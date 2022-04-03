@@ -1,0 +1,1953 @@
+#1: 'The Meathook Massacre', $63.46, Mythic
+#2: 'Vorinclex, Monstrous Raider', $33.08, Mythic
+#3: 'Goldspan Dragon', $29.1, Mythic
+#4: 'Old Gnawbone', $26.96, Mythic
+#5: 'The Wandering Emperor', $26.0, Mythic
+#6: 'Boseiju, Who Endures', $26.0, Rare
+#7: 'Cultivator Colossus', $21.0, Mythic
+#8: 'Hallowed Haunting', $18.49, Mythic
+#9: 'Agadeem's Awakening', $18.49, Mythic
+#10: 'Sea Gate Restoration', $16.77, Mythic
+#11: 'Wrenn and Seven', $15.0, Mythic
+#12: 'Jin-Gitaxias, Progress Tyrant', $14.99, Mythic
+#13: 'Necroduality', $14.99, Mythic
+#14: 'Hengegate Pathway', $13.8, Rare
+#15: 'Toxrill, the Corrosive', $13.79, Mythic
+#16: 'Lolth, Spider Queen', $12.75, Mythic
+#17: 'Beledros Witherbloom', $12.59, Mythic
+#18: 'Avabruck Caretaker', $11.75, Mythic
+#19: 'Tiamat', $11.16, Mythic
+#20: 'Omnath, Locus of Creation', $11.0, Mythic
+#21: 'Valki, God of Lies', $10.99, Mythic
+#22: 'Ancient Greenwarden', $10.73, Mythic
+#23: 'Chandra, Dressed to Kill', $10.52, Mythic
+#24: 'Esika, God of the Tree', $10.13, Mythic
+#25: 'Professor Onyx', $9.53, Mythic
+#26: 'Kaito Shizuki', $9.5, Mythic
+#27: 'Lithoform Engine', $9.49, Mythic
+#28: 'Ashaya, Soul of the Wild', $9.25, Mythic
+#29: 'Den of the Bugbear', $9.02, Rare
+#30: 'Otawara, Soaring City', $9.0, Rare
+#31: 'Crackle with Power', $8.99, Mythic
+#32: 'Koma, Cosmos Serpent', $8.99, Mythic
+#33: 'Hidetsugu Consumes All', $8.77, Mythic
+#34: 'Shatterskull Smashing', $8.61, Mythic
+#35: 'Olivia, Crimson Bride', $8.53, Mythic
+#36: 'Lier, Disciple of the Drowned', $8.52, Mythic
+#37: 'Sorin the Mirthless', $8.0, Mythic
+#38: 'Arlinn, the Pack's Hope', $8.0, Mythic
+#39: 'Halvar, God of Battle', $8.0, Mythic
+#40: 'Shipwreck Marsh', $7.99, Rare
+#41: 'Acererak the Archlich', $7.99, Mythic
+#42: 'Toski, Bearer of Secrets', $7.82, Rare
+#43: 'Treasure Vault', $7.54, Rare
+#44: 'Hullbreaker Horror', $7.43, Rare
+#45: 'Magma Opus', $7.2, Mythic
+#46: 'Valakut Awakening', $7.05, Rare
+#47: 'Shattered Sanctum', $6.99, Rare
+#48: 'Stormcarved Coast', $6.99, Rare
+#49: 'Haunted Ridge', $6.99, Rare
+#50: 'March of Otherworldly Light', $6.7, Rare
+#51: 'Kodama of the West Tree', $6.55, Mythic
+#52: 'Sundown Pass', $6.53, Rare
+#53: 'Blightstep Pathway', $6.41, Rare
+#54: 'Deserted Beach', $6.27, Rare
+#55: 'Clearwater Pathway', $6.2, Rare
+#56: 'Unnatural Growth', $6.09, Rare
+#57: 'Tezzeret, Betrayer of Flesh', $6.0, Mythic
+#58: 'Wandering Archaic', $6.0, Rare
+#59: 'Augur of Autumn', $5.98, Rare
+#60: 'Circle of Dreams Druid', $5.88, Rare
+#61: 'Riverglide Pathway', $5.75, Rare
+#62: 'Inferno of the Star Mounts', $5.68, Mythic
+#63: 'Expressive Iteration', $5.67, Uncommon
+#64: 'Fable of the Mirror-Breaker', $5.65, Rare
+#65: 'Darkbore Pathway', $5.59, Rare
+#66: 'Forsaken Monument', $5.59, Mythic
+#67: 'Vanquish the Horde', $5.52, Rare
+#68: 'Junji, the Midnight Sky', $5.5, Mythic
+#69: 'Manaform Hellkite', $5.5, Mythic
+#70: 'Ebondeath, Dracolich', $5.5, Mythic
+#71: 'Birgi, God of Storytelling', $5.47, Rare
+#72: 'Dreamroot Cascade', $5.31, Rare
+#73: 'Deathcap Glade', $5.27, Rare
+#74: 'Scute Swarm', $5.26, Rare
+#75: 'Alrund's Epiphany', $5.24, Mythic
+#76: 'Moraug, Fury of Akoum', $5.23, Mythic
+#77: 'Branchloft Pathway', $5.22, Rare
+#78: 'Maskwood Nexus', $5.2, Rare
+#79: 'Turntimber Symbiosis', $5.09, Mythic
+#80: 'Intrepid Adversary', $5.08, Mythic
+#81: 'Prismari Command', $5.07, Rare
+#82: 'Skyclave Apparition', $5.05, Rare
+#83: 'Teferi, Who Slows the Sunset', $5.03, Mythic
+#84: 'Ranger Class', $5.01, Rare
+#85: 'Cemetery Prowler', $5.0, Mythic
+#86: 'Cemetery Gatekeeper', $5.0, Mythic
+#87: 'Overgrown Farmland', $4.89, Rare
+#88: 'Welcoming Vampire', $4.86, Rare
+#89: 'Poppet Stitcher', $4.75, Mythic
+#90: 'The Book of Exalted Deeds', $4.75, Mythic
+#91: 'Farewell', $4.69, Rare
+#92: 'Demilich', $4.63, Mythic
+#93: 'Barkchannel Pathway', $4.55, Rare
+#94: 'Memory Deluge', $4.53, Rare
+#95: 'Adeline, Resplendent Cathar', $4.51, Rare
+#96: 'Tainted Adversary', $4.5, Mythic
+#97: 'Emeria's Call', $4.5, Mythic
+#98: 'Nashi, Moon Sage's Scion', $4.38, Mythic
+#99: 'Brightclimb Pathway', $4.38, Rare
+#100: 'Angel of Destiny', $4.32, Mythic
+#101: 'Tasha's Hideous Laughter', $4.26, Rare
+#102: 'Atsushi, the Blazing Sky', $4.25, Mythic
+#103: 'Needleverge Pathway', $4.24, Rare
+#104: 'Eiganjo, Seat of the Empire', $4.15, Rare
+#105: 'The World Tree', $4.12, Rare
+#106: 'Bloodthirsty Adversary', $4.07, Mythic
+#107: 'Bala Ged Recovery', $4.04, Uncommon
+#108: 'Galazeth Prismari', $4.02, Mythic
+#109: 'Rockfall Vale', $4.0, Rare
+#110: 'Tyvar Kell', $4.0, Mythic
+#111: 'Cragcrown Pathway', $3.99, Rare
+#112: 'Takenuma, Abandoned Mire', $3.93, Rare
+#113: 'Haunting Voyage', $3.88, Mythic
+#114: 'Culling Ritual', $3.83, Rare
+#115: 'Orvar, the All-Form', $3.74, Mythic
+#116: 'Tergrid, God of Fright', $3.72, Rare
+#117: 'Realmwalker', $3.71, Rare
+#118: 'Tamiyo, Compleated Sage', $3.68, Mythic
+#119: 'Iymrith, Desert Doom', $3.63, Mythic
+#120: 'Glasspool Mimic', $3.62, Rare
+#121: 'Righteous Valkyrie', $3.6, Rare
+#122: 'Werewolf Pack Leader', $3.56, Rare
+#123: 'Shadrix Silverquill', $3.49, Mythic
+#124: 'Xanathar, Guild Kingpin', $3.4, Mythic
+#125: 'Drana, the Last Bloodchief', $3.24, Mythic
+#126: 'Rowan, Scholar of Sparks', $3.2, Mythic
+#127: 'The Tarrasque', $3.15, Mythic
+#128: 'Burning-Rune Demon', $3.09, Mythic
+#129: 'Henrika Domnathi', $3.08, Mythic
+#130: 'Kaya the Inexorable', $3.06, Mythic
+#131: 'Esika's Chariot', $3.06, Rare
+#132: 'Kaya, Geist Hunter', $3.0, Mythic
+#133: 'Malevolent Hermit', $3.0, Rare
+#134: 'Paladin Class', $3.0, Rare
+#135: 'Velomachus Lorehold', $3.0, Mythic
+#136: 'Guardian of Faith', $2.98, Rare
+#137: 'Zariel, Archduke of Avernus', $2.97, Mythic
+#138: 'Deadly Dispute', $2.9, Common
+#139: 'Teleportation Circle', $2.89, Rare
+#140: 'Kura, the Boundless Sky', $2.76, Mythic
+#141: 'Solve the Equation', $2.76, Uncommon
+#142: 'Lion Sash', $2.75, Rare
+#143: 'Leyline Tyrant', $2.75, Mythic
+#144: 'Lotus Cobra', $2.74, Rare
+#145: 'Wedding Announcement', $2.73, Rare
+#146: 'Mordenkainen', $2.73, Mythic
+#147: 'Luminarch Aspirant', $2.69, Rare
+#148: 'Cemetery Illuminator', $2.57, Mythic
+#149: 'Mirror Box', $2.5, Rare
+#150: 'Icingdeath, Frost Tyrant', $2.5, Mythic
+#151: 'Xorn', $2.5, Rare
+#152: 'Fighter Class', $2.5, Rare
+#153: 'Scourge of the Skyclaves', $2.5, Mythic
+#154: 'Portable Hole', $2.49, Uncommon
+#155: 'Fateful Absence', $2.41, Rare
+#156: 'The Reality Chip', $2.4, Rare
+#157: 'Varragoth, Bloodsky Sire', $2.37, Rare
+#158: 'Maddening Cacophony', $2.36, Rare
+#159: 'Oswald Fiddlebender', $2.35, Rare
+#160: 'Archmage Emeritus', $2.35, Rare
+#161: 'Spectral Adversary', $2.34, Mythic
+#162: 'Voice of the Blessed', $2.32, Rare
+#163: 'Starnheim Unleashed', $2.31, Mythic
+#164: 'Felidar Retreat', $2.31, Rare
+#165: 'Secluded Courtyard', $2.27, Uncommon
+#166: 'Dragon's Approach', $2.27, Common
+#167: 'Sedgemoor Witch', $2.27, Rare
+#168: 'Grazilaxx, Illithid Scholar', $2.25, Rare
+#169: 'Hive of the Eye Tyrant', $2.21, Rare
+#170: 'Eradicator Valkyrie', $2.2, Mythic
+#171: 'Lair of the Hydra', $2.19, Rare
+#172: 'Ao, the Dawn Sky', $2.15, Mythic
+#173: 'Tibalt's Trickery', $2.15, Rare
+#174: 'Faithbound Judge', $2.14, Mythic
+#175: 'The Deck of Many Things', $2.1, Mythic
+#176: 'Baleful Mastery', $2.1, Rare
+#177: 'Sigarda, Champion of Light', $2.09, Mythic
+#178: 'Moonveil Regent', $2.09, Mythic
+#179: 'Storm-Kiln Artist', $2.09, Uncommon
+#180: 'Vanishing Verse', $2.09, Rare
+#181: 'Malakir Rebirth', $2.09, Uncommon
+#182: 'Volatile Arsonist', $2.07, Mythic
+#183: 'Necroblossom Snarl', $2.05, Rare
+#184: 'Toralf, God of Fury', $2.03, Mythic
+#185: 'Sokenzan, Crucible of Defiance', $2.0, Rare
+#186: 'Champion of the Perished', $2.0, Rare
+#187: 'Saryth, the Viper's Fang', $2.0, Rare
+#188: 'Kasmina, Enigma Sage', $2.0, Mythic
+#189: 'Frostboil Snarl', $2.0, Rare
+#190: 'Elite Spellbinder', $2.0, Rare
+#191: 'Elvish Warmaster', $2.0, Rare
+#192: 'Doomskar', $2.0, Rare
+#193: 'Tovolar, Dire Overlord', $1.99, Rare
+#194: 'Magda, Brazen Outlaw', $1.99, Rare
+#195: 'Skyclave Relic', $1.99, Rare
+#196: 'Thalia, Guardian of Thraben', $1.98, Rare
+#197: 'Shineshadow Snarl', $1.96, Rare
+#198: 'Faceless Haven', $1.93, Rare
+#199: 'Katilda, Dawnhart Martyr', $1.9, Rare
+#200: 'Cosima, God of the Voyage', $1.86, Rare
+#201: 'Nissa of Shadowed Boughs', $1.86, Mythic
+#202: 'Rogue Class', $1.83, Rare
+#203: 'Tanazir Quandrix', $1.83, Mythic
+#204: 'Primal Adversary', $1.79, Mythic
+#205: 'Consider', $1.75, Common
+#206: 'Delina, Wild Mage', $1.74, Rare
+#207: 'Reflections of Littjara', $1.73, Rare
+#208: 'Archon of Emeria', $1.69, Rare
+#209: 'Furycalm Snarl', $1.68, Rare
+#210: 'Cemetery Protector', $1.67, Mythic
+#211: 'Blade of the Oni', $1.65, Mythic
+#212: 'Grand Master of Flowers', $1.65, Mythic
+#213: 'Liesa, Forgotten Archangel', $1.63, Rare
+#214: 'Headless Rider', $1.61, Rare
+#215: 'Double Major', $1.61, Rare
+#216: 'Lord of the Forsaken', $1.58, Mythic
+#217: 'Plumb the Forbidden', $1.52, Uncommon
+#218: 'Infernal Grasp', $1.5, Uncommon
+#219: 'Ellywick Tumblestrum', $1.5, Mythic
+#220: 'Witherbloom Command', $1.5, Rare
+#221: 'Vineglimmer Snarl', $1.5, Rare
+#222: 'Body of Research', $1.5, Mythic
+#223: 'Mila, Crafty Companion', $1.5, Mythic
+#224: 'Galvanic Iteration', $1.49, Rare
+#225: 'Extus, Oriq Overlord', $1.49, Mythic
+#226: 'Blex, Vexing Pest', $1.49, Mythic
+#227: 'Mystic Reflection', $1.49, Rare
+#228: 'Dig Up', $1.47, Rare
+#229: 'The Celestus', $1.46, Rare
+#230: 'Minsc, Beloved Ranger', $1.45, Mythic
+#231: 'Howlpack Piper', $1.44, Rare
+#232: 'Quakebringer', $1.43, Mythic
+#233: 'Thieving Skydiver', $1.43, Rare
+#234: 'Hagra Mauling', $1.43, Rare
+#235: 'Cave of the Frost Dragon', $1.41, Rare
+#236: 'Kairi, the Swirling Sky', $1.38, Mythic
+#237: 'Jugan Defends the Temple', $1.38, Mythic
+#238: 'Hofri Ghostforge', $1.35, Mythic
+#239: 'Nighthawk Scavenger', $1.35, Rare
+#240: 'Glorious Sunrise', $1.34, Rare
+#241: 'Faithful Mending', $1.32, Uncommon
+#242: 'Enduring Angel', $1.3, Mythic
+#243: 'Hobgoblin Bandit Lord', $1.3, Rare
+#244: 'Snow-Covered Island <278>', $1.3, Common
+#245: 'Gisa, Glorious Resurrector', $1.29, Rare
+#246: 'Prosperous Innkeeper', $1.28, Uncommon
+#247: 'Mavinda, Students' Advocate', $1.28, Mythic
+#248: 'Smoldering Egg', $1.26, Rare
+#249: 'Reckless Stormseeker', $1.25, Rare
+#250: 'Vorpal Sword', $1.25, Rare
+#251: 'The Book of Vile Darkness', $1.25, Mythic
+#252: 'Wizard Class', $1.25, Uncommon
+#253: 'Jadzi, Oracle of Arcavios', $1.25, Mythic
+#254: 'Ingenious Smith', $1.22, Uncommon
+#255: 'Blot Out the Sky', $1.22, Mythic
+#256: 'Snow-Covered Island <279>', $1.21, Common
+#257: 'Cleric Class', $1.2, Uncommon
+#258: 'Cosmos Elixir', $1.2, Rare
+#259: 'Nahiri, Heir of the Ancients', $1.2, Mythic
+#260: 'Savior of Ollenbock', $1.19, Mythic
+#261: 'Tovolar's Huntmaster', $1.15, Rare
+#262: 'Brutal Cathar', $1.14, Rare
+#263: 'Florian, Voldaren Scion', $1.14, Rare
+#264: 'Jerren, Corrupted Bishop', $1.13, Mythic
+#265: 'Loyal Warhound', $1.1, Rare
+#266: 'Hostile Hostel', $1.09, Mythic
+#267: 'Mirrorhall Mimic', $1.07, Rare
+#268: 'Ice Tunnel', $1.07, Common
+#269: 'Mascot Exhibition', $1.06, Mythic
+#270: 'Soul Shatter', $1.06, Rare
+#271: 'Overcharged Amalgam', $1.05, Rare
+#272: 'Sea Gate Stormcaller', $1.03, Mythic
+#273: 'Edgar, Charmed Groom', $1.02, Rare
+#274: 'Morbid Opportunist', $1.02, Uncommon
+#275: 'Reidane, God of the Worthy', $1.02, Rare
+#276: 'Thousand-Faced Shadow', $1.0, Rare
+#277: 'The Kami War', $1.0, Mythic
+#278: 'Reckoner Bankbuster', $1.0, Rare
+#279: 'By Invitation Only', $1.0, Rare
+#280: 'Ascendant Packleader', $1.0, Rare
+#281: 'Wash Away', $1.0, Uncommon
+#282: 'Pithing Needle', $1.0, Rare
+#283: 'Sigardian Savior', $1.0, Mythic
+#284: 'Minion of the Mighty', $1.0, Rare
+#285: 'Bard Class', $1.0, Rare
+#286: 'Valentin, Dean of the Vein', $1.0, Rare
+#287: 'Ecological Appreciation', $1.0, Mythic
+#288: 'Snow-Covered Swamp <281>', $1.0, Common
+#289: 'Rise of the Dread Marn', $1.0, Rare
+#290: 'Battle Mammoth', $1.0, Mythic
+#291: 'Tyrite Sanctum', $1.0, Rare
+#292: 'Dream Devourer', $1.0, Rare
+#293: 'Jace, Mirror Mage', $1.0, Mythic
+#294: 'Ruin Crab', $1.0, Uncommon
+#295: 'Maul of the Skyclaves', $1.0, Rare
+#296: 'Voldaren Estate', $0.99, Rare
+#297: 'Moonsilver Key', $0.99, Uncommon
+#298: 'Wish', $0.99, Rare
+#299: 'Sorcerer Class', $0.99, Rare
+#300: 'Strixhaven Stadium', $0.99, Rare
+#301: 'Harness Infinity', $0.99, Mythic
+#302: 'Showdown of the Skalds', $0.99, Rare
+#303: 'Pyre of Heroes', $0.99, Rare
+#304: 'Niko Aris', $0.99, Mythic
+#305: 'Alrund, God of the Cosmos', $0.99, Mythic
+#306: 'Snow-Covered Forest <284>', $0.99, Common
+#307: 'Snow-Covered Forest <285>', $0.99, Common
+#308: 'Snow-Covered Swamp <280>', $0.99, Common
+#309: 'Valakut Exploration', $0.99, Rare
+#310: 'Ondu Inversion', $0.99, Rare
+#311: 'Ulvenwald Oddity', $0.98, Rare
+#312: 'Containment Construct', $0.97, Uncommon
+#313: 'Cemetery Desecrator', $0.97, Mythic
+#314: 'Spirit-Sister's Call', $0.96, Mythic
+#315: 'Light-Paws, Emperor's Voice', $0.95, Rare
+#316: 'Jadar, Ghoulcaller of Nephalia', $0.95, Rare
+#317: 'Lizard Blades', $0.93, Rare
+#318: 'Anje, Maid of Dishonor', $0.93, Rare
+#319: 'Resplendent Marshal', $0.93, Mythic
+#320: 'Torens, Fist of the Angels', $0.92, Rare
+#321: 'Volo, Guide to Monsters', $0.92, Rare
+#322: 'Blade Historian', $0.92, Rare
+#323: 'Hinata, Dawn-Crowned', $0.89, Rare
+#324: 'Geralf, Visionary Stitcher', $0.89, Rare
+#325: 'Nadaar, Selfless Paladin', $0.89, Rare
+#326: 'Jukai Naturalist', $0.86, Uncommon
+#327: 'Woodland Chasm', $0.85, Common
+#328: 'Semester's End', $0.83, Rare
+#329: 'Immersturm Predator', $0.83, Rare
+#330: 'Sejiri Shelter', $0.82, Uncommon
+#331: 'Inscription of Abundance', $0.82, Rare
+#332: 'Drizzt Do'Urden', $0.81, Rare
+#333: 'Orb of Dragonkind', $0.81, Rare
+#334: 'March of Swirling Mist', $0.8, Rare
+#335: 'Go Blank', $0.8, Uncommon
+#336: 'Rimewood Falls', $0.8, Common
+#337: 'Satoru Umezawa', $0.79, Rare
+#338: 'Rite of Harmony', $0.79, Rare
+#339: 'Flameskull', $0.79, Mythic
+#340: 'Consuming Blob', $0.77, Mythic
+#341: 'Nullpriest of Oblivion', $0.77, Rare
+#342: 'Change of Fortune', $0.76, Rare
+#343: 'The Restoration of Eiganjo', $0.75, Rare
+#344: 'Isshin, Two Heavens as One', $0.75, Rare
+#345: 'Voldaren Bloodcaster', $0.75, Rare
+#346: 'Halana and Alena, Partners', $0.75, Rare
+#347: 'Druid Class', $0.75, Uncommon
+#348: 'Westgate Regent', $0.75, Rare
+#349: 'Eye of Vecna', $0.75, Rare
+#350: 'In Search of Greatness', $0.75, Rare
+#351: 'Crippling Fear', $0.75, Rare
+#352: 'Legion Angel', $0.75, Rare
+#353: 'Swamp <272>', $0.74, Common
+#354: 'Swamp <273>', $0.74, Common
+#355: 'Swamp <273>', $0.72, Common
+#356: 'Swamp <272>', $0.72, Common
+#357: 'Triskaidekaphile', $0.71, Rare
+#358: 'Moon-Blessed Cleric', $0.71, Uncommon
+#359: 'Search for Glory', $0.7, Rare
+#360: 'Froghemoth', $0.69, Rare
+#361: 'Test of Talents', $0.69, Uncommon
+#362: 'Saw It Coming', $0.69, Uncommon
+#363: 'Snow-Covered Mountain <283>', $0.67, Common
+#364: 'Blood on the Snow', $0.67, Rare
+#365: 'Fracture', $0.66, Uncommon
+#366: 'Siphon Insight', $0.65, Rare
+#367: 'Mask of Griselbrand', $0.64, Rare
+#368: 'Katilda, Dawnhart Prime', $0.64, Rare
+#369: 'Snow-Covered Mountain <282>', $0.64, Common
+#370: 'Splendid Reclamation', $0.63, Rare
+#371: 'Ill-Tempered Loner', $0.63, Rare
+#372: 'Old-Growth Troll', $0.63, Rare
+#373: 'Binding the Old Gods', $0.63, Uncommon
+#374: 'Mechtitan Core', $0.62, Rare
+#375: 'Dollhouse of Horrors', $0.62, Rare
+#376: 'Patrician Geist', $0.62, Rare
+#377: 'Strict Proctor', $0.62, Rare
+#378: 'Quandrix Command', $0.61, Rare
+#379: 'Explosive Singularity', $0.6, Mythic
+#380: 'Dreadfeast Demon', $0.6, Rare
+#381: 'Old Stickfingers', $0.59, Rare
+#382: 'Mind Flayer', $0.59, Rare
+#383: 'Oriq Loremage', $0.59, Rare
+#384: 'Fading Hope', $0.58, Uncommon
+#385: 'Leonin Lightscribe', $0.58, Rare
+#386: 'Volatile Fjord', $0.58, Common
+#387: 'Shambling Ghast', $0.57, Common
+#388: 'Tazri, Beacon of Unity', $0.57, Mythic
+#389: 'Island <271>', $0.56, Common
+#390: 'Island <270>', $0.55, Common
+#391: 'Sludge Monster', $0.55, Rare
+#392: 'Falkenrath Pit Fighter', $0.55, Rare
+#393: 'Sunstreak Phoenix', $0.55, Mythic
+#394: 'Triumphant Adventurer', $0.55, Rare
+#395: 'Roiling Vortex', $0.55, Rare
+#396: 'Goro-Goro, Disciple of Ryusei', $0.53, Rare
+#397: 'Play with Fire', $0.53, Uncommon
+#398: 'Mountain <274>', $0.53, Common
+#399: 'Feed the Swarm', $0.53, Common
+#400: 'Kami of Transience', $0.52, Rare
+#401: 'Rushed Rebirth', $0.52, Rare
+#402: 'Island <270>', $0.51, Common
+#403: 'Suspicious Stowaway', $0.51, Rare
+#404: 'Magmatic Channeler', $0.51, Rare
+#405: 'Jwari Disruption', $0.51, Uncommon
+#406: 'Dorothea, Vengeful Victim', $0.5, Rare
+#407: 'Grolnok, the Omnivore', $0.5, Rare
+#408: 'Alchemist's Gambit', $0.5, Rare
+#409: 'Runo Stromkirk', $0.5, Rare
+#410: 'Curse of Hospitality', $0.5, Rare
+#411: 'Consuming Tide', $0.5, Rare
+#412: 'Bloodvial Purveyor', $0.5, Rare
+#413: 'Old Rutstein', $0.5, Rare
+#414: 'Howling Moon', $0.5, Rare
+#415: 'Forest <276>', $0.5, Common
+#416: 'Forest <277>', $0.5, Common
+#417: 'Graveyard Trespasser', $0.5, Rare
+#418: 'Croaking Counterpart', $0.5, Rare
+#419: 'Sunset Revelry', $0.5, Uncommon
+#420: 'Slogurk, the Overslime', $0.5, Rare
+#421: 'Outland Liberator', $0.5, Uncommon
+#422: 'Slaughter Specialist', $0.5, Rare
+#423: 'Burn Down the House', $0.5, Rare
+#424: 'Storm the Festival', $0.5, Rare
+#425: 'Adult Gold Dragon', $0.5, Rare
+#426: 'Battle Cry Goblin', $0.5, Uncommon
+#427: 'Ochre Jelly', $0.5, Rare
+#428: 'Orcus, Prince of Undeath', $0.5, Rare
+#429: 'Unexpected Windfall', $0.5, Common
+#430: 'Skeletal Swarming', $0.5, Rare
+#431: 'Asmodeus the Archfiend', $0.5, Rare
+#432: 'Codie, Vociferous Codex', $0.5, Rare
+#433: 'Conspiracy Theorist', $0.5, Rare
+#434: 'Hall of Oracles', $0.5, Rare
+#435: 'Accomplished Alchemist', $0.5, Rare
+#436: 'The Biblioplex', $0.5, Rare
+#437: 'Daemogoth Titan', $0.5, Rare
+#438: 'Highland Forest', $0.5, Common
+#439: 'Rally the Ranks', $0.5, Rare
+#440: 'Draugr Necromancer', $0.5, Rare
+#441: 'Jorn, God of Winter', $0.5, Rare
+#442: 'Glorious Protector', $0.5, Rare
+#443: 'Tangled Florahedron', $0.5, Uncommon
+#444: 'Crawling Barrens', $0.5, Rare
+#445: 'Yasharn, Implacable Earth', $0.5, Rare
+#446: 'Phylath, World Sculptor', $0.5, Rare
+#447: 'Akiri, Fearless Voyager', $0.5, Rare
+#448: 'Kazandu Mammoth', $0.5, Rare
+#449: 'Brilliant Restoration', $0.49, Rare
+#450: 'Rabbit Battery', $0.49, Uncommon
+#451: 'Reckless Impulse', $0.49, Common
+#452: 'Eruth, Tormented Prophet', $0.49, Rare
+#453: 'Olivia's Attendants', $0.49, Rare
+#454: 'Willow Geist', $0.49, Rare
+#455: 'Rem Karolus, Stalwart Slayer', $0.49, Rare
+#456: 'Sigarda's Splendor', $0.49, Rare
+#457: 'Flumph', $0.49, Rare
+#458: 'Wight', $0.49, Rare
+#459: 'Yuan-Ti Malison', $0.49, Rare
+#460: 'Treasure Chest', $0.49, Rare
+#461: 'Monk Class', $0.49, Rare
+#462: 'Forsworn Paladin', $0.49, Rare
+#463: 'Shaile, Dean of Radiance', $0.49, Rare
+#464: 'Selfless Glyphweaver', $0.49, Rare
+#465: 'Callous Bloodmage', $0.49, Rare
+#466: 'Sarulf, Realm Eater', $0.49, Rare
+#467: 'Arctic Treeline', $0.49, Common
+#468: 'Egon, God of Death', $0.49, Rare
+#469: 'Ascendant Spirit', $0.49, Rare
+#470: 'Firja's Retribution', $0.49, Rare
+#471: 'Silundi Vision', $0.49, Uncommon
+#472: 'Cloudsteel Kirin', $0.48, Rare
+#473: 'Island <271>', $0.48, Common
+#474: 'Vadrik, Astral Archmage', $0.48, Rare
+#475: 'Augmenter Pugilist', $0.48, Rare
+#476: 'Path of Peril', $0.47, Rare
+#477: 'Curse of Silence', $0.47, Rare
+#478: 'Sphere of Annihilation', $0.47, Rare
+#479: 'The Blackstaff of Waterdeep', $0.47, Rare
+#480: 'Gelatinous Cube', $0.47, Rare
+#481: 'Varis, Silverymoon Ranger', $0.47, Rare
+#482: 'Venerable Warsinger', $0.47, Rare
+#483: 'Zareth San, the Trickster', $0.47, Rare
+#484: 'Zagras, Thief of Heartbeats', $0.47, Rare
+#485: 'Shigeki, Jukai Visionary', $0.46, Rare
+#486: 'Demonic Bargain', $0.46, Rare
+#487: 'Dire-Strain Rampage', $0.46, Rare
+#488: 'Instrument of the Bards', $0.46, Rare
+#489: 'Experimental Synthesizer', $0.45, Common
+#490: 'Sungold Sentinel', $0.45, Rare
+#491: 'Cathar Commando', $0.45, Common
+#492: 'Lorehold Command', $0.45, Rare
+#493: 'Witherbloom Apprentice', $0.45, Uncommon
+#494: 'Silverquill Silencer', $0.45, Rare
+#495: 'Snowfield Sinkhole', $0.45, Common
+#496: 'Grakmaw, Skyclave Ravager', $0.45, Rare
+#497: 'Charix, the Raging Isle', $0.45, Rare
+#498: 'Invoke Despair', $0.44, Rare
+#499: 'Mindlink Mech', $0.44, Rare
+#500: 'Falkenrath Forebear', $0.44, Rare
+#501: 'Hero's Downfall', $0.44, Uncommon
+#502: 'Kolvori, God of Kinship', $0.44, Rare
+#503: 'Linvala, Shield of Sea Gate', $0.44, Rare
+#504: 'Taborax, Hope's Demise', $0.44, Rare
+#505: 'Kazuul's Fury', $0.44, Uncommon
+#506: 'Hamlet Vanguard', $0.43, Rare
+#507: 'Curse of Shaken Faith', $0.43, Rare
+#508: 'Angelfire Ignition', $0.43, Rare
+#509: 'Wizard's Spellbook', $0.43, Rare
+#510: 'Skemfar Avenger', $0.43, Rare
+#511: 'Skyclave Shade', $0.43, Rare
+#512: 'Dying to Serve', $0.42, Rare
+#513: 'Dennick, Pious Apprentice', $0.42, Rare
+#514: 'Devastating Mastery', $0.42, Rare
+#515: 'Snow-Covered Plains <277>', $0.42, Common
+#516: 'Delver of Secrets', $0.41, Uncommon
+#517: 'Dragon Turtle', $0.41, Rare
+#518: 'Hand of Vecna', $0.41, Rare
+#519: 'Bloodchief's Thirst', $0.41, Uncommon
+#520: 'Roadside Reliquary', $0.4, Uncommon
+#521: 'Patchwork Automaton', $0.4, Uncommon
+#522: 'Forest <277>', $0.4, Common
+#523: 'Island <271>', $0.4, Common
+#524: 'Graf Reaver', $0.4, Rare
+#525: 'Odric, Blood-Cursed', $0.4, Rare
+#526: 'Mountain <275>', $0.4, Common
+#527: 'Vampire Socialite', $0.4, Uncommon
+#528: 'Cathartic Pyre', $0.4, Uncommon
+#529: 'Silverquill Command', $0.4, Rare
+#530: 'Plargg, Dean of Chaos', $0.4, Rare
+#531: 'Radiant Scrollwielder', $0.4, Rare
+#532: 'Rip Apart', $0.4, Uncommon
+#533: 'Access Tunnel', $0.4, Uncommon
+#534: 'Dramatic Finale', $0.4, Rare
+#535: 'Exponential Growth', $0.4, Rare
+#536: 'Sigrid, God-Favored', $0.4, Rare
+#537: 'Sulfurous Mire', $0.4, Common
+#538: 'Replicating Ring', $0.4, Uncommon
+#539: 'Bloodline Pretender', $0.4, Uncommon
+#540: 'Dragonkin Berserker', $0.4, Rare
+#541: 'Rune of Sustenance', $0.4, Uncommon
+#542: 'Runeforge Champion', $0.4, Rare
+#543: 'Confounding Conundrum', $0.4, Rare
+#544: 'Cleansing Wildfire', $0.4, Common
+#545: 'Nahiri's Lithoforming', $0.4, Rare
+#546: 'Oran-Rief Ooze', $0.4, Rare
+#547: 'Shadows' Verdict', $0.4, Rare
+#548: 'Mech Hangar', $0.39, Uncommon
+#549: 'Fell Stinger', $0.39, Uncommon
+#550: 'Dreamshackle Geist', $0.39, Rare
+#551: 'Briarbridge Tracker', $0.39, Rare
+#552: 'Curse of Surveillance', $0.39, Rare
+#553: 'Bruenor Battlehammer', $0.39, Uncommon
+#554: 'Dancing Sword', $0.39, Rare
+#555: 'Efreet Flamepainter', $0.39, Rare
+#556: 'Sparring Regimen', $0.39, Rare
+#557: 'Clever Lumimancer', $0.39, Uncommon
+#558: 'Multiple Choice', $0.39, Rare
+#559: 'Eyetwitch', $0.39, Uncommon
+#560: 'Calamity Bearer', $0.39, Rare
+#561: 'Harald Unites the Elves', $0.39, Rare
+#562: 'Orah, Skyclave Hierophant', $0.39, Rare
+#563: 'Forest <280>', $0.39, Common
+#564: 'Wayward Guide-Beast', $0.39, Rare
+#565: 'Hallowed Respite', $0.38, Rare
+#566: 'Bloodline Culling', $0.38, Rare
+#567: 'King Narfi's Betrayal', $0.38, Rare
+#568: 'Inscription of Insight', $0.38, Rare
+#569: 'Oni-Cult Anvil', $0.37, Uncommon
+#570: 'Dominating Vampire', $0.37, Rare
+#571: 'Plains <269>', $0.37, Common
+#572: 'Ghoulcaller's Harvest', $0.37, Rare
+#573: 'Can't Stay Away', $0.37, Rare
+#574: 'Wake to Slaughter', $0.37, Rare
+#575: 'Cyclone Summoner', $0.37, Rare
+#576: 'Swarm Shambler', $0.37, Rare
+#577: 'Kabira Takedown', $0.37, Uncommon
+#578: 'Forest <276>', $0.36, Common
+#579: 'Patchwork Crawler', $0.36, Rare
+#580: 'Light Up the Night', $0.36, Rare
+#581: 'Verdant Mastery', $0.36, Rare
+#582: 'Gnarled Professor', $0.36, Rare
+#583: 'Inscription of Ruin', $0.36, Rare
+#584: 'Biting-Palm Ninja', $0.35, Rare
+#585: 'March of Reckless Joy', $0.35, Rare
+#586: 'Invoke Calamity', $0.35, Rare
+#587: 'Raiyuu, Storm's Edge', $0.35, Rare
+#588: 'Invoke Justice', $0.35, Rare
+#589: 'Invoke the Winds', $0.35, Rare
+#590: 'Thundering Raiju', $0.35, Rare
+#591: 'Mountain <275>', $0.35, Common
+#592: 'Sigarda's Summons', $0.35, Rare
+#593: 'Concealing Curtains', $0.35, Rare
+#594: 'Inspired Idea', $0.35, Rare
+#595: 'Winged Portent', $0.35, Rare
+#596: 'Lantern of the Lost', $0.35, Uncommon
+#597: 'Blood Fountain', $0.35, Common
+#598: 'Plains <268>', $0.35, Common
+#599: 'Curse of Leeches', $0.35, Rare
+#600: 'Geistflame Reservoir', $0.35, Rare
+#601: 'Kessig Naturalist', $0.35, Uncommon
+#602: 'Grafted Identity', $0.35, Rare
+#603: 'Ludevic, Necrogenius', $0.35, Rare
+#604: 'Field of Ruin', $0.35, Uncommon
+#605: 'Power Word Kill', $0.35, Uncommon
+#606: 'Skullport Merchant', $0.35, Uncommon
+#607: 'Dungeon Descent', $0.35, Rare
+#608: 'Zalto, Fire Giant Duke', $0.35, Rare
+#609: 'Kalain, Reclusive Painter', $0.35, Uncommon
+#610: 'Long Rest', $0.35, Rare
+#611: 'True Polymorph', $0.35, Rare
+#612: 'Dragonsguard Elite', $0.35, Rare
+#613: 'Flamescroll Celebrant', $0.35, Rare
+#614: 'Draconic Intervention', $0.35, Rare
+#615: 'Fervent Mastery', $0.35, Rare
+#616: 'Pestilent Cauldron', $0.35, Rare
+#617: 'Poet's Quill', $0.35, Rare
+#618: 'Tempted by the Oriq', $0.35, Rare
+#619: 'Alpine Meadow', $0.35, Common
+#620: 'Snow-Covered Plains <276>', $0.35, Common
+#621: 'Cosmos Charger', $0.35, Rare
+#622: 'Waking the Trolls', $0.35, Rare
+#623: 'Battle of Frost and Fire', $0.35, Rare
+#624: 'Battle for Bretagard', $0.35, Rare
+#625: 'The Bears of Littjara', $0.35, Rare
+#626: 'Fynn, the Fangbearer', $0.35, Uncommon
+#627: 'The Raven's Warning', $0.35, Rare
+#628: 'Graven Lore', $0.35, Rare
+#629: 'The Bloodsky Massacre', $0.35, Rare
+#630: 'Icebreaker Kraken', $0.35, Rare
+#631: 'Coveted Prize', $0.35, Rare
+#632: 'Tajuru Paragon', $0.35, Rare
+#633: 'Roiling Regrowth', $0.35, Uncommon
+#634: 'Kargan Intimidator', $0.35, Rare
+#635: 'Myriad Construct', $0.35, Rare
+#636: 'Throne of Makindi', $0.35, Rare
+#637: 'Verazol, the Split Current', $0.35, Rare
+#638: 'Satsuki, the Living Lore', $0.34, Rare
+#639: 'Soul Transfer', $0.34, Rare
+#640: 'Plains <269>', $0.34, Common
+#641: 'Investigator's Journal', $0.34, Rare
+#642: 'Trelasarra, Moon Dancer', $0.34, Uncommon
+#643: 'Confront the Past', $0.34, Rare
+#644: 'Tend the Pests', $0.34, Uncommon
+#645: 'Demon's Disciple', $0.34, Uncommon
+#646: 'Inventive Iteration', $0.33, Rare
+#647: 'Mountain <274>', $0.33, Common
+#648: 'Teachings of the Archaics', $0.33, Rare
+#649: 'Elemental Expressionist', $0.33, Rare
+#650: 'Ingenious Mastery', $0.33, Rare
+#651: 'Glacial Floodplain', $0.33, Common
+#652: 'Kardur, Doomscourge', $0.33, Uncommon
+#653: 'Tundra Fumarole', $0.33, Rare
+#654: 'Blessing of Frost', $0.33, Rare
+#655: 'Forest <279>', $0.33, Common
+#656: 'Mountain <275>', $0.33, Common
+#657: 'Kaza, Roil Chaser', $0.33, Rare
+#658: 'Khalni Ambush', $0.33, Uncommon
+#659: 'Tatsunari, Toad Rider', $0.32, Rare
+#660: 'Plains <268>', $0.32, Common
+#661: 'Kessig Wolfrider', $0.32, Rare
+#662: 'Hiveheart Shaman', $0.32, Rare
+#663: 'Rite of Oblivion', $0.32, Uncommon
+#664: 'Otherworldly Gaze', $0.32, Common
+#665: 'Academic Probation', $0.32, Rare
+#666: 'Retriever Phoenix', $0.32, Rare
+#667: 'Reckless Crew', $0.32, Rare
+#668: 'Clarion Spirit', $0.32, Uncommon
+#669: 'Arni Brokenbrow', $0.32, Rare
+#670: 'Spikefield Hazard', $0.32, Uncommon
+#671: 'Cragplate Baloth', $0.32, Rare
+#672: 'Shatterskull Charger', $0.32, Rare
+#673: 'Creepy Puppeteer', $0.31, Rare
+#674: 'Manifestation Sage', $0.31, Rare
+#675: 'Fireblade Charger', $0.31, Uncommon
+#676: 'Hidetsugu, Devouring Chaos', $0.3, Rare
+#677: 'Kyodai, Soul of Kamigawa', $0.3, Rare
+#678: 'Surgehacker Mech', $0.3, Rare
+#679: 'The Dragon-Kami Reborn', $0.3, Rare
+#680: 'Scrap Welder', $0.3, Rare
+#681: 'Generous Visitor', $0.3, Uncommon
+#682: 'March of Wretched Sorrow', $0.3, Rare
+#683: 'Invoke the Ancients', $0.3, Rare
+#684: 'Archghoul of Thraben', $0.3, Uncommon
+#685: 'Krydle of Baldur's Gate', $0.3, Uncommon
+#686: 'Meteor Swarm', $0.3, Rare
+#687: 'Temple of the Dragon Queen', $0.3, Uncommon
+#688: 'Uvilda, Dean of Perfection', $0.3, Rare
+#689: 'Kianne, Dean of Substance', $0.3, Rare
+#690: 'Torrent Sculptor', $0.3, Rare
+#691: 'Illuminate History', $0.3, Rare
+#692: 'Thrilling Discovery', $0.3, Common
+#693: 'Culmination of Studies', $0.3, Rare
+#694: 'Basic Conjuration', $0.3, Rare
+#695: 'Dream Strix', $0.3, Rare
+#696: 'Divide by Zero', $0.3, Uncommon
+#697: 'Blizzard Brawl', $0.3, Uncommon
+#698: 'Forest <278>', $0.3, Common
+#699: 'Mountain <276>', $0.3, Common
+#700: 'Swamp <272>', $0.3, Common
+#701: 'Archpriest of Iona', $0.3, Rare
+#702: 'Coralhelm Chronicler', $0.3, Rare
+#703: 'Relic Robber', $0.3, Rare
+#704: 'Vastwood Surge', $0.3, Uncommon
+#705: 'Squad Commander', $0.3, Rare
+#706: 'Master of Winds', $0.3, Rare
+#707: 'Nimble Trapfinder', $0.3, Rare
+#708: 'Tribute to Horobi', $0.29, Rare
+#709: 'Reality Heist', $0.29, Uncommon
+#710: 'Lantern Flare', $0.29, Rare
+#711: 'Bladestitched Skaab', $0.29, Uncommon
+#712: 'You Find Some Prisoners', $0.29, Uncommon
+#713: 'Resculpt', $0.29, Common
+#714: 'Ravenform', $0.29, Common
+#715: 'Weathered Runestone', $0.29, Uncommon
+#716: 'Littjara Mirrorlake', $0.29, Uncommon
+#717: 'Mukotai Soulripper', $0.28, Rare
+#718: 'Colossal Skyturtle', $0.28, Uncommon
+#719: 'Tamiyo's Safekeeping', $0.28, Common
+#720: 'Swamp <273>', $0.28, Common
+#721: 'Rune of Might', $0.28, Uncommon
+#722: 'Swamp <273>', $0.28, Common
+#723: 'Undead Butler', $0.27, Uncommon
+#724: 'Masked Vandal', $0.27, Common
+#725: 'Axgard Armory', $0.27, Uncommon
+#726: 'Island <270>', $0.27, Common
+#727: 'Touch the Spirit Realm', $0.26, Uncommon
+#728: 'Burning Hands', $0.26, Uncommon
+#729: 'Reconstruct History', $0.26, Uncommon
+#730: 'Plains <268>', $0.26, Common
+#731: 'Swamp <274>', $0.26, Common
+#732: 'Vastwood Fortification', $0.26, Uncommon
+#733: 'Michiko's Reign of Truth', $0.25, Uncommon
+#734: 'Go-Shintai of Shared Purpose', $0.25, Uncommon
+#735: 'Silver-Fur Master', $0.25, Uncommon
+#736: 'Enthusiastic Mechanaut', $0.25, Uncommon
+#737: 'Spirited Companion', $0.25, Common
+#738: 'Teachings of the Kirin', $0.25, Rare
+#739: 'Gloomshrieker', $0.25, Uncommon
+#740: 'Moonsnare Prototype', $0.25, Common
+#741: 'Hotshot Mechanic', $0.25, Uncommon
+#742: 'Tempered in Solitude', $0.25, Uncommon
+#743: 'Circuit Mender', $0.25, Uncommon
+#744: 'Go-Shintai of Ancient Wars', $0.25, Uncommon
+#745: 'Born to Drive', $0.25, Uncommon
+#746: 'Anchor to Reality', $0.25, Uncommon
+#747: 'Prosperous Thief', $0.25, Uncommon
+#748: 'Selfless Samurai', $0.25, Uncommon
+#749: 'Go-Shintai of Hidden Cruelty', $0.25, Uncommon
+#750: 'Eiganjo Uprising', $0.25, Rare
+#751: 'Mobilizer Mech', $0.25, Uncommon
+#752: 'Discover the Impossible', $0.25, Uncommon
+#753: 'Go-Shintai of Boundless Vigor', $0.25, Uncommon
+#754: 'March of Burgeoning Life', $0.25, Rare
+#755: 'Replication Specialist', $0.25, Uncommon
+#756: 'Roaring Earth', $0.25, Uncommon
+#757: 'Kotose, the Silent Spider', $0.25, Rare
+#758: 'Gravelighter', $0.25, Uncommon
+#759: 'Dragonspark Reactor', $0.25, Uncommon
+#760: 'Dockside Chef', $0.25, Uncommon
+#761: 'Reinforced Ronin', $0.25, Uncommon
+#762: 'Risona, Asari Commander', $0.25, Rare
+#763: 'Go-Shintai of Lost Wisdom', $0.25, Uncommon
+#764: 'Invigorating Hot Spring', $0.25, Uncommon
+#765: 'Wedding Invitation', $0.25, Common
+#766: 'Geistlight Snare', $0.25, Uncommon
+#767: 'Dread Fugue', $0.25, Uncommon
+#768: 'Dormant Grove', $0.25, Uncommon
+#769: 'Valorous Stance', $0.25, Uncommon
+#770: 'Packsong Pup', $0.25, Uncommon
+#771: 'Vilespawn Spider', $0.25, Uncommon
+#772: 'Twinblade Geist', $0.25, Uncommon
+#773: 'Brine Comber', $0.25, Uncommon
+#774: 'Radiant Grace', $0.25, Uncommon
+#775: 'Laid to Rest', $0.25, Uncommon
+#776: 'Retrieve', $0.25, Uncommon
+#777: 'Abrade', $0.25, Common
+#778: 'Stensia Uprising', $0.25, Rare
+#779: 'Honeymoon Hearse', $0.25, Uncommon
+#780: 'Thirst for Discovery', $0.25, Uncommon
+#781: 'Ancient Lumberknot', $0.25, Uncommon
+#782: 'Into the Night', $0.25, Uncommon
+#783: 'Mischievous Catgeist', $0.25, Uncommon
+#784: 'Voltaic Visionary', $0.25, Uncommon
+#785: 'Wandering Mind', $0.25, Uncommon
+#786: 'Markov Purifier', $0.25, Uncommon
+#787: 'Skull Skaab', $0.25, Uncommon
+#788: 'Reclusive Taxidermist', $0.25, Uncommon
+#789: 'Stormchaser Drake', $0.25, Uncommon
+#790: 'Kessig Flamebreather', $0.25, Common
+#791: 'Lambholt Raconteur', $0.25, Uncommon
+#792: 'Circle of Confinement', $0.25, Uncommon
+#793: 'Child of the Pack', $0.25, Uncommon
+#794: 'Restless Bloodseeker', $0.25, Uncommon
+#795: 'Wolfkin Outcast', $0.25, Uncommon
+#796: 'Crawling Infestation', $0.25, Uncommon
+#797: 'Catapult Fodder', $0.25, Uncommon
+#798: 'Bloodtithe Harvester', $0.25, Uncommon
+#799: 'Foreboding Statue', $0.25, Uncommon
+#800: 'Voldaren Epicure', $0.25, Common
+#801: 'Panicked Bystander', $0.25, Uncommon
+#802: 'Contortionist Troupe', $0.25, Uncommon
+#803: 'Village Watch', $0.25, Uncommon
+#804: 'Foul Play', $0.25, Uncommon
+#805: 'Heirloom Mirror', $0.25, Uncommon
+#806: 'Thermo-Alchemist', $0.25, Uncommon
+#807: 'Flame Channeler', $0.25, Uncommon
+#808: 'Dissipate', $0.25, Uncommon
+#809: 'Devoted Grafkeeper', $0.25, Uncommon
+#810: 'Lunar Frenzy', $0.25, Uncommon
+#811: 'Arcane Infusion', $0.25, Uncommon
+#812: 'Ghoulish Procession', $0.25, Uncommon
+#813: 'Diregraf Rebirth', $0.25, Uncommon
+#814: 'Fleshtaker', $0.25, Uncommon
+#815: 'Turn the Earth', $0.25, Uncommon
+#816: 'Corpse Cobble', $0.25, Uncommon
+#817: 'Burly Breaker', $0.25, Uncommon
+#818: 'Chaplain of Alms', $0.25, Uncommon
+#819: 'Hungry for More', $0.25, Uncommon
+#820: 'Necrosynthesis', $0.25, Uncommon
+#821: 'Ambitious Farmhand', $0.25, Uncommon
+#822: 'Fangblade Brigand', $0.25, Uncommon
+#823: 'Mystic Skull', $0.25, Uncommon
+#824: 'Sacred Fire', $0.25, Uncommon
+#825: 'Borrowed Time', $0.25, Uncommon
+#826: 'Dryad's Revival', $0.25, Uncommon
+#827: 'Rootcoil Creeper', $0.25, Uncommon
+#828: 'Bereaved Survivor', $0.25, Uncommon
+#829: 'Hound Tamer', $0.25, Uncommon
+#830: 'Unnatural Moonrise', $0.25, Uncommon
+#831: 'Dreadhound', $0.25, Uncommon
+#832: 'Deathbonnet Sprout', $0.25, Uncommon
+#833: 'Vengeful Strangler', $0.25, Uncommon
+#834: 'Bloodtithe Collector', $0.25, Uncommon
+#835: 'Lunarch Veteran', $0.25, Common
+#836: 'Stromkirk Bloodthief', $0.25, Uncommon
+#837: 'Dungeon Crawler', $0.25, Uncommon
+#838: 'Mountain <275>', $0.25, Common
+#839: 'Swamp <272>', $0.25, Common
+#840: 'Dawnbringer Cleric', $0.25, Common
+#841: 'You See a Pair of Goblins', $0.25, Uncommon
+#842: 'Choose Your Weapon', $0.25, Uncommon
+#843: 'Green Dragon', $0.25, Uncommon
+#844: 'Black Dragon', $0.25, Uncommon
+#845: 'Fly', $0.25, Uncommon
+#846: 'Feign Death', $0.25, Common
+#847: 'Grim Wanderer', $0.25, Uncommon
+#848: 'You Happen On a Glade', $0.25, Uncommon
+#849: 'Shessra, Death's Whisper', $0.25, Uncommon
+#850: 'Hama Pashar, Ruin Seeker', $0.25, Uncommon
+#851: 'Targ Nar, Demon-Fang Gnoll', $0.25, Uncommon
+#852: 'Chaos Channeler', $0.25, Uncommon
+#853: 'Barrowin of Clan Undurr', $0.25, Uncommon
+#854: 'Eccentric Apprentice', $0.25, Uncommon
+#855: 'Lightfoot Rogue', $0.25, Uncommon
+#856: 'Goblin Morningstar', $0.25, Uncommon
+#857: 'Critical Hit', $0.25, Uncommon
+#858: 'Feywild Trickster', $0.25, Uncommon
+#859: 'Gretchen Titchwillow', $0.25, Uncommon
+#860: 'Bag of Holding', $0.25, Uncommon
+#861: 'Red Dragon', $0.25, Uncommon
+#862: 'Barbarian Class', $0.25, Uncommon
+#863: 'Warlock Class', $0.25, Uncommon
+#864: 'Death-Priest of Myrkul', $0.25, Uncommon
+#865: 'Farideh, Devil's Chosen', $0.25, Uncommon
+#866: 'Magic Missile', $0.25, Uncommon
+#867: 'Reaper's Talisman', $0.25, Uncommon
+#868: 'Demogorgon's Clutches', $0.25, Uncommon
+#869: 'Monk of the Open Hand', $0.25, Uncommon
+#870: 'White Dragon', $0.25, Uncommon
+#871: 'Ray of Enfeeblement', $0.25, Uncommon
+#872: 'Wild Shape', $0.25, Uncommon
+#873: 'Plate Armor', $0.25, Uncommon
+#874: 'Check for Traps', $0.25, Uncommon
+#875: 'Dragon's Fire', $0.25, Common
+#876: 'Professor of Symbology', $0.25, Uncommon
+#877: 'Quandrix Apprentice', $0.25, Uncommon
+#878: 'Environmental Sciences', $0.25, Common
+#879: 'Thunderous Orator', $0.25, Uncommon
+#880: 'Lorehold Excavation', $0.25, Uncommon
+#881: 'Quintorius, Field Historian', $0.25, Uncommon
+#882: 'Reduce to Memory', $0.25, Uncommon
+#883: 'Creative Outburst', $0.25, Uncommon
+#884: 'Explosive Welcome', $0.25, Uncommon
+#885: 'Fortifying Draught', $0.25, Uncommon
+#886: 'Stonebinder's Familiar', $0.25, Uncommon
+#887: 'Igneous Inspiration', $0.25, Uncommon
+#888: 'Practical Research', $0.25, Uncommon
+#889: 'Rootha, Mercurial Artist', $0.25, Uncommon
+#890: 'Maelstrom Muse', $0.25, Uncommon
+#891: 'Kelpie Guide', $0.25, Uncommon
+#892: 'Tenured Inkcaster', $0.25, Uncommon
+#893: 'Zimone, Quandrix Prodigy', $0.25, Uncommon
+#894: 'Emergent Sequence', $0.25, Uncommon
+#895: 'Team Pennant', $0.25, Uncommon
+#896: 'Quandrix Cultivator', $0.25, Uncommon
+#897: 'Secret Rendezvous', $0.25, Uncommon
+#898: 'Necrotic Fumes', $0.25, Uncommon
+#899: 'Closing Statement', $0.25, Uncommon
+#900: 'Show of Confidence', $0.25, Uncommon
+#901: 'Decisive Denial', $0.25, Uncommon
+#902: 'Bookwurm', $0.25, Uncommon
+#903: 'Mentor's Guidance', $0.25, Uncommon
+#904: 'Killian, Ink Duelist', $0.25, Uncommon
+#905: 'Humiliate', $0.25, Uncommon
+#906: 'Shadewing Laureate', $0.25, Uncommon
+#907: 'Deadly Brew', $0.25, Uncommon
+#908: 'Honor Troll', $0.25, Uncommon
+#909: 'Dina, Soul Steeper', $0.25, Uncommon
+#910: 'Zephyr Boots', $0.25, Uncommon
+#911: 'Mortality Spear', $0.25, Uncommon
+#912: 'Devouring Tendrils', $0.25, Uncommon
+#913: 'Daemogoth Woe-Eater', $0.25, Uncommon
+#914: 'Invasion of the Giants', $0.25, Uncommon
+#915: 'Behold the Multiverse', $0.25, Common
+#916: 'Koll, the Forgemaster', $0.25, Uncommon
+#917: 'Glimpse the Cosmos', $0.25, Uncommon
+#918: 'Giant's Amulet', $0.25, Uncommon
+#919: 'Bretagard Stronghold', $0.25, Uncommon
+#920: 'Forging the Tyrite Sword', $0.25, Uncommon
+#921: 'The Trickster-God's Heist', $0.25, Uncommon
+#922: 'Village Rites', $0.25, Common
+#923: 'Seize the Spoils', $0.25, Common
+#924: 'Firja, Judge of Valor', $0.25, Uncommon
+#925: 'Vega, the Watcher', $0.25, Uncommon
+#926: 'Skemfar Shadowsage', $0.25, Uncommon
+#927: 'Moritte of the Frost', $0.25, Uncommon
+#928: 'Tergrid's Shadow', $0.25, Uncommon
+#929: 'Fall of the Impostor', $0.25, Uncommon
+#930: 'Spectral Steel', $0.25, Uncommon
+#931: 'Kardur's Vicious Return', $0.25, Uncommon
+#932: 'Harald, King of Skemfar', $0.25, Uncommon
+#933: 'Crush the Weak', $0.25, Uncommon
+#934: 'Dual Strike', $0.25, Uncommon
+#935: 'Rune of Flight', $0.25, Uncommon
+#936: 'Basalt Ravager', $0.25, Uncommon
+#937: 'Shepherd of the Cosmos', $0.25, Uncommon
+#938: 'Narfi, Betrayer King', $0.25, Uncommon
+#939: 'Aegar, the Freezing Flame', $0.25, Uncommon
+#940: 'Poison the Cup', $0.25, Uncommon
+#941: 'Usher of the Fallen', $0.25, Uncommon
+#942: 'Valkyrie's Sword', $0.25, Uncommon
+#943: 'Skemfar Elderhall', $0.25, Uncommon
+#944: 'Gnottvold Slumbermound', $0.25, Uncommon
+#945: 'Fearless Liberator', $0.25, Uncommon
+#946: 'Gates of Istfell', $0.25, Uncommon
+#947: 'Port of Karfell', $0.25, Uncommon
+#948: 'Surtland Frostpyre', $0.25, Uncommon
+#949: 'Ascent of the Worthy', $0.25, Uncommon
+#950: 'Colossal Plow', $0.25, Uncommon
+#951: 'Maja, Bretagard Protector', $0.25, Uncommon
+#952: 'Frost Augur', $0.25, Uncommon
+#953: 'Svella, Ice Shaper', $0.25, Uncommon
+#954: 'The Three Seasons', $0.25, Uncommon
+#955: 'Arni Slays the Troll', $0.25, Uncommon
+#956: 'Shimmerdrift Vale', $0.25, Common
+#957: 'Great Hall of Starnheim', $0.25, Uncommon
+#958: 'Rune of Mortality', $0.25, Uncommon
+#959: 'Rune of Speed', $0.25, Uncommon
+#960: 'Vengeful Reaper', $0.25, Uncommon
+#961: 'Murasa Rootgrazer', $0.25, Uncommon
+#962: 'Acquisitions Expert', $0.25, Uncommon
+#963: 'Spoils of Adventure', $0.25, Uncommon
+#964: 'Merfolk Windrobber', $0.25, Uncommon
+#965: 'Cleric of Life's Bond', $0.25, Uncommon
+#966: 'Windrider Wizard', $0.25, Uncommon
+#967: 'Pelakka Predation', $0.25, Uncommon
+#968: 'Island <269>', $0.25, Common
+#969: 'Mountain <277>', $0.25, Common
+#970: 'Plains <266>', $0.25, Common
+#971: 'Plains <267>', $0.25, Common
+#972: 'Umara Wizard', $0.25, Uncommon
+#973: 'Kor Blademaster', $0.25, Uncommon
+#974: 'Brushfire Elemental', $0.25, Uncommon
+#975: 'Akoum Warrior', $0.25, Uncommon
+#976: 'Thwart the Grave', $0.25, Uncommon
+#977: 'Umara Mystic', $0.25, Uncommon
+#978: 'Song-Mad Treachery', $0.25, Uncommon
+#979: 'Skyclave Cleric', $0.25, Uncommon
+#980: 'Lullmage's Domination', $0.25, Uncommon
+#981: 'Zof Consumption', $0.25, Uncommon
+#982: 'Vine Gecko', $0.25, Uncommon
+#983: 'Rockslide Sorcerer', $0.25, Uncommon
+#984: 'Makindi Stampede', $0.25, Uncommon
+#985: 'Attended Healer', $0.25, Uncommon
+#986: 'Iridescent Hornbeetle', $0.25, Uncommon
+#987: 'Murasa Sproutling', $0.25, Uncommon
+#988: 'Lithoform Blight', $0.25, Uncommon
+#989: 'Cinderclasm', $0.25, Uncommon
+#990: 'Lullmage's Familiar', $0.25, Uncommon
+#991: 'Shadow Stinger', $0.25, Uncommon
+#992: 'Blackbloom Rogue', $0.25, Uncommon
+#993: 'Skyclave Pick-Axe', $0.25, Uncommon
+#994: 'Concerted Defense', $0.25, Uncommon
+#995: 'Journey to Oblivion', $0.25, Uncommon
+#996: 'Moss-Pit Skeleton', $0.25, Uncommon
+#997: 'Skyclave Shadowcat', $0.25, Uncommon
+#998: 'Canyon Jerboa', $0.25, Uncommon
+#999: 'Negate', $0.25, Common
+#1000: 'Thundering Rebuke', $0.25, Uncommon
+#1001: 'Soaring Thought-Thief', $0.25, Uncommon
+#1002: 'Scion of the Swarm', $0.25, Uncommon
+#1003: 'Roost of Drakes', $0.25, Uncommon
+#1004: 'Base Camp', $0.25, Uncommon
+#1005: 'Beyeen Veil', $0.25, Uncommon
+#1006: 'Kargan Warleader', $0.25, Uncommon
+#1007: 'Relic Golem', $0.25, Uncommon
+#1008: 'Relic Vial', $0.25, Uncommon
+#1009: 'Relic Amulet', $0.25, Uncommon
+#1010: 'Relic Axe', $0.25, Uncommon
+#1011: 'Marauding Blight-Priest', $0.25, Common
+#1012: 'Shatterskull Minotaur', $0.25, Uncommon
+#1013: 'Assassin's Ink', $0.24, Uncommon
+#1014: 'Kumano Faces Kakkazan', $0.24, Uncommon
+#1015: 'Dawnhart Geist', $0.24, Uncommon
+#1016: 'Biolume Egg', $0.24, Uncommon
+#1017: 'Rending Flame', $0.24, Uncommon
+#1018: 'Sigardian Paladin', $0.24, Uncommon
+#1019: 'Ollenbock Escort', $0.24, Uncommon
+#1020: 'Edgar's Awakening', $0.24, Uncommon
+#1021: 'Runebound Wolf', $0.24, Uncommon
+#1022: 'Oakshade Stalker', $0.24, Uncommon
+#1023: 'Ballista Watcher', $0.24, Uncommon
+#1024: 'Infestation Expert', $0.24, Uncommon
+#1025: 'Cobbled Lancer', $0.24, Uncommon
+#1026: 'Undying Malice', $0.24, Common
+#1027: 'Ancestral Anger', $0.24, Common
+#1028: 'Join the Dance', $0.24, Uncommon
+#1029: 'Gavony Dawnguard', $0.24, Uncommon
+#1030: 'Seize the Storm', $0.24, Uncommon
+#1031: 'Voldaren Ambusher', $0.24, Uncommon
+#1032: 'Spellrune Painter', $0.24, Uncommon
+#1033: 'Ardent Elementalist', $0.24, Common
+#1034: 'Storm Skreelix', $0.24, Uncommon
+#1035: 'Fifty Feet of Rope', $0.24, Uncommon
+#1036: 'Keen-Eared Sentry', $0.24, Uncommon
+#1037: 'Dungeon Map', $0.24, Uncommon
+#1038: 'Lurking Roper', $0.24, Uncommon
+#1039: 'Split the Party', $0.24, Uncommon
+#1040: 'Blue Dragon', $0.24, Uncommon
+#1041: 'Trickster's Talisman', $0.24, Uncommon
+#1042: 'Mage Hunter', $0.24, Uncommon
+#1043: 'Prismari Campus', $0.24, Common
+#1044: 'Academic Dispute', $0.24, Uncommon
+#1045: 'Teach by Example', $0.24, Common
+#1046: 'Hall Monitor', $0.24, Uncommon
+#1047: 'Eureka Moment', $0.24, Common
+#1048: 'Witherbloom Campus', $0.24, Common
+#1049: 'Flunk', $0.24, Uncommon
+#1050: 'Path to the World Tree', $0.24, Uncommon
+#1051: 'Spirit of the Aldergard', $0.24, Uncommon
+#1052: 'Snakeskin Veil', $0.24, Common
+#1053: 'Goldvein Pick', $0.24, Common
+#1054: 'Return Upon the Tide', $0.24, Uncommon
+#1055: 'Immersturm Skullcairn', $0.24, Uncommon
+#1056: 'Starnheim Courser', $0.24, Common
+#1057: 'Elven Bow', $0.24, Uncommon
+#1058: 'Emeria Captain', $0.24, Uncommon
+#1059: 'Taunting Arbormage', $0.24, Uncommon
+#1060: 'Kitesail Cleric', $0.24, Uncommon
+#1061: 'Mind Carver', $0.24, Uncommon
+#1062: 'Sure-Footed Infiltrator', $0.24, Uncommon
+#1063: 'Skyclave Geopede', $0.24, Uncommon
+#1064: 'Fearless Fledgling', $0.24, Uncommon
+#1065: 'Merfolk Falconer', $0.24, Uncommon
+#1066: 'Covert Technician', $0.23, Uncommon
+#1067: 'Leech Gauntlet', $0.23, Uncommon
+#1068: 'Kappa Tech-Wrecker', $0.23, Uncommon
+#1069: 'Prodigy's Prototype', $0.23, Uncommon
+#1070: 'Nezumi Prowler', $0.23, Uncommon
+#1071: 'Swamp <288>', $0.23, Common
+#1072: 'Thirst for Knowledge', $0.23, Uncommon
+#1073: 'Dokuchi Silencer', $0.23, Uncommon
+#1074: 'Diver Skaab', $0.23, Uncommon
+#1075: 'Witness the Future', $0.23, Uncommon
+#1076: 'Soulcipher Board', $0.23, Uncommon
+#1077: 'Distracting Geist', $0.23, Uncommon
+#1078: 'Alluring Suitor', $0.23, Uncommon
+#1079: 'Parasitic Grasp', $0.23, Uncommon
+#1080: 'Bramble Wurm', $0.23, Uncommon
+#1081: 'Cartographer's Survey', $0.23, Uncommon
+#1082: 'Flame-Blessed Bolt', $0.23, Common
+#1083: 'Ominous Roost', $0.23, Uncommon
+#1084: 'Mysterious Tome', $0.23, Uncommon
+#1085: 'Purifying Dragon', $0.23, Uncommon
+#1086: 'Covert Cutpurse', $0.23, Uncommon
+#1087: 'Overwhelmed Archivist', $0.23, Uncommon
+#1088: 'Eaten Alive', $0.23, Common
+#1089: 'Sunrise Cavalier', $0.23, Uncommon
+#1090: 'Vivisection', $0.23, Uncommon
+#1091: 'Winterthorn Blessing', $0.23, Uncommon
+#1092: 'Cathar's Call', $0.23, Uncommon
+#1093: 'Return to Nature', $0.23, Common
+#1094: 'Cloister Gargoyle', $0.23, Uncommon
+#1095: 'You Find the Villains' Lair', $0.23, Common
+#1096: 'Intrepid Outlander', $0.23, Uncommon
+#1097: 'Celestial Unicorn', $0.23, Common
+#1098: 'Drider', $0.23, Uncommon
+#1099: 'Dragon's Disciple', $0.23, Uncommon
+#1100: 'Wandering Troubadour', $0.23, Uncommon
+#1101: 'Power of Persuasion', $0.23, Uncommon
+#1102: 'Hulking Bugbear', $0.23, Uncommon
+#1103: 'You Meet in a Tavern', $0.23, Uncommon
+#1104: 'Blink Dog', $0.23, Uncommon
+#1105: 'Aberrant Mind Sorcerer', $0.23, Uncommon
+#1106: 'Silverquill Apprentice', $0.23, Uncommon
+#1107: 'Lorehold Apprentice', $0.23, Uncommon
+#1108: 'Dueling Coach', $0.23, Uncommon
+#1109: 'Lorehold Campus', $0.23, Common
+#1110: 'Grinning Ignus', $0.23, Uncommon
+#1111: 'Master Symmetrist', $0.23, Uncommon
+#1112: 'Golden Ratio', $0.23, Uncommon
+#1113: 'Reflective Golem', $0.23, Uncommon
+#1114: 'Karok Wrangler', $0.23, Uncommon
+#1115: 'Silverquill Campus', $0.23, Common
+#1116: 'Overgrown Arch', $0.23, Uncommon
+#1117: 'Containment Breach', $0.23, Uncommon
+#1118: 'Reject', $0.23, Common
+#1119: 'Wormhole Serpent', $0.23, Uncommon
+#1120: 'Spell Satchel', $0.23, Uncommon
+#1121: 'Kaya's Onslaught', $0.23, Uncommon
+#1122: 'Bloodsky Berserker', $0.23, Uncommon
+#1123: 'Divine Gambit', $0.23, Uncommon
+#1124: 'Avalanche Caller', $0.23, Uncommon
+#1125: 'Littjara Glade-Warden', $0.23, Uncommon
+#1126: 'Dwarven Hammer', $0.23, Uncommon
+#1127: 'Icebind Pillar', $0.23, Uncommon
+#1128: 'Ravager's Mace', $0.23, Uncommon
+#1129: 'Goma Fada Vanguard', $0.23, Uncommon
+#1130: 'Springmantle Cleric', $0.23, Uncommon
+#1131: 'Veteran Adventurer', $0.23, Uncommon
+#1132: 'Allied Assault', $0.23, Uncommon
+#1133: 'Banishing Slash', $0.22, Uncommon
+#1134: 'Wind-Scarred Crag', $0.22, Common
+#1135: 'Frenzied Devils', $0.22, Uncommon
+#1136: 'Sanguine Statuette', $0.22, Uncommon
+#1137: 'Beloved Beggar', $0.22, Uncommon
+#1138: 'Baneblade Scoundrel', $0.22, Uncommon
+#1139: 'Covetous Castaway', $0.22, Uncommon
+#1140: 'Displacer Beast', $0.22, Uncommon
+#1141: 'Hoarding Ogre', $0.22, Common
+#1142: 'Scaled Herbalist', $0.22, Common
+#1143: 'Mercurial Transformation', $0.22, Uncommon
+#1144: 'Symmetry Sage', $0.22, Uncommon
+#1145: 'Inga Rune-Eyes', $0.22, Uncommon
+#1146: 'Hailstorm Valkyrie', $0.22, Uncommon
+#1147: 'Skyclave Plunder', $0.22, Uncommon
+#1148: 'Norika Yamazaki, the Poet', $0.21, Uncommon
+#1149: 'Innocent Traveler', $0.21, Uncommon
+#1150: 'Bloodsworn Squire', $0.21, Uncommon
+#1151: 'Magma Pummeler', $0.21, Uncommon
+#1152: 'Whispering Wizard', $0.21, Uncommon
+#1153: 'Markov Retribution', $0.21, Uncommon
+#1154: 'Gryffwing Cavalry', $0.21, Uncommon
+#1155: 'Evolving Wilds', $0.21, Common
+#1156: 'Clear Shot', $0.21, Uncommon
+#1157: 'Defend the Celestus', $0.21, Uncommon
+#1158: 'Jack-o'-Lantern', $0.21, Common
+#1159: 'Blood Pact', $0.21, Common
+#1160: 'Evolving Wilds', $0.21, Common
+#1161: 'Mountain <274>', $0.21, Common
+#1162: 'Hunter's Mark', $0.21, Uncommon
+#1163: 'Ray of Frost', $0.21, Uncommon
+#1164: 'Priest of Ancient Lore', $0.21, Common
+#1165: 'Iron Golem', $0.21, Uncommon
+#1166: 'Prismari Apprentice', $0.21, Uncommon
+#1167: 'First Day of Class', $0.21, Common
+#1168: 'Returned Pastcaller', $0.21, Uncommon
+#1169: 'Ardent Dustspeaker', $0.21, Uncommon
+#1170: 'Archway Commons', $0.21, Common
+#1171: 'Brackish Trudge', $0.21, Uncommon
+#1172: 'Snow Day', $0.21, Uncommon
+#1173: 'Rootless Yew', $0.21, Uncommon
+#1174: 'Depart the Realm', $0.21, Common
+#1175: 'Tajuru Blightblade', $0.21, Common
+#1176: 'Into the Roil', $0.21, Common
+#1177: 'Grotag Night-Runner', $0.21, Uncommon
+#1178: 'Oblivion's Hunger', $0.21, Common
+#1179: 'Paired Tactician', $0.21, Uncommon
+#1180: 'Tuktuk Rubblefort', $0.21, Common
+#1181: 'The Shattered States Era', $0.2, Common
+#1182: 'Azusa's Many Journeys', $0.2, Uncommon
+#1183: 'Boseiju Reaches Skyward', $0.2, Uncommon
+#1184: 'Malicious Malfunction', $0.2, Uncommon
+#1185: 'Bronzeplate Boar', $0.2, Uncommon
+#1186: 'Sokenzan Smelter', $0.2, Uncommon
+#1187: 'Asari Captain', $0.2, Uncommon
+#1188: 'Twinshot Sniper', $0.2, Uncommon
+#1189: 'Awakened Awareness', $0.2, Uncommon
+#1190: 'Moon-Circuit Hacker', $0.2, Common
+#1191: 'Futurist Operative', $0.2, Uncommon
+#1192: 'Upriser Renegade', $0.2, Uncommon
+#1193: 'Naomi, Pillar of Order', $0.2, Uncommon
+#1194: 'High-Speed Hoverbike', $0.2, Uncommon
+#1195: 'Swamp <287>', $0.2, Common
+#1196: 'Heiko Yamazaki, the General', $0.2, Uncommon
+#1197: 'Essence Capture', $0.2, Uncommon
+#1198: 'Spinning Wheel Kick', $0.2, Uncommon
+#1199: 'Spell Pierce', $0.2, Common
+#1200: 'Network Disruptor', $0.2, Common
+#1201: 'Boon of Boseiju', $0.2, Uncommon
+#1202: 'Acquisition Octopus', $0.2, Uncommon
+#1203: 'Towashi Guide-Bot', $0.2, Uncommon
+#1204: 'Blossom Prancer', $0.2, Uncommon
+#1205: 'Orochi Merge-Keeper', $0.2, Uncommon
+#1206: 'Blade-Blizzard Kitsune', $0.2, Uncommon
+#1207: 'Imperial Recovery Unit', $0.2, Uncommon
+#1208: 'Disruption Protocol', $0.2, Common
+#1209: 'Reckoner's Bargain', $0.2, Common
+#1210: 'Bronze Cudgels', $0.2, Uncommon
+#1211: 'Bloodfell Caves', $0.2, Common
+#1212: 'Blossoming Sands', $0.2, Common
+#1213: 'Dismal Backwater', $0.2, Common
+#1214: 'Jungle Hollow', $0.2, Common
+#1215: 'Rugged Highlands', $0.2, Common
+#1216: 'Scoured Barrens', $0.2, Common
+#1217: 'Swiftwater Cliffs', $0.2, Common
+#1218: 'Thornwood Falls', $0.2, Common
+#1219: 'Tranquil Cove', $0.2, Common
+#1220: 'Uncharted Haven', $0.2, Common
+#1221: 'Skulking Killer', $0.2, Uncommon
+#1222: 'Angelic Quartermaster', $0.2, Uncommon
+#1223: 'Lunar Rejection', $0.2, Uncommon
+#1224: 'Cloaked Cadet', $0.2, Uncommon
+#1225: 'Groom's Finery', $0.2, Uncommon
+#1226: 'Arm the Cathars', $0.2, Uncommon
+#1227: 'Wedding Security', $0.2, Uncommon
+#1228: 'Gutter Skulker', $0.2, Uncommon
+#1229: 'Honored Heirloom', $0.2, Common
+#1230: 'Boarded Window', $0.2, Uncommon
+#1231: 'Resistance Squad', $0.2, Uncommon
+#1232: 'Screaming Swarm', $0.2, Uncommon
+#1233: 'Blood Hypnotist', $0.2, Uncommon
+#1234: 'Spiked Ripsaw', $0.2, Uncommon
+#1235: 'Sawblade Slinger', $0.2, Uncommon
+#1236: 'Fleeting Spirit', $0.2, Uncommon
+#1237: 'Markov Waltzer', $0.2, Uncommon
+#1238: 'Bride's Gown', $0.2, Uncommon
+#1239: 'End the Festivities', $0.2, Common
+#1240: 'Hobbling Zombie', $0.2, Common
+#1241: 'Dawnhart Wardens', $0.2, Uncommon
+#1242: 'Nebelgast Intruder', $0.2, Uncommon
+#1243: 'Loyal Gryff', $0.2, Uncommon
+#1244: 'Grizzly Ghoul', $0.2, Uncommon
+#1245: 'Ritual of Hope', $0.2, Uncommon
+#1246: 'Rise of the Ants', $0.2, Uncommon
+#1247: 'Odric's Outrider', $0.2, Uncommon
+#1248: 'Dawnhart Mentor', $0.2, Uncommon
+#1249: 'Skaab Wrangler', $0.2, Uncommon
+#1250: 'Brood Weaver', $0.2, Uncommon
+#1251: 'Phantom Carriage', $0.2, Uncommon
+#1252: 'Firmament Sage', $0.2, Uncommon
+#1253: 'Obsessive Astronomer', $0.2, Uncommon
+#1254: 'Duelcraft Trainer', $0.2, Uncommon
+#1255: 'Geistwave', $0.2, Common
+#1256: 'Duress', $0.2, Common
+#1257: 'Raze the Effigy', $0.2, Common
+#1258: 'Mountain <277>', $0.2, Common
+#1259: 'Plains <265>', $0.2, Common
+#1260: 'Island <266>', $0.2, Common
+#1261: 'Mountain <276>', $0.2, Common
+#1262: 'Swamp <271>', $0.2, Common
+#1263: 'Island <268>', $0.2, Common
+#1264: 'Plains <263>', $0.2, Common
+#1265: 'Owlbear', $0.2, Common
+#1266: 'Purple Worm', $0.2, Uncommon
+#1267: 'Plundering Barbarian', $0.2, Common
+#1268: 'Guild Thief', $0.2, Uncommon
+#1269: 'Tiger-Tribe Hunter', $0.2, Uncommon
+#1270: 'You Find a Cursed Idol', $0.2, Common
+#1271: 'Pixie Guide', $0.2, Common
+#1272: 'Jaded Sell-Sword', $0.2, Common
+#1273: 'Goblin Javelineer', $0.2, Common
+#1274: 'Minimus Containment', $0.2, Common
+#1275: 'Loathsome Troll', $0.2, Uncommon
+#1276: 'Silver Raven', $0.2, Common
+#1277: 'Rally Maneuver', $0.2, Uncommon
+#1278: 'Sudden Insight', $0.2, Uncommon
+#1279: 'Divine Smite', $0.2, Uncommon
+#1280: 'Rust Monster', $0.2, Uncommon
+#1281: 'Leather Armor', $0.2, Common
+#1282: 'Neverwinter Dryad', $0.2, Common
+#1283: 'Hoard Robber', $0.2, Common
+#1284: 'Thieves' Tools', $0.2, Common
+#1285: 'Boots of Speed', $0.2, Common
+#1286: 'Pest Summoning', $0.2, Common
+#1287: 'Introduction to Annihilation', $0.2, Common
+#1288: 'Introduction to Prophecy', $0.2, Common
+#1289: 'Field Trip', $0.2, Common
+#1290: 'Guiding Voice', $0.2, Common
+#1291: 'Heated Debate', $0.2, Common
+#1292: 'Curate', $0.2, Common
+#1293: 'Sudden Breakthrough', $0.2, Common
+#1294: 'Quandrix Campus', $0.2, Common
+#1295: 'Start from Scratch', $0.2, Uncommon
+#1296: 'Crushing Disappointment', $0.2, Common
+#1297: 'Aether Helix', $0.2, Uncommon
+#1298: 'Letter of Acceptance', $0.2, Common
+#1299: 'Serpentine Curve', $0.2, Common
+#1300: 'Umbral Juke', $0.2, Uncommon
+#1301: 'Charge Through', $0.2, Common
+#1302: 'Detention Vortex', $0.2, Uncommon
+#1303: 'Mascot Interception', $0.2, Uncommon
+#1304: 'Big Play', $0.2, Common
+#1305: 'Blood Researcher', $0.2, Common
+#1306: 'Hunt for Specimens', $0.2, Common
+#1307: 'Professor's Warning', $0.2, Common
+#1308: 'Infuse with Vitality', $0.2, Common
+#1309: 'Scurrid Colony', $0.2, Common
+#1310: 'Tangletrap', $0.2, Common
+#1311: 'Frost Bite', $0.2, Common
+#1312: 'Sarulf's Packmate', $0.2, Common
+#1313: 'Boreal Outrider', $0.2, Uncommon
+#1314: 'Elderfang Disciple', $0.2, Common
+#1315: 'Giant Ox', $0.2, Common
+#1316: 'Raise the Draugr', $0.2, Common
+#1317: 'Frostpyre Arcanist', $0.2, Uncommon
+#1318: 'Draugr's Helm', $0.2, Uncommon
+#1319: 'Demon Bolt', $0.2, Common
+#1320: 'Jaspera Sentinel', $0.2, Common
+#1321: 'Provoke the Trolls', $0.2, Uncommon
+#1322: 'Runed Crown', $0.2, Uncommon
+#1323: 'Revitalize', $0.2, Common
+#1324: 'Niko Defies Destiny', $0.2, Uncommon
+#1325: 'Disdainful Stroke', $0.2, Common
+#1326: 'Doomskar Titan', $0.2, Uncommon
+#1327: 'Battlefield Raptor', $0.2, Common
+#1328: 'Battershield Warrior', $0.2, Uncommon
+#1329: 'Frenzied Raider', $0.2, Uncommon
+#1330: 'Demonic Gifts', $0.2, Common
+#1331: 'Zulaport Duelist', $0.2, Common
+#1332: 'Gnarlid Colony', $0.2, Common
+#1333: 'Spitfire Lagac', $0.2, Common
+#1334: 'Akoum Hellhound', $0.2, Common
+#1335: 'Anticognition', $0.2, Common
+#1336: 'Resolute Strike', $0.2, Common
+#1337: 'Hagra Constrictor', $0.2, Common
+#1338: 'Tormenting Voice', $0.2, Common
+#1339: 'Prowling Felidar', $0.2, Common
+#1340: 'Roil Eruption', $0.2, Common
+#1341: 'Disenchant', $0.2, Common
+#1342: 'Spare Supplies', $0.2, Common
+#1343: 'Scale the Heights', $0.2, Common
+#1344: 'Kazandu Nectarpot', $0.2, Common
+#1345: 'Mind Drain', $0.2, Common
+#1346: 'Reclaim the Wastes', $0.2, Common
+#1347: 'Territorial Scythecat', $0.2, Common
+#1348: 'Deliberate', $0.2, Common
+#1349: 'Kor Celebrant', $0.2, Common
+#1350: 'Thundering Sparkmage', $0.2, Uncommon
+#1351: 'Sky-Blessed Samurai', $0.19, Uncommon
+#1352: 'Seismic Wave', $0.19, Uncommon
+#1353: 'Alchemist's Retrieval', $0.19, Common
+#1354: 'Persistent Specimen', $0.19, Common
+#1355: 'Vampire's Kiss', $0.19, Common
+#1356: 'Unblinking Observer', $0.19, Common
+#1357: 'No Way Out', $0.19, Common
+#1358: 'Rotten Reunion', $0.19, Common
+#1359: 'Forest <281>', $0.19, Common
+#1360: 'Island <269>', $0.19, Common
+#1361: 'Forest <279>', $0.19, Common
+#1362: 'Plains <264>', $0.19, Common
+#1363: 'Bar the Gate', $0.19, Common
+#1364: 'Clever Conjurer', $0.19, Common
+#1365: 'Improvised Weaponry', $0.19, Common
+#1366: 'Delver's Torch', $0.19, Common
+#1367: 'Frost Trickster', $0.19, Common
+#1368: 'Quandrix Pledgemage', $0.19, Common
+#1369: 'Expel', $0.19, Common
+#1370: 'Needlethorn Drake', $0.19, Common
+#1371: 'Professor of Zoomancy', $0.19, Common
+#1372: 'Mage Duel', $0.19, Common
+#1373: 'Bayou Groff', $0.19, Common
+#1374: 'Cram Session', $0.19, Common
+#1375: 'Annul', $0.19, Common
+#1376: 'Raiders' Karve', $0.19, Common
+#1377: 'Stalwart Valkyrie', $0.19, Common
+#1378: 'Skull Raid', $0.19, Common
+#1379: 'Grotag Bug-Catcher', $0.19, Common
+#1380: 'Utility Knife', $0.19, Common
+#1381: 'Malakir Blood-Priest', $0.19, Common
+#1382: 'Adventure Awaits', $0.19, Common
+#1383: 'Broken Wings', $0.19, Common
+#1384: 'Cunning Geysermage', $0.19, Common
+#1385: 'Dreadwurm', $0.19, Common
+#1386: 'Glacial Grasp', $0.19, Common
+#1387: 'Nahiri's Binding', $0.19, Common
+#1388: 'Cliffhaven Kitesail', $0.19, Common
+#1389: 'Behold the Unspeakable', $0.18, Uncommon
+#1390: 'Runaway Trash-Bot', $0.18, Uncommon
+#1391: 'Historian's Wisdom', $0.18, Uncommon
+#1392: 'Enormous Energy Blade', $0.18, Uncommon
+#1393: 'Storyweave', $0.18, Uncommon
+#1394: 'You Are Already Dead', $0.18, Common
+#1395: 'Reito Sentinel', $0.18, Uncommon
+#1396: 'Mirrorshell Crab', $0.18, Common
+#1397: 'Iron Apprentice', $0.18, Common
+#1398: 'Secrets of the Key', $0.18, Common
+#1399: 'Search Party Captain', $0.18, Common
+#1400: 'Crawl from the Cellar', $0.18, Common
+#1401: 'Novice Occultist', $0.18, Common
+#1402: 'Moonrager's Slash', $0.18, Common
+#1403: 'Timberland Guide', $0.18, Common
+#1404: 'Swamp <270>', $0.18, Common
+#1405: 'Forest <280>', $0.18, Common
+#1406: 'Dueling Rapier', $0.18, Common
+#1407: 'Yuan-Ti Fang-Blade', $0.18, Common
+#1408: 'Farideh's Fireball', $0.18, Common
+#1409: 'Contact Other Plane', $0.18, Common
+#1410: 'Brazen Dwarf', $0.18, Common
+#1411: 'Potion of Healing', $0.18, Common
+#1412: 'Greataxe', $0.18, Common
+#1413: 'Underdark Basilisk', $0.18, Common
+#1414: 'Expanded Anatomy', $0.18, Common
+#1415: 'Beaming Defiance', $0.18, Common
+#1416: 'Make Your Mark', $0.18, Common
+#1417: 'Augury Raven', $0.18, Common
+#1418: 'Broken Wings', $0.18, Common
+#1419: 'Elderleaf Mentor', $0.18, Common
+#1420: 'Vault Robber', $0.18, Common
+#1421: 'Priest of the Haunted Edge', $0.18, Common
+#1422: 'Shell Shield', $0.18, Common
+#1423: 'Rabid Bite', $0.18, Common
+#1424: 'Field Research', $0.18, Common
+#1425: 'Dauntless Survivor', $0.18, Common
+#1426: 'Expedition Skulker', $0.18, Common
+#1427: 'Cascade Seer', $0.18, Common
+#1428: 'Angelheart Protector', $0.18, Common
+#1429: 'Nissa's Zendikon', $0.18, Common
+#1430: 'Joraga Visionary', $0.18, Common
+#1431: 'Blood Beckoning', $0.18, Common
+#1432: 'Bubble Snare', $0.18, Common
+#1433: 'Murasa Brute', $0.18, Common
+#1434: 'Scorch Rider', $0.18, Common
+#1435: 'Inordinate Rage', $0.18, Common
+#1436: 'Stonework Packbeast', $0.18, Common
+#1437: 'Ghastly Gloomhunter', $0.18, Common
+#1438: 'Skyclave Squid', $0.18, Common
+#1439: 'Chilling Trap', $0.18, Common
+#1440: 'Blood Price', $0.18, Common
+#1441: 'Skyclave Sentinel', $0.18, Common
+#1442: 'Greater Tanuki', $0.17, Common
+#1443: 'Okiba Reckoner Raid', $0.17, Common
+#1444: 'Okiba Salvage', $0.17, Uncommon
+#1445: 'Unforgiving One', $0.17, Uncommon
+#1446: 'Webspinner Cuff', $0.17, Uncommon
+#1447: 'Mulch', $0.17, Common
+#1448: 'Doomed Dissenter', $0.17, Common
+#1449: 'Diregraf Horde', $0.17, Common
+#1450: 'Flip the Switch', $0.17, Common
+#1451: 'Vampire Interloper', $0.17, Common
+#1452: 'Electric Revelation', $0.17, Common
+#1453: 'Pack's Betrayal', $0.17, Common
+#1454: 'Forest <278>', $0.17, Common
+#1455: 'Island <267>', $0.17, Common
+#1456: 'You Come to a River', $0.17, Common
+#1457: 'You See a Guard Approach', $0.17, Common
+#1458: 'Devour Intellect', $0.17, Common
+#1459: 'You Come to the Gnoll Camp', $0.17, Common
+#1460: 'Kick in the Door', $0.17, Common
+#1461: 'Fates' Reversal', $0.17, Common
+#1462: 'Secret Door', $0.17, Common
+#1463: 'Swarming Goblins', $0.17, Common
+#1464: 'Shocking Grasp', $0.17, Common
+#1465: 'Price of Loyalty', $0.17, Common
+#1466: 'Dire Wolf Prowler', $0.17, Common
+#1467: 'Grim Bounty', $0.17, Common
+#1468: 'Star Pupil', $0.17, Common
+#1469: 'Bury in Books', $0.17, Common
+#1470: 'Pilgrim of the Ages', $0.17, Common
+#1471: 'Novice Dissector', $0.17, Common
+#1472: 'Witherbloom Pledgemage', $0.17, Common
+#1473: 'Unwilling Ingredient', $0.17, Common
+#1474: 'Arcane Subtraction', $0.17, Common
+#1475: 'Mage Hunters' Onslaught', $0.17, Common
+#1476: 'Dogged Pursuit', $0.17, Common
+#1477: 'Feed the Serpent', $0.17, Common
+#1478: 'Bound in Gold', $0.17, Common
+#1479: 'Invoke the Divine', $0.17, Common
+#1480: 'Bind the Monster', $0.17, Common
+#1481: 'Shepherd of Heroes', $0.17, Common
+#1482: 'Cliffhaven Sell-Sword', $0.17, Common
+#1483: 'Tajuru Snarecaster', $0.17, Common
+#1484: 'Fissure Wizard', $0.17, Common
+#1485: 'Nimana Skydancer', $0.17, Common
+#1486: 'Pressure Point', $0.17, Common
+#1487: 'Sunblade Samurai', $0.16, Common
+#1488: 'Forest <291>', $0.16, Common
+#1489: 'Island <286>', $0.16, Common
+#1490: 'Island <285>', $0.16, Common
+#1491: 'Walking Skyscraper', $0.16, Uncommon
+#1492: 'When We Were Young', $0.16, Uncommon
+#1493: 'The Long Reach of Night', $0.16, Uncommon
+#1494: 'Kami of Terrible Secrets', $0.16, Common
+#1495: 'Thundersteel Colossus', $0.16, Common
+#1496: 'Defenestrate', $0.16, Common
+#1497: 'Siege Zombie', $0.16, Common
+#1498: 'Hedgewitch's Mask', $0.16, Common
+#1499: 'Stuffed Bear', $0.16, Common
+#1500: 'Revenge of the Drowned', $0.16, Common
+#1501: 'Morkrut Behemoth', $0.16, Common
+#1502: 'Stolen Vitality', $0.16, Common
+#1503: 'Path to the Festival', $0.16, Common
+#1504: 'Plains <262>', $0.16, Common
+#1505: '+2 Mace', $0.16, Common
+#1506: 'Planar Ally', $0.16, Common
+#1507: 'Vampire Spawn', $0.16, Common
+#1508: 'Campus Guide', $0.16, Common
+#1509: 'Inkling Summoning', $0.16, Common
+#1510: 'Axgard Cavalry', $0.16, Common
+#1511: 'Squash', $0.16, Common
+#1512: 'Farsight Adept', $0.16, Common
+#1513: 'Risen Riptide', $0.16, Common
+#1514: 'Sea Gate Banneret', $0.16, Common
+#1515: 'Synchronized Spellcraft', $0.16, Common
+#1516: 'Canopy Baloth', $0.16, Common
+#1517: 'Drana's Silencer', $0.16, Common
+#1518: 'Scavenged Blade', $0.16, Common
+#1519: 'Tazeem Roilmage', $0.16, Common
+#1520: 'Turntimber Ascetic', $0.16, Common
+#1521: 'Life of Toshiro Umezawa', $0.15, Uncommon
+#1522: 'The Modern Age', $0.15, Common
+#1523: 'Era of Enlightenment', $0.15, Common
+#1524: 'Tamiyo's Compleation', $0.15, Common
+#1525: 'Lethal Exploit', $0.15, Common
+#1526: 'Akki War Paint', $0.15, Common
+#1527: 'Ancestral Katana', $0.15, Common
+#1528: 'Imperial Subduer', $0.15, Common
+#1529: 'Akki Ember-Keeper', $0.15, Common
+#1530: 'Simian Sling', $0.15, Common
+#1531: 'Geothermal Kami', $0.15, Common
+#1532: 'Bamboo Grove Archer', $0.15, Common
+#1533: 'Armguard Familiar', $0.15, Common
+#1534: 'Guardians of Oboro', $0.15, Common
+#1535: 'Peerless Samurai', $0.15, Common
+#1536: 'Mountain <290>', $0.15, Common
+#1537: 'Mountain <289>', $0.15, Common
+#1538: 'Plains <284>', $0.15, Common
+#1539: 'Plains <283>', $0.15, Common
+#1540: 'Light the Way', $0.15, Common
+#1541: 'The Fall of Lord Konda', $0.15, Uncommon
+#1542: 'Fang of Shigeki', $0.15, Common
+#1543: 'Nezumi Bladeblesser', $0.15, Common
+#1544: 'Saiba Trespassers', $0.15, Common
+#1545: 'Seven-Tail Mentor', $0.15, Common
+#1546: 'Moonsnare Specialist', $0.15, Common
+#1547: 'Tales of Master Seshiro', $0.15, Common
+#1548: 'Kami of Industry', $0.15, Common
+#1549: 'Eiganjo Exemplar', $0.15, Common
+#1550: 'Flame Discharge', $0.15, Uncommon
+#1551: 'Mukotai Ambusher', $0.15, Common
+#1552: 'Dragonfly Suit', $0.15, Common
+#1553: 'Golden-Tail Disciple', $0.15, Common
+#1554: 'Imperial Oath', $0.15, Common
+#1555: 'Intercessor's Arrest', $0.15, Common
+#1556: 'Kitsune Ace', $0.15, Common
+#1557: 'Lucky Offering', $0.15, Common
+#1558: 'Regent's Authority', $0.15, Common
+#1559: 'Repel the Vile', $0.15, Common
+#1560: 'Futurist Sentinel', $0.15, Common
+#1561: 'Mnemonic Sphere', $0.15, Common
+#1562: 'Moonfolk Puzzlemaker', $0.15, Common
+#1563: 'Planar Incision', $0.15, Common
+#1564: 'Short Circuit', $0.15, Common
+#1565: 'Skyswimmer Koi', $0.15, Common
+#1566: 'Suit Up', $0.15, Common
+#1567: 'Chainflail Centipede', $0.15, Common
+#1568: 'Clawing Torment', $0.15, Common
+#1569: 'Debt to the Kami', $0.15, Common
+#1570: 'Kaito's Pursuit', $0.15, Common
+#1571: 'Kami of Restless Shadows', $0.15, Common
+#1572: 'Reckoner Shakedown', $0.15, Common
+#1573: 'Return to Action', $0.15, Common
+#1574: 'Twisted Embrace', $0.15, Common
+#1575: 'Undercity Scrounger', $0.15, Common
+#1576: 'Virus Beetle', $0.15, Common
+#1577: 'Ambitious Assault', $0.15, Common
+#1578: 'Crackling Emergence', $0.15, Common
+#1579: 'Explosive Entry', $0.15, Common
+#1580: 'Ironhoof Boar', $0.15, Common
+#1581: 'Kami's Flare', $0.15, Common
+#1582: 'Kindled Fury', $0.15, Common
+#1583: 'Voltage Surge', $0.15, Common
+#1584: 'Bearer of Memory', $0.15, Common
+#1585: 'Careful Cultivation', $0.15, Common
+#1586: 'Commune with Spirits', $0.15, Common
+#1587: 'Fade into Antiquity', $0.15, Common
+#1588: 'Grafted Growth', $0.15, Common
+#1589: 'Harmonious Emergence', $0.15, Common
+#1590: 'Jukai Preserver', $0.15, Common
+#1591: 'Jukai Trainee', $0.15, Common
+#1592: 'Master's Rebuke', $0.15, Common
+#1593: 'Season of Renewal', $0.15, Common
+#1594: 'Automated Artificer', $0.15, Common
+#1595: 'Brute Suit', $0.15, Common
+#1596: 'Dramatist's Puppet', $0.15, Common
+#1597: 'Ecologist's Terrarium', $0.15, Common
+#1598: 'Network Terminal', $0.15, Common
+#1599: 'Ninja's Kunai', $0.15, Common
+#1600: 'Papercraft Decoy', $0.15, Common
+#1601: 'Shrine Steward', $0.15, Common
+#1602: 'Rot-Tide Gargantua', $0.15, Common
+#1603: 'Drogskol Infantry', $0.15, Common
+#1604: 'Apprentice Sharpshooter', $0.15, Common
+#1605: 'Massive Might', $0.15, Common
+#1606: 'Mindleech Ghoul', $0.15, Common
+#1607: 'Syncopate', $0.15, Common
+#1608: 'Lantern Bearer', $0.15, Common
+#1609: 'Weaver of Blossoms', $0.15, Common
+#1610: 'Belligerent Guest', $0.15, Common
+#1611: 'Scattered Thoughts', $0.15, Common
+#1612: 'Sanctify', $0.15, Common
+#1613: 'Unhallowed Phalanx', $0.15, Common
+#1614: 'Moldgraf Millipede', $0.15, Common
+#1615: 'Flourishing Hunter', $0.15, Common
+#1616: 'Dawnhart Disciple', $0.15, Common
+#1617: 'Hungry Ridgewolf', $0.15, Common
+#1618: 'Bloodcrazed Socialite', $0.15, Common
+#1619: 'Wretched Throng', $0.15, Common
+#1620: 'Adamant Will', $0.15, Common
+#1621: 'Fierce Retribution', $0.15, Common
+#1622: 'Parish-Blade Trainee', $0.15, Common
+#1623: 'Supernatural Rescue', $0.15, Common
+#1624: 'Traveling Minister', $0.15, Common
+#1625: 'Cradle of Safety', $0.15, Common
+#1626: 'Repository Skaab', $0.15, Common
+#1627: 'Serpentine Ambush', $0.15, Common
+#1628: 'Stitched Assistant', $0.15, Common
+#1629: 'Bleed Dry', $0.15, Common
+#1630: 'Gift of Fangs', $0.15, Common
+#1631: 'Pointed Discussion', $0.15, Common
+#1632: 'Blood Petal Celebrant', $0.15, Common
+#1633: 'Bloody Betrayal', $0.15, Common
+#1634: 'Falkenrath Celebrants', $0.15, Common
+#1635: 'Nature's Embrace', $0.15, Common
+#1636: 'Toxic Scorpion', $0.15, Common
+#1637: 'Wolf Strike', $0.15, Common
+#1638: 'Desperate Farmer', $0.15, Common
+#1639: 'Unruly Mob', $0.15, Common
+#1640: 'Festival Crasher', $0.15, Common
+#1641: 'Howl of the Hunt', $0.15, Common
+#1642: 'Pestilent Wolf', $0.15, Common
+#1643: 'Snarling Wolf', $0.15, Common
+#1644: 'Might of the Old Ways', $0.15, Common
+#1645: 'Candlelit Cavalry', $0.15, Common
+#1646: 'Baithook Angler', $0.15, Common
+#1647: 'Candletrap', $0.15, Common
+#1648: 'Famished Foragers', $0.15, Common
+#1649: 'Stormrider Spirit', $0.15, Common
+#1650: 'Brimstone Vandal', $0.15, Common
+#1651: 'Arrogant Outlaw', $0.15, Common
+#1652: 'Dawnhart Rejuvenator', $0.15, Common
+#1653: 'Immolation', $0.15, Common
+#1654: 'Candlegrove Witch', $0.15, Common
+#1655: 'Celestus Sanctifier', $0.15, Common
+#1656: 'Ritual Guardian', $0.15, Common
+#1657: 'Sungold Barrage', $0.15, Common
+#1658: 'Startle', $0.15, Common
+#1659: 'Larder Zombie', $0.15, Common
+#1660: 'Locked in the Cemetery', $0.15, Common
+#1661: 'Duel for Dominance', $0.15, Common
+#1662: 'Falkenrath Perforator', $0.15, Common
+#1663: 'Bird Admirer', $0.15, Common
+#1664: 'Flare of Faith', $0.15, Common
+#1665: 'Thraben Exorcism', $0.15, Common
+#1666: 'Organ Hoarder', $0.15, Common
+#1667: 'Bladebrand', $0.15, Common
+#1668: 'Blessed Defiance', $0.15, Common
+#1669: 'Gavony Silversmith', $0.15, Common
+#1670: 'Gavony Trapper', $0.15, Common
+#1671: 'Homestead Courage', $0.15, Common
+#1672: 'Soul-Guide Gryff', $0.15, Common
+#1673: 'Mourning Patrol', $0.15, Common
+#1674: 'Clarion Cathars', $0.15, Common
+#1675: 'Component Collector', $0.15, Common
+#1676: 'Devious Cover-Up', $0.15, Common
+#1677: 'Drownyard Amalgam', $0.15, Common
+#1678: 'Falcon Abomination', $0.15, Common
+#1679: 'Shipwreck Sifters', $0.15, Common
+#1680: 'Bat Whisperer', $0.15, Common
+#1681: 'Olivia's Midnight Ambush', $0.15, Common
+#1682: 'Abandon the Post', $0.15, Common
+#1683: 'Burn the Accursed', $0.15, Common
+#1684: 'Lambholt Harrier', $0.15, Common
+#1685: 'Mounted Dreadknight', $0.15, Common
+#1686: 'Neonate's Rush', $0.15, Common
+#1687: 'Voldaren Stinger', $0.15, Common
+#1688: 'Bounding Wolf', $0.15, Common
+#1689: 'Bramble Armor', $0.15, Common
+#1690: 'Eccentric Farmer', $0.15, Common
+#1691: 'Harvesttide Sentry', $0.15, Common
+#1692: 'Plummet', $0.15, Common
+#1693: 'Shadowbeast Sighting', $0.15, Common
+#1694: 'Tapping at the Window', $0.15, Common
+#1695: 'Crossroads Candleguide', $0.15, Common
+#1696: 'Silver Bolt', $0.15, Common
+#1697: 'Galedrifter', $0.15, Common
+#1698: 'Ecstatic Awakener', $0.15, Common
+#1699: 'Shady Traveler', $0.15, Common
+#1700: 'Harvesttide Infiltrator', $0.15, Common
+#1701: 'Tireless Hauler', $0.15, Common
+#1702: 'Shortcut Seeker', $0.15, Common
+#1703: 'Gloom Stalker', $0.15, Common
+#1704: 'Mimic', $0.15, Common
+#1705: 'Charmed Sleep', $0.15, Common
+#1706: 'You Hear Something on Watch', $0.15, Common
+#1707: 'Bull's Strength', $0.15, Common
+#1708: 'Manticore', $0.15, Common
+#1709: 'Baleful Beholder', $0.15, Common
+#1710: 'Hobgoblin Captain', $0.15, Common
+#1711: 'Ranger's Hawk', $0.15, Common
+#1712: 'Find the Path', $0.15, Common
+#1713: 'Mordenkainen's Polymorph', $0.15, Common
+#1714: 'Zombie Ogre', $0.15, Common
+#1715: 'Dwarfhold Champion', $0.15, Common
+#1716: 'Bulette', $0.15, Common
+#1717: 'Half-Elf Monk', $0.15, Common
+#1718: 'You're Ambushed on the Road', $0.15, Common
+#1719: 'Air-Cult Elemental', $0.15, Common
+#1720: 'Gnoll Hunter', $0.15, Common
+#1721: 'Devoted Paladin', $0.15, Common
+#1722: 'Valor Singer', $0.15, Common
+#1723: 'Earth-Cult Elemental', $0.15, Common
+#1724: 'Spiked Pit Trap', $0.15, Common
+#1725: 'Elturgard Ranger', $0.15, Common
+#1726: 'Clattering Skeletons', $0.15, Common
+#1727: 'Sylvan Shepherd', $0.15, Common
+#1728: 'Precipitous Drop', $0.15, Common
+#1729: 'Veteran Dungeoneer', $0.15, Common
+#1730: 'Djinni Windseer', $0.15, Common
+#1731: 'Scion of Stygia', $0.15, Common
+#1732: 'Hill Giant Herdgorger', $0.15, Common
+#1733: 'Hired Hexblade', $0.15, Common
+#1734: 'Rimeshield Frost Giant', $0.15, Common
+#1735: 'Arcane Investigator', $0.15, Common
+#1736: 'Herald of Hadar', $0.15, Common
+#1737: 'Paladin's Shield', $0.15, Common
+#1738: 'Sepulcher Ghoul', $0.15, Common
+#1739: 'Soulknife Spy', $0.15, Common
+#1740: 'Spoils of the Hunt', $0.15, Common
+#1741: 'Eyes of the Beholder', $0.15, Common
+#1742: 'Circle of the Moon Druid', $0.15, Common
+#1743: 'Arborea Pegasus', $0.15, Common
+#1744: 'Steadfast Paladin', $0.15, Common
+#1745: 'Armory Veteran', $0.15, Common
+#1746: 'Compelled Duel', $0.15, Common
+#1747: 'Plummet', $0.15, Common
+#1748: 'Ranger's Longbow', $0.15, Common
+#1749: 'Spare Dagger', $0.15, Common
+#1750: 'Eager First-Year', $0.15, Common
+#1751: 'Pop Quiz', $0.15, Common
+#1752: 'Waterfall Aerialist', $0.15, Common
+#1753: 'Enthusiastic Study', $0.15, Common
+#1754: 'Study Break', $0.15, Common
+#1755: 'Rise of Extus', $0.15, Common
+#1756: 'Ageless Guardian', $0.15, Common
+#1757: 'Stonebound Mentor', $0.15, Common
+#1758: 'Lorehold Pledgemage', $0.15, Common
+#1759: 'Spirit Summoning', $0.15, Common
+#1760: 'Relic Sloth', $0.15, Common
+#1761: 'Illustrious Historian', $0.15, Common
+#1762: 'Combat Professor', $0.15, Common
+#1763: 'Elemental Summoning', $0.15, Common
+#1764: 'Prismari Pledgemage', $0.15, Common
+#1765: 'Spectacle Mage', $0.15, Common
+#1766: 'Defend the Campus', $0.15, Common
+#1767: 'Blood Age General', $0.15, Common
+#1768: 'Fractal Summoning', $0.15, Common
+#1769: 'Elemental Masterpiece', $0.15, Common
+#1770: 'Arrogant Poet', $0.15, Common
+#1771: 'Cogwork Archivist', $0.15, Common
+#1772: 'Oggyar Battle-Seer', $0.15, Common
+#1773: 'Square Up', $0.15, Common
+#1774: 'Owlin Shieldmage', $0.15, Common
+#1775: 'Leyline Invocation', $0.15, Common
+#1776: 'Essence Infusion', $0.15, Common
+#1777: 'Fuming Effigy', $0.15, Common
+#1778: 'Biomathematician', $0.15, Common
+#1779: 'Soothsayer Adept', $0.15, Common
+#1780: 'Tome Shredder', $0.15, Common
+#1781: 'Promising Duskmage', $0.15, Common
+#1782: 'Silverquill Pledgemage', $0.15, Common
+#1783: 'Exhilarating Elocution', $0.15, Common
+#1784: 'Moldering Karok', $0.15, Common
+#1785: 'Pillardrop Warden', $0.15, Common
+#1786: 'Pigment Storm', $0.15, Common
+#1787: 'Burrog Befuddler', $0.15, Common
+#1788: 'Excavated Wall', $0.15, Common
+#1789: 'Spiteful Squad', $0.15, Common
+#1790: 'Pillardrop Rescuer', $0.15, Common
+#1791: 'Leech Fanatic', $0.15, Common
+#1792: 'Spined Karok', $0.15, Common
+#1793: 'Reckless Amplimancer', $0.15, Common
+#1794: 'Springmane Cervin', $0.15, Common
+#1795: 'Twinscroll Shaman', $0.15, Common
+#1796: 'Lash of Malice', $0.15, Common
+#1797: 'Stonerise Spirit', $0.15, Common
+#1798: 'Vortex Runner', $0.15, Common
+#1799: 'Specter of the Fens', $0.15, Common
+#1800: 'Biblioplex Assistant', $0.15, Common
+#1801: 'Glittering Frost', $0.15, Common
+#1802: 'Sculptor of Winter', $0.15, Common
+#1803: 'Koma's Faithful', $0.15, Common
+#1804: 'Iron Verdict', $0.15, Common
+#1805: 'Doomskar Oracle', $0.15, Common
+#1806: 'Gods' Hall Guardian', $0.15, Common
+#1807: 'Undersea Invader', $0.15, Common
+#1808: 'Hagi Mob', $0.15, Common
+#1809: 'Guardian Gladewalker', $0.15, Common
+#1810: 'Littjara Kinseekers', $0.15, Common
+#1811: 'Run Ashore', $0.15, Common
+#1812: 'Deathknell Berserker', $0.15, Common
+#1813: 'Open the Omenpaths', $0.15, Common
+#1814: 'Tormentor's Helm', $0.15, Common
+#1815: 'Grim Draugr', $0.15, Common
+#1816: 'Roots of Wisdom', $0.15, Common
+#1817: 'Withercrown', $0.15, Common
+#1818: 'Codespell Cleric', $0.15, Common
+#1819: 'Mammoth Growth', $0.15, Common
+#1820: 'Run Amok', $0.15, Common
+#1821: 'Dread Rider', $0.15, Common
+#1822: 'Smashing Success', $0.15, Common
+#1823: 'Infernal Pet', $0.15, Common
+#1824: 'Breakneck Berserker', $0.15, Common
+#1825: 'Duskwielder', $0.15, Common
+#1826: 'King Harald's Revenge', $0.15, Common
+#1827: 'Cinderheart Giant', $0.15, Common
+#1828: 'Wings of the Cosmos', $0.15, Common
+#1829: 'Funeral Longboat', $0.15, Common
+#1830: 'Pilfering Hawk', $0.15, Common
+#1831: 'Frostpeak Yeti', $0.15, Common
+#1832: 'Gnottvold Recluse', $0.15, Common
+#1833: 'Karfell Kennel-Master', $0.15, Common
+#1834: 'Icehide Troll', $0.15, Common
+#1835: 'Beskir Shieldmate', $0.15, Common
+#1836: 'Tuskeri Firewalker', $0.15, Common
+#1837: 'Strategic Planning', $0.15, Common
+#1838: 'Berg Strider', $0.15, Common
+#1839: 'Karfell Harbinger', $0.15, Common
+#1840: 'Dwarven Reinforcements', $0.15, Common
+#1841: 'Axgard Braggart', $0.15, Common
+#1842: 'Goldmaw Champion', $0.15, Common
+#1843: 'Scorn Effigy', $0.15, Common
+#1844: 'Ravenous Lindwurm', $0.15, Common
+#1845: 'Master Skald', $0.15, Common
+#1846: 'Arachnoform', $0.15, Common
+#1847: 'Draugr Thought-Thief', $0.15, Common
+#1848: 'Jarl of the Forsaken', $0.15, Common
+#1849: 'Raven Wings', $0.15, Common
+#1850: 'Story Seeker', $0.15, Common
+#1851: 'Fearless Pup', $0.15, Common
+#1852: 'Horizon Seeker', $0.15, Common
+#1853: 'Immersturm Raider', $0.15, Common
+#1854: 'Warhorn Blast', $0.15, Common
+#1855: 'Grizzled Outrider', $0.15, Common
+#1856: 'Struggle for Skemfar', $0.15, Common
+#1857: 'Weigh Down', $0.15, Common
+#1858: 'Brinebarrow Intruder', $0.15, Common
+#1859: 'Shackles of Treachery', $0.15, Common
+#1860: 'Craven Hulk', $0.15, Common
+#1861: 'Valor of the Worthy', $0.15, Common
+#1862: 'Draugr Recruiter', $0.15, Common
+#1863: 'Mists of Littjara', $0.15, Common
+#1864: 'Mistwalker', $0.15, Common
+#1865: 'Expedition Diviner', $0.15, Common
+#1866: 'Kabira Outrider', $0.15, Common
+#1867: 'Might of Murasa', $0.15, Common
+#1868: 'Sneaking Guide', $0.15, Common
+#1869: 'Ardent Electromancer', $0.15, Common
+#1870: 'Seafloor Stalker', $0.15, Common
+#1871: 'Teeterpeak Ambusher', $0.15, Common
+#1872: 'Makindi Ox', $0.15, Common
+#1873: 'Guul Draz Mucklord', $0.15, Common
+#1874: 'Subtle Strike', $0.15, Common
+#1875: 'Deadly Alliance', $0.15, Common
+#1876: 'Practiced Tactics', $0.15, Common
+#1877: 'Sea Gate Colossus', $0.15, Common
+#1878: 'Highborn Vampire', $0.15, Common
+#1879: 'Nimana Skitter-Sneak', $0.15, Common
+#1880: 'Expedition Champion', $0.15, Common
+#1881: 'Cleric of Chill Depths', $0.15, Common
+#1882: 'Dauntless Unity', $0.15, Common
+#1883: 'Tazeem Raptor', $0.15, Common
+#1884: 'Mesa Lynx', $0.15, Common
+#1885: 'Living Tempest', $0.15, Common
+#1886: 'Molten Blast', $0.15, Common
+#1887: 'Kazandu Stomper', $0.15, Common
+#1888: 'Sizzling Barrage', $0.15, Common
+#1889: 'Strength of Solidarity', $0.15, Common
+#1890: 'Smite the Monstrous', $0.15, Common
+#1891: 'Expedition Healer', $0.15, Common
+#1892: 'Vanquish the Weak', $0.15, Common
+#1893: 'Pyroclastic Hellion', $0.15, Common
+#1894: 'Unstoppable Ogre', $0.14, Common
+#1895: 'Forest <292>', $0.14, Common
+#1896: 'Inkrise Infiltrator', $0.14, Common
+#1897: 'Coiling Stalker', $0.14, Common
+#1898: 'Akki Ronin', $0.14, Common
+#1899: 'Mothrider Patrol', $0.14, Common
+#1900: 'Wanderer's Intervention', $0.14, Common
+#1901: 'Scrapyard Steelbreaker', $0.14, Common
+#1902: 'Towashi Songshaper', $0.14, Common
+#1903: 'Favor of Jukai', $0.14, Common
+#1904: 'Fearful Villager', $0.14, Common
+#1905: 'Daybreak Combatants', $0.14, Common
+#1906: 'Heron of Hope', $0.14, Common
+#1907: 'Nurturing Presence', $0.14, Common
+#1908: 'Piercing Light', $0.14, Common
+#1909: 'Vampire Slayer', $0.14, Common
+#1910: 'Dreadlight Monstrosity', $0.14, Common
+#1911: 'Aim for the Head', $0.14, Common
+#1912: 'Diregraf Scavenger', $0.14, Common
+#1913: 'Grisly Ritual', $0.14, Common
+#1914: 'Pyre Spawn', $0.14, Common
+#1915: 'Sure Strike', $0.14, Common
+#1916: 'Snarling Wolf', $0.14, Common
+#1917: 'Spore Crawler', $0.14, Common
+#1918: 'Witch's Web', $0.14, Common
+#1919: 'Blood Servitor', $0.14, Common
+#1920: 'Ceremonial Knife', $0.14, Common
+#1921: 'Inspiring Bard', $0.14, Common
+#1922: 'Courier Bat', $0.13, Common
+#1923: 'Syphon Essence', $0.13, Common
+#1924: 'Sheltering Boughs', $0.13, Common
+#1925: 'Sporeback Wolf', $0.13, Common
+#1926: 'Heir of the Ancient Fang', $0.12, Common
+#1927: 'Gift of Wrath', $0.12, Common
+#1928: 'Searchlight Companion', $0.12, Common
+#1929: 'Weary Prisoner', $0.12, Common
+#1930: 'Gryff Rider', $0.12, Common
+#1931: 'Kindly Ancestor', $0.12, Common
+#1932: 'Militia Rallier', $0.12, Common
+#1933: 'Heron-Blessed Geist', $0.12, Common
+#1934: 'Nebelgast Beguiler', $0.12, Common
+#1935: 'Chill of the Grave', $0.12, Common
+#1936: 'Lacerate Flesh', $0.12, Common
+#1937: 'Lightning Wolf', $0.12, Common
+#1938: 'Bramble Armor', $0.12, Common
+#1939: 'Crushing Canopy', $0.12, Common
+#1940: 'Rural Recruit', $0.12, Common
+#1941: 'Ragged Recluse', $0.12, Common
+#1942: 'Befriending the Moths', $0.11, Common
+#1943: 'Sigarda's Imprisonment', $0.11, Common
+#1944: 'Unholy Officiant', $0.11, Common
+#1945: 'Cruel Witness', $0.11, Common
+#1946: 'Fear of Death', $0.11, Common
+#1947: 'Steelclad Spirit', $0.11, Common
+#1948: 'Wanderlight Spirit', $0.11, Common
+#1949: 'Hookhand Mariner', $0.11, Common
+#1950: 'Estwald Shieldbasher', $0.1, Common
+#1951: 'Selhoff Entomber', $0.1, Common
+#1952: 'Skywarp Skaab', $0.1, Common
+#1953: 'Binding Geist', $0.1, Common
