@@ -7,11 +7,8 @@
     @author: z33k
 
 """
-from mtgcards import MtgSet
-from mtgcards.goldfish import getset
-
-mtgset = MtgSet.KAMIGAWA_NEON_DYNASTY
-result = getset(mtgset)
+from mtgcards.goldfish.sets import getsets
+result = getsets()
 
 
 

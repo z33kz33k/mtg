@@ -7,12 +7,18 @@
     @author: z33k
 
 """
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 import requests
 from contexttimer import Timer
 
 Json = Dict[str, Any]
+INPUTDIR, OUTPUTDIR = Path("input"), Path("output")
+if not INPUTDIR.exists():
+    raise OSError(f"Default input directory not found at: {INPUTDIR}.")
+if not OUTPUTDIR.exists():
+    raise OSError(f"Default output directory not found at: {OUTPUTDIR}.")
 
 
 def timed_request(url: str, postdata: Optional[Json] = None,

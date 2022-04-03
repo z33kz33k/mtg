@@ -1,12 +1,14 @@
 """
 
-    mtgcards.goldfish.py
-    ~~~~~~~~~~~~~~~~~~~~
-    Scrape www.mtggoldfish.com for MtG cards output.
+    mtgcards.goldfish.cards.py
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Scrape www.mtggoldfish.com for MtG cards data.
 
     @author: z33k
 
 """
+import json
+import time
 from dataclasses import dataclass
 from enum import Enum
 from typing import List, Optional, Tuple
@@ -14,23 +16,12 @@ from typing import List, Optional, Tuple
 from bs4 import BeautifulSoup
 from bs4.element import Tag
 
-from mtgcards import MtgSet, Json
-from mtgcards.utils import timed_request
+from mtgcards.utils import Json, timed_request, OUTPUTDIR
+from mtgcards.goldfish.sets import URL as SETS_URL
+from mtgcards.goldfish.sets import MtgSet, DOMAIN, STANDARD_META_SETS, PIONEER_META_SETS, \
+    MODERN_META_SETS, SetFormat
 
-SET_URL_MAP = {
-    MtgSet.ZENDIKAR_RISING: "Zendikar+Rising",
-    MtgSet.KALDHEIM: "Kaldheim",
-    MtgSet.STRIXHAVEN_MYSTICAL_ARCHIVE: "Strixhaven+Mystical+Archive",
-    MtgSet.STRIXHAVEN_SCHOOL_OF_MAGES: "Strixhaven+School+of+Mages",
-    MtgSet.ADVENTURES_IN_THE_FORGOTTEN_REALMS: "Adventures+in+the+Forgotten+Realms",
-    MtgSet.INNISTRAD_MIDNIGHT_HUNT: "Innistrad+Midnight+Hunt",
-    MtgSet.INNISTRAD_CRIMSON_VOW: "Innistrad+Crimson+Vow",
-    MtgSet.KAMIGAWA_NEON_DYNASTY: "Kamigawa+Neon+Dynasty",
-    MtgSet.ALCHEMY: "Alchemy",
-}
-DOMAIN = "www.mtggoldfish.com"
-URL_PREFIX = f"https://{DOMAIN}/sets/"
-URL_TEMPLATE = URL_PREFIX + "{}#online"
+URL_TEMPLATE = SETS_URL + "{}#online"
 
 
 class Mana(Enum):
@@ -108,13 +99,13 @@ class Price:
 
 @dataclass
 class Card:
-    number: int
+    number: Optional[int]  # some cards in Alchemy have no number
     name: str
     link: str
     mana: Tuple[Mana, ...]
     rarity: Rarity
     price: Optional[float]
-    mtg_set: MtgSet = None
+    mtg_set: Optional[MtgSet] = None
 
     @property
     def cmc(self) -> int:
@@ -160,10 +151,10 @@ class Card:
             return mana.name.lower()
         return mana.value
 
-    def as_dict(self, set_included: bool = True) -> Json:
+    def as_json(self, set_included=True) -> Json:
         result = {
                 "name": self.name,
-                "set": self.mtg_set.value,
+                "set": self.mtg_set.value.code,
                 "number": self.number,
                 "rarity": self.rarity.value,
                 "mana": [self._json_mana_name(mana) for mana in self.mana],
@@ -179,26 +170,34 @@ class Card:
 @dataclass
 class SetData:
     cards: List[Card]
+    mtg_set: MtgSet
+
+    @property
+    def as_json(self) -> Json:
+        return {
+            self.mtg_set.value.code: [card.as_json(set_included=False) for card in self.cards]
+        }
 
 
 def _get_table(mtg_set: MtgSet) -> Optional[Tag]:
-    url = URL_TEMPLATE.format(SET_URL_MAP[mtg_set])
+    link = mtg_set.value.link[6:]
+    url = URL_TEMPLATE.format(link)
     markup = timed_request(url)
     soup = BeautifulSoup(markup, "lxml")
     return soup.find("table", class_="card-container-table table table-striped table-sm")
 
 
-def _get_rows(table: Tag) -> List[Tag]:
+def _getrows(table: Tag) -> List[Tag]:
     body = table.find("tbody")
     return [el for el in body.children][1:]
 
 
 def _parse_row(row: Tag, mtg_set: Optional[MtgSet] = None) -> Card:
     number, link, mana, rarity, price = [td for td in row.children][:5]
-    number = int(number.text)
+    number = int(number.text) if number.text else None
     link = link.find("a")
     # e.g. "Boseiju, Who Endures [NEO]" ==> "Boseiju, Who Endures"
-    name = link.attrs["output-card-id"][:-6]
+    name = link.attrs["data-card-id"][:-6]
     link = DOMAIN + link.attrs["href"]
     mana = mana.find("span")
     if mana is None:
@@ -254,8 +253,29 @@ def _parse_mana(text: str) -> Tuple[Mana, ...]:
 
 def getset(mtg_set: MtgSet) -> SetData:
     tbl = _get_table(mtg_set)
-    rows = _get_rows(tbl)
+    rows = _getrows(tbl)
     cards = [_parse_row(row, mtg_set) for row in rows]
-    return SetData(cards)
+    return SetData(cards, mtg_set)
 
+
+# TODO: use file utils here (getdir() and so on)
+def json_dump(fmt: SetFormat = SetFormat.STANDARD, filename="cards.json") -> None:
+    if fmt is SetFormat.STANDARD:
+        metas = STANDARD_META_SETS
+    elif fmt is SetFormat.PIONEER:
+        metas = PIONEER_META_SETS
+    else:
+        metas = MODERN_META_SETS
+
+    dest = OUTPUTDIR / filename
+
+    sets = []
+    for meta_set in metas:
+        mtg_set = MtgSet(meta_set)
+        time.sleep(0.2)
+        data = getset(mtg_set)
+        sets.append(data.as_json)
+
+    with dest.open("w", encoding="utf-8") as f:
+        json.dump({fmt.value: sets}, f, indent=2)
 
