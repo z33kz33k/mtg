@@ -11,7 +11,6 @@ import json
 from enum import Enum
 from dataclasses import dataclass
 from datetime import datetime
-from pathlib import Path
 from typing import Dict, List, Optional
 
 from bs4 import BeautifulSoup
@@ -75,7 +74,7 @@ def _parse_ul(ul: Tag, set_format: SetFormat) -> SetMetaData:
     return SetMetaData(name, code, release, link, set_format)
 
 
-def getsets(as_json=False) -> Dict[str, List[SetMetaData]]:
+def scrape(as_json=False) -> Dict[str, List[SetMetaData]]:
     markup = timed_request(URL)
     soup = BeautifulSoup(markup, "lxml")
     divs = soup.find_all("div", class_="sets-format-block")[:3]
@@ -97,7 +96,7 @@ def getsets(as_json=False) -> Dict[str, List[SetMetaData]]:
 # TODO: use file utils here (getdir() and so on)
 def json_dump(filename="sets_meta.json") -> None:
     dest = OUTPUTDIR / filename
-    sets = getsets(as_json=True)
+    sets = scrape(as_json=True)
     with dest.open("w", encoding="utf-8") as f:
         json.dump(sets, f, indent=2)
 
@@ -211,3 +210,10 @@ class MtgSet(Enum):
     FIFTH_DAWN = MODERN_META_SETS[41]
     DARKSTEEL = MODERN_META_SETS[42]
     MIRRODIN = MODERN_META_SETS[43]
+
+    @staticmethod
+    def from_code(code: str) -> "MtgSet":
+        mtgset = next((s for s in MtgSet if code == s.value.code), None)
+        if mtgset:
+            return mtgset
+        raise ValueError(f"Cannot match code: {code!r} with any MtG set.")

@@ -8,9 +8,11 @@
 
 """
 import json
+import random
 import time
 from dataclasses import dataclass
 from enum import Enum
+from pathlib import Path
 from typing import List, Optional, Tuple
 
 from bs4 import BeautifulSoup
@@ -69,15 +71,29 @@ class Mana(Enum):
         else:
             raise ValueError(f"Unexpected hybrid mana string: {text!r}.")
 
+    @staticmethod
+    def to_json_name(mana: "Mana") -> str:
+        if mana in HYBRID_MANA:
+            return mana.name.lower()
+        return mana.value
+
+    @staticmethod
+    def from_json_name(name: str) -> "Mana":
+        if "hybrid" in name:
+            return Mana[name.upper()]
+        return Mana(name)
+
 
 HYBRID_MANA = [mana for mana in Mana if "HYBRID" in mana.name]
 
 
 class Rarity(Enum):
+    BASIC_LAND = "Basic Land"
     COMMON = "Common"
     UNCOMMON = "Uncommon"
     RARE = "Rare"
     MYTHIC = "Mythic"
+    SPECIAL = "Special"
 
 
 class PriceUnit(Enum):
@@ -96,15 +112,29 @@ class Price:
         else:
             return f"{self.value:.2f} {self.unit.value}"
 
+    @staticmethod
+    def from_str(text: str) -> "Price":
+        if "$" in text:
+            _, price = text.split()
+            return Price(float(price), PriceUnit.DOLLAR)
+        elif "tix" in text:
+            price, _ = text.split()
+            return Price(float(price), PriceUnit.TIX)
+        else:
+            raise ValueError(f"Invalid price string: {text}.")
+
 
 @dataclass
 class Card:
     number: Optional[int]  # some cards in Alchemy have no number
     name: str
     link: str
-    mana: Tuple[Mana, ...]
-    rarity: Rarity
-    price: Optional[float]
+    # phyrexian mana (e.g. in Modern Masters 2015:
+    # https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=512288)
+    # is not (easily) parseable on mtggoldfish
+    mana: Optional[Tuple[Mana, ...]]
+    rarity: Optional[Rarity]
+    price: Optional[Price]
     mtg_set: Optional[MtgSet] = None
 
     @property
@@ -145,26 +175,36 @@ class Card:
     def has_colored_mana(self) -> bool:
         return self.colored_mana_count > 0
 
-    @staticmethod
-    def _json_mana_name(mana: Mana) -> str:
-        if mana in HYBRID_MANA:
-            return mana.name.lower()
-        return mana.value
-
     def as_json(self, set_included=True) -> Json:
+        mana = [Mana.to_json_name(mana) for mana in self.mana] if self.mana is not None else None
         result = {
                 "name": self.name,
                 "set": self.mtg_set.value.code,
                 "number": self.number,
-                "rarity": self.rarity.value,
-                "mana": [self._json_mana_name(mana) for mana in self.mana],
-                "price": str(self.price),
+                "rarity": self.rarity.value if self.rarity else None,
+                "mana": mana,
+                "price": str(self.price) if self.price else None,
                 "link": self.link,
             }
         if set_included:
             return result
         del result["set"]
         return result
+
+    @staticmethod
+    def from_json(data: Json) -> "Card":
+        if data["mana"] is None:
+            mana = None
+        else:
+            mana = tuple([Mana.from_json_name(name) for name in data["mana"]])
+        return Card(
+            data["number"],
+            data["name"],
+            data["link"],
+            mana,
+            Rarity(data["rarity"]) if data["rarity"] is not None else None,
+            Price.from_str(data["price"]) if data["price"] is not None else None,
+        )
 
 
 @dataclass
@@ -177,6 +217,13 @@ class SetData:
         return {
             self.mtg_set.value.code: [card.as_json(set_included=False) for card in self.cards]
         }
+
+    @staticmethod
+    def from_json(cards_data: List[Json], mtg_set: MtgSet) -> "SetData":
+        cards = [Card.from_json(card_data) for card_data in cards_data]
+        for card in cards:
+            card.mtg_set = mtg_set
+        return SetData(cards, mtg_set)
 
 
 def _get_table(mtg_set: MtgSet) -> Optional[Tag]:
@@ -204,8 +251,15 @@ def _parse_row(row: Tag, mtg_set: Optional[MtgSet] = None) -> Card:
         mana = ()
     else:
         mana = mana.attrs["aria-label"]
-        mana = _parse_mana(mana)
-    rarity = Rarity(rarity.text)
+        try:
+            mana = _parse_mana(mana)
+        except ValueError:
+            print(f"WARNING: not parseable mana string: {mana!r}. Mana for {name!r} set to `None`")
+            mana = None
+    if not rarity.text:
+        rarity = None
+    else:
+        rarity = Rarity(rarity.text)
     # e.g. "29.37 tix" ==> "29.37"
     if price.text:
         if "$" in price.text:
@@ -228,6 +282,8 @@ def _parse_mana(text: str) -> Tuple[Mana, ...]:
     manas, is_hybrid, hybrid_mana = [], False, []
     for token in tokens:
         if not is_hybrid:
+            if token == "phyrexian":
+                break
             try:
                 manas.append(Mana(token))
             except ValueError:
@@ -251,7 +307,7 @@ def _parse_mana(text: str) -> Tuple[Mana, ...]:
     return tuple(manas)
 
 
-def getset(mtg_set: MtgSet) -> SetData:
+def scrape(mtg_set: MtgSet) -> SetData:
     tbl = _get_table(mtg_set)
     rows = _getrows(tbl)
     cards = [_parse_row(row, mtg_set) for row in rows]
@@ -259,7 +315,7 @@ def getset(mtg_set: MtgSet) -> SetData:
 
 
 # TODO: use file utils here (getdir() and so on)
-def json_dump(fmt: SetFormat = SetFormat.STANDARD, filename="cards.json") -> None:
+def json_dump(fmt: SetFormat = SetFormat.STANDARD, filename: Optional[str] = None) -> None:
     if fmt is SetFormat.STANDARD:
         metas = STANDARD_META_SETS
     elif fmt is SetFormat.PIONEER:
@@ -267,15 +323,66 @@ def json_dump(fmt: SetFormat = SetFormat.STANDARD, filename="cards.json") -> Non
     else:
         metas = MODERN_META_SETS
 
+    if not filename:
+        filename = fmt.name.lower() + ".json"
     dest = OUTPUTDIR / filename
 
-    sets = []
-    for meta_set in metas:
+    setmap, total = {}, len(metas)
+    for i, meta_set in enumerate(metas, start=1):
         mtg_set = MtgSet(meta_set)
-        time.sleep(0.2)
-        data = getset(mtg_set)
-        sets.append(data.as_json)
+        data = scrape(mtg_set)
+        setmap.update(data.as_json)
+        print(f"{i}/{total} set has been parsed.")
+        time.sleep(random.uniform(0.15, 0.3))
 
     with dest.open("w", encoding="utf-8") as f:
-        json.dump({fmt.value: sets}, f, indent=2)
+        json.dump(setmap, f, indent=2)
 
+    if dest.exists():
+        print(f"All data successfully dumped at {dest!r}.")
+    else:
+        print(f"WARNING! Nothing has been saved at {dest!r}.")
+
+
+STANDARD_JSON_PATH = Path("input/standard.json")
+PIONEER_JSON_PATH = Path("input/pioneer.json")
+MODERN_JSON_PATH = Path("input/modern.json")
+with STANDARD_JSON_PATH.open() as sf:
+    STANDARD_JSON = json.load(sf)
+with PIONEER_JSON_PATH.open() as pf:
+    PIONEER_JSON = json.load(pf)
+with MODERN_JSON_PATH.open() as mf:
+    MODERN_JSON = json.load(mf)
+
+
+def getset(mtg_set: MtgSet) -> Optional[SetData]:
+    allinput = {**STANDARD_JSON, **PIONEER_JSON, **MODERN_JSON}
+    cards_data = allinput.get(mtg_set.value.code)
+    if cards_data:
+        return SetData.from_json(cards_data, mtg_set)
+    return None
+
+
+def getsets(*sets: MtgSet) -> List[SetData]:
+    result = []
+    for mtgset in sets:
+        setdata = getset(mtgset)
+        if setdata:
+            result.append(setdata)
+    return result
+
+
+def get_sets_by_format(fmt: SetFormat) -> List[SetData]:
+    def parse_json(data: Json) -> List[SetData]:
+        result = []
+        for code, card_data in data.items():
+            mtgset = MtgSet.from_code(code)
+            result.append(SetData.from_json(card_data, mtgset))
+        return result
+
+    if fmt is SetFormat.MODERN:
+        return parse_json(MODERN_JSON)
+    elif fmt is SetFormat.PIONEER:
+        return parse_json(PIONEER_JSON)
+    else:
+        return parse_json(STANDARD_JSON)
