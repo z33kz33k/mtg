@@ -11,12 +11,15 @@ import json
 from enum import Enum
 from dataclasses import dataclass
 from datetime import datetime
+from pathlib import Path
 from typing import Dict, List, Optional
 
 from bs4 import BeautifulSoup
 from bs4.element import Tag
 
-from mtgcards.utils import timed_request, Json, OUTPUTDIR, INPUTDIR
+from mtgcards.utils import timed_request, from_iterable
+from mtgcards.utils.files import getdir, getfile
+from mtgcards.const import Json, OUTPUTDIR, INPUTDIR
 
 DOMAIN = "www.mtggoldfish.com"
 URL = f"https://{DOMAIN}/sets/"
@@ -93,17 +96,14 @@ def scrape(as_json=False) -> Dict[str, List[SetMetaData]]:
     return setmap
 
 
-# TODO: use file utils here (getdir() and so on)
 def json_dump(filename="sets_meta.json") -> None:
-    dest = OUTPUTDIR / filename
+    dest = getdir(OUTPUTDIR) / filename
     sets = scrape(as_json=True)
     with dest.open("w", encoding="utf-8") as f:
         json.dump(sets, f, indent=2)
 
 
-INPUT_METAFILE = INPUTDIR / "sets_meta.json"
-if not INPUT_METAFILE.exists():
-    raise OSError(f"No sets input meta JSON at {INPUT_METAFILE}.")
+INPUT_METAFILE = getfile(str(Path(INPUTDIR) / "sets_meta.json"))
 
 with INPUT_METAFILE.open() as f:
     META_SETS_JSON = json.load(f)
@@ -213,7 +213,7 @@ class MtgSet(Enum):
 
     @staticmethod
     def from_code(code: str) -> "MtgSet":
-        mtgset = next((s for s in MtgSet if code == s.value.code), None)
+        mtgset = from_iterable(MtgSet, lambda s: s.value.code == code)
         if mtgset:
             return mtgset
         raise ValueError(f"Cannot match code: {code!r} with any MtG set.")

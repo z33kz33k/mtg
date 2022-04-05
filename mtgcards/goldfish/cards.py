@@ -18,7 +18,9 @@ from typing import List, Optional, Tuple
 from bs4 import BeautifulSoup
 from bs4.element import Tag
 
-from mtgcards.utils import Json, timed_request, OUTPUTDIR
+from mtgcards.utils import from_iterable, timed_request
+from mtgcards.utils.files import getdir, getfile
+from mtgcards.const import Json, OUTPUTDIR, INPUTDIR
 from mtgcards.goldfish.sets import URL as SETS_URL
 from mtgcards.goldfish.sets import MtgSet, DOMAIN, STANDARD_META_SETS, PIONEER_META_SETS, \
     MODERN_META_SETS, SetFormat
@@ -225,6 +227,54 @@ class SetData:
             card.mtg_set = mtg_set
         return SetData(cards, mtg_set)
 
+    def find(self, name: str) -> Optional[Card]:
+        """Find a card by ``name`` provided. Return ``None`` if nothing has been found.
+        """
+        return from_iterable(self.cards, lambda c: c.name == name)
+
+    def find_by_number(self, number: int) -> Optional[Card]:
+        """Find a card by ``number`` provided. Return ``None`` if nothing has been found.
+        """
+        return from_iterable(self.cards, lambda c: c.number == number)
+
+    def find_all(self, *, rarity: Optional[Rarity] = None, price: Optional[float] = None,
+                 text: Optional[str] = None, mana: Optional[Mana] = None,
+                 cmc: Optional[int] = None, has_hybrid_mana: Optional[bool] = None,
+                 has_x_mana: Optional[bool] = None, has_colorless_mana: Optional[bool] = None,
+                 has_colored_mana: Optional[bool] = None) -> List[Card]:
+        """Find all cards that meet specified parameters.
+
+        :param rarity: matched card's rarity
+        :param price: matched card's price
+        :param text: a text in matched card's name
+        :param mana: matched card's mana as tuple of Mana enumerations
+        :param cmc: matched card's converted mana cost
+        :param has_hybrid_mana: True, if matched card has hybrid mana
+        :param has_x_mana: True, if matched card has X mana
+        :param has_colorless_mana: True, if matched card has colorless mana
+        :param has_colored_mana: True, if matched card has colored mana
+        """
+        mtgcards = self.cards[:]
+        if rarity:
+            mtgcards = [card for card in mtgcards if card.rarity is rarity]
+        if price:
+            mtgcards = [card for card in mtgcards if card.price.value == price]
+        if text:
+            mtgcards = [card for card in mtgcards if text in card.name]
+        if mana is not None:
+            mtgcards = [card for card in mtgcards if card.mana == mana]
+        if cmc is not None:
+            mtgcards = [card for card in mtgcards if card.cmc == cmc]
+        if has_hybrid_mana is not None:
+            mtgcards = [card for card in mtgcards if card.has_hybrid_mana]
+        if has_x_mana is not None:
+            mtgcards = [card for card in mtgcards if card.has_x_mana]
+        if has_colorless_mana is not None:
+            mtgcards = [card for card in mtgcards if card.has_colorless_mana]
+        if has_colored_mana is not None:
+            mtgcards = [card for card in mtgcards if card.has_colored_mana]
+        return mtgcards
+
 
 def _get_table(mtg_set: MtgSet) -> Optional[Tag]:
     link = mtg_set.value.link[6:]
@@ -314,7 +364,6 @@ def scrape(mtg_set: MtgSet) -> SetData:
     return SetData(cards, mtg_set)
 
 
-# TODO: use file utils here (getdir() and so on)
 def json_dump(fmt: SetFormat = SetFormat.STANDARD, filename: Optional[str] = None) -> None:
     if fmt is SetFormat.STANDARD:
         metas = STANDARD_META_SETS
@@ -325,7 +374,7 @@ def json_dump(fmt: SetFormat = SetFormat.STANDARD, filename: Optional[str] = Non
 
     if not filename:
         filename = fmt.name.lower() + ".json"
-    dest = OUTPUTDIR / filename
+    dest = getdir(OUTPUTDIR) / filename
 
     setmap, total = {}, len(metas)
     for i, meta_set in enumerate(metas, start=1):
@@ -344,18 +393,20 @@ def json_dump(fmt: SetFormat = SetFormat.STANDARD, filename: Optional[str] = Non
         print(f"WARNING! Nothing has been saved at {dest!r}.")
 
 
-STANDARD_JSON_PATH = Path("input/standard.json")
-PIONEER_JSON_PATH = Path("input/pioneer.json")
-MODERN_JSON_PATH = Path("input/modern.json")
-with STANDARD_JSON_PATH.open() as sf:
+STANDARD_JSON_FILE = getfile(str(Path(INPUTDIR) / "standard.json"))
+PIONEER_JSON_FILE = getfile(str(Path(INPUTDIR) / "pioneer.json"))
+MODERN_JSON_FILE = getfile(str(Path(INPUTDIR) / "modern.json"))
+with STANDARD_JSON_FILE.open() as sf:
     STANDARD_JSON = json.load(sf)
-with PIONEER_JSON_PATH.open() as pf:
+with PIONEER_JSON_FILE.open() as pf:
     PIONEER_JSON = json.load(pf)
-with MODERN_JSON_PATH.open() as mf:
+with MODERN_JSON_FILE.open() as mf:
     MODERN_JSON = json.load(mf)
 
 
 def getset(mtg_set: MtgSet) -> Optional[SetData]:
+    """Return set specified by ``mtg_set`` enumeration or ``None`` if there's no such data.
+    """
     allinput = {**STANDARD_JSON, **PIONEER_JSON, **MODERN_JSON}
     cards_data = allinput.get(mtg_set.value.code)
     if cards_data:
@@ -364,6 +415,8 @@ def getset(mtg_set: MtgSet) -> Optional[SetData]:
 
 
 def getsets(*sets: MtgSet) -> List[SetData]:
+    """Return sets' data specified by the enumerated ``sets``.
+    """
     result = []
     for mtgset in sets:
         setdata = getset(mtgset)
@@ -372,7 +425,9 @@ def getsets(*sets: MtgSet) -> List[SetData]:
     return result
 
 
-def get_sets_by_format(fmt: SetFormat) -> List[SetData]:
+def get_sets_by_format(fmt: SetFormat = SetFormat.STANDARD) -> List[SetData]:
+    """Return all sets belonging to the specified format.
+    """
     def parse_json(data: Json) -> List[SetData]:
         result = []
         for code, card_data in data.items():
@@ -386,3 +441,57 @@ def get_sets_by_format(fmt: SetFormat) -> List[SetData]:
         return parse_json(PIONEER_JSON)
     else:
         return parse_json(STANDARD_JSON)
+
+
+def find_card(name: str, fmt: SetFormat = SetFormat.STANDARD) -> Optional[Card]:
+    """Find a card with ``name`` in all sets of format ``fmt``. Return ``None`` if nothing matches.
+    """
+    sets = get_sets_by_format(fmt)
+    for s in sets:
+        card = s.find(name)
+        if card:
+            return card
+    return None
+
+
+def find_cards(fmt: SetFormat = SetFormat.STANDARD, *, rarity: Optional[Rarity] = None,
+               price: Optional[float] = None, text: Optional[str] = None,
+               mana: Optional[Mana] = None, cmc: Optional[int] = None,
+               has_hybrid_mana: Optional[bool] = None, has_x_mana: Optional[bool] = None,
+               has_colorless_mana: Optional[bool] = None,
+               has_colored_mana: Optional[bool] = None) -> List[Card]:
+    """Find all cards in the specified format that meet specified parameters.
+
+    :param fmt: format to match cards in
+    :param rarity: matched card's rarity
+    :param price: matched card's price
+    :param text: a text in matched card's name
+    :param mana: matched card's mana as tuple of Mana enumerations
+    :param cmc: matched card's converted mana cost
+    :param has_hybrid_mana: True, if matched card has hybrid mana
+    :param has_x_mana: True, if matched card has X mana
+    :param has_colorless_mana: True, if matched card has colorless mana
+    :param has_colored_mana: True, if matched card has colored mana
+    """
+    sets = get_sets_by_format(fmt)
+    mtgcards = [card for s in sets for card in s.cards]
+    if rarity:
+        mtgcards = [card for card in mtgcards if card.rarity is rarity]
+    if price:
+        mtgcards = [card for card in mtgcards if card.price.value == price]
+    if text:
+        mtgcards = [card for card in mtgcards if text in card.name]
+    if mana is not None:
+        mtgcards = [card for card in mtgcards if card.mana == mana]
+    if cmc is not None:
+        mtgcards = [card for card in mtgcards if card.cmc == cmc]
+    if has_hybrid_mana is not None:
+        mtgcards = [card for card in mtgcards if card.has_hybrid_mana]
+    if has_x_mana is not None:
+        mtgcards = [card for card in mtgcards if card.has_x_mana]
+    if has_colorless_mana is not None:
+        mtgcards = [card for card in mtgcards if card.has_colorless_mana]
+    if has_colored_mana is not None:
+        mtgcards = [card for card in mtgcards if card.has_colored_mana]
+    return mtgcards
+
