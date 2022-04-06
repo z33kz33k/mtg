@@ -15,7 +15,7 @@ from bs4 import BeautifulSoup
 from bs4.element import ResultSet, Tag
 from mtgcards.utils import from_iterable, timed_request
 
-from mtgcards.goldfish.cards import Card as GoldfishCard, find_card, Price
+from mtgcards.goldfish.cards import Card as GoldfishCard, PriceUnit, find_card, Price
 
 URL = "https://magic.wizards.com/en/articles/archive/magic-digital/innistrad-crimson-vow-jump-" \
       "event-details-and-packets-2021-11-10"
@@ -36,7 +36,7 @@ class Card:
 @dataclass
 class RotatedCard(Card):
     appear_chance: int  # percents
-    alternative: Optional["Card"] = None  # injected post-initialization
+    alternative: Optional["RotatedCard"] = None  # injected post-initialization
 
     @staticmethod
     def from_card(card: Card, appear_chance: int) -> "RotatedCard":
@@ -49,6 +49,27 @@ class RotatedCard(Card):
             card.goldfish_data,
             appear_chance,
         )
+
+    @property
+    def rotated_price(self) -> Optional[Price]:
+        """Return price for this rotated card calculated as an average of both rotation cards'
+        prices weighted by chance of appearance. If none of rotated cards have price, return
+        ``None``.
+        """
+        if self.alternative is None:
+            return None
+        if self.goldfish_data is None or self.goldfish_data.price is None:
+            return self.alternative.goldfish_data.price
+        if self.alternative.goldfish_data is None or self.alternative.goldfish_data.price is None:
+            return self.goldfish_data.price
+        price = self.goldfish_data.price.value
+        altprice = self.alternative.goldfish_data.price.value
+        price *= self.appear_chance / 100
+        altprice *= self.alternative.appear_chance / 100
+        newprice = price + altprice
+        unit = self.goldfish_data.price.unit if self.goldfish_data.price else \
+            self.alternative.goldfish_data.price.unit
+        return Price(newprice, unit)
 
 
 @dataclass
@@ -64,10 +85,20 @@ class Deck:
     def price(self) -> Optional[Price]:
         if not self.cards:
             return None
-        # TODO: more elaborate approach that factors in alternatives
-        total = sum(card.goldfish_data.price.value * card.quantity for card in self.cards
-                    if card.goldfish_data.price is not None)
-        return Price(total, self.cards[0].goldfish_data.price.unit)
+        total = 0
+        for card in self.cards:
+            if isinstance(card, RotatedCard):
+                if card.rotated_price:
+                    total += card.rotated_price.value * card.quantity
+            else:
+                if card.goldfish_data and card.goldfish_data.price:
+                    total += card.goldfish_data.price.value * card.quantity
+
+        if self.cards[0].goldfish_data and self.cards[0].goldfish_data.price:
+            unit = self.cards[0].goldfish_data.price.unit
+        else:
+            unit = PriceUnit.DOLLAR
+        return Price(total, unit)
 
 
 ChanceCard = namedtuple("ChanceCard", "name chance")
@@ -110,12 +141,12 @@ class Parser:
         quantity = int(row.find("span", class_="card-count").text)
         info = row.find("a")
         if info:
-            name = info.text
+            name = info.text.replace("’", "'")
             set_code = info.attrs["data-cardexpansion"]
             number = int(info.attrs["data-cardnumber"])
             link = info.attrs["href"]
         else:
-            name = row.find("span", class_="card-name").text
+            name = row.find("span", class_="card-name").text.replace("’", "'")
             set_code, number, link = None, None, None
         goldfish = find_card(name)
         return Card(name, number, set_code, link, quantity, goldfish)
@@ -144,7 +175,8 @@ class Parser:
             if row:
                 rotated_card = RotatedCard.from_card(card, row.basecard.chance)
                 altgoldfish = find_card(row.altcard.name)
-                alt_card = Card(row.altcard.name, None, None, None, card.quantity, altgoldfish)
+                alt_card = RotatedCard(row.altcard.name, None, None, None, card.quantity,
+                                       altgoldfish, row.altcard.chance)
                 rotated_card.alternative = alt_card
                 new_cards.append(rotated_card)
             else:
@@ -158,6 +190,9 @@ class Parser:
         decks = []
         for decklist, table in zip(decklists, rotation_tables):
             deckname, rows = self._parse_decklist(decklist)
+            names = [deck.name for deck in decks]
+            if deckname in names:
+                continue
             cards = [self._parse_row(row) for row in rows]
             rotation_table = self._parse_rotation_table(table)
             new_cards = self._apply_rotations(cards, rotation_table)
@@ -165,5 +200,3 @@ class Parser:
             decks.append(deck)
 
         return decks
-
-
