@@ -7,12 +7,16 @@
     @author: z33k
 
 """
+import json
 from collections import namedtuple
 from dataclasses import dataclass
+from pathlib import Path
 from typing import List, Optional, Tuple
 
 from bs4 import BeautifulSoup
 from bs4.element import ResultSet, Tag
+
+from mtgcards.const import Json
 from mtgcards.utils import from_iterable, timed_request
 
 from mtgcards.goldfish.cards import Card as GoldfishCard, PriceUnit, find_card, Price
@@ -32,11 +36,64 @@ class Card:
     quantity: int
     goldfish_data: Optional[GoldfishCard]
 
+    @property
+    def as_json(self) -> Json:
+        return {
+            "name": self.name,
+            "number": self.number,
+            "set_code": self.set_code,
+            "gatherer_link": self.gatherer_link,
+            "quantity": self.quantity,
+        }
+
+    @staticmethod
+    def from_json(data: Json) -> "Card":
+        return Card(
+            data["name"],
+            data["number"],
+            data["set_code"],
+            data["gatherer_link"],
+            data["quantity"],
+            find_card(data["name"])
+        )
+
+
+@dataclass
+class AltCard:  # TODO: look below
+    name: str
+    appear_chance: int
+
 
 @dataclass
 class RotatedCard(Card):
     appear_chance: int  # percents
+    # TODO: make a separate dataclass for alternative card that doesn't hold unnecessary fields:
+    #  number, set_code, gatherer_link, quantity, alternative (that not only clog up memory
+    #  but end up serialized to json for no good reason)
     alternative: Optional["RotatedCard"] = None  # injected post-initialization
+
+    @property
+    def as_json(self) -> Json:
+        result = super().as_json
+        result.update({
+            "appear_chance": self.appear_chance,
+            "alternative": self.alternative.as_json if self.alternative else None,
+        })
+        return result
+
+    @staticmethod
+    def from_json(data: Json) -> "RotatedCard":
+        return RotatedCard(
+            data["name"],
+            data["number"],
+            data["set_code"],
+            data["gatherer_link"],
+            data["quantity"],
+            find_card(data["name"]),
+            data["appear_chance"],
+            # TODO: look at the above todo
+            RotatedCard.from_json(data["alternative"])
+        )
 
     @staticmethod
     def from_card(card: Card, appear_chance: int) -> "RotatedCard":
@@ -76,6 +133,26 @@ class RotatedCard(Card):
 class Deck:
     name: str
     cards: List[Card]
+
+    @property
+    def as_json(self) -> Json:
+        return {
+            "name": self.name,
+            "cards": [card.as_json for card in self.cards],
+        }
+
+    @staticmethod
+    def from_json(data: Json) -> "Deck":
+        cards = []
+        for card_data in data["cards"]:
+            if "appear_chance" in card_data:
+                cards.append(RotatedCard.from_json(card_data))
+            else:
+                cards.append(Card.from_json(card_data))
+        return Deck(
+            data["name"],
+            cards
+        )
 
     @property
     def count(self) -> int:
@@ -200,3 +277,15 @@ class Parser:
             decks.append(deck)
 
         return decks
+
+    def json_dump(self) -> None:
+        dest = Path("output/jumpin.json")
+        data = [deck.as_json for deck in self.decks]
+        with dest.open("w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2)
+
+        if dest.exists():
+            print(f"All data successfully dumped at {dest!r}.")
+        else:
+            print(f"WARNING! Nothing has been saved at {dest!r}.")
+
