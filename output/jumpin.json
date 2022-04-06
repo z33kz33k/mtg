@@ -6587,5 +6587,1335 @@
         }
       }
     ]
+  },
+  {
+    "name": "Balanced",
+    "cards": [
+      {
+        "name": "Virus Beetle",
+        "number": 128,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BVirus%5D+%5BBeetle%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Spirited Companion",
+        "number": 508,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BSpirited%5D+%5BCompanion%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Nezumi Bladeblesser",
+        "number": 318,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BNezumi%5D+%5BBladeblesser%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Circuit Mender",
+        "number": 242,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BCircuit%5D+%5BMender%5D",
+        "quantity": 1,
+        "appear_chance": 67,
+        "alternative": {
+          "name": "Imperial Recovery Unit",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 33,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Kami of Terrible Secrets",
+        "number": 105,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BKami%5D+%5Bof%5D+%5BTerrible%5D+%5BSecrets%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Naomi, Pillar of Order",
+        "number": 229,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BNaomi,%5D+%5BPillar%5D+%5Bof%5D+%5BOrder%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Soul Transfer",
+        "number": 382,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BSoul%5D+%5BTransfer%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Malakir Rebirth",
+        "number": 111,
+        "set_code": "ZNR",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BMalakir%5D+%5BRebirth%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Blood Fountain",
+        "number": 95,
+        "set_code": "VOW",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BBlood%5D+%5BFountain%5D",
+        "quantity": 1,
+        "appear_chance": 67,
+        "alternative": {
+          "name": "Hedgewitch's Mask",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 33,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Life of Toshiro Umezawa",
+        "number": 108,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BLife%5D+%5Bof%5D+%5BToshiro%5D+%5BUmezawa%5D",
+        "quantity": 1,
+        "appear_chance": 50,
+        "alternative": {
+          "name": "Nezumi Prowler",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 50,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Befriending the Moths",
+        "number": 4,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BBefriending%5D+%5Bthe%5D+%5BMoths%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Intercessor's Arrest",
+        "number": 20,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BIntercessor%5D+%5BArrest%5D",
+        "quantity": 1,
+        "appear_chance": 50,
+        "alternative": {
+          "name": "Sigarda's Imprisonment",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 50,
+          "alternative": null
+        }
+      }
+    ]
+  },
+  {
+    "name": "Equipped",
+    "cards": [
+      {
+        "name": "Rabbit Battery",
+        "number": 157,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BRabbit%5D+%5BBattery%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Armory Veteran",
+        "number": 130,
+        "set_code": "AFR",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BArmory%5D+%5BVeteran%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Lizard Blades",
+        "number": 385,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BLizard%5D+%5BBlades%5D",
+        "quantity": 1,
+        "appear_chance": 50,
+        "alternative": {
+          "name": "Ogre-Head Helm",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 50,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Bronzeplate Boar",
+        "number": 135,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BBronzeplate%5D+%5BBoar%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Unstoppable Ogre",
+        "number": 169,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BUnstoppable%5D+%5BOgre%5D",
+        "quantity": 1,
+        "appear_chance": 50,
+        "alternative": {
+          "name": "Twinscroll Shaman",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 50,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Scrapyard Steelbreaker",
+        "number": 160,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BScrapyard%5D+%5BSteelbreaker%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Kami of Industry",
+        "number": 149,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BKami%5D+%5Bof%5D+%5BIndustry%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Ironhoof Boar",
+        "number": 148,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BIronhoof%5D+%5BBoar%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Kami's Flare",
+        "number": 150,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BKami%5D+%5BFlare%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Kazuul's Fury",
+        "number": 146,
+        "set_code": "ZNR",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BKazuul%5D+%5BFury%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Dueling Rapier",
+        "number": 140,
+        "set_code": "AFR",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BDueling%5D+%5BRapier%5D",
+        "quantity": 1,
+        "appear_chance": 50,
+        "alternative": {
+          "name": "Tormentor's Helm",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 25,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Dragonspark Reactor",
+        "number": 137,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BDragonspark%5D+%5BReactor%5D",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "name": "Enchanting",
+    "cards": [
+      {
+        "name": "Generous Visitor",
+        "number": 185,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BGenerous%5D+%5BVisitor%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Weaver of Harmony",
+        "number": 395,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BWeaver%5D+%5Bof%5D+%5BHarmony%5D",
+        "quantity": 1,
+        "appear_chance": 50,
+        "alternative": {
+          "name": "Kami of Transience",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 50,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Bearer of Memory",
+        "number": 174,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BBearer%5D+%5Bof%5D+%5BMemory%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Geothermal Kami",
+        "number": 186,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BGeothermal%5D+%5BKami%5D",
+        "quantity": 1,
+        "appear_chance": 50,
+        "alternative": {
+          "name": "Harmonious Emergence",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 50,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Jukai Preserver",
+        "number": 195,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BJukai%5D+%5BPreserver%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Blossom Prancer",
+        "number": 175,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BBlossom%5D+%5BPrancer%5D",
+        "quantity": 1,
+        "appear_chance": 75,
+        "alternative": {
+          "name": "Roaring Earth",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 25,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Greater Tanuki",
+        "number": 189,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BGreater%5D+%5BTanuki%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Tangled Florahedron",
+        "number": 211,
+        "set_code": "ZNR",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BTangled%5D+%5BFlorahedron%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Master's Rebuke",
+        "number": 202,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BMaster%5D+%5BRebuke%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Season of Renewal",
+        "number": 205,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BSeason%5D+%5Bof%5D+%5BRenewal%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Azusa's Many Journeys",
+        "number": 172,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BAzusa%5D+%5BMany%5D+%5BJourneys%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Sheltering Boughs",
+        "number": 218,
+        "set_code": "VOW",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BSheltering%5D+%5BBoughs%5D",
+        "quantity": 1,
+        "appear_chance": 33,
+        "alternative": {
+          "name": "Commune with Spirits",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 33,
+          "alternative": null
+        }
+      }
+    ]
+  },
+  {
+    "name": "High-Tech",
+    "cards": [
+      {
+        "name": "Iron Apprentice",
+        "number": 248,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BIron%5D+%5BApprentice%5D",
+        "quantity": 1,
+        "appear_chance": 33,
+        "alternative": {
+          "name": "Network Disruptor",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 33,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Towashi Songshaper",
+        "number": 167,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BTowashi%5D+%5BSongshaper%5D",
+        "quantity": 1,
+        "appear_chance": 67,
+        "alternative": {
+          "name": "Armguard Familiar",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 33,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Enthusiastic Mechanaut",
+        "number": 509,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BEnthusiastic%5D+%5BMechanaut%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Moonfolk Puzzlemaker",
+        "number": 68,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BMoonfolk%5D+%5BPuzzlemaker%5D",
+        "quantity": 1,
+        "appear_chance": 50,
+        "alternative": {
+          "name": "Unstoppable Ogre",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 50,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Twinshot Sniper",
+        "number": 168,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BTwinshot%5D+%5BSniper%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Replication Specialist",
+        "number": 76,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BReplication%5D+%5BSpecialist%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Saiba Trespassers",
+        "number": 77,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BSaiba%5D+%5BTrespassers%5D",
+        "quantity": 1,
+        "appear_chance": 50,
+        "alternative": {
+          "name": "Mirrorshell Crab",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 50,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Song-Mad Treachery",
+        "number": 165,
+        "set_code": "ZNR",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BSong-Mad%5D+%5BTreachery%5D",
+        "quantity": 1,
+        "appear_chance": 50,
+        "alternative": {
+          "name": "Spikefield Hazard",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 50,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Thirst for Knowledge",
+        "number": 85,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BThirst%5D+%5Bfor%5D+%5BKnowledge%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Abrade",
+        "number": 136,
+        "set_code": "AKR",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BAbrade%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Mechtitan Core",
+        "number": 402,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BMechtitan%5D+%5BCore%5D",
+        "quantity": 1,
+        "appear_chance": 75,
+        "alternative": {
+          "name": "Tezzeret, Betrayer of Flesh",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 25,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Experimental Synthesizer",
+        "number": 138,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BExperimental%5D+%5BSynthesizer%5D",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "name": "Mechs",
+    "cards": [
+      {
+        "name": "Skyclave Squid",
+        "number": 296,
+        "set_code": "ZNR",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BSkyclave%5D+%5BSquid%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Cunning Geysermage",
+        "number": 55,
+        "set_code": "ZNR",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BCunning%5D+%5BGeysermage%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Draugr Thought-Thief",
+        "number": 55,
+        "set_code": "KHM",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BDraugr%5D+%5BThought-Thief%5D",
+        "quantity": 1,
+        "appear_chance": 50,
+        "alternative": {
+          "name": "Soulknife Spy",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 50,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Whispering Wizard",
+        "number": 88,
+        "set_code": "VOW",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BWhispering%5D+%5BWizard%5D",
+        "quantity": 1,
+        "appear_chance": 50,
+        "alternative": {
+          "name": "Futurist Operative",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 50,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Rimeshield Frost Giant",
+        "number": 310,
+        "set_code": "AFR",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BRimeshield%5D+%5BFrost%5D+%5BGiant%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Fading Hope",
+        "number": 51,
+        "set_code": "MID",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BFading%5D+%5BHope%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Suit Up",
+        "number": 81,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BSuit%5D+%5BUp%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Mobilizer Mech",
+        "number": 65,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BMobilizer%5D+%5BMech%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Mindlink Mech",
+        "number": 373,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BMindlink%5D+%5BMech%5D",
+        "quantity": 1,
+        "appear_chance": 33,
+        "alternative": {
+          "name": "Reckoner Bankbuster",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 34,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Futurist Sentinel",
+        "number": 54,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BFuturist%5D+%5BSentinel%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Tamiyo's Compleation",
+        "number": 83,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BTamiyo%5D+%5BCompleation%5D",
+        "quantity": 1,
+        "appear_chance": 67,
+        "alternative": {
+          "name": "Revenge of the Drowned",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 33,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Mech Hangar",
+        "number": 270,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BMech%5D+%5BHangar%5D",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "name": "Modified",
+    "cards": [
+      {
+        "name": "Rabbit Battery",
+        "number": 157,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BRabbit%5D+%5BBattery%5D",
+        "quantity": 1,
+        "appear_chance": 50,
+        "alternative": {
+          "name": "Kumano Faces Kakkazan",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 50,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Guardian Gladewalker",
+        "number": 174,
+        "set_code": "KHM",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BGuardian%5D+%5BGladewalker%5D",
+        "quantity": 1,
+        "appear_chance": 34,
+        "alternative": {
+          "name": "Coiling Stalker",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 33,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Akki Ember-Keeper",
+        "number": 130,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BAkki%5D+%5BEmber-Keeper%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Heir of the Ancient Fang",
+        "number": 325,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BHeir%5D+%5Bof%5D+%5Bthe%5D+%5BAncient%5D+%5BFang%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Bronzeplate Boar",
+        "number": 135,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BBronzeplate%5D+%5BBoar%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Thundering Raiju",
+        "number": 389,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BThundering%5D+%5BRaiju%5D",
+        "quantity": 1,
+        "appear_chance": 67,
+        "alternative": {
+          "name": "Goro-Goro, Disciple of Ryusei",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 33,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Jukai Preserver",
+        "number": 195,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BJukai%5D+%5BPreserver%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Kami's Flare",
+        "number": 150,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BKami%5D+%5BFlare%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Master's Rebuke",
+        "number": 202,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BMaster%5D+%5BRebuke%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Vastwood Fortification",
+        "number": 216,
+        "set_code": "ZNR",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BVastwood%5D+%5BFortification%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Tales of Master Seshiro",
+        "number": 210,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BTales%5D+%5Bof%5D+%5BMaster%5D+%5BSeshiro%5D",
+        "quantity": 1,
+        "appear_chance": 50,
+        "alternative": {
+          "name": "Moldgraf Millipede",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 25,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Invigorating Hot Spring",
+        "number": 223,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BInvigorating%5D+%5BHot%5D+%5BSpring%5D",
+        "quantity": 1,
+        "appear_chance": 67,
+        "alternative": {
+          "name": "Roaring Earth",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 33,
+          "alternative": null
+        }
+      }
+    ]
+  },
+  {
+    "name": "Ninjas",
+    "cards": [
+      {
+        "name": "Network Disruptor",
+        "number": 71,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BNetwork%5D+%5BDisruptor%5D",
+        "quantity": 1,
+        "appear_chance": 50,
+        "alternative": {
+          "name": "Brinebarrow Intruder",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 50,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Moon-Circuit Hacker",
+        "number": 334,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BMoon-Circuit%5D+%5BHacker%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Inkrise Infiltrator",
+        "number": 341,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BInkrise%5D+%5BInfiltrator%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Silver-Fur Master",
+        "number": 511,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BSilver-Fur%5D+%5BMaster%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Satoru Umezawa",
+        "number": 352,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BSatoru%5D+%5BUmezawa%5D",
+        "quantity": 1,
+        "appear_chance": 50,
+        "alternative": {
+          "name": "Thousand-Faced Shadow",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 25,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Futurist Operative",
+        "number": 333,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BFuturist%5D+%5BOperative%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Moonsnare Specialist",
+        "number": 335,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BMoonsnare%5D+%5BSpecialist%5D",
+        "quantity": 1,
+        "appear_chance": 50,
+        "alternative": {
+          "name": "Saiba Trespassers",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 50,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Dokuchi Shadow-Walker",
+        "number": 339,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BDokuchi%5D+%5BShadow-Walker%5D",
+        "quantity": 1,
+        "appear_chance": 67,
+        "alternative": {
+          "name": "Kami of Restless Shadows",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 33,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Blackbloom Rogue",
+        "number": 91,
+        "set_code": "ZNR",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BBlackbloom%5D+%5BRogue%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Kaito's Pursuit",
+        "number": 103,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BKaito%5D+%5BPursuit%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Hero's Downfall",
+        "number": 120,
+        "set_code": "VOW",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BHero%5D+%5BDownfall%5D",
+        "quantity": 1,
+        "appear_chance": 50,
+        "alternative": {
+          "name": "Infernal Grasp",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 50,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Geistwave",
+        "number": 56,
+        "set_code": "MID",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BGeistwave%5D",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "name": "Sagas",
+    "cards": [
+      {
+        "name": "Jukai Naturalist",
+        "number": 510,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BJukai%5D+%5BNaturalist%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Satsuki, the Living Lore",
+        "number": 399,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BSatsuki,%5D+%5Bthe%5D+%5BLiving%5D+%5BLore%5D",
+        "quantity": 1,
+        "appear_chance": 75,
+        "alternative": {
+          "name": "Jugan Defends the Temple",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 25,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Bearer of Memory",
+        "number": 174,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BBearer%5D+%5Bof%5D+%5BMemory%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Jukai Preserver",
+        "number": 195,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BJukai%5D+%5BPreserver%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Greater Tanuki",
+        "number": 189,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BGreater%5D+%5BTanuki%5D",
+        "quantity": 1,
+        "appear_chance": 34,
+        "alternative": {
+          "name": "Master Skald",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 33,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Bala Ged Recovery",
+        "number": 180,
+        "set_code": "ZNR",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BBala%5D+%5BGed%5D+%5BRecovery%5D",
+        "quantity": 1,
+        "appear_chance": 50,
+        "alternative": {
+          "name": "Sejiri Shelter",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 50,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Storyweave",
+        "number": 209,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BStoryweave%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Era of Enlightenment",
+        "number": 11,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BEra%5D+%5Bof%5D+%5BEnlightenment%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Befriending the Moths",
+        "number": 4,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BBefriending%5D+%5Bthe%5D+%5BMoths%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Tales of Master Seshiro",
+        "number": 210,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BTales%5D+%5Bof%5D+%5BMaster%5D+%5BSeshiro%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Borrowed Time",
+        "number": 6,
+        "set_code": "MID",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BBorrowed%5D+%5BTime%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Fall of the Impostor",
+        "number": 208,
+        "set_code": "KHM",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BFall%5D+%5Bof%5D+%5Bthe%5D+%5BImpostor%5D",
+        "quantity": 1,
+        "appear_chance": 50,
+        "alternative": {
+          "name": "The Fall of Lord Konda",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 50,
+          "alternative": null
+        }
+      }
+    ]
+  },
+  {
+    "name": "Samauri",
+    "cards": [
+      {
+        "name": "The Wandering Emperor",
+        "number": 316,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BThe%5D+%5BWandering%5D+%5BEmperor%5D",
+        "quantity": 1,
+        "appear_chance": 50,
+        "alternative": {
+          "name": "The Restoration of Eiganjo",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 50,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Usher of the Fallen",
+        "number": 35,
+        "set_code": "KHM",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BUsher%5D+%5Bof%5D+%5Bthe%5D+%5BFallen%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Eiganjo Exemplar",
+        "number": 309,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BEiganjo%5D+%5BExemplar%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Selfless Samurai",
+        "number": 312,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BSelfless%5D+%5BSamurai%5D",
+        "quantity": 1,
+        "appear_chance": 67,
+        "alternative": {
+          "name": "Twinblade Geist",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 33,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Imperial Subduer",
+        "number": 310,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BImperial%5D+%5BSubduer%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Goldmaw Champion",
+        "number": 14,
+        "set_code": "KHM",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BGoldmaw%5D+%5BChampion%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Stalwart Valkyrie",
+        "number": 31,
+        "set_code": "KHM",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BStalwart%5D+%5BValkyrie%5D",
+        "quantity": 1,
+        "appear_chance": 33,
+        "alternative": {
+          "name": "Seven-Tail Mentor",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 34,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Sunblade Samurai",
+        "number": 315,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BSunblade%5D+%5BSamurai%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Wanderer's Intervention",
+        "number": 41,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BWanderer%5D+%5BIntervention%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Sejiri Shelter",
+        "number": 37,
+        "set_code": "ZNR",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BSejiri%5D+%5BShelter%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Ancestral Katana",
+        "number": 1,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BAncestral%5D+%5BKatana%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Borrowed Time",
+        "number": 6,
+        "set_code": "MID",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BBorrowed%5D+%5BTime%5D",
+        "quantity": 1,
+        "appear_chance": 50,
+        "alternative": {
+          "name": "Touch the Spirit Realm",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 50,
+          "alternative": null
+        }
+      }
+    ]
+  },
+  {
+    "name": "Sneaky",
+    "cards": [
+      {
+        "name": "Unwilling Ingredient",
+        "number": 90,
+        "set_code": "STX",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BUnwilling%5D+%5BIngredient%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Nezumi Prowler",
+        "number": 344,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BNezumi%5D+%5BProwler%5D",
+        "quantity": 1,
+        "appear_chance": 50,
+        "alternative": {
+          "name": "Dokuchi Silencer",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 50,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Inkrise Infiltrator",
+        "number": 341,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BInkrise%5D+%5BInfiltrator%5D",
+        "quantity": 1,
+        "appear_chance": 50,
+        "alternative": {
+          "name": "Ghastly Gloomhunter",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 50,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Biting-Palm Ninja",
+        "number": 338,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BBiting-Palm%5D+%5BNinja%5D",
+        "quantity": 1,
+        "appear_chance": 50,
+        "alternative": {
+          "name": "Nashi, Moon Sage's Scion",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 50,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Gravelighter",
+        "number": 98,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BGravelighter%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Mukotai Ambusher",
+        "number": 342,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BMukotai%5D+%5BAmbusher%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Kami of Restless Shadows",
+        "number": 104,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BKami%5D+%5Bof%5D+%5BRestless%5D+%5BShadows%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Dokuchi Shadow-Walker",
+        "number": 339,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BDokuchi%5D+%5BShadow-Walker%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Blackbloom Rogue",
+        "number": 91,
+        "set_code": "ZNR",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BBlackbloom%5D+%5BRogue%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Kaito's Pursuit",
+        "number": 103,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BKaito%5D+%5BPursuit%5D",
+        "quantity": 1
+      },
+      {
+        "name": "Return to Action",
+        "number": 121,
+        "set_code": "NEO",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BReturn%5D+%5Bto%5D+%5BAction%5D",
+        "quantity": 1,
+        "appear_chance": 50,
+        "alternative": {
+          "name": "You Are Already Dead",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 50,
+          "alternative": null
+        }
+      },
+      {
+        "name": "Hero's Downfall",
+        "number": 120,
+        "set_code": "VOW",
+        "gatherer_link": "https://gatherer.wizards.com/Pages/Search/Default.aspx?name=+%5BHero%5D+%5BDownfall%5D",
+        "quantity": 1,
+        "appear_chance": 50,
+        "alternative": {
+          "name": "Infernal Grasp",
+          "number": null,
+          "set_code": null,
+          "gatherer_link": null,
+          "quantity": 1,
+          "appear_chance": 50,
+          "alternative": null
+        }
+      }
+    ]
   }
 ]

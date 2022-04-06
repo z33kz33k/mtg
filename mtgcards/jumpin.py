@@ -23,6 +23,8 @@ from mtgcards.goldfish.cards import Card as GoldfishCard, PriceUnit, find_card, 
 
 URL = "https://magic.wizards.com/en/articles/archive/magic-digital/innistrad-crimson-vow-jump-" \
       "event-details-and-packets-2021-11-10"
+NEO_URL = "https://magic.wizards.com/en/articles/archive/magic-digital/jump-packets-update-" \
+          "kamigawa-neon-dynasty-2022-02-11"
 
 
 @dataclass
@@ -194,12 +196,14 @@ class RotationTable:
 
 class Parser:
     def __init__(self) -> None:
-        self._decklists, self._rotation_tables = self._parse_page()
+        self._decklists, self._rotation_tables = self._parse_page(URL)
         self.decks = self._get_decks(self._decklists, self._rotation_tables)
+        self._neo_decklists, self._neo_rotation_tables = self._parse_page(NEO_URL)
+        self.decks += self._get_decks(self._neo_decklists, self._neo_rotation_tables)
 
     @staticmethod
-    def _parse_page() -> Tuple[ResultSet, ResultSet]:
-        markup = timed_request(URL)
+    def _parse_page(url: str) -> Tuple[ResultSet, ResultSet]:
+        markup = timed_request(url)
         soup = BeautifulSoup(markup, "lxml")
         decklists = soup.find_all("div", class_="page-width bean_block bean_block_deck_list bean--"
                                                 "wiz-content-deck-list clearfix")
@@ -278,7 +282,7 @@ class Parser:
 
         return decks
 
-    def json_dump(self) -> None:
+    def dump_json(self) -> None:
         dest = Path("output/jumpin.json")
         data = [deck.as_json for deck in self.decks]
         with dest.open("w", encoding="utf-8") as f:
@@ -286,6 +290,23 @@ class Parser:
 
         if dest.exists():
             print(f"All data successfully dumped at {dest!r}.")
+        else:
+            print(f"WARNING! Nothing has been saved at {dest!r}.")
+
+    def dump_pricelist(self) -> None:
+        dest = Path("output/jumpin_priced.txt")
+        lines = []
+        maxlen = max(len(deck.name) for deck in self.decks)
+        for i, deck in enumerate(sorted(self.decks, key=lambda d: d.price.value, reverse=True),
+                                 start=1):
+            deckname = f"`{deck.name}`"
+            decknum = str(i).zfill(2)
+            lines.append(f"#{decknum}: {deckname.ljust(maxlen + 2)}: {str(deck.price):>7}")
+
+        dest.write_text("\n".join(lines))
+
+        if dest.exists():
+            print(f"Decks pricelist successfully dumped at {dest!r}.")
         else:
             print(f"WARNING! Nothing has been saved at {dest!r}.")
 

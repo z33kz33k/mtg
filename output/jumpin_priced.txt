@@ -1,50 +1,60 @@
-#01: `Tomb of Annihilation`   : $ 11.46
-#02: `Legion`                 :  $ 6.91
-#03: `Dead and Buried`        :  $ 6.37
-#04: `Elves`                  :  $ 6.13
-#05: `Roiling`                :  $ 5.95
-#06: `Celestial`              :  $ 5.75
-#07: `Werewolves`             :  $ 5.73
-#08: `Vampires`               :  $ 5.42
-#09: `Morbid`                 :  $ 5.30
-#10: `Sacrificial`            :  $ 5.15
-#11: `Fangs`                  :  $ 4.99
-#12: `Spellcraft`             :  $ 4.93
-#13: `Clerics`                :  $ 4.86
-#14: `Shambling`              :  $ 4.75
-#15: `Landfall`               :  $ 4.72
-#16: `Zombies`                :  $ 4.61
-#17: `Ordained`               :  $ 4.51
-#18: `Silverquill`            :  $ 4.43
-#19: `Witherbloom`            :  $ 4.30
-#20: `Rock and Roll`          :  $ 4.16
-#21: `Training`               :  $ 3.91
-#22: `Tough`                  :  $ 3.75
-#23: `Educated`               :  $ 3.70
-#24: `Wolf Pack`              :  $ 3.53
-#25: `Goblins`                :  $ 3.51
-#26: `Disturbed`              :  $ 3.33
-#27: `Spooky`                 :  $ 3.30
-#28: `Doctor`                 :  $ 3.28
-#29: `Armory`                 :  $ 3.12
-#30: `Roguish`                :  $ 3.11
-#31: `Dungeon of the Mad Mage`:  $ 3.09
-#32: `Crawlies`               :  $ 3.03
-#33: `Prismari`               :  $ 3.00
-#34: `Quandrix`               :  $ 2.99
-#35: `Lost Mine of Phandelver`:  $ 2.95
-#36: `Lorehold`               :  $ 2.83
-#37: `Powered Up`             :  $ 2.83
-#38: `Bloodthirsty`           :  $ 2.82
-#39: `Humans`                 :  $ 2.77
-#40: `Party`                  :  $ 2.75
-#41: `Kicker`                 :  $ 2.74
-#42: `Flashback`              :  $ 2.70
-#43: `High Rolling`           :  $ 2.64
-#44: `Bewitching`             :  $ 2.60
-#45: `Sorcerous`              :  $ 2.59
-#46: `Spirits`                :  $ 2.58
-#47: `Multitalented`          :  $ 2.58
-#48: `Wizards`                :  $ 2.47
-#49: `Double Trouble`         :  $ 2.35
-#50: `Warriors`               :  $ 2.31
+#01: `Samauri`                : $ 16.61
+#02: `Tomb of Annihilation`   : $ 11.46
+#03: `Legion`                 :  $ 6.91
+#04: `Dead and Buried`        :  $ 6.37
+#05: `Elves`                  :  $ 6.13
+#06: `Roiling`                :  $ 5.95
+#07: `Celestial`              :  $ 5.75
+#08: `Werewolves`             :  $ 5.73
+#09: `Vampires`               :  $ 5.42
+#10: `Sagas`                  :  $ 5.37
+#11: `Morbid`                 :  $ 5.30
+#12: `Sacrificial`            :  $ 5.15
+#13: `Fangs`                  :  $ 4.99
+#14: `Spellcraft`             :  $ 4.93
+#15: `Sneaky`                 :  $ 4.88
+#16: `Clerics`                :  $ 4.86
+#17: `Shambling`              :  $ 4.75
+#18: `Landfall`               :  $ 4.72
+#19: `Zombies`                :  $ 4.61
+#20: `High-Tech`              :  $ 4.51
+#21: `Ordained`               :  $ 4.51
+#22: `Silverquill`            :  $ 4.43
+#23: `Balanced`               :  $ 4.37
+#24: `Witherbloom`            :  $ 4.30
+#25: `Rock and Roll`          :  $ 4.16
+#26: `Training`               :  $ 3.91
+#27: `Tough`                  :  $ 3.75
+#28: `Educated`               :  $ 3.70
+#29: `Wolf Pack`              :  $ 3.53
+#30: `Goblins`                :  $ 3.51
+#31: `Ninjas`                 :  $ 3.44
+#32: `Equipped`               :  $ 3.36
+#33: `Disturbed`              :  $ 3.33
+#34: `Spooky`                 :  $ 3.30
+#35: `Doctor`                 :  $ 3.28
+#36: `Armory`                 :  $ 3.12
+#37: `Roguish`                :  $ 3.11
+#38: `Dungeon of the Mad Mage`:  $ 3.09
+#39: `Crawlies`               :  $ 3.03
+#40: `Mechs`                  :  $ 3.02
+#41: `Prismari`               :  $ 3.00
+#42: `Quandrix`               :  $ 2.99
+#43: `Lost Mine of Phandelver`:  $ 2.95
+#44: `Lorehold`               :  $ 2.83
+#45: `Powered Up`             :  $ 2.83
+#46: `Bloodthirsty`           :  $ 2.82
+#47: `Humans`                 :  $ 2.77
+#48: `Party`                  :  $ 2.75
+#49: `Enchanting`             :  $ 2.74
+#50: `Kicker`                 :  $ 2.74
+#51: `Flashback`              :  $ 2.70
+#52: `High Rolling`           :  $ 2.64
+#53: `Bewitching`             :  $ 2.60
+#54: `Sorcerous`              :  $ 2.59
+#55: `Spirits`                :  $ 2.58
+#56: `Multitalented`          :  $ 2.58
+#57: `Wizards`                :  $ 2.47
+#58: `Modified`               :  $ 2.45
+#59: `Double Trouble`         :  $ 2.35
+#60: `Warriors`               :  $ 2.31
