@@ -1,16 +1,16 @@
 {
   "Standard": [
     {
+      "name": "Streets of New Capenna",
+      "code": "SNC",
+      "release": "May 6, 2022",
+      "link": "/sets/Streets+of+New+Capenna#online"
+    },
+    {
       "name": "Kamigawa: Neon Dynasty",
       "code": "NEO",
       "release": "Feb 18, 2022",
       "link": "/sets/Kamigawa+Neon+Dynasty"
-    },
-    {
-      "name": "Alchemy",
-      "code": "Y22",
-      "release": "Dec 09, 2021",
-      "link": "/sets/Alchemy"
     },
     {
       "name": "Innistrad: Crimson Vow",
