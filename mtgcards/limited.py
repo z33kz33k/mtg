@@ -8,9 +8,11 @@
 
 """
 import csv
+from collections import defaultdict
+from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import Dict, Iterable, List, Optional, Tuple, Union
 
 from mtgcards.goldfish.cards import Mana
 from mtgcards.goldfish.sets import MtgSet
@@ -30,7 +32,7 @@ CSV_MAP = {
 
 
 class Color(Enum):
-    """Enumeration of MtG colors played in Limited as classified in 17lands.com data.
+    """Enumeration of MtG deck colors played in Limited as classified in 17lands.com data.
     """
     MONO_WHITE = "Mono-White"
     MONO_BLUE = "Mono-Blue"
@@ -72,6 +74,16 @@ class Color(Enum):
     JUND = "Jund (BRG)"
     NAYA = "Naya (RGW)"
     BANT = "Bant (GWU)"
+    JESKAI_WITH_SPLASH = "Jeskai (WUR) + Splash"
+    SULTAI_WITH_SPLASH = "Sultai (UBG) + Splash"
+    MARDU_WITH_SPLASH = "Mardu (BRW) + Splash"
+    TEMUR_WITH_SPLASH = "Temur (RGU) + Splash"
+    ABZAN_WITH_SPLASH = "Abzan (GWB) + Splash"
+    ESPER_WITH_SPLASH = "Esper (WUB) + Splash"
+    GRIXIS_WITH_SPLASH = "Grixis (UBR) + Splash"
+    JUND_WITH_SPLASH = "Jund (BRG) + Splash"
+    NAYA_WITH_SPLASH = "Naya (RGW) + Splash"
+    BANT_WITH_SPLASH = "Bant (GWU) + Splash"
 
     @classmethod
     def to_mana(cls, color: "Color") -> Tuple[Mana, ...]:
@@ -155,30 +167,62 @@ class Color(Enum):
             return Mana.RED, Mana.GREEN, Mana.WHITE
         elif color is cls.BANT:
             return Mana.GREEN, Mana.WHITE, Mana.BLUE
+        elif color is cls.JESKAI_WITH_SPLASH:
+            return Mana.BLUE, Mana.RED, Mana.WHITE, Mana.COLORLESS
+        elif color is cls.SULTAI_WITH_SPLASH:
+            return Mana.BLACK, Mana.GREEN, Mana.BLUE, Mana.COLORLESS
+        elif color is cls.MARDU_WITH_SPLASH:
+            return Mana.RED, Mana.WHITE, Mana.BLACK, Mana.COLORLESS
+        elif color is cls.TEMUR_WITH_SPLASH:
+            return Mana.GREEN, Mana.BLUE, Mana.RED, Mana.COLORLESS
+        elif color is cls.ABZAN_WITH_SPLASH:
+            return Mana.WHITE, Mana.BLACK, Mana.GREEN, Mana.COLORLESS
+        elif color is cls.ESPER_WITH_SPLASH:
+            return Mana.WHITE, Mana.BLUE, Mana.BLACK, Mana.COLORLESS
+        elif color is cls.GRIXIS_WITH_SPLASH:
+            return Mana.BLUE, Mana.BLACK, Mana.RED, Mana.COLORLESS
+        elif color is cls.JUND_WITH_SPLASH:
+            return Mana.BLACK, Mana.RED, Mana.GREEN, Mana.COLORLESS
+        elif color is cls.NAYA_WITH_SPLASH:
+            return Mana.RED, Mana.GREEN, Mana.WHITE, Mana.COLORLESS
+        elif color is cls.BANT_WITH_SPLASH:
+            return Mana.GREEN, Mana.WHITE, Mana.BLUE, Mana.COLORLESS
         else:
             raise ValueError(f"Invalid color: {color}.")
 
 
-class Performance:
-    """Draft color performance according to 17lands.com data.
+MONO_COLORS = [color for color in Color if len(Color.to_mana(color)) == 1]
+MONO_COLORS_WITH_SPLASH = [color for color in Color if len(Color.to_mana(color)) == 2
+                           and Mana.COLORLESS in Color.to_mana(color)]
+TWO_COLORS = [color for color in Color if len(Color.to_mana(color)) == 2
+              and Mana.COLORLESS not in Color.to_mana(color)]
+TWO_COLORS_WITH_SPLASH = [color for color in Color if len(Color.to_mana(color)) == 3
+                          and Mana.COLORLESS in Color.to_mana(color)]
+THREE_COLORS = [color for color in Color if len(Color.to_mana(color)) == 3
+                and Mana.COLORLESS not in Color.to_mana(color)]
+THREE_COLORS_WITH_SPLASH = [color for color in Color if len(Color.to_mana(color)) == 4
+                            and Mana.COLORLESS in Color.to_mana(color)]
+
+
+class Rating(Enum):
+    """Enumeration of color ratings based on a deck's win rate.
     """
-    def __init__(self, color: Color, wins: int, games: int,
-                 mtgset: Optional[MtgSet] = None) -> None:
-        self._color = color
-        self._wins, self._games = wins, games
-        self.__mtgset = mtgset
+    S = (60.0, ...)
+    A = (57.5, 60)
+    B = (55.0, 57.5)
+    C = (52.5, 55.0)
+    D = (50.0, 52.5)
+    F = (0.0, 50.0)
 
-    @property
-    def color(self) -> Color:
-        return self._color
 
-    @property
-    def wins(self) -> int:
-        return self._wins
-
-    @property
-    def games(self) -> int:
-        return self._games
+@dataclass(frozen=True)
+class Performance:
+    """Draft deck color performance according to 17lands.com data.
+    """
+    wins: int
+    games: int
+    color: Union[Color, Mana, None] = None
+    mtgset: Optional[MtgSet] = None
 
     @property
     def winrate(self) -> float:
@@ -188,16 +232,45 @@ class Performance:
     def winrate_str(self) -> str:
         return f"{self.winrate:.2f}%"
 
+    def __repr__(self) -> str:  # override
+        if self.color:
+            return f"{self.__class__.__name__}({self.color}, winrate={self.winrate_str}, " \
+                   f"{self.rating})"
+        return f"{self.__class__.__name__}(winrate={self.winrate_str}, {self.rating})"
+
     @property
-    def mtgset(self) -> MtgSet:
-        return self.__mtgset
+    def rating(self) -> Rating:
+        if self.winrate >= Rating.S.value[0]:
+            return Rating.S
+        elif Rating.A.value[0] <= self.winrate < Rating.A.value[1]:
+            return Rating.A
+        elif Rating.B.value[0] <= self.winrate < Rating.B.value[1]:
+            return Rating.B
+        elif Rating.C.value[0] <= self.winrate < Rating.C.value[1]:
+            return Rating.C
+        elif Rating.D.value[0] <= self.winrate < Rating.D.value[1]:
+            return Rating.D
+        elif Rating.F.value[0] <= self.winrate < Rating.F.value[1]:
+            return Rating.F
+        else:
+            raise ValueError(f"Winrate out of valid scope for ratings: {self.winrate}.")
 
-    @mtgset.setter
-    def mtgset(self, value: Optional[MtgSet]) -> None:
-        self.__mtgset = value
+    @staticmethod
+    def aggregate_performance(*performances: "Performance") -> "Performance":
+        wins = sum(perf.wins for perf in performances)
+        games = sum(perf.games for perf in performances)
+        colors = {perf.color for perf in performances}
+        color = [c for c in colors][0] if len(colors) == 1 else None
+        mtgsets = {perf.mtgset for perf in performances}
+        mgtset = [s for s in mtgsets][0] if len(colors) == 1 else None
+        return Performance(wins, games, color, mgtset)
 
-    def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({self.color}, winrate={self.winrate_str})"
+
+DECK_SIZE = 40
+LAND_COUNT = 17
+SPLASH_PERCENT = 3 * 100 / (DECK_SIZE - LAND_COUNT)  # splash is considered to be 3 cards
+TWO_COLOR_WITH_SPLASH_PERCENT = (100 - SPLASH_PERCENT) / 2
+THREE_COLOR_WITH_SPLASH_PERCENT = (100 - SPLASH_PERCENT) / 3
 
 
 class SetParser:
@@ -206,6 +279,7 @@ class SetParser:
     def __init__(self, mtgset: MtgSet, csv_path: Path) -> None:
         self._mtgset, self._csv_path = mtgset, csv_path
         self._performances = self._parse()
+        self._aggregate_performances = self._get_aggreagate_performances()
 
     @property
     def mtgset(self) -> MtgSet:
@@ -218,8 +292,9 @@ class SetParser:
     def _parse(self) -> List[Performance]:
         perfs = []
         with self.csv_path.open(newline="") as f:
-            for row in csv.reader(f):
-                perfs.append(Performance(Color(row[0]), int(row[1]), int(row[2])))
+            for row in [r for r in csv.reader(f)][1:]:
+                # parse only PremierDraft data
+                perfs.append(Performance(int(row[3]), int(row[4]), Color(row[0])))
         return perfs
 
     @property
@@ -229,4 +304,43 @@ class SetParser:
     @property
     def sorted_performances(self) -> List[Performance]:
         return sorted(self.performances, key=lambda p: p.winrate, reverse=True)
+
+    @staticmethod
+    def mana_weight(perf: Performance) -> float:
+        if perf.color in MONO_COLORS:
+            return 1.0
+        elif perf.color in MONO_COLORS_WITH_SPLASH:
+            return (100 - SPLASH_PERCENT) / 100
+        elif perf.color in TWO_COLORS:
+            return 0.5
+        elif perf.color in TWO_COLORS_WITH_SPLASH:
+            return TWO_COLOR_WITH_SPLASH_PERCENT / 100
+        elif perf.color in THREE_COLORS:
+            return 1 / 3
+        elif perf.color in THREE_COLORS_WITH_SPLASH:
+            return THREE_COLOR_WITH_SPLASH_PERCENT / 100
+        else:
+            raise ValueError(f"Invalid performance: {perf}.")
+
+    def _get_aggreagate_performances(self) -> Dict[Mana, Performance]:
+        aggregator = defaultdict(list)
+        for perf in self.performances:
+            manas = [mana for mana in Color.to_mana(perf.color) if mana is not Mana.COLORLESS]
+            for mana in manas:
+                ratio = self.mana_weight(perf)
+                subperf = Performance(int(ratio * perf.wins), int(ratio * perf.games), mana)
+                aggregator[mana].append(subperf)
+
+        aggregate_perfs = {}
+        for mana, subperfs in aggregator.items():
+            aggregate_perfs.update({mana: Performance.aggregate_performance(*subperfs)})
+
+        return aggregate_perfs
+
+    @property
+    def aggregate_performances(self) -> Dict[Mana, Performance]:
+        return self._aggregate_performances
+
+
+
 

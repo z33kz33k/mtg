@@ -1,40 +1,51 @@
-Mono-White,139,234,59.4%
-Mono-Blue,2,8,25.0%
-Mono-Black,33,64,51.6%
-Mono-Red,146,245,59.6%
-Mono-Green,65,107,60.7%
-Mono-White + Splash,386,649,59.5%
-Mono-Blue + Splash,63,141,44.7%
-Mono-Black + Splash,78,168,46.4%
-Mono-Red + Splash,221,404,54.7%
-Mono-Green + Splash,613,984,62.3%
-Azorius (WU),2009,3809,52.7%
-Dimir (UB),950,2121,44.8%
-Rakdos (BR),5309,9674,54.9%
-Gruul (RG),5893,10426,56.5%
-Selesnya (GW),9438,15281,61.8%
-Orzhov (WB),4172,7565,55.1%
-Golgari (BG),5321,9663,55.1%
-Simic (GU),2678,4835,55.4%
-Izzet (UR),6543,11686,56.0%
-Boros (RW),14728,24944,59.0%
-Azorius (WU) + Splash,871,1766,49.3%
-Dimir (UB) + Splash,989,2192,45.1%
-Rakdos (BR) + Splash,1114,2147,51.9%
-Gruul (RG) + Splash,5793,10189,56.9%
-Selesnya (GW) + Splash,4089,7173,57.0%
-Orzhov (WB) + Splash,1086,2125,51.1%
-Golgari (BG) + Splash,4424,8167,54.2%
-Simic (GU) + Splash,7532,13484,55.9%
-Izzet (UR) + Splash,3115,5715,54.5%
-Boros (RW) + Splash,2074,3773,55.0%
-Jeskai (WUR),601,1241,48.4%
-Sultai (UBG),5438,11005,49.4%
-Mardu (BRW),726,1508,48.1%
-Temur (RGU),6379,11693,54.6%
-Abzan (GWB),1385,2750,50.4%
-Esper (WUB),930,2034,45.7%
-Grixis (UBR),1220,2509,48.6%
-Jund (BRG),2519,4711,53.5%
-Naya (RGW),1370,2619,52.3%
-Bant (GWU),1403,2796,50.2%
+Color,QD Wins,QD Games,PD Wins,PD Games
+Mono-White,139,234,455,769
+Mono-Blue,2,8,10,25
+Mono-Black,33,64,31,62
+Mono-Red,146,245,364,635
+Mono-Green,65,107,59,96
+Mono-White + Splash,386,649,1158,1991
+Mono-Blue + Splash,63,141,230,452
+Mono-Black + Splash,78,168,115,269
+Mono-Red + Splash,221,404,821,1420
+Mono-Green + Splash,613,984,790,1367
+Azorius (WU),2009,3809,6416,12405
+Dimir (UB),950,2121,2944,6282
+Rakdos (BR),5309,9674,13951,25628
+Gruul (RG),5893,10426,11183,19810
+Selesnya (GW),9438,15281,14200,24205
+Orzhov (WB),4172,7565,11260,20822
+Golgari (BG),5321,9663,11610,20618
+Simic (GU),2678,4835,5342,9916
+Izzet (UR),6543,11686,18246,32457
+Boros (RW),14728,24944,34600,59644
+Azorius (WU) + Splash,871,1766,3309,6439
+Dimir (UB) + Splash,989,2192,3662,7738
+Rakdos (BR) + Splash,1114,2147,2726,5320
+Gruul (RG) + Splash,5793,10189,11671,20933
+Selesnya (GW) + Splash,4089,7173,8122,14674
+Orzhov (WB) + Splash,1086,2125,2984,6027
+Golgari (BG) + Splash,4424,8167,11809,21614
+Simic (GU) + Splash,7532,13484,19551,35740
+Izzet (UR) + Splash,3115,5715,9027,16560
+Boros (RW) + Splash,2074,3773,5336,9859
+Jeskai (WUR),601,1241,601,1241
+Sultai (UBG),5438,11005,5438,11005
+Mardu (BRW),726,1508,726,1508
+Temur (RGU),6379,11693,6379,11693
+Abzan (GWB),1385,2750,1385,2750
+Esper (WUB),930,2034,930,2034
+Grixis (UBR),1220,2509,1220,2509
+Jund (BRG),2519,4711,2519,4711
+Naya (RGW),1370,2619,1370,2619
+Bant (GWU),1403,2796,1403,2796
+Jeskai (WUR) + Splash,103,211,136,274
+Sultai (UBG) + Splash,3335,6335,9801,18287
+Mardu (BRW) + Splash,22,57,76,152
+Temur (RGU) + Splash,5083,8901,8751,15567
+Abzan (GWB) + Splash,399,787,976,1797
+Esper (WUB) + Splash,53,126,200,471
+Grixis (UBR) + Splash,128,270,381,843
+Jund (BRG) + Splash,1182,2192,2180,4031
+Naya (RGW) + Splash,686,1231,970,1809
+Bant (GWU) + Splash,861,1615,1900,3678
