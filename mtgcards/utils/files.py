@@ -15,7 +15,7 @@ from typing import List, Optional
 
 from logdecorator import log_on_error
 
-from mtgcards.utils.validate import validate_func_input_types
+from mtgcards.utils.validate import type_checker
 
 
 log = getLogger(__name__)
@@ -23,7 +23,7 @@ log = getLogger(__name__)
 
 @log_on_error(ERROR, "Error on getting {file_location}: {e!r}.",
               on_exceptions=(OSError, ValueError), reraise=True, logger=log)
-@validate_func_input_types(str)
+@type_checker(str)
 def getfile(file_location: str, absolute=False, sanity_check=True) -> Path:
     """Return a Path object pointing at a file according to string `file_location` provided.
 
@@ -53,7 +53,7 @@ def getfile(file_location: str, absolute=False, sanity_check=True) -> Path:
 
 @log_on_error(ERROR, "Error on getting {dir_location}: {e!r}.",
               on_exceptions=(OSError, ValueError), reraise=True, logger=log)
-@validate_func_input_types(str)
+@type_checker(str)
 def getdir(dir_location: str, absolute=False, create_missing=True) -> Optional[Path]:
     """Return a Path object pointing at a directory according to string `dir_location` provided.
 
@@ -78,7 +78,7 @@ def getdir(dir_location: str, absolute=False, create_missing=True) -> Optional[P
     return dir_ if not absolute else dir_.absolute()
 
 
-@validate_func_input_types(str)
+@type_checker(str)
 def recursive_removedir(dirpath: str, check_delay: int = 500) -> None:
     """Remove directory at ``dirpath`` and it contents recursively. Check after delay (default is
     500ms), if something still exists, list it.
@@ -96,7 +96,7 @@ def recursive_removedir(dirpath: str, check_delay: int = 500) -> None:
         log.info(f"Nothing to remove at {dirpath}.")
 
 
-@validate_func_input_types(str, str)
+@type_checker(str, str)
 def remove_by_ext(ext: str, destdir: str, recursive=False, opposite=False) -> int:
     """Remove from ``destdir`` files by provided extension. Optionally, remove all files of
     different extension.

@@ -14,7 +14,7 @@ import requests
 from contexttimer import Timer
 
 from mtgcards.const import T, TIMESTAMP_FORMAT, Json
-from mtgcards.utils.validate import validate_func_input_types, validate_func_uniform_input_type
+from mtgcards.utils.validate import uniform_type_checker, type_checker
 
 
 def timed_request(url: str, postdata: Optional[Json] = None,
@@ -41,7 +41,7 @@ def getrepr(classname: str, *reprs: str) -> str:
     return f"{classname}({', '.join(reprs)})"
 
 
-@validate_func_input_types(str)
+@type_checker(str)
 def parse_bool_from_str(string: str) -> Optional[bool]:
     """Parse a boolean value or ``None`` from ``string``.
     """
@@ -54,7 +54,7 @@ def parse_bool_from_str(string: str) -> Optional[bool]:
     return None
 
 
-@validate_func_input_types(str)
+@type_checker(str)
 def parse_float_from_str(string: str) -> Optional[float]:
     """Parse a floating point number or ``None`` from ``string``.
     """
@@ -68,7 +68,7 @@ def parse_float_from_str(string: str) -> Optional[float]:
     return result
 
 
-@validate_func_input_types(str)
+@type_checker(str)
 def parse_int_from_str(string: str) -> Optional[int]:
     """Parse an integer or ``None`` from ``string``.
     """
@@ -81,7 +81,7 @@ def parse_int_from_str(string: str) -> Optional[int]:
     return result
 
 
-@validate_func_input_types(str)
+@type_checker(str)
 def camel_case_split(text: str) -> List[str]:
     """Do camel-case split on ``text``.
 
@@ -134,7 +134,7 @@ def from_iterable(iterable: Iterable[T], predicate: Callable[[T], bool]) -> Opti
     return next((item for item in iterable if predicate(item)), None)
 
 
-@validate_func_uniform_input_type(str)
+@uniform_type_checker(str)
 def breadcrumbs(*crumbs: str) -> str:
     """Return a breadcrumb string based on ``crumbs`` supplied.
 

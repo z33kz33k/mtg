@@ -13,7 +13,7 @@ from types import TracebackType
 from typing import Any, Optional, Type
 
 from mtgcards.utils import timestamp
-from mtgcards.utils.validate import validate_func_input_types, validate_method_input_types_or_none
+from mtgcards.utils.validate import type_checker
 
 
 LOGDIR_NAME = "logs"
@@ -21,7 +21,7 @@ STDOUT_FORMAT = "%(message)s"
 
 
 # more or less copy of mtgcards.utils.files.getdir() too avoid circular imports
-@validate_func_input_types(str)
+@type_checker(str)
 def _getdir(dir_location: str) -> Path:
     """Return a Path object pointing at a directory according to string `dir_location` provided.
 
@@ -45,7 +45,7 @@ def _getdir(dir_location: str) -> Path:
     return dir_
 
 
-@validate_func_input_types(str, str)
+@type_checker(str, str)
 def _filepath(suffix: str, logdir: str) -> str:
     """Return logfile's string filepath.
     """
@@ -53,7 +53,7 @@ def _filepath(suffix: str, logdir: str) -> str:
     return str(_getdir(logdir) / filename)
 
 
-@validate_func_input_types(int, int)
+@type_checker(int, int)
 def fileformat(module_name_length: int, lvl_name_length: int) -> str:
     """Return a logging format for logfile records based on supplied arguments.
 
@@ -64,7 +64,7 @@ def fileformat(module_name_length: int, lvl_name_length: int) -> str:
            f"{lvl_name_length}s: %(message)s"
 
 
-@validate_func_input_types(str, int, str)
+@type_checker(str, int, str)
 def _filehandler(filepath: str, filelvl: int, file_format: str) -> logging.FileHandler:
     """Return a :class:`logging.FileHandler` object for the logfile.
     """
@@ -75,6 +75,7 @@ def _filehandler(filepath: str, filelvl: int, file_format: str) -> logging.FileH
     return filehandler
 
 
+@type_checker(int, stdoutformat=str)
 def _streamhandler(stdoutlvl: int, stdoutformat=STDOUT_FORMAT) -> logging.StreamHandler:
     """Return a :class: `logging.StreamHandler` object for log records displayed in stdout.
     """
@@ -131,7 +132,7 @@ class LoggingContext:
         return self.__enter_msg
 
     @enter_msg.setter
-    @validate_method_input_types_or_none(str)
+    @type_checker(str, is_method=True, none_allowed=True)
     def enter_msg(self, value: Optional[str]) -> None:
         self.__enter_msg = value
 
@@ -140,7 +141,7 @@ class LoggingContext:
         return self.__exit_msg
 
     @exit_msg.setter
-    @validate_method_input_types_or_none(str)
+    @type_checker(str, is_method=True, none_allowed=True)
     def exit_msg(self, value: Optional[str]) -> None:
         self.__exit_msg = value
 

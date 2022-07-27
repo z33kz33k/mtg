@@ -1,22 +1,19 @@
 """
 
-    mtgcards.utils.validate.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtgcards.utils.validate
+    ~~~~~~~~~~~~~~~~~~~~~~~
 
     Type validating decorators.
 
-    Validate input positional arguments' type of function and methods.
+    Validate types of input arguments of decorated functions (or methods).
 
     This module provides only basic type validation based on `isintance()` check.
 
-    TODO: improve this (e.g. handle passing kwargs to decorators - that would also probably cut
-        down the number of needed functions drastically)
-
 """
 from functools import wraps
-from typing import Any, Dict, Iterable, Type
+from typing import Any, Iterable, Type
 
-from mtgcards.const import Method, Function, T, MethodGeneric, FunctionGeneric
+from mtgcards.const import Method, Function
 
 
 def fullqualname(class_: Type) -> str:
@@ -41,7 +38,7 @@ def _validate_type(value: Any, type_: Type) -> None:
     :raises TypeError: on value not being of type_
     """
     if not isinstance(value, type_):
-        raise TypeError(f"Input value can only be of a '{fullqualname(type_)}' type, "
+        raise TypeError(f"Input value ({value}) can only be of a '{fullqualname(type_)}' type, "
                         f"got: '{type(value)}'.")
 
 
@@ -51,8 +48,8 @@ def _validate_type_or_none(value: Any, type_: Type) -> None:
     :raises TypeError: on value not being of type_ or None
     """
     if not (isinstance(value, type_) or value is None):
-        raise TypeError(f"Input value can only be of a '{fullqualname(type_)}' type or None, "
-                        f"got: '{type(value)}'.")
+        raise TypeError(f"Input value ({value}) can only be of a '{fullqualname(type_)}' type or "
+                        f"None, got: '{type(value)}'.")
 
 
 def _validate_types(value: Any, *types: Type) -> None:
@@ -62,7 +59,7 @@ def _validate_types(value: Any, *types: Type) -> None:
     """
     if not isinstance(value, types):
         namestr = types_to_namestr(types)
-        raise TypeError(f"Input value can only be of either of a [{namestr}] types, "
+        raise TypeError(f"Input value ({value}) can only be of either of a [{namestr}] types, "
                         f"got: '{type(value)}'.")
 
 
@@ -73,337 +70,167 @@ def _validate_types_or_none(value: Any, *types: Type) -> None:
     """
     if not (isinstance(value, types) or value is None):
         namestr = types_to_namestr(types)
-        raise TypeError(f"Input value can only be of either of [{namestr}] types or None, "
-                        f"got: '{type(value)}'.")
+        raise TypeError(f"Input value ({value}) can only be of either of [{namestr}] types or "
+                        f"None, got: '{type(value)}'.")
 
 
-def validate_method_input_types(*expected_types: Type) -> Method:
-    """Validate decorated method's positional arguments to be of ``expected_types`` (respectively).
-
-    .. note:: Any keyword arguments are ignored.
-
-    If length of `expected_types` doesn't match the length of the arguments,
-    the shorter range is validated.
-
-    :param expected_types: variable number of expected types of method's arguments
-    :return: validated method
-    """
-    def decorate(method: Method) -> Method:
-        @wraps(method)
-        def wrap(self: Any, *args: Any, **kwargs) -> Any:
-            for arg, et in zip(args, expected_types):
-                _validate_type(arg, et)
-            return method(self, *args, **kwargs)
-        return wrap
-    return decorate
-
-
-def validate_method_input_types_or_none(*expected_types: Type) -> Method:
-    """Validate decorated method's positional arguments to be of ``expected_types``
-    (respectively) or None.
-
-    .. note:: Any keyword arguments are ignored.
-
-    If length of `expected_types` doesn't match the length of the arguments,
-    the shorter range is validated.
-
-    :param expected_types: variable number of expected types of method's arguments
-    :return: validated method
-    """
-    def decorate(method: Method) -> Method:
-        @wraps(method)
-        def wrap(self: Any, *args: Any, **kwargs) -> Any:
-            for arg, et in zip(args, expected_types):
-                _validate_type_or_none(arg, et)
-            return method(self, *args, **kwargs)
-        return wrap
-    return decorate
-
-
-def validate_method_uniform_input_type(expected_type: Type) -> Method:
-    """Validate all of decorated method's positional arguments to be of ``expected_type``.
-
-    .. note:: Any keyword arguments are ignored.
-
-    :param expected_type: expected type of method's arguments
-    :return: validated method
-    """
-    def decorate(method: Method) -> Method:
-        @wraps(method)
-        def wrap(self: Any, *args: Any, **kwargs) -> Any:
-            for arg in args:
-                _validate_type(arg, expected_type)
-            return method(self, *args, **kwargs)
-        return wrap
-    return decorate
-
-
-def validate_method_uniform_input_types(*expected_types: Type) -> Method:
-    """Validates all of decorated method's positional arguments to be of either of
-    ``expected_types``.
-
-    .. note:: Any keyword arguments are ignored.
-
-    :param expected_types: variable number of expected types of method's arguments
-    :return: validated method
-    """
-    def decorate(method: Method) -> Method:
-        @wraps(method)
-        def wrap(self: Any, *args: Any, **kwargs) -> Any:
-            for arg in args:
-                _validate_types(arg, *expected_types)
-            return method(self, *args, **kwargs)
-        return wrap
-    return decorate
-
-
-def validate_method_uniform_input_types_or_none(*expected_types: Type) -> Method:
-    """Validate all of decorated method's positional arguments to be either of ``expected_types``
-    or ``None``.
-
-    .. note:: Any keyword arguments are ignored.
-
-    :param expected_types: variable number of expected types of method's arguments
-    :return: validated method
-    """
-    def decorate(method: Method) -> Method:
-        @wraps(method)
-        def wrap(self: Any, *args: Any, **kwargs) -> Any:
-            for arg in args:
-                _validate_types_or_none(arg, *expected_types)
-            return method(self, *args, **kwargs)
-        return wrap
-    return decorate
-
-
-def validate_method_input_iterable_generic_types(*expected_types: Type) -> Method:
-    """Validate all of decorated method's input iterable's items to be of one of ``expected_types``.
-
-    .. note:: The first argument has to be an iterable or `TypeError` is raised. Any other
-    arguments are ignored.
-
-    :param expected_types: variable number of expected types of input iterable's items
-    :return: validated method
-    """
-    def decorate(method: Method) -> Method:
-        @wraps(method)
-        def wrap(self: Any, input_iterable: Iterable[Any], *args, **kwargs) -> Any:
-            for item in input_iterable:
-                _validate_types(item, *expected_types)
-            return method(self, input_iterable, *args, **kwargs)
-        return wrap
-    return decorate
-
-
-def validate_method_input_iterable_generic_types_or_none(*expected_types: Type) -> Method:
-    """Validate all of decorated method's input iterable's items to be of one of
-    ``expected_types`` or None.
-
-    .. note:: The first argument has to be an iterable or `TypeError` is raised. Any other
-    arguments are ignored.
-
-    :param expected_types: variable number of expected types of input iterable's items
-    :return: validated method
-    """
-    def decorate(method: Method) -> Method:
-        @wraps(method)
-        def wrap(self: Any, input_iterable: Iterable[Any], *args, **kwargs) -> Any:
-            for item in input_iterable:
-                _validate_types_or_none(item, *expected_types)
-            return method(self, input_iterable, *args, **kwargs)
-        return wrap
-    return decorate
-
-
-def validate_method_input_dict_generic_type(keytype: Type, valuetype: Type) -> Method:
-    """Validate all of decorated method's input dict's keys to be of ``keytype`` and values to be
-    of ``valuetype`.
-
-    .. note:: The first argument has to be a dictionary or `TypeError` is raised. Any other
-    arguments are ignored.
-
-    :param keytype: expected type of input dict's keys
-    :param valuetype: expected type of input dict's values
-    :return: validated method
-    """
-    def decorate(method: Method) -> Method:
-        @wraps(method)
-        def wrap(self: Any, input_dict: Dict[keytype, valuetype], *args, **kwargs) -> Any:
-            _validate_type(input_dict, dict)
-            for k, v in input_dict.items():
-                _validate_type(k, keytype)
-                _validate_type(v, valuetype)
-            return method(self, input_dict, *args, **kwargs)
-        return wrap
-    return decorate
-
-
-def validate_func_input_types(*expected_types: Type) -> Function:
-    """Validate decorated function's positional arguments to be of ``expected_types``
-    (respectively).
-
-    .. note:: Any keyword arguments are ignored.
-
-    If length of `expected_types` doesn't match the length of the arguments,
-    the shorter range is validated.
-
-    :param expected_types: variable number of expected types of function's arguments
-    :return: validated function
-    """
-    def decorate(func: Function) -> Function:
-        @wraps(func)
-        def wrap(*args: Any, **kwargs) -> Any:
-            for arg, et in zip(args, expected_types):
-                _validate_type(arg, et)
-            return func(*args, **kwargs)
-        return wrap
-    return decorate
-
-
-def validate_func_input_types_or_none(*expected_types: Type) -> Function:
-    """Validate decorated function's positional arguments to be of ``expected_types``
-    (respectively) or None.
-
-    .. note:: Any keyword arguments are ignored.
-
-    If length of `expected_types` doesn't match the length of the arguments,
-    the shorter range is validated.
-
-    :param expected_types: variable number of expected types of function's arguments
-    :return: validated function
-    """
-    def decorate(func: Function) -> Function:
-        @wraps(func)
-        def wrap(*args: Any, **kwargs) -> Any:
-            for arg, et in zip(args, expected_types):
-                _validate_type_or_none(arg, et)
-            return func(*args, **kwargs)
-        return wrap
-    return decorate
-
-
-def validate_func_uniform_input_type(expected_type: Type) -> Function:
-    """Validate all of decorated function's positional arguments to be of ``expected_type``.
-
-    .. note:: Any keyword arguments are ignored.
-
-    :param expected_type: expected type of other function's arguments
-    :return: validated function
-    """
-    def decorate(func: Function) -> Function:
-        @wraps(func)
-        def wrap(*args: Any, **kwargs) -> Any:
-            for arg in args:
-                _validate_type(arg, expected_type)
-            return func(*args, **kwargs)
-        return wrap
-    return decorate
-
-
-def validate_func_uniform_input_types(*expected_types: Type) -> Function:
-    """Validates all of decorated function's positional arguments to be either of
-    ``expected_types``.
-
-    .. note:: Any keyword arguments are ignored.
-
-    :param expected_types: variable number of expected types of other function's arguments
-    :return: validated function
-    """
-    def decorate(func: Function) -> Function:
-        @wraps(func)
-        def wrap(*args: Any, **kwargs) -> Any:
-            for arg in args:
-                _validate_types(arg, *expected_types)
-            return func(*args, **kwargs)
-        return wrap
-    return decorate
-
-
-def validate_func_input_iterable_generic_types(*expected_types: Type) -> Function:
-    """Validate all of decorated function's input iterable's items to be one of ``expected_types``.
-
-    .. note:: The first argument has to be an iterable or `TypeError` is raised. Any other
-    arguments are ignored.
-
-    :param expected_types: variable number of expected types of input iterable's items
-    :return: validated function
-    """
-    def decorate(func: Function) -> Function:
-        @wraps(func)
-        def wrap(input_iterable: Iterable[Any], *args, **kwargs) -> Any:
-            for item in input_iterable:
-                _validate_types(item, *expected_types)
-            return func(input_iterable, *args, **kwargs)
-        return wrap
-    return decorate
-
-
-def validate_func_input_iterable_generic_types_or_none(*expected_types: Type) -> Function:
-    """Validate all of decorated function's input iterable's items to be of one of``expected_types``
-    or None.
-
-    .. note:: The first argument has to be an iterable or `TypeError` is raised. Any other
-    arguments are ignored.
-
-    :param expected_types: variable number of expected types of input iterable's items
-    :return: validated function
-    """
-    def decorate(func: Function) -> Function:
-        @wraps(func)
-        def wrap(input_iterable: Iterable[Type], *args, **kwargs) -> Any:
-            for item in input_iterable:
-                _validate_types_or_none(item, *expected_types)
-            return func(input_iterable, *args, **kwargs)
-        return wrap
-    return decorate
-
-
-def validate_func_input_dict_generic_type(keytype: Type, valuetype: Type) -> Function:
-    """Validate all of decorated function's input dict's keys to be of ``keytype`` and values to be
-    of ``valuetype`.
-
-    .. note:: The first argument has to be a dictionary or `TypeError` is raised. Any other
-    arguments are ignored.
-
-    :param keytype: expected type of input dict's keys
-    :param valuetype: expected type of input dict's values
-    :return: validated function
-    """
-    def decorate(func: Function) -> Function:
-        @wraps(func)
-        def wrap(input_dict: Dict[keytype, valuetype], *args, **kwargs) -> Any:
-            _validate_type(input_dict, dict)
-            for k, v in input_dict.items():
-                _validate_type(k, keytype)
-                _validate_type(v, valuetype)
-            return func(input_dict, *args, **kwargs)
-        return wrap
-    return decorate
-
-
-def assert_method_output_not_none(method: MethodGeneric) -> MethodGeneric:
-    """Assert decorated ``method``'s output is not ``None``.
-
-    :param method: method to check output of
-    :return: checked method
-    """
-    @wraps(method)
-    def wrap(self: Any, *args: T, **kwargs: T) -> T:
-        output = method(self, *args, **kwargs)
-        assert output is not None, "output mustn't be None"
-        return output
-    return wrap
-
-
-def assert_func_output_not_none(func: FunctionGeneric) -> FunctionGeneric:
+def assert_output_not_none(func: Function | Method) -> Function | Method:
     """Assert decorated ``func``'s output is not ``None``.
 
-    :param func: function to check output of
-    :return: checked function
+    :param func: function (or method) to check output of
+    :return: checked function (or method)
     """
     @wraps(func)
-    def wrap(*args: T, **kwargs: T) -> T:
+    def wrap(*args: Any, **kwargs: Any) -> Any:
         output = func(*args, **kwargs)
-        assert output is not None, "output mustn't be None"
+        assert output is not None, f"{func}'s output mustn't be None."
         return output
     return wrap
+
+
+def type_checker(*positional_types: Type, is_method=False, none_allowed=False,
+                 **keyword_types: Type) -> Function | Method:
+    """Validate decorated function's positional arguments to be of ``positional_types``
+    (respectively) and its keyword arguments to be of ``keyword_types``.
+
+    .. note:: Defaults, if specified, have to be passed as keywords arguments. Otherwise, they will be treated as types to validate.
+
+    If length of ``positional_types`` doesn't match the length of the arguments, the shorter
+    range gets validated. ``keyword_types`` that don't match anything in
+    decorated's function keyword arguments are ignored.
+
+    :param positional_types: variable number of expected types of decorated function's arguments
+    :param is_method: True, if the decorated function is a bound method (so its first argument has to be treated differently)
+    :param none_allowed: True, if ``None`` is allowed as a substitue for the given types
+    :param keyword_types: a mapping of decorated function's keyword argument names to their expected types
+    :return: validated function (or method)
+    """
+    def decorate(func: Function | Method) -> Function | Method:
+        @wraps(func)
+        def wrap(*args: Any, **kwargs: Any) -> Any:
+            self = None
+            if is_method:
+                self, *args = args
+            for arg, et in zip(args, positional_types):
+                if none_allowed:
+                    _validate_type_or_none(arg, et)
+                else:
+                    _validate_type(arg, et)
+            for k, v in kwargs.items():
+                if et := keyword_types.get(k):
+                    if none_allowed:
+                        _validate_type_or_none(v, et)
+                    else:
+                        _validate_type(v, et)
+            if self is not None:
+                args = [self, *args]
+            return func(*args, **kwargs)
+        return wrap
+    return decorate
+
+
+def uniform_type_checker(*expected_types: Type, is_method=False,
+                         none_allowed=False) -> Function | Method:
+    """Validate all of decorated function's positional and keyword arguments to be of one of
+    ``expected_types``.
+
+    .. note:: Defaults, if specified, have to be passed as keywords arguments. Otherwise, they will be treated as types to validate.
+
+    :param expected_types: variable number of expected types of decorated function's arguments
+    :param is_method: True, if the decorated function is a bound method (so its first argument has to be treated differently)
+    :param none_allowed: True, if ``None`` is allowed as a substitue for the given types
+    :return: validated function (or method)
+    """
+    def decorate(func: Function | Method) -> Function | Method:
+        @wraps(func)
+        def wrap(*args: Any, **kwargs: Any) -> Any:
+            self = None
+            if is_method:
+                self, *args = args
+            for arg in [*args, *kwargs.values()]:
+                if none_allowed:
+                    _validate_types_or_none(arg, *expected_types)
+                else:
+                    _validate_types(arg, *expected_types)
+            if self is not None:
+                args = [self, *args]
+            return func(*args, **kwargs)
+        return wrap
+    return decorate
+
+
+def generic_iterable_type_checker(*expected_types: Type, is_method=False,
+                                  none_allowed=False) -> Function | Method:
+    """Validate all of decorated function's input iterable's items to be one of ``expected_types``.
+
+    .. note:: Defaults, if specified, have to be passed as keywords arguments. Otherwise, they will be treated as types to validate.
+
+    The first argument of decorated function has to be an iterable or `TypeError` is raised. Any
+    other arguments are ignored.
+
+    :param expected_types: variable number of expected types of decorated function's input iterable's items
+    :param is_method: True, if the decorated function is a bound method (so its first argument has to be treated differently)
+    :param none_allowed: True, if ``None`` is allowed as a substitue for the given types
+    :return: validated function (or method)
+    """
+    def decorate(func: Function | Method) -> Function | Method:
+        @wraps(func)
+        def wrap(*args: Any, **kwargs: Any) -> Any:
+            self = None
+            if is_method:
+                self, *args = args
+            if args:
+                input_iterable, *args = args
+                for item in input_iterable:
+                    if none_allowed:
+                        _validate_type_or_none(item, *expected_types)
+                    else:
+                        _validate_types(item, *expected_types)
+                args = [input_iterable, *args]
+            if self is not None:
+                args = [self, *args]
+            return func(*args, **kwargs)
+        return wrap
+    return decorate
+
+
+def generic_dict_type_checker(key_expected_types: Iterable[Type],
+                              value_expected_types: Iterable[Type],
+                              is_method=False,
+                              none_allowed=False) -> Function | Method:
+    """Validate all of decorated function's input dict's keys and values to be, respectively,
+    one of ``key_expected_types`` and one of ``value_expected_types.
+
+    .. note:: Defaults, if specified, have to be passed as keywords arguments. Otherwise, they will be treated as types to validate.
+
+    The first argument of decorated function has to be a dictionary or `TypeError` is raised. Any
+    other arguments are ignored.
+
+    :param key_expected_types: iterable of expected types of decorated function's input dict's keys
+    :param value_expected_types: iterable of expected types of decorated function's input dict's values
+    :param is_method: True, if the decorated function is a bound method (so its first argument has to be treated differently)
+    :param none_allowed: True, if ``None`` is allowed as a substitue for the given types
+    :return: validated function (or method)
+    """
+    def decorate(func: Function | Method) -> Function | Method:
+        @wraps(func)
+        def wrap(*args: Any, **kwargs: Any) -> Any:
+            self = None
+            if is_method:
+                self, *args = args
+            if args:
+                input_dict, *args = args
+                _validate_type(input_dict, dict)
+                for k, v in input_dict.items():
+                    if none_allowed:
+                        _validate_type_or_none(k, *key_expected_types)
+                        _validate_type_or_none(v, *value_expected_types)
+                    else:
+                        _validate_types(k, *key_expected_types)
+                        _validate_types(v, *value_expected_types)
+                args = [input_dict, *args]
+            if self is not None:
+                args = [self, *args]
+            return func(*args, **kwargs)
+        return wrap
+    return decorate

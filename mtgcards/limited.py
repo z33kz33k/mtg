@@ -8,11 +8,14 @@
 
 """
 import csv
+from bisect import bisect
 from collections import defaultdict
 from dataclasses import dataclass
-from enum import Enum
+from enum import Enum, EnumMeta
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
+
+import numpy as np
 
 from mtgcards.goldfish.cards import Mana
 from mtgcards.goldfish.sets import MtgSet
@@ -204,18 +207,52 @@ THREE_COLORS_WITH_SPLASH = [color for color in Color if len(Color.to_mana(color)
                             and Mana.COLORLESS in Color.to_mana(color)]
 
 
-class Rating(Enum):
-    """Enumeration of color ratings based on a deck's win rate.
+class Grade(Enum):
+    """Enumeration of deck color grades.
     """
-    S = (60.0, ...)
-    A = (57.5, 60)
-    B = (55.0, 57.5)
-    C = (52.5, 55.0)
-    D = (50.0, 52.5)
-    F = (0.0, 50.0)
+    F = "F"
+    D_MINUS = "D-"
+    D = "D"
+    D_PLUS = "D+"
+    C_MINUS = "C-"
+    C = "C"
+    C_PLUS = "C+"
+    B_MINUS = "B-"
+    B = "B"
+    B_PLUS = "B+"
+    A_MINUS = "A-"
+    A = "A"
+    A_PLUS = "A+"
 
 
-@dataclass(frozen=True)
+DEFAULT_GRADESPAN_START = 50
+DEFAULT_GRADESPAN_STOP = 60
+
+
+def breakpoints(start: float = DEFAULT_GRADESPAN_START, stop: float = DEFAULT_GRADESPAN_STOP,
+                count: int = len(Grade) - 1) -> List[float]:
+    return [*np.linspace(start, stop, count)]
+
+
+BREAKPOINTS = breakpoints()
+
+
+def grade(score: float, breakpoints: Optional[List[float]] = None,
+          grades: str | EnumMeta = Grade) -> str | EnumMeta:
+    """Return a grade from supplied ``grades`` based on ``score`` and ``breakpoints``.
+
+    Breakpoints are understood as a sequence of ordered floats corresponding to a score value that
+    exactly merits one of the grades.
+    """
+    breakpoints = breakpoints or BREAKPOINTS
+    if len(grades) != len(breakpoints) + 1:
+        raise ValueError(f"Number of breakpoints must be one less than grades: "
+                         f"{len(grades)} != {len(breakpoints)} + 1")
+    i = bisect(breakpoints, score)
+    return [*grades][i]
+
+
+@dataclass()
 class Performance:
     """Draft deck color performance according to 17lands.com data.
     """
@@ -223,6 +260,8 @@ class Performance:
     games: int
     color: Union[Color, Mana, None] = None
     mtgset: Optional[MtgSet] = None
+    grade_start: Optional[float] = DEFAULT_GRADESPAN_START
+    grade_stop: Optional[float] = DEFAULT_GRADESPAN_STOP
 
     @property
     def winrate(self) -> float:
@@ -235,25 +274,13 @@ class Performance:
     def __repr__(self) -> str:  # override
         if self.color:
             return f"{self.__class__.__name__}({self.color}, winrate={self.winrate_str}, " \
-                   f"{self.rating})"
-        return f"{self.__class__.__name__}(winrate={self.winrate_str}, {self.rating})"
+                   f"{self.grade})"
+        return f"{self.__class__.__name__}(winrate={self.winrate_str}, {self.grade})"
 
     @property
-    def rating(self) -> Rating:
-        if self.winrate >= Rating.S.value[0]:
-            return Rating.S
-        elif Rating.A.value[0] <= self.winrate < Rating.A.value[1]:
-            return Rating.A
-        elif Rating.B.value[0] <= self.winrate < Rating.B.value[1]:
-            return Rating.B
-        elif Rating.C.value[0] <= self.winrate < Rating.C.value[1]:
-            return Rating.C
-        elif Rating.D.value[0] <= self.winrate < Rating.D.value[1]:
-            return Rating.D
-        elif Rating.F.value[0] <= self.winrate < Rating.F.value[1]:
-            return Rating.F
-        else:
-            raise ValueError(f"Winrate out of valid scope for ratings: {self.winrate}.")
+    def grade(self) -> Grade:
+        points = breakpoints(self.grade_start, self.grade_stop)
+        return grade(self.winrate, points)
 
     @staticmethod
     def aggregate_performance(*performances: "Performance") -> "Performance":
@@ -280,6 +307,7 @@ class SetParser:
         self._mtgset, self._csv_path = mtgset, csv_path
         self._performances = self._parse()
         self._aggregate_performances = self._get_aggreagate_performances()
+        self._recalibrate_perfs()
 
     @property
     def mtgset(self) -> MtgSet:
@@ -336,6 +364,12 @@ class SetParser:
             aggregate_perfs.update({mana: Performance.aggregate_performance(*subperfs)})
 
         return aggregate_perfs
+
+    def _recalibrate_perfs(self) -> None:
+        min_ = min(perf.winrate for perf in self.aggregate_performances.values())
+        max_ = max(perf.winrate for perf in self.aggregate_performances.values())
+        for perf in self.aggregate_performances.values():
+            perf.grade_start, perf.grade_stop = min_, max_
 
     @property
     def aggregate_performances(self) -> Dict[Mana, Performance]:
