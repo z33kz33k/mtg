@@ -19,6 +19,7 @@ import numpy as np
 
 from mtgcards.goldfish.cards import Mana
 from mtgcards.goldfish.sets import MtgSet
+from mtgcards.const import OUTPUTDIR
 
 
 CSV_MAP = {
@@ -307,7 +308,7 @@ class SetParser:
         self._mtgset, self._csv_path = mtgset, csv_path
         self._performances = self._parse()
         self._aggregate_performances = self._get_aggreagate_performances()
-        self._recalibrate_perfs()
+        self._recalibrate_aggr_perfs()
 
     @property
     def mtgset(self) -> MtgSet:
@@ -365,7 +366,9 @@ class SetParser:
 
         return aggregate_perfs
 
-    def _recalibrate_perfs(self) -> None:
+    def _recalibrate_aggr_perfs(self) -> None:
+        # TODO: the worst performance can never get the worst grade, because bisect_right is
+        #  used in grade() function
         min_ = min(perf.winrate for perf in self.aggregate_performances.values())
         max_ = max(perf.winrate for perf in self.aggregate_performances.values())
         for perf in self.aggregate_performances.values():
@@ -375,6 +378,47 @@ class SetParser:
     def aggregate_performances(self) -> Dict[Mana, Performance]:
         return self._aggregate_performances
 
+    def _build_perf_text(self) -> str:
+        title = self.mtgset.value.name.upper()
+        lines = [title]
+        lines.append("=" * len(title))
+        lines.append("")
+        title = "DECK COLOR PERFORMANCE"
+        lines.append(title)
+        lines.append("=" * len(title))
+        color_width = max(len(perf.color.value) for perf in self.performances) + 5
+        grade_width = max(len(perf.grade.value) for perf in self.performances) + 2
+        for perf in self.performances:
+            lines.append(f"{perf.color.value.ljust(color_width)}"
+                         f"{perf.grade.value.ljust(grade_width)} ({perf.winrate_str})")
+        lines.append("")
+
+        title = "AGGREGATE COLOR PERFORMANCE"
+        lines.append(title)
+        lines.append("=" * len(title))
+        mana_width = max(len(mana.value) for mana in self.aggregate_performances) + 5
+        grade_width = max(len(perf.grade.value)
+                          for perf in self.aggregate_performances.values()) + 2
+        for mana, perf in self.aggregate_performances.items():
+            lines.append(f"{mana.value.ljust(mana_width)}"
+                         f"{perf.grade.value.ljust(grade_width)} ({perf.winrate_str})")
+
+        return "\n".join(lines)
+
+    def to_file(self) -> None:
+        filename = self.mtgset.value.code.lower() + "_17lands.txt"
+        dest = Path(OUTPUTDIR) / filename
+        with dest.open("w", encoding="utf8") as f:
+            f.write(self._build_perf_text())
+
+        if dest.exists():
+            print(f"{dest} has been written successfully.")
+
+
+def dump_summary() -> None:
+    for mtgset, csvfile in CSV_MAP.items():
+        parser = SetParser(mtgset, csvfile)
+        parser.to_file()
 
 
 
