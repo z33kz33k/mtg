@@ -10,7 +10,7 @@
 from mtgcards.limited import dump_summary
 
 
-dump_summary()
+print("dupa")
 
 
 

@@ -13,7 +13,9 @@ from pathlib import Path
 from time import sleep
 from typing import List, Optional
 
+import requests
 from logdecorator import log_on_error
+from tqdm import tqdm
 
 from mtgcards.utils.validate import type_checker
 
@@ -126,3 +128,35 @@ def remove_by_ext(ext: str, destdir: str, recursive=False, opposite=False) -> in
                 remove(file, removed)
 
     return len(removed)
+
+
+def download_file(url: str, file_name="", dst_dir="") -> None:
+    """Download a file at ``url`` to destination specified by ``file_name`` and ``dst_dir``.
+
+    Mostly, as suggested by GPT3.
+
+    :param url: URL of the file to be downloaded.
+    :param file_name: Optional name for saved file. Default is the downloaded file's name.
+    :param dst_dir: Optional destination directory for saving. Default is the CWD.
+    """
+    if not file_name:
+        file_name = Path(url).name
+    # send an HTTP request to the URL
+    response = requests.get(url, stream=True)
+    # get the total file size in bytes
+    file_size = int(response.headers.get("Content-Length", 0))
+    divisor = 1024
+    # create a progress bar object
+    progress = tqdm(response.iter_content(divisor), f"Downloading {file_name!r}", total=file_size,
+                    unit="B", unit_scale=True, unit_divisor=divisor)
+
+    dst = file_name if not dst_dir else getdir(dst_dir) / file_name
+
+    # open a file for writing
+    with open(dst, "wb") as f:
+        # iterate over the file content in chunks
+        for chunk in progress:
+            # write each chunk to the file
+            f.write(chunk)
+            # update the progress bar manually
+            progress.update(len(chunk))

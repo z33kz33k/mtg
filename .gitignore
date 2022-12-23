@@ -2,8 +2,8 @@
 /research
 *service_account.json
 *api_creds.json
-/mtgcards/data/seventeen_data/*.ods
-/mtgcards/data/*.json
+/mtgcards/data/**
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

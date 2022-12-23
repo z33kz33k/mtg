@@ -9,6 +9,8 @@
 """
 from typing import Any, Callable, Dict, Tuple, TypeVar
 
+from mtgcards import __appname__
+
 # type annotation aliases
 Json = Dict[str, Any]
 T = TypeVar("T")
@@ -22,4 +24,4 @@ DATE_FORMAT_WITH_COMMA = "%Y-%m-%d, %H:%M"
 TIMESTAMP_FORMAT = "%Y%m%d_%H%M_%f"
 
 INPUTDIR, OUTPUTDIR = "input", "output"
-
+DATADIR = f"{__appname__}/data"

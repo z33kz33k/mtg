@@ -17,21 +17,22 @@ from typing import Dict, List, Optional, Tuple, Union
 
 import numpy as np
 
+from mtgcards.utils.files import getfile
 from mtgcards.goldfish.cards import Mana
 from mtgcards.goldfish.sets import MtgSet
-from mtgcards.const import OUTPUTDIR
+from mtgcards.const import OUTPUTDIR, DATADIR
 
 
 CSV_MAP = {
-    MtgSet.ZENDIKAR_RISING: Path("mtgcards/data/seventeen_data/zendikar_rising.csv"),
-    MtgSet.KALDHEIM: Path("mtgcards/data/seventeen_data/kaldheim.csv"),
-    MtgSet.STRIXHAVEN_SCHOOL_OF_MAGES: Path("mtgcards/data/seventeen_data/strixhaven.csv"),
-    MtgSet.ADVENTURES_IN_THE_FORGOTTEN_REALMS: Path(
-        "mtgcards/data/seventeen_data/adventures_forgotten_realms.csv"),
-    MtgSet.INNISTRAD_MIDNIGHT_HUNT: Path("mtgcards/data/seventeen_data/midnight_hunt.csv"),
-    MtgSet.INNISTRAD_CRIMSON_VOW: Path("mtgcards/data/seventeen_data/crimson_vow.csv"),
-    MtgSet.KAMIGAWA_NEON_DYNASTY: Path("mtgcards/data/seventeen_data/neon_dynasty.csv"),
-    MtgSet.STREETS_OF_NEW_CAPENNA: Path("mtgcards/data/seventeen_data/streets_new_capenna.csv"),
+    MtgSet.ZENDIKAR_RISING: getfile(f"{DATADIR}/17lands/zendikar_rising.csv"),
+    MtgSet.KALDHEIM: getfile(f"{DATADIR}/17lands/kaldheim.csv"),
+    MtgSet.STRIXHAVEN_SCHOOL_OF_MAGES: getfile(f"{DATADIR}/17lands/strixhaven.csv"),
+    MtgSet.ADVENTURES_IN_THE_FORGOTTEN_REALMS: getfile(
+        f"{DATADIR}/17lands/adventures_forgotten_realms.csv"),
+    MtgSet.INNISTRAD_MIDNIGHT_HUNT: getfile(f"{DATADIR}/17lands/midnight_hunt.csv"),
+    MtgSet.INNISTRAD_CRIMSON_VOW: getfile(f"{DATADIR}/17lands/crimson_vow.csv"),
+    MtgSet.KAMIGAWA_NEON_DYNASTY: getfile(f"{DATADIR}/17lands/neon_dynasty.csv"),
+    MtgSet.STREETS_OF_NEW_CAPENNA: getfile(f"{DATADIR}/17lands/streets_new_capenna.csv"),
 }
 
 
