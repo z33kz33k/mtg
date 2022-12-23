@@ -35,9 +35,9 @@ def getfile(file_location: str, absolute=False, sanity_check=True) -> Path:
         raise OSError(f"Cannot read provided location: {file_location} ({e}).")
     if sanity_check:
         if not file.exists():
-            raise OSError(f"Nothing at: {file}.")
+            raise FileNotFoundError(f"Nothing at: {file}.")
         if not file.is_file():
-            raise ValueError(f"Not a file: {file}.")
+            raise FileNotFoundError(f"Not a file: {file}.")
     if absolute:
         return file.absolute()
     else:
@@ -74,7 +74,7 @@ def getdir(dir_location: str, absolute=False, create_missing=True) -> Optional[P
         return
     else:
         if dir_.is_file():
-            raise ValueError(f"Not a directory: {dir_}.")
+            raise NotADirectoryError(f"Not a directory: {dir_}.")
     return dir_ if not absolute else dir_.absolute()
 
 

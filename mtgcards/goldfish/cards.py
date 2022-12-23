@@ -26,6 +26,7 @@ from mtgcards.goldfish.sets import MtgSet, DOMAIN, STANDARD_META_SETS, PIONEER_M
     MODERN_META_SETS, SetFormat
 
 URL_TEMPLATE = SETS_URL + "{}#online"
+INPUTDIR = f"{INPUTDIR}/goldfish"
 
 
 class Mana(Enum):

@@ -380,9 +380,7 @@ class SetParser:
 
     def _build_perf_text(self) -> str:
         title = self.mtgset.value.name.upper()
-        lines = [title]
-        lines.append("=" * len(title))
-        lines.append("")
+        lines = [title, "=" * len(title), ""]
         title = "DECK COLOR PERFORMANCE"
         lines.append(title)
         lines.append("=" * len(title))

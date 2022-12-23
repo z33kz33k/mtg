@@ -21,6 +21,7 @@ from mtgcards.utils import timed_request, from_iterable
 from mtgcards.utils.files import getdir, getfile
 from mtgcards.const import Json, OUTPUTDIR, INPUTDIR
 
+INPUTDIR = f"{INPUTDIR}/goldfish"
 DOMAIN = "www.mtggoldfish.com"
 URL = f"https://{DOMAIN}/sets/"
 DATE_FORMAT = "%b %d, %Y"
