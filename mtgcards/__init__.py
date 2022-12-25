@@ -8,7 +8,7 @@
 
 """
 __appname__ = __name__
-__version__ = "0.3.3"
+__version__ = "0.3.4"
 __description__ = "Scrape data on MtG cards and do other stuff."
 __author__ = "z33k"
 __license__ = "MIT License"

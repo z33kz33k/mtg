@@ -54,7 +54,7 @@ class Color(Enum):
     RAKDOS = ("B", "R")
     GRUUL = ("R", "G")
     SELESNYA = ("G", "W")
-    # enemy paiRs
+    # enemy pairs
     ORZHOV = ("W", "B")
     IZZET = ("U", "R")
     GOLGARI = ("B", "G")
@@ -231,6 +231,14 @@ class CardFace:
     """
     json: Json
 
+    def __eq__(self, other: "Card") -> bool:
+        left = self.name, self.mana_cost, self.type_line, self.oracle_text
+        right = other.name, other.mana_cost, other.type_line, other.oracle_text
+        return left == right
+
+    def __hash__(self) -> int:
+        return hash((self.name, self.mana_cost, self.type_line, self.oracle_text))
+
     @property
     def name(self) -> str:
         return self.json["name"]
@@ -252,7 +260,7 @@ class CardFace:
         return self.json["oracle_text"]
 
     @property
-    def colors(self) -> List[str]:
+    def colors(self) -> List[Color]:
         result = self.json.get("colors")
         return result if result else []
 
@@ -313,7 +321,9 @@ class Card:
         return self.json["cmc"]
 
     @property
-    def color_identity(self) -> List[str]:
+    def color_identity(self) -> List[Color]:
+        # 'color_identity' is a wider term than 'colors' (that only take mana cost into account)
+        # more on this here: https://mtg.fandom.com/wiki/Color_identity
         return self.json["color_identity"]
 
     @property
@@ -490,6 +500,36 @@ class Card:
         if self.is_multipart:
             return None
         return TypeLine(self.type_line)
+
+    @property
+    def supertypes(self) -> List[str]:
+        if self.is_multipart:
+            return sorted({t for face in self.card_faces for t in face.supertypes})
+        return self.parse_types().supertypes
+
+    @property
+    def regular_types(self) -> List[str]:
+        if self.is_multipart:
+            return sorted({t for face in self.card_faces for t in face.regular_types})
+        return self.parse_types().regular_types
+
+    @property
+    def subtypes(self) -> List[str]:
+        if self.is_multipart:
+            return sorted({t for face in self.card_faces for t in face.subtypes})
+        return self.parse_types().subtypes
+
+    @property
+    def races(self) -> List[str]:
+        if self.is_multipart:
+            return sorted({t for face in self.card_faces for t in face.races})
+        return self.parse_types().races
+
+    @property
+    def classes(self) -> List[str]:
+        if self.is_multipart:
+            return sorted({t for face in self.card_faces for t in face.classes})
+        return self.parse_types().classes
 
 
 @lru_cache
