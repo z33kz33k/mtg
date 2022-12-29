@@ -570,7 +570,7 @@ class Card:
         if not self.is_alchemy_rebalance:
             return None
         if not self.is_multipart:
-            return find_by_name(self.name.lstrip(ALCHEMY_REBALANCE_INDICATOR), exact=True)
+            return find_by_name(self.name[2:], exact=True)
         # is multipart
         first_part_name, *_ = self.name.split(MULTIPART_SEPARATOR)
         original_name = first_part_name[2:]
