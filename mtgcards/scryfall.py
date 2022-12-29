@@ -39,7 +39,11 @@ def download_scryfall_bulk_data() -> None:
 
 MULTIPART_SEPARATOR = "//"  # separates parts of card's name in multipart cards
 MULTIPART_LAYOUTS = ['adventure', 'art_series', 'double_faced_token', 'flip', 'modal_dfc', 'split',
-                     'transform']
+                     'transform']\
+
+# all cards that got Alchemy rebalance treatment have their rebalanced counterparts with names
+# prefixed by 'A-'
+ALCHEMY_REBALANCE_INDICATOR = "A-"
 
 
 class Color(Enum):
@@ -415,6 +419,10 @@ class Card:
         return datetime.strptime(self.json["released_at"], "%Y-%m-%d")
 
     @property
+    def reprint(self) -> bool:
+        return self.json["reprint"]
+
+    @property
     def set(self) -> str:
         return self.json["set"]
 
@@ -495,7 +503,7 @@ class Card:
             return None
         return value
 
-    @lru_cache()
+    @lru_cache
     def parse_types(self) -> Optional[TypeLine]:
         if self.is_multipart:
             return None
@@ -531,6 +539,54 @@ class Card:
             return sorted({t for face in self.card_faces for t in face.classes})
         return self.parse_types().classes
 
+    @property
+    def is_permanent(self) -> bool:
+        if self.is_multipart:
+            return all(face.is_permanent for face in self.card_faces)
+        return self.parse_types().is_permanent
+
+    @property
+    def is_nonpermanent(self) -> bool:
+        if self.is_multipart:
+            return all(face.is_nonpermanent for face in self.card_faces)
+        return self.parse_types().is_nonpermanent
+
+    @property
+    def is_alchemy_rebalance(self) -> bool:
+        return self.name.startswith(ALCHEMY_REBALANCE_INDICATOR)
+
+    @property
+    @lru_cache
+    def alchemy_rebalance(self) -> Optional["Card"]:
+        """Find Alchemy rebalanced version of this card and return it, or 'None' if there's no
+        such card.
+        """
+        return find_by_name(f"{ALCHEMY_REBALANCE_INDICATOR}{self.name}")
+
+    @property
+    def alchemy_rebalance_original(self) -> Optional["Card"]:
+        """If this card is Alchemy rebalance, return the original card. Return 'None' otherwise.
+        """
+        if not self.is_alchemy_rebalance:
+            return None
+        if not self.is_multipart:
+            return find_by_name(self.name.lstrip(ALCHEMY_REBALANCE_INDICATOR), exact=True)
+        # is multipart
+        first_part_name, *_ = self.name.split(MULTIPART_SEPARATOR)
+        original_name = first_part_name[2:]
+        original = from_iterable(
+            self.json["all_parts"],
+            lambda p: original_name in p["name"] and not p["name"].startswith(
+                ALCHEMY_REBALANCE_INDICATOR)
+        )
+        if original:
+            return find_by_name(original["name"], exact=True)
+        return None
+
+    @property
+    def has_alchemy_rebalance(self) -> bool:
+        return self.alchemy_rebalance is not None
+
 
 @lru_cache
 def bulk_data() -> Set[Card]:
@@ -564,7 +620,6 @@ def colors(data: Optional[Iterable[Card]] = None) -> List[str]:
     result = set()
     for card in data:
         result.update(card.colors)
-
     return sorted(result)
 
 
@@ -601,6 +656,16 @@ def rarities(data: Optional[Iterable[Card]] = None) -> List[str]:
     """
     data = data if data else bulk_data()
     return sorted({card.rarity for card in data})
+
+
+def keywords(data: Optional[Iterable[Card]] = None) -> List[str]:
+    """Return list of MtG card keywords in Scryfall data.
+    """
+    data = data if data else bulk_data()
+    result = set()
+    for card in data:
+        result.update(card.keywords)
+    return sorted(result)
 
 
 def find_cards(predicate: Callable[[Card], bool],
