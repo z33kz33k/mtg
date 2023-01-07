@@ -8,10 +8,12 @@
 
 """
 import json
+import re
+
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from functools import lru_cache
+from functools import lru_cache, cached_property
 from typing import Callable, Dict, Iterable, List, Optional, Set, Tuple
 
 import scrython
@@ -205,6 +207,34 @@ class TypeLine:
         return all(p in self.NONPERMAMENT_TYPES for p in self.regular_types)
 
     @property
+    def is_artifact(self) -> bool:
+        return "Artifact" in self.regular_types
+
+    @property
+    def is_creature(self) -> bool:
+        return "Creature" in self.regular_types
+
+    @property
+    def is_enchantment(self) -> bool:
+        return "Enchantment" in self.regular_types
+
+    @property
+    def is_land(self) -> bool:
+        return "Land" in self.regular_types
+
+    @property
+    def is_planeswalker(self) -> bool:
+        return "Planeswalker" in self.regular_types
+
+    @property
+    def is_sorcery(self) -> bool:
+        return "Sorcery" in self.regular_types
+
+    @property
+    def is_instant(self) -> bool:
+        return "Instant" in self.regular_types
+
+    @property
     def races(self) -> List[str]:
         return [t for t in self.subtypes if t in self.RACES]
 
@@ -225,6 +255,48 @@ class TypeLine:
             types, subtypes = self.text.split(f" {self.SEPARATOR} ", maxsplit=1)
             return types.split(), subtypes.split()
         return self.text.split(), []
+
+
+class LordSentence:
+    """Parser of 'lord'-effect related part of card's Oracle text.
+
+    More on lords:  https://mtg.fandom.com/wiki/Lord
+
+    A proper input should be a single isolated sentence (stripped of the trailing dot) from the
+    whole bulk of any given card's Oracle text, e.g. for 'Leaf-Crowned Visionary' the relevant
+    part is:
+
+        'Other Elves you control get +1/+1'
+
+    """
+    PATTERN = re.compile(r".*(\bget\s\+[\dX]/\+[\dX]\b).*")
+
+    @property
+    def prefix(self) -> str:
+        return self._prefix
+
+    @property
+    def buff(self) -> str:
+        return self._buff
+
+    @property
+    def suffix(self) -> str:
+        return self._suffix
+
+    @property
+    def is_valid(self) -> bool:
+        return bool(self.buff)
+
+    def __init__(self, text: str) -> None:
+        self._text = text
+        self._prefix, self._buff, self._suffix = self._parse()
+
+    def _parse(self) -> Tuple[str, str, str]:
+        match = self.PATTERN.match(self._text)
+        if match:
+            prefix, suffix = self._text.split(match.group(1), maxsplit=1)
+            return prefix.strip(), match.group(1), suffix.strip()
+        return "", "", ""
 
 
 @dataclass(frozen=True)
@@ -291,6 +363,10 @@ class CardFace:
     @property
     def classes(self) -> List[str]:
         return self.parse_types().classes
+
+    @cached_property
+    def lord_sentences(self) -> List[LordSentence]:
+        return Card.parse_lord_sentences(self.oracle_text)
 
 
 @dataclass(frozen=True)
@@ -555,8 +631,7 @@ class Card:
     def is_alchemy_rebalance(self) -> bool:
         return self.name.startswith(ALCHEMY_REBALANCE_INDICATOR)
 
-    @property
-    @lru_cache
+    @cached_property
     def alchemy_rebalance(self) -> Optional["Card"]:
         """Find Alchemy rebalanced version of this card and return it, or 'None' if there's no
         such card.
@@ -586,6 +661,26 @@ class Card:
     @property
     def has_alchemy_rebalance(self) -> bool:
         return self.alchemy_rebalance is not None
+
+    @staticmethod
+    def parse_lord_sentences(oracle_text: str) -> List[LordSentence]:
+        if not oracle_text:
+            return []
+        lord_sentences = []
+        for sentence in oracle_text.split("."):
+            lord_sentence = LordSentence(sentence)
+            if lord_sentence.is_valid:
+                lord_sentences.append(lord_sentence)
+        return lord_sentences
+
+    @cached_property
+    def lord_sentences(self) -> List[LordSentence]:
+        sentences = []
+        if self.is_multipart:
+            for face in self.card_faces:
+                sentences += face.lord_sentences
+            return sentences
+        return self.parse_lord_sentences(self.oracle_text)
 
 
 @lru_cache
