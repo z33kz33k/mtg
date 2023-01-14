@@ -10,11 +10,13 @@
 import json
 import re
 
+from collections import defaultdict, namedtuple
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 from functools import lru_cache, cached_property
-from typing import Callable, Dict, Iterable, List, Optional, Set, Tuple
+from pprint import pprint
+from typing import Callable, DefaultDict, Dict, Iterable, List, Optional, Set, Tuple
 
 import scrython
 
@@ -49,44 +51,43 @@ ALCHEMY_REBALANCE_INDICATOR = "A-"
 
 
 class Color(Enum):
-    WHITE = "W"
-    BLUE = "U"
-    BLACK = "B"
-    RED = "R"
-    GREEN = "G"
-    # allied pairs
-    AZORIUS = ("W", "U")
-    DIMIR = ("U", "B")
-    RAKDOS = ("B", "R")
-    GRUUL = ("R", "G")
-    SELESNYA = ("G", "W")
-    # enemy pairs
-    ORZHOV = ("W", "B")
-    IZZET = ("U", "R")
+    COLORLESS = ()  # technically, not a color
+    # singletons
+    WHITE = ("W", )
+    BLUE = ("U", )
+    BLACK = ("B", )
+    RED = ("R", )
+    GREEN = ("G", )
+    # pairs
     GOLGARI = ("B", "G")
-    BOROS = ("R", "W")
+    RAKDOS = ("B", "R")
+    DIMIR = ("B", "U")
+    ORZHOV = ("B", "W")
+    GRUUL = ("G", "R")
     SIMIC = ("G", "U")
-    # shard triples
-    BANT = ("G", "W", "U")
-    ESPER = ("W", "U", "B")
-    GRIXIS = ("U", "B", "R")
-    JUND = ("B", "R", "G")
-    NAYA = ("R", "G", "W")
-    # wedge triples
-    ABZAN = ("W", "B", "G")
-    JESKAI = ("U", "R", "W")
+    SELESNYA = ("G", "W")
+    IZZET = ("R", "U")
+    BOROS = ("R", "W")
+    AZORIUS = ("U", "W")
+    # triples
+    JUND = ("B", "G", "R")
     SULTAI = ("B", "G", "U")
-    MARDU = ("R", "W", "B")
-    TEMUR = ("G", "U", "R")
+    ABZAN = ("B", "G", "W")
+    GRIXIS = ("B", "R", "U")
+    MARDU = ("B", "R", "W")
+    ESPER = ("B", "U", "W")
+    TEMUR = ("G", "R", "U")
+    NAYA = ("G", "R", "W")
+    BANT = ("G", "U", "W")
+    JESKAI = ("R", "U", "W")
     # quadruples
-    ARTIFICE = ("W", "U", "B", "R")
-    CHAOS = ("U", "B", "R", "B")
-    AGGRESSION = ("B", "R", "G", "W")
-    ALTRUISM = ("R", "G", "W", "U")
-    GROWTH = ("G", "W", "U", "B")
+    CHAOS = ("B", "G", "R", "U")
+    AGGRESSION = ("B", "G", "R", "W")
+    GROWTH = ("B", "G", "U", "W")
+    ARTIFICE = ("B", "R", "U", "W")
+    ALTRUISM = ("G", "R", "U", "W")
     # other
-    ALL = ("W", "U", "B", "R", "G")
-    COLORLESS = "L"
+    ALL = ("B", "G", "R", "U", "W")
 
 
 class TypeLine:
@@ -336,7 +337,7 @@ class CardFace:
         return self.json["oracle_text"]
 
     @property
-    def colors(self) -> List[Color]:
+    def colors(self) -> List[str]:
         result = self.json.get("colors")
         return result if result else []
 
@@ -401,7 +402,7 @@ class Card:
         return self.json["cmc"]
 
     @property
-    def color_identity(self) -> List[Color]:
+    def color_identity(self) -> List[str]:
         # 'color_identity' is a wider term than 'colors' (that only take mana cost into account)
         # more on this here: https://mtg.fandom.com/wiki/Color_identity
         return self.json["color_identity"]
@@ -814,3 +815,45 @@ def find_by_parts(name_parts: Iterable[str],
     data = data if data else bulk_data()
     return find_card(lambda c: all(part.lower() in c.name.lower() for part in name_parts), data)
 
+
+class ColorIdentityDistibution:
+    """Distribution of `color_identity` in card data.
+    """
+    @property
+    def colorsmap(self) -> DefaultDict[Color, List[Card]]:
+        """Return mapping of cards to colors.
+        """
+        return self._colorsmap
+
+    @property
+    def colors(self) -> List[Tuple[Color, List[Card]]]:
+        """Return list of (color, cards) tuples sorted by color.
+        """
+        return self._colors
+
+    def __init__(self, data: Optional[Iterable[Card]] = None) -> None:
+        self._data = bulk_data() if not data else data
+        self._colorsmap = defaultdict(list)
+        for card in self._data:
+            self._colorsmap[Color(tuple(card.color_identity))].append(card)
+        self._colors = sorted([(k, v) for k, v in self._colorsmap.items()],
+                              key=lambda p: (len(p[0].value), p[0].value))
+        Triple = namedtuple("Triple", "color quantity percentage")
+        self._triples = [Triple(c[0], len(c[1]), len(c[1]) / len(bulk_data()))
+                         for c in self.colors]
+        self._triples.sort(key=lambda t: t[1], reverse=True)
+
+    def print(self) -> None:
+        """Print this color distribution.
+        """
+        triples_str = [(str(t.color), f"quantity={t.quantity}", f"percentage={t.percentage:.4f}%")
+                       for t in self._triples]
+        pprint(triples_str)
+
+    def color(self, color: Color) -> Optional[Tuple[Color, List[Card]]]:
+        return from_iterable(self.colors, lambda c: c[0] is color)
+
+
+def print_color_identity_distribution(data: Optional[Iterable[Card]] = None) -> None:
+    dist = ColorIdentityDistibution(data)
+    dist.print()
