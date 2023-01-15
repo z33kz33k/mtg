@@ -16,13 +16,13 @@ from datetime import datetime
 from enum import Enum
 from functools import lru_cache, cached_property
 from pprint import pprint
-from typing import Callable, DefaultDict, Dict, Iterable, List, Optional, Set, Tuple
+from typing import Callable, DefaultDict, Dict, Iterable, List, Optional, Set, Tuple, overload
 
 import scrython
 
 from mtgcards.utils import from_iterable
 from mtgcards.utils.files import download_file, getdir
-from mtgcards.const import DATADIR, Json
+from mtgcards.const import DATADIR, Json, T
 
 FILENAME = "scryfall.json"
 
@@ -402,10 +402,10 @@ class Card:
         return self.json["cmc"]
 
     @property
-    def color_identity(self) -> List[str]:
+    def color_identity(self) -> Color:
         # 'color_identity' is a wider term than 'colors' (that only take mana cost into account)
         # more on this here: https://mtg.fandom.com/wiki/Color_identity
-        return self.json["color_identity"]
+        return Color(tuple(self.json["color_identity"]))
 
     @property
     def colors(self) -> List[str]:
@@ -857,3 +857,8 @@ class ColorIdentityDistibution:
 def print_color_identity_distribution(data: Optional[Iterable[Card]] = None) -> None:
     dist = ColorIdentityDistibution(data)
     dist.print()
+
+
+class Deck(list):
+    def __init__(self, cards: Iterable[Card]) -> None:
+        super().__init__(cards)
