@@ -21,6 +21,8 @@ from mtgcards.utils import from_iterable
 from mtgcards.yt import Channel
 
 lvd = Channel('https://www.youtube.com/@LegenVD')
+linus = Channel("https://www.youtube.com/@LinusTechTips")
+
 
 
 

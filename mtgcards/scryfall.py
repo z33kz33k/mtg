@@ -413,6 +413,14 @@ class Card:
         return result if result else []
 
     @property
+    def collector_number(self) -> str:
+        return self.json["collector_number"]
+
+    @property
+    def collector_number_int(self) -> Optional[int]:
+        return self._int(self.collector_number)
+
+    @property
     def formats(self) -> List[str]:
         """Return list of all Scryfall string format designations (e.g. `bro` for The Brothers'
         War).
@@ -575,10 +583,9 @@ class Card:
         if text is None:
             return None
         try:
-            value = int(text)
+            return int(text)
         except ValueError:
             return None
-        return value
 
     @lru_cache
     def parse_types(self) -> Optional[TypeLine]:
@@ -862,3 +869,26 @@ def print_color_identity_distribution(data: Optional[Iterable[Card]] = None) -> 
 class Deck(list):
     def __init__(self, cards: Iterable[Card]) -> None:
         super().__init__(cards)
+
+
+ARENA_DECK_EXAMPLE = """
+Deck
+3 Lodestone Golem (BRR) 29
+3 Anointed Procession (AKR) 2
+3 Mythos of Illuna (IKO) 58
+4 Temple Garden (GRN) 258
+4 Emergency Powers (RNA) 169
+4 Breeding Pool (RNA) 246
+4 Commit /// Memory (AKR) 54
+4 Elvish Mystic (M14) 169
+4 Smothering Tithe (RNA) 22
+4 Mana Confluence (JOU) 163
+3 Leyline of Abundance (M20) 179
+2 Godless Shrine (RNA) 248
+4 Tangled Florahedron (ZNR) 211
+2 Brushland (BRO) 259
+4 Llanowar Elves (DAR) 168
+4 Assemble the Team (Y23) 17
+2 Watery Grave (GRN) 259
+2 Aether Hub (KLR) 279
+"""
