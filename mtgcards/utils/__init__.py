@@ -8,7 +8,7 @@
 
 """
 from datetime import datetime
-from typing import Callable, Iterable, List, Optional, Union
+from typing import Any, Callable, Iterable, List, Optional, Tuple, Type, Union
 
 import requests
 from contexttimer import Timer
@@ -31,14 +31,14 @@ def timed_request(url: str, postdata: Optional[Json] = None,
     return data.text
 
 
-def getrepr(classname: str, *reprs: str) -> str:
-    """Return ``__repr__`` string for reprs of format: 'name=value'
+def getrepr(class_: Type, *name_value_pairs: Tuple[str, Any]) -> str:
+    """Return ``__repr__`` string format: 'ClassName(name=value, ..., name_n=value_n)'
 
-    :param classname: name of the class to get repr for
-    :param reprs: repr part strings
-    :return: repr string
+    :param class_: class to get repr for
+    :param name_value_pairs: variable number of (name, value) tuples
     """
-    return f"{classname}({', '.join(reprs)})"
+    reprs = [f"{name}={value!r}" for name, value in name_value_pairs]
+    return f"{class_.__name__}({', '.join(reprs)})"
 
 
 @type_checker(str)

@@ -7,27 +7,94 @@
     @author: z33k
 
 """
+import re
+
 from datetime import datetime
 from decimal import Decimal
-from typing import List, Optional
+from typing import List, Optional, Set, Tuple
 
+import requests
 from scrapetube import get_channel
 from pytube import YouTube
 from youtubesearchpython import Channel as YtspChannel
 
 from mtgcards.const import Json
+from mtgcards.utils import getrepr
+
+
+class ArenaLine:
+    """A line of text in MtG Arena decklist format that denotes a card.
+
+    Example:
+        '4 Commit /// Memory (AKR) 54'
+    """
+    # matches '4 Commit /// Memory'
+    PATTERN = re.compile(r"\d\s[A-Z][\w\s'&/-]+")
+    # matches ''4 Commit /// Memory (AKR) 54''
+    EXTENDED_PATTERN = re.compile(r"\d\s[A-Z][\w\s'&/-]+\([A-Z\d]{3}\)\s\d+")
+
+    @property
+    def raw_line(self) -> str:
+        return self._raw_line
+
+    @property
+    def index(self) -> int:
+        return self._index
+
+    @property
+    def is_extended(self) -> bool:
+        return self._is_extended
+
+    @property
+    def quantity(self) -> int:
+        return self._quantity
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @property
+    def setcode(self) -> Optional[str]:
+        return self._setcode
+
+    @property
+    def collector_number(self) -> Optional[str]:
+        return self._collector_number
+
+    def __init__(self, line: str, idx: int) -> None:
+        self._raw_line, self._index = line, idx
+        self._is_extended = self.EXTENDED_PATTERN.match(line) is not None
+        quantity, rest = line.split(maxsplit=1)
+        self._quantity = int(quantity)
+        if self.is_extended:
+            self._name, rest = rest.split("(")
+            self._name = self._name.strip()
+            self._setcode, rest = rest.split(")")
+            self._collector_number = rest.strip()
+        else:
+            self._name, self._setcode, self._collector_number = rest, None, None
+
+    def __repr__(self) -> str:
+        pairs = [("quantity", self.quantity), ("name", self.name)]
+        if self.is_extended:
+            pairs += [("setcode", self.setcode), ("collector_number", self.collector_number)]
+        return getrepr(self.__class__, *pairs)
 
 
 class Video:
     """YouTube video showcasing a MtG deck with its most important metadata.
     """
     URL_TEMPLATE = "https://www.youtube.com/watch?v={}"
+
+    # decklist hooks
     AETHERHUB_HOOK = "aetherhub.com/Deck/"
     MOXFIELD_HOOK = "moxfield.com/decks/"
     GOLDFISH_HOOK = "mtggoldfish.com/deck/"
     TCGPLAYER_HOOK = "decks.tcgplayer.com/"
-    ARENA_HOOK = "First char is digit, second is a whitespace, third is a Capital letter"
-    UNTAPPED_HOOKS = ("mtga.untapped.gg", "/deck/")
+    UNTAPPED_HOOKS = {"mtga.untapped.gg", "/deck/"}
+
+    SHORTENER_HOOKS = {"bit.ly/", "tinyurl.com/", "cutt.ly/", "rb.gy/", "shortcm.li/", "tiny.cc/",
+                       "snip.ly/", "qti.ai/", "dub.sh/", "lyksoomu.com/", "zws.im/", "t.ly/"}
 
     @property
     def id(self) -> str:
@@ -61,9 +128,39 @@ class Video:
     def views(self) -> int:
         return self._pytube_data.views
 
+    @property
+    def _desc_lines(self) -> List[str]:
+        return self.description.split("\n")
+
+    @property
+    def links(self) -> List[str]:
+        return self._links
+
+    @property
+    def arena_lines(self) -> List[ArenaLine]:
+        return self._arena_lines
+
+    @property
+    def shortened_links(self) -> Set[str]:
+        return {link for link in self.links if any(hook in link for hook in self.SHORTENER_HOOKS)}
+
     def __init__(self, scrapetube_data: Json) -> None:
         self._scrapetube_data = scrapetube_data
         self._pytube_data = YouTube(self.URL_TEMPLATE.format(self.id))
+        self._links, self._arena_lines = self._parse_lines()
+
+    def _parse_lines(self) -> Tuple[List[str], List[ArenaLine]]:
+        links, arena_lines = [], []
+        for i, line in enumerate(self._desc_lines):
+            url = exctract_url(line)
+            if url:
+                links.append(url)
+            else:
+                match = ArenaLine.PATTERN.match(line)
+                if match:
+                    arena_lines.append(ArenaLine(line, i))
+
+        return links, arena_lines
 
 
 class Channel(list):
@@ -113,6 +210,20 @@ class Channel(list):
         return int(subscribers)
 
 
+def unshorten(url: str) -> str:
+    """Unshorten URL shortened by services like bit.ly, tinyurl.com etc.
+
+    Pilfered from: https://stackoverflow.com/a/28918160/4465708
+    """
+    session = requests.Session()  # so connections are recycled
+    resp = session.head(url, allow_redirects=True)
+    return resp.url
 
 
+def exctract_url(text: str) -> Optional[str]:
+    """Extract (the firs occurance of) URL from ``text``.
 
+    Pilfered from: https://stackoverflow.com/a/840110/4465708
+    """
+    match = re.search(r"(?P<url>https?://[^\s'\"]+)", text)
+    return match.group("url") if match else None

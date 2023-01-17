@@ -867,8 +867,13 @@ def print_color_identity_distribution(data: Optional[Iterable[Card]] = None) -> 
 
 
 class Deck(list):
-    def __init__(self, cards: Iterable[Card]) -> None:
+    @property
+    def sideboard(self) -> List[Card]:
+        return self._sideboard
+
+    def __init__(self, cards: List[Card], sideboard: Optional[List[Card]] = None) -> None:
         super().__init__(cards)
+        self._sideboard = sideboard if sideboard else []
 
 
 ARENA_DECK_EXAMPLE = """
