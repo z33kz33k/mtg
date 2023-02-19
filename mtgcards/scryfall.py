@@ -1050,6 +1050,8 @@ class Deck:
     def __repr__(self) -> str:
         return getrepr(
             self.__class__,
+            ("avg_cmc", f"{self.avg_cmc:.2f}"),
+            ("total_rarity_weight", int(self.total_rarity_weight)),
             ("artifacts", len(self.artifacts)),
             ("creatures", len(self.creatures)),
             ("enchantments", len(self.enchantments)),
@@ -1066,5 +1068,5 @@ class Deck:
         for playset in temp_playsets.values():
             if len(playset) > self.max_playset_count:
                 raise InvalidDeckError(f"Invalid sideboard. Too many occurances of"
-                                       f" {playset[0].name!r}: "
+                                       f" {playset[0].name!r} (considering the main list): "
                                        f"{len(playset)} > {self.max_playset_count}")
