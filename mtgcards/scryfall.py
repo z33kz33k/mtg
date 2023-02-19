@@ -17,10 +17,12 @@ from enum import Enum
 from functools import lru_cache, cached_property
 from pprint import pprint
 from typing import Callable, DefaultDict, Dict, Iterable, List, Optional, Set, Tuple, overload
+import itertools
+import math
 
 import scrython
 
-from mtgcards.utils import from_iterable
+from mtgcards.utils import from_iterable, getrepr, parse_int_from_str
 from mtgcards.utils.files import download_file, getdir
 from mtgcards.const import DATADIR, Json, T
 
@@ -89,13 +91,46 @@ class Color(Enum):
     # other
     ALL = ("B", "G", "R", "U", "W")
 
+    @property
+    def is_multi(self) -> bool:
+        return len(self.value) > 1
+
+
+class Rarity(Enum):
+    COMMON = "common"
+    UNCOMMON = "uncommon"
+    RARE = "rare"
+    MYTHIC = "mythic"
+    SPECIAL = "special"
+    BONUS = "bonus"
+
+    @property
+    def weight(self) -> Optional[float]:
+        """Return fractional weight of this rarity based on frequency of occurence in boosters.
+
+        Based on: https://mtg.fandom.com/wiki/Rarity
+        """
+        if self is Rarity.MYTHIC:
+            return 1 / (1/15 * 1/8)
+        if self is Rarity.RARE:
+            return 1 / (1/15 * 7/8)
+        if self is Rarity.UNCOMMON:
+            return 1 / (1/15 * 3)
+        if self is Rarity.COMMON:
+            return 1 / (1/15 * 11)
+        return None
+
+    @property
+    def is_special(self) -> bool:
+        return self is Rarity.SPECIAL or self is Rarity.BONUS
+
 
 class TypeLine:
     """Parser of type line in Scryfall data.
     """
     SEPARATOR = "—"
 
-    # according to MtG Wiki
+    # according to MtG Wiki (not updated since BRO)
     SUPERTYPES = {"Basic", "Elite", "Host", "Legendary", "Ongoing", "Snow", "Token", "World"}
     PERMAMENT_TYPES = {"Artifact", "Creature", "Enchantment", "Land", "Planeswalker"}
     NONPERMAMENT_TYPES = {"Sorcery", "Instant"}
@@ -220,6 +255,10 @@ class TypeLine:
         return "Enchantment" in self.regular_types
 
     @property
+    def is_instant(self) -> bool:
+        return "Instant" in self.regular_types
+
+    @property
     def is_land(self) -> bool:
         return "Land" in self.regular_types
 
@@ -230,10 +269,6 @@ class TypeLine:
     @property
     def is_sorcery(self) -> bool:
         return "Sorcery" in self.regular_types
-
-    @property
-    def is_instant(self) -> bool:
-        return "Instant" in self.regular_types
 
     @property
     def races(self) -> List[str]:
@@ -398,8 +433,8 @@ class Card:
         return [CardFace(item) for item in data]
 
     @property
-    def cmc(self) -> float:
-        return self.json["cmc"]
+    def cmc(self) -> int:
+        return math.ceil(self.json["cmc"])
 
     @property
     def color_identity(self) -> Color:
@@ -418,7 +453,12 @@ class Card:
 
     @property
     def collector_number_int(self) -> Optional[int]:
-        return self._int(self.collector_number)
+        """Return collector number as an integer, if it can be parsed as such.
+
+        `collector_number` can look like that:
+            {"12e", "67f", "233f", "A-268", "4e"}
+        """
+        return parse_int_from_str(self.collector_number)
 
     @property
     def formats(self) -> List[str]:
@@ -453,7 +493,7 @@ class Card:
 
     @property
     def loyalty_int(self) -> Optional[int]:
-        return self._int(self.loyalty)
+        return parse_int_from_str(self.loyalty)
 
     @property
     def has_special_loyalty(self) -> bool:
@@ -483,7 +523,7 @@ class Card:
 
     @property
     def power_int(self) -> Optional[int]:
-        return self._int(self.power)
+        return parse_int_from_str(self.power)
 
     @property
     def has_special_power(self) -> bool:
@@ -496,8 +536,28 @@ class Card:
         return self.json["prices"].get("usd")
 
     @property
-    def rarity(self) -> str:
-        return self.json["rarity"]
+    def rarity(self) -> Rarity:
+        return Rarity(self.json["rarity"])
+
+    @property
+    def has_special_rarity(self) -> bool:
+        return self.rarity.is_special
+
+    @property
+    def is_common(self) -> bool:
+        return self.rarity is Rarity.COMMON
+
+    @property
+    def is_uncommon(self) -> bool:
+        return self.rarity is Rarity.UNCOMMON
+
+    @property
+    def is_rare(self) -> bool:
+        return self.rarity is Rarity.RARE
+
+    @property
+    def is_mythic(self) -> bool:
+        return self.rarity is Rarity.MYTHIC
 
     @property
     def released_at(self) -> datetime:
@@ -525,7 +585,7 @@ class Card:
 
     @property
     def toughness_int(self) -> Optional[int]:
-        return self._int(self.toughness)
+        return parse_int_from_str(self.toughness)
 
     @property
     def has_special_toughness(self) -> bool:
@@ -578,15 +638,6 @@ class Card:
             return True
         return False
 
-    @staticmethod
-    def _int(text: Optional[str]) -> Optional[int]:
-        if text is None:
-            return None
-        try:
-            return int(text)
-        except ValueError:
-            return None
-
     @lru_cache
     def parse_types(self) -> Optional[TypeLine]:
         if self.is_multipart:
@@ -604,6 +655,34 @@ class Card:
         if self.is_multipart:
             return sorted({t for face in self.card_faces for t in face.regular_types})
         return self.parse_types().regular_types
+
+    @property
+    def is_artifact(self) -> bool:
+        return "Artifact" in self.regular_types
+
+    @property
+    def is_creature(self) -> bool:
+        return "Creature" in self.regular_types
+
+    @property
+    def is_enchantment(self) -> bool:
+        return "Enchantment" in self.regular_types
+
+    @property
+    def is_instant(self) -> bool:
+        return "Instant" in self.regular_types
+
+    @property
+    def is_land(self) -> bool:
+        return "Land" in self.regular_types
+
+    @property
+    def is_planeswalker(self) -> bool:
+        return "Planeswalker" in self.regular_types
+
+    @property
+    def is_sorcery(self) -> bool:
+        return "Sorcery" in self.regular_types
 
     @property
     def subtypes(self) -> List[str]:
@@ -823,6 +902,14 @@ def find_by_parts(name_parts: Iterable[str],
     return find_card(lambda c: all(part.lower() in c.name.lower() for part in name_parts), data)
 
 
+def find_by_collector_number(collector_number: int, set_code: str,
+                             data: Optional[Iterable[Card]] = None) -> Optional[Card]:
+    data = data if data else bulk_data()
+    data = [card for card in data if card.collector_number_int]
+    cards = set_cards(set_code.lower(), data=data)
+    return find_card(lambda c: c.collector_number == collector_number, cards)
+
+
 class ColorIdentityDistibution:
     """Distribution of `color_identity` in card data.
     """
@@ -866,34 +953,118 @@ def print_color_identity_distribution(data: Optional[Iterable[Card]] = None) -> 
     dist.print()
 
 
-class Deck(list):
+class InvalidDeckError(ValueError):
+    """Raised on invalid decks.
+    """
+
+
+class Deck:
+    """A deck of cards.
+    """
+    @cached_property
+    def list(self) -> List[Card]:
+        return [*itertools.chain(playset for playset in self._playsets.values())]
+
     @property
     def sideboard(self) -> List[Card]:
         return self._sideboard
 
-    def __init__(self, cards: List[Card], sideboard: Optional[List[Card]] = None) -> None:
-        super().__init__(cards)
-        self._sideboard = sideboard if sideboard else []
+    @property
+    def is_singleton(self) -> bool:
+        return self._is_singleton
 
+    @property
+    def max_playset_count(self) -> int:
+        return self._max_playset_count
 
-ARENA_DECK_EXAMPLE = """
-Deck
-3 Lodestone Golem (BRR) 29
-3 Anointed Procession (AKR) 2
-3 Mythos of Illuna (IKO) 58
-4 Temple Garden (GRN) 258
-4 Emergency Powers (RNA) 169
-4 Breeding Pool (RNA) 246
-4 Commit /// Memory (AKR) 54
-4 Elvish Mystic (M14) 169
-4 Smothering Tithe (RNA) 22
-4 Mana Confluence (JOU) 163
-3 Leyline of Abundance (M20) 179
-2 Godless Shrine (RNA) 248
-4 Tangled Florahedron (ZNR) 211
-2 Brushland (BRO) 259
-4 Llanowar Elves (DAR) 168
-4 Assemble the Team (Y23) 17
-2 Watery Grave (GRN) 259
-2 Aether Hub (KLR) 279
-"""
+    @property
+    def artifacts(self) -> List[Card]:
+        return [card for card in self.list if card.is_artifact]
+
+    @property
+    def creatures(self) -> List[Card]:
+        return [card for card in self.list if card.is_creature]
+
+    @property
+    def enchantments(self) -> List[Card]:
+        return [card for card in self.list if card.is_enchantment]
+
+    @property
+    def instants(self) -> List[Card]:
+        return [card for card in self.list if card.is_instant]
+
+    @property
+    def lands(self) -> List[Card]:
+        return [card for card in self.list if card.is_land]
+
+    @property
+    def planeswalkers(self) -> List[Card]:
+        return [card for card in self.list if card.is_planeswalker]
+
+    @property
+    def sorceries(self) -> List[Card]:
+        return [card for card in self.list if card.is_sorcery]
+
+    @property
+    def commons(self) -> List[Card]:
+        return [card for card in self.list if card.is_common]
+
+    @property
+    def uncommons(self) -> List[Card]:
+        return [card for card in self.list if card.is_uncommon]
+
+    @property
+    def rares(self) -> List[Card]:
+        return [card for card in self.list if card.is_rare]
+
+    @property
+    def mythics(self) -> List[Card]:
+        return [card for card in self.list if card.is_mythic]
+
+    @property
+    def total_rarity_weight(self) -> float:
+        return sum(card.rarity.weight for card in self.list)
+
+    @property
+    def avg_cmc(self) -> float:
+        return sum(card.cmc for card in self.list) / len(self.list)
+
+    def __init__(self, cards: Iterable[Card], sideboard: Optional[Iterable[Card]] = None,
+                 is_singleton=False) -> None:
+        self._sideboard = [*sideboard] if sideboard else []
+        self._is_singleton = is_singleton
+        self._max_playset_count = 1 if is_singleton else 4
+        self._playsets: DefaultDict[Card, List[Card]] = defaultdict(list)
+        for card in cards:
+            if card.has_special_rarity:
+                raise InvalidDeckError(f"Invalid rarity for {card.name!r}: {card.rarity.value!r}")
+            self._playsets[card].append(card)
+        for playset in self._playsets.values():
+            if len(playset) > self.max_playset_count:
+                raise InvalidDeckError(f"Invalid main list. Too many occurances of"
+                                       f" {playset[0].name!r}: "
+                                       f"{len(playset)} > {self.max_playset_count}")
+        if self.sideboard:
+            self._validate_sideboard()
+
+    def __repr__(self) -> str:
+        return getrepr(
+            self.__class__,
+            ("artifacts", len(self.artifacts)),
+            ("creatures", len(self.creatures)),
+            ("enchantments", len(self.enchantments)),
+            ("instants", len(self.instants)),
+            ("lands", len(self.lands)),
+            ("planeswalkers", len(self.planeswalkers)),
+            ("sorceries", len(self.sorceries)),
+        )
+
+    def _validate_sideboard(self) -> None:
+        temp_playsets = defaultdict(list)
+        for card in [*self.list, *self.sideboard]:
+            temp_playsets[card].append(card)
+        for playset in temp_playsets.values():
+            if len(playset) > self.max_playset_count:
+                raise InvalidDeckError(f"Invalid sideboard. Too many occurances of"
+                                       f" {playset[0].name!r}: "
+                                       f"{len(playset)} > {self.max_playset_count}")

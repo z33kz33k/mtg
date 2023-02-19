@@ -42,7 +42,7 @@ def getrepr(class_: Type, *name_value_pairs: Tuple[str, Any]) -> str:
 
 
 @type_checker(str)
-def parse_bool_from_str(string: str) -> Optional[bool]:
+def parse_bool_from_str(string: Optional[str]) -> Optional[bool]:
     """Parse a boolean value or ``None`` from ``string``.
     """
     if not string:
@@ -55,30 +55,28 @@ def parse_bool_from_str(string: str) -> Optional[bool]:
 
 
 @type_checker(str)
-def parse_float_from_str(string: str) -> Optional[float]:
+def parse_float_from_str(string: Optional[str]) -> Optional[float]:
     """Parse a floating point number or ``None`` from ``string``.
     """
     if not string:
         return None
     string = string.replace(",", ".") if "," in string else string
     try:
-        result = float(string)
+        return float(string)
     except ValueError:
         return None
-    return result
 
 
 @type_checker(str)
-def parse_int_from_str(string: str) -> Optional[int]:
+def parse_int_from_str(string: Optional[str]) -> Optional[int]:
     """Parse an integer or ``None`` from ``string``.
     """
     if not string:
         return None
     try:
-        result = int(string)
+        return int(string)
     except ValueError:
         return None
-    return result
 
 
 @type_checker(str)

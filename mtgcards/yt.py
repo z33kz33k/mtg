@@ -19,7 +19,8 @@ from pytube import YouTube
 from youtubesearchpython import Channel as YtspChannel
 
 from mtgcards.const import Json
-from mtgcards.utils import getrepr
+from mtgcards.utils import getrepr, parse_int_from_str
+from mtgcards.scryfall import MULTIPART_SEPARATOR as SCRYFALL_MULTIPART_SEPARATOR
 
 
 class ArenaLine:
@@ -28,18 +29,15 @@ class ArenaLine:
     Example:
         '4 Commit /// Memory (AKR) 54'
     """
+    MULTIPART_SEPARATOR = "///"  # this is different than in Scryfall data where they use: '//'
     # matches '4 Commit /// Memory'
-    PATTERN = re.compile(r"\d\s[A-Z][\w\s'&/-]+")
-    # matches ''4 Commit /// Memory (AKR) 54''
-    EXTENDED_PATTERN = re.compile(r"\d\s[A-Z][\w\s'&/-]+\([A-Z\d]{3}\)\s\d+")
+    PATTERN = re.compile(r"\d\s[A-Z][\w\s'&/,-]+")
+    # matches '4 Commit /// Memory (AKR) 54'
+    EXTENDED_PATTERN = re.compile(r"\d\s[A-Z][\w\s'&/,-]+\([A-Z\d]{3}\)\s\d+")
 
     @property
     def raw_line(self) -> str:
         return self._raw_line
-
-    @property
-    def index(self) -> int:
-        return self._index
 
     @property
     def is_extended(self) -> bool:
@@ -58,11 +56,11 @@ class ArenaLine:
         return self._setcode
 
     @property
-    def collector_number(self) -> Optional[str]:
+    def collector_number(self) -> Optional[int]:
         return self._collector_number
 
-    def __init__(self, line: str, idx: int) -> None:
-        self._raw_line, self._index = line, idx
+    def __init__(self, line: str) -> None:
+        self._raw_line = line
         self._is_extended = self.EXTENDED_PATTERN.match(line) is not None
         quantity, rest = line.split(maxsplit=1)
         self._quantity = int(quantity)
@@ -70,9 +68,10 @@ class ArenaLine:
             self._name, rest = rest.split("(")
             self._name = self._name.strip()
             self._setcode, rest = rest.split(")")
-            self._collector_number = rest.strip()
+            self._collector_number = parse_int_from_str(rest.strip())
         else:
             self._name, self._setcode, self._collector_number = rest, None, None
+        self._name = self._name.replace(self.MULTIPART_SEPARATOR, SCRYFALL_MULTIPART_SEPARATOR)
 
     def __repr__(self) -> str:
         pairs = [("quantity", self.quantity), ("name", self.name)]
@@ -88,8 +87,10 @@ class Video:
 
     # decklist hooks
     AETHERHUB_HOOK = "aetherhub.com/Deck/"
-    MOXFIELD_HOOK = "moxfield.com/decks/"
     GOLDFISH_HOOK = "mtggoldfish.com/deck/"
+    MOXFIELD_HOOK = "moxfield.com/decks/"
+    MTGAZONE_HOOK = "mtgazone.com/user-decks/"
+    STREAMDECKER_HOOK = "streamdecker.com/deck/"
     TCGPLAYER_HOOK = "decks.tcgplayer.com/"
     UNTAPPED_HOOKS = {"mtga.untapped.gg", "/deck/"}
 
@@ -150,15 +151,22 @@ class Video:
         self._links, self._arena_lines = self._parse_lines()
 
     def _parse_lines(self) -> Tuple[List[str], List[ArenaLine]]:
-        links, arena_lines = [], []
+        links, arena_lines, arena_sideboard_lines = [], [], []
+        sideboard_on = False
         for i, line in enumerate(self._desc_lines):
             url = exctract_url(line)
             if url:
                 links.append(url)
             else:
+                if line.startswith("Sideboard"):
+                    sideboard_on = True
+                    continue
                 match = ArenaLine.PATTERN.match(line)
                 if match:
-                    arena_lines.append(ArenaLine(line, i))
+                    if sideboard_on:
+                        arena_sideboard_lines.append(ArenaLine(line))
+                    else:
+                        arena_lines.append(ArenaLine(line))
 
         return links, arena_lines
 
@@ -220,10 +228,11 @@ def unshorten(url: str) -> str:
     return resp.url
 
 
-def exctract_url(text: str) -> Optional[str]:
+def exctract_url(text: str, https=True) -> Optional[str]:
     """Extract (the firs occurance of) URL from ``text``.
 
     Pilfered from: https://stackoverflow.com/a/840110/4465708
     """
-    match = re.search(r"(?P<url>https?://[^\s'\"]+)", text)
+    pattern = r"(?P<url>https?://[^\s'\"]+)" if https else r"(?P<url>http?://[^\s'\"]+)"
+    match = re.search(pattern, text)
     return match.group("url") if match else None
