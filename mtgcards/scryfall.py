@@ -111,13 +111,13 @@ class Rarity(Enum):
         Based on: https://mtg.fandom.com/wiki/Rarity
         """
         if self is Rarity.MYTHIC:
-            return 1 / (1/15 * 1/8)
+            return 1 / (1/15 * 1/8)  # 120.00
         if self is Rarity.RARE:
-            return 1 / (1/15 * 7/8)
+            return 1 / (1/15 * 7/8)  # 17.14
         if self is Rarity.UNCOMMON:
-            return 1 / (1/15 * 3)
+            return 1 / (1/15 * 3)    # 5.00
         if self is Rarity.COMMON:
-            return 1 / (1/15 * 11)
+            return 1 / (1/15 * 11)   # 1.36
         return None
 
     @property
@@ -772,7 +772,7 @@ class Card:
 
 @lru_cache
 def bulk_data() -> Set[Card]:
-    """Return Scryfall JSON data as list of Card objects.
+    """Return Scryfall JSON data as set of Card objects.
     """
     source = getdir(DATADIR) / FILENAME
     if not source.exists():
@@ -837,7 +837,7 @@ def rarities(data: Optional[Iterable[Card]] = None) -> List[str]:
     """Return list of MtG card rarities in Scryfall data.
     """
     data = data if data else bulk_data()
-    return sorted({card.rarity for card in data})
+    return sorted({card.rarity.value for card in data})
 
 
 def keywords(data: Optional[Iterable[Card]] = None) -> List[str]:
@@ -961,9 +961,11 @@ class InvalidDeckError(ValueError):
 class Deck:
     """A deck of cards.
     """
+    MIN_SIZE = 60
+
     @cached_property
-    def list(self) -> List[Card]:
-        return [*itertools.chain(playset for playset in self._playsets.values())]
+    def mainlist(self) -> List[Card]:
+        return [*itertools.chain(*self._playsets.values())]
 
     @property
     def sideboard(self) -> List[Card]:
@@ -979,55 +981,59 @@ class Deck:
 
     @property
     def artifacts(self) -> List[Card]:
-        return [card for card in self.list if card.is_artifact]
+        return [card for card in self.mainlist if card.is_artifact]
 
     @property
     def creatures(self) -> List[Card]:
-        return [card for card in self.list if card.is_creature]
+        return [card for card in self.mainlist if card.is_creature]
 
     @property
     def enchantments(self) -> List[Card]:
-        return [card for card in self.list if card.is_enchantment]
+        return [card for card in self.mainlist if card.is_enchantment]
 
     @property
     def instants(self) -> List[Card]:
-        return [card for card in self.list if card.is_instant]
+        return [card for card in self.mainlist if card.is_instant]
 
     @property
     def lands(self) -> List[Card]:
-        return [card for card in self.list if card.is_land]
+        return [card for card in self.mainlist if card.is_land]
 
     @property
     def planeswalkers(self) -> List[Card]:
-        return [card for card in self.list if card.is_planeswalker]
+        return [card for card in self.mainlist if card.is_planeswalker]
 
     @property
     def sorceries(self) -> List[Card]:
-        return [card for card in self.list if card.is_sorcery]
+        return [card for card in self.mainlist if card.is_sorcery]
 
     @property
     def commons(self) -> List[Card]:
-        return [card for card in self.list if card.is_common]
+        return [card for card in self.mainlist if card.is_common]
 
     @property
     def uncommons(self) -> List[Card]:
-        return [card for card in self.list if card.is_uncommon]
+        return [card for card in self.mainlist if card.is_uncommon]
 
     @property
     def rares(self) -> List[Card]:
-        return [card for card in self.list if card.is_rare]
+        return [card for card in self.mainlist if card.is_rare]
 
     @property
     def mythics(self) -> List[Card]:
-        return [card for card in self.list if card.is_mythic]
+        return [card for card in self.mainlist if card.is_mythic]
 
     @property
     def total_rarity_weight(self) -> float:
-        return sum(card.rarity.weight for card in self.list)
+        return sum(card.rarity.weight for card in self.mainlist)
+
+    @property
+    def avg_rarity_weight(self):
+        return self.total_rarity_weight / len(self.mainlist)
 
     @property
     def avg_cmc(self) -> float:
-        return sum(card.cmc for card in self.list) / len(self.list)
+        return sum(card.cmc for card in self.mainlist) / len(self.mainlist)
 
     def __init__(self, cards: Iterable[Card], sideboard: Optional[Iterable[Card]] = None,
                  is_singleton=False) -> None:
@@ -1039,19 +1045,36 @@ class Deck:
             if card.has_special_rarity:
                 raise InvalidDeckError(f"Invalid rarity for {card.name!r}: {card.rarity.value!r}")
             self._playsets[card].append(card)
-        for playset in self._playsets.values():
-            if len(playset) > self.max_playset_count:
-                raise InvalidDeckError(f"Invalid main list. Too many occurances of"
-                                       f" {playset[0].name!r}: "
-                                       f"{len(playset)} > {self.max_playset_count}")
+        self._validate_mainlist()
         if self.sideboard:
             self._validate_sideboard()
+
+    def _validate_mainlist(self) -> None:
+        for playset in self._playsets.values():
+            card = playset[0]
+            if not card.is_land and len(playset) > self.max_playset_count:
+                raise InvalidDeckError(f"Invalid main list. Too many occurances of"
+                                       f" {card.name!r}: "
+                                       f"{len(playset)} > {self.max_playset_count}")
+        if len(self.mainlist) < self.MIN_SIZE:
+            print([card.name for card in self.mainlist])
+            raise InvalidDeckError(f"Invalid deck size: '{len(self.mainlist)}'")
+
+    def _validate_sideboard(self) -> None:
+        temp_playsets = defaultdict(list)
+        for card in [*self.mainlist, *self.sideboard]:
+            temp_playsets[card].append(card)
+        for playset in temp_playsets.values():
+            if len(playset) > self.max_playset_count:
+                raise InvalidDeckError(f"Invalid sideboard. Too many occurances of"
+                                       f" {playset[0].name!r} (considering the main list): "
+                                       f"{len(playset)} > {self.max_playset_count}")
 
     def __repr__(self) -> str:
         return getrepr(
             self.__class__,
             ("avg_cmc", f"{self.avg_cmc:.2f}"),
-            ("total_rarity_weight", int(self.total_rarity_weight)),
+            ("avg_rarity_weight", f"{self.avg_rarity_weight:.1f}"),
             ("artifacts", len(self.artifacts)),
             ("creatures", len(self.creatures)),
             ("enchantments", len(self.enchantments)),
@@ -1061,12 +1084,3 @@ class Deck:
             ("sorceries", len(self.sorceries)),
         )
 
-    def _validate_sideboard(self) -> None:
-        temp_playsets = defaultdict(list)
-        for card in [*self.list, *self.sideboard]:
-            temp_playsets[card].append(card)
-        for playset in temp_playsets.values():
-            if len(playset) > self.max_playset_count:
-                raise InvalidDeckError(f"Invalid sideboard. Too many occurances of"
-                                       f" {playset[0].name!r} (considering the main list): "
-                                       f"{len(playset)} > {self.max_playset_count}")

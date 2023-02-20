@@ -146,11 +146,11 @@ def download_file(url: str, file_name="", dst_dir="") -> None:
     # get the total file size in bytes
     file_size = int(response.headers.get("Content-Length", 0))
     divisor = 1024
-    # create a progress bar object
-    progress = tqdm(response.iter_content(divisor), f"Downloading {file_name!r}", total=file_size,
-                    unit="B", unit_scale=True, unit_divisor=divisor)
 
-    dst = file_name if not dst_dir else getdir(dst_dir) / file_name
+    dst = Path(file_name) if not dst_dir else getdir(dst_dir) / file_name
+    # create a progress bar object
+    progress = tqdm(response.iter_content(divisor), f"Downloading '{dst.resolve()}'",
+                    total=file_size, unit="B", unit_scale=True, unit_divisor=divisor)
 
     # open a file for writing
     with open(dst, "wb") as f:

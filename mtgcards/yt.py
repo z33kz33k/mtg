@@ -7,11 +7,12 @@
     @author: z33k
 
 """
+import itertools
 import re
-
+from collections import defaultdict, Counter
 from datetime import datetime
 from decimal import Decimal
-from typing import List, Optional, Set, Tuple
+from typing import DefaultDict, List, Optional, Set, Tuple
 
 import requests
 from scrapetube import get_channel
@@ -21,6 +22,8 @@ from youtubesearchpython import Channel as YtspChannel
 from mtgcards.const import Json
 from mtgcards.utils import getrepr, parse_int_from_str
 from mtgcards.scryfall import MULTIPART_SEPARATOR as SCRYFALL_MULTIPART_SEPARATOR
+from mtgcards.scryfall import formats as scryfall_formats
+from mtgcards.scryfall import format_cards, Card, Deck, find_card, find_by_collector_number
 
 
 class ArenaLine:
@@ -31,9 +34,9 @@ class ArenaLine:
     """
     MULTIPART_SEPARATOR = "///"  # this is different than in Scryfall data where they use: '//'
     # matches '4 Commit /// Memory'
-    PATTERN = re.compile(r"\d\s[A-Z][\w\s'&/,-]+")
+    PATTERN = re.compile(r"\d{1,3}\s[A-Z][\w\s'&/,-]+")
     # matches '4 Commit /// Memory (AKR) 54'
-    EXTENDED_PATTERN = re.compile(r"\d\s[A-Z][\w\s'&/,-]+\([A-Z\d]{3}\)\s\d+")
+    EXTENDED_PATTERN = re.compile(r"\d{1,3}\s[A-Z][\w\s'&/,-]+\([A-Z\d]{3}\)\s\d+")
 
     @property
     def raw_line(self) -> str:
@@ -52,7 +55,7 @@ class ArenaLine:
         return self._name
 
     @property
-    def setcode(self) -> Optional[str]:
+    def set_code(self) -> Optional[str]:
         return self._setcode
 
     @property
@@ -76,7 +79,7 @@ class ArenaLine:
     def __repr__(self) -> str:
         pairs = [("quantity", self.quantity), ("name", self.name)]
         if self.is_extended:
-            pairs += [("setcode", self.setcode), ("collector_number", self.collector_number)]
+            pairs += [("setcode", self.set_code), ("collector_number", self.collector_number)]
         return getrepr(self.__class__, *pairs)
 
 
@@ -96,6 +99,8 @@ class Video:
 
     SHORTENER_HOOKS = {"bit.ly/", "tinyurl.com/", "cutt.ly/", "rb.gy/", "shortcm.li/", "tiny.cc/",
                        "snip.ly/", "qti.ai/", "dub.sh/", "lyksoomu.com/", "zws.im/", "t.ly/"}
+
+    formats = scryfall_formats()
 
     @property
     def id(self) -> str:
@@ -138,22 +143,52 @@ class Video:
         return self._links
 
     @property
+    def shortened_links(self) -> Set[str]:
+        return {link for link in self.links if any(hook in link for hook in self.SHORTENER_HOOKS)}
+
+    @property
+    def format(self) -> str:
+        return self._format
+
+    @property
     def arena_lines(self) -> List[ArenaLine]:
         return self._arena_lines
 
     @property
-    def shortened_links(self) -> Set[str]:
-        return {link for link in self.links if any(hook in link for hook in self.SHORTENER_HOOKS)}
+    def arena_sideboard_lines(self) -> List[ArenaLine]:
+        return self._arena_sideboard_lines
+
+    @property
+    def deck(self) -> Optional[Deck]:
+        return self._deck
 
     def __init__(self, scrapetube_data: Json) -> None:
         self._scrapetube_data = scrapetube_data
         self._pytube_data = YouTube(self.URL_TEMPLATE.format(self.id))
-        self._links, self._arena_lines = self._parse_lines()
+        self._format_soup: DefaultDict[str, List[str]] = defaultdict(list)
+        self._extract_formats(self.title)
+        self._links, self._arena_lines, self._arena_sideboard_lines = self._parse_lines()
+        self._format = self._get_format()
+        self._format_cards = format_cards(self._format)
+        self._deck = self._get_deck()
 
-    def _parse_lines(self) -> Tuple[List[str], List[ArenaLine]]:
+    def _extract_formats(self, line: str) -> None:
+        formats = [word.lower() for word in line.strip().split() if word.lower() in self.formats]
+        for fmt in formats:
+            self._format_soup[fmt].append(fmt)
+
+    def _get_format(self) -> str:
+        # if format soup has been populated from title and description, take the most common item
+        if self._format_soup:
+            return Counter(itertools.chain(*self._format_soup.values())).most_common(1)[0][0]
+        # if not, fall back to default
+        return "standard"
+
+    def _parse_lines(self) -> Tuple[List[str], List[ArenaLine], List[ArenaLine]]:
         links, arena_lines, arena_sideboard_lines = [], [], []
         sideboard_on = False
         for i, line in enumerate(self._desc_lines):
+            self._extract_formats(line)
             url = exctract_url(line)
             if url:
                 links.append(url)
@@ -168,7 +203,46 @@ class Video:
                     else:
                         arena_lines.append(ArenaLine(line))
 
-        return links, arena_lines
+        return links, arena_lines, arena_sideboard_lines
+
+    def _process_arena_line(self, arena_line: ArenaLine) -> List[Card]:
+        if arena_line.is_extended:
+            card = find_by_collector_number(arena_line.collector_number, arena_line.set_code)
+            if card:
+                return [card] * arena_line.quantity
+
+        card = find_card(lambda c: arena_line.name == c.name, self._format_cards)
+        if card:
+            return [card] * arena_line.quantity
+
+        # try less strictly
+        card = find_card(lambda c: arena_line.name in c.name, self._format_cards)
+        if card:
+            return [card] * arena_line.quantity
+
+        return []
+
+    def _get_arena_deck(self, card_lines: List[ArenaLine],
+                        sideboard_lines: List[ArenaLine]) -> Optional[Deck]:
+        cards, sideboard = [], []
+        for card_line in card_lines:
+            processed = self._process_arena_line(card_line)
+            if not processed:
+                print(f"Card not found for main list: {card_line}")
+                return None
+            cards.extend(processed)
+        for sideboard_line in sideboard_lines:
+            processed = self._process_arena_line(sideboard_line)
+            if not processed:
+                print(f"Card not found for sideboard: {sideboard_line}")
+                break
+        return Deck(cards, sideboard)
+
+    def _get_deck(self) -> Optional[Deck]:
+        if self.arena_lines and sum(al.quantity for al in self.arena_lines) >= Deck.MIN_SIZE:
+            return self._get_arena_deck(self.arena_lines, self.arena_sideboard_lines)
+        # TODO: more
+        return None
 
 
 class Channel(list):
