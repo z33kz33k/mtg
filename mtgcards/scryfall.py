@@ -95,6 +95,29 @@ class Color(Enum):
     def is_multi(self) -> bool:
         return len(self.value) > 1
 
+    @staticmethod
+    def from_letters(letters: Iterable[str]) -> "Color":
+        letters = [*letters]
+        if (any(letter not in Color.ALL.value for letter in letters)
+                or any(letters.count(letter) > 1 for letter in letters)):
+            raise ValueError(f"Invalid color letter designations: {letters}")
+        relevant_colors = [color for color in Color if len(color.value) == len(letters)]
+        if not relevant_colors:
+            raise ValueError(f"Invalid number of color letter designation. Must be 1-5, "
+                             f"got {len(letters)}")
+        result = from_iterable(relevant_colors,
+                               lambda color: all(letter in color.value for letter in letters))
+        if not result:
+            raise ValueError(f"No color for designations: {letters}")
+        return result
+
+    @staticmethod
+    def from_cards(cards: Iterable["Card"]) -> "Color":
+        letters = set()
+        for card in cards:
+            letters.update(card.color_identity.value)
+        return Color.from_letters(letters)
+
 
 class Rarity(Enum):
     COMMON = "common"
@@ -418,6 +441,16 @@ class Card:
 
     def __hash__(self) -> int:
         return hash(self.id)
+
+    def __str__(self) -> str:
+        text = f"{self.name} ({self.set.upper()})"
+        if self.collector_number:
+            text += f" {self.collector_number}"
+        return text
+
+    def __repr__(self) -> str:
+        return getrepr(self.__class__, ("name", self.name), ("set", self.set),
+                       ("collector_number", self.collector_number))
 
     def __post_init__(self) -> None:
         if self.is_multipart and self.card_faces is None:
@@ -972,12 +1005,20 @@ class Deck:
         return self._sideboard
 
     @property
-    def is_singleton(self) -> bool:
-        return self._is_singleton
+    def commander(self) -> Optional[Card]:
+        return self._commander
 
     @property
     def max_playset_count(self) -> int:
         return self._max_playset_count
+
+    @property
+    def all_cards(self) -> List[Card]:
+        return [*self.mainlist, *self.sideboard]
+
+    @property
+    def color_identity(self) -> Color:
+        return Color.from_cards(self.mainlist)
 
     @property
     def artifacts(self) -> List[Card]:
@@ -1036,10 +1077,16 @@ class Deck:
         return sum(card.cmc for card in self.mainlist) / len(self.mainlist)
 
     def __init__(self, cards: Iterable[Card], sideboard: Optional[Iterable[Card]] = None,
-                 is_singleton=False) -> None:
+                 commander: Optional[Card] = None) -> None:
         self._sideboard = [*sideboard] if sideboard else []
-        self._is_singleton = is_singleton
-        self._max_playset_count = 1 if is_singleton else 4
+        self._commander = commander
+        if commander:
+            for card in cards:
+                if any(letter not in commander.colors for letter in card.colors):
+                    raise ValueError(f"Color of {card} doesn't match "
+                                     f"commander color: {card.colors}!={commander.colors}")
+            cards = [commander, *cards]
+        self._max_playset_count = 1 if commander is not None else 4
         self._playsets: DefaultDict[Card, List[Card]] = defaultdict(list)
         for card in cards:
             if card.has_special_rarity:
@@ -1062,7 +1109,7 @@ class Deck:
 
     def _validate_sideboard(self) -> None:
         temp_playsets = defaultdict(list)
-        for card in [*self.mainlist, *self.sideboard]:
+        for card in self.all_cards:
             temp_playsets[card].append(card)
         for playset in temp_playsets.values():
             if len(playset) > self.max_playset_count:
@@ -1071,10 +1118,10 @@ class Deck:
                                        f"{len(playset)} > {self.max_playset_count}")
 
     def __repr__(self) -> str:
-        return getrepr(
-            self.__class__,
+        reprs = [
             ("avg_cmc", f"{self.avg_cmc:.2f}"),
             ("avg_rarity_weight", f"{self.avg_rarity_weight:.1f}"),
+            ("color_identity", self.color_identity.name),
             ("artifacts", len(self.artifacts)),
             ("creatures", len(self.creatures)),
             ("enchantments", len(self.enchantments)),
@@ -1082,5 +1129,8 @@ class Deck:
             ("lands", len(self.lands)),
             ("planeswalkers", len(self.planeswalkers)),
             ("sorceries", len(self.sorceries)),
-        )
+        ]
+        if self.commander:
+            reprs.append(("commander", str(self.commander)))
+        return getrepr(self.__class__, *reprs)
 

@@ -10,6 +10,7 @@
 import itertools
 import re
 from collections import defaultdict, Counter
+from enum import Enum, auto
 from datetime import datetime
 from decimal import Decimal
 from typing import DefaultDict, List, Optional, Set, Tuple
@@ -20,67 +21,44 @@ from pytube import YouTube
 from youtubesearchpython import Channel as YtspChannel
 
 from mtgcards.const import Json
-from mtgcards.utils import getrepr, parse_int_from_str
-from mtgcards.scryfall import MULTIPART_SEPARATOR as SCRYFALL_MULTIPART_SEPARATOR
 from mtgcards.scryfall import formats as scryfall_formats
 from mtgcards.scryfall import format_cards, Card, Deck, find_card, find_by_collector_number
+from mtgcards.yt.arena import ArenaLine
 
 
-class ArenaLine:
-    """A line of text in MtG Arena decklist format that denotes a card.
+class _ArenaParsing(Enum):
+    """State machine for Arena lines parsing
 
-    Example:
-        '4 Commit /// Memory (AKR) 54'
     """
-    MULTIPART_SEPARATOR = "///"  # this is different than in Scryfall data where they use: '//'
-    # matches '4 Commit /// Memory'
-    PATTERN = re.compile(r"\d{1,3}\s[A-Z][\w\s'&/,-]+")
-    # matches '4 Commit /// Memory (AKR) 54'
-    EXTENDED_PATTERN = re.compile(r"\d{1,3}\s[A-Z][\w\s'&/,-]+\([A-Z\d]{3}\)\s\d+")
+    IDLE = auto()
+    MAINLIST = auto()
+    COMMANDER = auto()
+    SIDEBOARD = auto()
 
-    @property
-    def raw_line(self) -> str:
-        return self._raw_line
+    @classmethod
+    def shift_to_idle(cls, current_state: "_ArenaParsing") -> "_ArenaParsing":
+        if current_state not in (_ArenaParsing.MAINLIST, _ArenaParsing.COMMANDER,
+                                 _ArenaParsing.SIDEBOARD):
+            raise RuntimeError(f"Invalid transition to IDLE from: {current_state.name}")
+        return _ArenaParsing.IDLE
 
-    @property
-    def is_extended(self) -> bool:
-        return self._is_extended
+    @classmethod
+    def shift_to_mainlist(cls, current_state: "_ArenaParsing") -> "_ArenaParsing":
+        if current_state is not _ArenaParsing.IDLE:
+            raise RuntimeError(f"Invalid transition to MAIN_LIST from: {current_state.name}")
+        return _ArenaParsing.MAINLIST
 
-    @property
-    def quantity(self) -> int:
-        return self._quantity
+    @classmethod
+    def shift_to_commander(cls, current_state: "_ArenaParsing") -> "_ArenaParsing":
+        if current_state is not _ArenaParsing.IDLE:
+            raise RuntimeError(f"Invalid transition to COMMANDER from: {current_state.name}")
+        return _ArenaParsing.COMMANDER
 
-    @property
-    def name(self) -> str:
-        return self._name
-
-    @property
-    def set_code(self) -> Optional[str]:
-        return self._setcode
-
-    @property
-    def collector_number(self) -> Optional[int]:
-        return self._collector_number
-
-    def __init__(self, line: str) -> None:
-        self._raw_line = line
-        self._is_extended = self.EXTENDED_PATTERN.match(line) is not None
-        quantity, rest = line.split(maxsplit=1)
-        self._quantity = int(quantity)
-        if self.is_extended:
-            self._name, rest = rest.split("(")
-            self._name = self._name.strip()
-            self._setcode, rest = rest.split(")")
-            self._collector_number = parse_int_from_str(rest.strip())
-        else:
-            self._name, self._setcode, self._collector_number = rest, None, None
-        self._name = self._name.replace(self.MULTIPART_SEPARATOR, SCRYFALL_MULTIPART_SEPARATOR)
-
-    def __repr__(self) -> str:
-        pairs = [("quantity", self.quantity), ("name", self.name)]
-        if self.is_extended:
-            pairs += [("setcode", self.set_code), ("collector_number", self.collector_number)]
-        return getrepr(self.__class__, *pairs)
+    @classmethod
+    def shift_to_sideboard(cls, current_state: "_ArenaParsing") -> "_ArenaParsing":
+        if current_state is not _ArenaParsing.IDLE:
+            raise RuntimeError(f"Invalid transition to SIDEBOARD from: {current_state.name}")
+        return _ArenaParsing.SIDEBOARD
 
 
 class Video:
@@ -136,7 +114,7 @@ class Video:
 
     @property
     def _desc_lines(self) -> List[str]:
-        return self.description.split("\n")
+        return [line.strip() for line in self.description.split("\n")]
 
     @property
     def links(self) -> List[str]:
@@ -167,6 +145,7 @@ class Video:
         self._pytube_data = YouTube(self.URL_TEMPLATE.format(self.id))
         self._format_soup: DefaultDict[str, List[str]] = defaultdict(list)
         self._extract_formats(self.title)
+        self._arena_parsing = _ArenaParsing.IDLE
         self._links, self._arena_lines, self._arena_sideboard_lines = self._parse_lines()
         self._format = self._get_format()
         self._format_cards = format_cards(self._format)
@@ -184,29 +163,42 @@ class Video:
         # if not, fall back to default
         return "standard"
 
-    def _parse_lines(self) -> Tuple[List[str], List[ArenaLine], List[ArenaLine]]:
-        links, arena_lines, arena_sideboard_lines = [], [], []
-        sideboard_on = False
+    def _parse_lines(self
+                     ) -> Tuple[List[str], List[ArenaLine], List[ArenaLine], Optional[ArenaLine]]:
+        links, arena_lines, arena_sideboard_lines, commander_line = [], [], [], None
         for i, line in enumerate(self._desc_lines):
             self._extract_formats(line)
             url = exctract_url(line)
             if url:
                 links.append(url)
             else:
-                if line.startswith("Sideboard"):
-                    sideboard_on = True
-                    continue
-                match = ArenaLine.PATTERN.match(line)
-                if match:
-                    if sideboard_on:
-                        arena_sideboard_lines.append(ArenaLine(line))
-                    else:
-                        arena_lines.append(ArenaLine(line))
+                # Arena parsing
+                if not line or line.isspace():
+                    self._arena_parsing = _ArenaParsing.shift_to_idle(self._arena_parsing)
+                elif line.startswith("Sideboard"):
+                    self._arena_parsing = _ArenaParsing.shift_to_sideboard(self._arena_parsing)
+                elif line.startswith("Commander"):
+                    self._arena_parsing = _ArenaParsing.shift_to_commander(self._arena_parsing)
+                else:
+                    match = ArenaLine.PATTERN.match(line)
+                    if match:
+                        if self._arena_parsing is _ArenaParsing.IDLE:
+                            self._arena_parsing = _ArenaParsing.shift_to_mainlist(
+                                self._arena_parsing)
 
-        return links, arena_lines, arena_sideboard_lines
+                        if self._arena_parsing is _ArenaParsing.SIDEBOARD:
+                            arena_sideboard_lines.append(ArenaLine(line))
+                        elif self._arena_parsing is _ArenaParsing.COMMANDER:
+                            commander_line = ArenaLine(line)
+                        elif self._arena_parsing is _ArenaParsing.MAINLIST:
+                            arena_lines.append(ArenaLine(line))
+
+        return links, arena_lines, arena_sideboard_lines, commander_line
 
     def _process_arena_line(self, arena_line: ArenaLine) -> List[Card]:
         if arena_line.is_extended:
+            # TODO: make finding card always return from a pool of possible cards the one with
+            #  the smallest collector number
             card = find_by_collector_number(arena_line.collector_number, arena_line.set_code)
             if card:
                 return [card] * arena_line.quantity
