@@ -22,7 +22,8 @@ from youtubesearchpython import Channel as YtspChannel
 
 from mtgcards.const import Json
 from mtgcards.scryfall import formats as scryfall_formats
-from mtgcards.scryfall import format_cards, Card, Deck, find_card, find_by_collector_number
+from mtgcards.scryfall import format_cards, Card, Deck, find_by_name_narrowed_by_collector_number, \
+    set_cards
 from mtgcards.yt.arena import ArenaLine
 
 
@@ -197,18 +198,12 @@ class Video:
 
     def _process_arena_line(self, arena_line: ArenaLine) -> List[Card]:
         if arena_line.is_extended:
-            # TODO: make finding card always return from a pool of possible cards the one with
-            #  the smallest collector number
-            card = find_by_collector_number(arena_line.collector_number, arena_line.set_code)
+            cards = set_cards(arena_line.set_code.lower())
+            card = find_by_name_narrowed_by_collector_number(arena_line.name, cards)
             if card:
                 return [card] * arena_line.quantity
 
-        card = find_card(lambda c: arena_line.name == c.name, self._format_cards)
-        if card:
-            return [card] * arena_line.quantity
-
-        # try less strictly
-        card = find_card(lambda c: arena_line.name in c.name, self._format_cards)
+        card = find_by_name_narrowed_by_collector_number(arena_line.name, self._format_cards)
         if card:
             return [card] * arena_line.quantity
 

@@ -45,8 +45,8 @@ def download_scryfall_bulk_data() -> None:
 
 MULTIPART_SEPARATOR = "//"  # separates parts of card's name in multipart cards
 MULTIPART_LAYOUTS = ['adventure', 'art_series', 'double_faced_token', 'flip', 'modal_dfc', 'split',
-                     'transform']\
-
+                     'transform'] \
+ \
 # all cards that got Alchemy rebalance treatment have their rebalanced counterparts with names
 # prefixed by 'A-'
 ALCHEMY_REBALANCE_INDICATOR = "A-"
@@ -55,11 +55,11 @@ ALCHEMY_REBALANCE_INDICATOR = "A-"
 class Color(Enum):
     COLORLESS = ()  # technically, not a color
     # singletons
-    WHITE = ("W", )
-    BLUE = ("U", )
-    BLACK = ("B", )
-    RED = ("R", )
-    GREEN = ("G", )
+    WHITE = ("W",)
+    BLUE = ("U",)
+    BLACK = ("B",)
+    RED = ("R",)
+    GREEN = ("G",)
     # pairs
     GOLGARI = ("B", "G")
     RAKDOS = ("B", "R")
@@ -134,13 +134,13 @@ class Rarity(Enum):
         Based on: https://mtg.fandom.com/wiki/Rarity
         """
         if self is Rarity.MYTHIC:
-            return 1 / (1/15 * 1/8)  # 120.00
+            return 1 / (1 / 15 * 1 / 8)  # 120.00
         if self is Rarity.RARE:
-            return 1 / (1/15 * 7/8)  # 17.14
+            return 1 / (1 / 15 * 7 / 8)  # 17.14
         if self is Rarity.UNCOMMON:
-            return 1 / (1/15 * 3)    # 5.00
+            return 1 / (1 / 15 * 3)  # 5.00
         if self is Rarity.COMMON:
-            return 1 / (1/15 * 11)   # 1.36
+            return 1 / (1 / 15 * 11)  # 1.36
         return None
 
     @property
@@ -190,7 +190,7 @@ class TypeLine:
                      "Siren", "Sponge", "Squid", "Starfish", "Thalakos", "Trilobite", "Turtle",
                      "Vedalken", "Whale"},
         Color.BLACK: {"Aetherborn", "Azra", "Bat", "Carrier", "Dauthi", "Eye",
-                      "Gorgon", "Hag", "Harpy", "Horror", "Imp", "Lamia", "Leech",  "Nightmare",
+                      "Gorgon", "Hag", "Harpy", "Horror", "Imp", "Lamia", "Leech", "Nightmare",
                       "Nightstalker", "Phyrexian", "Rat", "Scorpion", "Shade", "Skeleton", "Slug",
                       "Specter", "Thrull", "Worm", "Wraith"},
         Color.RED: {"Cyclops", "Devil", "Dwarf", "Efreet", "Giant", "Goat", "Gremlin", "Hellion",
@@ -909,22 +909,30 @@ def format_cards(fmt: str, data: Optional[Iterable[Card]] = None) -> Set[Card]:
     return find_cards(lambda c: c.is_legal_in(fmt), data)
 
 
-def find_card(predicate: Callable[[Card], bool],
-              data: Optional[Iterable[Card]] = None) -> Optional[Card]:
+def find_card(predicate: Callable[[Card], bool], data: Optional[Iterable[Card]] = None,
+              narrow_by_collector_number=False) -> Optional[Card]:
     """Return card data from ``data`` that satisfies ``predicate`` or `None`.
     """
     data = data if data else bulk_data()
-    return from_iterable(data, predicate)
+    if not narrow_by_collector_number:
+        return from_iterable(data, predicate)
+
+    cards = find_cards(predicate, data)
+    cards = [card for card in cards if card.collector_number_int]
+    cards = sorted(cards, key=lambda c: c.collector_number_int)
+    # return card with the smallest collector number
+    return cards[0] if cards else None
 
 
 def find_by_name(card_name: str, data: Optional[Iterable[Card]] = None,
-                 exact=False) -> Optional[Card]:
+                 exact=False, narrow_by_collector_number=False) -> Optional[Card]:
     """Return a Scryfall card data of provided name or `None`.
     """
     data = data if data else bulk_data()
     if exact:
-        return find_card(lambda c: c.name == card_name, data)
-    return find_card(lambda c: card_name.lower() in c.name.lower(), data)
+        return find_card(lambda c: c.name == card_name, data, narrow_by_collector_number)
+    return find_card(lambda c: card_name.lower() in c.name.lower(), data,
+                     narrow_by_collector_number)
 
 
 def find_by_parts(name_parts: Iterable[str],
@@ -935,17 +943,33 @@ def find_by_parts(name_parts: Iterable[str],
     return find_card(lambda c: all(part.lower() in c.name.lower() for part in name_parts), data)
 
 
-def find_by_collector_number(collector_number: int, set_code: str,
+def find_by_collector_number(collector_number: int,
                              data: Optional[Iterable[Card]] = None) -> Optional[Card]:
+    """Return a Scryfall card data designated by provided ``collector_number`` from ``data`` or
+    `None`.
+    """
     data = data if data else bulk_data()
     data = [card for card in data if card.collector_number_int]
-    cards = set_cards(set_code.lower(), data=data)
-    return find_card(lambda c: c.collector_number == collector_number, cards)
+    return find_card(lambda c: c.collector_number == collector_number, data)
+
+
+def find_by_name_narrowed_by_collector_number(
+        name: str, data: Optional[Iterable[Card]] = None) -> Optional[Card]:
+    """Return a Scryfall card data of provided name or `None`.
+    """
+    data = data if data else bulk_data()
+    card = find_by_name(name, data, exact=True, narrow_by_collector_number=True)
+    if card:
+        return card
+    # try less strictly
+    card = find_by_name(name, data, exact=False, narrow_by_collector_number=True)
+    return card if card else None
 
 
 class ColorIdentityDistibution:
     """Distribution of `color_identity` in card data.
     """
+
     @property
     def colorsmap(self) -> DefaultDict[Color, List[Card]]:
         """Return mapping of cards to colors.
@@ -1133,4 +1157,3 @@ class Deck:
         if self.commander:
             reprs.append(("commander", str(self.commander)))
         return getrepr(self.__class__, *reprs)
-
