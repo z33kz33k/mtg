@@ -20,7 +20,7 @@ from mtgcards.utils import from_iterable
 
 from mtgcards.yt import Channel
 
-brewlab = Channel('https://www.youtube.com/@MTGABrewLab')
+channel = Channel('https://www.youtube.com/@islanddelvergaming1350')
 pass
 # lvd = Channel('https://www.youtube.com/@LegenVD')
 # linus = Channel("https://www.youtube.com/@LinusTechTips")

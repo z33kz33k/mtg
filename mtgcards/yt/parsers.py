@@ -158,7 +158,8 @@ class ArenaParser:
                     if self._state is _ParsingState.SIDEBOARD:
                         sideboard.extend(CardLine(line).process(self._format_cards))
                     elif self._state is _ParsingState.COMMANDER:
-                        commander = CardLine(line).process(self._format_cards)
+                        result = CardLine(line).process(self._format_cards)
+                        commander = result[0] if result else None
                     elif self._state is _ParsingState.MAINLIST:
                         main_list.extend(CardLine(line).process(self._format_cards))
 

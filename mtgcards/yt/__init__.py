@@ -118,9 +118,13 @@ class Video:
             self._format_soup[fmt].append(fmt)
 
     def _get_format(self) -> str:
-        # if format soup has been populated from title and description, take the most common item
+        # if format soup has been populated, take the most common item
         if self._format_soup:
-            return Counter(itertools.chain(*self._format_soup.values())).most_common(1)[0][0]
+            two_best = Counter(itertools.chain(*self._format_soup.values())).most_common(2)
+            two_best = [pair[0] for pair in two_best]
+            if len(two_best) == 2 and all(fmt in ("brawl", "historic") for fmt in two_best):
+                return "historicbrawl"
+            return two_best[0]
         # if not, fall back to default
         return "standard"
 
