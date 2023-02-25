@@ -45,8 +45,8 @@ def download_scryfall_bulk_data() -> None:
 
 MULTIPART_SEPARATOR = "//"  # separates parts of card's name in multipart cards
 MULTIPART_LAYOUTS = ['adventure', 'art_series', 'double_faced_token', 'flip', 'modal_dfc', 'split',
-                     'transform'] \
- \
+                     'transform']
+
 # all cards that got Alchemy rebalance treatment have their rebalanced counterparts with names
 # prefixed by 'A-'
 ALCHEMY_REBALANCE_INDICATOR = "A-"
@@ -488,10 +488,16 @@ class Card:
     def collector_number_int(self) -> Optional[int]:
         """Return collector number as an integer, if it can be parsed as such.
 
+        .. note: Parsing logic strips any non-digits and then parses a number. This means that
+        some alternative versions (e.g. Alchemy variants) will have the same number. However,
+        it needs to be this way, because there are some basic cards that still have the collector
+        number in this format (for instance both parts of Meld pairs from BRO).
+
         `collector_number` can look like that:
             {"12e", "67f", "233f", "A-268", "4e"}
         """
-        return parse_int_from_str(self.collector_number)
+        cn = "".join(char for char in self.collector_number if char.isdigit())
+        return parse_int_from_str(cn)
 
     @property
     def formats(self) -> List[str]:
@@ -710,6 +716,10 @@ class Card:
         return "Land" in self.regular_types
 
     @property
+    def is_basic_land(self) -> bool:
+        return "Land" in self.regular_types and "Basic" in self.supertypes
+
+    @property
     def is_planeswalker(self) -> bool:
         return "Planeswalker" in self.regular_types
 
@@ -891,18 +901,21 @@ def find_cards(predicate: Callable[[Card], bool],
     return {card for card in data if predicate(card)}
 
 
+@lru_cache
 def set_cards(*set_codes: str, data: Optional[Iterable[Card]] = None) -> Set[Card]:
     """Return card data for sets designated by ``set_codes``.
     """
     return find_cards(lambda c: c.set in [code.lower() for code in set_codes], data)
 
 
+@lru_cache
 def arena_cards() -> Set[Card]:
     """Return Scryfall bulk data filtered for only cards available on Arena.
     """
     return find_cards(lambda c: "arena" in c.games)
 
 
+@lru_cache
 def format_cards(fmt: str, data: Optional[Iterable[Card]] = None) -> Set[Card]:
     """Return card data for MtG format designated by ``fmt``.
     """
@@ -1021,7 +1034,7 @@ class Deck:
     MIN_SIZE = 60
 
     @cached_property
-    def mainlist(self) -> List[Card]:
+    def main_list(self) -> List[Card]:
         return [*itertools.chain(*self._playsets.values())]
 
     @property
@@ -1038,81 +1051,81 @@ class Deck:
 
     @property
     def all_cards(self) -> List[Card]:
-        return [*self.mainlist, *self.sideboard]
+        return [*self.main_list, *self.sideboard]
 
     @property
     def color_identity(self) -> Color:
-        return Color.from_cards(self.mainlist)
+        return Color.from_cards(self.main_list)
 
     @property
     def artifacts(self) -> List[Card]:
-        return [card for card in self.mainlist if card.is_artifact]
+        return [card for card in self.main_list if card.is_artifact]
 
     @property
     def creatures(self) -> List[Card]:
-        return [card for card in self.mainlist if card.is_creature]
+        return [card for card in self.main_list if card.is_creature]
 
     @property
     def enchantments(self) -> List[Card]:
-        return [card for card in self.mainlist if card.is_enchantment]
+        return [card for card in self.main_list if card.is_enchantment]
 
     @property
     def instants(self) -> List[Card]:
-        return [card for card in self.mainlist if card.is_instant]
+        return [card for card in self.main_list if card.is_instant]
 
     @property
     def lands(self) -> List[Card]:
-        return [card for card in self.mainlist if card.is_land]
+        return [card for card in self.main_list if card.is_land]
 
     @property
     def planeswalkers(self) -> List[Card]:
-        return [card for card in self.mainlist if card.is_planeswalker]
+        return [card for card in self.main_list if card.is_planeswalker]
 
     @property
     def sorceries(self) -> List[Card]:
-        return [card for card in self.mainlist if card.is_sorcery]
+        return [card for card in self.main_list if card.is_sorcery]
 
     @property
     def commons(self) -> List[Card]:
-        return [card for card in self.mainlist if card.is_common]
+        return [card for card in self.main_list if card.is_common]
 
     @property
     def uncommons(self) -> List[Card]:
-        return [card for card in self.mainlist if card.is_uncommon]
+        return [card for card in self.main_list if card.is_uncommon]
 
     @property
     def rares(self) -> List[Card]:
-        return [card for card in self.mainlist if card.is_rare]
+        return [card for card in self.main_list if card.is_rare]
 
     @property
     def mythics(self) -> List[Card]:
-        return [card for card in self.mainlist if card.is_mythic]
+        return [card for card in self.main_list if card.is_mythic]
 
     @property
     def total_rarity_weight(self) -> float:
-        return sum(card.rarity.weight for card in self.mainlist)
+        return sum(card.rarity.weight for card in self.main_list)
 
     @property
     def avg_rarity_weight(self):
-        return self.total_rarity_weight / len(self.mainlist)
+        return self.total_rarity_weight / len(self.main_list)
 
     @property
     def avg_cmc(self) -> float:
-        return sum(card.cmc for card in self.mainlist) / len(self.mainlist)
+        return sum(card.cmc for card in self.main_list) / len(self.main_list)
 
-    def __init__(self, cards: Iterable[Card], sideboard: Optional[Iterable[Card]] = None,
+    def __init__(self, main_list: Iterable[Card], sideboard: Optional[Iterable[Card]] = None,
                  commander: Optional[Card] = None) -> None:
         self._sideboard = [*sideboard] if sideboard else []
         self._commander = commander
         if commander:
-            for card in cards:
+            for card in main_list:
                 if any(letter not in commander.colors for letter in card.colors):
                     raise ValueError(f"Color of {card} doesn't match "
                                      f"commander color: {card.colors}!={commander.colors}")
-            cards = [commander, *cards]
+            main_list = [commander, *main_list]
         self._max_playset_count = 1 if commander is not None else 4
         self._playsets: DefaultDict[Card, List[Card]] = defaultdict(list)
-        for card in cards:
+        for card in main_list:
             if card.has_special_rarity:
                 raise InvalidDeckError(f"Invalid rarity for {card.name!r}: {card.rarity.value!r}")
             self._playsets[card].append(card)
@@ -1123,13 +1136,12 @@ class Deck:
     def _validate_mainlist(self) -> None:
         for playset in self._playsets.values():
             card = playset[0]
-            if not card.is_land and len(playset) > self.max_playset_count:
+            if not card.is_basic_land and len(playset) > self.max_playset_count:
                 raise InvalidDeckError(f"Invalid main list. Too many occurances of"
                                        f" {card.name!r}: "
                                        f"{len(playset)} > {self.max_playset_count}")
-        if len(self.mainlist) < self.MIN_SIZE:
-            print([card.name for card in self.mainlist])
-            raise InvalidDeckError(f"Invalid deck size: '{len(self.mainlist)}'")
+        if len(self.main_list) < self.MIN_SIZE:
+            raise InvalidDeckError(f"Invalid deck size: '{len(self.main_list)}'")
 
     def _validate_sideboard(self) -> None:
         temp_playsets = defaultdict(list)

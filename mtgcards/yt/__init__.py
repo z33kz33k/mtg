@@ -10,9 +10,9 @@
 import itertools
 import re
 from collections import defaultdict, Counter
-from enum import Enum, auto
 from datetime import datetime
 from decimal import Decimal
+from functools import cached_property
 from typing import DefaultDict, List, Optional, Set, Tuple
 
 import requests
@@ -22,44 +22,9 @@ from youtubesearchpython import Channel as YtspChannel
 
 from mtgcards.const import Json
 from mtgcards.scryfall import formats as scryfall_formats
-from mtgcards.scryfall import format_cards, Card, Deck, find_by_name_narrowed_by_collector_number, \
-    set_cards
-from mtgcards.yt.arena import ArenaLine
-
-
-class _ArenaParsing(Enum):
-    """State machine for Arena lines parsing
-
-    """
-    IDLE = auto()
-    MAINLIST = auto()
-    COMMANDER = auto()
-    SIDEBOARD = auto()
-
-    @classmethod
-    def shift_to_idle(cls, current_state: "_ArenaParsing") -> "_ArenaParsing":
-        if current_state not in (_ArenaParsing.MAINLIST, _ArenaParsing.COMMANDER,
-                                 _ArenaParsing.SIDEBOARD):
-            raise RuntimeError(f"Invalid transition to IDLE from: {current_state.name}")
-        return _ArenaParsing.IDLE
-
-    @classmethod
-    def shift_to_mainlist(cls, current_state: "_ArenaParsing") -> "_ArenaParsing":
-        if current_state is not _ArenaParsing.IDLE:
-            raise RuntimeError(f"Invalid transition to MAIN_LIST from: {current_state.name}")
-        return _ArenaParsing.MAINLIST
-
-    @classmethod
-    def shift_to_commander(cls, current_state: "_ArenaParsing") -> "_ArenaParsing":
-        if current_state is not _ArenaParsing.IDLE:
-            raise RuntimeError(f"Invalid transition to COMMANDER from: {current_state.name}")
-        return _ArenaParsing.COMMANDER
-
-    @classmethod
-    def shift_to_sideboard(cls, current_state: "_ArenaParsing") -> "_ArenaParsing":
-        if current_state is not _ArenaParsing.IDLE:
-            raise RuntimeError(f"Invalid transition to SIDEBOARD from: {current_state.name}")
-        return _ArenaParsing.SIDEBOARD
+from mtgcards.scryfall import format_cards, Deck
+from mtgcards.utils import getrepr
+from mtgcards.yt.parsers import ArenaParser
 
 
 class Video:
@@ -113,7 +78,7 @@ class Video:
     def views(self) -> int:
         return self._pytube_data.views
 
-    @property
+    @cached_property
     def _desc_lines(self) -> List[str]:
         return [line.strip() for line in self.description.split("\n")]
 
@@ -130,14 +95,6 @@ class Video:
         return self._format
 
     @property
-    def arena_lines(self) -> List[ArenaLine]:
-        return self._arena_lines
-
-    @property
-    def arena_sideboard_lines(self) -> List[ArenaLine]:
-        return self._arena_sideboard_lines
-
-    @property
     def deck(self) -> Optional[Deck]:
         return self._deck
 
@@ -146,14 +103,17 @@ class Video:
         self._pytube_data = YouTube(self.URL_TEMPLATE.format(self.id))
         self._format_soup: DefaultDict[str, List[str]] = defaultdict(list)
         self._extract_formats(self.title)
-        self._arena_parsing = _ArenaParsing.IDLE
-        self._links, self._arena_lines, self._arena_sideboard_lines = self._parse_lines()
+        self._links = self._parse_lines()
         self._format = self._get_format()
         self._format_cards = format_cards(self._format)
         self._deck = self._get_deck()
 
+    def __repr__(self) -> str:
+        return getrepr(self.__class__, ("title", self.title), ("deck", self.deck))
+
     def _extract_formats(self, line: str) -> None:
-        formats = [word.lower() for word in line.strip().split() if word.lower() in self.formats]
+        words = [word.lower() for word in line.strip().split()]
+        formats = [fmt for fmt in self.formats if any(fmt in word for word in words)]
         for fmt in formats:
             self._format_soup[fmt].append(fmt)
 
@@ -164,70 +124,19 @@ class Video:
         # if not, fall back to default
         return "standard"
 
-    def _parse_lines(self
-                     ) -> Tuple[List[str], List[ArenaLine], List[ArenaLine], Optional[ArenaLine]]:
-        links, arena_lines, arena_sideboard_lines, commander_line = [], [], [], None
-        for i, line in enumerate(self._desc_lines):
+    def _parse_lines(self) -> List[str]:
+        links = []
+        for line in self._desc_lines:
             self._extract_formats(line)
             url = exctract_url(line)
             if url:
                 links.append(url)
-            else:
-                # Arena parsing
-                if not line or line.isspace():
-                    self._arena_parsing = _ArenaParsing.shift_to_idle(self._arena_parsing)
-                elif line.startswith("Sideboard"):
-                    self._arena_parsing = _ArenaParsing.shift_to_sideboard(self._arena_parsing)
-                elif line.startswith("Commander"):
-                    self._arena_parsing = _ArenaParsing.shift_to_commander(self._arena_parsing)
-                else:
-                    match = ArenaLine.PATTERN.match(line)
-                    if match:
-                        if self._arena_parsing is _ArenaParsing.IDLE:
-                            self._arena_parsing = _ArenaParsing.shift_to_mainlist(
-                                self._arena_parsing)
-
-                        if self._arena_parsing is _ArenaParsing.SIDEBOARD:
-                            arena_sideboard_lines.append(ArenaLine(line))
-                        elif self._arena_parsing is _ArenaParsing.COMMANDER:
-                            commander_line = ArenaLine(line)
-                        elif self._arena_parsing is _ArenaParsing.MAINLIST:
-                            arena_lines.append(ArenaLine(line))
-
-        return links, arena_lines, arena_sideboard_lines, commander_line
-
-    def _process_arena_line(self, arena_line: ArenaLine) -> List[Card]:
-        if arena_line.is_extended:
-            cards = set_cards(arena_line.set_code.lower())
-            card = find_by_name_narrowed_by_collector_number(arena_line.name, cards)
-            if card:
-                return [card] * arena_line.quantity
-
-        card = find_by_name_narrowed_by_collector_number(arena_line.name, self._format_cards)
-        if card:
-            return [card] * arena_line.quantity
-
-        return []
-
-    def _get_arena_deck(self, card_lines: List[ArenaLine],
-                        sideboard_lines: List[ArenaLine]) -> Optional[Deck]:
-        cards, sideboard = [], []
-        for card_line in card_lines:
-            processed = self._process_arena_line(card_line)
-            if not processed:
-                print(f"Card not found for main list: {card_line}")
-                return None
-            cards.extend(processed)
-        for sideboard_line in sideboard_lines:
-            processed = self._process_arena_line(sideboard_line)
-            if not processed:
-                print(f"Card not found for sideboard: {sideboard_line}")
-                break
-        return Deck(cards, sideboard)
+        return links
 
     def _get_deck(self) -> Optional[Deck]:
-        if self.arena_lines and sum(al.quantity for al in self.arena_lines) >= Deck.MIN_SIZE:
-            return self._get_arena_deck(self.arena_lines, self.arena_sideboard_lines)
+        deck = ArenaParser(self._desc_lines, self._format_cards).deck
+        if deck:
+            return deck
         # TODO: more
         return None
 
