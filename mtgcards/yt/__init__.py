@@ -13,9 +13,10 @@ from collections import defaultdict, Counter
 from datetime import datetime
 from decimal import Decimal
 from functools import cached_property
-from typing import DefaultDict, List, Optional, Set, Tuple
+from typing import DefaultDict, Dict, List, Optional, Set, Tuple
 
 import requests
+from contexttimer import Timer
 from scrapetube import get_channel
 from pytube import YouTube
 from youtubesearchpython import Channel as YtspChannel
@@ -24,7 +25,7 @@ from mtgcards.const import Json
 from mtgcards.scryfall import formats as scryfall_formats
 from mtgcards.scryfall import format_cards, Deck
 from mtgcards.utils import getrepr
-from mtgcards.yt.parsers import ArenaParser
+from mtgcards.yt.parsers import ArenaParser, get_url_parser
 
 
 class Video:
@@ -103,7 +104,7 @@ class Video:
         self._pytube_data = YouTube(self.URL_TEMPLATE.format(self.id))
         self._format_soup: DefaultDict[str, List[str]] = defaultdict(list)
         self._extract_formats(self.title)
-        self._links = self._parse_lines()
+        self._links, self._arena_lines = self._parse_lines()
         self._format = self._get_format()
         self._format_cards = format_cards(self._format)
         self._deck = self._get_deck()
@@ -128,21 +129,66 @@ class Video:
         # if not, fall back to default
         return "standard"
 
-    def _parse_lines(self) -> List[str]:
-        links = []
+    def _parse_lines(self) -> Tuple[List[str], List[str]]:
+        links, arena_lines = [], []
         for line in self._desc_lines:
             self._extract_formats(line)
             url = exctract_url(line)
             if url:
                 links.append(url)
-        return links
+            else:
+                if ArenaParser.is_arena_line(line):
+                    arena_lines.append(line)
+        return links, arena_lines
+
+    @classmethod
+    def _process_hooks(cls, links: List[str]) -> Dict[str, str]:
+        providers = {}
+        for link in links:
+            if not providers.get("aetherhub") and cls.AETHERHUB_HOOK in link:
+                providers["aetherhub"] = link
+            elif not providers.get("goldfish") and cls.GOLDFISH_HOOK in link:
+                providers["goldfish"] = link
+            elif not providers.get("moxfield") and cls.MOXFIELD_HOOK in link:
+                providers["moxfield"] = link
+            elif not providers.get("mtgazone") and cls.MTGAZONE_HOOK in link:
+                providers["mtgazone"] = link
+            elif not providers.get("streamdecker") and cls.STREAMDECKER_HOOK in link:
+                providers["streamdecker"] = link
+            elif not providers.get("tcgplayer") and cls.TCGPLAYER_HOOK in link:
+                providers["tcgplayer"] = link
+            elif (not providers.get("untapped")
+                  and all(hook in link for hook in cls.UNTAPPED_HOOKS)):
+                providers["untapped"] = link
+        return providers
+
+    def _process_decklist_url(self, url: str, provider: str) -> Optional[Deck]:
+        parser_type = get_url_parser(provider)
+        return parser_type(url, self._format_cards).deck
+
+    def _process_urls(self, urls: List[str]) -> Optional[Deck]:
+        providers = self._process_hooks(urls)
+        for provider, url in providers.items():
+            deck = self._process_decklist_url(url, provider)
+            if deck:
+                return deck
+        return None
 
     def _get_deck(self) -> Optional[Deck]:
-        deck = ArenaParser(self._desc_lines, self._format_cards).deck
+        # 1st stage: Arena lines
+        if self._arena_lines:
+            deck = ArenaParser(self._arena_lines, self._format_cards).deck
+            if deck:
+                return deck
+        # 2nd stage: regular URLs
+        deck = self._process_urls(self.links)
         if deck:
             return deck
-        # TODO: more
-        return None
+        # 3rd stage: shortened URLs
+        shortened_urls = [link for link in self.links
+                          if any(hook in link for hook in self.SHORTENER_HOOKS)]
+        unshortened_urls = [unshorten(url) for url in shortened_urls]
+        return self._process_urls(unshortened_urls)
 
 
 class Channel(list):
@@ -197,8 +243,11 @@ def unshorten(url: str) -> str:
 
     Pilfered from: https://stackoverflow.com/a/28918160/4465708
     """
-    session = requests.Session()  # so connections are recycled
-    resp = session.head(url, allow_redirects=True)
+    print(f"Unshortening: '{url}'...")
+    with Timer() as t:
+        session = requests.Session()  # so connections are recycled
+        resp = session.head(url, allow_redirects=True)
+    print(f"Request completed in {t.elapsed:.3f} seconds.")
     return resp.url
 
 
