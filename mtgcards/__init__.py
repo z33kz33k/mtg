@@ -16,8 +16,6 @@ __license__ = "MIT License"
 from mtgcards.utils.log import rootlogger
 from mtgcards.const import OUTPUTDIR
 
-from mtgcards.scryfall import Card
-
 log = rootlogger(__name__, OUTPUTDIR)
 
 

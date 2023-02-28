@@ -11,8 +11,7 @@ import re
 from enum import Enum, auto
 from typing import List, Optional, Set
 
-from mtgcards import Card
-from mtgcards.scryfall import Deck, InvalidDeckError, \
+from mtgcards.scryfall import Card, Deck, InvalidDeckError, \
     MULTIPART_SEPARATOR as SCRYFALL_MULTIPART_SEPARATOR, \
     find_by_name_narrowed_by_collector_number, set_cards
 from mtgcards.utils import getrepr, parse_int_from_str

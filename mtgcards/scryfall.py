@@ -812,6 +812,14 @@ class Card:
             return sentences
         return self.parse_lord_sentences(self.oracle_text)
 
+    @property
+    def multiples_allowed(self) -> bool:
+        if not self.oracle_text:
+            return False
+        if "deck can have any number of cards named" in self.oracle_text:
+            return True
+        return False
+
 
 @lru_cache
 def bulk_data() -> Set[Card]:
@@ -1136,10 +1144,13 @@ class Deck:
     def _validate_mainlist(self) -> None:
         for playset in self._playsets.values():
             card = playset[0]
-            if not card.is_basic_land and len(playset) > self.max_playset_count:
-                raise InvalidDeckError(f"Invalid main list. Too many occurances of"
-                                       f" {card.name!r}: "
-                                       f"{len(playset)} > {self.max_playset_count}")
+            if card.is_basic_land or card.multiples_allowed:
+                pass
+            else:
+                if len(playset) > self.max_playset_count:
+                    raise InvalidDeckError(f"Invalid main list. Too many occurances of"
+                                           f" {card.name!r}: "
+                                           f"{len(playset)} > {self.max_playset_count}")
         if len(self.main_list) < self.MIN_SIZE:
             raise InvalidDeckError(f"Invalid deck size: '{len(self.main_list)}'")
 
@@ -1148,10 +1159,14 @@ class Deck:
         for card in self.all_cards:
             temp_playsets[card].append(card)
         for playset in temp_playsets.values():
-            if len(playset) > self.max_playset_count:
-                raise InvalidDeckError(f"Invalid sideboard. Too many occurances of"
-                                       f" {playset[0].name!r} (considering the main list): "
-                                       f"{len(playset)} > {self.max_playset_count}")
+            card = playset[0]
+            if card.is_basic_land or card.multiples_allowed:
+                pass
+            else:
+                if len(playset) > self.max_playset_count:
+                    raise InvalidDeckError(f"Invalid sideboard. Too many occurances of"
+                                           f" {playset[0].name!r} (considering the main list): "
+                                           f"{len(playset)} > {self.max_playset_count}")
 
     def __repr__(self) -> str:
         reprs = [

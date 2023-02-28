@@ -34,11 +34,13 @@ class UrlParser(ABC):
 
     def __init__(self, url: str, format_cards: Set[Card]) -> None:
         self._url, self._format_cards = url, format_cards
-        self._markup = timed_request(url)
-        self._soup = BeautifulSoup(self._markup, "lxml")
-        self._deck = self._parse()
+        self._deck = None
+
+    def _get_soup(self, **requests_kwargs) -> BeautifulSoup:
+        self._markup = timed_request(self._url, **requests_kwargs)
+        return BeautifulSoup(self._markup, "lxml")
 
     @abstractmethod
-    def _parse(self) -> None:
+    def _get_deck(self) -> Optional[Deck]:
         raise NotImplementedError
 

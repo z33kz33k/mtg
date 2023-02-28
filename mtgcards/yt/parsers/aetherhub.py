@@ -7,20 +7,24 @@
     @author: z33k
 
 """
-from typing import List, Optional
+from typing import List, Optional, Set
 
 from bs4 import Tag
 
-from mtgcards import Card
 from mtgcards.scryfall import Deck, InvalidDeckError, find_by_name_narrowed_by_collector_number, \
-    set_cards
+    set_cards, Card
 from mtgcards.yt.parsers import ParsingError, UrlParser
 
 
 class AetherHubParser(UrlParser):
     """Parser of AetherHub decklist page.
     """
-    def _parse(self) -> Optional[Deck]:
+    def __init__(self, url: str, format_cards: Set[Card]) -> None:
+        super().__init__(url, format_cards)
+        self._soup = self._get_soup()
+        self._deck = self._get_deck()
+
+    def _get_deck(self) -> Optional[Deck]:
         main_list, sideboard, commander = [], [], None
 
         tables = self._soup.find_all("table", class_="table table-borderless")
@@ -34,8 +38,9 @@ class AetherHubParser(UrlParser):
         hovers = [h for h in hovers if h]
         hovers = sorted([h for h in hovers if h], key=lambda h: len(h), reverse=True)
 
+        commander_tag = None
         if len(hovers[-1]) == 1:  # commander
-            hovers, commander = hovers[:-1], hovers[-1]
+            hovers, commander_tag = hovers[:-1], hovers[-1][0]
 
         if len(hovers) == 2:
             main_list_tags, sideboard_tags = hovers
@@ -50,6 +55,11 @@ class AetherHubParser(UrlParser):
 
         for tag in sideboard_tags:
             sideboard.extend(self._parse_hover_tag(tag))
+
+        if commander_tag is not None:
+            result = self._parse_hover_tag(commander_tag)
+            if result:
+                commander = result[0]
 
         try:
             return Deck(main_list, sideboard, commander)
