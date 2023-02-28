@@ -13,7 +13,7 @@ from collections import defaultdict, Counter
 from datetime import datetime
 from decimal import Decimal
 from functools import cached_property
-from typing import DefaultDict, Dict, List, Optional, Set, Tuple
+from typing import DefaultDict, Dict, List, Optional, Set, Tuple, Type
 
 import requests
 from contexttimer import Timer
@@ -25,7 +25,15 @@ from mtgcards.const import Json
 from mtgcards.scryfall import formats as scryfall_formats
 from mtgcards.scryfall import format_cards, Deck
 from mtgcards.utils import getrepr
-from mtgcards.yt.parsers import ArenaParser, get_url_parser
+from mtgcards.yt.parsers import UrlParser
+from mtgcards.yt.parsers.arena import ArenaParser
+from mtgcards.yt.parsers.aetherhub import AetherHubParser
+from mtgcards.yt.parsers.goldfish import GoldfishParser
+from mtgcards.yt.parsers.moxfield import MoxfieldParser
+from mtgcards.yt.parsers.mtgazone import MtgaZoneParser
+from mtgcards.yt.parsers.streamdecker import StreamdeckerParser
+from mtgcards.yt.parsers.tcgplayer import TcgPlayerParser
+from mtgcards.yt.parsers.untapped import UntappedParser
 
 
 class Video:
@@ -142,34 +150,30 @@ class Video:
         return links, arena_lines
 
     @classmethod
-    def _process_hooks(cls, links: List[str]) -> Dict[str, str]:
-        providers = {}
+    def _process_hooks(cls, links: List[str]) -> Dict[Type[UrlParser], str]:
+        parsersmap = {}
         for link in links:
-            if not providers.get("aetherhub") and cls.AETHERHUB_HOOK in link:
-                providers["aetherhub"] = link
-            elif not providers.get("goldfish") and cls.GOLDFISH_HOOK in link:
-                providers["goldfish"] = link
-            elif not providers.get("moxfield") and cls.MOXFIELD_HOOK in link:
-                providers["moxfield"] = link
-            elif not providers.get("mtgazone") and cls.MTGAZONE_HOOK in link:
-                providers["mtgazone"] = link
-            elif not providers.get("streamdecker") and cls.STREAMDECKER_HOOK in link:
-                providers["streamdecker"] = link
-            elif not providers.get("tcgplayer") and cls.TCGPLAYER_HOOK in link:
-                providers["tcgplayer"] = link
-            elif (not providers.get("untapped")
+            if not parsersmap.get(AetherHubParser) and cls.AETHERHUB_HOOK in link:
+                parsersmap[AetherHubParser] = link
+            elif not parsersmap.get(GoldfishParser) and cls.GOLDFISH_HOOK in link:
+                parsersmap[GoldfishParser] = link
+            elif not parsersmap.get(MoxfieldParser) and cls.MOXFIELD_HOOK in link:
+                parsersmap[MoxfieldParser] = link
+            elif not parsersmap.get(MtgaZoneParser) and cls.MTGAZONE_HOOK in link:
+                parsersmap[MtgaZoneParser] = link
+            elif not parsersmap.get(StreamdeckerParser) and cls.STREAMDECKER_HOOK in link:
+                parsersmap[StreamdeckerParser] = link
+            elif not parsersmap.get(TcgPlayerParser) and cls.TCGPLAYER_HOOK in link:
+                parsersmap[TcgPlayerParser] = link
+            elif (not parsersmap.get(UntappedParser)
                   and all(hook in link for hook in cls.UNTAPPED_HOOKS)):
-                providers["untapped"] = link
-        return providers
-
-    def _process_decklist_url(self, url: str, provider: str) -> Optional[Deck]:
-        parser_type = get_url_parser(provider)
-        return parser_type(url, self._format_cards).deck
+                parsersmap[UntappedParser] = link
+        return parsersmap
 
     def _process_urls(self, urls: List[str]) -> Optional[Deck]:
-        providers = self._process_hooks(urls)
-        for provider, url in providers.items():
-            deck = self._process_decklist_url(url, provider)
+        parsersmap = self._process_hooks(urls)
+        for parser_type, url in parsersmap.items():
+            deck = parser_type(url, self._format_cards).deck
             if deck:
                 return deck
         return None

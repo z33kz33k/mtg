@@ -18,13 +18,13 @@ from mtgcards.utils.validate import uniform_type_checker, type_checker
 
 
 def timed_request(url: str, postdata: Optional[Json] = None,
-                  return_json=False) -> Union[List[Json], Json, str]:
+                  return_json=False, **requests_kwargs) -> Union[List[Json], Json, str]:
     print(f"Retrieving data from: '{url}'...")
     with Timer() as t:
         if postdata:
-            data = requests.post(url, json=postdata)
+            data = requests.post(url, json=postdata, **requests_kwargs)
         else:
-            data = requests.get(url)
+            data = requests.get(url, **requests_kwargs)
     print(f"Request completed in {t.elapsed:.3f} seconds.")
     if return_json:
         return data.json()

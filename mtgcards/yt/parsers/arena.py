@@ -1,29 +1,21 @@
 """
 
-    mtgcards.yt.parsers.py
-    ~~~~~~~~~~~~~~~~~~~~~~
-    Parse YouTube video's descriptions for card data.
+    mtgcards.yt.parsers.arena.py
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Parse Arena decklists in YouTube video's descriptions.
 
     @author: z33k
 
 """
 import re
-from abc import ABC, abstractmethod
 from enum import Enum, auto
-from typing import List, Optional, Set, Type, Union
+from typing import List, Optional, Set
 
-from bs4 import BeautifulSoup
-from bs4.element import Tag
-
-from mtgcards.scryfall import MULTIPART_SEPARATOR as SCRYFALL_MULTIPART_SEPARATOR
-from mtgcards.scryfall import Card, Deck, find_by_name_narrowed_by_collector_number, set_cards, \
-    InvalidDeckError
-from mtgcards.utils import getrepr, parse_int_from_str, timed_request
-
-
-class ParsingError(ValueError):
-    """Raised on unexpected states of parsed data.
-    """
+from mtgcards import Card
+from mtgcards.scryfall import Deck, InvalidDeckError, \
+    MULTIPART_SEPARATOR as SCRYFALL_MULTIPART_SEPARATOR, \
+    find_by_name_narrowed_by_collector_number, set_cards
+from mtgcards.utils import getrepr, parse_int_from_str
 
 
 class _ParsingState(Enum):
@@ -190,138 +182,3 @@ class ArenaParser:
             return Deck(main_list, sideboard, commander)
         except InvalidDeckError:
             return None
-
-
-class UrlParser(ABC):
-    """Abstract base parser of URLs pointing to decklists.
-    """
-    @property
-    @abstractmethod
-    def url(self) -> str:
-        raise NotImplementedError
-
-    @property
-    @abstractmethod
-    def deck(self) -> Optional[Deck]:
-        raise NotImplementedError
-
-    @abstractmethod
-    def __init__(self, url: str, format_cards: Set[Card]) -> None:
-        raise NotImplementedError
-
-
-class AetherHubParser(UrlParser):
-    """Parser of AetherHub deck page.
-    """
-    @property
-    def url(self) -> str:
-        return self._url
-
-    @property
-    def deck(self) -> Optional[Deck]:
-        return self._deck
-
-    def __init__(self, url: str, format_cards: Set[Card]) -> None:
-        self._url, self._format_cards = url, format_cards
-        self._markup = timed_request(url)
-        self._soup = BeautifulSoup(self._markup, "lxml")
-        self._deck = self._parse()
-
-    # def _parse(self) -> Optional[Deck]:
-    #     card_tags = [*self._soup.find_all("a", class_="cardLink")]
-    #     card_tags = self._trim_duplicates(card_tags)
-    #     playset_tags = defaultdict(list)
-    #     for tag in card_tags:
-    #         playset_tags[tag.attr["data-card-name"]].append(tag)
-    #
-    # @staticmethod
-    # def _trim_duplicates(card_tags: List[Tag]) -> List[Tag]:
-    #     names = [c.attrs["data-card-name"] for c in card_tags]
-    #
-    #     idx, offset = 0, 10
-    #     searched = None
-    #     marker_group = names[:offset]
-    #     current_group = marker_group[:]
-    #
-    #     while current_group:
-    #         idx += offset
-    #         current_group = names[idx: idx + offset]
-    #         if current_group == marker_group:
-    #             searched = idx
-    #             break
-    #
-    #     return card_tags[:searched] if searched else card_tags
-
-    # @staticmethod
-    # def _parse_playset_tags(playset_tags: List[Tag]) -> List[Card]:
-    #     card_tag = playset_tags[0]
-    #     name, set_code = card_tag.attrs["data-card-name"], card_tag.attrs["data-card-set"].lower()
-    #     cards = set_cards(set_code)
-    #     card = find_by_name_narrowed_by_collector_number(name, cards)
-    #     return [card] * len(playset_tags) if card else []
-
-    def _parse(self) -> Optional[Deck]:
-        main_list, sideboard, commander = [], [], None
-
-        tables = self._soup.find_all("table", class_="table table-borderless")
-        if not tables:
-            raise ParsingError(f"No 'table table-borderless' tables (that contain grouped card "
-                               f"data) in the soup")
-
-        hovers = []
-        for table in tables:
-            hovers.append([*table.find_all("div", "hover-imglink")])
-        hovers = [h for h in hovers if h]
-        hovers = sorted([h for h in hovers if h], key=lambda h: len(h), reverse=True)
-
-        if len(hovers[-1]) == 1:  # commander
-            hovers, commander = hovers[:-1], hovers[-1]
-
-        if len(hovers) == 2:
-            main_list_tags, sideboard_tags = hovers
-        elif len(hovers) == 1:
-            main_list_tags, sideboard_tags = hovers[0], []
-        else:
-            raise ParsingError(f"Unexpected number of 'hover-imglink' div tags "
-                               f"(that contain card data): {len(hovers)}")
-
-        for tag in main_list_tags:
-            main_list.extend(self._parse_hover_tag(tag))
-
-        for tag in sideboard_tags:
-            sideboard.extend(self._parse_hover_tag(tag))
-
-        try:
-            return Deck(main_list, sideboard, commander)
-        except InvalidDeckError:
-            return None
-
-    def _parse_hover_tag(self, hover_tag: Tag) -> List[Card]:
-        quantity, *_ = hover_tag.text.split()
-        try:
-            quantity = int(quantity)
-        except ValueError:
-            raise ParsingError(f"Can't parse card quantity from tag's text:"
-                               f" {hover_tag.text.split()}")
-
-        card_tag = hover_tag.find("a")
-        if card_tag is None:
-            raise ParsingError(f"No 'a' tag inside 'hover-imglink' div tag: {hover_tag!r}")
-
-        name, set_code = card_tag.attrs["data-card-name"], card_tag.attrs["data-card-set"].lower()
-        cards = set_cards(set_code)
-        card = find_by_name_narrowed_by_collector_number(name, cards)
-        if card:
-            return [card] * quantity
-        card = find_by_name_narrowed_by_collector_number(name, self._format_cards)
-        return [card] * quantity if card else []
-
-
-def get_url_parser(designation: str) -> Type[UrlParser]:
-    """Return decklist URL parser class according to provider ``designation``.
-    """
-    if designation == "aetherhub":
-        return AetherHubParser
-    else:
-        raise ValueError(f"Unrecognized parser: {designation!r}")
-
