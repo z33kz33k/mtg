@@ -25,7 +25,7 @@ class AetherHubParser(UrlParser):
         self._deck = self._get_deck()
 
     def _get_deck(self) -> Optional[Deck]:
-        main_list, sideboard, commander = [], [], None
+        mainboard, sideboard, commander = [], [], None
 
         tables = self._soup.find_all("table", class_="table table-borderless")
         if not tables:
@@ -51,7 +51,7 @@ class AetherHubParser(UrlParser):
                                f"(that contain card data): {len(hovers)}")
 
         for tag in main_list_tags:
-            main_list.extend(self._parse_hover_tag(tag))
+            mainboard.extend(self._parse_hover_tag(tag))
 
         for tag in sideboard_tags:
             sideboard.extend(self._parse_hover_tag(tag))
@@ -62,7 +62,7 @@ class AetherHubParser(UrlParser):
                 commander = result[0]
 
         try:
-            return Deck(main_list, sideboard, commander)
+            return Deck(mainboard, sideboard, commander)
         except InvalidDeckError:
             return None
 

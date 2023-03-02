@@ -22,7 +22,7 @@ class _ParsingState(Enum):
     """
     IDLE = auto()
     COMMANDER = auto()
-    MAINLIST = auto()
+    MAINBOARD = auto()
     SIDEBOARD = auto()
 
     @classmethod
@@ -34,12 +34,12 @@ class _ParsingState(Enum):
     @classmethod
     def shift_to_mainlist(cls, current_state: "_ParsingState") -> "_ParsingState":
         if current_state not in (_ParsingState.IDLE, _ParsingState.COMMANDER):
-            raise RuntimeError(f"Invalid transition to MAIN_LIST from: {current_state.name}")
-        return _ParsingState.MAINLIST
+            raise RuntimeError(f"Invalid transition to MAINBOARD from: {current_state.name}")
+        return _ParsingState.MAINBOARD
 
     @classmethod
     def shift_to_sideboard(cls, current_state: "_ParsingState") -> "_ParsingState":
-        if current_state is not _ParsingState.MAINLIST:
+        if current_state is not _ParsingState.MAINBOARD:
             raise RuntimeError(f"Invalid transition to SIDEBOARD from: {current_state.name}")
         return _ParsingState.SIDEBOARD
 
@@ -61,7 +61,7 @@ class GoldfishParser(UrlParser):
         self._deck = self._get_deck()
 
     def _get_deck(self) -> Optional[Deck]:
-        main_list, sideboard, commander = [], [], None
+        mainboard, sideboard, commander = [], [], None
         table = self._soup.find("table", class_="deck-view-deck-table")
         rows = table.find_all("tr")
         for row in rows:
@@ -77,13 +77,13 @@ class GoldfishParser(UrlParser):
                 if self._state is _ParsingState.COMMANDER:
                     if cards:
                         commander = cards[0]
-                elif self._state is _ParsingState.MAINLIST:
-                    main_list.extend(cards)
+                elif self._state is _ParsingState.MAINBOARD:
+                    mainboard.extend(cards)
                 elif self._state is _ParsingState.SIDEBOARD:
                     sideboard.extend(cards)
 
         try:
-            return Deck(main_list, sideboard, commander)
+            return Deck(mainboard, sideboard, commander)
         except InvalidDeckError:
             return None
 

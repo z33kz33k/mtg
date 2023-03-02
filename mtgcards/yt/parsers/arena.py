@@ -21,13 +21,13 @@ class _ParsingState(Enum):
     """State machine for Arena lines parsing.
     """
     IDLE = auto()
-    MAINLIST = auto()
+    MAINBOARD = auto()
     COMMANDER = auto()
     SIDEBOARD = auto()
 
     @classmethod
     def shift_to_idle(cls, current_state: "_ParsingState") -> "_ParsingState":
-        if current_state not in (_ParsingState.MAINLIST, _ParsingState.COMMANDER,
+        if current_state not in (_ParsingState.MAINBOARD, _ParsingState.COMMANDER,
                                  _ParsingState.SIDEBOARD):
             raise RuntimeError(f"Invalid transition to IDLE from: {current_state.name}")
         return _ParsingState.IDLE
@@ -35,8 +35,8 @@ class _ParsingState(Enum):
     @classmethod
     def shift_to_mainlist(cls, current_state: "_ParsingState") -> "_ParsingState":
         if current_state is not _ParsingState.IDLE:
-            raise RuntimeError(f"Invalid transition to MAIN_LIST from: {current_state.name}")
-        return _ParsingState.MAINLIST
+            raise RuntimeError(f"Invalid transition to MAINBOARD from: {current_state.name}")
+        return _ParsingState.MAINBOARD
 
     @classmethod
     def shift_to_commander(cls, current_state: "_ParsingState") -> "_ParsingState":
@@ -150,7 +150,7 @@ class ArenaParser:
         return False
 
     def _parse_lines(self) -> Optional[Deck]:
-        main_list, sideboard, commander = [], [], None
+        mainboard, sideboard, commander = [], [], None
         for line in self._lines:
             if self._state is not _ParsingState.IDLE and (not line or line.isspace()):
                 self._state = _ParsingState.shift_to_idle(self._state)
@@ -163,21 +163,21 @@ class ArenaParser:
                 if match:
                     if self._state is _ParsingState.IDLE:
                         try:
-                            return Deck(main_list, sideboard, commander)
+                            return Deck(mainboard, sideboard, commander)
                         except InvalidDeckError:
                             pass
                         self._state = _ParsingState.shift_to_mainlist(self._state)
-                        main_list, sideboard, commander = [], [], None  # reset state
+                        mainboard, sideboard, commander = [], [], None  # reset state
 
                     if self._state is _ParsingState.SIDEBOARD:
                         sideboard.extend(_CardLine(line).process(self._format_cards))
                     elif self._state is _ParsingState.COMMANDER:
                         result = _CardLine(line).process(self._format_cards)
                         commander = result[0] if result else None
-                    elif self._state is _ParsingState.MAINLIST:
-                        main_list.extend(_CardLine(line).process(self._format_cards))
+                    elif self._state is _ParsingState.MAINBOARD:
+                        mainboard.extend(_CardLine(line).process(self._format_cards))
 
         try:
-            return Deck(main_list, sideboard, commander)
+            return Deck(mainboard, sideboard, commander)
         except InvalidDeckError:
             return None

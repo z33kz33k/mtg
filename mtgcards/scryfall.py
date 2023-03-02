@@ -358,6 +358,7 @@ class LordSentence:
         return "", "", ""
 
 
+# TODO: make Card inherit from CardFace
 @dataclass(frozen=True)
 class CardFace:
     """Thin wrapper on card face data that lives inside Scryfall card data.
@@ -373,6 +374,9 @@ class CardFace:
 
     def __hash__(self) -> int:
         return hash((self.name, self.mana_cost, self.type_line, self.oracle_text))
+
+    def __str__(self) -> str:
+        return self.name
 
     @property
     def name(self) -> str:
@@ -426,6 +430,42 @@ class CardFace:
     @cached_property
     def lord_sentences(self) -> List[LordSentence]:
         return Card.parse_lord_sentences(self.oracle_text)
+
+    @property
+    def loyalty(self) -> Optional[str]:
+        return self.json.get("loyalty")
+
+    @property
+    def loyalty_int(self) -> Optional[int]:
+        return parse_int_from_str(self.loyalty) if self.loyalty is not None else None
+
+    @property
+    def has_special_loyalty(self) -> bool:
+        return self.loyalty is not None and self.loyalty_int is None
+
+    @property
+    def power(self) -> Optional[int]:
+        return self.json.get("power")
+
+    @property
+    def power_int(self) -> Optional[int]:
+        return parse_int_from_str(self.power) if self.power is not None else None
+
+    @property
+    def has_special_power(self) -> bool:
+        return self.power is not None and self.power_int is None
+
+    @property
+    def toughness(self) -> Optional[str]:
+        return self.json.get("toughness")
+
+    @property
+    def toughness_int(self) -> Optional[int]:
+        return parse_int_from_str(self.toughness) if self.toughness is not None else None
+
+    @property
+    def has_special_toughness(self) -> bool:
+        return self.toughness is not None and self.toughness_int is None
 
 
 @dataclass(frozen=True)
@@ -532,7 +572,7 @@ class Card:
 
     @property
     def loyalty_int(self) -> Optional[int]:
-        return parse_int_from_str(self.loyalty)
+        return parse_int_from_str(self.loyalty) if self.loyalty is not None else None
 
     @property
     def has_special_loyalty(self) -> bool:
@@ -562,7 +602,7 @@ class Card:
 
     @property
     def power_int(self) -> Optional[int]:
-        return parse_int_from_str(self.power)
+        return parse_int_from_str(self.power) if self.power is not None else None
 
     @property
     def has_special_power(self) -> bool:
@@ -624,7 +664,7 @@ class Card:
 
     @property
     def toughness_int(self) -> Optional[int]:
-        return parse_int_from_str(self.toughness)
+        return parse_int_from_str(self.toughness) if self.toughness is not None else None
 
     @property
     def has_special_toughness(self) -> bool:
@@ -748,13 +788,13 @@ class Card:
     @property
     def is_permanent(self) -> bool:
         if self.is_multipart:
-            return all(face.is_permanent for face in self.card_faces)
+            return all(face.parse_types().is_permanent for face in self.card_faces)
         return self.parse_types().is_permanent
 
     @property
     def is_nonpermanent(self) -> bool:
         if self.is_multipart:
-            return all(face.is_nonpermanent for face in self.card_faces)
+            return all(face.parse_types().is_nonpermanent for face in self.card_faces)
         return self.parse_types().is_nonpermanent
 
     @property
@@ -960,6 +1000,8 @@ def find_by_parts(name_parts: Iterable[str],
                   data: Optional[Iterable[Card]] = None) -> Optional[Card]:
     """Return a Scryfall card data designated by provided ``name_parts`` or `None`.
     """
+    if isinstance(name_parts, str):
+        name_parts = name_parts.split()
     data = data if data else bulk_data()
     return find_card(lambda c: all(part.lower() in c.name.lower() for part in name_parts), data)
 
@@ -985,6 +1027,13 @@ def find_by_name_narrowed_by_collector_number(
     # try less strictly
     card = find_by_name(name, data, exact=False, narrow_by_collector_number=True)
     return card if card else None
+
+
+def find_by_id(scryfall_id: str, data: Optional[Iterable[Card]] = None) -> Optional[Card]:
+    """Return a Scryfall card data of provided ``scryfall_id``.
+    """
+    data = data if data else bulk_data()
+    return from_iterable(data, lambda c: c.id == scryfall_id)
 
 
 class ColorIdentityDistibution:
@@ -1042,7 +1091,7 @@ class Deck:
     MIN_SIZE = 60
 
     @cached_property
-    def main_list(self) -> List[Card]:
+    def mainboard(self) -> List[Card]:
         return [*itertools.chain(*self._playsets.values())]
 
     @property
@@ -1059,81 +1108,81 @@ class Deck:
 
     @property
     def all_cards(self) -> List[Card]:
-        return [*self.main_list, *self.sideboard]
+        return [*self.mainboard, *self.sideboard]
 
     @property
     def color_identity(self) -> Color:
-        return Color.from_cards(self.main_list)
+        return Color.from_cards(self.mainboard)
 
     @property
     def artifacts(self) -> List[Card]:
-        return [card for card in self.main_list if card.is_artifact]
+        return [card for card in self.mainboard if card.is_artifact]
 
     @property
     def creatures(self) -> List[Card]:
-        return [card for card in self.main_list if card.is_creature]
+        return [card for card in self.mainboard if card.is_creature]
 
     @property
     def enchantments(self) -> List[Card]:
-        return [card for card in self.main_list if card.is_enchantment]
+        return [card for card in self.mainboard if card.is_enchantment]
 
     @property
     def instants(self) -> List[Card]:
-        return [card for card in self.main_list if card.is_instant]
+        return [card for card in self.mainboard if card.is_instant]
 
     @property
     def lands(self) -> List[Card]:
-        return [card for card in self.main_list if card.is_land]
+        return [card for card in self.mainboard if card.is_land]
 
     @property
     def planeswalkers(self) -> List[Card]:
-        return [card for card in self.main_list if card.is_planeswalker]
+        return [card for card in self.mainboard if card.is_planeswalker]
 
     @property
     def sorceries(self) -> List[Card]:
-        return [card for card in self.main_list if card.is_sorcery]
+        return [card for card in self.mainboard if card.is_sorcery]
 
     @property
     def commons(self) -> List[Card]:
-        return [card for card in self.main_list if card.is_common]
+        return [card for card in self.mainboard if card.is_common]
 
     @property
     def uncommons(self) -> List[Card]:
-        return [card for card in self.main_list if card.is_uncommon]
+        return [card for card in self.mainboard if card.is_uncommon]
 
     @property
     def rares(self) -> List[Card]:
-        return [card for card in self.main_list if card.is_rare]
+        return [card for card in self.mainboard if card.is_rare]
 
     @property
     def mythics(self) -> List[Card]:
-        return [card for card in self.main_list if card.is_mythic]
+        return [card for card in self.mainboard if card.is_mythic]
 
     @property
     def total_rarity_weight(self) -> float:
-        return sum(card.rarity.weight for card in self.main_list)
+        return sum(card.rarity.weight for card in self.mainboard)
 
     @property
     def avg_rarity_weight(self):
-        return self.total_rarity_weight / len(self.main_list)
+        return self.total_rarity_weight / len(self.mainboard)
 
     @property
     def avg_cmc(self) -> float:
-        return sum(card.cmc for card in self.main_list) / len(self.main_list)
+        return sum(card.cmc for card in self.mainboard) / len(self.mainboard)
 
-    def __init__(self, main_list: Iterable[Card], sideboard: Optional[Iterable[Card]] = None,
+    def __init__(self, mainboard: Iterable[Card], sideboard: Optional[Iterable[Card]] = None,
                  commander: Optional[Card] = None) -> None:
         self._sideboard = [*sideboard] if sideboard else []
         self._commander = commander
         if commander:
-            for card in main_list:
+            for card in mainboard:
                 if any(letter not in commander.colors for letter in card.colors):
                     raise ValueError(f"Color of {card} doesn't match "
                                      f"commander color: {card.colors}!={commander.colors}")
-            main_list = [commander, *main_list]
+            mainboard = [commander, *mainboard]
         self._max_playset_count = 1 if commander is not None else 4
         self._playsets: DefaultDict[Card, List[Card]] = defaultdict(list)
-        for card in main_list:
+        for card in mainboard:
             if card.has_special_rarity:
                 raise InvalidDeckError(f"Invalid rarity for {card.name!r}: {card.rarity.value!r}")
             self._playsets[card].append(card)
@@ -1151,8 +1200,8 @@ class Deck:
                     raise InvalidDeckError(f"Invalid main list. Too many occurances of"
                                            f" {card.name!r}: "
                                            f"{len(playset)} > {self.max_playset_count}")
-        if len(self.main_list) < self.MIN_SIZE:
-            raise InvalidDeckError(f"Invalid deck size: '{len(self.main_list)}'")
+        if len(self.mainboard) < self.MIN_SIZE:
+            raise InvalidDeckError(f"Invalid deck size: '{len(self.mainboard)}'")
 
     def _validate_sideboard(self) -> None:
         temp_playsets = defaultdict(list)
