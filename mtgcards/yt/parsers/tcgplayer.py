@@ -14,6 +14,9 @@ from mtgcards.scryfall import Deck, Card
 from mtgcards.yt.parsers import UrlParser
 
 
+# html parsing
+
+
 class TcgPlayerParser(UrlParser):
     """Parser of TCG Player decklist page.
     """

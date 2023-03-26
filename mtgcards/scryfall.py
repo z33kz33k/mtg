@@ -16,7 +16,7 @@ from datetime import datetime
 from enum import Enum
 from functools import lru_cache, cached_property
 from pprint import pprint
-from typing import Callable, DefaultDict, Dict, Iterable, List, Optional, Set, Tuple, overload
+from typing import Callable, DefaultDict, Dict, Iterable, List, Optional, Set, Tuple
 import itertools
 import math
 
@@ -24,7 +24,8 @@ import scrython
 
 from mtgcards.utils import from_iterable, getrepr, parse_int_from_str
 from mtgcards.utils.files import download_file, getdir
-from mtgcards.const import DATADIR, Json, T
+from mtgcards.const import DATADIR, Json
+from mtgcards.mtgwiki import RACES, CLASSES
 
 FILENAME = "scryfall.json"
 
@@ -158,88 +159,6 @@ class TypeLine:
     PERMAMENT_TYPES = {"Artifact", "Creature", "Enchantment", "Land", "Planeswalker"}
     NONPERMAMENT_TYPES = {"Sorcery", "Instant"}
 
-    # creature types
-    # race types
-    ICONIC_RACES = {
-        Color.WHITE: "Angel",
-        Color.BLUE: "Sphinx",
-        Color.BLACK: "Demon",
-        Color.RED: "Dragon",
-        Color.GREEN: "Hydra",
-    }
-    CHARACTERISTIC_RACES = {
-        Color.WHITE: {"Human"},
-        Color.BLUE: {"Merfolk"},
-        Color.BLACK: {"Vampire", "Zombie"},
-        Color.RED: {"Goblin"},
-        Color.GREEN: {"Elf"},
-    }
-    MECHANICALLY_THEMED_RACES = {"Atog", "Bringer", "Demigod", "God", "Incarnation", "Licid",
-                                 "Lhurgoyf", "Nephilim", "Phelddagrif", "Shapeshifter", "Slith",
-                                 "Sliver", "Spike", "Volver", "Wall", "Weird", "Werewolf", "Zubera"}
-    TOKEN_SPECIFIC_RACES = {"Balloon", "Camarid", "Caribou", "Fractal", "Germ", "Graveborn",
-                            "Hamster", "Inkling", "Mite", "Orb", "Pentavite", "Pincher", "Prism",
-                            "Sand", "Saproling", "Sculpture", "Servo", "Splinter", "Tetravite",
-                            "Triskelavite"}
-    MAJORITY_RACES = {
-        Color.WHITE: {"Archon", "Camel", "Cat", "Fox", "Griffin", "Hippogriff", "Kirin",
-                      "Kithkin", "Kor", "Lammasu", "Mouse", "Pegasus", "Soltari", "Unicorn"},
-        Color.BLUE: {"Beeble", "Cephalid", "Crab", "Djinn", "Drake", "Faerie", "Fish", "Homarid",
-                     "Homunculus", "Illusion", "Jellyfish", "Kraken", "Leviathan", "Metathran",
-                     "Moonfolk", "Nautilus", "Octopus", "Otter", "Oyster", "Serpent", "Shark",
-                     "Siren", "Sponge", "Squid", "Starfish", "Thalakos", "Trilobite", "Turtle",
-                     "Vedalken", "Whale"},
-        Color.BLACK: {"Aetherborn", "Azra", "Bat", "Carrier", "Dauthi", "Eye",
-                      "Gorgon", "Hag", "Harpy", "Horror", "Imp", "Lamia", "Leech", "Nightmare",
-                      "Nightstalker", "Phyrexian", "Rat", "Scorpion", "Shade", "Skeleton", "Slug",
-                      "Specter", "Thrull", "Worm", "Wraith"},
-        Color.RED: {"Cyclops", "Devil", "Dwarf", "Efreet", "Giant", "Goat", "Gremlin", "Hellion",
-                    "Jackal", "Kobold", "Manticore", "Minotaur", "Ogre", "Orc", "Orgg", "Phoenix",
-                    "Viashino", "Wolverine", "Yeti"},
-        Color.GREEN: {"Antelope", "Ape", "Aurochs", "Badger", "Basilisk", "Bear", "Beast", "Boar",
-                      "Brushwagg", "Centaur", "Crocodile", "Dryad", "Elk", "Ferret", "Fungus",
-                      "Hippo", "Hyena", "Mole", "Mongoose", "Monkey", "Ooze", "Ouphe", "Plant",
-                      "Rabbit", "Raccoon", "Rhino", "Snake", "Spider", "Squirrel", "Treefolk",
-                      "Troll", "Wolf", "Wombat", "Wurm"},
-        Color.COLORLESS: {"Eldrazi"},
-    }
-    ARTIFACT_RACES = {"Assembly-Worker", "Blinkmoth", "Construct", "Dreadnought", "Juggernaut",
-                      "Gnome", "Golem", "Masticore", "Myr", "Robot", "Sable", "Scarecrow",
-                      "Thopter", "Walrus"}
-    MULTICOLORED_RACES = {"Alien", "Avatar", "Bird", "Chimera", "Mutant", "Naga", "Cockatrice",
-                          "Dinosaur", "Dog", "Elemental", "Elephant", "Sheep", "Frog",
-                          "Gargoyle", "Horse", "Insect", "Nymph", "Ox", "Pangolin", "Pest",
-                          "Kavu", "Lizard", "Satyr", "Noggle", "Reflection", "Salamander",
-                          "Spirit", "Surrakar"}
-    CROSSOVER_RACES = {
-        "Dungeons & Dragons": {"Beholder", "Gith", "Gnoll", "Halfling", "Tiefling"},
-        "Universes Beyond": {"Astartes", "C'tan", "Custodes", "Necron", "Primarch", "Tyranid"},
-    }
-    RACES = {*ICONIC_RACES.values(), *{race for v in CHARACTERISTIC_RACES.values() for race in v},
-             *MECHANICALLY_THEMED_RACES, *TOKEN_SPECIFIC_RACES,
-             *{race for v in MAJORITY_RACES.values() for race in v}, *ARTIFACT_RACES,
-             *MULTICOLORED_RACES, *{race for v in CROSSOVER_RACES.values() for race in v}}
-
-    # class types
-    SPELLCASTERS = {
-        Color.WHITE: "Cleric",
-        Color.BLUE: "Wizard",
-        Color.BLACK: "Warlock",
-        Color.RED: "Shaman",
-        Color.GREEN: "Druid",
-    }
-    MECHANICALLY_THEMED_CLASSES = {"Ally", "Coward", "Egg", "Flagbearer", "Mercenary", "Monger",
-                                   "Ninja", "Pilot", "Processor", "Rebel", "Samurai", "Spellshaper"}
-    TOKEN_SPECIFIC_CLASSES = {"Army", "Deserter", "Scion", "Serf", "Survivor", "Tentacle"}
-    GENERAL_CLASSES = {"Advisor", "Archer", "Artificer", "Assassin", "Barbarian", "Bard",
-                       "Berserker", "Child", "Citizen", "Clown", "Drone", "Elder", "Employee",
-                       "Gamer", "Guest", "Knight", "Minion", "Monk", "Mystic", "Noble", "Nomad",
-                       "Peasant", "Performer", "Pirate", "Praetor", "Ranger", "Rigger", "Rogue",
-                       "Scout", "Soldier", "Spawn", "Warrior"}
-    CROSSOVER_CLASSES = {"Universes Beyond": "Inquisitor"}
-    CLASSES = {*SPELLCASTERS.values(), *MECHANICALLY_THEMED_CLASSES, *TOKEN_SPECIFIC_CLASSES,
-               *GENERAL_CLASSES, *CROSSOVER_CLASSES.values()}
-
     @property
     def text(self) -> str:
         return self._text
@@ -295,11 +214,11 @@ class TypeLine:
 
     @property
     def races(self) -> List[str]:
-        return [t for t in self.subtypes if t in self.RACES]
+        return [t for t in self.subtypes if t in RACES]
 
     @property
     def classes(self) -> List[str]:
-        return [t for t in self.subtypes if t in self.CLASSES]
+        return [t for t in self.subtypes if t in CLASSES]
 
     def __init__(self, text: str) -> None:
         if MULTIPART_SEPARATOR in text:
