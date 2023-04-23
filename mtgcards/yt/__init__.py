@@ -15,14 +15,15 @@ from decimal import Decimal
 from functools import cached_property
 from typing import DefaultDict, Dict, List, Optional, Set, Tuple, Type
 
+import backoff
 import gspread
+import pytube
+import pytube.exceptions
 import requests
+import scrapetube
 from contexttimer import Timer
-from scrapetube import get_channel
-from pytube import YouTube
 from youtubesearchpython import Channel as YtspChannel
 
-from mtgcards.const import Json
 from mtgcards.scryfall import formats as scryfall_formats
 from mtgcards.scryfall import format_cards, Deck
 from mtgcards.utils import getrepr
@@ -78,35 +79,35 @@ class Video:
 
     @property
     def author(self) -> str:
-        return self._pytube_data.author
-
-    @property
-    def channel_id(self) -> str:
-        return self._pytube_data.channel_id
+        return self._author
 
     @property
     def description(self) -> str:
-        return self._pytube_data.description
+        return self._description
 
     @property
     def keywords(self) -> List[str]:
-        return self._pytube_data.keywords
+        return self._keywords
 
     @property
-    def published_date(self) -> datetime:
-        return self._pytube_data.publish_date
+    def publish_date(self) -> datetime:
+        return self._publish_date
 
     @property
     def title(self) -> str:
-        return self._pytube_data.title
+        return self._title
 
     @property
     def views(self) -> int:
-        return self._pytube_data.views
+        return self._views
+
+    @property
+    def channel_id(self) -> str:
+        return self._channel_id
 
     @cached_property
     def _desc_lines(self) -> List[str]:
-        return [line.strip() for line in self.description.split("\n")]
+        return [line.strip() for line in self.description.split("\n")] if self.description else []
 
     @property
     def links(self) -> List[str]:
@@ -130,7 +131,10 @@ class Video:
         :param video_id: unique string identifying a YouTube video (the part after `v=` in the URL)
         """
         self._id = video_id
-        self._pytube_data = YouTube(self.URL_TEMPLATE.format(self.id))
+        self._pytube = self._get_pytube()
+        self._author, self._description, self._title = None, None, None
+        self._keywords, self._publish_date, self._views = None, None, None
+        self._get_pytube_data()
         self._format_soup: DefaultDict[str, List[str]] = defaultdict(list)
         self._extract_formats(self.title)
         self._links, self._arena_lines = self._parse_lines()
@@ -140,6 +144,119 @@ class Video:
 
     def __repr__(self) -> str:
         return getrepr(self.__class__, ("title", self.title), ("deck", self.deck))
+
+    def _get_pytube(self) -> pytube.YouTube:
+        return pytube.YouTube(self.URL_TEMPLATE.format(self.id))
+
+    def _get_pytube_data(self) -> None:
+        self._author = self._get_author()
+        self._description = self._get_description()
+        self._title = self._get_title()
+        self._keywords = self._get_keywords()
+        self._publish_date = self._get_publish_date()
+        self._views = self._get_views()
+        self._channel_id = self._get_channel_id()
+
+    def _get_author(self) -> str:
+        try:
+            author = self._pytube.author
+        except pytube.exceptions.PytubeError:
+            print("Problems with retrieving video author. Retrying with backoff (60 seconds "
+                  "max)...")
+            author = self._get_author_with_backoff()
+        return author
+
+    def _get_description(self) -> str:
+        try:
+            description = self._pytube.description
+            if description is None:
+                raise ValueError
+        except (pytube.exceptions.PytubeError, ValueError):
+            print("Problems with retrieving video description. Retrying with backoff (60 seconds "
+                  "max)...")
+            description = self._get_description_with_backoff()
+        return description
+
+    def _get_title(self) -> str:
+        try:
+            title = self._pytube.title
+        except pytube.exceptions.PytubeError:
+            print("Problems with retrieving video title. Retrying with backoff (60 seconds max)...")
+            title = self._get_title_with_backoff()
+        return title
+
+    def _get_keywords(self) -> List[str]:
+        try:
+            keywords = self._pytube.keywords
+        except pytube.exceptions.PytubeError:
+            print("Problems with retrieving video keywords. Retrying with backoff (60 seconds "
+                  "max)...")
+            keywords = self._get_keywords_with_backoff()
+        return keywords
+
+    def _get_publish_date(self) -> datetime:
+        try:
+            publish_date = self._pytube.publish_date
+        except pytube.exceptions.PytubeError:
+            print("Problems with retrieving video publish date. Retrying with backoff (60 seconds "
+                  "max)...")
+            publish_date = self._get_publish_date_with_backoff()
+        return publish_date
+
+    def _get_views(self) -> int:
+        try:
+            views = self._pytube.views
+        except pytube.exceptions.PytubeError:
+            print("Problems with retrieving video views. Retrying with backoff (60 seconds max)...")
+            views = self._get_views_with_backoff()
+        return views
+
+    def _get_channel_id(self) -> str:
+        try:
+            channel_id = self._pytube.channel_id
+        except pytube.exceptions.PytubeError:
+            print("Problems with retrieving video channel ID. Retrying with backoff (60 seconds "
+                  "max)...")
+            channel_id = self._get_channel_id_with_backoff()
+        return channel_id
+
+    @backoff.on_exception(backoff.expo, pytube.exceptions.PytubeError, max_time=60)
+    def _get_author_with_backoff(self) -> str:
+        self._pytube = self._get_pytube()
+        return self._pytube.author
+
+    @backoff.on_exception(backoff.expo, (pytube.exceptions.PytubeError, ValueError), max_time=60)
+    def _get_description_with_backoff(self) -> str:
+        self._pytube = self._get_pytube()  # returns a pytube.YouTube object
+        desc = self._pytube.description
+        if not desc:
+            raise ValueError
+        return self._pytube.description
+
+    @backoff.on_exception(backoff.expo, pytube.exceptions.PytubeError, max_time=60)
+    def _get_title_with_backoff(self) -> str:
+        self._pytube = self._get_pytube()
+        return self._pytube.title
+
+    @backoff.on_exception(backoff.expo, pytube.exceptions.PytubeError, max_time=60)
+    def _get_keywords_with_backoff(self) -> List[str]:
+        self._pytube = self._get_pytube()
+        return self._pytube.keywords
+
+    @backoff.on_exception(backoff.expo, pytube.exceptions.PytubeError, max_time=60)
+    def _get_publish_date_with_backoff(self) -> datetime:
+        self._pytube = self._get_pytube()
+        return self._pytube.publish_date
+
+    @backoff.on_exception(backoff.expo, pytube.exceptions.PytubeError, max_time=60)
+    def _get_views_with_backoff(self) -> int:
+        self._pytube = self._get_pytube()
+        return self._pytube.views
+
+    @backoff.on_exception(backoff.expo, pytube.exceptions.PytubeError, max_time=60)
+    def _get_channel_id_with_backoff(self) -> str:
+        self._pytube = self._get_pytube()
+        return self._pytube.channel_id
 
     def _extract_formats(self, line: str) -> None:
         words = [word.lower() for word in line.strip().split()]
@@ -241,7 +358,7 @@ class Channel(list):
 
     def __init__(self, url: str, limit=10) -> None:
         try:
-            videos = [*get_channel(channel_url=url, limit=limit)]
+            videos = [*scrapetube.get_channel(channel_url=url, limit=limit)]
         except OSError:
             raise ValueError(f"Invalid URL: {url!r}")
         super().__init__([Video(data["videoId"]) for data in videos])

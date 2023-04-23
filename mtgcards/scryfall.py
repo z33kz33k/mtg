@@ -1044,6 +1044,10 @@ class Deck:
         return [card for card in self.mainboard if card.is_artifact]
 
     @property
+    def battles(self) -> List[Card]:
+        return [card for card in self.mainboard if card.is_battle]
+
+    @property
     def creatures(self) -> List[Card]:
         return [card for card in self.mainboard if card.is_creature]
 
@@ -1148,6 +1152,7 @@ class Deck:
             ("avg_rarity_weight", f"{self.avg_rarity_weight:.1f}"),
             ("color_identity", self.color_identity.name),
             ("artifacts", len(self.artifacts)),
+            ("battles", len(self.battles)),
             ("creatures", len(self.creatures)),
             ("enchantments", len(self.enchantments)),
             ("instants", len(self.instants)),
