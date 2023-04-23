@@ -155,8 +155,9 @@ class TypeLine:
     SEPARATOR = "—"
 
     # according to MtG Wiki (not updated since BRO)
-    SUPERTYPES = {"Basic", "Elite", "Host", "Legendary", "Ongoing", "Snow", "Token", "World"}
-    PERMAMENT_TYPES = {"Artifact", "Creature", "Enchantment", "Land", "Planeswalker"}
+    SUPERTYPES = {"Basic", "Elite", "Host", "Legendary", "Ongoing", "Snow", "Token", "Tribal",
+                  "World"}
+    PERMAMENT_TYPES = {"Artifact", "Battle", "Creature", "Enchantment", "Land", "Planeswalker"}
     NONPERMAMENT_TYPES = {"Sorcery", "Instant"}
 
     @property
@@ -310,8 +311,8 @@ class CardFace:
         return self.json["mana_cost"]
 
     @property
-    def type_line(self) -> str:
-        return self.json["type_line"]
+    def type_line(self) -> Optional[str]:
+        return self.json.get("type_line")
 
     @property
     def oracle_text(self) -> str:
@@ -323,28 +324,28 @@ class CardFace:
         return result if result else []
 
     @lru_cache
-    def parse_types(self) -> TypeLine:
-        return TypeLine(self.type_line)
+    def parse_types(self) -> Optional[TypeLine]:
+        return TypeLine(self.type_line) if self.type_line else None
 
     @property
     def supertypes(self) -> List[str]:
-        return self.parse_types().supertypes
+        return self.parse_types().supertypes if self.parse_types() else []
 
     @property
     def regular_types(self) -> List[str]:
-        return self.parse_types().regular_types
+        return self.parse_types().regular_types if self.parse_types() else []
 
     @property
     def subtypes(self) -> List[str]:
-        return self.parse_types().subtypes
+        return self.parse_types().subtypes if self.parse_types() else []
 
     @property
     def races(self) -> List[str]:
-        return self.parse_types().races
+        return self.parse_types().races if self.parse_types() else []
 
     @property
     def classes(self) -> List[str]:
-        return self.parse_types().classes
+        return self.parse_types().classes if self.parse_types() else []
 
     @cached_property
     def lord_sentences(self) -> List[LordSentence]:
@@ -418,10 +419,10 @@ class Card:
             raise ScryfallError(f"Invalid layout {self.layout!r} for multipart card {self.name!r}")
 
     @property
-    def card_faces(self) -> Optional[List[CardFace]]:
+    def card_faces(self) -> List[CardFace]:
         data = self.json.get("card_faces")
         if data is None:
-            return None
+            return []
         return [CardFace(item) for item in data]
 
     @property
@@ -661,6 +662,10 @@ class Card:
     @property
     def is_creature(self) -> bool:
         return "Creature" in self.regular_types
+
+    @property
+    def is_battle(self) -> bool:
+        return "Battle" in self.regular_types
 
     @property
     def is_enchantment(self) -> bool:

@@ -74,7 +74,7 @@ class Video:
 
     @property
     def id(self) -> str:
-        return self._scrapetube_data["videoId"]
+        return self._id
 
     @property
     def author(self) -> str:
@@ -124,8 +124,12 @@ class Video:
     def deck(self) -> Optional[Deck]:
         return self._deck
 
-    def __init__(self, scrapetube_data: Json) -> None:
-        self._scrapetube_data = scrapetube_data
+    def __init__(self, video_id: str) -> None:
+        """Initialize.
+
+        :param video_id: unique string identifying a YouTube video (the part after `v=` in the URL)
+        """
+        self._id = video_id
         self._pytube_data = YouTube(self.URL_TEMPLATE.format(self.id))
         self._format_soup: DefaultDict[str, List[str]] = defaultdict(list)
         self._extract_formats(self.title)
@@ -240,7 +244,7 @@ class Channel(list):
             videos = [*get_channel(channel_url=url, limit=limit)]
         except OSError:
             raise ValueError(f"Invalid URL: {url!r}")
-        super().__init__([Video(data) for data in videos])
+        super().__init__([Video(data["videoId"]) for data in videos])
         self._url = url
         self._id = self[0].channel_id if self else None
         self._ytsp_data = YtspChannel(self.id) if self._id else None
