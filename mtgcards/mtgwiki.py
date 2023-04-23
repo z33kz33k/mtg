@@ -12,6 +12,7 @@ from typing import List, Tuple
 
 from bs4 import BeautifulSoup
 from bs4.element import Tag
+import gspread
 
 from mtgcards.const import DATADIR
 from mtgcards.utils.files import download_file
@@ -71,7 +72,7 @@ class _CreatureTypesParser:
                 continue
 
         if any(table is None for table in (race_table, class_table)):
-            raise ValueError("Invalid markup. Cannot parse Race/Class tables")
+            raise ValueError("Invalid markup. Cannot find Race/Class tables")
 
         return race_table, class_table
 

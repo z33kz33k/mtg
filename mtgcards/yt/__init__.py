@@ -15,6 +15,7 @@ from decimal import Decimal
 from functools import cached_property
 from typing import DefaultDict, Dict, List, Optional, Set, Tuple, Type
 
+import gspread
 import requests
 from contexttimer import Timer
 from scrapetube import get_channel
@@ -34,6 +35,22 @@ from mtgcards.yt.parsers.mtgazone import MtgaZoneParser
 from mtgcards.yt.parsers.streamdecker import StreamdeckerParser
 from mtgcards.yt.parsers.tcgplayer import TcgPlayerParser
 from mtgcards.yt.parsers.untapped import UntappedParser
+
+
+def channels() -> Dict[str, str]:
+    """Retrieve a channel addresses mapping from a private Google Sheet spreadsheet.
+
+    Mind that this operation takes about 2 seconds to complete.
+
+    :return: a dictionary of channel names mapped to their addresses
+    """
+    creds_file = "scraping_service_account.json"
+    client = gspread.service_account(filename=creds_file)
+    spreadsheet = client.open("mtga_yt")
+    worksheet = spreadsheet.worksheet("channels")
+    names = worksheet.col_values(1, value_render_option="UNFORMATTED_VALUE")[1:]
+    addresses = worksheet.col_values(3, value_render_option="UNFORMATTED_VALUE")[1:]
+    return dict((name, address) for name, address in zip(names, addresses))
 
 
 class Video:

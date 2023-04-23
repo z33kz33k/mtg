@@ -1004,6 +1004,7 @@ class InvalidDeckError(ValueError):
     """
 
 
+# TODO: handle companions
 class Deck:
     """A deck of cards.
     """
