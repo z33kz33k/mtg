@@ -220,14 +220,17 @@ class Video:
             channel_id = self._get_channel_id_with_backoff()
         return channel_id
 
-    @backoff.on_exception(backoff.expo, pytube.exceptions.PytubeError, max_time=60)
+    @backoff.on_exception(backoff.expo, (pytube.exceptions.PytubeError, ValueError), max_time=60)
     def _get_author_with_backoff(self) -> str:
         self._pytube = self._get_pytube()
+        author = self._pytube.author
+        if author == 'unknown':
+            raise ValueError
         return self._pytube.author
 
     @backoff.on_exception(backoff.expo, (pytube.exceptions.PytubeError, ValueError), max_time=60)
     def _get_description_with_backoff(self) -> str:
-        self._pytube = self._get_pytube()  # returns a pytube.YouTube object
+        self._pytube = self._get_pytube()
         desc = self._pytube.description
         if not desc:
             raise ValueError

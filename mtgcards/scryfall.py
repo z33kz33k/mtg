@@ -1009,11 +1009,11 @@ class InvalidDeckError(ValueError):
     """
 
 
-# TODO: handle companions
 class Deck:
-    """A deck of cards.
+    """A deck of cards suitable for Constructed formats.
     """
-    MIN_SIZE = 60
+    MIN_MAINBOARD_SIZE = 60
+    MAX_SIDEBOARD_SIZE = 15
 
     @cached_property
     def mainboard(self) -> List[Card]:
@@ -1024,8 +1024,16 @@ class Deck:
         return self._sideboard
 
     @property
+    def has_sideboard(self) -> bool:
+        return bool(self.sideboard)
+
+    @property
     def commander(self) -> Optional[Card]:
         return self._commander
+
+    @property
+    def companion(self) -> Optional[Card]:
+        return self._companion
 
     @property
     def max_playset_count(self) -> int:
@@ -1037,7 +1045,7 @@ class Deck:
 
     @property
     def color_identity(self) -> Color:
-        return Color.from_cards(self.mainboard)
+        return Color.from_cards(self.all_cards)
 
     @property
     def artifacts(self) -> List[Card]:
@@ -1100,37 +1108,45 @@ class Deck:
         return sum(card.cmc for card in self.mainboard) / len(self.mainboard)
 
     def __init__(self, mainboard: Iterable[Card], sideboard: Optional[Iterable[Card]] = None,
-                 commander: Optional[Card] = None) -> None:
+                 commander: Optional[Card] = None, companion: Optional[Card] = None) -> None:
         self._sideboard = [*sideboard] if sideboard else []
+        self._companion = companion
+        self._sideboard = [companion, *self.sideboard] if companion else self.sideboard
+        if len(self.sideboard) > self.MAX_SIDEBOARD_SIZE:
+            raise InvalidDeckError(f"Invalid sideboard size: {len(self.sideboard)} "
+                                   f"> {self.MAX_SIDEBOARD_SIZE}")
+
         self._commander = commander
         if commander:
-            for card in mainboard:
+            for card in [*mainboard, *self.sideboard]:
                 if any(letter not in commander.colors for letter in card.colors):
-                    raise ValueError(f"Color of {card} doesn't match "
-                                     f"commander color: {card.colors}!={commander.colors}")
+                    raise InvalidDeckError(f"Color of {card} doesn't match "
+                                           f"commander color: {card.colors}!={commander.colors}")
             mainboard = [commander, *mainboard]
+
         self._max_playset_count = 1 if commander is not None else 4
         self._playsets: DefaultDict[Card, List[Card]] = defaultdict(list)
         for card in mainboard:
             if card.has_special_rarity:
                 raise InvalidDeckError(f"Invalid rarity for {card.name!r}: {card.rarity.value!r}")
             self._playsets[card].append(card)
-        self._validate_mainlist()
+        self._validate_mainboard()
         if self.sideboard:
             self._validate_sideboard()
 
-    def _validate_mainlist(self) -> None:
+    def _validate_mainboard(self) -> None:
         for playset in self._playsets.values():
             card = playset[0]
             if card.is_basic_land or card.multiples_allowed:
                 pass
             else:
                 if len(playset) > self.max_playset_count:
-                    raise InvalidDeckError(f"Invalid main list. Too many occurances of"
+                    raise InvalidDeckError(f"Invalid mainboard. Too many occurances of"
                                            f" {card.name!r}: "
                                            f"{len(playset)} > {self.max_playset_count}")
-        if len(self.mainboard) < self.MIN_SIZE:
-            raise InvalidDeckError(f"Invalid deck size: '{len(self.mainboard)}'")
+        if len(self.mainboard) < self.MIN_MAINBOARD_SIZE:
+            raise InvalidDeckError(f"Invalid deck size: {len(self.mainboard)} "
+                                   f"< {self.MIN_MAINBOARD_SIZE}")
 
     def _validate_sideboard(self) -> None:
         temp_playsets = defaultdict(list)
@@ -1143,7 +1159,8 @@ class Deck:
             else:
                 if len(playset) > self.max_playset_count:
                     raise InvalidDeckError(f"Invalid sideboard. Too many occurances of"
-                                           f" {playset[0].name!r} (considering the main list): "
+                                           f" {playset[0].name!r} in mainboard and sideboard "
+                                           f"combined: "
                                            f"{len(playset)} > {self.max_playset_count}")
 
     def __repr__(self) -> str:
@@ -1162,4 +1179,7 @@ class Deck:
         ]
         if self.commander:
             reprs.append(("commander", str(self.commander)))
+        if self.companion:
+            reprs.append(("companion", str(self.companion)))
+        reprs.append(("sideboard", self.has_sideboard))
         return getrepr(self.__class__, *reprs)
