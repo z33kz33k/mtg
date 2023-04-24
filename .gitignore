@@ -3,7 +3,11 @@
 *service_account.json
 *api_creds.json
 /mtgcards/data/**
+run.py
+tests.py
 
+# PyCharm project
+.idea
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
