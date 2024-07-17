@@ -130,7 +130,7 @@ class Rarity(Enum):
 
     @property
     def weight(self) -> Optional[float]:
-        """Return fractional weight of this rarity based on frequency of occurence in boosters.
+        """Return fractional weight of this rarity based on frequency of occurrence in boosters.
 
         Based on: https://mtg.fandom.com/wiki/Rarity
         """
@@ -154,11 +154,10 @@ class TypeLine:
     """
     SEPARATOR = "—"
 
-    # according to MtG Wiki (not updated since BRO)
     SUPERTYPES = {"Basic", "Elite", "Host", "Legendary", "Ongoing", "Snow", "Token", "Tribal",
                   "World"}
-    PERMAMENT_TYPES = {"Artifact", "Battle", "Creature", "Enchantment", "Land", "Planeswalker"}
-    NONPERMAMENT_TYPES = {"Sorcery", "Instant"}
+    PERMANENT_TYPES = {"Artifact", "Battle", "Creature", "Enchantment", "Land", "Planeswalker"}
+    NONPERMANENT_TYPES = {"Sorcery", "Instant"}
 
     @property
     def text(self) -> str:
@@ -178,12 +177,12 @@ class TypeLine:
 
     @property
     def is_permanent(self) -> bool:
-        return all(p in self.PERMAMENT_TYPES for p in self.regular_types)
+        return all(p in self.PERMANENT_TYPES for p in self.regular_types)
 
     @property
     def is_nonpermanent(self) -> bool:
         # type not being permanent doesn't mean it's 'non-permanent', e.g. 'dungeon' is neither
-        return all(p in self.NONPERMAMENT_TYPES for p in self.regular_types)
+        return all(p in self.NONPERMANENT_TYPES for p in self.regular_types)
 
     @property
     def is_artifact(self) -> bool:
@@ -461,8 +460,7 @@ class Card:
 
     @property
     def formats(self) -> List[str]:
-        """Return list of all Scryfall string format designations (e.g. `bro` for The Brothers'
-        War).
+        """Return list of all Scryfall string format designations.
         """
         return sorted(fmt for fmt in self.legalities)
 
@@ -515,6 +513,10 @@ class Card:
         if not self.is_multipart:
             return {*self.name.split()}
         return {part for face in self.card_faces for part in face.name_parts}
+
+    @property
+    def main_name(self) -> str | None:
+        return None if not self.is_multipart else self.card_faces[0].name
 
     @property
     def power(self) -> Optional[int]:
@@ -739,7 +741,7 @@ class Card:
         if not self.is_alchemy_rebalance:
             return None
         if not self.is_multipart:
-            return find_by_name(self.name[2:], exact=True)
+            return find_by_name(self.name[2:])
         # is multipart
         first_part_name, *_ = self.name.split(MULTIPART_SEPARATOR)
         original_name = first_part_name[2:]
@@ -749,7 +751,7 @@ class Card:
                 ALCHEMY_REBALANCE_INDICATOR)
         )
         if original:
-            return find_by_name(original["name"], exact=True)
+            return find_by_name(original["name"])
         return None
 
     @property
@@ -909,15 +911,18 @@ def find_card(predicate: Callable[[Card], bool], data: Optional[Iterable[Card]] 
     return cards[0] if cards else None
 
 
-def find_by_name(card_name: str, data: Optional[Iterable[Card]] = None,
-                 exact=False, narrow_by_collector_number=False) -> Optional[Card]:
+def find_by_name(card_name: str, data: Optional[Iterable[Card]] = None) -> Card | None:
     """Return a Scryfall card data of provided name or `None`.
     """
     data = data if data else bulk_data()
-    if exact:
-        return find_card(lambda c: c.name == card_name, data, narrow_by_collector_number)
-    return find_card(lambda c: card_name.lower() in c.name.lower(), data,
-                     narrow_by_collector_number)
+    card = find_card(lambda c: c.name == card_name, data, narrow_by_collector_number=True)
+    if card:
+        return card
+    card = find_card(lambda c: c.main_name == card_name, data, narrow_by_collector_number=True)
+    if card:
+        return card
+    return find_card(
+        lambda c: card_name.lower() in c.name.lower(), data, narrow_by_collector_number=True)
 
 
 def find_by_parts(name_parts: Iterable[str],
@@ -940,19 +945,6 @@ def find_by_collector_number(collector_number: int,
     return find_card(lambda c: c.collector_number == collector_number, data)
 
 
-def find_by_name_narrowed_by_collector_number(
-        name: str, data: Optional[Iterable[Card]] = None) -> Optional[Card]:
-    """Return a Scryfall card data of provided name or `None`.
-    """
-    data = data if data else bulk_data()
-    card = find_by_name(name, data, exact=True, narrow_by_collector_number=True)
-    if card:
-        return card
-    # try less strictly
-    card = find_by_name(name, data, exact=False, narrow_by_collector_number=True)
-    return card if card else None
-
-
 def find_by_id(scryfall_id: str, data: Optional[Iterable[Card]] = None) -> Optional[Card]:
     """Return a Scryfall card data of provided ``scryfall_id``.
     """
@@ -960,7 +952,7 @@ def find_by_id(scryfall_id: str, data: Optional[Iterable[Card]] = None) -> Optio
     return from_iterable(data, lambda c: c.id == scryfall_id)
 
 
-class ColorIdentityDistibution:
+class ColorIdentityDistribution:
     """Distribution of `color_identity` in card data.
     """
 
@@ -979,8 +971,10 @@ class ColorIdentityDistibution:
     def __init__(self, data: Optional[Iterable[Card]] = None) -> None:
         self._data = bulk_data() if not data else data
         self._colorsmap = defaultdict(list)
+        # for card in self._data:
+        #     self._colorsmap[Color(tuple(card.color_identity))].append(card)
         for card in self._data:
-            self._colorsmap[Color(tuple(card.color_identity))].append(card)
+            self._colorsmap[card.color_identity].append(card)
         self._colors = sorted([(k, v) for k, v in self._colorsmap.items()],
                               key=lambda p: (len(p[0].value), p[0].value))
         Triple = namedtuple("Triple", "color quantity percentage")
@@ -1000,7 +994,7 @@ class ColorIdentityDistibution:
 
 
 def print_color_identity_distribution(data: Optional[Iterable[Card]] = None) -> None:
-    dist = ColorIdentityDistibution(data)
+    dist = ColorIdentityDistribution(data)
     dist.print()
 
 
@@ -1141,7 +1135,7 @@ class Deck:
                 pass
             else:
                 if len(playset) > self.max_playset_count:
-                    raise InvalidDeckError(f"Invalid mainboard. Too many occurances of"
+                    raise InvalidDeckError(f"Invalid mainboard. Too many occurrences of"
                                            f" {card.name!r}: "
                                            f"{len(playset)} > {self.max_playset_count}")
         if len(self.mainboard) < self.MIN_MAINBOARD_SIZE:
@@ -1158,7 +1152,7 @@ class Deck:
                 pass
             else:
                 if len(playset) > self.max_playset_count:
-                    raise InvalidDeckError(f"Invalid sideboard. Too many occurances of"
+                    raise InvalidDeckError(f"Invalid sideboard. Too many occurrences of"
                                            f" {playset[0].name!r} in mainboard and sideboard "
                                            f"combined: "
                                            f"{len(playset)} > {self.max_playset_count}")

@@ -114,7 +114,7 @@ def totuple(lst: list) -> tuple:
 def tolist(tpl: tuple) -> list:
     """Convert ``tpl`` and any tuple it containes (no matter the nesting level) recursively to list.
 
-    Taken from and maid in reverse:
+    Taken from and made in reverse:
         https://stackoverflow.com/a/27050037/4465708
     """
     return list(tolist(i) if isinstance(i, tuple) else i for i in tpl)
@@ -127,7 +127,7 @@ def cleardir(obj: object) -> List[str]:
 
 
 def from_iterable(iterable: Iterable[T], predicate: Callable[[T], bool]) -> Optional[T]:
-    """Return item from ``iterable`` based on ``predicate`` or ``None``, if it cannout be found.
+    """Return item from ``iterable`` based on ``predicate`` or ``None``, if it cannot be found.
     """
     return next((item for item in iterable if predicate(item)), None)
 

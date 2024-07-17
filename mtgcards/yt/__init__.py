@@ -292,28 +292,28 @@ class Video:
 
     @classmethod
     def _process_hooks(cls, links: List[str]) -> Dict[Type[UrlParser], str]:
-        parsersmap = {}
+        parsers_map = {}
         for link in links:
-            if not parsersmap.get(AetherHubParser) and cls.AETHERHUB_HOOK in link:
-                parsersmap[AetherHubParser] = link
-            elif not parsersmap.get(GoldfishParser) and cls.GOLDFISH_HOOK in link:
-                parsersmap[GoldfishParser] = link
-            elif not parsersmap.get(MoxfieldParser) and cls.MOXFIELD_HOOK in link:
-                parsersmap[MoxfieldParser] = link
-            elif not parsersmap.get(MtgaZoneParser) and cls.MTGAZONE_HOOK in link:
-                parsersmap[MtgaZoneParser] = link
-            elif not parsersmap.get(StreamdeckerParser) and cls.STREAMDECKER_HOOK in link:
-                parsersmap[StreamdeckerParser] = link
-            elif not parsersmap.get(TcgPlayerParser) and cls.TCGPLAYER_HOOK in link:
-                parsersmap[TcgPlayerParser] = link
-            elif (not parsersmap.get(UntappedParser)
+            if not parsers_map.get(AetherHubParser) and cls.AETHERHUB_HOOK in link:
+                parsers_map[AetherHubParser] = link
+            elif not parsers_map.get(GoldfishParser) and cls.GOLDFISH_HOOK in link:
+                parsers_map[GoldfishParser] = link
+            elif not parsers_map.get(MoxfieldParser) and cls.MOXFIELD_HOOK in link:
+                parsers_map[MoxfieldParser] = link
+            elif not parsers_map.get(MtgaZoneParser) and cls.MTGAZONE_HOOK in link:
+                parsers_map[MtgaZoneParser] = link
+            elif not parsers_map.get(StreamdeckerParser) and cls.STREAMDECKER_HOOK in link:
+                parsers_map[StreamdeckerParser] = link
+            elif not parsers_map.get(TcgPlayerParser) and cls.TCGPLAYER_HOOK in link:
+                parsers_map[TcgPlayerParser] = link
+            elif (not parsers_map.get(UntappedParser)
                   and all(hook in link for hook in cls.UNTAPPED_HOOKS)):
-                parsersmap[UntappedParser] = link
-        return parsersmap
+                parsers_map[UntappedParser] = link
+        return parsers_map
 
     def _process_urls(self, urls: List[str]) -> Optional[Deck]:
-        parsersmap = self._process_hooks(urls)
-        for parser_type, url in parsersmap.items():
+        parsers_map = self._process_hooks(urls)
+        for parser_type, url in parsers_map.items():
             deck = parser_type(url, self._format_cards).deck
             if deck:
                 return deck

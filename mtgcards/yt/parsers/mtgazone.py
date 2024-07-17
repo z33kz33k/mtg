@@ -17,5 +17,9 @@ from mtgcards.yt.parsers import UrlParser
 class MtgaZoneParser(UrlParser):
     """Parser of MTG Arena Zone decklist page.
     """
+
+    def _get_deck(self) -> Optional[Deck]:
+        pass
+
     def _parse(self) -> Optional[Deck]:
         pass

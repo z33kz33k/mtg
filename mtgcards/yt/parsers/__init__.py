@@ -12,7 +12,7 @@ from typing import Optional, Set
 
 from bs4 import BeautifulSoup
 
-from mtgcards.scryfall import Card, Deck
+from mtgcards.scryfall import Card, Deck, find_by_name, set_cards
 from mtgcards.utils import timed_request
 
 
@@ -44,3 +44,11 @@ class UrlParser(ABC):
     def _get_deck(self) -> Optional[Deck]:
         raise NotImplementedError
 
+    def _get_playset(self, name: str, quantity: int, set_code="") -> list[Card]:
+        if set_code:
+            cards = set_cards(set_code)
+            card = find_by_name(name, cards)
+            if card:
+                return [card] * quantity
+        card = find_by_name(name, self._format_cards)
+        return [card] * quantity if card else []

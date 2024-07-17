@@ -20,5 +20,9 @@ from mtgcards.yt.parsers import UrlParser
 class TcgPlayerParser(UrlParser):
     """Parser of TCG Player decklist page.
     """
+
+    def _get_deck(self) -> Optional[Deck]:
+        pass
+
     def _parse(self) -> Optional[Deck]:
         pass

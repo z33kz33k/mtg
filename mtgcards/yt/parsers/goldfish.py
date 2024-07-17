@@ -12,8 +12,7 @@ from typing import Optional, Set
 
 from bs4 import Tag
 
-from mtgcards.scryfall import Deck, InvalidDeckError, find_by_name_narrowed_by_collector_number, \
-    set_cards, Card
+from mtgcards.scryfall import Deck, InvalidDeckError, Card
 from mtgcards.yt.parsers import ParsingError, UrlParser
 
 
@@ -32,7 +31,7 @@ class _ParsingState(Enum):
         return _ParsingState.COMMANDER
 
     @classmethod
-    def shift_to_mainlist(cls, current_state: "_ParsingState") -> "_ParsingState":
+    def shift_to_mainboard(cls, current_state: "_ParsingState") -> "_ParsingState":
         if current_state not in (_ParsingState.IDLE, _ParsingState.COMMANDER):
             raise RuntimeError(f"Invalid transition to MAINBOARD from: {current_state.name}")
         return _ParsingState.MAINBOARD
@@ -69,7 +68,7 @@ class GoldfishParser(UrlParser):
                 if row.text.strip() == "Commander":
                     self._state = _ParsingState.shift_to_commander(self._state)
                 elif "Creatures" in row.text.strip():
-                    self._state = _ParsingState.shift_to_mainlist(self._state)
+                    self._state = _ParsingState.shift_to_mainboard(self._state)
                 elif "Sideboard" in row.text.strip():
                     self._state = _ParsingState.shift_to_sideboard(self._state)
             else:
@@ -87,7 +86,7 @@ class GoldfishParser(UrlParser):
         except InvalidDeckError:
             return None
 
-    def _parse_row(self, row: Tag):
+    def _parse_row(self, row: Tag) -> list[Card]:
         quantity_tag = row.find(class_="text-right")
         if not quantity_tag:
             raise ParsingError("Can't find quantity data in a row tag")
@@ -113,11 +112,5 @@ class GoldfishParser(UrlParser):
             name = name.strip()
 
         set_code = set_code[:-1].lower()
-
-        cards = set_cards(set_code)
-        card = find_by_name_narrowed_by_collector_number(name, cards)
-        if card:
-            return [card] * quantity
-        card = find_by_name_narrowed_by_collector_number(name, self._format_cards)
-        return [card] * quantity if card else []
+        return self._get_playset(name, quantity, set_code)
 

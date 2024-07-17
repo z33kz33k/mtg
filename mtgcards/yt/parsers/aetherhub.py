@@ -11,8 +11,7 @@ from typing import List, Optional, Set
 
 from bs4 import Tag
 
-from mtgcards.scryfall import Deck, InvalidDeckError, find_by_name_narrowed_by_collector_number, \
-    set_cards, Card
+from mtgcards.scryfall import Deck, InvalidDeckError, find_by_name, set_cards, Card
 from mtgcards.yt.parsers import ParsingError, UrlParser
 
 
@@ -66,7 +65,7 @@ class AetherHubParser(UrlParser):
         except InvalidDeckError:
             return None
 
-    def _parse_hover_tag(self, hover_tag: Tag) -> List[Card]:
+    def _parse_hover_tag(self, hover_tag: Tag) -> list[Card]:
         quantity, *_ = hover_tag.text.split()
         try:
             quantity = int(quantity)
@@ -79,9 +78,4 @@ class AetherHubParser(UrlParser):
             raise ParsingError(f"No 'a' tag inside 'hover-imglink' div tag: {hover_tag!r}")
 
         name, set_code = card_tag.attrs["data-card-name"], card_tag.attrs["data-card-set"].lower()
-        cards = set_cards(set_code)
-        card = find_by_name_narrowed_by_collector_number(name, cards)
-        if card:
-            return [card] * quantity
-        card = find_by_name_narrowed_by_collector_number(name, self._format_cards)
-        return [card] * quantity if card else []
+        return self._get_playset(name, quantity, set_code)

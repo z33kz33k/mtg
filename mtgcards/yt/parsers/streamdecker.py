@@ -10,8 +10,7 @@
 from typing import List, Optional, Set
 
 from mtgcards.const import Json
-from mtgcards.scryfall import Deck, Card, InvalidDeckError, \
-    find_by_name_narrowed_by_collector_number, set_cards
+from mtgcards.scryfall import Deck, Card, InvalidDeckError, find_by_name, set_cards
 from mtgcards.utils import timed_request
 from mtgcards.yt.parsers import UrlParser
 
@@ -32,12 +31,12 @@ class StreamdeckerParser(UrlParser):
         mainboard, sideboard, commander = [], [], None
         # TODO: adapt to streamdecker JSON
         # for _, card in self._json_data["mainboard"].items():
-        #     mainboard.extend(self._get_playset(card))
+        #     mainboard.extend(self._parse_card(card))
         # for _, card in self._json_data["sideboard"].items():
-        #     sideboard.extend(self._get_playset(card))
+        #     sideboard.extend(self._parse_card(card))
         # if self._json_data["commanders"]:
         #     card = next(iter(self._json_data["commanders"].items()))[1]
-        #     result = self._get_playset(card)
+        #     result = self._parse_card(card)
         #     if result:
         #         commander = result[0]
 
@@ -46,14 +45,9 @@ class StreamdeckerParser(UrlParser):
         except InvalidDeckError:
             return None
 
-    def _get_playset(self, json_card: Json) -> List[Card]:
+    def _parse_card(self, json_card: Json) -> List[Card]:
         # TODO: adapt to streamdecker JSON
         # quantity = json_card["quantity"]
         # set_code, name = json_card["card"]["set"], json_card["card"]["name"]
-        # cards = set_cards(set_code)
-        # card = find_by_name_narrowed_by_collector_number(name, cards)
-        # if card:
-        #     return [card] * quantity
-        # card = find_by_name_narrowed_by_collector_number(name, self._format_cards)
-        # return [card] * quantity if card else []
+        # return self._get_playset(name, quantity, set_code)
         pass

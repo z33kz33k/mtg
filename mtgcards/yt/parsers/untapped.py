@@ -17,5 +17,9 @@ from mtgcards.yt.parsers import UrlParser
 class UntappedParser(UrlParser):
     """Parser of Untapped.gg decklist page.
     """
+
+    def _get_deck(self) -> Optional[Deck]:
+        pass
+
     def _parse(self) -> Optional[Deck]:
         pass
