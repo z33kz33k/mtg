@@ -8,18 +8,17 @@
 
 """
 import json
-from enum import Enum
 from dataclasses import dataclass
 from datetime import datetime
+from enum import Enum
 from pathlib import Path
-from typing import Dict, List, Optional
 
 from bs4 import BeautifulSoup
 from bs4.element import Tag
 
-from mtgcards.utils import timed_request, from_iterable
+from mtgcards.const import INPUTDIR, Json, OUTPUTDIR
+from mtgcards.utils import from_iterable, timed_request
 from mtgcards.utils.files import getdir, getfile
-from mtgcards.const import Json, OUTPUTDIR, INPUTDIR
 
 INPUTDIR = f"{INPUTDIR}/goldfish"
 DOMAIN = "www.mtggoldfish.com"
@@ -37,12 +36,12 @@ class SetFormat(Enum):
 class SetMetaData:
     name: str
     code: str
-    release: Optional[datetime]
+    release: datetime | None
     link: str
-    format: Optional[SetFormat] = None
+    format: SetFormat | None = None
 
     @staticmethod
-    def parse_release(datestr: str) -> Optional[datetime]:
+    def parse_release(datestr: str) -> datetime | None:
         """Parse ``datestr`` of format `Feb 18, 2022` into a datetime object.
         """
         if not datestr:
@@ -78,7 +77,7 @@ def _parse_ul(ul: Tag, set_format: SetFormat) -> SetMetaData:
     return SetMetaData(name, code, release, link, set_format)
 
 
-def scrape(as_json=False) -> Dict[str, List[SetMetaData]]:
+def scrape(as_json=False) -> dict[str, list[SetMetaData]]:
     markup = timed_request(URL)
     soup = BeautifulSoup(markup, "lxml")
     divs = soup.find_all("div", class_="sets-format-block")[:3]

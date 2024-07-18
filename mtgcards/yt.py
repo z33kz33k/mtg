@@ -9,11 +9,11 @@
 """
 import itertools
 import re
-from collections import defaultdict, Counter
+from collections import Counter, defaultdict
 from datetime import datetime
 from decimal import Decimal
 from functools import cached_property
-from typing import DefaultDict, Dict, List, Optional, Set, Tuple, Type
+from typing import Type
 
 import backoff
 import gspread
@@ -24,21 +24,21 @@ import scrapetube
 from contexttimer import Timer
 from youtubesearchpython import Channel as YtspChannel
 
+from mtgcards.decks import UrlParser
+from mtgcards.decks.aetherhub import AetherHubParser
+from mtgcards.decks.arena import ArenaParser
+from mtgcards.decks.goldfish import GoldfishParser
+from mtgcards.decks.moxfield import MoxfieldParser
+from mtgcards.decks.mtgazone import MtgaZoneParser
+from mtgcards.decks.streamdecker import StreamdeckerParser
+from mtgcards.decks.tcgplayer import TcgPlayerParser
+from mtgcards.decks.untapped import UntappedParser
+from mtgcards.scryfall import Deck, format_cards
 from mtgcards.scryfall import formats as scryfall_formats
-from mtgcards.scryfall import format_cards, Deck
 from mtgcards.utils import getrepr
-from mtgcards.yt.parsers import UrlParser
-from mtgcards.yt.parsers.arena import ArenaParser
-from mtgcards.yt.parsers.aetherhub import AetherHubParser
-from mtgcards.yt.parsers.goldfish import GoldfishParser
-from mtgcards.yt.parsers.moxfield import MoxfieldParser
-from mtgcards.yt.parsers.mtgazone import MtgaZoneParser
-from mtgcards.yt.parsers.streamdecker import StreamdeckerParser
-from mtgcards.yt.parsers.tcgplayer import TcgPlayerParser
-from mtgcards.yt.parsers.untapped import UntappedParser
 
 
-def channels() -> Dict[str, str]:
+def channels() -> dict[str, str]:
     """Retrieve a channel addresses mapping from a private Google Sheet spreadsheet.
 
     Mind that this operation takes about 2 seconds to complete.
@@ -86,7 +86,7 @@ class Video:
         return self._description
 
     @property
-    def keywords(self) -> List[str]:
+    def keywords(self) -> list[str]:
         return self._keywords
 
     @property
@@ -106,15 +106,15 @@ class Video:
         return self._channel_id
 
     @cached_property
-    def _desc_lines(self) -> List[str]:
+    def _desc_lines(self) -> list[str]:
         return [line.strip() for line in self.description.split("\n")] if self.description else []
 
     @property
-    def links(self) -> List[str]:
+    def links(self) -> list[str]:
         return self._links
 
     @property
-    def shortened_links(self) -> Set[str]:
+    def shortened_links(self) -> set[str]:
         return {link for link in self.links if any(hook in link for hook in self.SHORTENER_HOOKS)}
 
     @property
@@ -122,7 +122,7 @@ class Video:
         return self._format
 
     @property
-    def deck(self) -> Optional[Deck]:
+    def deck(self) -> Deck | None:
         return self._deck
 
     def __init__(self, video_id: str) -> None:
@@ -135,7 +135,7 @@ class Video:
         self._author, self._description, self._title = None, None, None
         self._keywords, self._publish_date, self._views = None, None, None
         self._get_pytube_data()
-        self._format_soup: DefaultDict[str, List[str]] = defaultdict(list)
+        self._format_soup: defaultdict[str, list[str]] = defaultdict(list)
         self._extract_formats(self.title)
         self._links, self._arena_lines = self._parse_lines()
         self._format = self._get_format()
@@ -185,7 +185,7 @@ class Video:
             title = self._get_title_with_backoff()
         return title
 
-    def _get_keywords(self) -> List[str]:
+    def _get_keywords(self) -> list[str]:
         try:
             keywords = self._pytube.keywords
         except pytube.exceptions.PytubeError:
@@ -242,7 +242,7 @@ class Video:
         return self._pytube.title
 
     @backoff.on_exception(backoff.expo, pytube.exceptions.PytubeError, max_time=60)
-    def _get_keywords_with_backoff(self) -> List[str]:
+    def _get_keywords_with_backoff(self) -> list[str]:
         self._pytube = self._get_pytube()
         return self._pytube.keywords
 
@@ -278,11 +278,11 @@ class Video:
         # if not, fall back to default
         return "standard"
 
-    def _parse_lines(self) -> Tuple[List[str], List[str]]:
+    def _parse_lines(self) -> tuple[list[str], list[str]]:
         links, arena_lines = [], []
         for line in self._desc_lines:
             self._extract_formats(line)
-            url = exctract_url(line)
+            url = extract_url(line)
             if url:
                 links.append(url)
             else:
@@ -291,7 +291,7 @@ class Video:
         return links, arena_lines
 
     @classmethod
-    def _process_hooks(cls, links: List[str]) -> Dict[Type[UrlParser], str]:
+    def _process_hooks(cls, links: list[str]) -> dict[Type[UrlParser], str]:
         parsers_map = {}
         for link in links:
             if not parsers_map.get(AetherHubParser) and cls.AETHERHUB_HOOK in link:
@@ -311,7 +311,7 @@ class Video:
                 parsers_map[UntappedParser] = link
         return parsers_map
 
-    def _process_urls(self, urls: List[str]) -> Optional[Deck]:
+    def _process_urls(self, urls: list[str]) -> Deck | None:
         parsers_map = self._process_hooks(urls)
         for parser_type, url in parsers_map.items():
             deck = parser_type(url, self._format_cards).deck
@@ -319,7 +319,7 @@ class Video:
                 return deck
         return None
 
-    def _get_deck(self) -> Optional[Deck]:
+    def _get_deck(self) -> Deck | None:
         # 1st stage: Arena lines
         if self._arena_lines:
             deck = ArenaParser(self._arena_lines, self._format_cards).deck
@@ -344,19 +344,19 @@ class Channel(list):
         return self._url
 
     @property
-    def id(self) -> Optional[str]:
+    def id(self) -> str | None:
         return self._id
 
     @property
-    def title(self) -> Optional[str]:
+    def title(self) -> str | None:
         return self._title
 
     @property
-    def tags(self) -> Optional[List[str]]:
+    def tags(self) -> list[str] | None:
         return self._tags
 
     @property
-    def subscribers(self) -> Optional[int]:
+    def subscribers(self) -> int | None:
         return self._subscribers
 
     def __init__(self, url: str, limit=10) -> None:
@@ -396,8 +396,8 @@ def unshorten(url: str) -> str:
     return resp.url
 
 
-def exctract_url(text: str, https=True) -> Optional[str]:
-    """Extract (the firs occurance of) URL from ``text``.
+def extract_url(text: str, https=True) -> str | None:
+    """Extract (the firs occurrence of) URL from ``text``.
 
     Pilfered from: https://stackoverflow.com/a/840110/4465708
     """

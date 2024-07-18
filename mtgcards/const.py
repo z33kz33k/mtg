@@ -7,17 +7,17 @@
     @author: z33k
 
 """
-from typing import Any, Callable, Dict, Tuple, TypeVar
+from typing import Any, Callable, TypeVar
 
 from mtgcards import __appname__
 
 # type annotation aliases
-Json = Dict[str, Any]
+Json = dict[str, Any]
 T = TypeVar("T")
-Method = Callable[[Any, Tuple[Any, ...]], Any]  # method with signature def methodname(self, *args)
-Function = Callable[[Tuple[Any, ...]], Any]  # function with signature def funcname(*args)
-MethodGeneric = Callable[[Any, Tuple[T, ...]], T]
-FunctionGeneric = Callable[[Tuple[T, ...]], T]
+Method = Callable[[Any, tuple[Any, ...]], Any]  # method with signature def methodname(self, *args)
+Function = Callable[[tuple[Any, ...]], Any]  # function with signature def funcname(*args)
+MethodGeneric = Callable[[Any, tuple[T, ...]], T]
+FunctionGeneric = Callable[[tuple[T, ...]], T]
 
 DATE_FORMAT = "%Y-%m-%d %H:%M"
 DATE_FORMAT_WITH_COMMA = "%Y-%m-%d, %H:%M"

@@ -13,17 +13,16 @@ import time
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import List, Optional, Tuple
 
 from bs4 import BeautifulSoup
 from bs4.element import Tag
 
+from mtgcards.const import INPUTDIR, Json, OUTPUTDIR
+from mtgcards.goldfish.sets import DOMAIN, MODERN_META_SETS, MtgSet, PIONEER_META_SETS, \
+    STANDARD_META_SETS, SetFormat
+from mtgcards.goldfish.sets import URL as SETS_URL
 from mtgcards.utils import from_iterable, timed_request
 from mtgcards.utils.files import getdir, getfile
-from mtgcards.const import Json, OUTPUTDIR, INPUTDIR
-from mtgcards.goldfish.sets import URL as SETS_URL
-from mtgcards.goldfish.sets import MtgSet, DOMAIN, STANDARD_META_SETS, PIONEER_META_SETS, \
-    MODERN_META_SETS, SetFormat
 
 URL_TEMPLATE = SETS_URL + "{}#online"
 INPUTDIR = f"{INPUTDIR}/goldfish"
@@ -129,16 +128,16 @@ class Price:
 
 @dataclass
 class Card:
-    number: Optional[int]  # some cards in Alchemy have no number
+    number: int | None  # some cards in Alchemy have no number
     name: str
     link: str
     # phyrexian mana (e.g. in Modern Masters 2015:
     # https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=512288)
     # is not (easily) parseable on mtggoldfish
-    mana: Optional[Tuple[Mana, ...]]
-    rarity: Optional[Rarity]
-    price: Optional[Price]
-    mtg_set: Optional[MtgSet] = None
+    mana: tuple[Mana, ...] | None
+    rarity: Rarity | None
+    price: Price | None
+    mtg_set: MtgSet | None = None
 
     @property
     def cmc(self) -> int:
@@ -212,7 +211,7 @@ class Card:
 
 @dataclass
 class SetData:
-    cards: List[Card]
+    cards: list[Card]
     mtg_set: MtgSet
 
     @property
@@ -222,27 +221,28 @@ class SetData:
         }
 
     @staticmethod
-    def from_json(cards_data: List[Json], mtg_set: MtgSet) -> "SetData":
+    def from_json(cards_data: list[Json], mtg_set: MtgSet) -> "SetData":
         cards = [Card.from_json(card_data) for card_data in cards_data]
         for card in cards:
             card.mtg_set = mtg_set
         return SetData(cards, mtg_set)
 
-    def find(self, name: str) -> Optional[Card]:
+    def find(self, name: str) -> Card | None:
         """Find a card by ``name`` provided. Return ``None`` if nothing has been found.
         """
         return from_iterable(self.cards, lambda c: c.name == name)
 
-    def find_by_number(self, number: int) -> Optional[Card]:
+    def find_by_number(self, number: int) -> Card | None:
         """Find a card by ``number`` provided. Return ``None`` if nothing has been found.
         """
         return from_iterable(self.cards, lambda c: c.number == number)
 
-    def find_all(self, *, rarity: Optional[Rarity] = None, price: Optional[float] = None,
-                 text: Optional[str] = None, mana: Optional[Mana] = None,
-                 cmc: Optional[int] = None, has_hybrid_mana: Optional[bool] = None,
-                 has_x_mana: Optional[bool] = None, has_colorless_mana: Optional[bool] = None,
-                 has_colored_mana: Optional[bool] = None) -> List[Card]:
+    def find_all(
+            self, *, rarity: Rarity | None = None, price: float | None = None,
+            text: str | None = None, mana: Mana | None = None,
+            cmc: int | None = None, has_hybrid_mana: bool | None = None,
+            has_x_mana: bool | None = None, has_colorless_mana: bool | None = None,
+            has_colored_mana: bool | None = None) -> list[Card]:
         """Find all cards that meet specified parameters.
 
         :param rarity: matched card's rarity
@@ -277,7 +277,7 @@ class SetData:
         return mtgcards
 
 
-def _get_table(mtg_set: MtgSet) -> Optional[Tag]:
+def _get_table(mtg_set: MtgSet) -> Tag | None:
     link = mtg_set.value.link[6:]
     url = URL_TEMPLATE.format(link)
     markup = timed_request(url)
@@ -285,12 +285,12 @@ def _get_table(mtg_set: MtgSet) -> Optional[Tag]:
     return soup.find("table", class_="card-container-table table table-striped table-sm")
 
 
-def _getrows(table: Tag) -> List[Tag]:
+def _getrows(table: Tag) -> list[Tag]:
     body = table.find("tbody")
     return [el for el in body.children][1:]
 
 
-def _parse_row(row: Tag, mtg_set: Optional[MtgSet] = None) -> Card:
+def _parse_row(row: Tag, mtg_set: MtgSet | None = None) -> Card:
     number, link, mana, rarity, price = [td for td in row.children][:5]
     number = int(number.text) if number.text else None
     link = link.find("a")
@@ -327,7 +327,7 @@ def _parse_row(row: Tag, mtg_set: Optional[MtgSet] = None) -> Card:
     return Card(number, name, link, mana, rarity, price, mtg_set)
 
 
-def _parse_mana(text: str) -> Tuple[Mana, ...]:
+def _parse_mana(text: str) -> tuple[Mana, ...]:
     text = text.replace("mana cost: ", "")
     tokens = text.split()
     manas, is_hybrid, hybrid_mana = [], False, []
@@ -365,7 +365,7 @@ def scrape(mtg_set: MtgSet) -> SetData:
     return SetData(cards, mtg_set)
 
 
-def json_dump(fmt: SetFormat = SetFormat.STANDARD, filename: Optional[str] = None) -> None:
+def json_dump(fmt: SetFormat = SetFormat.STANDARD, filename: str | None = None) -> None:
     if fmt is SetFormat.STANDARD:
         metas = STANDARD_META_SETS
     elif fmt is SetFormat.PIONEER:
@@ -405,7 +405,7 @@ with MODERN_JSON_FILE.open() as mf:
     MODERN_JSON = json.load(mf)
 
 
-def getset(mtg_set: MtgSet) -> Optional[SetData]:
+def getset(mtg_set: MtgSet) -> SetData | None:
     """Return set specified by ``mtg_set`` enumeration or ``None`` if there's no such data.
     """
     allinput = {**STANDARD_JSON, **PIONEER_JSON, **MODERN_JSON}
@@ -415,7 +415,7 @@ def getset(mtg_set: MtgSet) -> Optional[SetData]:
     return None
 
 
-def getsets(*sets: MtgSet) -> List[SetData]:
+def getsets(*sets: MtgSet) -> list[SetData]:
     """Return sets' data specified by the enumerated ``sets``.
     """
     result = []
@@ -426,10 +426,10 @@ def getsets(*sets: MtgSet) -> List[SetData]:
     return result
 
 
-def get_sets_by_format(fmt: SetFormat = SetFormat.STANDARD) -> List[SetData]:
+def get_sets_by_format(fmt: SetFormat = SetFormat.STANDARD) -> list[SetData]:
     """Return all sets belonging to the specified format.
     """
-    def parse_json(data: Json) -> List[SetData]:
+    def parse_json(data: Json) -> list[SetData]:
         result = []
         for code, card_data in data.items():
             mtgset = MtgSet.from_code(code)
@@ -444,7 +444,7 @@ def get_sets_by_format(fmt: SetFormat = SetFormat.STANDARD) -> List[SetData]:
         return parse_json(STANDARD_JSON)
 
 
-def find_card(name: str, fmt: SetFormat = SetFormat.STANDARD) -> Optional[Card]:
+def find_card(name: str, fmt: SetFormat = SetFormat.STANDARD) -> Card | None:
     """Find a card with ``name`` in all sets of format ``fmt``. Return ``None`` if nothing matches.
     """
     sets = get_sets_by_format(fmt)
@@ -455,12 +455,13 @@ def find_card(name: str, fmt: SetFormat = SetFormat.STANDARD) -> Optional[Card]:
     return None
 
 
-def find_cards(fmt: SetFormat = SetFormat.STANDARD, *, rarity: Optional[Rarity] = None,
-               price: Optional[float] = None, text: Optional[str] = None,
-               mana: Optional[Mana] = None, cmc: Optional[int] = None,
-               has_hybrid_mana: Optional[bool] = None, has_x_mana: Optional[bool] = None,
-               has_colorless_mana: Optional[bool] = None,
-               has_colored_mana: Optional[bool] = None) -> List[Card]:
+def find_cards(
+        fmt: SetFormat = SetFormat.STANDARD, *, rarity: Rarity | None = None,
+        price: float | None = None, text: str | None = None,
+        mana: Mana | None = None, cmc: int | None = None,
+        has_hybrid_mana: bool | None = None, has_x_mana: bool | None = None,
+        has_colorless_mana: bool | None = None,
+        has_colored_mana: bool | None = None) -> list[Card]:
     """Find all cards in the specified format that meet specified parameters.
 
     :param fmt: format to match cards in

@@ -8,17 +8,17 @@
 
 """
 from datetime import datetime
-from typing import Any, Callable, Iterable, List, Optional, Tuple, Type, Union
+from typing import Any, Callable, Iterable, Optional, Type, Union
 
 import requests
 from contexttimer import Timer
 
-from mtgcards.const import T, TIMESTAMP_FORMAT, Json
-from mtgcards.utils.validate import uniform_type_checker, type_checker
+from mtgcards.const import Json, T, TIMESTAMP_FORMAT
+from mtgcards.utils.validate import type_checker, uniform_type_checker
 
 
 def timed_request(url: str, postdata: Optional[Json] = None,
-                  return_json=False, **requests_kwargs) -> Union[List[Json], Json, str]:
+                  return_json=False, **requests_kwargs) -> Union[list[Json], Json, str]:
     print(f"Retrieving data from: '{url}'...")
     with Timer() as t:
         if postdata:
@@ -31,7 +31,7 @@ def timed_request(url: str, postdata: Optional[Json] = None,
     return data.text
 
 
-def getrepr(class_: Type, *name_value_pairs: Tuple[str, Any]) -> str:
+def getrepr(class_: Type, *name_value_pairs: tuple[str, Any]) -> str:
     """Return ``__repr__`` string format: 'ClassName(name=value, ..., name_n=value_n)'
 
     :param class_: class to get repr for
@@ -42,7 +42,7 @@ def getrepr(class_: Type, *name_value_pairs: Tuple[str, Any]) -> str:
 
 
 @type_checker(str)
-def parse_bool_from_str(string: Optional[str]) -> Optional[bool]:
+def parse_bool_from_str(string: str | None) -> bool | None:
     """Parse a boolean value or ``None`` from ``string``.
     """
     if not string:
@@ -55,7 +55,7 @@ def parse_bool_from_str(string: Optional[str]) -> Optional[bool]:
 
 
 @type_checker(str)
-def parse_float_from_str(string: Optional[str]) -> Optional[float]:
+def parse_float_from_str(string: str | None) -> float | None:
     """Parse a floating point number or ``None`` from ``string``.
     """
     if not string:
@@ -68,7 +68,7 @@ def parse_float_from_str(string: Optional[str]) -> Optional[float]:
 
 
 @type_checker(str)
-def parse_int_from_str(string: Optional[str]) -> Optional[int]:
+def parse_int_from_str(string: str | None) -> int | None:
     """Parse an integer or ``None`` from ``string``.
     """
     if not string:
@@ -80,7 +80,7 @@ def parse_int_from_str(string: Optional[str]) -> Optional[int]:
 
 
 @type_checker(str)
-def camel_case_split(text: str) -> List[str]:
+def camel_case_split(text: str) -> list[str]:
     """Do camel-case split on ``text``.
 
     Taken from:
@@ -103,7 +103,7 @@ def camel_case_split(text: str) -> List[str]:
 
 
 def totuple(lst: list) -> tuple:
-    """Convert ``lst`` and any list it containes (no matter the nesting level) recursively to tuple.
+    """Convert ``lst`` and any list it contains (no matter the nesting level) recursively to tuple.
 
     Taken from:
         https://stackoverflow.com/a/27050037/4465708
@@ -112,7 +112,7 @@ def totuple(lst: list) -> tuple:
 
 
 def tolist(tpl: tuple) -> list:
-    """Convert ``tpl`` and any tuple it containes (no matter the nesting level) recursively to list.
+    """Convert ``tpl`` and any tuple it contains (no matter the nesting level) recursively to list.
 
     Taken from and made in reverse:
         https://stackoverflow.com/a/27050037/4465708
@@ -120,7 +120,7 @@ def tolist(tpl: tuple) -> list:
     return list(tolist(i) if isinstance(i, tuple) else i for i in tpl)
 
 
-def cleardir(obj: object) -> List[str]:
+def cleardir(obj: object) -> list[str]:
     """Return ``dir(obj)`` without extraneous fluff.
     """
     return [attr for attr in dir(obj) if not attr.startswith("_")]

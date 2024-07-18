@@ -8,15 +8,12 @@
 
 """
 from pathlib import Path
-from typing import List, Tuple
 
 from bs4 import BeautifulSoup
 from bs4.element import Tag
-import gspread
 
 from mtgcards.const import DATADIR
 from mtgcards.utils.files import download_file
-
 
 FILENAME = "creature_type.html"
 
@@ -35,13 +32,13 @@ class _CreatureTypesParser:
     FILEPATH = Path(DATADIR) / FILENAME
 
     @property
-    def races(self) -> List[str]:
+    def races(self) -> list[str]:
         """Return a list of races.
         """
         return self._races
 
     @property
-    def classes(self) -> List[str]:
+    def classes(self) -> list[str]:
         """Return a list of classes.
         """
         return self._classes
@@ -55,7 +52,7 @@ class _CreatureTypesParser:
         self._races = self._parse_table(self._race_table)
         self._classes = self._parse_table(self._class_table)
 
-    def _get_tables(self) -> Tuple[Tag, Tag]:
+    def _get_tables(self) -> tuple[Tag, Tag]:
         table = self._soup.find("table", class_="navbox")
         classes = "nowraplinks mw-collapsible navbox-subgroup mw-made-collapsible".split()
         relevant_tables = table.find_all("table", class_=classes)
@@ -77,7 +74,7 @@ class _CreatureTypesParser:
         return race_table, class_table
 
     @staticmethod
-    def _parse_table(table: Tag) -> List[str]:
+    def _parse_table(table: Tag) -> list[str]:
         lis = table.find_all("li")
         regular_lis = [li for li in lis if ":" not in li.text]
         qualified_lis = [li for li in lis if ":" in li.text]

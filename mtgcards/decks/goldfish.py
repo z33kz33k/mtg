@@ -1,19 +1,18 @@
 """
 
-    mtgcards.yt.parsers.goldfish.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtgcards.decks.goldfish.py
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Parse MtGGoldfish decklist page.
 
     @author: z33k
 
 """
 from enum import Enum, auto
-from typing import Optional, Set
 
 from bs4 import Tag
 
-from mtgcards.scryfall import Deck, InvalidDeckError, Card
-from mtgcards.yt.parsers import ParsingError, UrlParser
+from mtgcards.decks import ParsingError, UrlParser
+from mtgcards.scryfall import Card, Deck, InvalidDeckError
 
 
 class _ParsingState(Enum):
@@ -53,13 +52,13 @@ class GoldfishParser(UrlParser):
                   "image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
     }
 
-    def __init__(self, url: str, format_cards: Set[Card]) -> None:
+    def __init__(self, url: str, format_cards: set[Card]) -> None:
         super().__init__(url, format_cards)
         self._soup = self._get_soup(headers=self.HEADERS)
         self._state = _ParsingState.IDLE
         self._deck = self._get_deck()
 
-    def _get_deck(self) -> Optional[Deck]:
+    def _get_deck(self) -> Deck | None:
         mainboard, sideboard, commander = [], [], None
         table = self._soup.find("table", class_="deck-view-deck-table")
         rows = table.find_all("tr")

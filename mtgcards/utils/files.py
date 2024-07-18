@@ -11,7 +11,7 @@ import shutil
 from logging import ERROR, getLogger
 from pathlib import Path
 from time import sleep
-from typing import List, Optional
+from typing import Optional
 
 import requests
 from logdecorator import log_on_error
@@ -19,12 +19,12 @@ from tqdm import tqdm
 
 from mtgcards.utils.validate import type_checker
 
-
 log = getLogger(__name__)
 
 
-@log_on_error(ERROR, "Error on getting {file_location}: {e!r}.",
-              on_exceptions=(OSError, ValueError), reraise=True, logger=log)
+@log_on_error(
+    ERROR, "Error on getting {file_location}: {e!r}.", on_exceptions=(OSError, ValueError),
+    reraise=True, logger=log)
 @type_checker(str)
 def getfile(file_location: str, absolute=False, sanity_check=True) -> Path:
     """Return a Path object pointing at a file according to string `file_location` provided.
@@ -53,8 +53,9 @@ def getfile(file_location: str, absolute=False, sanity_check=True) -> Path:
         return result
 
 
-@log_on_error(ERROR, "Error on getting {dir_location}: {e!r}.",
-              on_exceptions=(OSError, ValueError), reraise=True, logger=log)
+@log_on_error(
+    ERROR, "Error on getting {dir_location}: {e!r}.", on_exceptions=(OSError, ValueError),
+    reraise=True, logger=log)
 @type_checker(str)
 def getdir(dir_location: str, absolute=False, create_missing=True) -> Optional[Path]:
     """Return a Path object pointing at a directory according to string `dir_location` provided.
@@ -107,7 +108,7 @@ def remove_by_ext(ext: str, destdir: str, recursive=False, opposite=False) -> in
 
     :return: number of removed files
     """
-    def remove(f: Path, removed_lst: List[Path]) -> None:
+    def remove(f: Path, removed_lst: list[Path]) -> None:
         f.unlink()
         if not f.exists():
             removed_lst.append(f)

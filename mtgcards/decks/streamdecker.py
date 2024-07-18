@@ -1,18 +1,17 @@
 """
 
-    mtgcards.yt.parsers.streamdecker.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtgcards.decks.streamdecker.py
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Parse Streamdecker decklist page.
 
     @author: z33k
 
 """
-from typing import List, Optional, Set
 
 from mtgcards.const import Json
-from mtgcards.scryfall import Deck, Card, InvalidDeckError, find_by_name, set_cards
+from mtgcards.decks import UrlParser
+from mtgcards.scryfall import Card, Deck, InvalidDeckError
 from mtgcards.utils import timed_request
-from mtgcards.yt.parsers import UrlParser
 
 
 class StreamdeckerParser(UrlParser):
@@ -20,14 +19,14 @@ class StreamdeckerParser(UrlParser):
     """
     API_URL_TEMPLATE = "https://www.streamdecker.com/api/deck/{}"
 
-    def __init__(self, url: str, format_cards: Set[Card]) -> None:
+    def __init__(self, url: str, format_cards: set[Card]) -> None:
         super().__init__(url, format_cards)
         *_, self._decklist_id = url.split("/")
         self._json_data = timed_request(self.API_URL_TEMPLATE.format(self._decklist_id),
                                         return_json=True)
         self._deck = self._get_deck()
 
-    def _get_deck(self) -> Optional[Deck]:
+    def _get_deck(self) -> Deck | None:
         mainboard, sideboard, commander = [], [], None
         # TODO: adapt to streamdecker JSON
         # for _, card in self._json_data["mainboard"].items():
@@ -45,7 +44,7 @@ class StreamdeckerParser(UrlParser):
         except InvalidDeckError:
             return None
 
-    def _parse_card(self, json_card: Json) -> List[Card]:
+    def _parse_card(self, json_card: Json) -> list[Card]:
         # TODO: adapt to streamdecker JSON
         # quantity = json_card["quantity"]
         # set_code, name = json_card["card"]["set"], json_card["card"]["name"]

@@ -11,15 +11,14 @@ import json
 from collections import namedtuple
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import Optional
 
 from bs4 import BeautifulSoup
 from bs4.element import ResultSet, Tag
 
 from mtgcards.const import Json
+from mtgcards.goldfish.cards import Card as GoldfishCard, Price, PriceUnit, find_card
 from mtgcards.utils import from_iterable, timed_request
-
-from mtgcards.goldfish.cards import Card as GoldfishCard, PriceUnit, find_card, Price
 
 URL = "https://magic.wizards.com/en/articles/archive/magic-digital/innistrad-crimson-vow-jump-" \
       "event-details-and-packets-2021-11-10"
@@ -32,9 +31,9 @@ class Card:
     # some cards listed in decklists are not linked and hence lack data other than name and
     # quantity (e.g. Sigarda's Imprisonment in DISTURBED)
     name: str
-    number: Optional[int]
-    set_code: Optional[str]
-    gatherer_link: Optional[str]
+    number: int | None
+    set_code: str | None
+    gatherer_link: str | None
     quantity: int
     goldfish_data: Optional[GoldfishCard]
 
@@ -72,7 +71,7 @@ class RotatedCard(Card):
     # TODO: make a separate dataclass for alternative card that doesn't hold unnecessary fields:
     #  number, set_code, gatherer_link, quantity, alternative (that not only clog up memory
     #  but end up serialized to json for no good reason)
-    alternative: Optional["RotatedCard"] = None  # injected post-initialization
+    alternative: "RotatedCard" | None = None  # injected post-initialization
 
     @property
     def as_json(self) -> Json:
@@ -110,7 +109,7 @@ class RotatedCard(Card):
         )
 
     @property
-    def rotated_price(self) -> Optional[Price]:
+    def rotated_price(self) -> Price | None:
         """Return price for this rotated card calculated as an average of both rotation cards'
         prices weighted by chance of appearance. If none of rotated cards have price, return
         ``None``.
@@ -134,7 +133,7 @@ class RotatedCard(Card):
 @dataclass
 class Deck:
     name: str
-    cards: List[Card]
+    cards: list[Card]
 
     @property
     def as_json(self) -> Json:
@@ -161,7 +160,7 @@ class Deck:
         return sum(card.quantity for card in self.cards)
 
     @property
-    def price(self) -> Optional[Price]:
+    def price(self) -> Price | None:
         if not self.cards:
             return None
         total = 0
@@ -191,7 +190,7 @@ class RotationTableRow:
 
 @dataclass
 class RotationTable:
-    rows: List[RotationTableRow]
+    rows: list[RotationTableRow]
 
 
 class Parser:
@@ -202,7 +201,7 @@ class Parser:
         self.decks += self._get_decks(self._neo_decklists, self._neo_rotation_tables)
 
     @staticmethod
-    def _parse_page(url: str) -> Tuple[ResultSet, ResultSet]:
+    def _parse_page(url: str) -> tuple[ResultSet, ResultSet]:
         markup = timed_request(url)
         soup = BeautifulSoup(markup, "lxml")
         decklists = soup.find_all("div", class_="page-width bean_block bean_block_deck_list bean--"
@@ -211,7 +210,7 @@ class Parser:
         return decklists, rotation_tables
 
     @staticmethod
-    def _parse_decklist(decklist: Tag) -> Tuple[str, ResultSet]:
+    def _parse_decklist(decklist: Tag) -> tuple[str, ResultSet]:
         inner_decklist = decklist.find("div", class_="sorted-by-overview-container sortedContainer")
         rows = inner_decklist.find_all("span", class_="row")
         deckname = decklist.find("h4").text
@@ -249,7 +248,7 @@ class Parser:
         return RotationTable(new_rows)
 
     @staticmethod
-    def _apply_rotations(cards: List[Card], rotation_table: RotationTable) -> List[Card]:
+    def _apply_rotations(cards: list[Card], rotation_table: RotationTable) -> list[Card]:
         new_cards = []
         for card in cards:
             row = from_iterable(rotation_table.rows, lambda r: r.basecard.name == card.name)
@@ -264,7 +263,7 @@ class Parser:
                 new_cards.append(card)
         return new_cards
 
-    def _get_decks(self, decklists, rotation_tables) -> List[Deck]:
+    def _get_decks(self, decklists, rotation_tables) -> list[Deck]:
         if len(decklists) != len(rotation_tables):
             raise ValueError(f"Invalid input. Decklists and rotation_tables have different lengths "
                              f"({len(decklists)} != {len(rotation_tables)}).")

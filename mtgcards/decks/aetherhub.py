@@ -1,29 +1,28 @@
 """
 
-    mtgcards.yt.parsers.aetherhub.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtgcards.decks.aetherhub.py
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Parse AetherHub decklist page.
 
     @author: z33k
 
 """
-from typing import List, Optional, Set
 
 from bs4 import Tag
 
-from mtgcards.scryfall import Deck, InvalidDeckError, find_by_name, set_cards, Card
-from mtgcards.yt.parsers import ParsingError, UrlParser
+from mtgcards.decks import ParsingError, UrlParser
+from mtgcards.scryfall import Card, Deck, InvalidDeckError
 
 
 class AetherHubParser(UrlParser):
     """Parser of AetherHub decklist page.
     """
-    def __init__(self, url: str, format_cards: Set[Card]) -> None:
+    def __init__(self, url: str, format_cards: set[Card]) -> None:
         super().__init__(url, format_cards)
         self._soup = self._get_soup()
         self._deck = self._get_deck()
 
-    def _get_deck(self) -> Optional[Deck]:
+    def _get_deck(self) -> Deck | None:
         mainboard, sideboard, commander = [], [], None
 
         tables = self._soup.find_all("table", class_="table table-borderless")

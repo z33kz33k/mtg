@@ -13,15 +13,14 @@ from collections import defaultdict
 from dataclasses import dataclass
 from enum import Enum, EnumMeta
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Optional, Union
 
 import numpy as np
 
-from mtgcards.utils.files import getfile
+from mtgcards.const import DATADIR, OUTPUTDIR
 from mtgcards.goldfish.cards import Mana
 from mtgcards.goldfish.sets import MtgSet
-from mtgcards.const import OUTPUTDIR, DATADIR
-
+from mtgcards.utils.files import getfile
 
 CSV_MAP = {
     MtgSet.ZENDIKAR_RISING: getfile(f"{DATADIR}/17lands/zendikar_rising.csv"),
@@ -91,7 +90,7 @@ class Color(Enum):
     BANT_WITH_SPLASH = "Bant (GWU) + Splash"
 
     @classmethod
-    def to_mana(cls, color: "Color") -> Tuple[Mana, ...]:
+    def to_mana(cls, color: "Color") -> tuple[Mana, ...]:
         if color is cls.MONO_WHITE:
             return Mana.WHITE,
         elif color is cls.MONO_BLUE:
@@ -232,14 +231,14 @@ DEFAULT_GRADESPAN_STOP = 60
 
 
 def breakpoints(start: float = DEFAULT_GRADESPAN_START, stop: float = DEFAULT_GRADESPAN_STOP,
-                count: int = len(Grade) - 1) -> List[float]:
+                count: int = len(Grade) - 1) -> list[float]:
     return [*np.linspace(start, stop, count)]
 
 
 BREAKPOINTS = breakpoints()
 
 
-def grade(score: float, breakpoints: Optional[List[float]] = None,
+def grade(score: float, breakpoints: Optional[list[float]] = None,
           grades: str | EnumMeta = Grade) -> str | EnumMeta:
     """Return a grade from supplied ``grades`` based on ``score`` and ``breakpoints``.
 
@@ -261,9 +260,9 @@ class Performance:
     wins: int
     games: int
     color: Union[Color, Mana, None] = None
-    mtgset: Optional[MtgSet] = None
-    grade_start: Optional[float] = DEFAULT_GRADESPAN_START
-    grade_stop: Optional[float] = DEFAULT_GRADESPAN_STOP
+    mtgset: MtgSet | None = None
+    grade_start: float | None = DEFAULT_GRADESPAN_START
+    grade_stop: float | None = DEFAULT_GRADESPAN_STOP
 
     @property
     def winrate(self) -> float:
@@ -308,7 +307,7 @@ class SetParser:
     def __init__(self, mtgset: MtgSet, csv_path: Path) -> None:
         self._mtgset, self._csv_path = mtgset, csv_path
         self._performances = self._parse()
-        self._aggregate_performances = self._get_aggreagate_performances()
+        self._aggregate_performances = self._get_aggregate_performances()
         self._recalibrate_aggr_perfs()
 
     @property
@@ -319,7 +318,7 @@ class SetParser:
     def csv_path(self) -> Path:
         return self._csv_path
 
-    def _parse(self) -> List[Performance]:
+    def _parse(self) -> list[Performance]:
         perfs = []
         with self.csv_path.open(newline="") as f:
             for row in [r for r in csv.reader(f)][1:]:
@@ -328,11 +327,11 @@ class SetParser:
         return perfs
 
     @property
-    def performances(self) -> List[Performance]:
+    def performances(self) -> list[Performance]:
         return self._performances
 
     @property
-    def sorted_performances(self) -> List[Performance]:
+    def sorted_performances(self) -> list[Performance]:
         return sorted(self.performances, key=lambda p: p.winrate, reverse=True)
 
     @staticmethod
@@ -352,7 +351,7 @@ class SetParser:
         else:
             raise ValueError(f"Invalid performance: {perf}.")
 
-    def _get_aggreagate_performances(self) -> Dict[Mana, Performance]:
+    def _get_aggregate_performances(self) -> dict[Mana, Performance]:
         aggregator = defaultdict(list)
         for perf in self.performances:
             manas = [mana for mana in Color.to_mana(perf.color) if mana is not Mana.COLORLESS]
@@ -376,7 +375,7 @@ class SetParser:
             perf.grade_start, perf.grade_stop = min_, max_
 
     @property
-    def aggregate_performances(self) -> Dict[Mana, Performance]:
+    def aggregate_performances(self) -> dict[Mana, Performance]:
         return self._aggregate_performances
 
     def _build_perf_text(self) -> str:

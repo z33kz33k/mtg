@@ -7,25 +7,24 @@
     @author: z33k
 
 """
+import itertools
 import json
+import math
 import re
-
 from collections import defaultdict, namedtuple
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import date
 from enum import Enum
-from functools import lru_cache, cached_property
+from functools import cached_property, lru_cache
 from pprint import pprint
-from typing import Callable, DefaultDict, Dict, Iterable, List, Optional, Set, Tuple
-import itertools
-import math
+from typing import Callable, Iterable, Optional
 
 import scrython
 
+from mtgcards.const import DATADIR, Json
+from mtgcards.mtgwiki import CLASSES, RACES
 from mtgcards.utils import from_iterable, getrepr, parse_int_from_str
 from mtgcards.utils.files import download_file, getdir
-from mtgcards.const import DATADIR, Json
-from mtgcards.mtgwiki import RACES, CLASSES
 
 FILENAME = "scryfall.json"
 
@@ -45,8 +44,8 @@ def download_scryfall_bulk_data() -> None:
 
 
 MULTIPART_SEPARATOR = "//"  # separates parts of card's name in multipart cards
-MULTIPART_LAYOUTS = ['adventure', 'art_series', 'double_faced_token', 'flip', 'modal_dfc', 'split',
-                     'transform']
+MULTIPART_LAYOUTS = ('adventure', 'art_series', 'double_faced_token', 'flip', 'modal_dfc', 'split',
+                     'transform')
 
 # all cards that got Alchemy rebalance treatment have their rebalanced counterparts with names
 # prefixed by 'A-'
@@ -129,7 +128,7 @@ class Rarity(Enum):
     BONUS = "bonus"
 
     @property
-    def weight(self) -> Optional[float]:
+    def weight(self) -> float | None:
         """Return fractional weight of this rarity based on frequency of occurrence in boosters.
 
         Based on: https://mtg.fandom.com/wiki/Rarity
@@ -164,15 +163,15 @@ class TypeLine:
         return self._text
 
     @property
-    def supertypes(self) -> List[str]:
+    def supertypes(self) -> list[str]:
         return [t for t in self._types if t in self.SUPERTYPES]
 
     @property
-    def regular_types(self) -> List[str]:
+    def regular_types(self) -> list[str]:
         return [t for t in self._types if t not in self.SUPERTYPES]
 
     @property
-    def subtypes(self) -> List[str]:
+    def subtypes(self) -> list[str]:
         return self._subtypes
 
     @property
@@ -213,11 +212,11 @@ class TypeLine:
         return "Sorcery" in self.regular_types
 
     @property
-    def races(self) -> List[str]:
+    def races(self) -> list[str]:
         return [t for t in self.subtypes if t in RACES]
 
     @property
-    def classes(self) -> List[str]:
+    def classes(self) -> list[str]:
         return [t for t in self.subtypes if t in CLASSES]
 
     def __init__(self, text: str) -> None:
@@ -226,7 +225,7 @@ class TypeLine:
         self._text = text
         self._types, self._subtypes = self._parse()
 
-    def _parse(self) -> Tuple[List[str], List[str]]:
+    def _parse(self) -> tuple[list[str], list[str]]:
         """Parse text into types and subtypes.
         """
         if self.SEPARATOR in self.text:
@@ -269,7 +268,7 @@ class LordSentence:
         self._text = text
         self._prefix, self._buff, self._suffix = self._parse()
 
-    def _parse(self) -> Tuple[str, str, str]:
+    def _parse(self) -> tuple[str, str, str]:
         match = self.PATTERN.match(self._text)
         if match:
             prefix, suffix = self._text.split(match.group(1), maxsplit=1)
@@ -302,7 +301,7 @@ class CardFace:
         return self.json["name"]
 
     @property
-    def name_parts(self) -> Set[str]:
+    def name_parts(self) -> set[str]:
         return {*self.name.split()}
 
     @property
@@ -310,7 +309,7 @@ class CardFace:
         return self.json["mana_cost"]
 
     @property
-    def type_line(self) -> Optional[str]:
+    def type_line(self) -> str | None:
         return self.json.get("type_line")
 
     @property
@@ -318,44 +317,44 @@ class CardFace:
         return self.json["oracle_text"]
 
     @property
-    def colors(self) -> List[str]:
+    def colors(self) -> list[str]:
         result = self.json.get("colors")
         return result if result else []
 
     @lru_cache
-    def parse_types(self) -> Optional[TypeLine]:
+    def parse_types(self) -> TypeLine | None:
         return TypeLine(self.type_line) if self.type_line else None
 
     @property
-    def supertypes(self) -> List[str]:
+    def supertypes(self) -> list[str]:
         return self.parse_types().supertypes if self.parse_types() else []
 
     @property
-    def regular_types(self) -> List[str]:
+    def regular_types(self) -> list[str]:
         return self.parse_types().regular_types if self.parse_types() else []
 
     @property
-    def subtypes(self) -> List[str]:
+    def subtypes(self) -> list[str]:
         return self.parse_types().subtypes if self.parse_types() else []
 
     @property
-    def races(self) -> List[str]:
+    def races(self) -> list[str]:
         return self.parse_types().races if self.parse_types() else []
 
     @property
-    def classes(self) -> List[str]:
+    def classes(self) -> list[str]:
         return self.parse_types().classes if self.parse_types() else []
 
     @cached_property
-    def lord_sentences(self) -> List[LordSentence]:
+    def lord_sentences(self) -> list[LordSentence]:
         return Card.parse_lord_sentences(self.oracle_text)
 
     @property
-    def loyalty(self) -> Optional[str]:
+    def loyalty(self) -> str | None:
         return self.json.get("loyalty")
 
     @property
-    def loyalty_int(self) -> Optional[int]:
+    def loyalty_int(self) -> int | None:
         return parse_int_from_str(self.loyalty) if self.loyalty is not None else None
 
     @property
@@ -363,11 +362,11 @@ class CardFace:
         return self.loyalty is not None and self.loyalty_int is None
 
     @property
-    def power(self) -> Optional[int]:
+    def power(self) -> int | None:
         return self.json.get("power")
 
     @property
-    def power_int(self) -> Optional[int]:
+    def power_int(self) -> int | None:
         return parse_int_from_str(self.power) if self.power is not None else None
 
     @property
@@ -375,11 +374,11 @@ class CardFace:
         return self.power is not None and self.power_int is None
 
     @property
-    def toughness(self) -> Optional[str]:
+    def toughness(self) -> str | None:
         return self.json.get("toughness")
 
     @property
-    def toughness_int(self) -> Optional[int]:
+    def toughness_int(self) -> int | None:
         return parse_int_from_str(self.toughness) if self.toughness is not None else None
 
     @property
@@ -418,7 +417,7 @@ class Card:
             raise ScryfallError(f"Invalid layout {self.layout!r} for multipart card {self.name!r}")
 
     @property
-    def card_faces(self) -> List[CardFace]:
+    def card_faces(self) -> list[CardFace]:
         data = self.json.get("card_faces")
         if data is None:
             return []
@@ -435,7 +434,7 @@ class Card:
         return Color(tuple(self.json["color_identity"]))
 
     @property
-    def colors(self) -> List[str]:
+    def colors(self) -> list[str]:
         result = self.json.get("colors")
         return result if result else []
 
@@ -444,7 +443,7 @@ class Card:
         return self.json["collector_number"]
 
     @property
-    def collector_number_int(self) -> Optional[int]:
+    def collector_number_int(self) -> int | None:
         """Return collector number as an integer, if it can be parsed as such.
 
         .. note: Parsing logic strips any non-digits and then parses a number. This means that
@@ -459,13 +458,13 @@ class Card:
         return parse_int_from_str(cn)
 
     @property
-    def formats(self) -> List[str]:
+    def formats(self) -> list[str]:
         """Return list of all Scryfall string format designations.
         """
         return sorted(fmt for fmt in self.legalities)
 
     @property
-    def games(self) -> List[str]:
+    def games(self) -> list[str]:
         return self.json["games"]
 
     @property
@@ -473,7 +472,7 @@ class Card:
         return self.json["id"]
 
     @property
-    def keywords(self) -> List[str]:
+    def keywords(self) -> list[str]:
         return self.json["keywords"]
 
     @property
@@ -481,15 +480,15 @@ class Card:
         return self.json["layout"]
 
     @property
-    def legalities(self) -> Dict[str, str]:
+    def legalities(self) -> dict[str, str]:
         return self.json["legalities"]
 
     @property
-    def loyalty(self) -> Optional[str]:
+    def loyalty(self) -> str | None:
         return self.json.get("loyalty")
 
     @property
-    def loyalty_int(self) -> Optional[int]:
+    def loyalty_int(self) -> int | None:
         return parse_int_from_str(self.loyalty) if self.loyalty is not None else None
 
     @property
@@ -497,11 +496,11 @@ class Card:
         return self.loyalty is not None and self.loyalty_int is None
 
     @property
-    def mana_cost(self) -> Optional[str]:
+    def mana_cost(self) -> str | None:
         return self.json.get("mana_cost")
 
     @property
-    def oracle_text(self) -> Optional[str]:
+    def oracle_text(self) -> str | None:
         return self.json.get("oracle_text")
 
     @property
@@ -509,21 +508,21 @@ class Card:
         return self.json["name"]
 
     @property
-    def name_parts(self) -> Set[str]:
+    def name_parts(self) -> set[str]:
         if not self.is_multipart:
             return {*self.name.split()}
         return {part for face in self.card_faces for part in face.name_parts}
 
     @property
-    def main_name(self) -> str | None:
-        return None if not self.is_multipart else self.card_faces[0].name
+    def main_name(self) -> str:
+        return self.card_faces[0].name if self.is_multipart else self.name
 
     @property
-    def power(self) -> Optional[int]:
+    def power(self) -> int | None:
         return self.json.get("power")
 
     @property
-    def power_int(self) -> Optional[int]:
+    def power_int(self) -> int | None:
         return parse_int_from_str(self.power) if self.power is not None else None
 
     @property
@@ -531,7 +530,7 @@ class Card:
         return self.power is not None and self.power_int is None
 
     @property
-    def price(self) -> Optional[float]:
+    def price(self) -> float | None:
         """Return price in USD or `None` if unavailable.
         """
         return self.json["prices"].get("usd")
@@ -561,8 +560,8 @@ class Card:
         return self.rarity is Rarity.MYTHIC
 
     @property
-    def released_at(self) -> datetime:
-        return datetime.strptime(self.json["released_at"], "%Y-%m-%d")
+    def released_at(self) -> date:
+        return date.fromisoformat(self.json["released_at"])
 
     @property
     def reprint(self) -> bool:
@@ -581,11 +580,11 @@ class Card:
         return self.json["set_type"]
 
     @property
-    def toughness(self) -> Optional[str]:
+    def toughness(self) -> str | None:
         return self.json.get("toughness")
 
     @property
-    def toughness_int(self) -> Optional[int]:
+    def toughness_int(self) -> int | None:
         return parse_int_from_str(self.toughness) if self.toughness is not None else None
 
     @property
@@ -603,6 +602,8 @@ class Card:
     def is_legal_in(self, fmt: str) -> bool:
         """Returns `True` if this card is legal in format designated by `fmt`.
 
+        Run formats() to see available format designations.
+
         :param fmt: Scryfall format designation
         :raises: ValueError on invalid format designation
         """
@@ -615,6 +616,8 @@ class Card:
 
     def is_banned_in(self, fmt: str) -> bool:
         """Returns `True` if this card is banned in format designated by `fmt`.
+
+        Run formats() to see available format designations.
 
         :param fmt: Scryfall format designation
         :raises: ValueError on invalid format designation
@@ -629,6 +632,8 @@ class Card:
     def is_restricted_in(self, fmt: str) -> bool:
         """Returns `True` if this card is restricted in format designated by `fmt`.
 
+        Run formats() to see available format designations.
+
         :param fmt: Scryfall format designation
         :raises: ValueError on invalid format designation
         """
@@ -640,19 +645,19 @@ class Card:
         return False
 
     @lru_cache
-    def parse_types(self) -> Optional[TypeLine]:
+    def parse_types(self) -> TypeLine | None:
         if self.is_multipart:
             return None
         return TypeLine(self.type_line)
 
     @property
-    def supertypes(self) -> List[str]:
+    def supertypes(self) -> list[str]:
         if self.is_multipart:
             return sorted({t for face in self.card_faces for t in face.supertypes})
         return self.parse_types().supertypes
 
     @property
-    def regular_types(self) -> List[str]:
+    def regular_types(self) -> list[str]:
         if self.is_multipart:
             return sorted({t for face in self.card_faces for t in face.regular_types})
         return self.parse_types().regular_types
@@ -694,19 +699,19 @@ class Card:
         return "Sorcery" in self.regular_types
 
     @property
-    def subtypes(self) -> List[str]:
+    def subtypes(self) -> list[str]:
         if self.is_multipart:
             return sorted({t for face in self.card_faces for t in face.subtypes})
         return self.parse_types().subtypes
 
     @property
-    def races(self) -> List[str]:
+    def races(self) -> list[str]:
         if self.is_multipart:
             return sorted({t for face in self.card_faces for t in face.races})
         return self.parse_types().races
 
     @property
-    def classes(self) -> List[str]:
+    def classes(self) -> list[str]:
         if self.is_multipart:
             return sorted({t for face in self.card_faces for t in face.classes})
         return self.parse_types().classes
@@ -759,7 +764,7 @@ class Card:
         return self.alchemy_rebalance is not None
 
     @staticmethod
-    def parse_lord_sentences(oracle_text: str) -> List[LordSentence]:
+    def parse_lord_sentences(oracle_text: str) -> list[LordSentence]:
         if not oracle_text:
             return []
         lord_sentences = []
@@ -770,7 +775,7 @@ class Card:
         return lord_sentences
 
     @cached_property
-    def lord_sentences(self) -> List[LordSentence]:
+    def lord_sentences(self) -> list[LordSentence]:
         sentences = []
         if self.is_multipart:
             for face in self.card_faces:
@@ -788,7 +793,7 @@ class Card:
 
 
 @lru_cache
-def bulk_data() -> Set[Card]:
+def bulk_data() -> set[Card]:
     """Return Scryfall JSON data as set of Card objects.
     """
     source = getdir(DATADIR) / FILENAME
@@ -801,7 +806,7 @@ def bulk_data() -> Set[Card]:
     return {Card(card_data) for card_data in data}
 
 
-def games(data: Optional[Iterable[Card]] = None) -> List[str]:
+def games(data: Iterable[Card] | None = None) -> list[str]:
     """Return list of string designations for games that can be played with cards in Scryfall data.
     """
     data = data if data else bulk_data()
@@ -812,7 +817,7 @@ def games(data: Optional[Iterable[Card]] = None) -> List[str]:
     return sorted(result)
 
 
-def colors(data: Optional[Iterable[Card]] = None) -> List[str]:
+def colors(data: Iterable[Card] | None = None) -> list[str]:
     """Return list of string designations for MtG colors in Scryfall data.
     """
     data = data if data else bulk_data()
@@ -822,7 +827,7 @@ def colors(data: Optional[Iterable[Card]] = None) -> List[str]:
     return sorted(result)
 
 
-def sets(data: Optional[Iterable[Card]] = None) -> List[str]:
+def sets(data: Iterable[Card] | None = None) -> list[str]:
     """Return list of string codes for MtG sets in Scryfall data (e.g. 'bro' for The Brothers'
     War).
     """
@@ -830,34 +835,34 @@ def sets(data: Optional[Iterable[Card]] = None) -> List[str]:
     return sorted({card.set for card in data})
 
 
-def formats() -> List[str]:
+def formats() -> list[str]:
     """Return list of string designations for MtG formats in Scryfall data.
     """
     return next(iter(bulk_data())).formats
 
 
-def layouts(data: Optional[Iterable[Card]] = None) -> List[str]:
+def layouts(data: Iterable[Card] | None = None) -> list[str]:
     """Return list of Scryfall string designations for card layouts in ``data``.
     """
     data = data if data else bulk_data()
     return sorted({card.layout for card in data})
 
 
-def set_names(data: Optional[Iterable[Card]] = None) -> List[str]:
+def set_names(data: Iterable[Card] | None = None) -> list[str]:
     """Return list of MtG set names in Scryfall data.
     """
     data = data if data else bulk_data()
     return sorted({card.set_name for card in data})
 
 
-def rarities(data: Optional[Iterable[Card]] = None) -> List[str]:
+def rarities(data: Iterable[Card] | None = None) -> list[str]:
     """Return list of MtG card rarities in Scryfall data.
     """
     data = data if data else bulk_data()
     return sorted({card.rarity.value for card in data})
 
 
-def keywords(data: Optional[Iterable[Card]] = None) -> List[str]:
+def keywords(data: Iterable[Card] | None = None) -> list[str]:
     """Return list of MtG card keywords in Scryfall data.
     """
     data = data if data else bulk_data()
@@ -867,8 +872,8 @@ def keywords(data: Optional[Iterable[Card]] = None) -> List[str]:
     return sorted(result)
 
 
-def find_cards(predicate: Callable[[Card], bool],
-               data: Optional[Iterable[Card]] = None) -> Set[Card]:
+def find_cards(
+        predicate: Callable[[Card], bool], data: Iterable[Card] | None = None) -> set[Card]:
     """Return list of cards from ``data`` that satisfy ``predicate``.
     """
     data = data if data else bulk_data()
@@ -876,28 +881,33 @@ def find_cards(predicate: Callable[[Card], bool],
 
 
 @lru_cache
-def set_cards(*set_codes: str, data: Optional[Iterable[Card]] = None) -> Set[Card]:
+def set_cards(*set_codes: str, data: Iterable[Card] | None = None) -> set[Card]:
     """Return card data for sets designated by ``set_codes``.
+
+    Run sets() to see available set codes.
     """
     return find_cards(lambda c: c.set in [code.lower() for code in set_codes], data)
 
 
 @lru_cache
-def arena_cards() -> Set[Card]:
+def arena_cards() -> set[Card]:
     """Return Scryfall bulk data filtered for only cards available on Arena.
     """
     return find_cards(lambda c: "arena" in c.games)
 
 
 @lru_cache
-def format_cards(fmt: str, data: Optional[Iterable[Card]] = None) -> Set[Card]:
+def format_cards(fmt: str, data: Iterable[Card] | None = None) -> set[Card]:
     """Return card data for MtG format designated by ``fmt``.
+
+    Run formats() to see available format designations.
     """
     return find_cards(lambda c: c.is_legal_in(fmt), data)
 
 
-def find_card(predicate: Callable[[Card], bool], data: Optional[Iterable[Card]] = None,
-              narrow_by_collector_number=False) -> Optional[Card]:
+def find_card(
+        predicate: Callable[[Card], bool], data: Iterable[Card] | None = None,
+        narrow_by_collector_number=False) -> Card | None:
     """Return card data from ``data`` that satisfies ``predicate`` or `None`.
     """
     data = data if data else bulk_data()
@@ -911,7 +921,7 @@ def find_card(predicate: Callable[[Card], bool], data: Optional[Iterable[Card]] 
     return cards[0] if cards else None
 
 
-def find_by_name(card_name: str, data: Optional[Iterable[Card]] = None) -> Card | None:
+def find_by_name(card_name: str, data: Iterable[Card] | None = None) -> Card | None:
     """Return a Scryfall card data of provided name or `None`.
     """
     data = data if data else bulk_data()
@@ -925,8 +935,8 @@ def find_by_name(card_name: str, data: Optional[Iterable[Card]] = None) -> Card 
         lambda c: card_name.lower() in c.name.lower(), data, narrow_by_collector_number=True)
 
 
-def find_by_parts(name_parts: Iterable[str],
-                  data: Optional[Iterable[Card]] = None) -> Optional[Card]:
+def find_by_parts(
+        name_parts: Iterable[str], data: Iterable[Card] | None = None) -> Card | None:
     """Return a Scryfall card data designated by provided ``name_parts`` or `None`.
     """
     if isinstance(name_parts, str):
@@ -935,8 +945,8 @@ def find_by_parts(name_parts: Iterable[str],
     return find_card(lambda c: all(part.lower() in c.name.lower() for part in name_parts), data)
 
 
-def find_by_collector_number(collector_number: int,
-                             data: Optional[Iterable[Card]] = None) -> Optional[Card]:
+def find_by_collector_number(
+        collector_number: int, data: Iterable[Card] | None = None) -> Card | None:
     """Return a Scryfall card data designated by provided ``collector_number`` from ``data`` or
     `None`.
     """
@@ -945,8 +955,8 @@ def find_by_collector_number(collector_number: int,
     return find_card(lambda c: c.collector_number == collector_number, data)
 
 
-def find_by_id(scryfall_id: str, data: Optional[Iterable[Card]] = None) -> Optional[Card]:
-    """Return a Scryfall card data of provided ``scryfall_id``.
+def find_by_id(scryfall_id: str, data: Iterable[Card] | None = None) -> Card | None:
+    """Return a Scryfall card data of provided ``scryfall_id`` or `None`.
     """
     data = data if data else bulk_data()
     return from_iterable(data, lambda c: c.id == scryfall_id)
@@ -957,43 +967,45 @@ class ColorIdentityDistribution:
     """
 
     @property
-    def colorsmap(self) -> DefaultDict[Color, List[Card]]:
+    def colorsmap(self) -> defaultdict[Color, list[Card]]:
         """Return mapping of cards to colors.
         """
         return self._colorsmap
 
     @property
-    def colors(self) -> List[Tuple[Color, List[Card]]]:
+    def colors(self) -> list[tuple[Color, list[Card]]]:
         """Return list of (color, cards) tuples sorted by color.
         """
         return self._colors
 
-    def __init__(self, data: Optional[Iterable[Card]] = None) -> None:
+    def __init__(self, data: Iterable[Card] | None = None) -> None:
         self._data = bulk_data() if not data else data
         self._colorsmap = defaultdict(list)
         # for card in self._data:
         #     self._colorsmap[Color(tuple(card.color_identity))].append(card)
         for card in self._data:
             self._colorsmap[card.color_identity].append(card)
-        self._colors = sorted([(k, v) for k, v in self._colorsmap.items()],
-                              key=lambda p: (len(p[0].value), p[0].value))
+        self._colors = sorted(
+            [(k, v) for k, v in self._colorsmap.items()],
+            key=lambda p: (len(p[0].value), p[0].value))
         Triple = namedtuple("Triple", "color quantity percentage")
-        self._triples = [Triple(c[0], len(c[1]), len(c[1]) / len(bulk_data()))
-                         for c in self.colors]
+        self._triples = [
+            Triple(c[0], len(c[1]), len(c[1]) / len(bulk_data())) for c in self.colors]
         self._triples.sort(key=lambda t: t[1], reverse=True)
 
     def print(self) -> None:
         """Print this color distribution.
         """
-        triples_str = [(str(t.color), f"quantity={t.quantity}", f"percentage={t.percentage:.4f}%")
-                       for t in self._triples]
+        triples_str = [
+            (str(t.color), f"quantity={t.quantity}", f"percentage={t.percentage:.4f}%")
+            for t in self._triples]
         pprint(triples_str)
 
-    def color(self, color: Color) -> Optional[Tuple[Color, List[Card]]]:
+    def color(self, color: Color) -> tuple[Color, list[Card]] | None:
         return from_iterable(self.colors, lambda c: c[0] is color)
 
 
-def print_color_identity_distribution(data: Optional[Iterable[Card]] = None) -> None:
+def print_color_identity_distribution(data: Iterable[Card] | None = None) -> None:
     dist = ColorIdentityDistribution(data)
     dist.print()
 
@@ -1010,11 +1022,11 @@ class Deck:
     MAX_SIDEBOARD_SIZE = 15
 
     @cached_property
-    def mainboard(self) -> List[Card]:
+    def mainboard(self) -> list[Card]:
         return [*itertools.chain(*self._playsets.values())]
 
     @property
-    def sideboard(self) -> List[Card]:
+    def sideboard(self) -> list[Card]:
         return self._sideboard
 
     @property
@@ -1022,11 +1034,11 @@ class Deck:
         return bool(self.sideboard)
 
     @property
-    def commander(self) -> Optional[Card]:
+    def commander(self) -> Card | None:
         return self._commander
 
     @property
-    def companion(self) -> Optional[Card]:
+    def companion(self) -> Card | None:
         return self._companion
 
     @property
@@ -1034,7 +1046,7 @@ class Deck:
         return self._max_playset_count
 
     @property
-    def all_cards(self) -> List[Card]:
+    def all_cards(self) -> list[Card]:
         return [*self.mainboard, *self.sideboard]
 
     @property
@@ -1042,51 +1054,51 @@ class Deck:
         return Color.from_cards(self.all_cards)
 
     @property
-    def artifacts(self) -> List[Card]:
+    def artifacts(self) -> list[Card]:
         return [card for card in self.mainboard if card.is_artifact]
 
     @property
-    def battles(self) -> List[Card]:
+    def battles(self) -> list[Card]:
         return [card for card in self.mainboard if card.is_battle]
 
     @property
-    def creatures(self) -> List[Card]:
+    def creatures(self) -> list[Card]:
         return [card for card in self.mainboard if card.is_creature]
 
     @property
-    def enchantments(self) -> List[Card]:
+    def enchantments(self) -> list[Card]:
         return [card for card in self.mainboard if card.is_enchantment]
 
     @property
-    def instants(self) -> List[Card]:
+    def instants(self) -> list[Card]:
         return [card for card in self.mainboard if card.is_instant]
 
     @property
-    def lands(self) -> List[Card]:
+    def lands(self) -> list[Card]:
         return [card for card in self.mainboard if card.is_land]
 
     @property
-    def planeswalkers(self) -> List[Card]:
+    def planeswalkers(self) -> list[Card]:
         return [card for card in self.mainboard if card.is_planeswalker]
 
     @property
-    def sorceries(self) -> List[Card]:
+    def sorceries(self) -> list[Card]:
         return [card for card in self.mainboard if card.is_sorcery]
 
     @property
-    def commons(self) -> List[Card]:
+    def commons(self) -> list[Card]:
         return [card for card in self.mainboard if card.is_common]
 
     @property
-    def uncommons(self) -> List[Card]:
+    def uncommons(self) -> list[Card]:
         return [card for card in self.mainboard if card.is_uncommon]
 
     @property
-    def rares(self) -> List[Card]:
+    def rares(self) -> list[Card]:
         return [card for card in self.mainboard if card.is_rare]
 
     @property
-    def mythics(self) -> List[Card]:
+    def mythics(self) -> list[Card]:
         return [card for card in self.mainboard if card.is_mythic]
 
     @property
@@ -1101,25 +1113,27 @@ class Deck:
     def avg_cmc(self) -> float:
         return sum(card.cmc for card in self.mainboard) / len(self.mainboard)
 
-    def __init__(self, mainboard: Iterable[Card], sideboard: Optional[Iterable[Card]] = None,
-                 commander: Optional[Card] = None, companion: Optional[Card] = None) -> None:
+    def __init__(
+            self, mainboard: Iterable[Card], sideboard: Iterable[Card] | None = None,
+            commander: Card | None = None, companion: Card | None = None) -> None:
         self._sideboard = [*sideboard] if sideboard else []
         self._companion = companion
         self._sideboard = [companion, *self.sideboard] if companion else self.sideboard
         if len(self.sideboard) > self.MAX_SIDEBOARD_SIZE:
-            raise InvalidDeckError(f"Invalid sideboard size: {len(self.sideboard)} "
-                                   f"> {self.MAX_SIDEBOARD_SIZE}")
+            raise InvalidDeckError(
+                f"Invalid sideboard size: {len(self.sideboard)} > {self.MAX_SIDEBOARD_SIZE}")
 
         self._commander = commander
         if commander:
             for card in [*mainboard, *self.sideboard]:
                 if any(letter not in commander.colors for letter in card.colors):
-                    raise InvalidDeckError(f"Color of {card} doesn't match "
-                                           f"commander color: {card.colors}!={commander.colors}")
+                    raise InvalidDeckError(
+                        f"Color of {card} doesn't match commander color: "
+                        f"{card.colors}!={commander.colors}")
             mainboard = [commander, *mainboard]
 
         self._max_playset_count = 1 if commander is not None else 4
-        self._playsets: DefaultDict[Card, List[Card]] = defaultdict(list)
+        self._playsets: defaultdict[Card, list[Card]] = defaultdict(list)
         for card in mainboard:
             if card.has_special_rarity:
                 raise InvalidDeckError(f"Invalid rarity for {card.name!r}: {card.rarity.value!r}")
@@ -1135,12 +1149,12 @@ class Deck:
                 pass
             else:
                 if len(playset) > self.max_playset_count:
-                    raise InvalidDeckError(f"Invalid mainboard. Too many occurrences of"
-                                           f" {card.name!r}: "
-                                           f"{len(playset)} > {self.max_playset_count}")
+                    raise InvalidDeckError(
+                        f"Invalid mainboard. Too many occurrences of {card.name!r}: "
+                        f"{len(playset)} > {self.max_playset_count}")
         if len(self.mainboard) < self.MIN_MAINBOARD_SIZE:
-            raise InvalidDeckError(f"Invalid deck size: {len(self.mainboard)} "
-                                   f"< {self.MIN_MAINBOARD_SIZE}")
+            raise InvalidDeckError(
+                f"Invalid deck size: {len(self.mainboard)} < {self.MIN_MAINBOARD_SIZE}")
 
     def _validate_sideboard(self) -> None:
         temp_playsets = defaultdict(list)
@@ -1152,10 +1166,10 @@ class Deck:
                 pass
             else:
                 if len(playset) > self.max_playset_count:
-                    raise InvalidDeckError(f"Invalid sideboard. Too many occurrences of"
-                                           f" {playset[0].name!r} in mainboard and sideboard "
-                                           f"combined: "
-                                           f"{len(playset)} > {self.max_playset_count}")
+                    raise InvalidDeckError(
+                        f"Invalid sideboard. Too many occurrences of "
+                        f"{playset[0].name!r} in mainboard and sideboard combined: "
+                        f"{len(playset)} > {self.max_playset_count}")
 
     def __repr__(self) -> str:
         reprs = [

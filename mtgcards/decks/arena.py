@@ -1,15 +1,14 @@
 """
 
-    mtgcards.yt.parsers.arena.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Parse Arena decklists in YouTube video's descriptions.
+    mtgcards.decks.arena.py
+    ~~~~~~~~~~~~~~~~~~~~~~~~
+    Parse Arena decklist text format.
 
     @author: z33k
 
 """
 import re
 from enum import Enum, auto
-from typing import List, Optional, Set
 
 from mtgcards.scryfall import Card, Deck, InvalidDeckError, \
     MULTIPART_SEPARATOR as SCRYFALL_MULTIPART_SEPARATOR, find_by_name, set_cards
@@ -56,7 +55,7 @@ class _CardLine:
     Example:
         '4 Commit /// Memory (AKR) 54'
     """
-    MULTIPART_SEPARATOR = "///"  # this is different than in Scryfall data where they use: '//'
+    MULTIPART_SEPARATOR = "///"  # this is different from in Scryfall data where they use: '//'
     # matches '4 Commit /// Memory'
     PATTERN = re.compile(r"\d{1,3}\s[A-Z][\w\s'&/,-]+")
     # matches '4 Commit /// Memory (AKR) 54'
@@ -79,11 +78,11 @@ class _CardLine:
         return self._name
 
     @property
-    def set_code(self) -> Optional[str]:
+    def set_code(self) -> str | None:
         return self._setcode
 
     @property
-    def collector_number(self) -> Optional[int]:
+    def collector_number(self) -> int | None:
         return self._collector_number
 
     def __init__(self, line: str) -> None:
@@ -106,7 +105,7 @@ class _CardLine:
             pairs += [("setcode", self.set_code), ("collector_number", self.collector_number)]
         return getrepr(self.__class__, *pairs)
 
-    def process(self, format_cards: Set[Card]) -> list[Card]:
+    def process(self, format_cards: set[Card]) -> list[Card]:
         """Process this Arena line into a number of cards.
 
         :param format_cards: provide a card pool corresponding to a MtG format to aid in searching
@@ -126,10 +125,10 @@ class ArenaParser:
     """Parser of YT video description lines that denote a deck in Arena format.
     """
     @property
-    def deck(self) -> Optional[Deck]:
+    def deck(self) -> Deck | None:
         return self._deck
 
-    def __init__(self, lines: List[str], format_cards: Set[Card]) -> None:
+    def __init__(self, lines: list[str], format_cards: set[Card]) -> None:
         self._lines, self._format_cards = lines, format_cards
         self._state = _ParsingState.IDLE
         self._deck = self._parse_lines()
@@ -148,7 +147,7 @@ class ArenaParser:
                 return True
         return False
 
-    def _parse_lines(self) -> Optional[Deck]:
+    def _parse_lines(self) -> Deck | None:
         mainboard, sideboard, commander = [], [], None
         for line in self._lines:
             if self._state is not _ParsingState.IDLE and (not line or line.isspace()):

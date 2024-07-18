@@ -121,28 +121,28 @@ def rootlogger(module: str, output_dir: str, module_name_length=24, lvl_name_len
 class LoggingContext:
     """A context manager that logs messages on enter and exit.
     """
-    def __init__(self, logger: logging.Logger, enter_msg: Optional[str] = None,
-                 exit_msg: Optional[str] = None, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, logger: logging.Logger, enter_msg: str | None = None,
+                 exit_msg: str | None = None, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         self._log = logger
         self.enter_msg, self.exit_msg = enter_msg, exit_msg
 
     @property
-    def enter_msg(self) -> Optional[str]:
+    def enter_msg(self) -> str | None:
         return self.__enter_msg
 
     @enter_msg.setter
     @type_checker(str, is_method=True, none_allowed=True)
-    def enter_msg(self, value: Optional[str]) -> None:
+    def enter_msg(self, value: str | None) -> None:
         self.__enter_msg = value
 
     @property
-    def exit_msg(self) -> Optional[str]:
+    def exit_msg(self) -> str | None:
         return self.__exit_msg
 
     @exit_msg.setter
     @type_checker(str, is_method=True, none_allowed=True)
-    def exit_msg(self, value: Optional[str]) -> None:
+    def exit_msg(self, value: str | None) -> None:
         self.__exit_msg = value
 
     @property
