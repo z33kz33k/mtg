@@ -52,8 +52,8 @@ class GoldfishParser(UrlParser):
                   "image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
     }
 
-    def __init__(self, url: str, format_cards: set[Card]) -> None:
-        super().__init__(url, format_cards)
+    def __init__(self, url: str, fmt="standard") -> None:
+        super().__init__(url, fmt)
         self._soup = self._get_soup(headers=self.HEADERS)
         self._state = _ParsingState.IDLE
         self._deck = self._get_deck()

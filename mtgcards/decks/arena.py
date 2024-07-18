@@ -10,6 +10,7 @@
 import re
 from enum import Enum, auto
 
+from mtgcards.decks import format_cards
 from mtgcards.scryfall import Card, Deck, InvalidDeckError, \
     MULTIPART_SEPARATOR as SCRYFALL_MULTIPART_SEPARATOR, find_by_name, set_cards
 from mtgcards.utils import getrepr, parse_int_from_str
@@ -105,10 +106,10 @@ class _CardLine:
             pairs += [("setcode", self.set_code), ("collector_number", self.collector_number)]
         return getrepr(self.__class__, *pairs)
 
-    def process(self, format_cards: set[Card]) -> list[Card]:
+    def process(self, fmt: str) -> list[Card]:
         """Process this Arena line into a number of cards.
 
-        :param format_cards: provide a card pool corresponding to a MtG format to aid in searching
+        :param fmt: MtG format string designation
         :return a list of cards according to this line's quantity or an empty list if no card can be identified
         """
         if self.is_extended:
@@ -117,7 +118,7 @@ class _CardLine:
             if card:
                 return [card] * self.quantity
 
-        card = find_by_name(self.name, format_cards)
+        card = find_by_name(self.name, format_cards(fmt))
         return [card] * self.quantity if card else []
 
 

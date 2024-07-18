@@ -1115,13 +1115,15 @@ class Deck:
 
     def __init__(
             self, mainboard: Iterable[Card], sideboard: Iterable[Card] | None = None,
-            commander: Card | None = None, companion: Card | None = None) -> None:
+            commander: Card | None = None, companion: Card | None = None,
+            metadata: Json | None = None) -> None:
         self._sideboard = [*sideboard] if sideboard else []
         self._companion = companion
         self._sideboard = [companion, *self.sideboard] if companion else self.sideboard
         if len(self.sideboard) > self.MAX_SIDEBOARD_SIZE:
             raise InvalidDeckError(
                 f"Invalid sideboard size: {len(self.sideboard)} > {self.MAX_SIDEBOARD_SIZE}")
+        self._metadata = metadata or {}
 
         self._commander = commander
         if commander:

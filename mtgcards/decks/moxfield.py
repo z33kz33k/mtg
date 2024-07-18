@@ -19,8 +19,8 @@ class MoxfieldParser(UrlParser):
     """
     API_URL_TEMPLATE = "https://api2.moxfield.com/v2/decks/all/{}"
 
-    def __init__(self, url: str, format_cards: set[Card]) -> None:
-        super().__init__(url, format_cards)
+    def __init__(self, url: str, fmt="standard") -> None:
+        super().__init__(url, fmt)
         *_, self._decklist_id = url.split("/")
         self._json_data = timed_request(self.API_URL_TEMPLATE.format(self._decklist_id),
                                         return_json=True)

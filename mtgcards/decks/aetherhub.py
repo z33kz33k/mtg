@@ -17,8 +17,8 @@ from mtgcards.scryfall import Card, Deck, InvalidDeckError
 class AetherHubParser(UrlParser):
     """Parser of AetherHub decklist page.
     """
-    def __init__(self, url: str, format_cards: set[Card]) -> None:
-        super().__init__(url, format_cards)
+    def __init__(self, url: str, fmt="standard") -> None:
+        super().__init__(url, fmt)
         self._soup = self._get_soup()
         self._deck = self._get_deck()
 
