@@ -12,7 +12,7 @@ from enum import Enum, auto
 
 from mtgcards.decks import Deck, InvalidDeckError, format_cards
 from mtgcards.scryfall import Card, MULTIPART_SEPARATOR as SCRYFALL_MULTIPART_SEPARATOR, find_by_name, set_cards
-from mtgcards.utils import getrepr, parse_int_from_str
+from mtgcards.utils import getrepr, getint
 
 
 class _ParsingState(Enum):
@@ -94,7 +94,7 @@ class _CardLine:
             self._name, rest = rest.split("(")
             self._name = self._name.strip()
             self._setcode, rest = rest.split(")")
-            self._collector_number = parse_int_from_str(rest.strip())
+            self._collector_number = getint(rest.strip())
         else:
             self._name, self._setcode, self._collector_number = rest, None, None
         self._name = self._name.replace(self.MULTIPART_SEPARATOR, SCRYFALL_MULTIPART_SEPARATOR)

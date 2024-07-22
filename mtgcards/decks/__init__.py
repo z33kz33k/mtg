@@ -439,6 +439,14 @@ class Deck:
         return sum(cards) / len(cards)
 
     @property
+    def price(self) -> float:
+        return sum(c.price for c in self.mainboard if c.price)
+
+    @property
+    def price_tix(self) -> float:
+        return sum(c.price_tix for c in self.mainboard if c.price_tix)
+
+    @property
     def metadata(self) -> Json:
         return self._metadata
 

@@ -23,7 +23,7 @@ import scrython
 
 from mtgcards.const import DATADIR, Json
 from mtgcards.mtgwiki import CLASSES, RACES
-from mtgcards.utils import from_iterable, getrepr, parse_int_from_str
+from mtgcards.utils import from_iterable, getrepr, getint
 from mtgcards.utils.files import download_file, getdir
 
 FILENAME = "scryfall.json"
@@ -355,7 +355,7 @@ class CardFace:
 
     @property
     def loyalty_int(self) -> int | None:
-        return parse_int_from_str(self.loyalty) if self.loyalty is not None else None
+        return getint(self.loyalty)
 
     @property
     def has_special_loyalty(self) -> bool:
@@ -367,7 +367,7 @@ class CardFace:
 
     @property
     def power_int(self) -> int | None:
-        return parse_int_from_str(self.power) if self.power is not None else None
+        return getint(self.power)
 
     @property
     def has_special_power(self) -> bool:
@@ -379,7 +379,7 @@ class CardFace:
 
     @property
     def toughness_int(self) -> int | None:
-        return parse_int_from_str(self.toughness) if self.toughness is not None else None
+        return getint(self.toughness)
 
     @property
     def has_special_toughness(self) -> bool:
@@ -455,7 +455,7 @@ class Card:
             {"12e", "67f", "233f", "A-268", "4e"}
         """
         cn = "".join(char for char in self.collector_number if char.isdigit())
-        return parse_int_from_str(cn)
+        return getint(cn)
 
     @property
     def formats(self) -> list[str]:
@@ -489,7 +489,7 @@ class Card:
 
     @property
     def loyalty_int(self) -> int | None:
-        return parse_int_from_str(self.loyalty) if self.loyalty is not None else None
+        return getint(self.loyalty)
 
     @property
     def has_special_loyalty(self) -> bool:
@@ -523,7 +523,7 @@ class Card:
 
     @property
     def power_int(self) -> int | None:
-        return parse_int_from_str(self.power) if self.power is not None else None
+        return getint(self.power)
 
     @property
     def has_special_power(self) -> bool:
@@ -534,6 +534,12 @@ class Card:
         """Return price in USD or `None` if unavailable.
         """
         return self.json["prices"].get("usd")
+
+    @property
+    def price_tix(self) -> float | None:
+        """Return price in MGTO's currency or `None` if unavailable.
+        """
+        return self.json["prices"].get("tix")
 
     @property
     def rarity(self) -> Rarity:
@@ -585,7 +591,7 @@ class Card:
 
     @property
     def toughness_int(self) -> int | None:
-        return parse_int_from_str(self.toughness) if self.toughness is not None else None
+        return getint(self.toughness)
 
     @property
     def has_special_toughness(self) -> bool:

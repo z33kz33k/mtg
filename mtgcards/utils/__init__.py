@@ -42,45 +42,6 @@ def getrepr(class_: Type, *name_value_pairs: tuple[str, Any]) -> str:
 
 
 @type_checker(str)
-def parse_bool_from_str(string: str | None) -> bool | None:
-    """Parse a boolean value or ``None`` from ``string``.
-    """
-    if not string:
-        return None
-    if string.lower() == "false":
-        return False
-    elif string.lower() == "true":
-        return True
-    return None
-
-
-@type_checker(str)
-def parse_float_from_str(string: str | None) -> float | None:
-    """Parse a floating point number or ``None`` from ``string``.
-    """
-    if not string:
-        return None
-    string = string.replace(",", ".") if "," in string else string
-    try:
-        return float(string)
-    except ValueError:
-        return None
-
-
-@type_checker(str)
-def parse_int_from_str(string: str | None) -> int | None:
-    """Parse an integer or ``None`` from ``string``.
-    """
-    if not string:
-        return None
-    try:
-        return int(string)
-    except ValueError:
-        return None
-
-
-# TODO: remove redundancy
-@type_checker(str)
 def extract_float(text: str) -> float:
     """Extract floating point number from text.
     """
@@ -98,6 +59,42 @@ def extract_int(text: str) -> int:
     if not num:
         raise ParsingError(f"No digits in text: {text!r}")
     return int(num)
+
+
+@type_checker(str)
+def getfloat(string: str | None) -> float | None:
+    """Interpret string as floating point number or, if not possible, return None.
+    """
+    if not string:
+        return None
+    try:
+        return extract_float(string)
+    except ValueError:
+        return None
+
+@type_checker(str)
+def getint(string: str | None) -> int | None:
+    """Interpret string as integer or, if not possible, return None.
+    """
+    if not string:
+        return None
+    try:
+        return extract_int(string)
+    except ValueError:
+        return None
+
+
+@type_checker(str)
+def getbool(string: str | None) -> bool | None:
+    """Interpret string as boolean value or, if not possible, return None
+    """
+    if not string:
+        return None
+    if string.lower() == "false":
+        return False
+    elif string.lower() == "true":
+        return True
+    return None
 
 
 

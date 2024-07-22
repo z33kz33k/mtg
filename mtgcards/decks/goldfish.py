@@ -7,6 +7,7 @@
     @author: z33k
 
 """
+from datetime import datetime
 from enum import Enum, auto
 
 from bs4 import Tag
@@ -60,12 +61,6 @@ class GoldfishParser(UrlParser):
         self._state = _ParsingState.IDLE
         self._deck = self._get_deck()
 
-    @staticmethod
-    def _get_price(price_tag: Tag) -> float:
-        integer = extract_int(price_tag.text)
-        decimal = extract_float(price_tag.find("span").text)
-        return integer + decimal
-
     def _get_metadata(self) -> Json:
         metadata = {}
         title_tag = self._soup.find("h1", class_="title")
@@ -74,16 +69,21 @@ class GoldfishParser(UrlParser):
         author_tag = title_tag.find("span")
         if author_tag is not None:
             metadata["author"] = author_tag.text.strip().removeprefix("by ")
-        prices_tag = self._soup.find("div", class_="header-prices-currency")
-        if prices_tag is not None:
-            paper_price_tags = prices_tag.select("div.deck-price-v2.paper")
-            if paper_price_tags:
-                metadata["price_tabletop"] = self._get_price(paper_price_tags[0])
-            mgto_price_tags = self._soup.select("div.deck-price-v2.online")
-            if mgto_price_tags:
-                metadata["price_mgto"] = self._get_price(mgto_price_tags[0])
         info_tag = self._soup.find("p", class_="deck-container-information")
-        # TODO
+        lines = [l for l in info_tag.text.splitlines() if l]
+        source_idx = None
+        for i, line in enumerate(lines):
+            if line.startswith("Format:"):
+                metadata["format"] = line.removeprefix("Format:").strip()
+            elif line.startswith("Event:"):
+                metadata["event"] = line.removeprefix("Event:").strip()
+            elif line.startswith("Deck Source:"):
+                source_idx = i + 1
+            elif line.startswith("Deck Date:"):
+                metadata["date"] = datetime.strptime(
+                    line.removeprefix("Deck Date:").strip(), "%b %d, %Y").date()
+        if source_idx is not None:
+            metadata["original_source"] = lines[source_idx].strip()
         return metadata
 
     def _get_deck(self) -> Deck | None:
