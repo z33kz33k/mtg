@@ -8,31 +8,39 @@
 
 """
 import itertools
+import logging
+import os
 from abc import ABC, abstractmethod
 from collections import defaultdict
+from datetime import date
+from enum import Enum
 from functools import cached_property, lru_cache
+from operator import itemgetter
 from typing import Iterable
 
 from bs4 import BeautifulSoup
 
 from mtgcards.const import Json
 from mtgcards.scryfall import Card, Color, find_by_name, format_cards as scryfall_fmt_cards, \
-    set_cards as scryfall_set_cards
-from mtgcards.utils import getrepr, timed_request
+    get_set, set_cards as scryfall_set_cards
+from mtgcards.utils import from_iterable, getrepr, timed_request
+from mtgcards.utils.files import getdir
+
+_log = logging.getLogger(__name__)
 
 
 # based on https://draftsim.com/mtg-archetypes/
 # this listing omits combo-control as it's too long a name to be efficiently used as a component
 # of a catchy deck name
 # in those scenarios usually a deck's theme (sub-archetype) is used (e.g. "stax" or "prison")
-ARCHETYPES = {
-    "aggro",
-    "midrange",
-    "control",
-    "combo",
-    "tempo",
-    "ramp"
-}
+class Archetype(Enum):
+    AGGRO = "aggro"
+    MIDRANGE = "midrange"
+    CONTROL = "control"
+    COMBO = "combo"
+    TEMPO = "tempo"
+    RAMP= "ramp"
+
 
 # themes compiled from:
 # https://edhrec.com/themes
@@ -344,14 +352,17 @@ class Deck:
     """
     MIN_MAINBOARD_SIZE = 60
     MAX_SIDEBOARD_SIZE = 15
+    MIN_AGGRO_CMC = 2.3
+    MAX_CONTROL_CREATURES_COUNT = 10
 
     @cached_property
     def mainboard(self) -> list[Card]:
         return [*itertools.chain(*self._playsets.values())]
 
-    @property
+    @cached_property
     def sideboard(self) -> list[Card]:
-        return self._sideboard
+        return [*itertools.chain(
+            *self._sideboard_playsets.values())] if self._sideboard_playsets else []
 
     @property
     def has_sideboard(self) -> bool:
@@ -447,6 +458,46 @@ class Deck:
         return sum(c.price_tix for c in self.mainboard if c.price_tix)
 
     @property
+    def sets(self) -> list[str]:
+        return sorted({c.set for c in self.all_cards if not c.is_basic_land})
+
+    @property
+    def color(self) -> Color:
+        if self.name:
+            return from_iterable(
+                Color, lambda c: any(p.title() == c.name.title() for p in self.name.split()))
+        return self.color_identity
+
+    @property
+    def theme(self) -> str | None:
+        if not self.name:
+            return None
+        nameparts = [
+            p for p in self.name.split() if not p.title() in [c.name.title() for c in Color]]
+        return from_iterable(
+                THEMES, lambda th: any(p.title() == th.title() for p in nameparts))
+
+    @property
+    def archetype(self) -> Archetype:
+        if self.name:
+            nameparts = [
+                p for p in self.name.split() if not p.title()
+                in [c.name.title() for c in Color]]
+            arch = from_iterable(
+                Archetype, lambda a: any(p.title() == a.name.title() for p in nameparts))
+            if arch:
+                return arch
+            card_parts = {p for card in self.mainboard for p in card.name_parts}
+            if nameparts and any(p.lower() in card_parts for p in nameparts):
+                return Archetype.COMBO
+        if self.avg_cmc < self.MIN_AGGRO_CMC:
+            return Archetype.AGGRO
+        else:
+            if len(self.creatures) < self.MAX_CONTROL_CREATURES_COUNT:
+                return Archetype.CONTROL
+            return Archetype.MIDRANGE
+
+    @property
     def metadata(self) -> Json:
         return self._metadata
 
@@ -462,24 +513,25 @@ class Deck:
             self, mainboard: Iterable[Card], sideboard: Iterable[Card] | None = None,
             commander: Card | None = None, companion: Card | None = None,
             metadata: Json | None = None) -> None:
-        self._sideboard = [*sideboard] if sideboard else []
+        sideboard = [*sideboard] if sideboard else []
         self._companion = companion
-        self._sideboard = [companion, *self.sideboard] if companion else self.sideboard
+        sideboard = [companion, *sideboard] if companion else sideboard
         self._metadata = metadata or {}
 
         self._commander = commander
         if commander:
-            for card in [*mainboard, *self.sideboard]:
+            for card in [*mainboard, *sideboard]:
                 if any(letter not in commander.colors for letter in card.colors):
                     raise InvalidDeckError(
                         f"Color of {card} doesn't match commander color: "
                         f"{card.colors}!={commander.colors}")
-            mainboard = [commander, *mainboard]
 
         self._max_playset_count = 1 if commander is not None else 4
         self._playsets = to_playsets(*mainboard)
         self._validate_mainboard()
-        if self.sideboard:
+        self._sideboard_playsets = None
+        if sideboard:
+            self._sideboard_playsets = to_playsets(*sideboard)
             self._validate_sideboard()
 
     def _validate_playset(self, playset: list[Card]) -> None:
@@ -497,9 +549,10 @@ class Deck:
     def _validate_mainboard(self) -> None:
         for playset in self._playsets.values():
             self._validate_playset(playset)
-        if len(self.mainboard) < self.MIN_MAINBOARD_SIZE:
+        length = len(self.mainboard) + (1 if self.commander else 0)
+        if length < self.MIN_MAINBOARD_SIZE:
             raise InvalidDeckError(
-                f"Invalid deck size: {len(self.mainboard)} < {self.MIN_MAINBOARD_SIZE}")
+                f"Invalid deck size: {length} < {self.MIN_MAINBOARD_SIZE}")
 
     def _validate_sideboard(self) -> None:
         temp_playsets = to_playsets(*self.all_cards)
@@ -531,12 +584,18 @@ class Deck:
         reprs.append(("sideboard", self.has_sideboard))
         return getrepr(self.__class__, *reprs)
 
+    def export(self, dstdir: str = os.getcwd()) -> None:
+        exp = DckExporter(self)
+        dstdir = getdir(dstdir)
+        dst = dstdir / exp.filename
+        _log.info(f"Exporting deck to: '{dst}'...")
+        dst.write_text(exp.export(), encoding="utf-8")
+
 
 class DckExporter:
     """Export a deck to a Forge MTG's .dck file.
     """
-    TEMPLATE = """
-[metadata]
+    TEMPLATE = """[metadata]
 Name={}
 [Commander]
 {}
@@ -545,8 +604,72 @@ Name={}
 [Sideboard]
 {}
 """
+    SOURCE_NICKNAMES = {
+        "www.mtggoldfish.com": "Goldfish"
+    }
+
+    FMT_NICKNAMES = {
+        'alchemy': "Alc",
+        'brawl': "Brl",
+        'commander': "Cmd",
+        'explorer': "Exp",
+        'historic': "Hst",
+        'modern': "Mdn",
+        'pauper': "Ppr",
+        'pioneer': "Pnr",
+        'standard': "Std",
+        'standardbrawl': "StdBrl",
+        'timeless': "Tml"
+    }
+    @property
+    def filename(self) -> str:
+        return f"{self._name}.dck"
+
     def __init__(self, deck: Deck) -> None:
         self._deck = deck
+        self._name = self._build_name()
+
+    def _derive_most_recent_set(self) -> str | None:
+        set_codes = {c.set for c in self._deck.mainboard if not c.is_basic_land}
+        sets = [get_set(s) for s in set_codes]
+        sets = [s for s in sets if s is not None and s.set_type() == "expansion"]
+        sets = [(s, date.fromisoformat(s.released_at())) for s in sets]
+        if not sets:
+            return None
+        sets.sort(key=itemgetter(1))
+        return [s[0].code() for s in sets][-1]
+
+    def _build_name(self) -> str:
+        source = self.SOURCE_NICKNAMES.get(self._deck.metadata.get("source")) or ""
+        name = f"{source}_" if source else ""
+        name += f"Mono_{self._deck.color.name.title()}_" if len(
+            self._deck.color.value) == 1 else f"{self._deck.color.name.title()}_"
+        if self._deck.theme:
+            name += f"{self._deck.theme}_"
+        name += f"{self._deck.archetype.name.title()}_"
+        fmt = self._deck.metadata.get("format")
+        if fmt:
+            set_code = self._derive_most_recent_set()
+            if set_code:
+                name += f"{set_code.upper()}_{self.FMT_NICKNAMES[fmt.lower()]}"
+        return name
+
+    @staticmethod
+    def _to_line(playset: list[Card]) -> str:
+        card = playset[0]
+        return f"{len(playset)} {card.main_name}|{card.set.upper()}|1"
+
+    def export(self) -> str:
+        commander = [
+            self._to_line(playset) for playset in
+            to_playsets(self._deck.commander).values()] if self._deck.commander else []
+        mainboard = [
+            self._to_line(playset) for playset in to_playsets(*self._deck.mainboard).values()]
+        sideboard = [
+            self._to_line(playset) for playset in
+            to_playsets(*self._deck.sideboard).values()] if self._deck.sideboard else []
+        return self.TEMPLATE.format(
+            self._name, "\n".join(commander), "\n".join(mainboard), "\n".join(sideboard))
 
 
 @lru_cache

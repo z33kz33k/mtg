@@ -12,7 +12,7 @@ from enum import Enum, auto
 
 from mtgcards.decks import Deck, InvalidDeckError, format_cards
 from mtgcards.scryfall import Card, MULTIPART_SEPARATOR as SCRYFALL_MULTIPART_SEPARATOR, find_by_name, set_cards
-from mtgcards.utils import getrepr, getint
+from mtgcards.utils import extract_int, getrepr, getint
 
 
 class _ParsingState(Enum):
@@ -89,7 +89,7 @@ class _CardLine:
         self._raw_line = line
         self._is_extended = self.EXTENDED_PATTERN.match(line) is not None
         quantity, rest = line.split(maxsplit=1)
-        self._quantity = int(quantity)
+        self._quantity = extract_int(quantity)
         if self.is_extended:
             self._name, rest = rest.split("(")
             self._name = self._name.strip()
@@ -169,12 +169,12 @@ class ArenaParser:
 
                     fmt_cards = format_cards(self._fmt)
                     if self._state is _ParsingState.SIDEBOARD:
-                        sideboard.extend(_CardLine(line).process(fmt_cards))
+                        sideboard.extend(_CardLine(line).process(self._fmt))
                     elif self._state is _ParsingState.COMMANDER:
-                        result = _CardLine(line).process(fmt_cards)
+                        result = _CardLine(line).process(self._fmt)
                         commander = result[0] if result else None
                     elif self._state is _ParsingState.MAINBOARD:
-                        mainboard.extend(_CardLine(line).process(fmt_cards))
+                        mainboard.extend(_CardLine(line).process(self._fmt))
 
         try:
             return Deck(mainboard, sideboard, commander)

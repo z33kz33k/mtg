@@ -14,7 +14,7 @@ from bs4 import Tag
 
 from mtgcards.const import Json
 from mtgcards.decks import Deck, InvalidDeckError, UrlParser
-from mtgcards.utils import ParsingError, extract_float, extract_int
+from mtgcards.utils import ParsingError, extract_int
 from mtgcards.scryfall import Card
 
 
@@ -120,12 +120,7 @@ class GoldfishParser(UrlParser):
         quantity_tag = row.find(class_="text-right")
         if not quantity_tag:
             raise ParsingError("Can't find quantity data in a row tag")
-        quantity = quantity_tag.text.strip()
-        try:
-            quantity = int(quantity)
-        except ValueError:
-            raise ParsingError(f"Can't parse card quantity from tag's text:"
-                               f" {quantity_tag.text!r}")
+        quantity = extract_int(quantity_tag.text.strip())
 
         a_tag = row.find("a")
         if not a_tag:

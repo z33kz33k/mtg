@@ -11,7 +11,7 @@
 from bs4 import Tag
 
 from mtgcards.decks import Deck, InvalidDeckError, UrlParser
-from mtgcards.utils import ParsingError
+from mtgcards.utils import ParsingError, extract_int
 from mtgcards.scryfall import Card
 
 
@@ -67,11 +67,7 @@ class AetherHubParser(UrlParser):
 
     def _parse_hover_tag(self, hover_tag: Tag) -> list[Card]:
         quantity, *_ = hover_tag.text.split()
-        try:
-            quantity = int(quantity)
-        except ValueError:
-            raise ParsingError(f"Can't parse card quantity from tag's text:"
-                               f" {hover_tag.text.split()}")
+        quantity = extract_int(quantity)
 
         card_tag = hover_tag.find("a")
         if card_tag is None:

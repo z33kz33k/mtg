@@ -19,11 +19,12 @@ from pprint import pprint
 from types import EllipsisType
 from typing import Callable, Iterable, Optional
 
+import requests.exceptions
 import scrython
 
 from mtgcards.const import DATADIR, Json
 from mtgcards.mtgwiki import CLASSES, RACES
-from mtgcards.utils import from_iterable, getrepr, getint
+from mtgcards.utils import from_iterable, getrepr, getint, timed_request
 from mtgcards.utils.files import download_file, getdir
 
 FILENAME = "scryfall.json"
@@ -388,7 +389,7 @@ class CardFace:
 
 @dataclass(frozen=True)
 class Card:
-    """Thin wrapper on Scryfall JSON data for an MtG card.
+    """Thin wrapper on Scryfall JSON data for a MtG card.
 
     Provides convenience access to the most important data pieces.
     """
@@ -584,6 +585,10 @@ class Card:
     @property
     def set_type(self) -> str:
         return self.json["set_type"]
+
+    @property
+    def set_uri(self) -> str:
+        return self.json["set_uri"]
 
     @property
     def toughness(self) -> str | None:
@@ -989,6 +994,14 @@ def find_by_id(scryfall_id: str, data: Iterable[Card] | None = None) -> Card | N
     """
     data = data if data else bulk_data()
     return from_iterable(data, lambda c: c.id == scryfall_id)
+
+
+@lru_cache
+def get_set(set_code: str) -> scrython.sets.Code | None:
+    try:
+        return scrython.sets.Code(code=set_code)
+    except scrython.ScryfallError:
+        return None
 
 
 class ColorIdentityDistribution:
