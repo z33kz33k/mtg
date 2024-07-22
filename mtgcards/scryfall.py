@@ -16,6 +16,7 @@ from datetime import date
 from enum import Enum
 from functools import cached_property, lru_cache
 from pprint import pprint
+from types import EllipsisType
 from typing import Callable, Iterable, Optional
 
 import scrython
@@ -783,12 +784,36 @@ class Card:
         return self.parse_lord_sentences(self.oracle_text)
 
     @property
-    def multiples_allowed(self) -> bool:
+    def allowed_multiples(self) -> int | EllipsisType | None:
         if not self.oracle_text:
-            return False
+            return None
         if "deck can have any number of cards named" in self.oracle_text:
-            return True
-        return False
+            return Ellipsis
+        if "deck can have up to one" in self.oracle_text:
+            return 1
+        if "deck can have up to two" in self.oracle_text:
+            return 2
+        if "deck can have up to three" in self.oracle_text:
+            return 3
+        if "deck can have up to four" in self.oracle_text:
+            return 4
+        if "deck can have up to five" in self.oracle_text:
+            return 5
+        if "deck can have up to six" in self.oracle_text:
+            return 6
+        if "deck can have up to seven" in self.oracle_text:  # Seven Dwarves
+            return 7
+        if "deck can have up to eight" in self.oracle_text:
+            return 8
+        if "deck can have up to nine" in self.oracle_text:  # Nazgul
+            return 9
+        if "deck can have up to ten" in self.oracle_text:
+            return 10
+        if "deck can have up to eleven" in self.oracle_text:
+            return 11
+        if "deck can have up to twelve" in self.oracle_text:
+            return 12
+        return None
 
 
 @lru_cache

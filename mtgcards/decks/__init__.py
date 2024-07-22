@@ -450,8 +450,6 @@ class Deck:
     def author(self) -> str | None:
         return self.metadata.get("author")
 
-
-
     def __init__(
             self, mainboard: Iterable[Card], sideboard: Iterable[Card] | None = None,
             commander: Card | None = None, companion: Card | None = None,
@@ -459,9 +457,6 @@ class Deck:
         self._sideboard = [*sideboard] if sideboard else []
         self._companion = companion
         self._sideboard = [companion, *self.sideboard] if companion else self.sideboard
-        if len(self.sideboard) > self.MAX_SIDEBOARD_SIZE:
-            raise InvalidDeckError(
-                f"Invalid sideboard size: {len(self.sideboard)} > {self.MAX_SIDEBOARD_SIZE}")
         self._metadata = metadata or {}
 
         self._commander = commander
@@ -479,16 +474,21 @@ class Deck:
         if self.sideboard:
             self._validate_sideboard()
 
+    def _validate_playset(self, playset: list[Card]) -> None:
+        card = playset[0]
+        if card.is_basic_land or card.allowed_multiples is Ellipsis:
+            pass
+        else:
+            max_playset = self.max_playset_count if card.allowed_multiples is None \
+                else card.allowed_multiples
+            if len(playset) > max_playset:
+                raise InvalidDeckError(
+                    f"Too many occurrences of {card.name!r}: "
+                    f"{len(playset)} > {max_playset}")
+
     def _validate_mainboard(self) -> None:
         for playset in self._playsets.values():
-            card = playset[0]
-            if card.is_basic_land or card.multiples_allowed:
-                pass
-            else:
-                if len(playset) > self.max_playset_count:
-                    raise InvalidDeckError(
-                        f"Invalid mainboard. Too many occurrences of {card.name!r}: "
-                        f"{len(playset)} > {self.max_playset_count}")
+            self._validate_playset(playset)
         if len(self.mainboard) < self.MIN_MAINBOARD_SIZE:
             raise InvalidDeckError(
                 f"Invalid deck size: {len(self.mainboard)} < {self.MIN_MAINBOARD_SIZE}")
@@ -496,18 +496,14 @@ class Deck:
     def _validate_sideboard(self) -> None:
         temp_playsets = to_playsets(*self.all_cards)
         for playset in temp_playsets.values():
-            card = playset[0]
-            if card.is_basic_land or card.multiples_allowed:
-                pass
-            else:
-                if len(playset) > self.max_playset_count:
-                    raise InvalidDeckError(
-                        f"Invalid sideboard. Too many occurrences of "
-                        f"{playset[0].name!r} in mainboard and sideboard combined: "
-                        f"{len(playset)} > {self.max_playset_count}")
+            self._validate_playset(playset)
+        if len(self.sideboard) > self.MAX_SIDEBOARD_SIZE:
+            raise InvalidDeckError(
+                f"Invalid sideboard size: {len(self.sideboard)} > {self.MAX_SIDEBOARD_SIZE}")
 
     def __repr__(self) -> str:
-        reprs = [
+        reprs = [("name", self.name)] if self.name else []
+        reprs += [
             ("avg_cmc", f"{self.avg_cmc:.2f}"),
             ("avg_rarity_weight", f"{self.avg_rarity_weight:.1f}"),
             ("color_identity", self.color_identity.name),
