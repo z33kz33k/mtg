@@ -9,8 +9,8 @@
 """
 
 from mtgcards.const import Json
-from mtgcards.decks import UrlParser
-from mtgcards.scryfall import Card, Deck, InvalidDeckError
+from mtgcards.decks import Deck, InvalidDeckError, UrlParser
+from mtgcards.scryfall import Card
 from mtgcards.utils import timed_request
 
 

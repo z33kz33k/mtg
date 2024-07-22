@@ -7,7 +7,6 @@
     @author: z33k
 
 """
-import itertools
 import json
 import math
 import re
@@ -880,7 +879,6 @@ def find_cards(
     return {card for card in data if predicate(card)}
 
 
-@lru_cache
 def set_cards(*set_codes: str, data: Iterable[Card] | None = None) -> set[Card]:
     """Return card data for sets designated by ``set_codes``.
 
@@ -924,6 +922,8 @@ def find_card(
 def find_by_name(card_name: str, data: Iterable[Card] | None = None) -> Card | None:
     """Return a Scryfall card data of provided name or `None`.
     """
+    if "Mountain" in card_name:
+        pass
     data = data if data else bulk_data()
     card = find_card(lambda c: c.name == card_name, data, narrow_by_collector_number=True)
     if card:
@@ -931,8 +931,6 @@ def find_by_name(card_name: str, data: Iterable[Card] | None = None) -> Card | N
     card = find_card(lambda c: c.main_name == card_name, data, narrow_by_collector_number=True)
     if card:
         return card
-    return find_card(
-        lambda c: card_name.lower() in c.name.lower(), data, narrow_by_collector_number=True)
 
 
 def find_by_parts(
@@ -1010,186 +1008,3 @@ def print_color_identity_distribution(data: Iterable[Card] | None = None) -> Non
     dist.print()
 
 
-class InvalidDeckError(ValueError):
-    """Raised on invalid decks.
-    """
-
-
-class Deck:
-    """A deck of cards suitable for Constructed formats.
-    """
-    MIN_MAINBOARD_SIZE = 60
-    MAX_SIDEBOARD_SIZE = 15
-
-    @cached_property
-    def mainboard(self) -> list[Card]:
-        return [*itertools.chain(*self._playsets.values())]
-
-    @property
-    def sideboard(self) -> list[Card]:
-        return self._sideboard
-
-    @property
-    def has_sideboard(self) -> bool:
-        return bool(self.sideboard)
-
-    @property
-    def commander(self) -> Card | None:
-        return self._commander
-
-    @property
-    def companion(self) -> Card | None:
-        return self._companion
-
-    @property
-    def max_playset_count(self) -> int:
-        return self._max_playset_count
-
-    @property
-    def all_cards(self) -> list[Card]:
-        return [*self.mainboard, *self.sideboard]
-
-    @property
-    def color_identity(self) -> Color:
-        return Color.from_cards(self.all_cards)
-
-    @property
-    def artifacts(self) -> list[Card]:
-        return [card for card in self.mainboard if card.is_artifact]
-
-    @property
-    def battles(self) -> list[Card]:
-        return [card for card in self.mainboard if card.is_battle]
-
-    @property
-    def creatures(self) -> list[Card]:
-        return [card for card in self.mainboard if card.is_creature]
-
-    @property
-    def enchantments(self) -> list[Card]:
-        return [card for card in self.mainboard if card.is_enchantment]
-
-    @property
-    def instants(self) -> list[Card]:
-        return [card for card in self.mainboard if card.is_instant]
-
-    @property
-    def lands(self) -> list[Card]:
-        return [card for card in self.mainboard if card.is_land]
-
-    @property
-    def planeswalkers(self) -> list[Card]:
-        return [card for card in self.mainboard if card.is_planeswalker]
-
-    @property
-    def sorceries(self) -> list[Card]:
-        return [card for card in self.mainboard if card.is_sorcery]
-
-    @property
-    def commons(self) -> list[Card]:
-        return [card for card in self.mainboard if card.is_common]
-
-    @property
-    def uncommons(self) -> list[Card]:
-        return [card for card in self.mainboard if card.is_uncommon]
-
-    @property
-    def rares(self) -> list[Card]:
-        return [card for card in self.mainboard if card.is_rare]
-
-    @property
-    def mythics(self) -> list[Card]:
-        return [card for card in self.mainboard if card.is_mythic]
-
-    @property
-    def total_rarity_weight(self) -> float:
-        return sum(card.rarity.weight for card in self.mainboard)
-
-    @property
-    def avg_rarity_weight(self):
-        return self.total_rarity_weight / len(self.mainboard)
-
-    @property
-    def avg_cmc(self) -> float:
-        return sum(card.cmc for card in self.mainboard) / len(self.mainboard)
-
-    def __init__(
-            self, mainboard: Iterable[Card], sideboard: Iterable[Card] | None = None,
-            commander: Card | None = None, companion: Card | None = None,
-            metadata: Json | None = None) -> None:
-        self._sideboard = [*sideboard] if sideboard else []
-        self._companion = companion
-        self._sideboard = [companion, *self.sideboard] if companion else self.sideboard
-        if len(self.sideboard) > self.MAX_SIDEBOARD_SIZE:
-            raise InvalidDeckError(
-                f"Invalid sideboard size: {len(self.sideboard)} > {self.MAX_SIDEBOARD_SIZE}")
-        self._metadata = metadata or {}
-
-        self._commander = commander
-        if commander:
-            for card in [*mainboard, *self.sideboard]:
-                if any(letter not in commander.colors for letter in card.colors):
-                    raise InvalidDeckError(
-                        f"Color of {card} doesn't match commander color: "
-                        f"{card.colors}!={commander.colors}")
-            mainboard = [commander, *mainboard]
-
-        self._max_playset_count = 1 if commander is not None else 4
-        self._playsets: defaultdict[Card, list[Card]] = defaultdict(list)
-        for card in mainboard:
-            if card.has_special_rarity:
-                raise InvalidDeckError(f"Invalid rarity for {card.name!r}: {card.rarity.value!r}")
-            self._playsets[card].append(card)
-        self._validate_mainboard()
-        if self.sideboard:
-            self._validate_sideboard()
-
-    def _validate_mainboard(self) -> None:
-        for playset in self._playsets.values():
-            card = playset[0]
-            if card.is_basic_land or card.multiples_allowed:
-                pass
-            else:
-                if len(playset) > self.max_playset_count:
-                    raise InvalidDeckError(
-                        f"Invalid mainboard. Too many occurrences of {card.name!r}: "
-                        f"{len(playset)} > {self.max_playset_count}")
-        if len(self.mainboard) < self.MIN_MAINBOARD_SIZE:
-            raise InvalidDeckError(
-                f"Invalid deck size: {len(self.mainboard)} < {self.MIN_MAINBOARD_SIZE}")
-
-    def _validate_sideboard(self) -> None:
-        temp_playsets = defaultdict(list)
-        for card in self.all_cards:
-            temp_playsets[card].append(card)
-        for playset in temp_playsets.values():
-            card = playset[0]
-            if card.is_basic_land or card.multiples_allowed:
-                pass
-            else:
-                if len(playset) > self.max_playset_count:
-                    raise InvalidDeckError(
-                        f"Invalid sideboard. Too many occurrences of "
-                        f"{playset[0].name!r} in mainboard and sideboard combined: "
-                        f"{len(playset)} > {self.max_playset_count}")
-
-    def __repr__(self) -> str:
-        reprs = [
-            ("avg_cmc", f"{self.avg_cmc:.2f}"),
-            ("avg_rarity_weight", f"{self.avg_rarity_weight:.1f}"),
-            ("color_identity", self.color_identity.name),
-            ("artifacts", len(self.artifacts)),
-            ("battles", len(self.battles)),
-            ("creatures", len(self.creatures)),
-            ("enchantments", len(self.enchantments)),
-            ("instants", len(self.instants)),
-            ("lands", len(self.lands)),
-            ("planeswalkers", len(self.planeswalkers)),
-            ("sorceries", len(self.sorceries)),
-        ]
-        if self.commander:
-            reprs.append(("commander", str(self.commander)))
-        if self.companion:
-            reprs.append(("companion", str(self.companion)))
-        reprs.append(("sideboard", self.has_sideboard))
-        return getrepr(self.__class__, *reprs)

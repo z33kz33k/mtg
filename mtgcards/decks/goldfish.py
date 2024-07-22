@@ -11,8 +11,10 @@ from enum import Enum, auto
 
 from bs4 import Tag
 
-from mtgcards.decks import ParsingError, UrlParser
-from mtgcards.scryfall import Card, Deck, InvalidDeckError
+from mtgcards.const import Json
+from mtgcards.decks import Deck, InvalidDeckError, UrlParser
+from mtgcards.utils import ParsingError, extract_float, extract_int
+from mtgcards.scryfall import Card
 
 
 class _ParsingState(Enum):
@@ -58,15 +60,44 @@ class GoldfishParser(UrlParser):
         self._state = _ParsingState.IDLE
         self._deck = self._get_deck()
 
+    @staticmethod
+    def _get_price(price_tag: Tag) -> float:
+        integer = extract_int(price_tag.text)
+        decimal = extract_float(price_tag.find("span").text)
+        return integer + decimal
+
+    def _get_metadata(self) -> Json:
+        metadata = {}
+        title_tag = self._soup.find("h1", class_="title")
+        metadata["source"] = "www.mtggoldfish.com"
+        metadata["name"], *_ = title_tag.text.strip().split("\n")
+        author_tag = title_tag.find("span")
+        if author_tag is not None:
+            metadata["author"] = author_tag.text.strip().removeprefix("by ")
+        prices_tag = self._soup.find("div", class_="header-prices-currency")
+        if prices_tag is not None:
+            paper_price_tags = prices_tag.select("div.deck-price-v2.paper")
+            if paper_price_tags:
+                metadata["price_tabletop"] = self._get_price(paper_price_tags[0])
+            mgto_price_tags = self._soup.select("div.deck-price-v2.online")
+            if mgto_price_tags:
+                metadata["price_mgto"] = self._get_price(mgto_price_tags[0])
+        info_tag = self._soup.find("p", class_="deck-container-information")
+        # TODO
+        return metadata
+
     def _get_deck(self) -> Deck | None:
         mainboard, sideboard, commander = [], [], None
         table = self._soup.find("table", class_="deck-view-deck-table")
         rows = table.find_all("tr")
+        headers = (
+            "Creatures", "Planeswalkers", "Spells", "Battles", "Artifacts", "Enchantments", "Lands")
         for row in rows:
             if row.has_attr("class") and "deck-category-header" in row.attrs["class"]:
                 if row.text.strip() == "Commander":
                     self._state = _ParsingState.shift_to_commander(self._state)
-                elif "Creatures" in row.text.strip():
+                elif any(h in row.text.strip() for h in headers
+                         ) and not self._state is _ParsingState.MAINBOARD:
                     self._state = _ParsingState.shift_to_mainboard(self._state)
                 elif "Sideboard" in row.text.strip():
                     self._state = _ParsingState.shift_to_sideboard(self._state)
@@ -81,7 +112,7 @@ class GoldfishParser(UrlParser):
                     sideboard.extend(cards)
 
         try:
-            return Deck(mainboard, sideboard, commander)
+            return Deck(mainboard, sideboard, commander, metadata=self._get_metadata())
         except InvalidDeckError:
             return None
 

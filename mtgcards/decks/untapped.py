@@ -9,8 +9,7 @@
 """
 from typing import Optional
 
-from mtgcards.scryfall import Deck
-from mtgcards.decks import UrlParser
+from mtgcards.decks import Deck, UrlParser
 
 
 class UntappedParser(UrlParser):

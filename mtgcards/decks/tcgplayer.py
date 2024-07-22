@@ -8,8 +8,7 @@
 
 """
 
-from mtgcards.decks import UrlParser
-from mtgcards.scryfall import Deck
+from mtgcards.decks import Deck, UrlParser
 
 
 # html parsing

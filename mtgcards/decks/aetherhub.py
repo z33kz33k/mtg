@@ -10,8 +10,9 @@
 
 from bs4 import Tag
 
-from mtgcards.decks import ParsingError, UrlParser
-from mtgcards.scryfall import Card, Deck, InvalidDeckError
+from mtgcards.decks import Deck, InvalidDeckError, UrlParser
+from mtgcards.utils import ParsingError
+from mtgcards.scryfall import Card
 
 
 class AetherHubParser(UrlParser):

@@ -10,9 +10,8 @@
 import re
 from enum import Enum, auto
 
-from mtgcards.decks import format_cards
-from mtgcards.scryfall import Card, Deck, InvalidDeckError, \
-    MULTIPART_SEPARATOR as SCRYFALL_MULTIPART_SEPARATOR, find_by_name, set_cards
+from mtgcards.decks import Deck, InvalidDeckError, format_cards
+from mtgcards.scryfall import Card, MULTIPART_SEPARATOR as SCRYFALL_MULTIPART_SEPARATOR, find_by_name, set_cards
 from mtgcards.utils import getrepr, parse_int_from_str
 
 
@@ -129,8 +128,8 @@ class ArenaParser:
     def deck(self) -> Deck | None:
         return self._deck
 
-    def __init__(self, lines: list[str], format_cards: set[Card]) -> None:
-        self._lines, self._format_cards = lines, format_cards
+    def __init__(self, lines: list[str], fmt="standard") -> None:
+        self._lines, self._fmt = lines, fmt
         self._state = _ParsingState.IDLE
         self._deck = self._parse_lines()
 
@@ -168,13 +167,14 @@ class ArenaParser:
                         self._state = _ParsingState.shift_to_mainlist(self._state)
                         mainboard, sideboard, commander = [], [], None  # reset state
 
+                    fmt_cards = format_cards(self._fmt)
                     if self._state is _ParsingState.SIDEBOARD:
-                        sideboard.extend(_CardLine(line).process(self._format_cards))
+                        sideboard.extend(_CardLine(line).process(fmt_cards))
                     elif self._state is _ParsingState.COMMANDER:
-                        result = _CardLine(line).process(self._format_cards)
+                        result = _CardLine(line).process(fmt_cards)
                         commander = result[0] if result else None
                     elif self._state is _ParsingState.MAINBOARD:
-                        mainboard.extend(_CardLine(line).process(self._format_cards))
+                        mainboard.extend(_CardLine(line).process(fmt_cards))
 
         try:
             return Deck(mainboard, sideboard, commander)

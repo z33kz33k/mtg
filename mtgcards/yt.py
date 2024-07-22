@@ -24,7 +24,7 @@ import scrapetube
 from contexttimer import Timer
 from youtubesearchpython import Channel as YtspChannel
 
-from mtgcards.decks import UrlParser
+from mtgcards.decks import Deck, UrlParser
 from mtgcards.decks.aetherhub import AetherHubParser
 from mtgcards.decks.arena import ArenaParser
 from mtgcards.decks.goldfish import GoldfishParser
@@ -33,7 +33,7 @@ from mtgcards.decks.mtgazone import MtgaZoneParser
 from mtgcards.decks.streamdecker import StreamdeckerParser
 from mtgcards.decks.tcgplayer import TcgPlayerParser
 from mtgcards.decks.untapped import UntappedParser
-from mtgcards.scryfall import Deck, format_cards
+from mtgcards.scryfall import format_cards
 from mtgcards.scryfall import formats as scryfall_formats
 from mtgcards.utils import getrepr
 

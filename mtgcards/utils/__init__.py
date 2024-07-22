@@ -79,6 +79,28 @@ def parse_int_from_str(string: str | None) -> int | None:
         return None
 
 
+# TODO: remove redundancy
+@type_checker(str)
+def extract_float(text: str) -> float:
+    """Extract floating point number from text.
+    """
+    num = "".join([char for char in text if char.isdigit() or char in ",."])
+    if not num:
+        raise ParsingError(f"No digits or decimal point in text: {text!r}")
+    return float(num.replace(",", "."))
+
+
+@type_checker(str)
+def extract_int(text: str) -> int:
+    """Extract an integer from text.
+    """
+    num = "".join([char for char in text if char.isdigit()])
+    if not num:
+        raise ParsingError(f"No digits in text: {text!r}")
+    return int(num)
+
+
+
 @type_checker(str)
 def camel_case_split(text: str) -> list[str]:
     """Do camel-case split on ``text``.
@@ -146,3 +168,8 @@ def timestamp(format_=TIMESTAMP_FORMAT) -> str:
     """Return timestamp string according to the datetime ``format_`` supplied.
     """
     return datetime.now().strftime(format_)
+
+
+class ParsingError(ValueError):
+    """Raised on unexpected states of parsed data.
+    """
