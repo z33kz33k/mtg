@@ -245,15 +245,16 @@ class SetData:
             has_colored_mana: bool | None = None) -> list[Card]:
         """Find all cards that meet specified parameters.
 
-        :param rarity: matched card's rarity
-        :param price: matched card's price
-        :param text: a text in matched card's name
-        :param mana: matched card's mana as tuple of Mana enumerations
-        :param cmc: matched card's converted mana cost
-        :param has_hybrid_mana: True, if matched card has hybrid mana
-        :param has_x_mana: True, if matched card has X mana
-        :param has_colorless_mana: True, if matched card has colorless mana
-        :param has_colored_mana: True, if matched card has colored mana
+        Args:
+            rarity: matched card's rarity
+            price: matched card's price
+            text: a text in matched card's name
+            mana: matched card's mana as tuple of Mana enumerations
+            cmc: matched card's converted mana cost
+            has_hybrid_mana: True, if matched card has hybrid mana
+            has_x_mana: True, if matched card has X mana
+            has_colorless_mana: True, if matched card has colorless mana
+            has_colored_mana: True, if matched card has colored mana
         """
         mtgcards = self.cards[:]
         if rarity:
@@ -464,16 +465,17 @@ def find_cards(
         has_colored_mana: bool | None = None) -> list[Card]:
     """Find all cards in the specified format that meet specified parameters.
 
-    :param fmt: format to match cards in
-    :param rarity: matched card's rarity
-    :param price: matched card's price
-    :param text: a text in matched card's name
-    :param mana: matched card's mana as tuple of Mana enumerations
-    :param cmc: matched card's converted mana cost
-    :param has_hybrid_mana: True, if matched card has hybrid mana
-    :param has_x_mana: True, if matched card has X mana
-    :param has_colorless_mana: True, if matched card has colorless mana
-    :param has_colored_mana: True, if matched card has colored mana
+    Args:
+        fmt: format to match cards in
+        rarity: matched card's rarity
+        price: matched card's price
+        text: a text in matched card's name
+        mana: matched card's mana as tuple of Mana enumerations
+        cmc: matched card's converted mana cost
+        has_hybrid_mana: True, if matched card has hybrid mana
+        has_x_mana: True, if matched card has X mana
+        has_colorless_mana: True, if matched card has colorless mana
+        has_colored_mana: True, if matched card has colored mana
     """
     sets = get_sets_by_format(fmt)
     mtgcards = [card for s in sets for card in s.cards]

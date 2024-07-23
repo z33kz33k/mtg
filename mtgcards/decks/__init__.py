@@ -506,8 +506,8 @@ class Deck:
         return self.metadata.get("name")
 
     @property
-    def author(self) -> str | None:
-        return self.metadata.get("author")
+    def source(self) -> str | None:
+        return self.metadata.get("source")
 
     def __init__(
             self, mainboard: Iterable[Card], sideboard: Iterable[Card] | None = None,
@@ -584,12 +584,21 @@ class Deck:
         reprs.append(("sideboard", self.has_sideboard))
         return getrepr(self.__class__, *reprs)
 
-    def export(self, dstdir: str = os.getcwd()) -> None:
-        exp = DckExporter(self)
+    def export(self, dstdir: str = os.getcwd(), name="") -> None:
+        """Export to a Forge MTG deckfile format (.dck).
+
+        Args:
+            dstdir: optionally, the destination directory (if not provided CWD is used)
+            name: optionally, a custom name for the exported deck (if not provided a name based on this deck's data and metadata is constructed)
+        """
+        exp = DckExporter(self, name)
         dstdir = getdir(dstdir)
         dst = dstdir / exp.filename
         _log.info(f"Exporting deck to: '{dst}'...")
         dst.write_text(exp.export(), encoding="utf-8")
+
+    def update_metadata(self, **data: Json) -> None:
+        self._metadata.update(data)
 
 
 class DckExporter:
@@ -625,10 +634,11 @@ Name={}
     def filename(self) -> str:
         return f"{self._name}.dck"
 
-    def __init__(self, deck: Deck) -> None:
+    def __init__(self, deck: Deck, name="") -> None:
         self._deck = deck
-        self._name = self._build_name()
+        self._name = name or self._build_name()
 
+    # takes a few seconds to complete (due to using get_set())
     def _derive_most_recent_set(self) -> str | None:
         set_codes = {c.set for c in self._deck.mainboard if not c.is_basic_land}
         sets = [get_set(s) for s in set_codes]
@@ -640,18 +650,31 @@ Name={}
         return [s[0].code() for s in sets][-1]
 
     def _build_name(self) -> str:
-        source = self.SOURCE_NICKNAMES.get(self._deck.metadata.get("source")) or ""
+        # source
+        source = self.SOURCE_NICKNAMES.get(self._deck.source) or ""
         name = f"{source}_" if source else ""
+        # color
         name += f"Mono_{self._deck.color.name.title()}_" if len(
             self._deck.color.value) == 1 else f"{self._deck.color.name.title()}_"
+        # theme
         if self._deck.theme:
             name += f"{self._deck.theme}_"
+        # archetype
         name += f"{self._deck.archetype.name.title()}_"
+        # meta
+        if any("meta" in k for k in self._deck.metadata):
+            name += "Meta_"
+            meta_place = self._deck.metadata.get("meta_place")
+            if meta_place:
+                name += f"#{meta_place}_"
+        # format
         fmt = self._deck.metadata.get("format")
         if fmt:
             set_code = self._derive_most_recent_set()
             if set_code:
                 name += f"{set_code.upper()}_{self.FMT_NICKNAMES[fmt.lower()]}"
+            else:
+                name += self.FMT_NICKNAMES[fmt.lower()]
         return name
 
     @staticmethod

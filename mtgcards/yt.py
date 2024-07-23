@@ -43,7 +43,8 @@ def channels() -> dict[str, str]:
 
     Mind that this operation takes about 2 seconds to complete.
 
-    :return: a dictionary of channel names mapped to their addresses
+    Returns:
+        a dictionary of channel names mapped to their addresses
     """
     creds_file = "scraping_service_account.json"
     client = gspread.service_account(filename=creds_file)
@@ -128,7 +129,8 @@ class Video:
     def __init__(self, video_id: str) -> None:
         """Initialize.
 
-        :param video_id: unique string identifying a YouTube video (the part after `v=` in the URL)
+        Args:
+            video_id: unique string identifying a YouTube video (the part after `v=` in the URL)
         """
         self._id = video_id
         self._pytube = self._get_pytube()
@@ -397,7 +399,7 @@ def unshorten(url: str) -> str:
 
 
 def extract_url(text: str, https=True) -> str | None:
-    """Extract (the firs occurrence of) URL from ``text``.
+    """Extract (the first occurrence of) URL from ``text``.
 
     Pilfered from: https://stackoverflow.com/a/840110/4465708
     """

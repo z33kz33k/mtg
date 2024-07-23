@@ -19,12 +19,11 @@ from pprint import pprint
 from types import EllipsisType
 from typing import Callable, Iterable, Optional
 
-import requests.exceptions
 import scrython
 
 from mtgcards.const import DATADIR, Json
 from mtgcards.mtgwiki import CLASSES, RACES
-from mtgcards.utils import from_iterable, getrepr, getint, timed_request
+from mtgcards.utils import from_iterable, getint, getrepr
 from mtgcards.utils.files import download_file, getdir
 
 FILENAME = "scryfall.json"
@@ -447,13 +446,14 @@ class Card:
     def collector_number_int(self) -> int | None:
         """Return collector number as an integer, if it can be parsed as such.
 
-        .. note: Parsing logic strips any non-digits and then parses a number. This means that
-        some alternative versions (e.g. Alchemy variants) will have the same number. However,
-        it needs to be this way, because there are some basic cards that still have the collector
-        number in this format (for instance both parts of Meld pairs from BRO).
+        Note:
+            Parsing logic strips any non-digits and then parses a number. This means that
+            some alternative versions (e.g. Alchemy variants) will have the same number. However,
+            it needs to be this way, because there are some basic cards that still have the
+            collector number in this format (for instance both parts of Meld pairs from BRO).
 
-        `collector_number` can look like that:
-            {"12e", "67f", "233f", "A-268", "4e"}
+            `collector_number` can look like that:
+                {"12e", "67f", "233f", "A-268", "4e"}
         """
         cn = "".join(char for char in self.collector_number if char.isdigit())
         return getint(cn)
@@ -615,8 +615,11 @@ class Card:
 
         Run formats() to see available format designations.
 
-        :param fmt: Scryfall format designation
-        :raises: ValueError on invalid format designation
+        Args:
+            fmt: Scryfall format designation
+
+        Raises:
+            ValueError on invalid format designation
         """
         if fmt.lower() not in self.formats:
             raise ValueError(f"No such format: {fmt!r}")
@@ -630,8 +633,11 @@ class Card:
 
         Run formats() to see available format designations.
 
-        :param fmt: Scryfall format designation
-        :raises: ValueError on invalid format designation
+        Args:
+            fmt: Scryfall format designation
+
+        Raises:
+            ValueError on invalid format designation
         """
         if fmt.lower() not in self.formats:
             raise ValueError(f"No such format: {fmt!r}")
@@ -645,8 +651,11 @@ class Card:
 
         Run formats() to see available format designations.
 
-        :param fmt: Scryfall format designation
-        :raises: ValueError on invalid format designation
+        Args:
+            fmt: Scryfall format designation
+
+        Raises:
+            ValueError on invalid format designation
         """
         if fmt.lower() not in self.formats:
             raise ValueError(f"No such format: {fmt!r}")
@@ -996,7 +1005,7 @@ def find_by_id(scryfall_id: str, data: Iterable[Card] | None = None) -> Card | N
     return from_iterable(data, lambda c: c.id == scryfall_id)
 
 
-@lru_cache
+@lru_cache  # pulling Scryfall data takes a few seconds
 def get_set(set_code: str) -> scrython.sets.Code | None:
     try:
         return scrython.sets.Code(code=set_code)

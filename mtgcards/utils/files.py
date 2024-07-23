@@ -106,7 +106,8 @@ def remove_by_ext(ext: str, destdir: str, recursive=False, opposite=False) -> in
 
     Extension shall include the leading period, e.g. ".py"
 
-    :return: number of removed files
+    Returns:
+        number of removed files
     """
     def remove(f: Path, removed_lst: list[Path]) -> None:
         f.unlink()
@@ -136,9 +137,10 @@ def download_file(url: str, file_name="", dst_dir="") -> None:
 
     Mostly, as suggested by GPT3.
 
-    :param url: URL of the file to be downloaded.
-    :param file_name: Optional name for saved file. Default is the downloaded file's name.
-    :param dst_dir: Optional destination directory for saving. Default is the CWD.
+    Args:
+        url: URL of the file to be downloaded.
+        file_name: Optional name for saved file. Default is the downloaded file's name.
+        dst_dir: Optional destination directory for saving. Default is the CWD.
     """
     if not file_name:
         file_name = Path(url).name

@@ -34,8 +34,9 @@ def timed_request(url: str, postdata: Optional[Json] = None,
 def getrepr(class_: Type, *name_value_pairs: tuple[str, Any]) -> str:
     """Return ``__repr__`` string format: 'ClassName(name=value, ..., name_n=value_n)'
 
-    :param class_: class to get repr for
-    :param name_value_pairs: variable number of (name, value) tuples
+    Args:
+        class_: class to get repr for
+        name_value_pairs: variable number of (name, value) tuples
     """
     reprs = [f"{name}={value!r}" for name, value in name_value_pairs]
     return f"{class_.__name__}({', '.join(reprs)})"
@@ -105,8 +106,11 @@ def camel_case_split(text: str) -> list[str]:
     Taken from:
         https://stackoverflow.com/a/58996565/4465708
 
-    :param text: text to be split
-    :return: a list of parts
+    Args:
+        text: text to be split
+
+    Returns:
+        a list of parts
     """
     bools = [char.isupper() for char in text]
     # mark change of case

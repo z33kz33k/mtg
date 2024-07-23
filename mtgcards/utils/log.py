@@ -57,8 +57,9 @@ def _filepath(suffix: str, logdir: str) -> str:
 def fileformat(module_name_length: int, lvl_name_length: int) -> str:
     """Return a logging format for logfile records based on supplied arguments.
 
-    :param module_name_length: char-length reserved for module's name
-    :param lvl_name_length: char-length reserved for severity level
+    Args:
+        module_name_length: char-length reserved for module's name
+        lvl_name_length: char-length reserved for severity level
     """
     return f"%(asctime)s: %(name)-{module_name_length}s: %(levelname)-" \
            f"{lvl_name_length}s: %(message)s"
@@ -90,23 +91,25 @@ def rootlogger(module: str, output_dir: str, module_name_length=24, lvl_name_len
                filelvl=logging.DEBUG, suffix="", stdoutlvl=logging.DEBUG) -> logging.Logger:
     """Return a root :class:`logging.Logger` object set-up according to supplied arguments.
 
-    .. note:: Take care to run this function at the proper place to have logging behave correctly.
-    ``module`` ougth to be a root module for every other module that spawns a logger object with
-    ``logging.getLogger()``. More on this in the official docs (paragraph starting with "The name
-    is potentially..."):
+    Note:
+        Take care to run this function at the proper place to have logging behave correctly.
+        ``module`` ought to be a root module for every other module that spawns a logger object with
+        ``logging.getLogger()``. More on this in the official docs (paragraph starting with "The
+        name is potentially..."):
 
         https://docs.python.org/3/library/logging.html
 
-    That way the set-up is done only once, on the root and every other spawned logger is
-    considered a root's descendant and all the root's settings are propagated downstream.
+        That way the set-up is done only once, on the root and every other spawned logger is
+        considered a root's descendant and all the root's settings are propagated downstream.
 
-    :param module: calling module's name
-    :param output_dir: output directory location
-    :param module_name_length: char-length reserved for module's name in the logfile records
-    :param lvl_name_length:  char-length reserved for severity level in the logfile records
-    :param filelvl: severity level of logfile records
-    :param suffix: log filename's suffix
-    :param stdoutlvl: severity level of standard output's records
+    Args:
+        module: calling module's name
+        output_dir: output directory location
+        module_name_length: char-length reserved for module's name in the logfile records
+        lvl_name_length:  char-length reserved for severity level in the logfile records
+        filelvl: severity level of logfile records
+        suffix: log filename's suffix
+        stdoutlvl: severity level of standard output's records
     """
     logger = logging.getLogger(module)
     logger.setLevel(logging.DEBUG)

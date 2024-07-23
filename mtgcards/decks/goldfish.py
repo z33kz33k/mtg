@@ -2,7 +2,7 @@
 
     mtgcards.decks.goldfish.py
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Parse MtGGoldfish decklist page.
+    Parse MtGGoldfish decklists.
 
     @author: z33k
 
@@ -26,23 +26,23 @@ class _ParsingState(Enum):
     MAINBOARD = auto()
     SIDEBOARD = auto()
 
-    @classmethod
-    def shift_to_commander(cls, current_state: "_ParsingState") -> "_ParsingState":
-        if current_state is not _ParsingState.IDLE:
-            raise RuntimeError(f"Invalid transition to COMMANDER from: {current_state.name}")
-        return _ParsingState.COMMANDER
 
-    @classmethod
-    def shift_to_mainboard(cls, current_state: "_ParsingState") -> "_ParsingState":
-        if current_state not in (_ParsingState.IDLE, _ParsingState.COMMANDER):
-            raise RuntimeError(f"Invalid transition to MAINBOARD from: {current_state.name}")
-        return _ParsingState.MAINBOARD
+def _shift_to_commander(current_state: _ParsingState) -> _ParsingState:
+    if current_state is not _ParsingState.IDLE:
+        raise RuntimeError(f"Invalid transition to COMMANDER from: {current_state.name}")
+    return _ParsingState.COMMANDER
 
-    @classmethod
-    def shift_to_sideboard(cls, current_state: "_ParsingState") -> "_ParsingState":
-        if current_state is not _ParsingState.MAINBOARD:
-            raise RuntimeError(f"Invalid transition to SIDEBOARD from: {current_state.name}")
-        return _ParsingState.SIDEBOARD
+
+def _shift_to_mainboard(current_state: _ParsingState) -> _ParsingState:
+    if current_state not in (_ParsingState.IDLE, _ParsingState.COMMANDER):
+        raise RuntimeError(f"Invalid transition to MAINBOARD from: {current_state.name}")
+    return _ParsingState.MAINBOARD
+
+
+def _shift_to_sideboard(current_state: _ParsingState) -> "_ParsingState":
+    if current_state is not _ParsingState.MAINBOARD:
+        raise RuntimeError(f"Invalid transition to SIDEBOARD from: {current_state.name}")
+    return _ParsingState.SIDEBOARD
 
 
 class GoldfishParser(UrlParser):
@@ -95,12 +95,12 @@ class GoldfishParser(UrlParser):
         for row in rows:
             if row.has_attr("class") and "deck-category-header" in row.attrs["class"]:
                 if row.text.strip() == "Commander":
-                    self._state = _ParsingState.shift_to_commander(self._state)
+                    self._state = _shift_to_commander(self._state)
                 elif any(h in row.text.strip() for h in headers
                          ) and not self._state is _ParsingState.MAINBOARD:
-                    self._state = _ParsingState.shift_to_mainboard(self._state)
+                    self._state = _shift_to_mainboard(self._state)
                 elif "Sideboard" in row.text.strip():
-                    self._state = _ParsingState.shift_to_sideboard(self._state)
+                    self._state = _shift_to_sideboard(self._state)
             else:
                 cards = self._parse_row(row)
                 if self._state is _ParsingState.COMMANDER:
