@@ -15,42 +15,46 @@ from mtgcards.scryfall import Card, MULTIPART_SEPARATOR as SCRYFALL_MULTIPART_SE
 from mtgcards.utils import extract_int, getrepr, getint
 
 
-class _ParsingState(Enum):
+class ParsingState(Enum):
     """State machine for Arena lines parsing.
     """
     IDLE = auto()
     MAINBOARD = auto()
-    COMMANDER = auto()
     SIDEBOARD = auto()
+    COMMANDER = auto()
+    COMPANION = auto()
 
 
-def _shift_to_idle(current_state: _ParsingState) -> _ParsingState:
+def _shift_to_idle(current_state: ParsingState) -> ParsingState:
     if current_state not in (
-            _ParsingState.MAINBOARD, _ParsingState.COMMANDER, _ParsingState.SIDEBOARD):
+            ParsingState.MAINBOARD, ParsingState.COMMANDER, ParsingState.COMPANION,
+            ParsingState.SIDEBOARD):
         raise RuntimeError(f"Invalid transition to IDLE from: {current_state.name}")
-    return _ParsingState.IDLE
+    return ParsingState.IDLE
 
-
-def _shift_to_mainlist(current_state: _ParsingState) -> _ParsingState:
-    if current_state is not _ParsingState.IDLE:
+def _shift_to_mainboard(current_state: ParsingState) -> ParsingState:
+    if current_state is not ParsingState.IDLE:
         raise RuntimeError(f"Invalid transition to MAINBOARD from: {current_state.name}")
-    return _ParsingState.MAINBOARD
+    return ParsingState.MAINBOARD
 
-
-def _shift_to_commander(current_state: _ParsingState) -> _ParsingState:
-    if current_state is not _ParsingState.IDLE:
-        raise RuntimeError(f"Invalid transition to COMMANDER from: {current_state.name}")
-    return _ParsingState.COMMANDER
-
-
-def _shift_to_sideboard(current_state: _ParsingState) -> _ParsingState:
-    if current_state is not _ParsingState.IDLE:
+def _shift_to_sideboard(current_state: ParsingState) -> ParsingState:
+    if current_state is not ParsingState.IDLE:
         raise RuntimeError(f"Invalid transition to SIDEBOARD from: {current_state.name}")
-    return _ParsingState.SIDEBOARD
+    return ParsingState.SIDEBOARD
+
+def _shift_to_commander(current_state: ParsingState) -> ParsingState:
+    if current_state is not ParsingState.IDLE:
+        raise RuntimeError(f"Invalid transition to COMMANDER from: {current_state.name}")
+    return ParsingState.COMMANDER
+
+def _shift_to_companion(current_state: ParsingState) -> ParsingState:
+    if current_state is not ParsingState.IDLE:
+        raise RuntimeError(f"Invalid transition to COMPANION from: {current_state.name}")
+    return ParsingState.COMPANION
 
 
-class _CardLine:
-    """A line of text in MtG Arena decklist format that denotes a card.
+class _PlaysetLine:
+    """A line of text in MtG Arena decklist format that denotes a card playset.
 
     Example:
         '4 Commit /// Memory (AKR) 54'
@@ -106,7 +110,7 @@ class _CardLine:
         return getrepr(self.__class__, *pairs)
 
     def to_playset(self, fmt: str) -> list[Card]:
-        """Process this Arena line into a playset of cards.
+        """Process this line into a playset of cards.
 
         Args:
             fmt: MtG format string designation
@@ -124,6 +128,14 @@ class _CardLine:
         return [card] * self.quantity if card else []
 
 
+def is_playset(line: str) -> bool:
+    return bool(_PlaysetLine.PATTERN.match(line))
+
+
+def is_empty(line: str) -> bool:
+    return not line or line.isspace()
+
+
 class ArenaParser:
     """Parser of lines of text that denote a deck in Arena format.
     """
@@ -133,52 +145,38 @@ class ArenaParser:
 
     def __init__(self, lines: list[str], fmt="standard") -> None:
         self._lines, self._fmt = lines, fmt
-        self._state = _ParsingState.IDLE
+        self._state = ParsingState.IDLE
         self._deck = self._parse_lines()
 
-    @staticmethod
-    def is_arena_line(line: str) -> bool:
-        if not line or line.isspace():
-            return True
-        elif line.startswith("Sideboard"):
-            return True
-        elif line.startswith("Commander"):
-            return True
-        else:
-            match = _CardLine.PATTERN.match(line)
-            if match:
-                return True
-        return False
-
     def _parse_lines(self) -> Deck | None:
-        mainboard, sideboard, commander = [], [], None
+        mainboard, sideboard, commander, companion = [], [], None, None
         for line in self._lines:
-            if self._state is not _ParsingState.IDLE and (not line or line.isspace()):
+            if self._state is not ParsingState.IDLE and is_empty(line):
                 self._state = _shift_to_idle(self._state)
-            elif line.startswith("Sideboard"):
+            elif line == "Sideboard":
                 self._state = _shift_to_sideboard(self._state)
-            elif line.startswith("Commander"):
+            elif line == "Commander":
                 self._state = _shift_to_commander(self._state)
-            else:
-                match = _CardLine.PATTERN.match(line)
-                if match:
-                    if self._state is _ParsingState.IDLE:
-                        try:
-                            return Deck(mainboard, sideboard, commander)
-                        except InvalidDeckError:
-                            pass
-                        self._state = _shift_to_mainlist(self._state)
-                        mainboard, sideboard, commander = [], [], None  # reset state
+            elif line == "Companion":
+                self._state = _shift_to_companion(self._state)
+            elif line == "Deck":
+                self._state = _shift_to_mainboard(self._state)
+            elif is_playset(line):
+                if self._state is ParsingState.IDLE:
+                    self._state = _shift_to_mainboard(self._state)
 
-                    if self._state is _ParsingState.SIDEBOARD:
-                        sideboard.extend(_CardLine(line).to_playset(self._fmt))
-                    elif self._state is _ParsingState.COMMANDER:
-                        result = _CardLine(line).to_playset(self._fmt)
-                        commander = result[0] if result else None
-                    elif self._state is _ParsingState.MAINBOARD:
-                        mainboard.extend(_CardLine(line).to_playset(self._fmt))
+                if self._state is ParsingState.SIDEBOARD:
+                    sideboard.extend(_PlaysetLine(line).to_playset(self._fmt))
+                elif self._state is ParsingState.COMMANDER:
+                    result = _PlaysetLine(line).to_playset(self._fmt)
+                    commander = result[0] if result else None
+                elif self._state is ParsingState.COMPANION:
+                    result = _PlaysetLine(line).to_playset(self._fmt)
+                    companion = result[0] if result else None
+                elif self._state is ParsingState.MAINBOARD:
+                    mainboard.extend(_PlaysetLine(line).to_playset(self._fmt))
 
         try:
-            return Deck(mainboard, sideboard, commander)
+            return Deck(mainboard, sideboard, commander, companion, {"format": self._fmt})
         except InvalidDeckError:
             return None

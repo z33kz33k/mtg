@@ -23,7 +23,7 @@ import scrython
 
 from mtgcards.const import DATADIR, Json
 from mtgcards.mtgwiki import CLASSES, RACES
-from mtgcards.utils import from_iterable, getint, getrepr
+from mtgcards.utils import from_iterable, getfloat, getint, getrepr
 from mtgcards.utils.files import download_file, getdir
 
 FILENAME = "scryfall.json"
@@ -534,13 +534,13 @@ class Card:
     def price(self) -> float | None:
         """Return price in USD or `None` if unavailable.
         """
-        return self.json["prices"].get("usd")
+        return getfloat(self.json["prices"].get("usd"))
 
     @property
     def price_tix(self) -> float | None:
         """Return price in MGTO's currency or `None` if unavailable.
         """
-        return self.json["prices"].get("tix")
+        return getfloat(self.json["prices"].get("tix"))
 
     @property
     def rarity(self) -> Rarity:
@@ -879,6 +879,7 @@ def sets(data: Iterable[Card] | None = None) -> list[str]:
     return sorted({card.set for card in data})
 
 
+@lru_cache
 def formats() -> list[str]:
     """Return list of string designations for MtG formats in Scryfall data.
     """

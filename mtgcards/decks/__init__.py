@@ -487,8 +487,11 @@ class Deck:
                 Archetype, lambda a: any(p.title() == a.name.title() for p in nameparts))
             if arch:
                 return arch
+            # combo
             card_parts = {p for card in self.mainboard for p in card.name_parts}
-            if nameparts and any(p.lower() in card_parts for p in nameparts):
+            if any(p.title() in THEMES for p in nameparts):  # a themed deck is not a combo deck
+                pass
+            elif nameparts and any(p.lower() in card_parts for p in nameparts):
                 return Archetype.COMBO
         if self.avg_cmc < self.MIN_AGGRO_CMC:
             return Archetype.AGGRO
@@ -508,6 +511,10 @@ class Deck:
     @property
     def source(self) -> str | None:
         return self.metadata.get("source")
+
+    @property
+    def format(self) -> str | None:
+        return self.metadata.get("format")
 
     def __init__(
             self, mainboard: Iterable[Card], sideboard: Iterable[Card] | None = None,
@@ -668,13 +675,12 @@ Name={}
             if meta_place:
                 name += f"#{meta_place}_"
         # format
-        fmt = self._deck.metadata.get("format")
-        if fmt:
+        if self._deck.format:
             set_code = self._derive_most_recent_set()
             if set_code:
-                name += f"{set_code.upper()}_{self.FMT_NICKNAMES[fmt.lower()]}"
+                name += f"{set_code.upper()}_{self.FMT_NICKNAMES[self._deck.format.lower()]}"
             else:
-                name += self.FMT_NICKNAMES[fmt.lower()]
+                name += self.FMT_NICKNAMES[self._deck.format.lower()]
         return name
 
     @staticmethod

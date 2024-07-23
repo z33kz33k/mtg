@@ -15,27 +15,24 @@ from decimal import Decimal
 from functools import cached_property
 from typing import Type
 
-import backoff
 import gspread
-import pytube
-import pytube.exceptions
+import pytubefix
 import requests
 import scrapetube
 from contexttimer import Timer
 from youtubesearchpython import Channel as YtspChannel
 
+from mtgcards.scryfall import formats
 from mtgcards.decks import Deck, UrlParser
 from mtgcards.decks.aetherhub import AetherHubParser
-from mtgcards.decks.arena import ArenaParser
+from mtgcards.decks.arena import ArenaParser, is_empty, is_playset
 from mtgcards.decks.goldfish import GoldfishParser
 from mtgcards.decks.moxfield import MoxfieldParser
 from mtgcards.decks.mtgazone import MtgaZoneParser
 from mtgcards.decks.streamdecker import StreamdeckerParser
 from mtgcards.decks.tcgplayer import TcgPlayerParser
 from mtgcards.decks.untapped import UntappedParser
-from mtgcards.scryfall import format_cards
-from mtgcards.scryfall import formats as scryfall_formats
-from mtgcards.utils import getrepr
+from mtgcards.utils import getrepr, timed_request
 
 
 def channels() -> dict[str, str]:
@@ -69,10 +66,85 @@ class Video:
     TCGPLAYER_HOOK = "decks.tcgplayer.com/"
     UNTAPPED_HOOKS = {"mtga.untapped.gg", "/deck/"}
 
-    SHORTENER_HOOKS = {"bit.ly/", "tinyurl.com/", "cutt.ly/", "rb.gy/", "shortcm.li/", "tiny.cc/",
-                       "snip.ly/", "qti.ai/", "dub.sh/", "lyksoomu.com/", "zws.im/", "t.ly/"}
+    SHORTENER_HOOKS = {
+        "bit.ly/",
+        "tinyurl.com/",
+        "cutt.ly/",
+        "rb.gy/",
+        "shortcm.li/",
+        "tiny.cc/",
+        "snip.ly/",
+        "qti.ai/",
+        "dub.sh/",
+        "lyksoomu.com/",
+        "zws.im/",
+        "t.ly/"
+    }
 
-    formats = scryfall_formats()
+    PASTEBIN_LIKE_HOOKS = {
+        "bitbin.it",
+        "bpa.st",
+        "cl1p.net",
+        "codebeautify.org",
+        "codeshare.io",
+        "commie.io",
+        "controlc.com",
+        "cutapaste.net",
+        "defuse.ca/pastebin.htm",
+        "dotnetfiddle.net",
+        "dpaste.com",
+        "dpaste.org",
+        "everfall.com/paste/",
+        "friendpaste.com",
+        "gist.github.com",
+        "hastebin.com",
+        "ide.geeksforgeeks.org",
+        "ideone.com",
+        "ivpaste.com",
+        "jpst.it",
+        "jsbin.com",
+        "jsfiddle.net",
+        "jsitor.com",
+        "justpaste.it",
+        "justpaste.me",
+        "kpaste.net",
+        "n0paste.tk",
+        "nekobin.com",
+        "notes.io",
+        "p.ip.fi",
+        "paste-bin.xyz",
+        "paste.centos.org",
+        "paste.debian.net",
+        "paste.ee",
+        "paste.jp",
+        "paste.mozilla.org",
+        "paste.ofcode.org",
+        "paste.opensuse.org",
+        "paste.org.ru",
+        "paste.rohitab.com",
+        "paste.sh",
+        "paste2.org",
+        "pastebin.ai",
+        "pastebin.com",
+        "pastebin.fi",
+        "pastebin.fr",
+        "pastebin.osuosl.org",
+        "pastecode.io",
+        "pasted.co",
+        "pasteio.com",
+        "pastelink.net",
+        "pastie.org",
+        "privatebin.net",
+        "pst.innomi.net",
+        "quickhighlighter.com",
+        "termbin.com",
+        "tny.cz",
+        "tutpaste.com",
+        "vpaste.net",
+        "www.paste.lv",
+        "www.paste4btc.com",
+        "www.pastebin.pt",
+    }
 
     @property
     def id(self) -> str:
@@ -134,162 +206,79 @@ class Video:
         """
         self._id = video_id
         self._pytube = self._get_pytube()
+        # description and title is also available in scrapetube data on Channel level
         self._author, self._description, self._title = None, None, None
         self._keywords, self._publish_date, self._views = None, None, None
         self._get_pytube_data()
-        self._format_soup: defaultdict[str, list[str]] = defaultdict(list)
-        self._extract_formats(self.title)
+        self._format_soup = self._get_format_soup()
         self._links, self._arena_lines = self._parse_lines()
         self._format = self._get_format()
-        self._format_cards = format_cards(self._format)
         self._deck = self._get_deck()
 
     def __repr__(self) -> str:
         return getrepr(self.__class__, ("title", self.title), ("deck", self.deck))
 
-    def _get_pytube(self) -> pytube.YouTube:
-        return pytube.YouTube(self.URL_TEMPLATE.format(self.id))
+    def _get_pytube(self) -> pytubefix.YouTube:
+        return pytubefix.YouTube(self.URL_TEMPLATE.format(self.id))
 
     def _get_pytube_data(self) -> None:
-        self._author = self._get_author()
-        self._description = self._get_description()
-        self._title = self._get_title()
-        self._keywords = self._get_keywords()
-        self._publish_date = self._get_publish_date()
-        self._views = self._get_views()
-        self._channel_id = self._get_channel_id()
+        self._author = self._pytube.author
+        self._description = self._pytube.description
+        self._title = self._pytube.title
+        self._keywords = self._pytube.keywords
+        self._publish_date = self._pytube.publish_date
+        self._views = self._pytube.views
+        self._channel_id = self._pytube.channel_id
 
-    def _get_author(self) -> str:
-        try:
-            author = self._pytube.author
-        except pytube.exceptions.PytubeError:
-            print("Problems with retrieving video author. Retrying with backoff (60 seconds "
-                  "max)...")
-            author = self._get_author_with_backoff()
-        return author
-
-    def _get_description(self) -> str:
-        try:
-            description = self._pytube.description
-            if description is None:
-                raise ValueError
-        except (pytube.exceptions.PytubeError, ValueError):
-            print("Problems with retrieving video description. Retrying with backoff (60 seconds "
-                  "max)...")
-            description = self._get_description_with_backoff()
-        return description
-
-    def _get_title(self) -> str:
-        try:
-            title = self._pytube.title
-        except pytube.exceptions.PytubeError:
-            print("Problems with retrieving video title. Retrying with backoff (60 seconds max)...")
-            title = self._get_title_with_backoff()
-        return title
-
-    def _get_keywords(self) -> list[str]:
-        try:
-            keywords = self._pytube.keywords
-        except pytube.exceptions.PytubeError:
-            print("Problems with retrieving video keywords. Retrying with backoff (60 seconds "
-                  "max)...")
-            keywords = self._get_keywords_with_backoff()
-        return keywords
-
-    def _get_publish_date(self) -> datetime:
-        try:
-            publish_date = self._pytube.publish_date
-        except pytube.exceptions.PytubeError:
-            print("Problems with retrieving video publish date. Retrying with backoff (60 seconds "
-                  "max)...")
-            publish_date = self._get_publish_date_with_backoff()
-        return publish_date
-
-    def _get_views(self) -> int:
-        try:
-            views = self._pytube.views
-        except pytube.exceptions.PytubeError:
-            print("Problems with retrieving video views. Retrying with backoff (60 seconds max)...")
-            views = self._get_views_with_backoff()
-        return views
-
-    def _get_channel_id(self) -> str:
-        try:
-            channel_id = self._pytube.channel_id
-        except pytube.exceptions.PytubeError:
-            print("Problems with retrieving video channel ID. Retrying with backoff (60 seconds "
-                  "max)...")
-            channel_id = self._get_channel_id_with_backoff()
-        return channel_id
-
-    @backoff.on_exception(backoff.expo, (pytube.exceptions.PytubeError, ValueError), max_time=60)
-    def _get_author_with_backoff(self) -> str:
-        self._pytube = self._get_pytube()
-        author = self._pytube.author
-        if author == 'unknown':
-            raise ValueError
-        return self._pytube.author
-
-    @backoff.on_exception(backoff.expo, (pytube.exceptions.PytubeError, ValueError), max_time=60)
-    def _get_description_with_backoff(self) -> str:
-        self._pytube = self._get_pytube()
-        desc = self._pytube.description
-        if not desc:
-            raise ValueError
-        return self._pytube.description
-
-    @backoff.on_exception(backoff.expo, pytube.exceptions.PytubeError, max_time=60)
-    def _get_title_with_backoff(self) -> str:
-        self._pytube = self._get_pytube()
-        return self._pytube.title
-
-    @backoff.on_exception(backoff.expo, pytube.exceptions.PytubeError, max_time=60)
-    def _get_keywords_with_backoff(self) -> list[str]:
-        self._pytube = self._get_pytube()
-        return self._pytube.keywords
-
-    @backoff.on_exception(backoff.expo, pytube.exceptions.PytubeError, max_time=60)
-    def _get_publish_date_with_backoff(self) -> datetime:
-        self._pytube = self._get_pytube()
-        return self._pytube.publish_date
-
-    @backoff.on_exception(backoff.expo, pytube.exceptions.PytubeError, max_time=60)
-    def _get_views_with_backoff(self) -> int:
-        self._pytube = self._get_pytube()
-        return self._pytube.views
-
-    @backoff.on_exception(backoff.expo, pytube.exceptions.PytubeError, max_time=60)
-    def _get_channel_id_with_backoff(self) -> str:
-        self._pytube = self._get_pytube()
-        return self._pytube.channel_id
-
-    def _extract_formats(self, line: str) -> None:
+    @staticmethod
+    def _extract_formats(line: str) -> list[str]:
         words = [word.lower() for word in line.strip().split()]
-        formats = [fmt for fmt in self.formats if any(fmt in word for word in words)]
-        for fmt in formats:
-            self._format_soup[fmt].append(fmt)
+        return [fmt for fmt in formats() if any(fmt in word for word in words)]
+
+    def _get_format_soup(self) -> defaultdict[str, list[str]]:
+        fmt_soup = defaultdict(list)
+        for line in [self.title, *self._desc_lines]:
+            for fmt in self._extract_formats(line):
+                fmt_soup[fmt].append(fmt)
+        return fmt_soup
 
     def _get_format(self) -> str:
         # if format soup has been populated, take the most common item
         if self._format_soup:
             two_best = Counter(itertools.chain(*self._format_soup.values())).most_common(2)
             two_best = [pair[0] for pair in two_best]
-            if len(two_best) == 2 and all(fmt in ("brawl", "historic") for fmt in two_best):
-                return "historicbrawl"
+            if len(two_best) == 2 and all(fmt in ("brawl", "standard") for fmt in two_best):
+                return "standardbrawl"
             return two_best[0]
         # if not, fall back to default
         return "standard"
 
+    @staticmethod
+    def is_arena(line: str) -> bool:
+        if line == "Deck":
+            return True
+        elif line == "Commander":
+            return True
+        elif line == "Companion":
+            return True
+        elif line == "Sideboard":
+            return True
+        elif is_playset(line):
+            return True
+        return False
+
     def _parse_lines(self) -> tuple[list[str], list[str]]:
         links, arena_lines = [], []
-        for line in self._desc_lines:
+        for i, line in enumerate(self._desc_lines):
             self._extract_formats(line)
             url = extract_url(line)
             if url:
                 links.append(url)
-            else:
-                if ArenaParser.is_arena_line(line):
+            elif is_empty(line):
+                if i != len(self._desc_lines) - 1 and is_playset(self._desc_lines[i + 1]):
                     arena_lines.append(line)
+            elif self.is_arena(line):
+                arena_lines.append(line)
         return links, arena_lines
 
     @classmethod
@@ -311,12 +300,22 @@ class Video:
             elif (not parsers_map.get(UntappedParser)
                   and all(hook in link for hook in cls.UNTAPPED_HOOKS)):
                 parsers_map[UntappedParser] = link
+            elif not parsers_map.get("pastebin-like") and any(
+                    h in link for h in cls.PASTEBIN_LIKE_HOOKS):
+                parsers_map["pastebin-like"] = link
         return parsers_map
 
     def _process_urls(self, urls: list[str]) -> Deck | None:
         parsers_map = self._process_hooks(urls)
+        deck = None
         for parser_type, url in parsers_map.items():
-            deck = parser_type(url, self._format_cards).deck
+            if parser_type == "pastebin-like":
+                lines = timed_request(url).splitlines()
+                lines = [l for l in lines if self.is_arena(l) or is_empty(l)]
+                if lines:
+                    deck = ArenaParser(lines, fmt=self._format).deck
+            else:
+                deck = parser_type(url, self._format).deck
             if deck:
                 return deck
         return None
@@ -324,7 +323,7 @@ class Video:
     def _get_deck(self) -> Deck | None:
         # 1st stage: Arena lines
         if self._arena_lines:
-            deck = ArenaParser(self._arena_lines, self._format_cards).deck
+            deck = ArenaParser(self._arena_lines, self._format).deck
             if deck:
                 return deck
         # 2nd stage: regular URLs
@@ -354,6 +353,10 @@ class Channel(list):
         return self._title
 
     @property
+    def description(self) -> str | None:
+        return self._description
+
+    @property
     def tags(self) -> list[str] | None:
         return self._tags
 
@@ -370,12 +373,17 @@ class Channel(list):
         self._url = url
         self._id = self[0].channel_id if self else None
         self._ytsp_data = YtspChannel(self.id) if self._id else None
-        self._title = self._ytsp_data.result["title"] if self._id else None
-        self._tags = self._ytsp_data.result["tags"] if self._id else None
+        self._description = self._ytsp_data.result.get("description") if self._id else None
+        self._title = self._ytsp_data.result.get("title") if self._id else None
+        self._tags = self._ytsp_data.result.get("tags") if self._id else None
         self._subscribers = self._parse_subscribers() if self._id else None
 
-    def _parse_subscribers(self) -> int:
+    def _parse_subscribers(self) -> int | None:
+        if not self._id:
+            return None
         text = self._ytsp_data.result["subscribers"]["simpleText"]
+        if not text:
+            return None
         number = text.rstrip(" subscribers").rstrip("KM")
         subscribers = Decimal(number)
         if "K" in text:

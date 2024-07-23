@@ -62,7 +62,7 @@ def extract_int(text: str) -> int:
     return int(num)
 
 
-@type_checker(str)
+@type_checker(str, none_allowed=True)
 def getfloat(string: str | None) -> float | None:
     """Interpret string as floating point number or, if not possible, return None.
     """
@@ -73,7 +73,7 @@ def getfloat(string: str | None) -> float | None:
     except ValueError:
         return None
 
-@type_checker(str)
+@type_checker(str, none_allowed=True)
 def getint(string: str | None) -> int | None:
     """Interpret string as integer or, if not possible, return None.
     """
@@ -85,7 +85,7 @@ def getint(string: str | None) -> int | None:
         return None
 
 
-@type_checker(str)
+@type_checker(str, none_allowed=True)
 def getbool(string: str | None) -> bool | None:
     """Interpret string as boolean value or, if not possible, return None
     """

@@ -8,41 +8,38 @@
 
 """
 from datetime import datetime
-from enum import Enum, auto
 
 from bs4 import Tag
 
 from mtgcards.const import Json
 from mtgcards.decks import Deck, InvalidDeckError, UrlParser
+from mtgcards.decks.arena import ParsingState
 from mtgcards.utils import ParsingError, extract_int
-from mtgcards.scryfall import Card
+from mtgcards.scryfall import Card, formats
 
 
-class _ParsingState(Enum):
-    """State machine for parsing.
-    """
-    IDLE = auto()
-    COMMANDER = auto()
-    MAINBOARD = auto()
-    SIDEBOARD = auto()
-
-
-def _shift_to_commander(current_state: _ParsingState) -> _ParsingState:
-    if current_state is not _ParsingState.IDLE:
+def _shift_to_commander(current_state: ParsingState) -> ParsingState:
+    if current_state not in (ParsingState.IDLE, ParsingState.COMPANION):
         raise RuntimeError(f"Invalid transition to COMMANDER from: {current_state.name}")
-    return _ParsingState.COMMANDER
+    return ParsingState.COMMANDER
 
 
-def _shift_to_mainboard(current_state: _ParsingState) -> _ParsingState:
-    if current_state not in (_ParsingState.IDLE, _ParsingState.COMMANDER):
+def _shift_to_companion(current_state: ParsingState) -> ParsingState:
+    if current_state not in (ParsingState.IDLE, ParsingState.COMMANDER):
+        raise RuntimeError(f"Invalid transition to COMPANION from: {current_state.name}")
+    return ParsingState.COMPANION
+
+
+def _shift_to_mainboard(current_state: ParsingState) -> ParsingState:
+    if current_state not in (ParsingState.IDLE, ParsingState.COMMANDER, ParsingState.COMPANION):
         raise RuntimeError(f"Invalid transition to MAINBOARD from: {current_state.name}")
-    return _ParsingState.MAINBOARD
+    return ParsingState.MAINBOARD
 
 
-def _shift_to_sideboard(current_state: _ParsingState) -> "_ParsingState":
-    if current_state is not _ParsingState.MAINBOARD:
+def _shift_to_sideboard(current_state: ParsingState) -> "ParsingState":
+    if current_state is not ParsingState.MAINBOARD:
         raise RuntimeError(f"Invalid transition to SIDEBOARD from: {current_state.name}")
-    return _ParsingState.SIDEBOARD
+    return ParsingState.SIDEBOARD
 
 
 class GoldfishParser(UrlParser):
@@ -55,10 +52,16 @@ class GoldfishParser(UrlParser):
                   "image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
     }
 
+    FMT_NAMES = {
+        "penny dreadful": "penny",
+        "pauper commander": "paupercommander",
+        "standard brawl": "standardbrawl",
+    }
+
     def __init__(self, url: str, fmt="standard") -> None:
         super().__init__(url, fmt)
         self._soup = self._get_soup(headers=self.HEADERS)
-        self._state = _ParsingState.IDLE
+        self._state = ParsingState.IDLE
         self._deck = self._get_deck()
 
     def _get_metadata(self) -> Json:
@@ -66,6 +69,7 @@ class GoldfishParser(UrlParser):
         title_tag = self._soup.find("h1", class_="title")
         metadata["source"] = "www.mtggoldfish.com"
         metadata["name"], *_ = title_tag.text.strip().split("\n")
+        metadata["format"] = self._fmt
         author_tag = title_tag.find("span")
         if author_tag is not None:
             metadata["author"] = author_tag.text.strip().removeprefix("by ")
@@ -74,7 +78,11 @@ class GoldfishParser(UrlParser):
         source_idx = None
         for i, line in enumerate(lines):
             if line.startswith("Format:"):
-                metadata["format"] = line.removeprefix("Format:").strip()
+                fmt = line.removeprefix("Format:").strip().lower()
+                if fmt in self.FMT_NAMES:
+                    fmt = self.FMT_NAMES[fmt]
+                if fmt in formats():
+                    metadata["format"] = fmt
             elif line.startswith("Event:"):
                 metadata["event"] = line.removeprefix("Event:").strip()
             elif line.startswith("Deck Source:"):
@@ -87,7 +95,7 @@ class GoldfishParser(UrlParser):
         return metadata
 
     def _get_deck(self) -> Deck | None:
-        mainboard, sideboard, commander = [], [], None
+        mainboard, sideboard, commander, companion = [], [], None, None
         table = self._soup.find("table", class_="deck-view-deck-table")
         rows = table.find_all("tr")
         headers = (
@@ -96,24 +104,29 @@ class GoldfishParser(UrlParser):
             if row.has_attr("class") and "deck-category-header" in row.attrs["class"]:
                 if row.text.strip() == "Commander":
                     self._state = _shift_to_commander(self._state)
+                elif row.text.strip().startswith("Companion"):
+                    self._state = _shift_to_companion(self._state)
                 elif any(h in row.text.strip() for h in headers
-                         ) and not self._state is _ParsingState.MAINBOARD:
+                         ) and not self._state is ParsingState.MAINBOARD:
                     self._state = _shift_to_mainboard(self._state)
                 elif "Sideboard" in row.text.strip():
                     self._state = _shift_to_sideboard(self._state)
             else:
                 cards = self._parse_row(row)
-                if self._state is _ParsingState.COMMANDER:
+                if self._state is ParsingState.COMMANDER:
                     if cards:
                         commander = cards[0]
-                elif self._state is _ParsingState.MAINBOARD:
+                elif self._state is ParsingState.COMPANION:
+                    if cards:
+                        companion = cards[0]
+                elif self._state is ParsingState.MAINBOARD:
                     mainboard.extend(cards)
-                elif self._state is _ParsingState.SIDEBOARD:
+                elif self._state is ParsingState.SIDEBOARD:
                     sideboard.extend(cards)
 
         try:
-            return Deck(mainboard, sideboard, commander, metadata=self._get_metadata())
-        except InvalidDeckError:
+            return Deck(mainboard, sideboard, commander, companion, metadata=self._get_metadata())
+        except InvalidDeckError as ide:
             return None
 
     def _parse_row(self, row: Tag) -> list[Card]:
@@ -137,5 +150,8 @@ class GoldfishParser(UrlParser):
             name = name.strip()
 
         set_code = set_code[:-1].lower()
-        return self._get_playset(name, quantity, set_code)
-
+        # return self._get_playset(name, quantity, set_code)
+        playset = self._get_playset(name, quantity, set_code)
+        if not playset:
+            pass
+        return playset
