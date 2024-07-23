@@ -13,17 +13,15 @@ import os
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from datetime import date
-from enum import Enum
+from enum import Enum, auto
 from functools import cached_property, lru_cache
 from operator import itemgetter
-from typing import Iterable
-
-from bs4 import BeautifulSoup
+from typing import Any, Iterable
 
 from mtgcards.const import Json
 from mtgcards.scryfall import Card, Color, find_by_name, format_cards as scryfall_fmt_cards, \
-    get_set, set_cards as scryfall_set_cards
-from mtgcards.utils import from_iterable, getrepr, timed_request
+    formats, get_set, set_cards as scryfall_set_cards
+from mtgcards.utils import from_iterable, getrepr
 from mtgcards.utils.files import getdir
 
 _log = logging.getLogger(__name__)
@@ -604,7 +602,7 @@ class Deck:
         _log.info(f"Exporting deck to: '{dst}'...")
         dst.write_text(exp.export(), encoding="utf-8")
 
-    def update_metadata(self, **data: Json) -> None:
+    def update_metadata(self, **data: Any) -> None:
         self._metadata.update(data)
 
 
@@ -711,24 +709,30 @@ def set_cards(set_code: str) -> set[Card]:
     return scryfall_set_cards(set_code)
 
 
-class UrlParser(ABC):
-    """Abstract base parser of URLs pointing to decklists.
+class ParsingState(Enum):
+    """State machine for Arena lines parsing.
     """
-    @property
-    def url(self) -> str:
-        return self._url
+    IDLE = auto()
+    MAINBOARD = auto()
+    SIDEBOARD = auto()
+    COMMANDER = auto()
+    COMPANION = auto()
 
+
+class DeckParser(ABC):
+    """Abstract base deck parser.
+    """
     @property
     def deck(self) -> Deck | None:
         return self._deck
 
-    def __init__(self, url: str, fmt="standard") -> None:
-        self._url, self._fmt = url, fmt
+    def __init__(self, fmt="standard") -> None:
+        fmt = fmt.lower()
+        if fmt not in formats():
+            raise ValueError(f"Format can be only one of: {formats()}")
+        self._fmt = fmt
+        self._state = ParsingState.IDLE
         self._deck = None
-
-    def _get_soup(self, **requests_kwargs) -> BeautifulSoup:
-        self._markup = timed_request(self._url, **requests_kwargs)
-        return BeautifulSoup(self._markup, "lxml")
 
     @abstractmethod
     def _get_deck(self) -> Deck | None:

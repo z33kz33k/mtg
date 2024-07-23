@@ -7,12 +7,10 @@
     @author: z33k
 
 """
-from typing import Optional
-
-from mtgcards.decks import Deck, UrlParser
+from mtgcards.decks import Deck, DeckParser
 
 
-class MtgaZoneParser(UrlParser):
+class MtgaZoneParser(DeckParser):
     """Parser of MTG Arena Zone decklist page.
     """
 

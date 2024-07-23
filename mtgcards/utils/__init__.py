@@ -11,6 +11,7 @@ from datetime import datetime
 from typing import Any, Callable, Iterable, Optional, Type, Union
 
 import requests
+from bs4 import BeautifulSoup
 from contexttimer import Timer
 
 from mtgcards.const import Json, T, TIMESTAMP_FORMAT
@@ -29,6 +30,11 @@ def timed_request(url: str, postdata: Optional[Json] = None,
     if return_json:
         return data.json()
     return data.text
+
+
+def getsoup(url: str, **requests_kwargs) -> BeautifulSoup:
+    markup = timed_request(url, **requests_kwargs)
+    return BeautifulSoup(markup, "lxml")
 
 
 def getrepr(class_: Type, *name_value_pairs: tuple[str, Any]) -> str:
@@ -96,7 +102,6 @@ def getbool(string: str | None) -> bool | None:
     elif string.lower() == "true":
         return True
     return None
-
 
 
 @type_checker(str)

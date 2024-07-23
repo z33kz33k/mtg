@@ -23,7 +23,7 @@ from contexttimer import Timer
 from youtubesearchpython import Channel as YtspChannel
 
 from mtgcards.scryfall import formats
-from mtgcards.decks import Deck, UrlParser
+from mtgcards.decks import Deck, DeckParser
 from mtgcards.decks.aetherhub import AetherHubParser
 from mtgcards.decks.arena import ArenaParser, is_empty, is_playset
 from mtgcards.decks.goldfish import GoldfishParser
@@ -282,7 +282,7 @@ class Video:
         return links, arena_lines
 
     @classmethod
-    def _process_hooks(cls, links: list[str]) -> dict[Type[UrlParser], str]:
+    def _process_hooks(cls, links: list[str]) -> dict[Type[DeckParser], str]:
         parsers_map = {}
         for link in links:
             if not parsers_map.get(AetherHubParser) and cls.AETHERHUB_HOOK in link:

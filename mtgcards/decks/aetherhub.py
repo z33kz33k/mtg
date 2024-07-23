@@ -10,20 +10,21 @@
 
 from bs4 import Tag
 
-from mtgcards.decks import Deck, InvalidDeckError, UrlParser
-from mtgcards.utils import ParsingError, extract_int
+from mtgcards.decks import Deck, InvalidDeckError, DeckParser
+from mtgcards.utils import ParsingError, extract_int, getsoup
 from mtgcards.scryfall import Card
 
 
-class AetherHubParser(UrlParser):
+# TODO: Companion
+class AetherHubParser(DeckParser):
     """Parser of AetherHub decklist page.
     """
     def __init__(self, url: str, fmt="standard") -> None:
-        super().__init__(url, fmt)
-        self._soup = self._get_soup()
+        super().__init__(fmt)
+        self._soup = getsoup(url)
         self._deck = self._get_deck()
 
-    def _get_deck(self) -> Deck | None:
+    def _get_deck(self) -> Deck | None:  # override
         mainboard, sideboard, commander = [], [], None
 
         tables = self._soup.find_all("table", class_="table table-borderless")

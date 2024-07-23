@@ -12,9 +12,8 @@ from datetime import datetime
 from bs4 import Tag
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, InvalidDeckError, UrlParser
-from mtgcards.decks.arena import ParsingState
-from mtgcards.utils import ParsingError, extract_int
+from mtgcards.decks import Deck, InvalidDeckError, DeckParser, ParsingState
+from mtgcards.utils import ParsingError, extract_int, getsoup
 from mtgcards.scryfall import Card, formats
 
 
@@ -42,16 +41,17 @@ def _shift_to_sideboard(current_state: ParsingState) -> "ParsingState":
     return ParsingState.SIDEBOARD
 
 
-class GoldfishParser(UrlParser):
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
+                  "Chrome/96.0.4664.113 Safari/537.36}",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,"
+              "image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
+}
+
+
+class GoldfishParser(DeckParser):
     """Parser of MtGGoldfish decklist page.
     """
-    HEADERS = {
-        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
-                      "Chrome/96.0.4664.113 Safari/537.36}",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,"
-                  "image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
-    }
-
     FMT_NAMES = {
         "penny dreadful": "penny",
         "pauper commander": "paupercommander",
@@ -59,9 +59,8 @@ class GoldfishParser(UrlParser):
     }
 
     def __init__(self, url: str, fmt="standard") -> None:
-        super().__init__(url, fmt)
-        self._soup = self._get_soup(headers=self.HEADERS)
-        self._state = ParsingState.IDLE
+        super().__init__(fmt)
+        self._soup = getsoup(url, headers=HEADERS)
         self._deck = self._get_deck()
 
     def _get_metadata(self) -> Json:
@@ -94,7 +93,7 @@ class GoldfishParser(UrlParser):
             metadata["original_source"] = lines[source_idx].strip()
         return metadata
 
-    def _get_deck(self) -> Deck | None:
+    def _get_deck(self) -> Deck | None:  # override
         mainboard, sideboard, commander, companion = [], [], None, None
         table = self._soup.find("table", class_="deck-view-deck-table")
         rows = table.find_all("tr")
@@ -126,7 +125,7 @@ class GoldfishParser(UrlParser):
 
         try:
             return Deck(mainboard, sideboard, commander, companion, metadata=self._get_metadata())
-        except InvalidDeckError as ide:
+        except InvalidDeckError:
             return None
 
     def _parse_row(self, row: Tag) -> list[Card]:
@@ -150,8 +149,26 @@ class GoldfishParser(UrlParser):
             name = name.strip()
 
         set_code = set_code[:-1].lower()
-        # return self._get_playset(name, quantity, set_code)
-        playset = self._get_playset(name, quantity, set_code)
-        if not playset:
-            pass
-        return playset
+        return self._get_playset(name, quantity, set_code)
+
+
+def scrape_meta(fmt="standard") -> list[Deck]:
+    fmt = fmt.lower()
+    if fmt not in formats():
+        raise ValueError(f"Format can be only one of: {formats()}")
+    url = f"https://www.mtggoldfish.com/metagame/{fmt}/full"
+    soup = getsoup(url, headers=HEADERS)
+    tiles = soup.find_all("div", class_="archetype-tile")
+    decks, counts = [], []
+    for i, tile in enumerate(tiles, start=1):
+        link = tile.find("a").attrs["href"]
+        deck = GoldfishParser(f"https://www.mtggoldfish.com{link}", fmt=fmt).deck
+        count = tile.find("span", class_="archetype-tile-statistic-value-extra-data").text.strip()
+        count = extract_int(count)
+        counts.append(counts)
+        deck.update_metadata(meta_place=i, meta_count=count)
+        decks.append(deck)
+    total = sum(counts)
+    for deck, count in zip(decks, counts):
+        deck.update_metadata(meta_share=count * 100 / total)
+    return decks

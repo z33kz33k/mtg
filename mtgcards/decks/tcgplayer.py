@@ -8,13 +8,13 @@
 
 """
 
-from mtgcards.decks import Deck, UrlParser
+from mtgcards.decks import Deck, DeckParser
 
 
 # html parsing
 
 
-class TcgPlayerParser(UrlParser):
+class TcgPlayerParser(DeckParser):
     """Parser of TCG Player decklist page.
     """
 

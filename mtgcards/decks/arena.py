@@ -8,21 +8,11 @@
 
 """
 import re
-from enum import Enum, auto
 
-from mtgcards.decks import Deck, InvalidDeckError, format_cards
-from mtgcards.scryfall import Card, MULTIPART_SEPARATOR as SCRYFALL_MULTIPART_SEPARATOR, find_by_name, set_cards
+from mtgcards.decks import Deck, DeckParser, InvalidDeckError, ParsingState, format_cards
+from mtgcards.scryfall import Card, MULTIPART_SEPARATOR as SCRYFALL_MULTIPART_SEPARATOR, \
+    find_by_name, set_cards
 from mtgcards.utils import extract_int, getrepr, getint
-
-
-class ParsingState(Enum):
-    """State machine for Arena lines parsing.
-    """
-    IDLE = auto()
-    MAINBOARD = auto()
-    SIDEBOARD = auto()
-    COMMANDER = auto()
-    COMPANION = auto()
 
 
 def _shift_to_idle(current_state: ParsingState) -> ParsingState:
@@ -136,19 +126,15 @@ def is_empty(line: str) -> bool:
     return not line or line.isspace()
 
 
-class ArenaParser:
+class ArenaParser(DeckParser):
     """Parser of lines of text that denote a deck in Arena format.
     """
-    @property
-    def deck(self) -> Deck | None:
-        return self._deck
-
     def __init__(self, lines: list[str], fmt="standard") -> None:
-        self._lines, self._fmt = lines, fmt
-        self._state = ParsingState.IDLE
-        self._deck = self._parse_lines()
+        super().__init__(fmt)
+        self._lines = lines
+        self._deck = self._get_deck()
 
-    def _parse_lines(self) -> Deck | None:
+    def _get_deck(self) -> Deck | None:  # override
         mainboard, sideboard, commander, companion = [], [], None, None
         for line in self._lines:
             if self._state is not ParsingState.IDLE and is_empty(line):

@@ -9,10 +9,10 @@
 """
 from typing import Optional
 
-from mtgcards.decks import Deck, UrlParser
+from mtgcards.decks import Deck, DeckParser
 
 
-class UntappedParser(UrlParser):
+class UntappedParser(DeckParser):
     """Parser of Untapped.gg decklist page.
     """
 

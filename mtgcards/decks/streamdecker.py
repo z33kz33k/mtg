@@ -9,12 +9,12 @@
 """
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, InvalidDeckError, UrlParser
+from mtgcards.decks import Deck, InvalidDeckError, DeckParser
 from mtgcards.scryfall import Card
 from mtgcards.utils import timed_request
 
 
-class StreamdeckerParser(UrlParser):
+class StreamdeckerParser(DeckParser):
     """Parser of Streamdecker deck page.
     """
     API_URL_TEMPLATE = "https://www.streamdecker.com/api/deck/{}"
