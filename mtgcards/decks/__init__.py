@@ -9,7 +9,6 @@
 """
 import itertools
 import logging
-import os
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from datetime import date
@@ -19,13 +18,16 @@ from operator import itemgetter
 from typing import Any, Iterable
 
 from mtgcards.const import Json, OUTPUT_DIR
-from mtgcards.scryfall import Card, Color, find_by_name, format_cards as scryfall_fmt_cards, \
-    formats, get_set, set_cards as scryfall_set_cards
+from mtgcards.scryfall import Card, Color, MULTIPART_SEPARATOR as SCRYFALL_MULTIPART_SEPARATOR, \
+    find_by_name, format_cards as scryfall_fmt_cards, formats, get_set, \
+    set_cards as scryfall_set_cards
 from mtgcards.utils import from_iterable, getrepr
 from mtgcards.utils.files import getdir
 
 _log = logging.getLogger(__name__)
 
+
+ARENA_MULTIPART_SEPARATOR = "///"  # this is different from Scryfall data where they use: '//'
 
 # based on https://draftsim.com/mtg-archetypes/
 # this listing omits combo-control as it's too long a name to be efficiently used as a component
@@ -519,7 +521,8 @@ class Deck:
             metadata: Json | None = None) -> None:
         sideboard = [*sideboard] if sideboard else []
         self._companion = companion
-        sideboard = [companion, *sideboard] if companion else sideboard
+        sideboard = [
+            companion, *sideboard] if companion and companion not in sideboard else sideboard
         self._metadata = metadata or {}
 
         self._commander = commander
@@ -588,28 +591,32 @@ class Deck:
         reprs.append(("sideboard", self.has_sideboard))
         return getrepr(self.__class__, *reprs)
 
-    def export(self, dstdir="", name="") -> None:
+    def update_metadata(self, **data: Any) -> None:
+        self._metadata.update(data)
+
+    def to_dck(self, dstdir="", name="") -> None:
         """Export to a Forge MTG deckfile format (.dck).
 
         Args:
             dstdir: optionally, the destination directory (if not provided CWD is used)
             name: optionally, a custom name for the exported deck (if not provided a name based on this deck's data and metadata is constructed)
         """
-        exp = DckExporter(self, name)
-        dstdir = dstdir or OUTPUT_DIR / "dck"
-        dstdir = getdir(dstdir)
-        dst = dstdir / exp.filename
-        _log.info(f"Exporting deck to: '{dst}'...")
-        dst.write_text(exp.export(), encoding="utf-8")
+        Exporter(self, name).to_dck(dstdir)
 
-    def update_metadata(self, **data: Any) -> None:
-        self._metadata.update(data)
+    def to_arena(self, dstdir="", name="") -> None:
+        """Export to a MTGA deckfile text format (as a .txt file).
+
+        Args:
+            dstdir: optionally, the destination directory (if not provided CWD is used)
+            name: optionally, a custom name for the exported deck (if not provided a name based on this deck's data and metadata is constructed)
+        """
+        Exporter(self, name).to_arena(dstdir)
 
 
-class DckExporter:
+class Exporter:
     """Export a deck to a Forge MTG's .dck file.
     """
-    TEMPLATE = """[metadata]
+    DCK_TEMPLATE = """[metadata]
 Name={}
 [Commander]
 {}
@@ -618,32 +625,41 @@ Name={}
 [Sideboard]
 {}
 """
+
     SOURCE_NICKNAMES = {
         "www.mtggoldfish.com": "Goldfish"
     }
 
     FMT_NICKNAMES = {
-        'alchemy': "Alc",
-        'brawl': "Brl",
-        'commander': "Cmd",
-        'explorer': "Exp",
+        'alchemy': "Alch",
+        'brawl': "Brwl",
+        'commander': "Cmdr",
+        'duel': "Duel",
+        'explorer': "Expl",
+        'future': "Ftr",
+        'gladiator': "Gld",
         'historic': "Hst",
+        'legacy': "Lgc",
         'modern': "Mdn",
+        'oathbreaker': "Obr",
+        'oldschool': "Old",
         'pauper': "Ppr",
+        'paupercommander': "PprCmd",
+        'penny': "Pnn",
         'pioneer': "Pnr",
+        'predh': "Pdh",
+        'premodern': "PreMdn",
         'standard': "Std",
         'standardbrawl': "StdBrl",
-        'timeless': "Tml"
+        'timeless': "Tml",
+        'vintage': "Vnt",
     }
-    @property
-    def filename(self) -> str:
-        return f"{self._name}.dck"
 
     def __init__(self, deck: Deck, name="") -> None:
         self._deck = deck
         self._name = name or self._build_name()
 
-    # takes a few seconds to complete (due to using get_set())
+    # takes a few seconds to complete (due to using get_set() (which uses scrython))
     def _derive_most_recent_set(self) -> str | None:
         set_codes = {c.set for c in self._deck.mainboard if not c.is_basic_land}
         sets = [get_set(s) for s in set_codes]
@@ -703,21 +719,68 @@ Name={}
         return name
 
     @staticmethod
-    def _to_line(playset: list[Card]) -> str:
+    def _to_dck_line(playset: list[Card]) -> str:
         card = playset[0]
         return f"{len(playset)} {card.main_name}|{card.set.upper()}|1"
 
-    def export(self) -> str:
+    def _build_dck(self) -> str:
         commander = [
-            self._to_line(playset) for playset in
+            self._to_dck_line(playset) for playset in
             to_playsets(self._deck.commander).values()] if self._deck.commander else []
         mainboard = [
-            self._to_line(playset) for playset in to_playsets(*self._deck.mainboard).values()]
+            self._to_dck_line(playset) for playset in to_playsets(*self._deck.mainboard).values()]
         sideboard = [
-            self._to_line(playset) for playset in
+            self._to_dck_line(playset) for playset in
             to_playsets(*self._deck.sideboard).values()] if self._deck.sideboard else []
-        return self.TEMPLATE.format(
+        return self.DCK_TEMPLATE.format(
             self._name, "\n".join(commander), "\n".join(mainboard), "\n".join(sideboard))
+
+    def to_dck(self, dstdir="") -> None:
+        dstdir = dstdir or OUTPUT_DIR / "dck"
+        dstdir = getdir(dstdir)
+        dst = dstdir / f"{self._name}.dck"
+        _log.info(f"Exporting deck to: '{dst}'...")
+        dst.write_text(self._build_dck(), encoding="utf-8")
+
+    @staticmethod
+    def _to_arena_line(playset: list[Card]) -> str:
+        card = playset[0]
+        card_name = card.name.replace(
+            SCRYFALL_MULTIPART_SEPARATOR,
+            ARENA_MULTIPART_SEPARATOR) if card.is_multipart else card.name
+        line =  f"{len(playset)} {card_name}"
+        if card.collector_number is not None:
+            line += f" ({card.set.upper()}) {card.collector_number}"
+        return line
+
+    def _build_arena(self) -> str:
+        lines = []
+        if self._deck.commander:
+            playset = to_playsets(self._deck.commander)[self._deck.commander]
+            lines += ["Commander", self._to_arena_line(playset), ""]
+        if self._deck.companion:
+            playset = to_playsets(self._deck.companion)[self._deck.companion]
+            lines += ["Companion", self._to_arena_line(playset), ""]
+        lines += [
+            "Deck",
+            *[self._to_arena_line(playset) for playset
+              in to_playsets(*self._deck.mainboard).values()]
+        ]
+        if self._deck.sideboard:
+            lines += [
+                "",
+                "Sideboard",
+                *[self._to_arena_line(playset) for playset
+                  in to_playsets(*self._deck.sideboard).values()]
+            ]
+        return "\n".join(lines)
+
+    def to_arena(self, dstdir="") -> None:
+        dstdir = dstdir or OUTPUT_DIR / "arena"
+        dstdir = getdir(dstdir)
+        dst = dstdir / f"{self._name}.txt"
+        _log.info(f"Exporting deck to: '{dst}'...")
+        dst.write_text(self._build_arena(), encoding="utf-8")
 
 
 @lru_cache
@@ -731,7 +794,7 @@ def set_cards(set_code: str) -> set[Card]:
 
 
 class ParsingState(Enum):
-    """State machine for Arena lines parsing.
+    """State machine for deck parsing.
     """
     IDLE = auto()
     MAINBOARD = auto()

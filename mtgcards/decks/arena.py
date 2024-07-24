@@ -9,7 +9,8 @@
 """
 import re
 
-from mtgcards.decks import Deck, DeckParser, InvalidDeckError, ParsingState, format_cards
+from mtgcards.decks import ARENA_MULTIPART_SEPARATOR, Deck, DeckParser, InvalidDeckError, \
+    ParsingState, format_cards
 from mtgcards.scryfall import Card, MULTIPART_SEPARATOR as SCRYFALL_MULTIPART_SEPARATOR, \
     find_by_name, set_cards
 from mtgcards.utils import extract_int, getrepr, getint
@@ -43,13 +44,12 @@ def _shift_to_companion(current_state: ParsingState) -> ParsingState:
     return ParsingState.COMPANION
 
 
-class _PlaysetLine:
+class PlaysetLine:
     """A line of text in MtG Arena decklist format that denotes a card playset.
 
     Example:
         '4 Commit /// Memory (AKR) 54'
     """
-    MULTIPART_SEPARATOR = "///"  # this is different from Scryfall data where they use: '//'
     # matches '4 Commit /// Memory'
     PATTERN = re.compile(r"\d{1,3}\s[A-Z][\w\s'&/,-]+")
     # matches '4 Commit /// Memory (AKR) 54'
@@ -91,7 +91,7 @@ class _PlaysetLine:
             self._collector_number = getint(rest.strip())
         else:
             self._name, self._setcode, self._collector_number = rest, None, None
-        self._name = self._name.replace(self.MULTIPART_SEPARATOR, SCRYFALL_MULTIPART_SEPARATOR)
+        self._name = self._name.replace(ARENA_MULTIPART_SEPARATOR, SCRYFALL_MULTIPART_SEPARATOR)
 
     def __repr__(self) -> str:
         pairs = [("quantity", self.quantity), ("name", self.name)]
@@ -118,7 +118,7 @@ class _PlaysetLine:
 
 
 def is_playset(line: str) -> bool:
-    return bool(_PlaysetLine.PATTERN.match(line))
+    return bool(PlaysetLine.PATTERN.match(line))
 
 
 def is_empty(line: str) -> bool:
@@ -151,15 +151,15 @@ class ArenaParser(DeckParser):
                     self._state = _shift_to_mainboard(self._state)
 
                 if self._state is ParsingState.SIDEBOARD:
-                    sideboard.extend(_PlaysetLine(line).to_playset(self._fmt))
+                    sideboard.extend(PlaysetLine(line).to_playset(self._fmt))
                 elif self._state is ParsingState.COMMANDER:
-                    result = _PlaysetLine(line).to_playset(self._fmt)
+                    result = PlaysetLine(line).to_playset(self._fmt)
                     commander = result[0] if result else None
                 elif self._state is ParsingState.COMPANION:
-                    result = _PlaysetLine(line).to_playset(self._fmt)
+                    result = PlaysetLine(line).to_playset(self._fmt)
                     companion = result[0] if result else None
                 elif self._state is ParsingState.MAINBOARD:
-                    mainboard.extend(_PlaysetLine(line).to_playset(self._fmt))
+                    mainboard.extend(PlaysetLine(line).to_playset(self._fmt))
 
         try:
             return Deck(mainboard, sideboard, commander, companion, {"format": self._fmt})

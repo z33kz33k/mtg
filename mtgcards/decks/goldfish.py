@@ -64,10 +64,11 @@ class GoldfishParser(DeckParser):
         "standard brawl": "standardbrawl",
     }
 
-    def __init__(self, url: str, fmt="standard") -> None:
+    def __init__(self, url: str, fmt="standard", raise_error=False) -> None:
         super().__init__(fmt)
         self._soup = throttled_soup(url)
         self._deck = self._get_deck()
+        self._raise_error = raise_error
 
     def _get_metadata(self) -> Json:
         metadata = {}
@@ -132,7 +133,9 @@ class GoldfishParser(DeckParser):
         try:
             return Deck(mainboard, sideboard, commander, companion, metadata=self._get_metadata())
         except InvalidDeckError:
-            return None
+            if not self._raise_error:
+                return None
+            raise
 
     def _parse_row(self, row: Tag) -> list[Card]:
         quantity_tag = row.find(class_="text-right")
@@ -172,7 +175,10 @@ def scrape_meta(fmt="standard") -> list[Deck]:
     decks, counts = [], []
     for i, tile in enumerate(tiles, start=1):
         link = tile.find("a").attrs["href"]
-        deck = GoldfishParser(f"https://www.mtggoldfish.com{link}", fmt=fmt).deck
+        try:
+            deck = GoldfishParser(f"https://www.mtggoldfish.com{link}", fmt=fmt).deck
+        except InvalidDeckError as err:
+            raise ScrapingError(f"Scraping meta deck failed with: {err}")
         count = tile.find("span", class_="archetype-tile-statistic-value-extra-data").text.strip()
         count = extract_int(count)
         counts.append(count)
