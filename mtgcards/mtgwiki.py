@@ -12,7 +12,7 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 from bs4.element import Tag
 
-from mtgcards.const import DATADIR
+from mtgcards.const import DATA_DIR
 from mtgcards.utils.files import download_file
 
 FILENAME = "creature_type.html"
@@ -22,14 +22,14 @@ def download_creature_type_page() -> None:
     """Download MGT Wiki page on creature types.
     """
     url = "https://mtg.fandom.com/wiki/Creature_type"
-    download_file(url, file_name=FILENAME, dst_dir=DATADIR)
+    download_file(url, file_name=FILENAME, dst_dir=DATA_DIR)
 
 
 class _CreatureTypesParser:
     """Parse MTG Wiki "Creature_type" page for possible races and classes among creature types in a
     MtG card's type line.
     """
-    FILEPATH = Path(DATADIR) / FILENAME
+    FILEPATH = Path(DATA_DIR) / FILENAME
 
     @property
     def races(self) -> list[str]:

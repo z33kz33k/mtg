@@ -9,11 +9,12 @@
 """
 from datetime import datetime
 
-from bs4 import Tag
+from bs4 import BeautifulSoup, Tag
 
 from mtgcards.const import Json
 from mtgcards.decks import Deck, InvalidDeckError, DeckParser, ParsingState
-from mtgcards.utils import ParsingError, extract_int, getsoup
+from mtgcards.utils import extract_int, timed
+from mtgcards.utils.scrape import ScrapingError, getsoup, http_requests_counted, throttled
 from mtgcards.scryfall import Card, formats
 
 
@@ -49,6 +50,11 @@ HEADERS = {
 }
 
 
+@throttled(0.5)
+def throttled_soup(url: str) -> BeautifulSoup:
+    return getsoup(url, headers=HEADERS)
+
+
 class GoldfishParser(DeckParser):
     """Parser of MtGGoldfish decklist page.
     """
@@ -60,7 +66,7 @@ class GoldfishParser(DeckParser):
 
     def __init__(self, url: str, fmt="standard") -> None:
         super().__init__(fmt)
-        self._soup = getsoup(url, headers=HEADERS)
+        self._soup = throttled_soup(url)
         self._deck = self._get_deck()
 
     def _get_metadata(self) -> Json:
@@ -125,23 +131,23 @@ class GoldfishParser(DeckParser):
 
         try:
             return Deck(mainboard, sideboard, commander, companion, metadata=self._get_metadata())
-        except InvalidDeckError:
+        except InvalidDeckError as err:
             return None
 
     def _parse_row(self, row: Tag) -> list[Card]:
         quantity_tag = row.find(class_="text-right")
         if not quantity_tag:
-            raise ParsingError("Can't find quantity data in a row tag")
+            raise ScrapingError("Can't find quantity data in a row tag")
         quantity = extract_int(quantity_tag.text.strip())
 
         a_tag = row.find("a")
         if not a_tag:
-            raise ParsingError("Can't find name and set data a row tag")
+            raise ScrapingError("Can't find name and set data a row tag")
         text = a_tag.attrs.get("data-card-id")
         if not text:
-            raise ParsingError("Can't find name and set data a row tag")
+            raise ScrapingError("Can't find name and set data a row tag")
         if "[" not in text or "]" not in text:
-            raise ParsingError(f"No set data in: {text!r}")
+            raise ScrapingError(f"No set data in: {text!r}")
         name, set_code = text.split("[")
         name = name.strip()
         if "<" in name:
@@ -149,9 +155,15 @@ class GoldfishParser(DeckParser):
             name = name.strip()
 
         set_code = set_code[:-1].lower()
-        return self._get_playset(name, quantity, set_code)
+        # return self._get_playset(name, quantity, set_code)
+        playset = self._get_playset(name, quantity, set_code)
+        if not playset:
+            pass
+        return playset
 
 
+http_requests_counted("scraping meta decks")
+timed("scraping meta decks", precision=1)
 def scrape_meta(fmt="standard") -> list[Deck]:
     fmt = fmt.lower()
     if fmt not in formats():
@@ -159,13 +171,15 @@ def scrape_meta(fmt="standard") -> list[Deck]:
     url = f"https://www.mtggoldfish.com/metagame/{fmt}/full"
     soup = getsoup(url, headers=HEADERS)
     tiles = soup.find_all("div", class_="archetype-tile")
+    if not tiles:
+        raise ScrapingError("No deck tiles tags found")
     decks, counts = [], []
     for i, tile in enumerate(tiles, start=1):
         link = tile.find("a").attrs["href"]
         deck = GoldfishParser(f"https://www.mtggoldfish.com{link}", fmt=fmt).deck
         count = tile.find("span", class_="archetype-tile-statistic-value-extra-data").text.strip()
         count = extract_int(count)
-        counts.append(counts)
+        counts.append(count)
         deck.update_metadata(meta_place=i, meta_count=count)
         decks.append(deck)
     total = sum(counts)

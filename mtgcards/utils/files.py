@@ -8,77 +8,43 @@
 """
 import os
 import shutil
-from logging import ERROR, getLogger
+from logging import getLogger
 from pathlib import Path
 from time import sleep
-from typing import Optional
 
 import requests
-from logdecorator import log_on_error
 from tqdm import tqdm
 
+from mtgcards.const import PathLike
 from mtgcards.utils.validate import type_checker
 
-log = getLogger(__name__)
+_log = getLogger(__name__)
 
 
-@log_on_error(
-    ERROR, "Error on getting {file_location}: {e!r}.", on_exceptions=(OSError, ValueError),
-    reraise=True, logger=log)
-@type_checker(str)
-def getfile(file_location: str, absolute=False, sanity_check=True) -> Path:
-    """Return a Path object pointing at a file according to string `file_location` provided.
-
-    By default, perform a sanity check on the provided location.
+@type_checker(PathLike)
+def getdir(path: PathLike, create_missing=True) -> Path:
+    """Return a directory at ``path`` creating it (and all its needed parents) if missing.
     """
-    try:
-        file = Path(file_location)
-    except OSError as e:
-        raise OSError(f"Cannot read provided location: {file_location} ({e}).")
-    if sanity_check:
-        if not file.exists():
-            raise FileNotFoundError(f"Nothing at: {file}.")
-        if not file.is_file():
-            raise FileNotFoundError(f"Not a file: {file}.")
-    if absolute:
-        return file.absolute()
-    else:
-        try:
-            result = file.relative_to(Path("..").absolute()) if file.is_absolute() else file
-        # this can hiccup if `file` is absolute and `Path(".").absolute()` doesn't make sense for it
-        # so, we fall back from an attempt at returning a relative path to returning an absolute
-        # one (because that is what was fed on input anyway)
-        except ValueError:
-            result = file
-        return result
-
-
-@log_on_error(
-    ERROR, "Error on getting {dir_location}: {e!r}.", on_exceptions=(OSError, ValueError),
-    reraise=True, logger=log)
-@type_checker(str)
-def getdir(dir_location: str, absolute=False, create_missing=True) -> Optional[Path]:
-    """Return a Path object pointing at a directory according to string `dir_location` provided.
-
-    If nothing exists at ``dir_location``, create a directory according to it (including any
-    needed parents along the way). If ``dir_location`` points to an existing file,
-    raise `ValueError`.
-    """
-    try:
-        dir_ = Path(dir_location)
-    except OSError as e:
-        raise OSError(f"Cannot read provided location: {dir_location} ({e}).")
-
-    if not dir_.exists():
-        if create_missing:
-            log.info(f"Creating missing directory at: {dir_}...")
-            dir_.mkdir(parents=True, exist_ok=True)
-            return dir_
-        return
+    dir_ = Path(path)
+    if not dir_.exists() and create_missing:
+        _log.warning(f"Creating missing directory at: '{dir_.resolve()}'...")
+        dir_.mkdir(parents=True, exist_ok=True)
     else:
         if dir_.is_file():
-            raise NotADirectoryError(f"Not a directory: {dir_}.")
-    return dir_ if not absolute else dir_.absolute()
+            raise NotADirectoryError(f"Not a directory: '{dir_.resolve()}'")
+    return dir_
+
+
+@type_checker(PathLike)
+def getfile(path: PathLike, ext="") -> Path:
+    """Return an existing file at ``path``.
+    """
+    f = Path(path)
+    if not f.is_file():
+        raise FileNotFoundError(f"Not a file: '{f.resolve()}'")
+    if ext and not f.suffix.lower() == ext.lower():
+        raise ValueError(f"Not a {ext!r} file")
+    return f
 
 
 @type_checker(str)
@@ -91,12 +57,13 @@ def recursive_removedir(dirpath: str, check_delay: int = 500) -> None:
         shutil.rmtree(dir_, ignore_errors=True)
         sleep(check_delay / 1000)
         if dir_.exists():
-            log.warning(f"Problems encountered while trying to remove: {dir_}. "
-                        f"Content which hasn't been removed: {os.listdir(dir_)}")
+            _log.warning(
+                f"Problems encountered while trying to remove: {dir_}. Content which hasn't been "
+                f"removed: {os.listdir(dir_)}")
         else:
-            log.info(f"Removed successfully: {dir_} and its contents.")
+            _log.info(f"Removed successfully: {dir_} and its contents.")
     else:
-        log.info(f"Nothing to remove at {dirpath}.")
+        _log.info(f"Nothing to remove at {dirpath}.")
 
 
 @type_checker(str, str)
@@ -113,9 +80,9 @@ def remove_by_ext(ext: str, destdir: str, recursive=False, opposite=False) -> in
         f.unlink()
         if not f.exists():
             removed_lst.append(f)
-            log.info(f"Removed {f}.")
+            _log.info(f"Removed {f}.")
         else:
-            log.warning(f"Unable to remove file: {f}.")
+            _log.warning(f"Unable to remove file: {f}.")
 
     destdir = getdir(destdir)
     removed = []

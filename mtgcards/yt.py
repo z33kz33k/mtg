@@ -8,6 +8,7 @@
 
 """
 import itertools
+import logging
 import re
 from collections import Counter, defaultdict
 from datetime import datetime
@@ -32,7 +33,10 @@ from mtgcards.decks.mtgazone import MtgaZoneParser
 from mtgcards.decks.streamdecker import StreamdeckerParser
 from mtgcards.decks.tcgplayer import TcgPlayerParser
 from mtgcards.decks.untapped import UntappedParser
-from mtgcards.utils import getrepr, timed_request
+from mtgcards.utils import getrepr, timed, timed_request
+
+
+_log = logging.getLogger(__name__)
 
 
 def channels() -> dict[str, str]:
@@ -393,16 +397,14 @@ class Channel(list):
         return int(subscribers)
 
 
+@timed("unshortening")
 def unshorten(url: str) -> str:
     """Unshorten URL shortened by services like bit.ly, tinyurl.com etc.
 
     Pilfered from: https://stackoverflow.com/a/28918160/4465708
     """
-    print(f"Unshortening: '{url}'...")
-    with Timer() as t:
-        session = requests.Session()  # so connections are recycled
-        resp = session.head(url, allow_redirects=True)
-    print(f"Request completed in {t.elapsed:.3f} seconds.")
+    session = requests.Session()  # so connections are recycled
+    resp = session.head(url, allow_redirects=True)
     return resp.url
 
 

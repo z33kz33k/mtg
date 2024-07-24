@@ -16,11 +16,11 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 from bs4.element import Tag
 
-from mtgcards.const import INPUTDIR, Json, OUTPUTDIR
+from mtgcards.const import Json, OUTPUT_DIR
 from mtgcards.utils import from_iterable, timed_request
 from mtgcards.utils.files import getdir, getfile
 
-INPUTDIR = f"{INPUTDIR}/goldfish"
+INPUT_DIR = Path(__file__).resolve().parent / "input"
 DOMAIN = "www.mtggoldfish.com"
 URL = f"https://{DOMAIN}/sets/"
 DATE_FORMAT = "%b %d, %Y"
@@ -97,13 +97,13 @@ def scrape(as_json=False) -> dict[str, list[SetMetaData]]:
 
 
 def json_dump(filename="sets_meta.json") -> None:
-    dest = getdir(OUTPUTDIR) / filename
+    dest = getdir(OUTPUT_DIR) / filename
     sets = scrape(as_json=True)
     with dest.open("w", encoding="utf-8") as f:
         json.dump(sets, f, indent=2)
 
 
-INPUT_METAFILE = getfile(str(Path(INPUTDIR) / "sets_meta.json"))
+INPUT_METAFILE = getfile(str(Path(INPUT_DIR) / "sets_meta.json"))
 
 with INPUT_METAFILE.open() as f:
     META_SETS_JSON = json.load(f)

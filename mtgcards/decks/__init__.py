@@ -18,7 +18,7 @@ from functools import cached_property, lru_cache
 from operator import itemgetter
 from typing import Any, Iterable
 
-from mtgcards.const import Json
+from mtgcards.const import Json, OUTPUT_DIR
 from mtgcards.scryfall import Card, Color, find_by_name, format_cards as scryfall_fmt_cards, \
     formats, get_set, set_cards as scryfall_set_cards
 from mtgcards.utils import from_iterable, getrepr
@@ -339,8 +339,6 @@ class InvalidDeckError(ValueError):
 def to_playsets(*cards: Card) -> defaultdict[Card, list[Card]]:
     playsets = defaultdict(list)
     for card in cards:
-        if card.has_special_rarity:
-            raise InvalidDeckError(f"Invalid rarity for {card.name!r}: {card.rarity.value!r}")
         playsets[card].append(card)
     return playsets
 
@@ -462,8 +460,9 @@ class Deck:
     @property
     def color(self) -> Color:
         if self.name:
-            return from_iterable(
-                Color, lambda c: any(p.title() == c.name.title() for p in self.name.split()))
+            if clr := from_iterable(
+                Color, lambda c: any(p.title() == c.name.title() for p in self.name.split())):
+                return clr
         return self.color_identity
 
     @property
@@ -589,7 +588,7 @@ class Deck:
         reprs.append(("sideboard", self.has_sideboard))
         return getrepr(self.__class__, *reprs)
 
-    def export(self, dstdir: str = os.getcwd(), name="") -> None:
+    def export(self, dstdir="", name="") -> None:
         """Export to a Forge MTG deckfile format (.dck).
 
         Args:
@@ -597,6 +596,7 @@ class Deck:
             name: optionally, a custom name for the exported deck (if not provided a name based on this deck's data and metadata is constructed)
         """
         exp = DckExporter(self, name)
+        dstdir = dstdir or OUTPUT_DIR / "dck"
         dstdir = getdir(dstdir)
         dst = dstdir / exp.filename
         _log.info(f"Exporting deck to: '{dst}'...")
@@ -654,31 +654,52 @@ Name={}
         sets.sort(key=itemgetter(1))
         return [s[0].code() for s in sets][-1]
 
+    @staticmethod
+    def _normalize(name: str) -> str:
+        name = name.replace(" ", "_").replace("-", "_")
+        name = "_".join([p.title() for p in name.split("_")])
+        name = name.replace("5c_", "5C_").replace("4c_", "4C")
+        name = name.replace("Five_Color_", "5C_").replace("Four_Color_", "4C")
+        return name
+
+    def _build_core_name(self) -> str:
+        core = ""
+        # color
+        if len(self._deck.color.value) == 1:
+            core += f"Mono_{self._deck.color.name.title()}_"
+        elif len(self._deck.color.value) == 4:
+            core += "4C_"
+        elif len(self._deck.color.value) == 5:
+            core += "5C_"
+        else:
+            core += f"{self._deck.color.name.title()}_"
+        # theme
+        if self._deck.theme:
+            core += f"{self._deck.theme}_"
+        # archetype
+        core += f"{self._deck.archetype.name.title()}_"
+        return core
+
     def _build_name(self) -> str:
         # source
         source = self.SOURCE_NICKNAMES.get(self._deck.source) or ""
         name = f"{source}_" if source else ""
-        # color
-        name += f"Mono_{self._deck.color.name.title()}_" if len(
-            self._deck.color.value) == 1 else f"{self._deck.color.name.title()}_"
-        # theme
-        if self._deck.theme:
-            name += f"{self._deck.theme}_"
-        # archetype
-        name += f"{self._deck.archetype.name.title()}_"
+        # format
+        if self._deck.format:
+            name += f"{self.FMT_NICKNAMES[self._deck.format.lower()]}_"
         # meta
         if any("meta" in k for k in self._deck.metadata):
             name += "Meta_"
             meta_place = self._deck.metadata.get("meta_place")
             if meta_place:
-                name += f"#{meta_place}_"
-        # format
-        if self._deck.format:
-            set_code = self._derive_most_recent_set()
-            if set_code:
-                name += f"{set_code.upper()}_{self.FMT_NICKNAMES[self._deck.format.lower()]}"
-            else:
-                name += self.FMT_NICKNAMES[self._deck.format.lower()]
+                name += f"#{str(meta_place).zfill(2)}_"
+        if self._deck.name:
+            name += f"{self._normalize(self._deck.name)}_"
+        else:
+            name += self._build_core_name()
+        # set
+        if set_code := self._derive_most_recent_set():
+            name += set_code.upper()
         return name
 
     @staticmethod
@@ -746,5 +767,3 @@ class DeckParser(ABC):
                 return [card] * quantity
         card = find_by_name(name, format_cards(self._fmt))
         return [card] * quantity if card else []
-
-

@@ -11,7 +11,8 @@
 from bs4 import Tag
 
 from mtgcards.decks import Deck, InvalidDeckError, DeckParser
-from mtgcards.utils import ParsingError, extract_int, getsoup
+from mtgcards.utils import ParsingError, extract_int
+from mtgcards.utils.scrape import getsoup
 from mtgcards.scryfall import Card
 
 

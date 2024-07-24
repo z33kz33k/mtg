@@ -7,34 +7,72 @@
     @author: z33k
 
 """
+import logging
 from datetime import datetime
+from functools import wraps
 from typing import Any, Callable, Iterable, Optional, Type, Union
 
 import requests
-from bs4 import BeautifulSoup
 from contexttimer import Timer
 
-from mtgcards.const import Json, T, TIMESTAMP_FORMAT
+from mtgcards.const import FILENAME_TIMESTAMP_FORMAT, Json, T
 from mtgcards.utils.validate import type_checker, uniform_type_checker
 
+_log = logging.getLogger(__name__)
 
-def timed_request(url: str, postdata: Optional[Json] = None,
-                  return_json=False, **requests_kwargs) -> Union[list[Json], Json, str]:
-    print(f"Retrieving data from: '{url}'...")
-    with Timer() as t:
-        if postdata:
-            data = requests.post(url, json=postdata, **requests_kwargs)
-        else:
-            data = requests.get(url, **requests_kwargs)
-    print(f"Request completed in {t.elapsed:.3f} seconds.")
+
+def seconds2readable(seconds: float) -> str:
+    seconds = round(seconds)
+    minutes, seconds = divmod(seconds, 60)
+    hours, minutes = divmod(minutes, 60)
+    return f"{hours}h:{minutes:02}m:{seconds:02}s"
+
+
+def timed(operation="", precision=3) -> Callable:
+    """Add time measurement to the decorated operation.
+
+    Args:
+        operation: name of the time-measured operation (default is function's name)
+        precision: precision of the time measurement in seconds (decides output text formatting)
+
+    Returns:
+        the decorated function
+    """
+    if precision < 0:
+        precision = 0
+
+    def decorator(func: Callable) -> Callable:
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            with Timer() as t:
+                result = func(*args, **kwargs)
+            activity = operation or f"'{func.__name__}()'"
+            time = seconds2readable(t.elapsed)
+            if not precision:
+                _log.info(f"Completed {activity} in {time}")
+            elif precision == 1:
+                _log.info(f"Completed {activity} in {t.elapsed:.{precision}f} "
+                          f"second(s) ({time})")
+            else:
+                _log.info(f"Completed {activity} in {t.elapsed:.{precision}f} "
+                          f"second(s)")
+            return result
+        return wrapper
+    return decorator
+
+
+@timed("request")
+def timed_request(
+        url: str, postdata: Optional[Json] = None, return_json=False,
+        **requests_kwargs) -> Union[list[Json], Json, str]:
+    _log.info(f"Retrieving data from: '{url}'...")
+    if postdata:
+        data = requests.post(url, json=postdata, **requests_kwargs)
+    else:
+        data = requests.get(url, **requests_kwargs)
     if return_json:
         return data.json()
     return data.text
-
-
-def getsoup(url: str, **requests_kwargs) -> BeautifulSoup:
-    markup = timed_request(url, **requests_kwargs)
-    return BeautifulSoup(markup, "lxml")
 
 
 def getrepr(class_: Type, *name_value_pairs: tuple[str, Any]) -> str:
@@ -170,7 +208,7 @@ def breadcrumbs(*crumbs: str) -> str:
     return "/" + "/".join(crumbs)
 
 
-def timestamp(format_=TIMESTAMP_FORMAT) -> str:
+def timestamp(format_=FILENAME_TIMESTAMP_FORMAT) -> str:
     """Return timestamp string according to the datetime ``format_`` supplied.
     """
     return datetime.now().strftime(format_)

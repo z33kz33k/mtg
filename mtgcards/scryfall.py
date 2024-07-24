@@ -20,8 +20,9 @@ from types import EllipsisType
 from typing import Callable, Iterable, Optional
 
 import scrython
+from unidecode import unidecode
 
-from mtgcards.const import DATADIR, Json
+from mtgcards.const import DATA_DIR, Json
 from mtgcards.mtgwiki import CLASSES, RACES
 from mtgcards.utils import from_iterable, getfloat, getint, getrepr
 from mtgcards.utils.files import download_file, getdir
@@ -40,7 +41,7 @@ def download_scryfall_bulk_data() -> None:
     bd = scrython.BulkData()
     data = bd.data()[0]  # retrieve 'Oracle Cards' data dict
     url = data["download_uri"]
-    download_file(url, file_name=FILENAME, dst_dir=DATADIR)
+    download_file(url, file_name=FILENAME, dst_dir=DATA_DIR)
 
 
 MULTIPART_SEPARATOR = "//"  # separates parts of card's name in multipart cards
@@ -128,18 +129,18 @@ class Rarity(Enum):
     BONUS = "bonus"
 
     @property
-    def weight(self) -> float | None:
+    def weight(self) -> float:
         """Return fractional weight of this rarity based on frequency of occurrence in boosters.
 
         Based on: https://mtg.fandom.com/wiki/Rarity
         """
-        if self is Rarity.MYTHIC:
+        if self is Rarity.MYTHIC or self is Rarity.BONUS:
             return 1 / (1 / 15 * 1 / 8)  # 120.00
         if self is Rarity.RARE:
             return 1 / (1 / 15 * 7 / 8)  # 17.14
         if self is Rarity.UNCOMMON:
             return 1 / (1 / 15 * 3)  # 5.00
-        if self is Rarity.COMMON:
+        if self is Rarity.COMMON or self is Rarity.SPECIAL:
             return 1 / (1 / 15 * 11)  # 1.36
         return None
 
@@ -840,7 +841,7 @@ class Card:
 def bulk_data() -> set[Card]:
     """Return Scryfall JSON data as set of Card objects.
     """
-    source = getdir(DATADIR) / FILENAME
+    source = getdir(DATA_DIR) / FILENAME
     if not source.exists():
         download_scryfall_bulk_data()
 
@@ -968,15 +969,12 @@ def find_card(
 def find_by_name(card_name: str, data: Iterable[Card] | None = None) -> Card | None:
     """Return a Scryfall card data of provided name or `None`.
     """
-    if "Mountain" in card_name:
-        pass
     data = data if data else bulk_data()
-    card = find_card(lambda c: c.name == card_name, data, narrow_by_collector_number=True)
-    if card:
+    if card := find_card(
+        lambda c: unidecode(c.name) == card_name, data, narrow_by_collector_number=True):
         return card
-    card = find_card(lambda c: c.main_name == card_name, data, narrow_by_collector_number=True)
-    if card:
-        return card
+    return find_card(
+        lambda c: unidecode(c.main_name) == card_name, data, narrow_by_collector_number=True)
 
 
 def find_by_parts(

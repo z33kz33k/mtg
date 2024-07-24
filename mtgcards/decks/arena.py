@@ -110,8 +110,7 @@ class _PlaysetLine:
         """
         if self.is_extended:
             cards = set_cards(self.set_code.lower())
-            card = find_by_name(self.name, cards)
-            if card:
+            if card := find_by_name(self.name, cards):
                 return [card] * self.quantity
 
         card = find_by_name(self.name, format_cards(fmt))

@@ -12,20 +12,18 @@ import random
 import time
 from dataclasses import dataclass
 from enum import Enum
-from pathlib import Path
 
 from bs4 import BeautifulSoup
 from bs4.element import Tag
 
-from mtgcards.const import INPUTDIR, Json, OUTPUTDIR
-from mtgcards.goldfish.sets import DOMAIN, MODERN_META_SETS, MtgSet, PIONEER_META_SETS, \
+from mtgcards.const import Json, OUTPUT_DIR
+from mtgcards.goldfish.sets import DOMAIN, INPUT_DIR, MODERN_META_SETS, MtgSet, PIONEER_META_SETS, \
     STANDARD_META_SETS, SetFormat
 from mtgcards.goldfish.sets import URL as SETS_URL
 from mtgcards.utils import from_iterable, timed_request
 from mtgcards.utils.files import getdir, getfile
 
 URL_TEMPLATE = SETS_URL + "{}#online"
-INPUTDIR = f"{INPUTDIR}/goldfish"
 
 
 class Mana(Enum):
@@ -376,7 +374,7 @@ def json_dump(fmt: SetFormat = SetFormat.STANDARD, filename: str | None = None) 
 
     if not filename:
         filename = fmt.name.lower() + ".json"
-    dest = getdir(OUTPUTDIR) / filename
+    dest = getdir(OUTPUT_DIR) / filename
 
     setmap, total = {}, len(metas)
     for i, meta_set in enumerate(metas, start=1):
@@ -395,9 +393,9 @@ def json_dump(fmt: SetFormat = SetFormat.STANDARD, filename: str | None = None) 
         print(f"WARNING! Nothing has been saved at {dest!r}.")
 
 
-STANDARD_JSON_FILE = getfile(str(Path(INPUTDIR) / "standard.json"))
-PIONEER_JSON_FILE = getfile(str(Path(INPUTDIR) / "pioneer.json"))
-MODERN_JSON_FILE = getfile(str(Path(INPUTDIR) / "modern.json"))
+STANDARD_JSON_FILE = getfile(INPUT_DIR / "standard.json")
+PIONEER_JSON_FILE = getfile(INPUT_DIR / "pioneer.json")
+MODERN_JSON_FILE = getfile(INPUT_DIR / "modern.json")
 with STANDARD_JSON_FILE.open() as sf:
     STANDARD_JSON = json.load(sf)
 with PIONEER_JSON_FILE.open() as pf:
