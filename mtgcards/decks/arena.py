@@ -10,9 +10,9 @@
 import re
 
 from mtgcards.decks import ARENA_MULTIPART_SEPARATOR, Deck, DeckParser, InvalidDeckError, \
-    ParsingState, format_cards
+    ParsingState, format_cards, set_cards
 from mtgcards.scryfall import Card, MULTIPART_SEPARATOR as SCRYFALL_MULTIPART_SEPARATOR, \
-    find_by_name, set_cards
+    find_by_name
 from mtgcards.utils import extract_int, getrepr, getint
 
 

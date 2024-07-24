@@ -17,12 +17,12 @@ from functools import cached_property, lru_cache
 from operator import itemgetter
 from typing import Any, Iterable
 
-from mtgcards.const import Json, OUTPUT_DIR
+from mtgcards.const import Json, OUTPUT_DIR, PathLike
 from mtgcards.scryfall import Card, Color, MULTIPART_SEPARATOR as SCRYFALL_MULTIPART_SEPARATOR, \
     find_by_name, format_cards as scryfall_fmt_cards, formats, get_set, \
     set_cards as scryfall_set_cards
-from mtgcards.utils import from_iterable, getrepr
-from mtgcards.utils.files import getdir
+from mtgcards.utils import extract_int, from_iterable, getrepr
+from mtgcards.utils.files import getdir, getfile
 
 _log = logging.getLogger(__name__)
 
@@ -383,8 +383,12 @@ class Deck:
         return [*self.mainboard, *self.sideboard]
 
     @property
-    def color_identity(self) -> Color:
+    def color(self) -> Color:
         return Color.from_cards(self.all_cards)
+
+    @property
+    def color_identity(self) -> Color:
+        return Color.from_cards(self.all_cards, identity=True)
 
     @property
     def artifacts(self) -> list[Card]:
@@ -458,14 +462,6 @@ class Deck:
     @property
     def sets(self) -> list[str]:
         return sorted({c.set for c in self.all_cards if not c.is_basic_land})
-
-    @property
-    def color(self) -> Color:
-        if self.name:
-            if clr := from_iterable(
-                Color, lambda c: any(p.title() == c.name.title() for p in self.name.split())):
-                return clr
-        return self.color_identity
 
     @property
     def theme(self) -> str | None:
@@ -574,7 +570,7 @@ class Deck:
         reprs += [
             ("avg_cmc", f"{self.avg_cmc:.2f}"),
             ("avg_rarity_weight", f"{self.avg_rarity_weight:.1f}"),
-            ("color_identity", self.color_identity.name),
+            ("color", self.color.name),
             ("artifacts", len(self.artifacts)),
             ("battles", len(self.battles)),
             ("creatures", len(self.creatures)),
@@ -612,6 +608,10 @@ class Deck:
         """
         Exporter(self, name).to_arena(dstdir)
 
+    @classmethod
+    def from_dck(cls, path: PathLike) -> "Deck":
+        return Exporter.from_dck(path)
+
 
 class Exporter:
     """Export a deck to a Forge MTG's .dck file.
@@ -625,6 +625,7 @@ Name={}
 [Sideboard]
 {}
 """
+    NAME_SEP = "_"
 
     SOURCE_NICKNAMES = {
         "www.mtggoldfish.com": "Goldfish"
@@ -670,47 +671,49 @@ Name={}
         sets.sort(key=itemgetter(1))
         return [s[0].code() for s in sets][-1]
 
-    @staticmethod
-    def _normalize(name: str) -> str:
-        name = name.replace(" ", "_").replace("-", "_")
-        name = "_".join([p.title() for p in name.split("_")])
-        name = name.replace("5c_", "5C_").replace("4c_", "4C")
-        name = name.replace("Five_Color_", "5C_").replace("Four_Color_", "4C")
+    @classmethod
+    def _normalize(cls, name: str) -> str:
+        name = name.replace(" ", cls.NAME_SEP).replace("-", cls.NAME_SEP)
+        name = cls.NAME_SEP.join([p.title() for p in name.split(cls.NAME_SEP)])
+        name = name.replace(f"5c{cls.NAME_SEP}", f"5C{cls.NAME_SEP}").replace(
+            f"4c{cls.NAME_SEP}", f"4C{cls.NAME_SEP}")
+        name = name.replace(f"Five{cls.NAME_SEP}Color{cls.NAME_SEP}", f"5C{cls.NAME_SEP}").replace(
+            f"Four{cls.NAME_SEP}Color{cls.NAME_SEP}", f"4C{cls.NAME_SEP}")
         return name
 
     def _build_core_name(self) -> str:
         core = ""
         # color
         if len(self._deck.color.value) == 1:
-            core += f"Mono_{self._deck.color.name.title()}_"
+            core += f"Mono{self.NAME_SEP}{self._deck.color.name.title()}{self.NAME_SEP}"
         elif len(self._deck.color.value) == 4:
-            core += "4C_"
+            core += f"4C{self.NAME_SEP}"
         elif len(self._deck.color.value) == 5:
-            core += "5C_"
+            core += f"5C{self.NAME_SEP}"
         else:
-            core += f"{self._deck.color.name.title()}_"
+            core += f"{self._deck.color.name.title()}{self.NAME_SEP}"
         # theme
         if self._deck.theme:
-            core += f"{self._deck.theme}_"
+            core += f"{self._deck.theme}{self.NAME_SEP}"
         # archetype
-        core += f"{self._deck.archetype.name.title()}_"
+        core += f"{self._deck.archetype.name.title()}{self.NAME_SEP}"
         return core
 
     def _build_name(self) -> str:
         # source
         source = self.SOURCE_NICKNAMES.get(self._deck.source) or ""
-        name = f"{source}_" if source else ""
+        name = f"{source}{self.NAME_SEP}" if source else ""
         # format
         if self._deck.format:
-            name += f"{self.FMT_NICKNAMES[self._deck.format.lower()]}_"
+            name += f"{self.FMT_NICKNAMES[self._deck.format.lower()]}{self.NAME_SEP}"
         # meta
         if any("meta" in k for k in self._deck.metadata):
-            name += "Meta_"
+            name += f"Meta{self.NAME_SEP}"
             meta_place = self._deck.metadata.get("meta_place")
             if meta_place:
-                name += f"#{str(meta_place).zfill(2)}_"
+                name += f"#{str(meta_place).zfill(2)}{self.NAME_SEP}"
         if self._deck.name:
-            name += f"{self._normalize(self._deck.name)}_"
+            name += f"{self._normalize(self._deck.name)}{self.NAME_SEP}"
         else:
             name += self._build_core_name()
         # set
@@ -741,6 +744,69 @@ Name={}
         dst = dstdir / f"{self._name}.dck"
         _log.info(f"Exporting deck to: '{dst}'...")
         dst.write_text(self._build_dck(), encoding="utf-8")
+
+    @classmethod
+    def _parse_name(cls, name: str) -> Json:
+        metadata = {}
+        nameparts = name.split(cls.NAME_SEP)
+        if src := from_iterable(
+                cls.SOURCE_NICKNAMES,
+                lambda s: any(np == cls.SOURCE_NICKNAMES[s] for np in nameparts)):
+            metadata["source"] = src
+            nameparts.remove(cls.SOURCE_NICKNAMES[src])
+        if fmt := from_iterable(
+                cls.FMT_NICKNAMES,
+                lambda f: any(np == cls.FMT_NICKNAMES[f] for np in nameparts)):
+            metadata["format"] = fmt
+            nameparts.remove(cls.FMT_NICKNAMES[fmt])
+        try:
+            idx = nameparts.index(f"Meta")
+        except ValueError:
+            idx = -1
+        if idx != -1:
+            idx += 1
+            metadata["meta_place"] = extract_int(nameparts[idx])
+            del nameparts[idx]
+            nameparts.remove(f"Meta")
+        metadata["name"] = " ".join(nameparts[:-1])
+        return metadata
+
+    @staticmethod
+    def _parse_dck_line(line: str, fmt="standard") -> list[Card]:
+        quantity, rest = line.split(maxsplit=1)
+        name, set_code, _ = rest.split("|")
+        return get_playset(name, int(quantity), set_code.lower(), fmt)
+
+    @classmethod
+    def from_dck(cls, path: PathLike) -> Deck:
+        path = getfile(path, ext=".dck")
+        commander, mainboard, sideboard, metadata = None, [], [], {}
+        commander_on, mainboard_on, sideboard_on = False, False, False
+        fmt = "standard"
+        for line in path.read_text(encoding="utf-8").splitlines():
+            if line.startswith("Name="):
+                metadata = cls._parse_name(line.removeprefix("Name="))
+                fmt = metadata.get("format", "standard")
+            elif line == "[Commander]":
+                commander_on = True
+                continue
+            elif line == "[Main]":
+                commander_on, mainboard_on = False, True
+                continue
+            elif line == "[Sideboard]":
+                mainboard_on, sideboard_on = False, True
+                continue
+            elif not line:
+                continue
+
+            if commander_on:
+                commander = cls._parse_dck_line(line, fmt)[0]
+            elif mainboard_on:
+                mainboard += cls._parse_dck_line(line, fmt)
+            elif sideboard_on:
+                sideboard += cls._parse_dck_line(line, fmt)
+
+        return Deck(mainboard, sideboard, commander, metadata=metadata)
 
     @staticmethod
     def _to_arena_line(playset: list[Card]) -> str:
@@ -803,6 +869,18 @@ class ParsingState(Enum):
     COMPANION = auto()
 
 
+def get_playset(name: str, quantity: int, set_code="", fmt="standard") -> list[Card]:
+    if set_code:
+        cards = set_cards(set_code)
+        card = find_by_name(name, cards)
+        if card:
+            return [card] * quantity
+    card = find_by_name(name, format_cards(fmt))
+    if card.name == "Pick Your Poison":
+        pass
+    return [card] * quantity if card else []
+
+
 class DeckParser(ABC):
     """Abstract base deck parser.
     """
@@ -823,10 +901,4 @@ class DeckParser(ABC):
         raise NotImplementedError
 
     def _get_playset(self, name: str, quantity: int, set_code="") -> list[Card]:
-        if set_code:
-            cards = set_cards(set_code)
-            card = find_by_name(name, cards)
-            if card:
-                return [card] * quantity
-        card = find_by_name(name, format_cards(self._fmt))
-        return [card] * quantity if card else []
+        return get_playset(name, quantity, set_code, self._fmt)

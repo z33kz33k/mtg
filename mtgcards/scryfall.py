@@ -113,10 +113,11 @@ class Color(Enum):
         return result
 
     @staticmethod
-    def from_cards(cards: Iterable["Card"]) -> "Color":
+    def from_cards(cards: Iterable["Card"], identity=False) -> "Color":
         letters = set()
         for card in cards:
-            letters.update(card.color_identity.value)
+            color_value = card.color_identity.value if identity else card.color.value
+            letters.update(color_value)
         return Color.from_letters(letters)
 
 
@@ -408,8 +409,10 @@ class Card:
         return text
 
     def __repr__(self) -> str:
-        return getrepr(self.__class__, ("name", self.name), ("set", self.set),
-                       ("collector_number", self.collector_number))
+        return getrepr(
+            self.__class__, ("name", self.name), ("set", self.set),
+            ("collector_number", self.collector_number), ("color", self.color.name),
+            ("type_line", self.type_line))
 
     def __post_init__(self) -> None:
         if self.is_multipart and self.card_faces is None:
@@ -436,8 +439,15 @@ class Card:
 
     @property
     def colors(self) -> list[str]:
-        result = self.json.get("colors")
-        return result if result else []
+        if result := self.json.get("colors"):
+            return result
+        if self.is_multipart:
+            return self.card_faces[0].colors
+        return []
+
+    @property
+    def color(self) -> Color:
+        return Color(tuple(self.colors))
 
     @property
     def collector_number(self) -> str:
