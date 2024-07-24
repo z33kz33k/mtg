@@ -131,7 +131,7 @@ class GoldfishParser(DeckParser):
 
         try:
             return Deck(mainboard, sideboard, commander, companion, metadata=self._get_metadata())
-        except InvalidDeckError as err:
+        except InvalidDeckError:
             return None
 
     def _parse_row(self, row: Tag) -> list[Card]:
@@ -155,15 +155,11 @@ class GoldfishParser(DeckParser):
             name = name.strip()
 
         set_code = set_code[:-1].lower()
-        # return self._get_playset(name, quantity, set_code)
-        playset = self._get_playset(name, quantity, set_code)
-        if not playset:
-            pass
-        return playset
+        return self._get_playset(name, quantity, set_code)
 
 
-http_requests_counted("scraping meta decks")
-timed("scraping meta decks", precision=1)
+@http_requests_counted("scraping meta decks")
+@timed("scraping meta decks", precision=1)
 def scrape_meta(fmt="standard") -> list[Deck]:
     fmt = fmt.lower()
     if fmt not in formats():
