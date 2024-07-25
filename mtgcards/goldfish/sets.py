@@ -17,7 +17,8 @@ from bs4 import BeautifulSoup
 from bs4.element import Tag
 
 from mtgcards.const import Json, OUTPUT_DIR
-from mtgcards.utils import from_iterable, timed_request
+from mtgcards.utils import from_iterable
+from mtgcards.utils.scrape import timed_request
 from mtgcards.utils.files import getdir, getfile
 
 INPUT_DIR = Path(__file__).resolve().parent / "input"

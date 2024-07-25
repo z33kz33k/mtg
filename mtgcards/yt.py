@@ -24,7 +24,7 @@ from youtubesearchpython import Channel as YtspChannel
 
 from mtgcards.scryfall import formats
 from mtgcards.decks import Deck, DeckParser
-from mtgcards.decks.aetherhub import AetherHubParser
+from mtgcards.decks.aetherhub import AetherhubParser
 from mtgcards.decks.arena import ArenaParser, is_arena_line, is_empty, is_playset_line
 from mtgcards.decks.goldfish import GoldfishParser
 from mtgcards.decks.moxfield import MoxfieldParser
@@ -32,8 +32,8 @@ from mtgcards.decks.mtgazone import MtgaZoneParser
 from mtgcards.decks.streamdecker import StreamdeckerParser
 from mtgcards.decks.tcgplayer import TcgPlayerParser
 from mtgcards.decks.untapped import UntappedParser
-from mtgcards.utils import getrepr, timed, timed_request
-
+from mtgcards.utils import getrepr, timed
+from mtgcards.utils.scrape import timed_request
 
 _log = logging.getLogger(__name__)
 
@@ -274,8 +274,8 @@ class Video:
     def _process_hooks(cls, links: list[str]) -> dict[Type[DeckParser], str]:
         parsers_map = {}
         for link in links:
-            if not parsers_map.get(AetherHubParser) and cls.AETHERHUB_HOOK in link:
-                parsers_map[AetherHubParser] = link
+            if not parsers_map.get(AetherhubParser) and cls.AETHERHUB_HOOK in link:
+                parsers_map[AetherhubParser] = link
             elif not parsers_map.get(GoldfishParser) and cls.GOLDFISH_HOOK in link:
                 parsers_map[GoldfishParser] = link
             elif not parsers_map.get(MoxfieldParser) and cls.MOXFIELD_HOOK in link:

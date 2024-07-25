@@ -11,7 +11,7 @@
 from mtgcards.const import Json
 from mtgcards.decks import Deck, InvalidDeckError, DeckParser
 from mtgcards.scryfall import Card
-from mtgcards.utils import timed_request
+from mtgcards.utils.scrape import timed_request
 
 
 # TODO: companion

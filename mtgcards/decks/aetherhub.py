@@ -17,8 +17,8 @@ from mtgcards.scryfall import Card
 
 
 # TODO: Companion
-class AetherHubParser(DeckParser):
-    """Parser of AetherHub decklist page.
+class AetherhubParser(DeckParser):
+    """Parser of Aetherhub decklist page.
     """
     def __init__(self, url: str, fmt="standard") -> None:
         super().__init__(fmt)

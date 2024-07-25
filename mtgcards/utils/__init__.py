@@ -10,12 +10,11 @@
 import logging
 from datetime import datetime
 from functools import wraps
-from typing import Any, Callable, Iterable, Optional, Type, Union
+from typing import Any, Callable, Iterable, Optional, Type
 
-import requests
 from contexttimer import Timer
 
-from mtgcards.const import FILENAME_TIMESTAMP_FORMAT, Json, T
+from mtgcards.const import FILENAME_TIMESTAMP_FORMAT, T
 from mtgcards.utils.validate import type_checker, uniform_type_checker
 
 _log = logging.getLogger(__name__)
@@ -59,20 +58,6 @@ def timed(operation="", precision=3) -> Callable:
             return result
         return wrapper
     return decorator
-
-
-@timed("request")
-def timed_request(
-        url: str, postdata: Optional[Json] = None, return_json=False,
-        **requests_kwargs) -> Union[list[Json], Json, str]:
-    _log.info(f"Retrieving data from: '{url}'...")
-    if postdata:
-        data = requests.post(url, json=postdata, **requests_kwargs)
-    else:
-        data = requests.get(url, **requests_kwargs)
-    if return_json:
-        return data.json()
-    return data.text
 
 
 def getrepr(class_: Type, *name_value_pairs: tuple[str, Any]) -> str:

@@ -10,13 +10,13 @@
 import logging
 import time
 from functools import wraps
-from typing import Callable, Dict
+from typing import Callable, Dict, Optional, Union
 
 import requests
 from requests.exceptions import HTTPError
 from bs4 import BeautifulSoup
 
-from mtgcards.const import REQUEST_TIMEOUT
+from mtgcards.const import Json, REQUEST_TIMEOUT
 from mtgcards.utils import timed
 from mtgcards.utils.check_type import type_checker
 
@@ -30,6 +30,22 @@ class ScrapingError(IOError):
 
 
 http_requests_count = 0
+
+
+@timed("request")
+def timed_request(
+        url: str, postdata: Optional[Json] = None, return_json=False,
+        **requests_kwargs) -> Union[list[Json], Json, str]:
+    _log.info(f"Retrieving data from: '{url}'...")
+    global http_requests_count
+    if postdata:
+        response = requests.post(url, json=postdata, **requests_kwargs)
+    else:
+        response = requests.get(url, **requests_kwargs)
+    http_requests_count += 1
+    if return_json:
+        return response.json()
+    return response.text
 
 
 @timed("request")
@@ -103,3 +119,5 @@ def http_requests_counted(operation="") -> Callable:
             return result
         return wrapper
     return decorate
+
+
