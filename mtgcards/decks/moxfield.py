@@ -10,7 +10,7 @@
 
 from mtgcards.const import Json
 from mtgcards.decks import Deck, InvalidDeckError, DeckParser
-from mtgcards.scryfall import Card
+from mtgcards.scryfall import Card, all_sets
 from mtgcards.utils.scrape import timed_request
 
 
@@ -47,4 +47,5 @@ class MoxfieldParser(DeckParser):
     def _parse_card(self, json_card: Json) -> list[Card]:
         quantity = json_card["quantity"]
         set_code, name = json_card["card"]["set"], json_card["card"]["name"]
+        set_code = set_code if set_code in set(all_sets()) else ""
         return self._get_playset(name, quantity, set_code)
