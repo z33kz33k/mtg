@@ -929,6 +929,12 @@ def all_formats() -> list[str]:
     return next(iter(bulk_data())).formats
 
 
+def arena_formats() -> list[str]:
+    """Return list of all string deignations for MtG formats that can be played on MTG Arena.
+    """
+    return ["alchemy", "brawl", "explorer", "historic", "standard", "standardbrawl", "timeless"]
+
+
 def layouts(data: Iterable[Card] | None = None) -> list[str]:
     """Return list of Scryfall string designations for card layouts in ``data``.
     """

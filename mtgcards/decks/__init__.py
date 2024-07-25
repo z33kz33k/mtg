@@ -42,6 +42,11 @@ class Archetype(Enum):
     RAMP= "ramp"
 
 
+class Mode(Enum):
+    BO1 = "Bo1"
+    BO3 = "Bo3"
+
+
 # themes compiled from:
 # https://edhrec.com/themes
 # https://edhrec.com/typal
@@ -473,6 +478,9 @@ class Deck:
 
     @property
     def theme(self) -> str | None:
+        if theme := self.metadata.get("theme"):
+            return theme
+
         if not self.name:
             return None
         nameparts = [
@@ -482,6 +490,12 @@ class Deck:
 
     @property
     def archetype(self) -> Archetype:
+        if arch := self.metadata.get("archetype"):
+            try:
+                return Archetype(arch.lower())
+            except ValueError:
+                pass
+
         if self.name:
             nameparts = [
                 p for p in self.name.split() if not p.title()
@@ -653,7 +667,8 @@ Name={}
     NAME_SEP = "_"
 
     SOURCE_NICKNAMES = {
-        "www.mtggoldfish.com": "Goldfish"
+        "www.mtggoldfish.com": "Goldfish",
+        "aetherhub.com": "Aetherhub",
     }
 
     FMT_NICKNAMES = {
@@ -731,6 +746,10 @@ Name={}
         # format
         if self._deck.format:
             name += f"{self.FMT_NICKNAMES[self._deck.format.lower()]}{self.NAME_SEP}"
+        # mode
+        if mode := self._deck.metadata.get("mode"):
+            if mode in {m.value for m in Mode}:
+                name += f"{mode}_"
         # meta
         if any("meta" in k for k in self._deck.metadata):
             name += f"Meta{self.NAME_SEP}"
@@ -784,6 +803,10 @@ Name={}
                 lambda f: any(np == cls.FMT_NICKNAMES[f] for np in nameparts)):
             metadata["format"] = fmt
             nameparts.remove(cls.FMT_NICKNAMES[fmt])
+        if mode := from_iterable(
+                {m.value for m in Mode}, lambda mode: any(np == mode for np in nameparts)):
+            metadata["mode"] = mode
+            nameparts.remove(mode)
         try:
             idx = nameparts.index(f"Meta")
         except ValueError:
