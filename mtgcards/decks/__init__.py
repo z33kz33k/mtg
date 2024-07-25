@@ -558,6 +558,10 @@ class Deck:
         if sideboard:
             self._sideboard_playsets = to_playsets(*sideboard)
             self._validate_sideboard()
+            if not self.companion:
+                comp = from_iterable(sideboard, lambda c: c.is_companion)
+                if comp:
+                    self._companion = comp
 
     def _validate_playset(self, playset: list[Card]) -> None:
         card = playset[0]

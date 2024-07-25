@@ -13,14 +13,16 @@ from bs4 import Tag
 
 from mtgcards.const import Json
 from mtgcards.decks import Archetype, Deck, DeckParser, InvalidDeckError, Mode
-from mtgcards.scryfall import Card
-from mtgcards.utils import ParsingError, extract_float, extract_int
+from mtgcards.scryfall import Card, all_sets
+from mtgcards.utils import extract_float, extract_int
 from mtgcards.utils.scrape import ScrapingError, getsoup
 
 
-# TODO: Companion
 class AetherhubParser(DeckParser):
     """Parser of Aetherhub decklist page.
+
+    Note:
+        Companions are part of a sideboard list and aren't listed separately.
     """
     FORMATS = {
         "Arena Standard": ("standard", Mode.BO1),
@@ -101,10 +103,10 @@ class AetherhubParser(DeckParser):
     def _get_deck(self) -> Deck | None:  # override
         mainboard, sideboard, commander = [], [], None
 
-        tables = self._soup.find_all("table", class_="table table-borderless")
+        tables = self._soup.select("table.table.table-borderless.bg-ae-dark")
         if not tables:
             raise ScrapingError(
-                f"No 'table table-borderless' tables (that contain grouped card data) in the soup")
+                f"No tables (that contain grouped card data) in the soup")
 
         hovers = []
         for table in tables:
@@ -147,7 +149,8 @@ class AetherhubParser(DeckParser):
 
         card_tag = hover_tag.find("a")
         if card_tag is None:
-            raise ParsingError(f"No 'a' tag inside 'hover-imglink' div tag: {hover_tag!r}")
+            raise ScrapingError(f"No 'a' tag inside 'hover-imglink' div tag: {hover_tag!r}")
 
         name, set_code = card_tag.attrs["data-card-name"], card_tag.attrs["data-card-set"].lower()
+        set_code = set_code if set_code in set(all_sets()) else ""
         return self._get_playset(name, quantity, set_code)

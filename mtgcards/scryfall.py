@@ -811,6 +811,10 @@ class Card:
     def has_alchemy_rebalance(self) -> bool:
         return self.alchemy_rebalance is not None
 
+    @property
+    def is_companion(self) -> bool:
+        return "Companion" in self.keywords
+
     @staticmethod
     def parse_lord_sentences(oracle_text: str) -> list[LordSentence]:
         if not oracle_text:
