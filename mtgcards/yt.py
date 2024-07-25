@@ -20,13 +20,12 @@ import gspread
 import pytubefix
 import requests
 import scrapetube
-from contexttimer import Timer
 from youtubesearchpython import Channel as YtspChannel
 
 from mtgcards.scryfall import formats
 from mtgcards.decks import Deck, DeckParser
 from mtgcards.decks.aetherhub import AetherHubParser
-from mtgcards.decks.arena import ArenaParser, is_empty, is_playset
+from mtgcards.decks.arena import ArenaParser, is_arena_line, is_empty, is_playset_line
 from mtgcards.decks.goldfish import GoldfishParser
 from mtgcards.decks.moxfield import MoxfieldParser
 from mtgcards.decks.mtgazone import MtgaZoneParser
@@ -257,20 +256,6 @@ class Video:
         # if not, fall back to default
         return "standard"
 
-    @staticmethod
-    def is_arena(line: str) -> bool:
-        if line == "Deck":
-            return True
-        elif line == "Commander":
-            return True
-        elif line == "Companion":
-            return True
-        elif line == "Sideboard":
-            return True
-        elif is_playset(line):
-            return True
-        return False
-
     def _parse_lines(self) -> tuple[list[str], list[str]]:
         links, arena_lines = [], []
         for i, line in enumerate(self._desc_lines):
@@ -279,9 +264,9 @@ class Video:
             if url:
                 links.append(url)
             elif is_empty(line):
-                if i != len(self._desc_lines) - 1 and is_playset(self._desc_lines[i + 1]):
+                if i != len(self._desc_lines) - 1 and is_playset_line(self._desc_lines[i + 1]):
                     arena_lines.append(line)
-            elif self.is_arena(line):
+            elif is_arena_line(line):
                 arena_lines.append(line)
         return links, arena_lines
 

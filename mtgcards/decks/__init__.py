@@ -10,7 +10,7 @@
 import itertools
 import logging
 from abc import ABC, abstractmethod
-from collections import defaultdict
+from collections import Counter, defaultdict
 from datetime import date
 from enum import Enum, auto
 from functools import cached_property, lru_cache
@@ -464,6 +464,14 @@ class Deck:
         return sorted({c.set for c in self.all_cards if not c.is_basic_land})
 
     @property
+    def races(self) -> Counter:
+        return Counter(itertools.chain(*[c.races for c in self.all_cards]))
+
+    @property
+    def classes(self) -> Counter:
+        return Counter(itertools.chain(*[c.classes for c in self.all_cards]))
+
+    @property
     def theme(self) -> str | None:
         if not self.name:
             return None
@@ -567,6 +575,8 @@ class Deck:
 
     def __repr__(self) -> str:
         reprs = [("name", self.name)] if self.name else []
+        if self.format:
+            reprs += [("format", self.format)]
         reprs += [
             ("avg_cmc", f"{self.avg_cmc:.2f}"),
             ("avg_rarity_weight", f"{self.avg_rarity_weight:.1f}"),
@@ -610,11 +620,26 @@ class Deck:
 
     @classmethod
     def from_dck(cls, path: PathLike) -> "Deck":
+        """Import a deck from a Forge MTG deckfile format (.dck).
+
+        Args:
+            path: path to a .dck file
+        """
         return Exporter.from_dck(path)
+
+    @classmethod
+    def from_arena(cls, path: PathLike) -> "Deck":
+        """Import a deck from a MTG Arena deckfile format (.txt).
+
+        Args:
+            path: path to an Arena deck file
+        """
+        return Exporter.from_arena(path)
 
 
 class Exporter:
-    """Export a deck to a Forge MTG's .dck file.
+    """Export a deck to Forge MTG .dck file or Arena deck file. Also, import a deck from those
+    formats.
     """
     DCK_TEMPLATE = """[metadata]
 Name={}
@@ -779,11 +804,11 @@ Name={}
 
     @classmethod
     def from_dck(cls, path: PathLike) -> Deck:
-        path = getfile(path, ext=".dck")
+        file = getfile(path, ext=".dck")
         commander, mainboard, sideboard, metadata = None, [], [], {}
         commander_on, mainboard_on, sideboard_on = False, False, False
         fmt = "standard"
-        for line in path.read_text(encoding="utf-8").splitlines():
+        for line in file.read_text(encoding="utf-8").splitlines():
             if line.startswith("Name="):
                 metadata = cls._parse_name(line.removeprefix("Name="))
                 fmt = metadata.get("format", "standard")
@@ -847,6 +872,18 @@ Name={}
         dst = dstdir / f"{self._name}.txt"
         _log.info(f"Exporting deck to: '{dst}'...")
         dst.write_text(self._build_arena(), encoding="utf-8")
+
+    @classmethod
+    def from_arena(cls, path: PathLike) -> Deck:
+        from mtgcards.decks.arena import ArenaParser, is_arena_line, is_empty
+        file = getfile(path, ext=".txt")
+        lines = file.read_text(encoding="utf-8").splitlines()
+        if not all(is_arena_line(l) or is_empty(l) for l in lines):
+            raise ValueError(f"Not an MTG Arena deck file: '{file}'")
+        metadata = cls._parse_name(file.name)
+        deck = ArenaParser(lines, metadata.get("format", "standard")).deck
+        deck.update_metadata(**metadata)
+        return deck
 
 
 @lru_cache

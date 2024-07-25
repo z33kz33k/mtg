@@ -117,12 +117,27 @@ class PlaysetLine:
         return [card] * self.quantity if card else []
 
 
-def is_playset(line: str) -> bool:
+def is_playset_line(line: str) -> bool:
     return bool(PlaysetLine.PATTERN.match(line))
 
 
 def is_empty(line: str) -> bool:
     return not line or line.isspace()
+
+
+def is_arena_line(line: str) -> bool:
+    if line == "Deck":
+        return True
+    elif line == "Commander":
+        return True
+    elif line == "Companion":
+        return True
+    elif line == "Sideboard":
+        return True
+    elif is_playset_line(line):
+        return True
+    return False
+
 
 
 class ArenaParser(DeckParser):
@@ -146,7 +161,7 @@ class ArenaParser(DeckParser):
                 self._state = _shift_to_companion(self._state)
             elif line == "Deck":
                 self._state = _shift_to_mainboard(self._state)
-            elif is_playset(line):
+            elif is_playset_line(line):
                 if self._state is ParsingState.IDLE:
                     self._state = _shift_to_mainboard(self._state)
 
