@@ -927,11 +927,11 @@ class DeckParser(ABC):
     def deck(self) -> Deck | None:
         return self._deck
 
-    def __init__(self, fmt="standard") -> None:
+    def __init__(self, fmt="standard", author="") -> None:
         fmt = fmt.lower()
         if fmt not in all_formats():
             raise ValueError(f"Invalid format: {fmt!r}. Can be only one of: {all_formats()}")
-        self._fmt = fmt
+        self._fmt, self._author = fmt, author
         self._state = ParsingState.IDLE
         self._deck = None
 

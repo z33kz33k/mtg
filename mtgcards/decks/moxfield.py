@@ -14,14 +14,14 @@ from mtgcards.scryfall import Card, all_sets
 from mtgcards.utils.scrape import timed_request
 
 
-# TODO: companion
+# TODO: companion, metadata
 class MoxfieldParser(DeckParser):
     """Parser of Moxfield decklist page.
     """
     API_URL_TEMPLATE = "https://api2.moxfield.com/v2/decks/all/{}"
 
-    def __init__(self, url: str, fmt="standard") -> None:
-        super().__init__(fmt)
+    def __init__(self, url: str, fmt="standard", author="") -> None:
+        super().__init__(fmt, author)
         *_, self._decklist_id = url.split("/")
         self._json_data = timed_request(
             self.API_URL_TEMPLATE.format(self._decklist_id), return_json=True)

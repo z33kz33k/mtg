@@ -7,23 +7,51 @@
     @author: z33k
 
 """
+from datetime import datetime
 
 from bs4 import Tag
 
+from mtgcards.const import Json
 from mtgcards.decks import Deck, InvalidDeckError, DeckParser
-from mtgcards.utils import ParsingError, extract_int
-from mtgcards.utils.scrape import getsoup
-from mtgcards.scryfall import Card
+from mtgcards.utils import ParsingError, extract_int, from_iterable
+from mtgcards.utils.scrape import ScrapingError, getsoup
+from mtgcards.scryfall import Card, all_formats
 
 
 # TODO: Companion
 class AetherhubParser(DeckParser):
     """Parser of Aetherhub decklist page.
     """
-    def __init__(self, url: str, fmt="standard") -> None:
-        super().__init__(fmt)
+    def __init__(self, url: str, fmt="standard", author="") -> None:
+        super().__init__(fmt, author)
         self._soup = getsoup(url)
+        self._metadata = self._get_metadata()
         self._deck = self._get_deck()
+
+    def _get_metadata(self) -> Json:
+        metadata = {}
+        title_tag = self._soup.find("h2", class_="text-header-gold")
+        if title_tag is None:
+            raise ScrapingError(f"No title tag to scrape metadata from")
+        fmt_part, name_part = title_tag.text.split("-", maxsplit=1)
+        fmt = from_iterable(
+            [t.lower() for t in fmt_part.split()], lambda p: p in all_formats())
+        if fmt:
+            self._fmt = fmt
+            metadata["format"] = fmt
+        metadata["name"] = name_part
+        if not self._author:
+            author_tag = self._soup.find('a', href=lambda href: href and "/User/" in href)
+            metadata["author"] = author_tag.text
+        date_tag = self._soup.select(
+            "div.col-xs-7.col-sm-7.col-md-7.col-lg-7.pl-0.pr-0.text-left")[0]
+        date_lines = [l.strip() for l in date_tag.text.strip().splitlines() if l]
+        date_text = date_lines[0].removeprefix("Last Updated: ").strip()
+        metadata["date"] = datetime.strptime(date_text, "%d %b %Y").date()
+        metadata["views"] = int(date_lines[2])
+        metadata["exports"] = int(date_lines[3])
+        metadata["comments"] = int(date_lines[4])
+        return metadata
 
     def _get_deck(self) -> Deck | None:  # override
         mainboard, sideboard, commander = [], [], None

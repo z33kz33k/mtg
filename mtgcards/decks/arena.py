@@ -143,8 +143,8 @@ def is_arena_line(line: str) -> bool:
 class ArenaParser(DeckParser):
     """Parser of lines of text that denote a deck in Arena format.
     """
-    def __init__(self, lines: list[str], fmt="standard") -> None:
-        super().__init__(fmt)
+    def __init__(self, lines: list[str], fmt="standard", author="") -> None:
+        super().__init__(fmt, author)
         self._lines = lines
         self._deck = self._get_deck()
 
@@ -177,6 +177,9 @@ class ArenaParser(DeckParser):
                     mainboard.extend(PlaysetLine(line).to_playset(self._fmt))
 
         try:
-            return Deck(mainboard, sideboard, commander, companion, {"format": self._fmt})
+            metadata = {"format": self._fmt}
+            if self._author:
+                metadata["author"] = self._author
+            return Deck(mainboard, sideboard, commander, companion, metadata)
         except InvalidDeckError:
             return None

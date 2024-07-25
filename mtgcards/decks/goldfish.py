@@ -64,9 +64,10 @@ class GoldfishParser(DeckParser):
         "standard brawl": "standardbrawl",
     }
 
-    def __init__(self, url: str, fmt="standard", raise_error=False) -> None:
-        super().__init__(fmt)
+    def __init__(self, url: str, fmt="standard", author="", raise_error=False) -> None:
+        super().__init__(fmt, author)
         self._soup = throttled_soup(url)
+        self._metadata = self._get_metadata()
         self._deck = self._get_deck()
         self._raise_error = raise_error
 
@@ -76,9 +77,12 @@ class GoldfishParser(DeckParser):
         metadata["source"] = "www.mtggoldfish.com"
         metadata["name"], *_ = title_tag.text.strip().split("\n")
         metadata["format"] = self._fmt
-        author_tag = title_tag.find("span")
-        if author_tag is not None:
-            metadata["author"] = author_tag.text.strip().removeprefix("by ")
+        if self._author:
+            metadata["author"] = self._author
+        else:
+            author_tag = title_tag.find("span")
+            if author_tag is not None:
+                metadata["author"] = author_tag.text.strip().removeprefix("by ")
         info_tag = self._soup.find("p", class_="deck-container-information")
         lines = [l for l in info_tag.text.splitlines() if l]
         source_idx = None
@@ -88,6 +92,7 @@ class GoldfishParser(DeckParser):
                 if fmt in self.FMT_NAMES:
                     fmt = self.FMT_NAMES[fmt]
                 if fmt in all_formats():
+                    self._fmt = fmt
                     metadata["format"] = fmt
             elif line.startswith("Event:"):
                 metadata["event"] = line.removeprefix("Event:").strip()
@@ -131,7 +136,7 @@ class GoldfishParser(DeckParser):
                     sideboard.extend(cards)
 
         try:
-            return Deck(mainboard, sideboard, commander, companion, metadata=self._get_metadata())
+            return Deck(mainboard, sideboard, commander, companion, metadata=self._metadata)
         except InvalidDeckError:
             if not self._raise_error:
                 return None

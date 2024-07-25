@@ -38,6 +38,10 @@ from mtgcards.utils.scrape import timed_request
 _log = logging.getLogger(__name__)
 
 
+UrlParser = (AetherhubParser | GoldfishParser | MoxfieldParser | MtgaZoneParser |
+             StreamdeckerParser | TcgPlayerParser | UntappedParser)
+
+
 def channels() -> dict[str, str]:
     """Retrieve a channel addresses mapping from a private Google Sheet spreadsheet.
 
@@ -271,7 +275,7 @@ class Video:
         return links, arena_lines
 
     @classmethod
-    def _process_hooks(cls, links: list[str]) -> dict[Type[DeckParser], str]:
+    def _process_hooks(cls, links: list[str]) -> dict[Type[UrlParser] | str, str]:
         parsers_map = {}
         for link in links:
             if not parsers_map.get(AetherhubParser) and cls.AETHERHUB_HOOK in link:
@@ -300,11 +304,11 @@ class Video:
         for parser_type, url in parsers_map.items():
             if parser_type == "pastebin-like":
                 lines = timed_request(url).splitlines()
-                lines = [l for l in lines if self.is_arena(l) or is_empty(l)]
+                lines = [l for l in lines if is_arena_line(l) or is_empty(l)]
                 if lines:
-                    deck = ArenaParser(lines, fmt=self._format).deck
+                    deck = ArenaParser(lines, fmt=self._format, author=self.author).deck
             else:
-                deck = parser_type(url, self._format).deck
+                deck = parser_type(url, self._format, self.author).deck
             if deck:
                 return deck
         return None
