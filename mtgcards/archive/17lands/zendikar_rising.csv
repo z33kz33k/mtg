@@ -1,0 +1,51 @@
+Color,QD Wins,QD Games,PD Wins,PD Games
+Mono-White,30,71,16,44
+Mono-Blue,157,283,187,345
+Mono-Black,18,35,20,36
+Mono-Red,126,210,169,296
+Mono-Green,42,75,32,78
+Mono-White + Splash,27,69,53,113
+Mono-Blue + Splash,438,744,589,1014
+Mono-Black + Splash,44,86,81,138
+Mono-Red + Splash,110,204,254,437
+Mono-Green + Splash,78,143,174,304
+Azorius (WU),3300,6014,6103,11284
+Dimir (UB),11289,19752,14333,26012
+Rakdos (BR),6159,10605,12891,22594
+Gruul (RG),2533,4757,4822,8974
+Selesnya (GW),2095,3932,3403,6379
+Orzhov (WB),10360,18691,14971,27256
+Golgari (BG),2402,4583,4506,8696
+Simic (GU),5262,9849,9391,17406
+Izzet (UR),5034,9210,11891,22295
+Boros (RW),6050,10591,13204,23147
+Azorius (WU) + Splash,178,379,428,874
+Dimir (UB) + Splash,622,1181,912,1852
+Rakdos (BR) + Splash,434,793,782,1563
+Gruul (RG) + Splash,556,1102,1351,2674
+Selesnya (GW) + Splash,380,756,1020,2080
+Orzhov (WB) + Splash,672,1353,1001,2055
+Golgari (BG) + Splash,464,942,1326,2728
+Simic (GU) + Splash,1640,3172,4031,8052
+Izzet (UR) + Splash,486,992,1128,2317
+Boros (RW) + Splash,287,579,689,1320
+Jeskai (WUR),171,385,171,385
+Sultai (UBG),546,1245,546,1245
+Mardu (BRW),368,802,368,802
+Temur (RGU),561,1174,561,1174
+Abzan (GWB),357,795,357,795
+Esper (WUB),474,953,474,953
+Grixis (UBR),340,742,340,742
+Jund (BRG),387,767,387,767
+Naya (RGW),480,999,480,999
+Bant (GWU),276,642,276,642
+Jeskai (WUR) + Splash,15,31,8,15
+Sultai (UBG) + Splash,8,26,67,139
+Mardu (BRW) + Splash,12,24,4,16
+Temur (RGU) + Splash,24,61,67,169
+Abzan (GWB) + Splash,18,35,39,81
+Esper (WUB) + Splash,14,26,16,25
+Grixis (UBR) + Splash,1,6,3,10
+Jund (BRG) + Splash,8,20,19,49
+Naya (RGW) + Splash,21,47,45,96
+Bant (GWU) + Splash,22,62,39,86

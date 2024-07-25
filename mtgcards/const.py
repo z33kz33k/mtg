@@ -25,7 +25,7 @@ FILENAME_TIMESTAMP_FORMAT = "%Y%m%d_%H%M%S"
 READABLE_TIMESTAMP_FORMAT = "%Y-%m-%d %H:%M:%S"
 SECONDS_IN_YEAR = 365.25 * 24 * 60 * 60  # with leap years
 
-DATA_DIR = Path(os.getcwd()) / "data"
+DATA_DIR = Path(os.getcwd()) / "var" / "data"
 OUTPUT_DIR = Path(os.getcwd()) / "var" / "output"
 
 _logging_initialized = False

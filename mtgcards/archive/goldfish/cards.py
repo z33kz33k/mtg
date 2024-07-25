@@ -17,9 +17,9 @@ from bs4 import BeautifulSoup
 from bs4.element import Tag
 
 from mtgcards.const import Json, OUTPUT_DIR
-from mtgcards.goldfish.sets import DOMAIN, INPUT_DIR, MODERN_META_SETS, MtgSet, PIONEER_META_SETS, \
+from mtgcards.archive.goldfish.sets import DOMAIN, INPUT_DIR, MODERN_META_SETS, MtgSet, PIONEER_META_SETS, \
     STANDARD_META_SETS, SetFormat
-from mtgcards.goldfish.sets import URL as SETS_URL
+from mtgcards.archive.goldfish.sets import URL as SETS_URL
 from mtgcards.utils import from_iterable
 from mtgcards.utils.scrape import timed_request
 from mtgcards.utils.files import getdir, getfile

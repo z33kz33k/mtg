@@ -17,7 +17,7 @@ from bs4 import BeautifulSoup
 from bs4.element import ResultSet, Tag
 
 from mtgcards.const import Json
-from mtgcards.goldfish.cards import Card as GoldfishCard, Price, PriceUnit, find_card
+from mtgcards.archive.goldfish.cards import Card as GoldfishCard, Price, PriceUnit, find_card
 from mtgcards.utils import from_iterable
 from mtgcards.utils.scrape import timed_request
 
