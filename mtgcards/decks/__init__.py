@@ -19,9 +19,9 @@ from typing import Any, Iterable
 
 from mtgcards.const import Json, OUTPUT_DIR, PathLike
 from mtgcards.scryfall import Card, Color, MULTIPART_SEPARATOR as SCRYFALL_MULTIPART_SEPARATOR, \
-    find_by_name, format_cards as scryfall_fmt_cards, formats, get_set, \
+    all_sets, find_by_name, format_cards as scryfall_fmt_cards, all_formats, get_set, \
     set_cards as scryfall_set_cards
-from mtgcards.utils import extract_int, from_iterable, getrepr
+from mtgcards.utils import ParsingError, extract_int, from_iterable, getrepr
 from mtgcards.utils.files import getdir, getfile
 
 _log = logging.getLogger(__name__)
@@ -800,6 +800,10 @@ Name={}
     def _parse_dck_line(line: str, fmt="standard") -> list[Card]:
         quantity, rest = line.split(maxsplit=1)
         name, set_code, _ = rest.split("|")
+        set_code = set_code.lower()
+        if set_code not in set(all_sets()):
+            raise ParsingError(
+                f"Invalid set code: {set_code!r}. Can be only one of: '{all_sets()}'")
         return get_playset(name, int(quantity), set_code.lower(), fmt)
 
     @classmethod
@@ -913,8 +917,6 @@ def get_playset(name: str, quantity: int, set_code="", fmt="standard") -> list[C
         if card:
             return [card] * quantity
     card = find_by_name(name, format_cards(fmt))
-    if card.name == "Pick Your Poison":
-        pass
     return [card] * quantity if card else []
 
 
@@ -927,8 +929,8 @@ class DeckParser(ABC):
 
     def __init__(self, fmt="standard") -> None:
         fmt = fmt.lower()
-        if fmt not in formats():
-            raise ValueError(f"Format can be only one of: {formats()}")
+        if fmt not in all_formats():
+            raise ValueError(f"Invalid format: {fmt!r}. Can be only one of: {all_formats()}")
         self._fmt = fmt
         self._state = ParsingState.IDLE
         self._deck = None

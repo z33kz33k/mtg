@@ -7,6 +7,7 @@
     @author: z33k
 
 """
+import itertools
 import json
 import math
 import re
@@ -624,7 +625,7 @@ class Card:
     def is_legal_in(self, fmt: str) -> bool:
         """Returns `True` if this card is legal in format designated by `fmt`.
 
-        Run formats() to see available format designations.
+        Run all_formats() to see available format designations.
 
         Args:
             fmt: Scryfall format designation
@@ -632,8 +633,9 @@ class Card:
         Raises:
             ValueError on invalid format designation
         """
-        if fmt.lower() not in self.formats:
-            raise ValueError(f"No such format: {fmt!r}")
+        fmt = fmt.lower()
+        if fmt not in self.formats:
+            raise ValueError(f"Invalid format: {fmt!r}. Can be only one of: '{self.formats}'")
 
         if self.legalities[fmt] == "legal":
             return True
@@ -642,7 +644,7 @@ class Card:
     def is_banned_in(self, fmt: str) -> bool:
         """Returns `True` if this card is banned in format designated by `fmt`.
 
-        Run formats() to see available format designations.
+        Run all_formats() to see available format designations.
 
         Args:
             fmt: Scryfall format designation
@@ -650,8 +652,9 @@ class Card:
         Raises:
             ValueError on invalid format designation
         """
-        if fmt.lower() not in self.formats:
-            raise ValueError(f"No such format: {fmt!r}")
+        fmt = fmt.lower()
+        if fmt not in self.formats:
+            raise ValueError(f"Invalid format: {fmt!r}. Can be only one of: '{self.formats}'")
 
         if self.legalities[fmt] == "banned":
             return True
@@ -660,7 +663,7 @@ class Card:
     def is_restricted_in(self, fmt: str) -> bool:
         """Returns `True` if this card is restricted in format designated by `fmt`.
 
-        Run formats() to see available format designations.
+        Run all_formats() to see available format designations.
 
         Args:
             fmt: Scryfall format designation
@@ -668,12 +671,26 @@ class Card:
         Raises:
             ValueError on invalid format designation
         """
-        if fmt.lower() not in self.formats:
-            raise ValueError(f"No such format: {fmt!r}")
+        fmt = fmt.lower()
+        if fmt not in self.formats:
+            raise ValueError(f"Invalid format: {fmt!r}. Can be only one of: '{self.formats}'")
 
         if self.legalities[fmt] == "restricted":
             return True
         return False
+
+    @property
+    def legal_formats(self) -> list[str]:
+        return sorted([fmt for fmt, legality in self.legalities.items() if legality == "legal"])
+
+    @property
+    def banned_formats(self) -> list[str]:
+        return sorted([fmt for fmt, legality in self.legalities.items() if legality == "banned"])
+
+    @property
+    def restricted_formats(self) -> list[str]:
+        return sorted(
+            [fmt for fmt, legality in self.legalities.items() if legality == "restricted"])
 
     @lru_cache
     def parse_types(self) -> TypeLine | None:
@@ -890,9 +907,24 @@ def sets(data: Iterable[Card] | None = None) -> list[str]:
     return sorted({card.set for card in data})
 
 
+def formats(data: Iterable[Card] | None = None) -> list[str]:
+    """Return list of string designations for MtG formats that are legal for cards in the data
+    specified.
+    """
+    data = data if data else bulk_data()
+    return sorted({*itertools.chain(*[c.legal_formats for c in data])})
+
+
 @lru_cache
-def formats() -> list[str]:
-    """Return list of string designations for MtG formats in Scryfall data.
+def all_sets() -> list[str]:
+    """Return list of all string designations for MtG formats in Scryfall data.
+    """
+    return sets()
+
+
+@lru_cache
+def all_formats() -> list[str]:
+    """Return list of all string designations for MtG formats in Scryfall data.
     """
     return next(iter(bulk_data())).formats
 
@@ -939,8 +971,13 @@ def find_cards(
 def set_cards(*set_codes: str, data: Iterable[Card] | None = None) -> set[Card]:
     """Return card data for sets designated by ``set_codes``.
 
-    Run sets() to see available set codes.
+    Run all_sets() to see available set codes.
     """
+    set_codes = [code.lower() for code in set_codes]
+    available = set(all_sets())
+    for code in set_codes:
+        if code not in available:
+            raise ValueError(f"Invalid set code: {code!r}. Can be only one of: '{all_sets()}'")
     return find_cards(lambda c: c.set in [code.lower() for code in set_codes], data)
 
 
@@ -955,8 +992,12 @@ def arena_cards() -> set[Card]:
 def format_cards(fmt: str, data: Iterable[Card] | None = None) -> set[Card]:
     """Return card data for MtG format designated by ``fmt``.
 
-    Run formats() to see available format designations.
+    Run all_formats() to see available format designations.
     """
+    fmt = fmt.lower()
+    available = set(all_formats())
+    if fmt not in available:
+        raise ValueError(f"Invalid format: {fmt!r}. Can be only one of: '{all_formats()}'")
     return find_cards(lambda c: c.is_legal_in(fmt), data)
 
 

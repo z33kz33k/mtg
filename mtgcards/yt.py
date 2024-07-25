@@ -22,7 +22,7 @@ import requests
 import scrapetube
 from youtubesearchpython import Channel as YtspChannel
 
-from mtgcards.scryfall import formats
+from mtgcards.scryfall import all_formats
 from mtgcards.decks import Deck, DeckParser
 from mtgcards.decks.aetherhub import AetherhubParser
 from mtgcards.decks.arena import ArenaParser, is_arena_line, is_empty, is_playset_line
@@ -236,7 +236,7 @@ class Video:
     @staticmethod
     def _extract_formats(line: str) -> list[str]:
         words = [word.lower() for word in line.strip().split()]
-        return [fmt for fmt in formats() if any(fmt in word for word in words)]
+        return [fmt for fmt in all_formats() if any(fmt in word for word in words)]
 
     def _get_format_soup(self) -> defaultdict[str, list[str]]:
         fmt_soup = defaultdict(list)

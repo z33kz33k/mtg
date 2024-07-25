@@ -15,7 +15,7 @@ from mtgcards.const import Json
 from mtgcards.decks import Deck, InvalidDeckError, DeckParser, ParsingState
 from mtgcards.utils import extract_int, timed
 from mtgcards.utils.scrape import ScrapingError, getsoup, http_requests_counted, throttled
-from mtgcards.scryfall import Card, formats
+from mtgcards.scryfall import Card, all_formats, all_sets
 
 
 def _shift_to_commander(current_state: ParsingState) -> ParsingState:
@@ -87,7 +87,7 @@ class GoldfishParser(DeckParser):
                 fmt = line.removeprefix("Format:").strip().lower()
                 if fmt in self.FMT_NAMES:
                     fmt = self.FMT_NAMES[fmt]
-                if fmt in formats():
+                if fmt in all_formats():
                     metadata["format"] = fmt
             elif line.startswith("Event:"):
                 metadata["event"] = line.removeprefix("Event:").strip()
@@ -158,6 +158,7 @@ class GoldfishParser(DeckParser):
             name = name.strip()
 
         set_code = set_code[:-1].lower()
+        set_code = set_code if set_code in set(all_sets()) else ""
         return self._get_playset(name, quantity, set_code)
 
 
@@ -165,8 +166,8 @@ class GoldfishParser(DeckParser):
 @timed("scraping meta decks", precision=1)
 def scrape_meta(fmt="standard") -> list[Deck]:
     fmt = fmt.lower()
-    if fmt not in formats():
-        raise ValueError(f"Format can be only one of: {formats()}")
+    if fmt not in all_formats():
+        raise ValueError(f"Invalid format: {fmt!r}. Can be only one of: {all_formats()}")
     url = f"https://www.mtggoldfish.com/metagame/{fmt}/full"
     soup = getsoup(url, headers=HEADERS)
     tiles = soup.find_all("div", class_="archetype-tile")

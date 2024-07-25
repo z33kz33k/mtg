@@ -73,7 +73,7 @@ class PlaysetLine:
 
     @property
     def set_code(self) -> str | None:
-        return self._setcode
+        return self._set_code
 
     @property
     def collector_number(self) -> int | None:
@@ -87,10 +87,10 @@ class PlaysetLine:
         if self.is_extended:
             self._name, rest = rest.split("(")
             self._name = self._name.strip()
-            self._setcode, rest = rest.split(")")
+            self._set_code, rest = rest.split(")")
             self._collector_number = getint(rest.strip())
         else:
-            self._name, self._setcode, self._collector_number = rest, None, None
+            self._name, self._set_code, self._collector_number = rest, None, None
         self._name = self._name.replace(ARENA_MULTIPART_SEPARATOR, SCRYFALL_MULTIPART_SEPARATOR)
 
     def __repr__(self) -> str:
