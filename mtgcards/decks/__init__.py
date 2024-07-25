@@ -533,6 +533,10 @@ class Deck:
     def format(self) -> str | None:
         return self.metadata.get("format")
 
+    @property
+    def is_meta(self) -> bool:
+        return any("meta" in k for k in self.metadata)
+
     def __init__(
             self, mainboard: Iterable[Card], sideboard: Iterable[Card] | None = None,
             commander: Card | None = None, companion: Card | None = None,
@@ -673,6 +677,7 @@ Name={}
     SOURCE_NICKNAMES = {
         "www.mtggoldfish.com": "Goldfish",
         "aetherhub.com": "Aetherhub",
+        "www.moxfield.com": "Moxfield",
     }
 
     FMT_NICKNAMES = {
@@ -744,9 +749,10 @@ Name={}
         return core
 
     def _build_name(self) -> str:
-        # source
+        # prefix (source/author)
         source = self.SOURCE_NICKNAMES.get(self._deck.source) or ""
-        name = f"{source}{self.NAME_SEP}" if source else ""
+        prefix = source if self._deck.is_meta and source else self._deck.metadata.get("author", "")
+        name = f"{prefix}{self.NAME_SEP}" if prefix else ""
         # format
         if self._deck.format:
             name += f"{self.FMT_NICKNAMES[self._deck.format.lower()]}{self.NAME_SEP}"
@@ -755,7 +761,7 @@ Name={}
             if mode in {m.value for m in Mode}:
                 name += f"{mode}_"
         # meta
-        if any("meta" in k for k in self._deck.metadata):
+        if self._deck.is_meta:
             name += f"Meta{self.NAME_SEP}"
             meta_place = self._deck.metadata.get("meta_place")
             if meta_place:

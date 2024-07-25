@@ -60,13 +60,14 @@ class AetherhubParser(DeckParser):
             fmt_part = fmt_part.strip()
             if fmt_pair := self.FORMATS.get(fmt_part):
                 fmt, mode = fmt_pair
-                self._fmt = fmt
-                metadata["format"] = fmt
+                self._fmt = metadata["format"] = fmt
                 metadata["mode"] = mode.value
             metadata["name"] = name_part.strip()
 
         # author (only in user-submitted decklists)
-        if not self._author:
+        if self._author:
+            metadata["author"] = self._author
+        else:
             if author_tag := self._soup.find('a', href=lambda href: href and "/User/" in href):
                 metadata["author"] = author_tag.text
 

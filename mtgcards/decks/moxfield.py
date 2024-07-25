@@ -7,6 +7,7 @@
     @author: z33k
 
 """
+from datetime import datetime
 
 from mtgcards.const import Json
 from mtgcards.decks import Deck, InvalidDeckError, DeckParser
@@ -14,7 +15,6 @@ from mtgcards.scryfall import Card, all_sets
 from mtgcards.utils.scrape import timed_request
 
 
-# TODO: companion, metadata
 class MoxfieldParser(DeckParser):
     """Parser of Moxfield decklist page.
     """
@@ -25,7 +25,23 @@ class MoxfieldParser(DeckParser):
         *_, self._decklist_id = url.split("/")
         self._json_data = timed_request(
             self.API_URL_TEMPLATE.format(self._decklist_id), return_json=True)
+        self._metadata = self._get_metadata()
         self._deck = self._get_deck()
+
+    def _get_metadata(self) -> Json:
+        metadata = {"source": "www.moxfield.com"}
+        self._fmt = metadata["format"] = self._json_data["format"]
+        name = self._json_data["name"]
+        if " - " in name:
+            *_, name = name.split(" - ")
+        metadata["name"] = name
+        metadata["likes"] = self._json_data["likeCount"]
+        metadata["views"] = self._json_data["viewCount"]
+        metadata["comments"] = self._json_data["commentCount"]
+        metadata["author"] = self._author or self._json_data["createdByUser"]["displayName"]
+        metadata["date"] = datetime.strptime(
+            self._json_data["lastUpdatedAtUtc"], "%Y-%m-%dT%H:%M:%S.%fZ").date()
+        return metadata
 
     def _get_deck(self) -> Deck | None:  # override
         mainboard, sideboard, commander = [], [], None
@@ -40,7 +56,7 @@ class MoxfieldParser(DeckParser):
                 commander = result[0]
 
         try:
-            return Deck(mainboard, sideboard, commander)
+            return Deck(mainboard, sideboard, commander, metadata=self._metadata)
         except InvalidDeckError:
             return None
 
