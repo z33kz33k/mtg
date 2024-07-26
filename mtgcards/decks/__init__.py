@@ -678,6 +678,7 @@ Name={}
         "www.mtggoldfish.com": "Goldfish",
         "aetherhub.com": "Aetherhub",
         "www.moxfield.com": "Moxfield",
+        "www.streamdecker.com": "Streamdecker",
     }
 
     FMT_NICKNAMES = {

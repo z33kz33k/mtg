@@ -15,6 +15,11 @@ from typing import Callable, Dict, Optional, Union
 import requests
 from requests.exceptions import HTTPError
 from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.common import TimeoutException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as ec
 
 from mtgcards.const import Json, REQUEST_TIMEOUT
 from mtgcards.utils import timed
@@ -120,4 +125,19 @@ def http_requests_counted(operation="") -> Callable:
         return wrapper
     return decorate
 
+
+def get_dynamic_soup_by_xpath(url: str, xpath: str, timeout=10.0) -> BeautifulSoup:
+    driver = webdriver.Chrome()
+    _log.info(f"Webdriving using Chrome to: '{url}'...")
+    driver.get(url)
+    try:
+        WebDriverWait(driver, timeout).until(
+            ec.presence_of_element_located((By.XPATH, xpath)))
+        _log.info(f"Page has been loaded and element specified by {xpath!r} is present")
+    except TimeoutException:
+        _log.error(f"Timed out waiting for element specified by {xpath!r} to be present.")
+        raise
+    soup = BeautifulSoup(driver.page_source, "lxml")
+    driver.quit()
+    return soup
 
