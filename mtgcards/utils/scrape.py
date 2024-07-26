@@ -128,23 +128,28 @@ def http_requests_counted(operation="") -> Callable:
 
 
 def get_dynamic_soup_by_xpath(
-        url: str, xpath: str, timeout=10.0, click=False, consent_xpath="") -> BeautifulSoup:
-    """Return BeautifulSoup object from dynamically rendered page source at ``url`` using Selenium
-    WebDriver that waits for presence of an element specified by ``xpath`.
+        url: str, xpath: str, timeout=10.0, click=False,
+        consent_xpath="") -> tuple[BeautifulSoup, BeautifulSoup | None]:
+    """Return BeautifulSoup object(s) from dynamically rendered page source at ``url`` using
+    Selenium WebDriver that waits for presence of an element specified by ``xpath`.
 
-    If specified, attempt at clicking the located element first is made. If consent XPath is
-    specified (it should point to a clickable consent button), then its presence first is
-    checked and, if confirmed, consent is clicked before attempting any other specified action.
+    If specified, attempt at clicking the located element first is made and two soup objects are
+    returned (with state before and after the click).
+
+    If consent XPath is specified (it should point to a clickable consent button), then its
+    presence first is checked and, if confirmed, consent is clicked before attempting any other
+    action.
 
     Args:
-        url: dynamic webpage URL
+        url: webpage's URL
         xpath: XPath to locate the main element
-        timeout: timeout used in attempted actions
-        click: main element is clicked before returning the soup
+        timeout: timeout used in attempted actions (consent timeout is halved)
+        click: if True, main element is clicked before returning the soups
         consent_xpath: XPath to locate a consent button (if present)
 
     Returns:
-        BeautifulSoup object from dynamically loaded page source
+        BeautifulSoup object (or two such objects if located element was clicked) from dynamically
+        loaded page source
     """
     driver = webdriver.Chrome()
     _log.info(f"Webdriving using Chrome to: '{url}'...")
@@ -157,11 +162,14 @@ def get_dynamic_soup_by_xpath(
         element = WebDriverWait(driver, timeout).until(
             EC.presence_of_element_located((By.XPATH, xpath)))
         _log.info(f"Page has been loaded and element specified by {xpath!r} is present")
+        page_source, soup2 = driver.page_source, None
         if click:
             element.click()
-            WebDriverWait(driver, timeout).until(EC.element_to_be_selected(element))
-        soup = BeautifulSoup(driver.page_source, "lxml")
-        return soup
+            soup2 = BeautifulSoup(driver.page_source, "lxml")
+        soup = BeautifulSoup(page_source, "lxml")
+
+        return soup, soup2
+
     except TimeoutException:
         _log.error(f"Timed out waiting for element specified by {xpath!r} to be present.")
         raise
@@ -169,7 +177,7 @@ def get_dynamic_soup_by_xpath(
         driver.quit()
 
 
-def accept_consent(driver: WebDriver, xpath: str, timeout=5.0) -> WebDriver:
+def accept_consent(driver: WebDriver, xpath: str, timeout=5.0) -> None:
     """Accept consent by clicking element pointed by ``xpath`` with the passed Chrome
     webdriver.
 
@@ -180,10 +188,8 @@ def accept_consent(driver: WebDriver, xpath: str, timeout=5.0) -> WebDriver:
         driver: a Chrome webdriver object
         xpath: XPath to locate the consent button to be clicked
         timeout: wait this much for disappearance of the located element
-
-    Returns:
-        the passed webdriver object
     """
+    _log.info("Attempting to close consent pop-up (if present)...")
     # locate and click the consent button if present
     try:
         consent_button = WebDriverWait(driver, timeout).until(
@@ -192,15 +198,15 @@ def accept_consent(driver: WebDriver, xpath: str, timeout=5.0) -> WebDriver:
         _log.info("Consent button clicked")
     except TimeoutException:
         _log.info("No need for accepting. Consent window not found")
-        return driver
+        return None
 
     # wait for the consent window to disappear
     try:
         WebDriverWait(driver, timeout).until_not(
             EC.presence_of_element_located((By.XPATH, xpath)))
-        _log.info("Consent window disappeared")
+        _log.info("Consent pop-up closed")
     except TimeoutException:
         driver.quit()
-        _log.error("Timed out waiting for consent window to disappear")
+        _log.error("Timed out waiting for consent pop-up to disappear")
         raise
 
