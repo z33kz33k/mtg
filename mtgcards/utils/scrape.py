@@ -16,10 +16,11 @@ import requests
 from requests.exceptions import HTTPError
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from selenium.common import TimeoutException
+from selenium.common import NoSuchElementException, TimeoutException
+from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as ec
+from selenium.webdriver.support import expected_conditions as EC
 
 from mtgcards.const import Json, REQUEST_TIMEOUT
 from mtgcards.utils import timed
@@ -126,18 +127,80 @@ def http_requests_counted(operation="") -> Callable:
     return decorate
 
 
-def get_dynamic_soup_by_xpath(url: str, xpath: str, timeout=10.0) -> BeautifulSoup:
+def get_dynamic_soup_by_xpath(
+        url: str, xpath: str, timeout=10.0, click=False, consent_xpath="") -> BeautifulSoup:
+    """Return BeautifulSoup object from dynamically rendered page source at ``url`` using Selenium
+    WebDriver that waits for presence of an element specified by ``xpath`.
+
+    If specified, attempt at clicking the located element first is made. If consent XPath is
+    specified (it should point to a clickable consent button), then its presence first is
+    checked and, if confirmed, consent is clicked before attempting any other specified action.
+
+    Args:
+        url: dynamic webpage URL
+        xpath: XPath to locate the main element
+        timeout: timeout used in attempted actions
+        click: main element is clicked before returning the soup
+        consent_xpath: XPath to locate a consent button (if present)
+
+    Returns:
+        BeautifulSoup object from dynamically loaded page source
+    """
     driver = webdriver.Chrome()
     _log.info(f"Webdriving using Chrome to: '{url}'...")
     driver.get(url)
+
+    if consent_xpath:
+        accept_consent(driver, consent_xpath, timeout / 2)
+
     try:
-        WebDriverWait(driver, timeout).until(
-            ec.presence_of_element_located((By.XPATH, xpath)))
+        element = WebDriverWait(driver, timeout).until(
+            EC.presence_of_element_located((By.XPATH, xpath)))
         _log.info(f"Page has been loaded and element specified by {xpath!r} is present")
+        if click:
+            element.click()
+            WebDriverWait(driver, timeout).until(EC.element_to_be_selected(element))
+        soup = BeautifulSoup(driver.page_source, "lxml")
+        return soup
     except TimeoutException:
         _log.error(f"Timed out waiting for element specified by {xpath!r} to be present.")
         raise
-    soup = BeautifulSoup(driver.page_source, "lxml")
-    driver.quit()
-    return soup
+    finally:
+        driver.quit()
+
+
+def accept_consent(driver: WebDriver, xpath: str, timeout=5.0) -> WebDriver:
+    """Accept consent by clicking element pointed by ``xpath`` with the passed Chrome
+    webdriver.
+
+    If the located element is not present, this function just returns doing nothing. Otherwise,
+    the button is clicked and the driver waits for its disappearance than returns itself.
+
+    Args:
+        driver: a Chrome webdriver object
+        xpath: XPath to locate the consent button to be clicked
+        timeout: wait this much for disappearance of the located element
+
+    Returns:
+        the passed webdriver object
+    """
+    # locate and click the consent button if present
+    try:
+        consent_button = WebDriverWait(driver, timeout).until(
+        EC.presence_of_element_located((By.XPATH, xpath)))
+        consent_button.click()
+        _log.info("Consent button clicked")
+    except TimeoutException:
+        _log.info("No need for accepting. Consent window not found")
+        return driver
+
+    # wait for the consent window to disappear
+    try:
+        WebDriverWait(driver, timeout).until_not(
+            EC.presence_of_element_located((By.XPATH, xpath)))
+        _log.info("Consent window disappeared")
+    except TimeoutException:
+        driver.quit()
+        _log.error("Timed out waiting for consent window to disappear")
+        raise
 
