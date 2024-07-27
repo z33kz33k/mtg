@@ -19,10 +19,11 @@ from typing import Any, Iterable
 
 from mtgcards.const import Json, OUTPUT_DIR, PathLike
 from mtgcards.scryfall import Card, Color, MULTIPART_SEPARATOR as SCRYFALL_MULTIPART_SEPARATOR, \
-    all_sets, find_by_name, format_cards as scryfall_fmt_cards, all_formats, get_set, \
+    all_sets, find_by_id, find_by_name, format_cards as scryfall_fmt_cards, all_formats, get_set, \
     set_cards as scryfall_set_cards
 from mtgcards.utils import ParsingError, extract_int, from_iterable, getrepr
 from mtgcards.utils.files import getdir, getfile
+from mtgcards.utils.scrape import ScrapingError
 
 _log = logging.getLogger(__name__)
 
@@ -951,7 +952,9 @@ def get_playset(name: str, quantity: int, set_code="", fmt="standard") -> list[C
         if card:
             return [card] * quantity
     card = find_by_name(name, format_cards(fmt))
-    return [card] * quantity if card else []
+    if not card:
+        raise ScrapingError(f"{name!r} card cannot be found")
+    return [card] * quantity
 
 
 class DeckParser(ABC):
@@ -975,3 +978,13 @@ class DeckParser(ABC):
 
     def _get_playset(self, name: str, quantity: int, set_code="") -> list[Card]:
         return get_playset(name, quantity, set_code, self._fmt)
+
+    @staticmethod
+    def _get_playset_by_id(scryfall_id: str, quantity: int) -> list[Card] | None:
+        card = find_by_id(scryfall_id)
+        if not card:
+            _log.warning(
+                f"Not a valid Scryfall card ID: {scryfall_id!r}. Maybe Scryfall data is not up "
+                f"to date?")
+            return None
+        return [card] * quantity

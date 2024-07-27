@@ -7,6 +7,8 @@
     @author: z33k
 
 """
+from datetime import date, timedelta
+from dateutil.relativedelta import relativedelta
 
 from mtgcards.const import Json
 from mtgcards.decks import Deck, InvalidDeckError, DeckParser
@@ -27,19 +29,33 @@ class StreamdeckerParser(DeckParser):
         self._metadata = self._get_metadata()
         self._deck = self._get_deck()
 
+    def _parse_date(self) -> date | None:
+        date_text = self._json_data["updatedAt"].removesuffix(" ago")
+        amount, time = date_text.split()
+        amount = int(amount)
+        dt = date.today()
+        if time in ("days", "day"):
+            return dt - timedelta(days=amount)
+        elif time in ("months", "month"):
+            return dt - relativedelta(months=amount)
+        elif time in ("years", "years"):
+            return date(dt.year - amount, dt.month, dt.day)
+        return None
+
     def _get_metadata(self) -> Json:
-        metadata = {"source": "www.streamdecker.com"}
-        # self._fmt = metadata["format"] = self._json_data["format"]
-        # name = self._json_data["name"]
-        # if " - " in name:
-        #     *_, name = name.split(" - ")
-        # metadata["name"] = name
-        # metadata["likes"] = self._json_data["likeCount"]
-        # metadata["views"] = self._json_data["viewCount"]
-        # metadata["comments"] = self._json_data["commentCount"]
-        # metadata["author"] = self._author or self._json_data["createdByUser"]["displayName"]
-        # metadata["date"] = datetime.strptime(
-        #     self._json_data["lastUpdatedAtUtc"], "%Y-%m-%dT%H:%M:%S.%fZ").date()
+        metadata = {
+            "source": "www.streamdecker.com",
+            "name": self._json_data["name"],
+            "views": self._json_data["views"]["counter"]
+        }
+        if not self._author:
+            metadata["author"] = self._json_data["userProfile"]["displayName"]
+            metadata["author_twitch_id"] = self._json_data["userProfile"]["twitchId"]
+        if self._fmt:
+            metadata["format"] = self._fmt
+        dt = self._parse_date()
+        if dt:
+            metadata["date"] = dt
         return metadata
 
     def _get_deck(self) -> Deck | None:

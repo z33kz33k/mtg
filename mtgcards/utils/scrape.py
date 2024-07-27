@@ -7,11 +7,13 @@
     @author: z33k
 
 """
+import json
 import logging
 import time
 from functools import wraps
 from typing import Callable, Dict, Optional, Union
 
+import brotli
 import requests
 from requests.exceptions import HTTPError
 from bs4 import BeautifulSoup
@@ -49,8 +51,24 @@ def timed_request(
     else:
         response = requests.get(url, **requests_kwargs)
     http_requests_count += 1
+    if str(response.status_code)[0] in ("4", "5"):
+        msg = f"Request failed with: '{response.status_code} {response.reason}'"
+        if response.status_code in (502, 503, 504):
+            raise HTTPError(msg)
+        _log.warning(msg)
+
+    # handle brotli compression
+    if response.headers.get("Content-Encoding") == "br":
+        try:
+            decompressed = brotli.decompress(response.content)
+            if return_json:
+                return json.loads(decompressed)
+            return decompressed
+        except brotli.error:
+            pass
+
     if return_json:
-        return response.json()
+        return response.json() if response.text else {}
     return response.text
 
 
@@ -182,7 +200,7 @@ def accept_consent(driver: WebDriver, xpath: str, timeout=5.0) -> None:
     webdriver.
 
     If the located element is not present, this function just returns doing nothing. Otherwise,
-    the button is clicked and the driver waits for its disappearance than returns itself.
+    the located element is clicked and the driver waits for its disappearance.
 
     Args:
         driver: a Chrome webdriver object
