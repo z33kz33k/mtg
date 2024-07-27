@@ -12,8 +12,8 @@ from dateutil.relativedelta import relativedelta
 
 from mtgcards.const import Json
 from mtgcards.decks import Deck, InvalidDeckError, DeckParser
-from mtgcards.scryfall import Card
-from mtgcards.utils.scrape import timed_request
+from mtgcards.scryfall import find_by_id, find_by_name
+from mtgcards.utils.scrape import ScrapingError, timed_request
 
 
 class StreamdeckerParser(DeckParser):
@@ -25,8 +25,9 @@ class StreamdeckerParser(DeckParser):
         super().__init__(fmt, author)
         *_, self._decklist_id = url.split("/")
         self._json_data = timed_request(
-            self.API_URL_TEMPLATE.format(self._decklist_id), return_json=True)
+            self.API_URL_TEMPLATE.format(self._decklist_id), return_json=True)["data"]
         self._metadata = self._get_metadata()
+        self._mainboard, self._sideboard, self._commander, self._companion = [], [], None, None
         self._deck = self._get_deck()
 
     def _parse_date(self) -> date | None:
@@ -38,7 +39,7 @@ class StreamdeckerParser(DeckParser):
             return dt - timedelta(days=amount)
         elif time in ("months", "month"):
             return dt - relativedelta(months=amount)
-        elif time in ("years", "years"):
+        elif time in ("years", "year"):
             return date(dt.year - amount, dt.month, dt.day)
         return None
 
@@ -58,27 +59,28 @@ class StreamdeckerParser(DeckParser):
             metadata["date"] = dt
         return metadata
 
-    def _get_deck(self) -> Deck | None:
-        mainboard, sideboard, commander = [], [], None
-        # TODO: adapt to streamdecker JSON
-        # for _, card in self._json_data["mainboard"].items():
-        #     mainboard.extend(self._parse_card(card))
-        # for _, card in self._json_data["sideboard"].items():
-        #     sideboard.extend(self._parse_card(card))
-        # if self._json_data["commanders"]:
-        #     card = next(iter(self._json_data["commanders"].items()))[1]
-        #     result = self._parse_card(card)
-        #     if result:
-        #         commander = result[0]
+    def _parse_card(self, json_card: Json) -> None:
+        scryfall_id = json_card["scryfallId"]
+        name = json_card["name"]
+        card = find_by_id(scryfall_id)
+        if not card:
+            card = find_by_name(name)
+            if not card:
+                raise ScrapingError(f"{name!r} card cannot be found")
+        if json_card["main"]:
+            self._mainboard.extend([card] * json_card["main"])
+        if json_card["sideboard"]:
+            self._sideboard.extend([card] * json_card["sideboard"])
+        if json_card["commander"]:
+            self._commander.extend([card] * json_card["commander"])
+        if json_card["companion"]:
+            self._companion.extend([card] * json_card["companion"])
 
+    def _get_deck(self) -> Deck | None:
+        for card in self._json_data["cardList"]:
+            self._parse_card(card)
         try:
-            return Deck(mainboard, sideboard, commander, metadata=self._metadata)
+            return Deck(self._mainboard, self._sideboard, self._commander, metadata=self._metadata)
         except InvalidDeckError:
             return None
 
-    def _parse_card(self, json_card: Json) -> list[Card]:
-        # TODO: adapt to streamdecker JSON
-        # quantity = json_card["quantity"]
-        # set_code, name = json_card["card"]["set"], json_card["card"]["name"]
-        # return self._get_playset(name, quantity, set_code)
-        pass
