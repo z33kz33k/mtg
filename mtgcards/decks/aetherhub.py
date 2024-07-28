@@ -45,8 +45,9 @@ class AetherhubParser(DeckParser):
         "Oathbreaker": ("oathbreaker", Mode.BO3),
     }
 
-    def __init__(self, url: str, fmt="standard", author="") -> None:
+    def __init__(self, url: str, fmt="standard", author="", throttled=False) -> None:
         super().__init__(fmt, author)
+        self._throttled = throttled
         self._soup = getsoup(url)
         self._metadata = self._get_metadata()
         self._deck = self._get_deck()
@@ -142,6 +143,8 @@ class AetherhubParser(DeckParser):
         try:
             return Deck(mainboard, sideboard, commander, metadata=self._metadata)
         except InvalidDeckError:
+            if self._throttled:
+                raise
             return None
 
     def _parse_hover_tag(self, hover_tag: Tag) -> list[Card]:

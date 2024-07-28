@@ -121,6 +121,11 @@ def throttled(delay: float | Callable[..., float]) -> Callable:
     return decorate
 
 
+@throttled(0.5)
+def throttled_soup(url: str, headers: Dict[str, str] | None = None) -> BeautifulSoup:
+    return getsoup(url, headers=headers)
+
+
 def http_requests_counted(operation="") -> Callable:
     """Count HTTP requests done by the decorated operation.
 

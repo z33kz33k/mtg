@@ -9,13 +9,13 @@
 """
 from datetime import datetime
 
-from bs4 import BeautifulSoup, Tag
+from bs4 import Tag
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, InvalidDeckError, DeckParser, ParsingState
-from mtgcards.utils import extract_int, timed
-from mtgcards.utils.scrape import ScrapingError, getsoup, http_requests_counted, throttled
+from mtgcards.decks import Deck, DeckParser, InvalidDeckError, ParsingState
 from mtgcards.scryfall import Card, all_formats, all_sets
+from mtgcards.utils import extract_int, timed
+from mtgcards.utils.scrape import ScrapingError, getsoup, http_requests_counted, throttled_soup
 
 
 def _shift_to_commander(current_state: ParsingState) -> ParsingState:
@@ -42,34 +42,29 @@ def _shift_to_sideboard(current_state: ParsingState) -> "ParsingState":
     return ParsingState.SIDEBOARD
 
 
-HEADERS = {
-    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
-                  "Chrome/96.0.4664.113 Safari/537.36}",
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,"
-              "image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
-}
-
-
-@throttled(0.5)
-def throttled_soup(url: str) -> BeautifulSoup:
-    return getsoup(url, headers=HEADERS)
-
-
 class GoldfishParser(DeckParser):
     """Parser of MtGGoldfish decklist page.
     """
+    HEADERS = {
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
+                      "Chrome/96.0.4664.113 Safari/537.36}",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,"
+                  "image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
+    }
+
     FMT_NAMES = {
         "penny dreadful": "penny",
         "pauper commander": "paupercommander",
         "standard brawl": "standardbrawl",
     }
 
-    def __init__(self, url: str, fmt="standard", author="", raise_error=False) -> None:
+    def __init__(self, url: str, fmt="standard", author="", throttled=False) -> None:
         super().__init__(fmt, author)
-        self._soup = throttled_soup(url)
+        self._throttled = throttled
+        self._soup = throttled_soup(
+            url, headers=self.HEADERS) if self._throttled else getsoup(url, headers=self.HEADERS)
         self._metadata = self._get_metadata()
         self._deck = self._get_deck()
-        self._raise_error = raise_error
 
     def _get_metadata(self) -> Json:
         metadata = {}
@@ -118,7 +113,7 @@ class GoldfishParser(DeckParser):
                 elif row.text.strip().startswith("Companion"):
                     self._state = _shift_to_companion(self._state)
                 elif any(h in row.text.strip() for h in headers
-                         ) and not self._state is ParsingState.MAINBOARD:
+                         ) and self._state is not ParsingState.MAINBOARD:
                     self._state = _shift_to_mainboard(self._state)
                 elif "Sideboard" in row.text.strip():
                     self._state = _shift_to_sideboard(self._state)
@@ -138,9 +133,9 @@ class GoldfishParser(DeckParser):
         try:
             return Deck(mainboard, sideboard, commander, companion, metadata=self._metadata)
         except InvalidDeckError:
-            if not self._raise_error:
-                return None
-            raise
+            if self._throttled:
+                raise
+            return None
 
     def _parse_row(self, row: Tag) -> list[Card]:
         quantity_tag = row.find(class_="text-right")
@@ -174,7 +169,7 @@ def scrape_meta(fmt="standard") -> list[Deck]:
     if fmt not in all_formats():
         raise ValueError(f"Invalid format: {fmt!r}. Can be only one of: {all_formats()}")
     url = f"https://www.mtggoldfish.com/metagame/{fmt}/full"
-    soup = getsoup(url, headers=HEADERS)
+    soup = throttled_soup(url, headers=GoldfishParser.HEADERS)
     tiles = soup.find_all("div", class_="archetype-tile")
     if not tiles:
         raise ScrapingError("No deck tiles tags found")
@@ -182,7 +177,8 @@ def scrape_meta(fmt="standard") -> list[Deck]:
     for i, tile in enumerate(tiles, start=1):
         link = tile.find("a").attrs["href"]
         try:
-            deck = GoldfishParser(f"https://www.mtggoldfish.com{link}", fmt=fmt).deck
+            deck = GoldfishParser(
+                f"https://www.mtggoldfish.com{link}", fmt=fmt, throttled=True).deck
         except InvalidDeckError as err:
             raise ScrapingError(f"Scraping meta deck failed with: {err}")
         count = tile.find("span", class_="archetype-tile-statistic-value-extra-data").text.strip()
