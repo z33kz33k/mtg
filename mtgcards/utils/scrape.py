@@ -150,6 +150,7 @@ def http_requests_counted(operation="") -> Callable:
     return decorate
 
 
+@timed("getting dynamic soup")
 def get_dynamic_soup_by_xpath(
         url: str, xpath: str, click=False, consent_xpath="",
         timeout=10.0) -> tuple[BeautifulSoup, BeautifulSoup | None]:

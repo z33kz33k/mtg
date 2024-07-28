@@ -9,11 +9,12 @@
 """
 import re
 
+from mtgcards.const import Json
 from mtgcards.decks import ARENA_MULTIPART_SEPARATOR, Deck, DeckParser, InvalidDeckError, \
-    ParsingState, format_cards, set_cards
+    ParsingState, get_playset
 from mtgcards.scryfall import Card, MULTIPART_SEPARATOR as SCRYFALL_MULTIPART_SEPARATOR, \
-    find_by_name
-from mtgcards.utils import extract_int, getrepr, getint
+    find_by_collector_number
+from mtgcards.utils import extract_int, getint, getrepr
 
 
 def _shift_to_idle(current_state: ParsingState) -> ParsingState:
@@ -23,20 +24,24 @@ def _shift_to_idle(current_state: ParsingState) -> ParsingState:
         raise RuntimeError(f"Invalid transition to IDLE from: {current_state.name}")
     return ParsingState.IDLE
 
+
 def _shift_to_mainboard(current_state: ParsingState) -> ParsingState:
     if current_state is not ParsingState.IDLE:
         raise RuntimeError(f"Invalid transition to MAINBOARD from: {current_state.name}")
     return ParsingState.MAINBOARD
+
 
 def _shift_to_sideboard(current_state: ParsingState) -> ParsingState:
     if current_state is not ParsingState.IDLE:
         raise RuntimeError(f"Invalid transition to SIDEBOARD from: {current_state.name}")
     return ParsingState.SIDEBOARD
 
+
 def _shift_to_commander(current_state: ParsingState) -> ParsingState:
     if current_state is not ParsingState.IDLE:
         raise RuntimeError(f"Invalid transition to COMMANDER from: {current_state.name}")
     return ParsingState.COMMANDER
+
 
 def _shift_to_companion(current_state: ParsingState) -> ParsingState:
     if current_state is not ParsingState.IDLE:
@@ -72,7 +77,7 @@ class PlaysetLine:
         return self._name
 
     @property
-    def set_code(self) -> str | None:
+    def set_code(self) -> str:
         return self._set_code
 
     @property
@@ -90,7 +95,7 @@ class PlaysetLine:
             self._set_code, rest = rest.split(")")
             self._collector_number = getint(rest.strip())
         else:
-            self._name, self._set_code, self._collector_number = rest, None, None
+            self._name, self._set_code, self._collector_number = rest, "", None
         self._name = self._name.replace(ARENA_MULTIPART_SEPARATOR, SCRYFALL_MULTIPART_SEPARATOR)
 
     def __repr__(self) -> str:
@@ -109,12 +114,9 @@ class PlaysetLine:
             a list of cards according to this line's quantity or an empty list if no card can be identified
         """
         if self.is_extended:
-            cards = set_cards(self.set_code.lower())
-            if card := find_by_name(self.name, cards):
+            if card := find_by_collector_number(self.collector_number, self.set_code):
                 return [card] * self.quantity
-
-        card = find_by_name(self.name, format_cards(fmt))
-        return [card] * self.quantity if card else []
+        return get_playset(self.name, self.quantity, self.set_code, fmt)
 
 
 def is_playset_line(line: str) -> bool:
@@ -139,12 +141,11 @@ def is_arena_line(line: str) -> bool:
     return False
 
 
-
 class ArenaParser(DeckParser):
     """Parser of lines of text that denote a deck in Arena format.
     """
-    def __init__(self, lines: list[str], fmt="standard", author="") -> None:
-        super().__init__(fmt, author)
+    def __init__(self, lines: list[str], metadata: Json | None = None) -> None:
+        super().__init__(metadata)
         self._lines = lines
         self._deck = self._get_deck()
 
@@ -166,20 +167,17 @@ class ArenaParser(DeckParser):
                     self._state = _shift_to_mainboard(self._state)
 
                 if self._state is ParsingState.SIDEBOARD:
-                    sideboard.extend(PlaysetLine(line).to_playset(self._fmt))
+                    sideboard.extend(PlaysetLine(line).to_playset(self.fmt))
                 elif self._state is ParsingState.COMMANDER:
-                    result = PlaysetLine(line).to_playset(self._fmt)
+                    result = PlaysetLine(line).to_playset(self.fmt)
                     commander = result[0] if result else None
                 elif self._state is ParsingState.COMPANION:
-                    result = PlaysetLine(line).to_playset(self._fmt)
+                    result = PlaysetLine(line).to_playset(self.fmt)
                     companion = result[0] if result else None
                 elif self._state is ParsingState.MAINBOARD:
-                    mainboard.extend(PlaysetLine(line).to_playset(self._fmt))
+                    mainboard.extend(PlaysetLine(line).to_playset(self.fmt))
 
         try:
-            metadata = {"format": self._fmt}
-            if self._author:
-                metadata["author"] = self._author
-            return Deck(mainboard, sideboard, commander, companion, metadata)
+            return Deck(mainboard, sideboard, commander, companion, self._metadata)
         except InvalidDeckError:
             return None

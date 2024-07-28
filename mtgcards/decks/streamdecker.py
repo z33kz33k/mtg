@@ -7,13 +7,18 @@
     @author: z33k
 
 """
+import logging
 from datetime import date, timedelta
+
 from dateutil.relativedelta import relativedelta
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, InvalidDeckError, UrlDeckParser
-from mtgcards.scryfall import find_by_id, find_by_name
-from mtgcards.utils.scrape import ScrapingError, timed_request
+from mtgcards.decks import Deck, InvalidDeckError, UrlDeckParser, find_card_by_name
+from mtgcards.scryfall import find_by_id
+from mtgcards.utils.scrape import timed_request
+
+
+_log = logging.getLogger(__name__)
 
 
 class StreamdeckerParser(UrlDeckParser):
@@ -21,17 +26,17 @@ class StreamdeckerParser(UrlDeckParser):
     """
     API_URL_TEMPLATE = "https://www.streamdecker.com/api/deck/{}"
 
-    def __init__(self, url: str, fmt="standard", author="") -> None:
-        super().__init__(url, fmt, author)
+    def __init__(self, url: str, metadata: Json | None = None) -> None:
+        super().__init__(url, metadata)
         *_, self._decklist_id = url.split("/")
         self._json_data = timed_request(
             self.API_URL_TEMPLATE.format(self._decklist_id), return_json=True)["data"]
-        self._metadata = self._get_metadata()
+        self._update_metadata()
         self._mainboard, self._sideboard, self._commander, self._companion = [], [], None, None
         self._deck = self._get_deck()
 
     @staticmethod
-    def is_deck_url(url: str) -> bool:
+    def is_deck_url(url: str) -> bool:  # override
         return "streamdecker.com/deck/" in url
 
     def _parse_date(self) -> date | None:
@@ -47,30 +52,24 @@ class StreamdeckerParser(UrlDeckParser):
             return date(dt.year - amount, dt.month, dt.day)
         return None
 
-    def _get_metadata(self) -> Json:
-        metadata = {
+    def _update_metadata(self) -> None:  # override
+        self._metadata.update({
             "source": "www.streamdecker.com",
             "name": self._json_data["name"],
             "views": self._json_data["views"]["counter"]
-        }
-        if not self._author:
-            metadata["author"] = self._json_data["userProfile"]["displayName"]
-            metadata["author_twitch_id"] = self._json_data["userProfile"]["twitchId"]
-        if self._fmt:
-            metadata["format"] = self._fmt
-        dt = self._parse_date()
-        if dt:
-            metadata["date"] = dt
-        return metadata
+        })
+        if not self.author:
+            self._metadata["author"] = self._json_data["userProfile"]["displayName"]
+        self._metadata["author_twitch_id"] = self._json_data["userProfile"]["twitchId"]
+        if dt := self._parse_date():
+            self._metadata["date"] = dt
 
     def _parse_card(self, json_card: Json) -> None:
         scryfall_id = json_card["scryfallId"]
         name = json_card["name"]
         card = find_by_id(scryfall_id)
         if not card:
-            card = find_by_name(name)
-            if not card:
-                raise ScrapingError(f"{name!r} card cannot be found")
+            card = find_card_by_name(name, fmt=self.fmt)
         if json_card["main"]:
             self._mainboard.extend([card] * json_card["main"])
         if json_card["sideboard"]:
@@ -85,6 +84,7 @@ class StreamdeckerParser(UrlDeckParser):
             self._parse_card(card)
         try:
             return Deck(self._mainboard, self._sideboard, self._commander, metadata=self._metadata)
-        except InvalidDeckError:
+        except InvalidDeckError as err:
+            _log.warning(f"Scraping failed with: {err}")
             return None
 

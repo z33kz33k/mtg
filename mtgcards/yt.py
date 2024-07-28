@@ -22,6 +22,7 @@ import requests
 import scrapetube
 from youtubesearchpython import Channel as YtspChannel
 
+from mtgcards.const import Json
 from mtgcards.decks import Deck, UrlDeckParser
 from mtgcards.decks.arena import ArenaParser, is_arena_line, is_empty, is_playset_line
 from mtgcards.decks.goldfish import GoldfishParser
@@ -145,6 +146,10 @@ class Video:
         return self._id
 
     @property
+    def url(self) -> str:
+        return self.URL_TEMPLATE.format(self.id)
+
+    @property
     def author(self) -> str:
         return self._author
 
@@ -192,6 +197,23 @@ class Video:
     def deck(self) -> Deck | None:
         return self._deck
 
+    @property
+    def metadata(self) -> Json:
+        metadata = {
+            "author": self.author,
+            "video": {
+                "url": self.url,
+                "title": self.title,
+                "description": self.description,
+                "keywords": self.keywords,
+                "date": self.publish_date,
+                "views": self.views
+            }
+        }
+        if self.format:
+            metadata["format"] = self.format
+        return metadata
+
     def __init__(self, video_id: str) -> None:
         """Initialize.
 
@@ -213,7 +235,7 @@ class Video:
         return getrepr(self.__class__, ("title", self.title), ("deck", self.deck))
 
     def _get_pytube(self) -> pytubefix.YouTube:
-        return pytubefix.YouTube(self.URL_TEMPLATE.format(self.id))
+        return pytubefix.YouTube(self.url)
 
     def _get_pytube_data(self) -> None:
         self._author = self._pytube.author
@@ -236,7 +258,7 @@ class Video:
                 fmt_soup[fmt].append(fmt)
         return fmt_soup
 
-    def _get_format(self) -> str:
+    def _get_format(self) -> str | None:
         # if format soup has been populated, take the most common item
         if self._format_soup:
             two_best = Counter(itertools.chain(*self._format_soup.values())).most_common(2)
@@ -245,7 +267,7 @@ class Video:
                 return "standardbrawl"
             return two_best[0]
         # if not, fall back to default
-        return "standard"
+        return None
 
     def _parse_lines(self) -> tuple[list[str], list[str]]:
         links, arena_lines = [], []
@@ -292,9 +314,9 @@ class Video:
                 lines = timed_request(url).splitlines()
                 lines = [l for l in lines if is_arena_line(l) or is_empty(l)]
                 if lines:
-                    deck = ArenaParser(lines, fmt=self._format, author=self.author).deck
+                    deck = ArenaParser(lines, self.metadata).deck
             else:
-                deck = parser_type(url, self._format, self.author).deck
+                deck = parser_type(url, self.metadata).deck
             if deck:
                 return deck
         return None
@@ -342,6 +364,10 @@ class Channel(list):
     @property
     def subscribers(self) -> int | None:
         return self._subscribers
+
+    @property
+    def decks(self) -> list[Deck]:
+        return [video.deck for video in self if video.deck]
 
     def __init__(self, url: str, limit=10) -> None:
         try:

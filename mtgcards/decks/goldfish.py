@@ -7,15 +7,19 @@
     @author: z33k
 
 """
+import logging
 from datetime import datetime
 
 from bs4 import Tag
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, InvalidDeckError, ParsingState, UrlDeckParser
+from mtgcards.decks import Deck, InvalidDeckError, ParsingState, UrlDeckParser, get_playset
 from mtgcards.scryfall import Card, all_formats, all_sets
 from mtgcards.utils import extract_int, timed
 from mtgcards.utils.scrape import ScrapingError, getsoup, http_requests_counted, throttled_soup
+
+
+_log = logging.getLogger(__name__)
 
 
 def _shift_to_commander(current_state: ParsingState) -> ParsingState:
@@ -58,30 +62,26 @@ class GoldfishParser(UrlDeckParser):
         "standard brawl": "standardbrawl",
     }
 
-    def __init__(self, url: str, fmt="standard", author="", throttled=False) -> None:
-        super().__init__(url, fmt, author)
+    def __init__(self, url: str, metadata: Json | None = None, throttled=False) -> None:
+        super().__init__(url, metadata)
         self._throttled = throttled
         self._soup = throttled_soup(
             url, headers=self.HEADERS) if self._throttled else getsoup(url, headers=self.HEADERS)
-        self._metadata = self._get_metadata()
+        self._update_metadata()
         self._deck = self._get_deck()
 
     @staticmethod
-    def is_deck_url(url: str) -> bool:
+    def is_deck_url(url: str) -> bool:  # override
         return "mtggoldfish.com/deck/" in url
 
-    def _get_metadata(self) -> Json:
-        metadata = {}
+    def _update_metadata(self) -> None:  # override
         title_tag = self._soup.find("h1", class_="title")
-        metadata["source"] = "www.mtggoldfish.com"
-        metadata["name"], *_ = title_tag.text.strip().split("\n")
-        metadata["format"] = self._fmt
-        if self._author:
-            metadata["author"] = self._author
-        else:
+        self._metadata["source"] = "www.mtggoldfish.com"
+        self._metadata["name"], *_ = title_tag.text.strip().split("\n")
+        if not self.author:
             author_tag = title_tag.find("span")
             if author_tag is not None:
-                metadata["author"] = author_tag.text.strip().removeprefix("by ")
+                self._metadata["author"] = author_tag.text.strip().removeprefix("by ")
         info_tag = self._soup.find("p", class_="deck-container-information")
         lines = [l for l in info_tag.text.splitlines() if l]
         source_idx = None
@@ -90,19 +90,21 @@ class GoldfishParser(UrlDeckParser):
                 fmt = line.removeprefix("Format:").strip().lower()
                 if fmt in self.FMT_NAMES:
                     fmt = self.FMT_NAMES[fmt]
-                if fmt in all_formats():
-                    self._fmt = fmt
-                    metadata["format"] = fmt
+                if fmt != self.fmt and fmt in all_formats():
+                    if self.fmt:
+                        _log.warning(
+                            f"Earlier specified format: {self.fmt!r} overwritten with a scraped "
+                            f"one: {fmt!r}")
+                    self._metadata["format"] = fmt
             elif line.startswith("Event:"):
-                metadata["event"] = line.removeprefix("Event:").strip()
+                self._metadata["event"] = line.removeprefix("Event:").strip()
             elif line.startswith("Deck Source:"):
                 source_idx = i + 1
             elif line.startswith("Deck Date:"):
-                metadata["date"] = datetime.strptime(
+                self._metadata["date"] = datetime.strptime(
                     line.removeprefix("Deck Date:").strip(), "%b %d, %Y").date()
         if source_idx is not None:
-            metadata["original_source"] = lines[source_idx].strip()
-        return metadata
+            self._metadata["original_source"] = lines[source_idx].strip()
 
     def _get_deck(self) -> Deck | None:  # override
         mainboard, sideboard, commander, companion = [], [], None, None
@@ -136,9 +138,10 @@ class GoldfishParser(UrlDeckParser):
 
         try:
             return Deck(mainboard, sideboard, commander, companion, metadata=self._metadata)
-        except InvalidDeckError:
+        except InvalidDeckError as err:
             if self._throttled:
                 raise
+            _log.warning(f"Scraping failed with: {err}")
             return None
 
     def _parse_row(self, row: Tag) -> list[Card]:
@@ -163,12 +166,12 @@ class GoldfishParser(UrlDeckParser):
 
         set_code = set_code[:-1].lower()
         set_code = set_code if set_code in set(all_sets()) else ""
-        return self._get_playset(name, quantity, set_code)
+        return get_playset(name, quantity, set_code, self.fmt)
 
 
 @http_requests_counted("scraping meta decks")
 @timed("scraping meta decks", precision=1)
-def scrape_meta(fmt="standard") -> list[Deck]:
+def scrape_meta(fmt="") -> list[Deck]:
     fmt = fmt.lower()
     if fmt not in all_formats():
         raise ValueError(f"Invalid format: {fmt!r}. Can be only one of: {all_formats()}")
@@ -182,7 +185,7 @@ def scrape_meta(fmt="standard") -> list[Deck]:
         link = tile.find("a").attrs["href"]
         try:
             deck = GoldfishParser(
-                f"https://www.mtggoldfish.com{link}", fmt=fmt, throttled=True).deck
+                f"https://www.mtggoldfish.com{link}", {"format": fmt}, throttled=True).deck
         except InvalidDeckError as err:
             raise ScrapingError(f"Scraping meta deck failed with: {err}")
         count = tile.find("span", class_="archetype-tile-statistic-value-extra-data").text.strip()

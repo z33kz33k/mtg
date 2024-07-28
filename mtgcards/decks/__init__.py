@@ -552,6 +552,15 @@ class Deck:
             self, mainboard: Iterable[Card], sideboard: Iterable[Card] | None = None,
             commander: Card | None = None, companion: Card | None = None,
             metadata: Json | None = None) -> None:
+        if commander:
+            if not commander.is_legendary or (
+                    not commander.is_creature and not commander.is_planeswalker):
+                raise InvalidDeckError(
+                    f"Commander must be a legendary creature/planeswalker. '{commander}' is not")
+        if companion:
+            if not companion.is_companion:
+                raise InvalidDeckError(f"Not a companion card: '{commander}'")
+
         sideboard = [*sideboard] if sideboard else []
         self._companion = companion
         sideboard = [
@@ -563,7 +572,7 @@ class Deck:
             for card in [*mainboard, *sideboard]:
                 if any(letter not in commander.colors for letter in card.colors):
                     raise InvalidDeckError(
-                        f"Color of {card} doesn't match commander color: "
+                        f"Color of '{card}' doesn't match commander color: "
                         f"{card.colors}!={commander.colors}")
 
         self._max_playset_count = 1 if commander is not None else 4
@@ -691,6 +700,9 @@ Name={}
         "www.moxfield.com": "Moxfield",
         "www.streamdecker.com": "Streamdecker",
         "mtga.untapped.gg": "Untapped",
+        "mtgazone.com": "MGTAZone",
+        "www.tcgplayer.com": "TCGPlayer",
+        "www.cardhoarder.com": "Cardhoarder",
     }
 
     FMT_NICKNAMES = {
@@ -843,7 +855,7 @@ Name={}
         return metadata
 
     @staticmethod
-    def _parse_dck_line(line: str, fmt="standard") -> list[Card]:
+    def _parse_dck_line(line: str, fmt="") -> list[Card]:
         quantity, rest = line.split(maxsplit=1)
         name, set_code, _ = rest.split("|")
         set_code = set_code.lower()
@@ -956,17 +968,27 @@ class ParsingState(Enum):
     COMPANION = auto()
 
 
-def get_playset(name: str, quantity: int, set_code="", fmt="standard") -> list[Card]:
+def find_card_by_name(name, set_code="", fmt="") -> Card:
+    card = None
     if set_code:
-        cards = set_cards(set_code)
-        card = find_by_name(name, cards)
-        if card:
-            return [card] * quantity
-    card = find_by_name(name, format_cards(fmt))
+        card = find_by_name(name, set_cards(set_code))
+    if not card and fmt:
+        card = find_by_name(name, format_cards(fmt))
+    if not card and not fmt:
+        card = find_by_name(name, format_cards("standard"))
     if not card:
         card = find_by_name(name)  # look up the whole pool as the last resort
     if not card:
         raise ScrapingError(f"{name!r} card cannot be found")
+    return card
+
+
+def get_playset(name: str, quantity: int, set_code="", fmt="") -> list[Card]:
+    fmt = fmt.lower()
+    if fmt and fmt not in all_formats():
+        raise ValueError(
+            f"Invalid format: {fmt!r}. Can be only one of: {all_formats()}")
+    card = find_card_by_name(name, set_code, fmt)
     return [card] * quantity
 
 
@@ -977,11 +999,16 @@ class DeckParser(ABC):
     def deck(self) -> Deck | None:
         return self._deck
 
-    def __init__(self, fmt="standard", author="") -> None:
-        fmt = fmt.lower()
-        if fmt not in all_formats():
-            raise ValueError(f"Invalid format: {fmt!r}. Can be only one of: {all_formats()}")
-        self._fmt, self._author = fmt, author
+    @property
+    def fmt(self) -> str:
+        return self._metadata.get("format", "")
+
+    @property
+    def author(self) -> str | None:
+        return self._metadata.get("author")
+
+    def __init__(self, metadata: Json | None = None) -> None:
+        self._metadata = metadata or {}
         self._state = ParsingState.IDLE
         self._deck = None
 
@@ -989,11 +1016,9 @@ class DeckParser(ABC):
     def _get_deck(self) -> Deck | None:
         raise NotImplementedError
 
-    def _get_playset(self, name: str, quantity: int, set_code="") -> list[Card]:
-        return get_playset(name, quantity, set_code, self._fmt)
-
     @staticmethod
     def _get_playset_by_id(scryfall_id: str, quantity: int) -> list[Card] | None:
+        scryfall_id = scryfall_id.lower()
         card = find_by_id(scryfall_id)
         if not card:
             _log.warning(
@@ -1008,11 +1033,15 @@ class UrlDeckParser(DeckParser):
     def url(self) -> str:
         return self._url
 
-    def __init__(self, url: str, fmt="standard", author="") -> None:
+    def __init__(self, url: str, metadata: Json | None = None) -> None:
         if not self.is_deck_url(url):
             raise ValueError(f"Not a deck URL: {url!r}")
-        super().__init__(fmt, author)
+        super().__init__(metadata)
         self._url = url
+
+    @abstractmethod
+    def _update_metadata(self) -> None:
+        raise NotImplementedError
 
     @staticmethod
     @abstractmethod

@@ -579,6 +579,10 @@ class Card:
         return self.rarity is Rarity.MYTHIC
 
     @property
+    def is_legendary(self) -> bool:
+        return "Legendary" in self.supertypes
+
+    @property
     def released_at(self) -> date:
         return date.fromisoformat(self.json["released_at"])
 
@@ -1049,12 +1053,11 @@ def find_by_parts(
 
 
 def find_by_collector_number(
-        collector_number: int, data: Iterable[Card] | None = None) -> Card | None:
+        collector_number: int, set_code: str) -> Card | None:
     """Return a Scryfall card data designated by provided ``collector_number`` from ``data`` or
     `None`.
     """
-    data = data if data else bulk_data()
-    data = [card for card in data if card.collector_number_int]
+    data = [card for card in set_cards(set_code) if card.collector_number_int is not None]
     return find_card(lambda c: c.collector_number == collector_number, data)
 
 

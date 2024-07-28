@@ -1,8 +1,8 @@
 """
 
-    mtgcards.decks.tcgplayer.py
+    mtgcards.decks.cardhoarder.py
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Parse TCG Player decklist page.
+    Parse Cardhoarder decklist page.
 
     @author: z33k
 
@@ -14,8 +14,8 @@ from mtgcards.decks import Deck, UrlDeckParser
 # html parsing
 
 
-class TcgplayerParser(UrlDeckParser):
-    """Parser of TCG Player decklist page.
+class CardhoarderParser(UrlDeckParser):
+    """Parser of Cardhoarder decklist page.
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -23,10 +23,11 @@ class TcgplayerParser(UrlDeckParser):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "decks.tcgplayer.com/" in url
+        return "www.cardhoarder.com/d/" in url
 
     def _update_metadata(self) -> None:  # override
-        self._metadata["source"] = "www.tcgplayer.com"
+        self._metadata["source"] = "www.cardhoarder.com"
 
     def _get_deck(self) -> Deck | None:  # override
         pass
+

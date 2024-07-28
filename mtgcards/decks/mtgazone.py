@@ -7,21 +7,24 @@
     @author: z33k
 
 """
+from mtgcards.const import Json
 from mtgcards.decks import Deck, UrlDeckParser
 
 
 class MtgazoneParser(UrlDeckParser):
     """Parser of MTG Arena Zone decklist page.
     """
-    def __init__(self, url: str, fmt="standard", author="", throttled=False) -> None:
-        super().__init__(url, fmt, author)
+
+    def __init__(self, url: str, metadata: Json | None = None, throttled=False) -> None:
+        super().__init__(url, metadata)
+        self._update_metadata()
 
     @staticmethod
-    def is_deck_url(url: str) -> bool:
+    def is_deck_url(url: str) -> bool:  # override
         return "mtgazone.com/user-decks/" in url
 
-    def _get_deck(self) -> Deck | None:
-        pass
+    def _update_metadata(self) -> None:  # override
+        self._metadata["source"] = "mtgazone.com"
 
-    def _parse(self) -> Deck | None:
+    def _get_deck(self) -> Deck | None:  # override
         pass
