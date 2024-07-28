@@ -151,8 +151,8 @@ def http_requests_counted(operation="") -> Callable:
 
 
 def get_dynamic_soup_by_xpath(
-        url: str, xpath: str, timeout=10.0, click=False,
-        consent_xpath="") -> tuple[BeautifulSoup, BeautifulSoup | None]:
+        url: str, xpath: str, click=False, consent_xpath="",
+        timeout=10.0) -> tuple[BeautifulSoup, BeautifulSoup | None]:
     """Return BeautifulSoup object(s) from dynamically rendered page source at ``url`` using
     Selenium WebDriver that waits for presence of an element specified by ``xpath`.
 
@@ -198,6 +198,13 @@ def get_dynamic_soup_by_xpath(
         raise
     finally:
         driver.quit()
+
+
+@throttled(0.5)
+def throttled_dynamic_soup_by_xpath(
+        url: str, xpath: str, timeout=10.0, click=False,
+        consent_xpath="") -> tuple[BeautifulSoup, BeautifulSoup | None]:
+    return get_dynamic_soup_by_xpath(url, xpath, timeout, click, consent_xpath)
 
 
 def accept_consent(driver: WebDriver, xpath: str, timeout=5.0) -> None:

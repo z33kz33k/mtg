@@ -690,6 +690,7 @@ Name={}
         "aetherhub.com": "Aetherhub",
         "www.moxfield.com": "Moxfield",
         "www.streamdecker.com": "Streamdecker",
+        "mtga.untapped.gg": "Untapped",
     }
 
     FMT_NICKNAMES = {
