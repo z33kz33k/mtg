@@ -988,3 +988,20 @@ class DeckParser(ABC):
                 f"to date?")
             return None
         return [card] * quantity
+
+
+class UrlDeckParser(DeckParser):
+    @property
+    def url(self) -> str:
+        return self._url
+
+    def __init__(self, url: str, fmt="standard", author="") -> None:
+        if not self.is_deck_url(url):
+            raise ValueError(f"Not a deck URL: {url!r}")
+        super().__init__(fmt, author)
+        self._url = url
+
+    @staticmethod
+    @abstractmethod
+    def is_deck_url(url: str) -> bool:
+        raise NotImplementedError

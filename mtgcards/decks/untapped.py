@@ -7,14 +7,18 @@
     @author: z33k
 
 """
-from typing import Optional
-
-from mtgcards.decks import Deck, DeckParser
+from mtgcards.decks import Deck, UrlDeckParser
 
 
-class UntappedParser(DeckParser):
+class UntappedParser(UrlDeckParser):
     """Parser of Untapped.gg decklist page.
     """
+    def __init__(self, url: str, fmt="standard", author="", throttled=False) -> None:
+        super().__init__(url, fmt, author)
+
+    @staticmethod
+    def is_deck_url(url: str) -> bool:
+        return "mtga.untapped.gg/profile/" in url and "/deck/" in url
 
     def _get_deck(self) -> Deck | None:
         pass

@@ -12,13 +12,15 @@ from datetime import datetime
 from bs4 import Tag
 
 from mtgcards.const import Json
-from mtgcards.decks import Archetype, Deck, DeckParser, InvalidDeckError, Mode
+from mtgcards.decks import Archetype, Deck, InvalidDeckError, Mode, UrlDeckParser
 from mtgcards.scryfall import Card, all_sets
 from mtgcards.utils import extract_float, extract_int
 from mtgcards.utils.scrape import ScrapingError, getsoup
 
 
-class AetherhubParser(DeckParser):
+# TODO: scrap the Mode idea as a name of a component for deck exported name, replace it with
+#  simple is_bo3 property (if deck has a sideboard more than 7 cards long it's bo3)
+class AetherhubParser(UrlDeckParser):
     """Parser of Aetherhub decklist page.
 
     Note:
@@ -46,11 +48,15 @@ class AetherhubParser(DeckParser):
     }
 
     def __init__(self, url: str, fmt="standard", author="", throttled=False) -> None:
-        super().__init__(fmt, author)
+        super().__init__(url, fmt, author)
         self._throttled = throttled
         self._soup = getsoup(url)
         self._metadata = self._get_metadata()
         self._deck = self._get_deck()
+
+    @staticmethod
+    def is_deck_url(url: str) -> bool:
+        return "aetherhub.com/Deck/" in url
 
     def _get_metadata(self) -> Json:
         metadata = {"source": "aetherhub.com"}

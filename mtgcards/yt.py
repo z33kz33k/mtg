@@ -22,24 +22,20 @@ import requests
 import scrapetube
 from youtubesearchpython import Channel as YtspChannel
 
-from mtgcards.scryfall import all_formats
-from mtgcards.decks import Deck, DeckParser
-from mtgcards.decks.aetherhub import AetherhubParser
+from mtgcards.decks import Deck, UrlDeckParser
 from mtgcards.decks.arena import ArenaParser, is_arena_line, is_empty, is_playset_line
 from mtgcards.decks.goldfish import GoldfishParser
+from mtgcards.decks.aetherhub import AetherhubParser
 from mtgcards.decks.moxfield import MoxfieldParser
-from mtgcards.decks.mtgazone import MtgaZoneParser
 from mtgcards.decks.streamdecker import StreamdeckerParser
-from mtgcards.decks.tcgplayer import TcgPlayerParser
 from mtgcards.decks.untapped import UntappedParser
+from mtgcards.decks.mtgazone import MtgazoneParser
+from mtgcards.decks.tcgplayer import TcgplayerParser
+from mtgcards.scryfall import all_formats
 from mtgcards.utils import getrepr, timed
 from mtgcards.utils.scrape import timed_request
 
 _log = logging.getLogger(__name__)
-
-
-UrlParser = (AetherhubParser | GoldfishParser | MoxfieldParser | MtgaZoneParser |
-             StreamdeckerParser | TcgPlayerParser | UntappedParser)
 
 
 def channels() -> dict[str, str]:
@@ -63,15 +59,6 @@ class Video:
     """YouTube video showcasing a MtG deck with its most important metadata.
     """
     URL_TEMPLATE = "https://www.youtube.com/watch?v={}"
-
-    # decklist hooks
-    AETHERHUB_HOOK = "aetherhub.com/Deck/"
-    GOLDFISH_HOOK = "mtggoldfish.com/deck/"
-    MOXFIELD_HOOK = "moxfield.com/decks/"
-    MTGAZONE_HOOK = "mtgazone.com/user-decks/"
-    STREAMDECKER_HOOK = "streamdecker.com/deck/"
-    TCGPLAYER_HOOK = "decks.tcgplayer.com/"
-    UNTAPPED_HOOKS = {"mtga.untapped.gg", "/deck/"}
 
     SHORTENER_HOOKS = {
         "bit.ly/",
@@ -218,8 +205,8 @@ class Video:
         self._keywords, self._publish_date, self._views = None, None, None
         self._get_pytube_data()
         self._format_soup = self._get_format_soup()
-        self._links, self._arena_lines = self._parse_lines()
         self._format = self._get_format()
+        self._links, self._arena_lines = self._parse_lines()
         self._deck = self._get_deck()
 
     def __repr__(self) -> str:
@@ -275,24 +262,23 @@ class Video:
         return links, arena_lines
 
     @classmethod
-    def _process_hooks(cls, links: list[str]) -> dict[Type[UrlParser] | str, str]:
+    def _process_hooks(cls, links: list[str]) -> dict[Type[UrlDeckParser] | str, str]:
         parsers_map = {}
         for link in links:
-            if not parsers_map.get(AetherhubParser) and cls.AETHERHUB_HOOK in link:
-                parsers_map[AetherhubParser] = link
-            elif not parsers_map.get(GoldfishParser) and cls.GOLDFISH_HOOK in link:
+            if not parsers_map.get(GoldfishParser) and GoldfishParser.is_deck_url(link):
                 parsers_map[GoldfishParser] = link
-            elif not parsers_map.get(MoxfieldParser) and cls.MOXFIELD_HOOK in link:
+            elif not parsers_map.get(AetherhubParser) and AetherhubParser.is_deck_url(link):
+                parsers_map[AetherhubParser] = link
+            elif not parsers_map.get(MoxfieldParser) and MoxfieldParser.is_deck_url(link):
                 parsers_map[MoxfieldParser] = link
-            elif not parsers_map.get(MtgaZoneParser) and cls.MTGAZONE_HOOK in link:
-                parsers_map[MtgaZoneParser] = link
-            elif not parsers_map.get(StreamdeckerParser) and cls.STREAMDECKER_HOOK in link:
+            elif not parsers_map.get(StreamdeckerParser) and StreamdeckerParser.is_deck_url(link):
                 parsers_map[StreamdeckerParser] = link
-            elif not parsers_map.get(TcgPlayerParser) and cls.TCGPLAYER_HOOK in link:
-                parsers_map[TcgPlayerParser] = link
-            elif (not parsers_map.get(UntappedParser)
-                  and all(hook in link for hook in cls.UNTAPPED_HOOKS)):
+            elif not parsers_map.get(UntappedParser) and UntappedParser.is_deck_url(link):
                 parsers_map[UntappedParser] = link
+            elif not parsers_map.get(MtgazoneParser) and MtgazoneParser.is_deck_url(link):
+                parsers_map[MtgazoneParser] = link
+            elif not parsers_map.get(TcgplayerParser) and TcgplayerParser.is_deck_url(link):
+                parsers_map[TcgplayerParser] = link
             elif not parsers_map.get("pastebin-like") and any(
                     h in link for h in cls.PASTEBIN_LIKE_HOOKS):
                 parsers_map["pastebin-like"] = link

@@ -12,7 +12,7 @@ from datetime import datetime
 from bs4 import Tag
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, DeckParser, InvalidDeckError, ParsingState
+from mtgcards.decks import Deck, InvalidDeckError, ParsingState, UrlDeckParser
 from mtgcards.scryfall import Card, all_formats, all_sets
 from mtgcards.utils import extract_int, timed
 from mtgcards.utils.scrape import ScrapingError, getsoup, http_requests_counted, throttled_soup
@@ -42,7 +42,7 @@ def _shift_to_sideboard(current_state: ParsingState) -> "ParsingState":
     return ParsingState.SIDEBOARD
 
 
-class GoldfishParser(DeckParser):
+class GoldfishParser(UrlDeckParser):
     """Parser of MtGGoldfish decklist page.
     """
     HEADERS = {
@@ -59,12 +59,16 @@ class GoldfishParser(DeckParser):
     }
 
     def __init__(self, url: str, fmt="standard", author="", throttled=False) -> None:
-        super().__init__(fmt, author)
+        super().__init__(url, fmt, author)
         self._throttled = throttled
         self._soup = throttled_soup(
             url, headers=self.HEADERS) if self._throttled else getsoup(url, headers=self.HEADERS)
         self._metadata = self._get_metadata()
         self._deck = self._get_deck()
+
+    @staticmethod
+    def is_deck_url(url: str) -> bool:
+        return "mtggoldfish.com/deck/" in url
 
     def _get_metadata(self) -> Json:
         metadata = {}

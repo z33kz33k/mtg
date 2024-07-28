@@ -11,24 +11,28 @@ from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, InvalidDeckError, DeckParser
+from mtgcards.decks import Deck, InvalidDeckError, UrlDeckParser
 from mtgcards.scryfall import find_by_id, find_by_name
 from mtgcards.utils.scrape import ScrapingError, timed_request
 
 
-class StreamdeckerParser(DeckParser):
+class StreamdeckerParser(UrlDeckParser):
     """Parser of Streamdecker deck page.
     """
     API_URL_TEMPLATE = "https://www.streamdecker.com/api/deck/{}"
 
     def __init__(self, url: str, fmt="standard", author="") -> None:
-        super().__init__(fmt, author)
+        super().__init__(url, fmt, author)
         *_, self._decklist_id = url.split("/")
         self._json_data = timed_request(
             self.API_URL_TEMPLATE.format(self._decklist_id), return_json=True)["data"]
         self._metadata = self._get_metadata()
         self._mainboard, self._sideboard, self._commander, self._companion = [], [], None, None
         self._deck = self._get_deck()
+
+    @staticmethod
+    def is_deck_url(url: str) -> bool:
+        return "streamdecker.com/deck/" in url
 
     def _parse_date(self) -> date | None:
         date_text = self._json_data["updatedAt"].removesuffix(" ago")

@@ -10,12 +10,12 @@
 from datetime import datetime
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, InvalidDeckError, DeckParser
+from mtgcards.decks import Deck, InvalidDeckError, UrlDeckParser
 from mtgcards.scryfall import Card, all_sets
 from mtgcards.utils.scrape import timed_request
 
 
-class MoxfieldParser(DeckParser):
+class MoxfieldParser(UrlDeckParser):
     """Parser of Moxfield decklist page.
     """
     API_URL_TEMPLATE = "https://api2.moxfield.com/v3/decks/all/{}"
@@ -41,13 +41,17 @@ class MoxfieldParser(DeckParser):
     }
 
     def __init__(self, url: str, fmt="standard", author="") -> None:
-        super().__init__(fmt, author)
+        super().__init__(url, fmt, author)
         *_, self._decklist_id = url.split("/")
         self._json_data = timed_request(
             self.API_URL_TEMPLATE.format(self._decklist_id), return_json=True,
             headers=self.HEADERS)
         self._metadata = self._get_metadata()
         self._deck = self._get_deck()
+
+    @staticmethod
+    def is_deck_url(url: str) -> bool:
+        return "moxfield.com/decks/" in url
 
     def _get_metadata(self) -> Json:
         metadata = {"source": "www.moxfield.com"}
