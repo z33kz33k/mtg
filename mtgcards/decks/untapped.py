@@ -65,7 +65,7 @@ class UntappedParser(UrlDeckParser):
             name = name_tag.text.strip()
             quantity_tag = li_tag.find("span")
             quantity = int(quantity_tag.text.strip())
-            board.extend(get_playset(name, quantity))\
+            board.extend(get_playset(name, quantity))
 
         return board
 
@@ -75,8 +75,9 @@ class UntappedParser(UrlDeckParser):
                 self._parse_soup(self._soup),
                 self._parse_soup(self._sideboard_soup) if self._sideboard_soup else None,
                 metadata=self._metadata)
-        except InvalidDeckError:
+        except InvalidDeckError as err:
             if self._throttled:
                 raise
+            _log.warning(f"Scraping failed with: {err}")
             return None
 
