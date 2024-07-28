@@ -18,8 +18,6 @@ from mtgcards.utils import extract_float, extract_int
 from mtgcards.utils.scrape import ScrapingError, getsoup
 
 
-# TODO: scrap the Mode idea as a name of a component for deck exported name, replace it with
-#  simple is_bo3 property (if deck has a sideboard more than 7 cards long it's bo3)
 class AetherhubParser(UrlDeckParser):
     """Parser of Aetherhub decklist page.
 

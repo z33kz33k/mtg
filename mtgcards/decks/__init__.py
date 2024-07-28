@@ -43,6 +43,8 @@ class Archetype(Enum):
     RAMP= "ramp"
 
 
+# this is needed when scraping meta-decks from sites that subdivide meta based on the mode of
+# play (e.g. Aetherhub)
 class Mode(Enum):
     BO1 = "Bo1"
     BO3 = "Bo3"
@@ -476,6 +478,14 @@ class Deck:
     @property
     def classes(self) -> Counter:
         return Counter(itertools.chain(*[c.classes for c in self.all_cards]))
+
+    @property
+    def is_bo3(self) -> bool:
+        return self.has_sideboard and len(self.sideboard) > 7
+
+    @property
+    def is_bo1(self) -> bool:
+        return not self.is_bo3
 
     @property
     def theme(self) -> str | None:
@@ -952,6 +962,8 @@ def get_playset(name: str, quantity: int, set_code="", fmt="standard") -> list[C
         if card:
             return [card] * quantity
     card = find_by_name(name, format_cards(fmt))
+    if not card:
+        card = find_by_name(name)  # look up the whole pool as the last resort
     if not card:
         raise ScrapingError(f"{name!r} card cannot be found")
     return [card] * quantity
