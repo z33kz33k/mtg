@@ -104,6 +104,7 @@ class AetherhubScraper(DeckScraper):
         if meta_tag := self._soup.find("h5", class_="text-center"):
             text = meta_tag.text.strip()
             share_part, change_part = text.split("of meta")
+            self._metadata["meta"] = {}
             self._metadata["meta"]["share"] = extract_float(share_part)
             self._metadata["meta"]["share_change"] = extract_float(change_part)
 

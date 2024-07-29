@@ -848,6 +848,7 @@ Name={}
             idx = -1
         if idx != -1:
             idx += 1
+            metadata["meta"] = {}
             metadata["meta"]["place"] = extract_int(nameparts[idx])
             del nameparts[idx]
             nameparts.remove(f"Meta")
