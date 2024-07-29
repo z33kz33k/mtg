@@ -8,14 +8,14 @@
 
 """
 from mtgcards.const import Json
-from mtgcards.decks import Deck, UrlDeckParser
+from mtgcards.decks import Deck, DeckScraper
 
 
 # html parsing
 
 
-class TcgplayerParser(UrlDeckParser):
-    """Parser of TCG Player decklist page.
+class TcgplayerScraper(DeckScraper):
+    """Scraper of TCG Player decklist page.
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)

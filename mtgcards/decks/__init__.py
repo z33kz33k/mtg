@@ -546,7 +546,7 @@ class Deck:
 
     @property
     def is_meta(self) -> bool:
-        return any("meta" in k for k in self.metadata)
+        return self._metadata.get("meta") is not None
 
     def __init__(
             self, mainboard: Iterable[Card], sideboard: Iterable[Card] | None = None,
@@ -788,8 +788,8 @@ Name={}
         # meta
         if self._deck.is_meta:
             name += f"Meta{self.NAME_SEP}"
-            meta_place = self._deck.metadata.get("meta_place")
-            if meta_place:
+            meta = self._deck.metadata["meta"]
+            if meta_place := meta.get("place"):
                 name += f"#{str(meta_place).zfill(2)}{self.NAME_SEP}"
         if self._deck.name:
             name += f"{self._normalize(self._deck.name)}{self.NAME_SEP}"
@@ -848,7 +848,7 @@ Name={}
             idx = -1
         if idx != -1:
             idx += 1
-            metadata["meta_place"] = extract_int(nameparts[idx])
+            metadata["meta"]["place"] = extract_int(nameparts[idx])
             del nameparts[idx]
             nameparts.remove(f"Meta")
         metadata["name"] = " ".join(nameparts[:-1])
@@ -869,11 +869,11 @@ Name={}
         file = getfile(path, ext=".dck")
         commander, mainboard, sideboard, metadata = None, [], [], {}
         commander_on, mainboard_on, sideboard_on = False, False, False
-        fmt = "standard"
+        fmt = ""
         for line in file.read_text(encoding="utf-8").splitlines():
             if line.startswith("Name="):
                 metadata = cls._parse_name(line.removeprefix("Name="))
-                fmt = metadata.get("format", "standard")
+                fmt = metadata.get("format", "")
             elif line == "[Commander]":
                 commander_on = True
                 continue
@@ -943,7 +943,7 @@ Name={}
         if not all(is_arena_line(l) or is_empty(l) for l in lines):
             raise ValueError(f"Not an MTG Arena deck file: '{file}'")
         metadata = cls._parse_name(file.name)
-        deck = ArenaParser(lines, metadata.get("format", "standard")).deck
+        deck = ArenaParser(lines, metadata.get("format", "")).deck
         deck.update_metadata(**metadata)
         return deck
 
@@ -1028,7 +1028,7 @@ class DeckParser(ABC):
         return [card] * quantity
 
 
-class UrlDeckParser(DeckParser):
+class DeckScraper(DeckParser):
     @property
     def url(self) -> str:
         return self._url

@@ -10,32 +10,31 @@
 import logging
 
 import selenium.common.exceptions
-from bs4 import BeautifulSoup
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, InvalidDeckError, UrlDeckParser, get_playset
-from mtgcards.scryfall import Card
+from mtgcards.decks import Deck, DeckScraper
+from mtgcards.decks.arena import ArenaParser
 from mtgcards.utils.scrape import get_dynamic_soup_by_xpath
 
-
 _log = logging.getLogger(__name__)
+CONSENT_XPATH = '//button[contains(@class, "fc-button fc-cta-consent") and @aria-label="Consent"]'
+CLIPBOARD_XPATH = "//span[text()='Copy to MTGA']"
 
 
-class UntappedParser(UrlDeckParser):
-    """Parser of decklist page of Untapped.gg user's profile.
+class UntappedProfileDeckScraper(DeckScraper):
+    """Scraper of decklist page of Untapped.gg user's profile.
     """
     _XPATH = "//div[@role='tab' and text()='SIDEBOARD']"
-    _CONSENT_XPATH = ('//button[contains(@class, "fc-button fc-cta-consent") '
-                      'and @aria-label="Consent"]')
 
-    def __init__(self, url: str, metadata: Json | None = None, throttled=False) -> None:
+    def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        self._throttled = throttled
         try:
-            self._soup, self._sideboard_soup = get_dynamic_soup_by_xpath(
-                url, self._XPATH, click=True, consent_xpath=self._CONSENT_XPATH)
+            self._soup, _, self._clipboard = get_dynamic_soup_by_xpath(
+                self._url, self._XPATH, consent_xpath=CONSENT_XPATH,
+                clipboard_xpath=CLIPBOARD_XPATH)
             self._update_metadata()
             self._deck = self._get_deck()
+            pass
         except selenium.common.exceptions.TimeoutException:
             _log.warning(f"Scraping failed due to a Selenium timing out")
 
@@ -54,30 +53,43 @@ class UntappedParser(UrlDeckParser):
             span_tag = author_tag.find("span")
             self._metadata["author"] = span_tag.text.strip().removesuffix("'s Profile")
 
-    @staticmethod
-    def _parse_soup(soup: BeautifulSoup) -> list[Card]:
-        board = []
-        tabpanel_tag = soup.find("div", attrs={"role": "tabpanel"})
-        li_tags = tabpanel_tag.find_all("li")
+    def _get_deck(self) -> Deck | None:  # override
+        return ArenaParser(self._clipboard.splitlines(), metadata=self._metadata).deck
 
-        for li_tag in li_tags:
-            name_tag = li_tag.select_one(".name")
-            name = name_tag.text.strip()
-            quantity_tag = li_tag.find("span")
-            quantity = int(quantity_tag.text.strip())
-            board.extend(get_playset(name, quantity))
 
-        return board
+class UntappedRegularDeckScraper(DeckScraper):
+    """Scraper of decklist page of Untapped.gg user's profile.
+    """
+    _XPATH = "//h1[contains(@class, 'styles__H1')]"
 
-    def _get_deck(self) -> Deck | None:
+    def __init__(self, url: str, metadata: Json | None = None) -> None:
+        super().__init__(self._normalize_url(url), metadata)
         try:
-            return Deck(
-                self._parse_soup(self._soup),
-                self._parse_soup(self._sideboard_soup) if self._sideboard_soup else None,
-                metadata=self._metadata)
-        except InvalidDeckError as err:
-            if self._throttled:
-                raise
-            _log.warning(f"Scraping failed with: {err}")
-            return None
+            self._soup, _, self._clipboard = get_dynamic_soup_by_xpath(
+                self._url, self._XPATH, consent_xpath=CONSENT_XPATH,
+                clipboard_xpath=CLIPBOARD_XPATH)
+            self._update_metadata()
+            self._deck = self._get_deck()
+            pass
+        except selenium.common.exceptions.TimeoutException:
+            _log.warning(f"Scraping failed due to a Selenium timing out")
+
+    @staticmethod
+    def is_deck_url(url: str) -> bool:  # override
+        return "mtga.untapped.gg/decks/" in url
+
+    @staticmethod
+    def _normalize_url(url: str) -> str:
+        return url.replace("input/", "") if "/input/" in url else url
+
+    def _update_metadata(self) -> None:  # override
+        self._metadata["source"] = "mtga.untapped.gg"
+        name_tag = self._soup.select("h1[class*='styles__H1']")[-1]
+        name = name_tag.text.strip()
+        if " (" in name:
+            name, *_ = name.split(" (")
+        self._metadata["name"] = name
+
+    def _get_deck(self) -> Deck | None:  # override
+        return ArenaParser(self._clipboard.splitlines(), metadata=self._metadata).deck
 

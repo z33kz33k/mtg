@@ -13,7 +13,7 @@ from datetime import datetime
 from bs4 import Tag
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, InvalidDeckError, ParsingState, UrlDeckParser, get_playset
+from mtgcards.decks import Deck, InvalidDeckError, ParsingState, DeckScraper, get_playset
 from mtgcards.scryfall import Card, all_formats, all_sets
 from mtgcards.utils import extract_int, timed
 from mtgcards.utils.scrape import ScrapingError, getsoup, http_requests_counted, throttled_soup
@@ -46,8 +46,8 @@ def _shift_to_sideboard(current_state: ParsingState) -> "ParsingState":
     return ParsingState.SIDEBOARD
 
 
-class GoldfishParser(UrlDeckParser):
-    """Parser of MtGGoldfish decklist page.
+class GoldfishScraper(DeckScraper):
+    """Scraper of MtGGoldfish decklist page.
     """
     HEADERS = {
         "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -176,24 +176,24 @@ def scrape_meta(fmt="") -> list[Deck]:
     if fmt not in all_formats():
         raise ValueError(f"Invalid format: {fmt!r}. Can be only one of: {all_formats()}")
     url = f"https://www.mtggoldfish.com/metagame/{fmt}/full"
-    soup = throttled_soup(url, headers=GoldfishParser.HEADERS)
+    soup = throttled_soup(url, headers=GoldfishScraper.HEADERS)
     tiles = soup.find_all("div", class_="archetype-tile")
     if not tiles:
         raise ScrapingError("No deck tiles tags found")
-    decks, counts = [], []
+    decks, metas = [], []
     for i, tile in enumerate(tiles, start=1):
         link = tile.find("a").attrs["href"]
         try:
-            deck = GoldfishParser(
+            deck = GoldfishScraper(
                 f"https://www.mtggoldfish.com{link}", {"format": fmt}, throttled=True).deck
         except InvalidDeckError as err:
             raise ScrapingError(f"Scraping meta deck failed with: {err}")
         count = tile.find("span", class_="archetype-tile-statistic-value-extra-data").text.strip()
         count = extract_int(count)
-        counts.append(count)
-        deck.update_metadata(meta_place=i, meta_count=count)
+        metas.append({"place": i, "count": count})
         decks.append(deck)
-    total = sum(counts)
-    for deck, count in zip(decks, counts):
-        deck.update_metadata(meta_share=count * 100 / total)
+    total = sum(m["count"] for m in metas)
+    for deck, meta in zip(decks, metas):
+        meta["share"] = meta["count"] * 100 / total
+        deck.update_metadata(meta=meta)
     return decks

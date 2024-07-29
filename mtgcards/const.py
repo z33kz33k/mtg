@@ -20,7 +20,6 @@ PathLike = str | Path
 Method = Callable[[Any, tuple[Any, ...]], Any]  # method with signature def methodname(self, *args)
 Function = Callable[[tuple[Any, ...]], Any]  # function with signature def funcname(*args)
 
-REQUEST_TIMEOUT = 15  # seconds
 FILENAME_TIMESTAMP_FORMAT = "%Y%m%d_%H%M%S"
 READABLE_TIMESTAMP_FORMAT = "%Y-%m-%d %H:%M:%S"
 SECONDS_IN_YEAR = 365.25 * 24 * 60 * 60  # with leap years

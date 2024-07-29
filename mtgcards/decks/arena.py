@@ -7,6 +7,7 @@
     @author: z33k
 
 """
+import logging
 import re
 
 from mtgcards.const import Json
@@ -15,6 +16,9 @@ from mtgcards.decks import ARENA_MULTIPART_SEPARATOR, Deck, DeckParser, InvalidD
 from mtgcards.scryfall import Card, MULTIPART_SEPARATOR as SCRYFALL_MULTIPART_SEPARATOR, \
     find_by_collector_number
 from mtgcards.utils import extract_int, getint, getrepr
+
+
+_log = logging.getLogger(__name__)
 
 
 def _shift_to_idle(current_state: ParsingState) -> ParsingState:
@@ -179,5 +183,6 @@ class ArenaParser(DeckParser):
 
         try:
             return Deck(mainboard, sideboard, commander, companion, self._metadata)
-        except InvalidDeckError:
+        except InvalidDeckError as err:
+            _log.warning(f"Scraping failed with: {err}")
             return None

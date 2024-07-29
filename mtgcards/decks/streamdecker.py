@@ -13,7 +13,7 @@ from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, InvalidDeckError, UrlDeckParser, find_card_by_name
+from mtgcards.decks import Deck, InvalidDeckError, DeckScraper, find_card_by_name
 from mtgcards.scryfall import find_by_id
 from mtgcards.utils.scrape import timed_request
 
@@ -21,8 +21,8 @@ from mtgcards.utils.scrape import timed_request
 _log = logging.getLogger(__name__)
 
 
-class StreamdeckerParser(UrlDeckParser):
-    """Parser of Streamdecker deck page.
+class StreamdeckerScraper(DeckScraper):
+    """Scraper of Streamdecker deck page.
     """
     API_URL_TEMPLATE = "https://www.streamdecker.com/api/deck/{}"
 

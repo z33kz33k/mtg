@@ -13,7 +13,7 @@ from datetime import datetime
 from bs4 import Tag
 
 from mtgcards.const import Json
-from mtgcards.decks import Archetype, Deck, InvalidDeckError, Mode, UrlDeckParser, get_playset
+from mtgcards.decks import Archetype, Deck, InvalidDeckError, Mode, DeckScraper, get_playset
 from mtgcards.scryfall import Card, all_sets
 from mtgcards.utils import extract_float, extract_int
 from mtgcards.utils.scrape import ScrapingError, getsoup
@@ -22,8 +22,8 @@ from mtgcards.utils.scrape import ScrapingError, getsoup
 _log = logging.getLogger(__name__)
 
 
-class AetherhubParser(UrlDeckParser):
-    """Parser of Aetherhub decklist page.
+class AetherhubScraper(DeckScraper):
+    """Scraper of Aetherhub decklist page.
 
     Note:
         Companions are part of a sideboard list and aren't listed separately.
@@ -104,12 +104,12 @@ class AetherhubParser(UrlDeckParser):
         if meta_tag := self._soup.find("h5", class_="text-center"):
             text = meta_tag.text.strip()
             share_part, change_part = text.split("of meta")
-            self._metadata["meta_share"] = extract_float(share_part)
-            self._metadata["meta_share_change"] = extract_float(change_part)
+            self._metadata["meta"]["share"] = extract_float(share_part)
+            self._metadata["meta"]["share_change"] = extract_float(change_part)
 
             count_tag = self._soup.select("h4.text-center.pt-2")[0]
             count_text, _ = count_tag.text.strip().split("decks,")
-            self._metadata["meta_count"] = extract_int(count_text)
+            self._metadata["meta"]["count"] = extract_int(count_text)
 
     def _get_deck(self) -> Deck | None:  # override
         mainboard, sideboard, commander = [], [], None

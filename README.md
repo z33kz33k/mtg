@@ -35,8 +35,8 @@ descriptions).
       [Selenium](https://github.com/SeleniumHQ/Selenium) - only profile decks so far (other 
       Untapped decklists are planned)
     * Those above work even if they are behind shortener links and need unshortening first
-    * Arena decklists in links to pastebin-like services (
-      like [Amazonian](https://www.youtube.com/@Amazonian) does) work too
+    * Arena decklists in links to pastebin-like services (like 
+      [Amazonian](https://www.youtube.com/@Amazonian) does) work too
 * Other decklist services are in plans
 * Scraping Goldfish for meta-decks
 * Exporting decks into a [Forge MTG](https://github.com/Card-Forge/forge) .dck format or Arena 

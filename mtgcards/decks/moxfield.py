@@ -11,7 +11,7 @@ import logging
 from datetime import datetime
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, InvalidDeckError, UrlDeckParser, get_playset
+from mtgcards.decks import Deck, InvalidDeckError, DeckScraper, get_playset
 from mtgcards.scryfall import Card, all_formats, all_sets
 from mtgcards.utils.scrape import timed_request
 
@@ -19,8 +19,8 @@ from mtgcards.utils.scrape import timed_request
 _log = logging.getLogger(__name__)
 
 
-class MoxfieldParser(UrlDeckParser):
-    """Parser of Moxfield decklist page.
+class MoxfieldScraper(DeckScraper):
+    """Scraper of Moxfield decklist page.
     """
     API_URL_TEMPLATE = "https://api2.moxfield.com/v3/decks/all/{}"
     HEADERS = {

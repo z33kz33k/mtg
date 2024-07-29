@@ -8,11 +8,11 @@
 
 """
 from mtgcards.const import Json
-from mtgcards.decks import Deck, UrlDeckParser
+from mtgcards.decks import Deck, DeckScraper
 
 
-class MtgazoneParser(UrlDeckParser):
-    """Parser of MTG Arena Zone decklist page.
+class MtgazoneScraper(DeckScraper):
+    """Scraper of MTG Arena Zone decklist page.
     """
 
     def __init__(self, url: str, metadata: Json | None = None, throttled=False) -> None:
