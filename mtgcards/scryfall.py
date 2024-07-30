@@ -938,7 +938,7 @@ def all_formats() -> list[str]:
 
 
 def arena_formats() -> list[str]:
-    """Return list of all string deignations for MtG formats that can be played on MTG Arena.
+    """Return list of all string designations for MtG formats that can be played on MTG Arena.
     """
     return ["alchemy", "brawl", "explorer", "historic", "standard", "standardbrawl", "timeless"]
 

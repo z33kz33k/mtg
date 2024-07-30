@@ -13,7 +13,7 @@ from datetime import datetime
 from bs4 import Tag
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, InvalidDeckError, ParsingState, DeckScraper, get_playset
+from mtgcards.decks import Deck, InvalidDeckError, Mode, ParsingState, DeckScraper, get_playset
 from mtgcards.scryfall import Card, all_formats, all_sets
 from mtgcards.utils import extract_int, timed
 from mtgcards.utils.scrape import ScrapingError, getsoup, http_requests_counted, throttled_soup
@@ -171,7 +171,7 @@ class GoldfishScraper(DeckScraper):
 
 @http_requests_counted("scraping meta decks")
 @timed("scraping meta decks", precision=1)
-def scrape_meta(fmt="") -> list[Deck]:
+def scrape_meta(fmt="standard") -> list[Deck]:
     fmt = fmt.lower()
     if fmt not in all_formats():
         raise ValueError(f"Invalid format: {fmt!r}. Can be only one of: {all_formats()}")
@@ -196,4 +196,5 @@ def scrape_meta(fmt="") -> list[Deck]:
     for deck, meta in zip(decks, metas):
         meta["share"] = meta["count"] * 100 / total
         deck.update_metadata(meta=meta)
+        deck.update_metadata(mode=Mode.BO3.value)
     return decks

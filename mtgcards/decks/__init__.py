@@ -620,6 +620,7 @@ class Deck:
         if self.format:
             reprs += [("format", self.format)]
         reprs += [
+            ("mode", f"{Mode.BO3.value if self.is_bo3 else Mode.BO1.value}"),
             ("avg_cmc", f"{self.avg_cmc:.2f}"),
             ("avg_rarity_weight", f"{self.avg_rarity_weight:.1f}"),
             ("color", self.color.name),
@@ -636,7 +637,6 @@ class Deck:
             reprs.append(("commander", str(self.commander)))
         if self.companion:
             reprs.append(("companion", str(self.companion)))
-        reprs.append(("sideboard", self.has_sideboard))
         return getrepr(self.__class__, *reprs)
 
     def update_metadata(self, **data: Any) -> None:
@@ -784,7 +784,7 @@ Name={}
         # mode
         if mode := self._deck.metadata.get("mode"):
             if mode in {m.value for m in Mode}:
-                name += f"{mode}_"
+                name += f"{mode}{self.NAME_SEP}"
         # meta
         if self._deck.is_meta:
             name += f"Meta{self.NAME_SEP}"
@@ -1035,7 +1035,7 @@ class DeckScraper(DeckParser):
         return self._url
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
-        if not self.is_deck_url(url):
+        if url and not self.is_deck_url(url):
             raise ValueError(f"Not a deck URL: {url!r}")
         super().__init__(metadata)
         self._url = url
