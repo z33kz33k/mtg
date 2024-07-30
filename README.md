@@ -27,9 +27,9 @@ descriptions).
   with Google APIs)
 * Arena, [Goldfish](https://www.mtggoldfish.com), [Moxfield](https://www.moxfield.com), 
   [Aetherhub](https://aetherhub.com), [Streamdecker](https://www.streamdecker.com/landing), 
-  [MtgaZone](https://mtgazone.com) and [Untapped](https://mtga.untapped.gg) deck parsers work, so:
+  [MTGAZone](https://mtgazone.com) and [Untapped](https://mtga.untapped.gg) deck parsers work, so:
     * Arena decklists pasted into video descriptions are parsed into Deck objects
-    * Goldfish, Moxfield, Aetherhub, Streamdecker and Untapped links contained in those 
+    * Goldfish, Moxfield, Aetherhub, Streamdecker, MTGAZone and Untapped links contained in those 
       descriptions are parsed into Deck objects
     * Due to its dynamic nature, Untapped is scraped using 
       [Selenium](https://github.com/SeleniumHQ/Selenium)
