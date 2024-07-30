@@ -26,15 +26,15 @@ descriptions).
   [youtubesearchpython](https://github.com/alexmercerind/youtube-search-python) to avoid bothering 
   with Google APIs)
 * Arena, [Goldfish](https://www.mtggoldfish.com), [Moxfield](https://www.moxfield.com), 
-  [Aetherhub](https://aetherhub.com), [Streamdecker](https://www.streamdecker.com/landing) 
-  and [Untapped](https://mtga.untapped.gg) deck parsers work, so:
+  [Aetherhub](https://aetherhub.com), [Streamdecker](https://www.streamdecker.com/landing), 
+  [MtgaZone](https://mtgazone.com) and [Untapped](https://mtga.untapped.gg) deck parsers work, so:
     * Arena decklists pasted into video descriptions are parsed into Deck objects
     * Goldfish, Moxfield, Aetherhub, Streamdecker and Untapped links contained in those 
       descriptions are parsed into Deck objects
     * Due to its dynamic nature, Untapped is scraped using 
       [Selenium](https://github.com/SeleniumHQ/Selenium)
     * Both Untapped decklist types featured in YT videos are supported: regular deck and profile deck
-    * Those above work even if they are behind shortener links and need unshortening first
+    * All those mentioned above work even if they are behind shortener links and need unshortening first
     * Arena decklists in links to pastebin-like services (like 
       [Amazonian](https://www.youtube.com/@Amazonian) does) work too
 * Other decklist services are in plans

@@ -22,6 +22,7 @@ from mtgcards.utils.scrape import ScrapingError, getsoup
 _log = logging.getLogger(__name__)
 
 
+# TODO: meta-decks
 class AetherhubScraper(DeckScraper):
     """Scraper of Aetherhub decklist page.
 
