@@ -11,16 +11,16 @@ import itertools
 import logging
 from abc import ABC, abstractmethod
 from collections import Counter, defaultdict
-from datetime import date
 from enum import Enum, auto
 from functools import cached_property, lru_cache
-from operator import itemgetter
+from operator import attrgetter
 from typing import Any, Iterable
 
 from mtgcards.const import Json, OUTPUT_DIR, PathLike
-from mtgcards.scryfall import Card, Color, MULTIPART_SEPARATOR as SCRYFALL_MULTIPART_SEPARATOR, \
-    all_sets, find_by_id, find_by_name, format_cards as scryfall_fmt_cards, all_formats, get_set, \
-    set_cards as scryfall_set_cards
+from mtgcards.scryfall import (
+    Card, Color, MULTIPART_SEPARATOR as SCRYFALL_MULTIPART_SEPARATOR, all_formats, all_set_codes,
+    find_by_id, find_by_name, find_sets, format_cards as scryfall_fmt_cards, set_cards as
+    scryfall_set_cards)
 from mtgcards.utils import ParsingError, extract_int, from_iterable, getrepr
 from mtgcards.utils.files import getdir, getfile
 from mtgcards.utils.scrape import ScrapingError
@@ -29,6 +29,7 @@ _log = logging.getLogger(__name__)
 
 
 ARENA_MULTIPART_SEPARATOR = "///"  # this is different from Scryfall data where they use: '//'
+
 
 # based on https://draftsim.com/mtg-archetypes/
 # this listing omits combo-control as it's too long a name to be efficiently used as a component
@@ -305,6 +306,7 @@ THEMES = {
     "Top-Deck",
     "Topdeck",
     "Toughness",
+    "Toxic",
     "Treasure",
     "Treasures",
     "Treefolk",  # tribal
@@ -548,6 +550,15 @@ class Deck:
     def is_meta(self) -> bool:
         return self._metadata.get("meta") is not None
 
+    @property
+    def latest_set(self) -> str | None:
+        set_codes = {c.set for c in self.all_cards if not c.is_basic_land}
+        sets = find_sets(lambda s: s.code in set_codes and s.set_type == "expansion")
+        if not sets:
+            return None
+        sets = sorted(sets, key=attrgetter("released_at"))
+        return [s.code for s in sets][-1]
+
     def __init__(
             self, mainboard: Iterable[Card], sideboard: Iterable[Card] | None = None,
             commander: Card | None = None, companion: Card | None = None,
@@ -703,6 +714,7 @@ Name={}
         "mtgazone.com": "MGTAZone",
         "www.tcgplayer.com": "TCGPlayer",
         "www.cardhoarder.com": "Cardhoarder",
+        "tappedout.net": "TappedOut",
     }
 
     FMT_NICKNAMES = {
@@ -734,16 +746,6 @@ Name={}
         self._deck = deck
         self._name = name or self._build_name()
 
-    # takes a few seconds to complete (due to using get_set() (which uses scrython))
-    def _derive_most_recent_set(self) -> str | None:
-        set_codes = {c.set for c in self._deck.mainboard if not c.is_basic_land}
-        sets = [get_set(s) for s in set_codes]
-        sets = [s for s in sets if s is not None and s.set_type() == "expansion"]
-        sets = [(s, date.fromisoformat(s.released_at())) for s in sets]
-        if not sets:
-            return None
-        sets.sort(key=itemgetter(1))
-        return [s[0].code() for s in sets][-1]
 
     @classmethod
     def _normalize(cls, name: str) -> str:
@@ -796,7 +798,7 @@ Name={}
         else:
             name += self._build_core_name()
         # set
-        if set_code := self._derive_most_recent_set():
+        if set_code := self._deck.latest_set:
             name += set_code.upper()
         return name
 
@@ -860,9 +862,9 @@ Name={}
         quantity, rest = line.split(maxsplit=1)
         name, set_code, _ = rest.split("|")
         set_code = set_code.lower()
-        if set_code not in set(all_sets()):
+        if set_code not in set(all_set_codes()):
             raise ParsingError(
-                f"Invalid set code: {set_code!r}. Can be only one of: '{all_sets()}'")
+                f"Invalid set code: {set_code!r}. Can be only one of: '{all_set_codes()}'")
         return get_playset(name, int(quantity), set_code.lower(), fmt)
 
     @classmethod

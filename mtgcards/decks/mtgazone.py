@@ -28,7 +28,7 @@ class MtgazoneScraper(DeckScraper):
     This scraper can be used both to scrape individual MTGAZone deck pages and to scrape
     decklist blocks that are aggregated on thematic (e.g. meta, post-rotation, guide) sites. In
     the latter case a deck block Tag object should be provided - a URL is not needed so an empty
-    string can be passed instead.
+    string should be passed instead.
     """
     def __init__(self, url: str, metadata: Json | None = None, deck_tag: Tag | None = None) -> None:
         super().__init__(url, metadata)

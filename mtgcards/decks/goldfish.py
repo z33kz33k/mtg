@@ -14,7 +14,7 @@ from bs4 import Tag
 
 from mtgcards.const import Json
 from mtgcards.decks import Deck, InvalidDeckError, Mode, ParsingState, DeckScraper, get_playset
-from mtgcards.scryfall import Card, all_formats, all_sets
+from mtgcards.scryfall import Card, all_formats, all_set_codes
 from mtgcards.utils import extract_int, timed
 from mtgcards.utils.scrape import ScrapingError, getsoup, http_requests_counted, throttled_soup
 
@@ -165,7 +165,7 @@ class GoldfishScraper(DeckScraper):
             name = name.strip()
 
         set_code = set_code[:-1].lower()
-        set_code = set_code if set_code in set(all_sets()) else ""
+        set_code = set_code if set_code in set(all_set_codes()) else ""
         return get_playset(name, quantity, set_code, self.fmt)
 
 

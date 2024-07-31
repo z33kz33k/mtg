@@ -12,7 +12,7 @@ from datetime import datetime
 
 from mtgcards.const import Json
 from mtgcards.decks import Deck, InvalidDeckError, DeckScraper, get_playset
-from mtgcards.scryfall import Card, all_formats, all_sets
+from mtgcards.scryfall import Card, all_formats, all_set_codes
 from mtgcards.utils.scrape import timed_request
 
 
@@ -108,5 +108,5 @@ class MoxfieldScraper(DeckScraper):
         if playset:
             return playset
         set_code, name = json_card["card"]["set"], json_card["card"]["name"]
-        set_code = set_code if set_code in set(all_sets()) else ""
+        set_code = set_code if set_code in set(all_set_codes()) else ""
         return get_playset(name, quantity, set_code, self.fmt)

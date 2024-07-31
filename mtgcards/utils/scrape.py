@@ -16,19 +16,18 @@ from typing import Callable, Dict, Optional, Union
 import brotli
 import pyperclip
 import requests
-from requests.exceptions import HTTPError
 from bs4 import BeautifulSoup
+from requests.exceptions import HTTPError
 from selenium import webdriver
-from selenium.common import NoSuchElementException, TimeoutException
+from selenium.common import TimeoutException
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 from mtgcards.const import Json
 from mtgcards.utils import timed
 from mtgcards.utils.check_type import type_checker
-
 
 _log = logging.getLogger(__name__)
 REQUESTS_TIMEOUT = 15.0  # seconds
@@ -45,6 +44,7 @@ http_requests_count = 0
 
 
 @timed("request")
+@type_checker(str)
 def timed_request(
         url: str, postdata: Optional[Json] = None, return_json=False,
         **requests_kwargs) -> Union[list[Json], Json, str]:

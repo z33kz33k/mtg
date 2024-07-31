@@ -29,7 +29,7 @@ class _CreatureTypesParser:
     """Parse MTG Wiki "Creature_type" page for possible races and classes among creature types in a
     MtG card's type line.
     """
-    FILEPATH = Path(DATA_DIR) / FILENAME
+    FILEPATH = DATA_DIR / FILENAME
 
     @property
     def races(self) -> list[str]:

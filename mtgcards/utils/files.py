@@ -16,7 +16,7 @@ import requests
 from tqdm import tqdm
 
 from mtgcards.const import PathLike
-from mtgcards.utils.validate import type_checker
+from mtgcards.utils.check_type import type_checker
 
 _log = getLogger(__name__)
 
@@ -119,7 +119,7 @@ def download_file(url: str, file_name="", dst_dir="") -> None:
 
     dst = Path(file_name) if not dst_dir else getdir(dst_dir) / file_name
     # create a progress bar object
-    progress = tqdm(response.iter_content(divisor), f"Downloading '{dst.resolve()}'",
+    progress = tqdm(response.iter_content(divisor), f"Downloading '{dst.resolve()}'...",
                     total=file_size, unit="B", unit_scale=True, unit_divisor=divisor)
 
     # open a file for writing

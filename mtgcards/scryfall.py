@@ -21,6 +21,7 @@ from types import EllipsisType
 from typing import Callable, Iterable, Optional
 
 import scrython
+from tqdm import tqdm
 from unidecode import unidecode
 
 from mtgcards.const import DATA_DIR, Json
@@ -28,7 +29,9 @@ from mtgcards.mtgwiki import CLASSES, RACES
 from mtgcards.utils import from_iterable, getfloat, getint, getrepr
 from mtgcards.utils.files import download_file, getdir
 
-FILENAME = "scryfall.json"
+
+CARDS_FILENAME = "scryfall_cards.json"
+SETS_FILENAME = "scryfall_sets.json"
 
 
 class ScryfallError(ValueError):
@@ -42,7 +45,31 @@ def download_scryfall_bulk_data() -> None:
     bd = scrython.BulkData()
     data = bd.data()[0]  # retrieve 'Oracle Cards' data dict
     url = data["download_uri"]
-    download_file(url, file_name=FILENAME, dst_dir=DATA_DIR)
+    download_file(url, file_name=CARDS_FILENAME, dst_dir=DATA_DIR)
+
+
+@lru_cache  # pulling Scryfall data takes a few seconds
+def api_set(set_code: str) -> scrython.sets.Code | None:
+    try:
+        return scrython.sets.Code(code=set_code)
+    except scrython.ScryfallError:
+        return None
+
+
+def download_scryfall_set_data() -> None:
+    """Ask Scryfall API for set data and dump it as .json files.
+    """
+    progress = tqdm(
+        (api_set(code) for code in sorted(all_set_codes())), f"Downloading sets data...",
+        total=len(all_set_codes()))
+
+    data = []
+    for set_data in progress:
+        data.append(set_data.scryfallJson)
+
+    dst = DATA_DIR / SETS_FILENAME
+    with dst.open("w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2)
 
 
 MULTIPART_SEPARATOR = "//"  # separates parts of card's name in multipart cards
@@ -142,9 +169,8 @@ class Rarity(Enum):
             return 1 / (1 / 15 * 7 / 8)  # 17.14
         if self is Rarity.UNCOMMON:
             return 1 / (1 / 15 * 3)  # 5.00
-        if self is Rarity.COMMON or self is Rarity.SPECIAL:
+        else:  # COMMON or SPECIAL
             return 1 / (1 / 15 * 11)  # 1.36
-        return None
 
     @property
     def is_special(self) -> bool:
@@ -872,11 +898,108 @@ class Card:
         return None
 
 
+@dataclass(frozen=True)
+class SetData:
+    """Thin wrapper on Scryfall JSON data for a MtG card set.
+
+    Provides convenience access to the most important data pieces.
+    """
+    json: Json
+
+    def __eq__(self, other: "SetData") -> bool:
+        return self.id == other.id
+
+    def __hash__(self) -> int:
+        return hash(self.id)
+
+    def __str__(self) -> str:
+        text = f"{self.name} ({self.code})"
+
+    def __repr__(self) -> str:
+        reprs = [
+            ("name", self.name), ("code", self.code), ("released_at", str(self.released_at)),
+            ("set_type", self.set_type), ("card_count", self.card_count)]
+        if self.block:
+            reprs.append(("block", self.block))
+        return getrepr(self.__class__, *reprs)
+
+    @property
+    def name(self) -> str:
+        return self.json["name"]
+
+    @property
+    def id(self) -> str:
+        return self.json["id"]
+
+    @property
+    def code(self) -> str:
+        return self.json["code"]
+
+    @property
+    def released_at(self) -> date:
+        return date.fromisoformat(self.json["released_at"])
+
+    @property
+    def set_type(self) -> str:
+        return self.json["set_type"]
+
+    @property
+    def card_count(self) -> int:
+        return self.json["card_count"]
+
+    @property
+    def is_digital(self) -> bool:
+        return self.json["digital"]
+
+    @property
+    def block(self) -> str | None:
+        return self.json.get("block")
+
+
+@lru_cache
+def sets() -> set[SetData]:
+    """Return Scryfall JSON set data as set of CardSet objects
+    """
+    source = getdir(DATA_DIR) / SETS_FILENAME
+    if not source.exists():
+        raise FileNotFoundError(f"Scryfall sets data file is missing at: '{source}'")
+
+    with source.open() as f:
+        data = json.load(f)
+
+    return {SetData(set_data) for set_data in data}
+
+
+def find_sets(
+        predicate: Callable[[SetData], bool],
+        data: Iterable[SetData] | None = None) -> set[SetData]:
+    """Return MtG sets from ``data`` that satisfy ``predicate``.
+    """
+    data = data or sets()
+    return {card_set for card_set in data if predicate(card_set)}
+
+
+def find_set(
+        predicate: Callable[[SetData], bool],
+        data: Iterable[SetData] | None = None) -> SetData | None:
+    """Return a MtG set from ``data`` that satisfies ``predicate`` or `None`.
+    """
+    data = data or sets()
+    return from_iterable(data, predicate)
+
+
+def find_set_by_code(set_code: str, data: Iterable[SetData] | None = None) -> SetData | None:
+    """Return a MtG set designated by provided code or `None`.
+    """
+    data = data or sets()
+    return find_set(lambda s: s.set_code == set_code.lower(), data)
+
+
 @lru_cache
 def bulk_data() -> set[Card]:
-    """Return Scryfall JSON data as set of Card objects.
+    """Return Scryfall JSON card data as set of Card objects.
     """
-    source = getdir(DATA_DIR) / FILENAME
+    source = getdir(DATA_DIR) / CARDS_FILENAME
     if not source.exists():
         download_scryfall_bulk_data()
 
@@ -889,7 +1012,7 @@ def bulk_data() -> set[Card]:
 def games(data: Iterable[Card] | None = None) -> list[str]:
     """Return list of string designations for games that can be played with cards in Scryfall data.
     """
-    data = data if data else bulk_data()
+    data = data or bulk_data()
     result = set()
     for card in data:
         result.update(card.games)
@@ -900,18 +1023,18 @@ def games(data: Iterable[Card] | None = None) -> list[str]:
 def colors(data: Iterable[Card] | None = None) -> list[str]:
     """Return list of string designations for MtG colors in Scryfall data.
     """
-    data = data if data else bulk_data()
+    data = data or bulk_data()
     result = set()
     for card in data:
         result.update(card.colors)
     return sorted(result)
 
 
-def sets(data: Iterable[Card] | None = None) -> list[str]:
+def set_codes(data: Iterable[Card] | None = None) -> list[str]:
     """Return list of string codes for MtG sets in Scryfall data (e.g. 'bro' for The Brothers'
     War).
     """
-    data = data if data else bulk_data()
+    data = data or bulk_data()
     return sorted({card.set for card in data})
 
 
@@ -919,15 +1042,15 @@ def formats(data: Iterable[Card] | None = None) -> list[str]:
     """Return list of string designations for MtG formats that are legal for cards in the data
     specified.
     """
-    data = data if data else bulk_data()
+    data = data or bulk_data()
     return sorted({*itertools.chain(*[c.legal_formats for c in data])})
 
 
 @lru_cache
-def all_sets() -> list[str]:
+def all_set_codes() -> list[str]:
     """Return list of all string designations for MtG formats in Scryfall data.
     """
-    return sets()
+    return set_codes()
 
 
 @lru_cache
@@ -946,28 +1069,28 @@ def arena_formats() -> list[str]:
 def layouts(data: Iterable[Card] | None = None) -> list[str]:
     """Return list of Scryfall string designations for card layouts in ``data``.
     """
-    data = data if data else bulk_data()
+    data = data or bulk_data()
     return sorted({card.layout for card in data})
 
 
 def set_names(data: Iterable[Card] | None = None) -> list[str]:
     """Return list of MtG set names in Scryfall data.
     """
-    data = data if data else bulk_data()
+    data = data or bulk_data()
     return sorted({card.set_name for card in data})
 
 
 def rarities(data: Iterable[Card] | None = None) -> list[str]:
     """Return list of MtG card rarities in Scryfall data.
     """
-    data = data if data else bulk_data()
+    data = data or bulk_data()
     return sorted({card.rarity.value for card in data})
 
 
 def keywords(data: Iterable[Card] | None = None) -> list[str]:
     """Return list of MtG card keywords in Scryfall data.
     """
-    data = data if data else bulk_data()
+    data = data or bulk_data()
     result = set()
     for card in data:
         result.update(card.keywords)
@@ -976,9 +1099,9 @@ def keywords(data: Iterable[Card] | None = None) -> list[str]:
 
 def find_cards(
         predicate: Callable[[Card], bool], data: Iterable[Card] | None = None) -> set[Card]:
-    """Return list of cards from ``data`` that satisfy ``predicate``.
+    """Return card data from ``data`` that satisfy ``predicate``.
     """
-    data = data if data else bulk_data()
+    data = data or bulk_data()
     return {card for card in data if predicate(card)}
 
 
@@ -988,10 +1111,10 @@ def set_cards(*set_codes: str, data: Iterable[Card] | None = None) -> set[Card]:
     Run all_sets() to see available set codes.
     """
     set_codes = [code.lower() for code in set_codes]
-    available = set(all_sets())
+    available = set(all_set_codes())
     for code in set_codes:
         if code not in available:
-            raise ValueError(f"Invalid set code: {code!r}. Can be only one of: '{all_sets()}'")
+            raise ValueError(f"Invalid set code: {code!r}. Can be only one of: '{all_set_codes()}'")
     return find_cards(lambda c: c.set in [code.lower() for code in set_codes], data)
 
 
@@ -1018,9 +1141,9 @@ def format_cards(fmt: str, data: Iterable[Card] | None = None) -> set[Card]:
 def find_card(
         predicate: Callable[[Card], bool], data: Iterable[Card] | None = None,
         narrow_by_collector_number=False) -> Card | None:
-    """Return card data from ``data`` that satisfies ``predicate`` or `None`.
+    """Return a card from ``data`` that satisfies ``predicate`` or `None`.
     """
-    data = data if data else bulk_data()
+    data = data or bulk_data()
     if not narrow_by_collector_number:
         return from_iterable(data, predicate)
 
@@ -1032,9 +1155,9 @@ def find_card(
 
 
 def find_by_name(card_name: str, data: Iterable[Card] | None = None) -> Card | None:
-    """Return a Scryfall card data of provided name or `None`.
+    """Return a card designated by provided name or `None`.
     """
-    data = data if data else bulk_data()
+    data = data or bulk_data()
     if card := find_card(
         lambda c: unidecode(c.name) == card_name, data, narrow_by_collector_number=True):
         return card
@@ -1044,17 +1167,17 @@ def find_by_name(card_name: str, data: Iterable[Card] | None = None) -> Card | N
 
 def find_by_parts(
         name_parts: Iterable[str], data: Iterable[Card] | None = None) -> Card | None:
-    """Return a Scryfall card data designated by provided ``name_parts`` or `None`.
+    """Return a card designated by provided ``name_parts`` or `None`.
     """
     if isinstance(name_parts, str):
         name_parts = name_parts.split()
-    data = data if data else bulk_data()
+    data = data or bulk_data()
     return find_card(lambda c: all(part.lower() in c.name.lower() for part in name_parts), data)
 
 
 def find_by_collector_number(
         collector_number: int, set_code: str) -> Card | None:
-    """Return a Scryfall card data designated by provided ``collector_number`` from ``data`` or
+    """Return a card designated by provided ``collector_number`` from ``data`` or
     `None`.
     """
     data = [card for card in set_cards(set_code) if card.collector_number_int is not None]
@@ -1062,18 +1185,10 @@ def find_by_collector_number(
 
 
 def find_by_id(scryfall_id: str, data: Iterable[Card] | None = None) -> Card | None:
-    """Return a Scryfall card data of provided ``scryfall_id`` or `None`.
+    """Return a card designated provided ``scryfall_id`` or `None`.
     """
-    data = data if data else bulk_data()
+    data = data or bulk_data()
     return from_iterable(data, lambda c: c.id == scryfall_id)
-
-
-@lru_cache  # pulling Scryfall data takes a few seconds
-def get_set(set_code: str) -> scrython.sets.Code | None:
-    try:
-        return scrython.sets.Code(code=set_code)
-    except scrython.ScryfallError:
-        return None
 
 
 class ColorIdentityDistribution:

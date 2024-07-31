@@ -25,10 +25,12 @@ from youtubesearchpython import Channel as YtspChannel
 from mtgcards.const import Json
 from mtgcards.decks import Deck, DeckScraper
 from mtgcards.decks.arena import ArenaParser, is_arena_line, is_empty, is_playset_line
+from mtgcards.decks.cardhoarder import CardhoarderScraper
 from mtgcards.decks.goldfish import GoldfishScraper
 from mtgcards.decks.aetherhub import AetherhubScraper
 from mtgcards.decks.moxfield import MoxfieldScraper
 from mtgcards.decks.streamdecker import StreamdeckerScraper
+from mtgcards.decks.tappedout import TappedoutScraper
 from mtgcards.decks.untapped import UntappedProfileDeckScraper, UntappedRegularDeckScraper
 from mtgcards.decks.mtgazone import MtgazoneScraper
 from mtgcards.decks.tcgplayer import TcgplayerScraper
@@ -301,10 +303,14 @@ class Video:
             elif not parser_map.get(
                     UntappedRegularDeckScraper) and UntappedRegularDeckScraper.is_deck_url(link):
                 parser_map[UntappedRegularDeckScraper] = link
-            # elif not parser_map.get(MtgazoneScraper) and MtgazoneScraper.is_deck_url(link):
-            #     parser_map[MtgazoneScraper] = link
-            # elif not parser_map.get(TcgplayerScraper) and TcgplayerScraper.is_deck_url(link):
-            #     parser_map[TcgplayerScraper] = link
+            elif not parser_map.get(MtgazoneScraper) and MtgazoneScraper.is_deck_url(link):
+                parser_map[MtgazoneScraper] = link
+            elif not parser_map.get(TcgplayerScraper) and TcgplayerScraper.is_deck_url(link):
+                parser_map[TcgplayerScraper] = link
+            elif not parser_map.get(CardhoarderScraper) and CardhoarderScraper.is_deck_url(link):
+                parser_map[CardhoarderScraper] = link
+            elif not parser_map.get(TappedoutScraper) and TappedoutScraper.is_deck_url(link):
+                parser_map[TappedoutScraper] = link
             elif not parser_map.get("pastebin-like") and any(
                     h in link for h in cls.PASTEBIN_LIKE_HOOKS):
                 parser_map["pastebin-like"] = link

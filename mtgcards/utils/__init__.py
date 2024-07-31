@@ -15,7 +15,7 @@ from typing import Any, Callable, Iterable, Optional, Type
 from contexttimer import Timer
 
 from mtgcards.const import FILENAME_TIMESTAMP_FORMAT, T
-from mtgcards.utils.validate import type_checker, uniform_type_checker
+from mtgcards.utils.check_type import type_checker, uniform_type_checker
 
 _log = logging.getLogger(__name__)
 
@@ -101,6 +101,7 @@ def getfloat(string: str | None) -> float | None:
         return extract_float(string)
     except ValueError:
         return None
+
 
 @type_checker(str, none_allowed=True)
 def getint(string: str | None) -> int | None:
