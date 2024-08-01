@@ -343,6 +343,7 @@ THEMES = {
     "Zoo",
 }
 
+
 class InvalidDeckError(ValueError):
     """Raised on invalid decks.
     """
@@ -389,16 +390,16 @@ class Deck:
         return self._max_playset_count
 
     @property
-    def all_cards(self) -> list[Card]:
+    def cards(self) -> list[Card]:
         return [*self.mainboard, *self.sideboard]
 
     @property
     def color(self) -> Color:
-        return Color.from_cards(self.all_cards)
+        return Color.from_cards(self.cards)
 
     @property
     def color_identity(self) -> Color:
-        return Color.from_cards(self.all_cards, identity=True)
+        return Color.from_cards(self.cards, identity=True)
 
     @property
     def artifacts(self) -> list[Card]:
@@ -471,15 +472,15 @@ class Deck:
 
     @property
     def sets(self) -> list[str]:
-        return sorted({c.set for c in self.all_cards if not c.is_basic_land})
+        return sorted({c.set for c in self.cards if not c.is_basic_land})
 
     @property
     def races(self) -> Counter:
-        return Counter(itertools.chain(*[c.races for c in self.all_cards]))
+        return Counter(itertools.chain(*[c.races for c in self.cards]))
 
     @property
     def classes(self) -> Counter:
-        return Counter(itertools.chain(*[c.classes for c in self.all_cards]))
+        return Counter(itertools.chain(*[c.classes for c in self.cards]))
 
     @property
     def is_bo3(self) -> bool:
@@ -552,8 +553,8 @@ class Deck:
 
     @property
     def latest_set(self) -> str | None:
-        set_codes = {c.set for c in self.all_cards if not c.is_basic_land}
-        sets = find_sets(lambda s: s.code in set_codes and s.set_type == "expansion")
+        set_codes = {c.set for c in self.cards if not c.is_basic_land}
+        sets = find_sets(lambda s: s.code in set_codes and s.is_expansion)
         if not sets:
             return None
         sets = sorted(sets, key=attrgetter("released_at"))
@@ -619,7 +620,7 @@ class Deck:
                 f"Invalid deck size: {length} < {self.MIN_MAINBOARD_SIZE}")
 
     def _validate_sideboard(self) -> None:
-        temp_playsets = to_playsets(*self.all_cards)
+        temp_playsets = to_playsets(*self.cards)
         for playset in temp_playsets.values():
             self._validate_playset(playset)
         if len(self.sideboard) > self.MAX_SIDEBOARD_SIZE:
@@ -649,6 +650,18 @@ class Deck:
         if self.companion:
             reprs.append(("companion", str(self.companion)))
         return getrepr(self.__class__, *reprs)
+
+    def __eq__(self, other: "Deck") -> bool:
+        if not isinstance(other, Deck):
+            return False
+        playsets = frozenset((card, len(cards)) for card, cards in to_playsets(*self.cards).items())
+        other_playsets = frozenset(
+            (card, len(cards)) for card, cards in to_playsets(*other.cards).items())
+        return playsets == other_playsets
+
+    def __hash__(self) -> int:
+        return hash(frozenset((card, len(cards)) for card, cards in to_playsets(
+            *self.cards).items()))
 
     def update_metadata(self, **data: Any) -> None:
         self._metadata.update(data)
@@ -745,7 +758,6 @@ Name={}
     def __init__(self, deck: Deck, name="") -> None:
         self._deck = deck
         self._name = name or self._build_name()
-
 
     @classmethod
     def _normalize(cls, name: str) -> str:

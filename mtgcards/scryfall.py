@@ -314,7 +314,9 @@ class CardFace:
     """
     json: Json
 
-    def __eq__(self, other: "Card") -> bool:
+    def __eq__(self, other: "CardFace") -> bool:
+        if not isinstance(other, CardFace):
+            return False
         left = self.name, self.mana_cost, self.type_line, self.oracle_text
         right = other.name, other.mana_cost, other.type_line, other.oracle_text
         return left == right
@@ -424,6 +426,8 @@ class Card:
     json: Json
 
     def __eq__(self, other: "Card") -> bool:
+        if not isinstance(other, Card):
+            return False
         return self.id == other.id
 
     def __hash__(self) -> int:
@@ -907,6 +911,8 @@ class SetData:
     json: Json
 
     def __eq__(self, other: "SetData") -> bool:
+        if not isinstance(other, SetData):
+            return False
         return self.id == other.id
 
     def __hash__(self) -> int:
@@ -954,6 +960,18 @@ class SetData:
     @property
     def block(self) -> str | None:
         return self.json.get("block")
+
+    @property
+    def is_official(self) -> bool:
+        return len(self.code) == 3
+
+    @property
+    def is_expansion(self) -> bool:
+        return self.set_type == "expansion"
+
+    @property
+    def is_core(self) -> bool:
+        return self.set_type == "core"
 
 
 @lru_cache
