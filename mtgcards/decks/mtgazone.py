@@ -22,6 +22,9 @@ from mtgcards.utils.scrape import ScrapingError, getsoup
 _log = logging.getLogger(__name__)
 
 
+# alternative approach would be to scrape:
+# self._soup.find("input", {"type": "hidden", "name": "c"}).attrs["value"].split("||")
+# but it has a downside of not having clear sideboard-mainboard separation
 class MtgazoneScraper(DeckScraper):
     """Scraper of MTG Arena Zone decklist page.
 
@@ -42,7 +45,6 @@ class MtgazoneScraper(DeckScraper):
         return "mtgazone.com/user-decks/" in url or "mtgazone.com/deck/" in url
 
     def _update_metadata(self) -> None:  # override
-        self._metadata["source"] = "mtgazone.com"
         name_author_tag = self._soup.find("div", class_="name-container")
         name_tag = name_author_tag.find("div", class_="name")
         name, author, event = name_tag.text.strip(), None, None

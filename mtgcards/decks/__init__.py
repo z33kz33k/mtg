@@ -1037,10 +1037,16 @@ class DeckScraper(DeckParser):
         return self._url
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
-        if url and not self.is_deck_url(url):
-            raise ValueError(f"Not a deck URL: {url!r}")
+        self._validate_url(url)
         super().__init__(metadata)
         self._url = url
+        self._metadata["source"] = self.get_source(self.url)
+        self._metadata["url"] = self.url
+
+    @classmethod
+    def _validate_url(cls, url):
+        if url and not cls.is_deck_url(url):
+            raise ValueError(f"Not a deck URL: {url!r}")
 
     @abstractmethod
     def _update_metadata(self) -> None:
@@ -1050,3 +1056,9 @@ class DeckScraper(DeckParser):
     @abstractmethod
     def is_deck_url(url: str) -> bool:
         raise NotImplementedError
+
+    @classmethod
+    def get_source(cls, url: str) -> str:
+        cls._validate_url(url)
+        parts = [p for p in url.split("/") if p]
+        return parts[1] if "http" in parts[0] else parts[0]

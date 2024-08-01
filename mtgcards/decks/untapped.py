@@ -44,7 +44,6 @@ class UntappedProfileDeckScraper(DeckScraper):
         return "mtga.untapped.gg/profile/" in url and "/deck/" in url
 
     def _update_metadata(self) -> None:  # override
-        self._metadata["source"] = "mtga.untapped.gg"
         name_tag = self._soup.select_one('span[class*="DeckListContainer__Title"]')
         strong_tag = name_tag.find("strong")
         self._metadata["name"] = strong_tag.text.strip()
@@ -83,7 +82,6 @@ class UntappedRegularDeckScraper(DeckScraper):
         return url.replace("input/", "") if "/input/" in url else url
 
     def _update_metadata(self) -> None:  # override
-        self._metadata["source"] = "mtga.untapped.gg"
         name_tag = self._soup.select("h1[class*='styles__H1']")[-1]
         name = name_tag.text.strip()
         if " (" in name:
@@ -115,7 +113,6 @@ class UntappedMetaDeckScraper(DeckScraper):
         return "mtga.untapped.gg/meta/decks/" in url
 
     def _update_metadata(self) -> None:  # override
-        self._metadata["source"] = "mtga.untapped.gg"
         name_tag = self._soup.select_one("h1[class*='layouts__MetaPageHeaderTitle']")
         name = name_tag.text.strip().removesuffix(" Deck")
         self._metadata["name"] = name

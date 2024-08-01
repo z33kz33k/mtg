@@ -23,6 +23,7 @@ _log = logging.getLogger(__name__)
 
 
 # TODO: meta-decks
+# no apparent ways to scrape an Arena list
 class AetherhubScraper(DeckScraper):
     """Scraper of Aetherhub decklist page.
 
@@ -62,8 +63,6 @@ class AetherhubScraper(DeckScraper):
         return "aetherhub.com/Deck/" in url
 
     def _update_metadata(self) -> None:  # override
-        self._metadata["source"] = "aetherhub.com"
-
         # name and format
         if title_tag := self._soup.find("h2", class_="text-header-gold"):
             fmt_part, name_part = title_tag.text.strip().split("-", maxsplit=1)

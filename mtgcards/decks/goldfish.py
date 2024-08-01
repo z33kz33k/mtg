@@ -46,6 +46,13 @@ def _shift_to_sideboard(current_state: ParsingState) -> "ParsingState":
     return ParsingState.SIDEBOARD
 
 
+# alternative approach would be to scrape:
+# self._soup.find("input", id="deck_input_deck").attrs["value"] which contains a decklist in
+# Arena format (albeit with the need to .replace("sideboard", "Sideboard") or maybe some other
+# safer means to achieve the same effect)
+# yet another alternative approach would be to scrape:
+# https://www.mtggoldfish.com/deck/arena_download/{DECK_ID} but this entails another request and
+# parsing a DECK_ID from the first URL
 class GoldfishScraper(DeckScraper):
     """Scraper of MtGGoldfish decklist page.
     """
@@ -72,11 +79,10 @@ class GoldfishScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "mtggoldfish.com/deck/" in url
+        return "www.mtggoldfish.com/deck/" in url or "www.mtggoldfish.com/archetype/" in url
 
     def _update_metadata(self) -> None:  # override
         title_tag = self._soup.find("h1", class_="title")
-        self._metadata["source"] = "www.mtggoldfish.com"
         self._metadata["name"], *_ = title_tag.text.strip().split("\n")
         if not self.author:
             author_tag = title_tag.find("span")

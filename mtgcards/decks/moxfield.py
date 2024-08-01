@@ -19,6 +19,7 @@ from mtgcards.utils.scrape import timed_request
 _log = logging.getLogger(__name__)
 
 
+# no apparent ways to scrape an Arena list
 class MoxfieldScraper(DeckScraper):
     """Scraper of Moxfield decklist page.
     """
@@ -55,10 +56,9 @@ class MoxfieldScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "moxfield.com/decks/" in url
+        return "www.moxfield.com/decks/" in url
 
     def _update_metadata(self) -> None:  # override
-        self._metadata["source"] = "www.moxfield.com"
         fmt = self._json_data["format"]
         if fmt != self.fmt and fmt in all_formats():
             if self.fmt:

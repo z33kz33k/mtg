@@ -21,6 +21,7 @@ from mtgcards.utils.scrape import timed_request
 _log = logging.getLogger(__name__)
 
 
+# no apparent ways to scrape an Arena list
 class StreamdeckerScraper(DeckScraper):
     """Scraper of Streamdecker deck page.
     """
@@ -37,7 +38,7 @@ class StreamdeckerScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "streamdecker.com/deck/" in url
+        return "www.streamdecker.com/deck/" in url
 
     def _parse_date(self) -> date | None:
         date_text = self._json_data["updatedAt"].removesuffix(" ago")
@@ -54,7 +55,6 @@ class StreamdeckerScraper(DeckScraper):
 
     def _update_metadata(self) -> None:  # override
         self._metadata.update({
-            "source": "www.streamdecker.com",
             "name": self._json_data["name"],
             "views": self._json_data["views"]["counter"]
         })
