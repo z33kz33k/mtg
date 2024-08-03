@@ -23,7 +23,7 @@ from mtgcards.scryfall import (
     scryfall_set_cards)
 from mtgcards.utils import ParsingError, extract_int, from_iterable, getrepr
 from mtgcards.utils.files import getdir, getfile
-from mtgcards.utils.scrape import ScrapingError
+from mtgcards.utils.scrape import ScrapingError, extract_source
 
 _log = logging.getLogger(__name__)
 
@@ -1052,7 +1052,7 @@ class DeckScraper(DeckParser):
         self._validate_url(url)
         super().__init__(metadata)
         self._url = url
-        self._metadata["source"] = self.get_source(self.url)
+        self._metadata["source"] = extract_source(self.url)
         self._metadata["url"] = self.url
 
     @classmethod
@@ -1068,9 +1068,3 @@ class DeckScraper(DeckParser):
     @abstractmethod
     def is_deck_url(url: str) -> bool:
         raise NotImplementedError
-
-    @classmethod
-    def get_source(cls, url: str) -> str:
-        cls._validate_url(url)
-        parts = [p for p in url.split("/") if p]
-        return parts[1] if "http" in parts[0] else parts[0]

@@ -23,7 +23,7 @@ import scrapetube
 from youtubesearchpython import Channel as YtspChannel
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, DeckScraper
+from mtgcards.decks import Deck, DeckParser, DeckScraper
 from mtgcards.decks.arena import ArenaParser, is_arena_line, is_empty, is_playset_line
 from mtgcards.decks.cardhoarder import CardhoarderScraper
 from mtgcards.decks.goldfish import GoldfishScraper
@@ -36,7 +36,7 @@ from mtgcards.decks.mtgazone import MtgazoneScraper
 from mtgcards.decks.tcgplayer import TcgplayerScraper
 from mtgcards.scryfall import all_formats
 from mtgcards.utils import getrepr, timed
-from mtgcards.utils.scrape import timed_request
+from mtgcards.utils.scrape import extract_source, timed_request
 
 _log = logging.getLogger(__name__)
 
@@ -192,12 +192,16 @@ class Video:
         return {link for link in self.links if any(hook in link for hook in self.SHORTENER_HOOKS)}
 
     @property
-    def format(self) -> str:
-        return self._format
+    def unshortened_links(self) -> list[str]:
+        return self._unshortened_links
 
     @property
-    def deck(self) -> Deck | None:
-        return self._deck
+    def derived_format(self) -> str:
+        return self._derived_format
+
+    @property
+    def decks(self) -> list[Deck]:
+        return self._decks
 
     @property
     def metadata(self) -> Json:
@@ -212,9 +216,13 @@ class Video:
                 "views": self.views
             }
         }
-        if self.format:
-            metadata["format"] = self.format
+        if self.derived_format:
+            metadata["format"] = self.derived_format
         return metadata
+
+    @property
+    def sources(self) -> list[str]:
+        return sorted(self._sources)
 
     def __init__(self, video_id: str) -> None:
         """Initialize.
@@ -227,14 +235,21 @@ class Video:
         # description and title is also available in scrapetube data on Channel level
         self._author, self._description, self._title = None, None, None
         self._keywords, self._publish_date, self._views = None, None, None
+        self._sources = set()
         self._get_pytube_data()
         self._format_soup = self._get_format_soup()
-        self._format = self._get_format()
+        self._derived_format = self._derive_format()
         self._links, self._arena_lines = self._parse_lines()
-        self._deck = self._get_deck()
+        self._unshortened_links: list[str] = []
+        self._decks = self._collect()
 
     def __repr__(self) -> str:
-        return getrepr(self.__class__, ("title", self.title), ("deck", self.deck))
+        return getrepr(self.__class__,
+            ("title", self.title),
+            ("deck", len(self.decks)),
+            ("date", str(self.publish_date.date())),
+            ("views", self.views)
+        )
 
     def _get_pytube(self) -> pytubefix.YouTube:
         return pytubefix.YouTube(self.url)
@@ -260,7 +275,7 @@ class Video:
                 fmt_soup[fmt].append(fmt)
         return fmt_soup
 
-    def _get_format(self) -> str | None:
+    def _derive_format(self) -> str | None:
         # if format soup has been populated, take the most common item
         if self._format_soup:
             two_best = Counter(itertools.chain(*self._format_soup.values())).most_common(2)
@@ -285,67 +300,57 @@ class Video:
                 arena_lines.append(line)
         return links, arena_lines
 
-    @classmethod
-    def _get_parser_map(cls, links: list[str]) -> dict[Type[DeckScraper] | str, str]:
-        parser_map = {}
-        for link in links:
-            if not parser_map.get(GoldfishScraper) and GoldfishScraper.is_deck_url(link):
-                parser_map[GoldfishScraper] = link
-            elif not parser_map.get(AetherhubScraper) and AetherhubScraper.is_deck_url(link):
-                parser_map[AetherhubScraper] = link
-            elif not parser_map.get(MoxfieldScraper) and MoxfieldScraper.is_deck_url(link):
-                parser_map[MoxfieldScraper] = link
-            elif not parser_map.get(StreamdeckerScraper) and StreamdeckerScraper.is_deck_url(link):
-                parser_map[StreamdeckerScraper] = link
-            elif not parser_map.get(
-                    UntappedProfileDeckScraper) and UntappedProfileDeckScraper.is_deck_url(link):
-                parser_map[UntappedProfileDeckScraper] = link
-            elif not parser_map.get(
-                    UntappedRegularDeckScraper) and UntappedRegularDeckScraper.is_deck_url(link):
-                parser_map[UntappedRegularDeckScraper] = link
-            elif not parser_map.get(MtgazoneScraper) and MtgazoneScraper.is_deck_url(link):
-                parser_map[MtgazoneScraper] = link
-            elif not parser_map.get(TcgplayerScraper) and TcgplayerScraper.is_deck_url(link):
-                parser_map[TcgplayerScraper] = link
-            elif not parser_map.get(CardhoarderScraper) and CardhoarderScraper.is_deck_url(link):
-                parser_map[CardhoarderScraper] = link
-            elif not parser_map.get(TappedoutScraper) and TappedoutScraper.is_deck_url(link):
-                parser_map[TappedoutScraper] = link
-            elif not parser_map.get("pastebin-like") and any(
-                    h in link for h in cls.PASTEBIN_LIKE_HOOKS):
-                parser_map["pastebin-like"] = link
-        return parser_map
-
-    def _process_urls(self, urls: list[str]) -> Deck | None:
-        parsers_map = self._get_parser_map(urls)
-        deck = None
-        for parser_type, url in parsers_map.items():
-            if parser_type == "pastebin-like":
-                lines = timed_request(url).splitlines()
-                lines = [l for l in lines if is_arena_line(l) or is_empty(l)]
-                if lines:
-                    deck = ArenaParser(lines, self.metadata).deck
-            else:
-                deck = parser_type(url, self.metadata).deck
-            if deck:
-                return deck
+    def _scrape_deck(self, link: str) -> Deck | None:
+        if GoldfishScraper.is_deck_url(link):
+            return GoldfishScraper(link, self.metadata).deck
+        elif AetherhubScraper.is_deck_url(link):
+            return AetherhubScraper(link, self.metadata).deck
+        elif MoxfieldScraper.is_deck_url(link):
+            return MoxfieldScraper(link, self.metadata).deck
+        elif StreamdeckerScraper.is_deck_url(link):
+            return StreamdeckerScraper(link, self.metadata).deck
+        elif UntappedProfileDeckScraper.is_deck_url(link):
+            return UntappedProfileDeckScraper(link, self.metadata).deck
+        elif UntappedRegularDeckScraper.is_deck_url(link):
+            return UntappedRegularDeckScraper(link, self.metadata).deck
+        elif MtgazoneScraper.is_deck_url(link):
+            return MtgazoneScraper(link, self.metadata).deck
+        elif CardhoarderScraper.is_deck_url(link):
+            return CardhoarderScraper(link, self.metadata).deck
+        elif TappedoutScraper.is_deck_url(link):
+            return TappedoutScraper(link, self.metadata).deck
+        elif any(h in link for h in self.PASTEBIN_LIKE_HOOKS):
+            lines = timed_request(link).splitlines()
+            lines = [l for l in lines if is_arena_line(l) or is_empty(l)]
+            if lines:
+                return ArenaParser(lines, self.metadata).deck
         return None
 
-    def _get_deck(self) -> Deck | None:
+    def _process_urls(self, urls: list[str]) -> list[Deck]:
+        decks = []
+        for url in urls:
+            self._sources.add(extract_source(url))
+            if deck := self._scrape_deck(url):
+                decks.append(deck)
+        return decks
+
+    def _collect(self) -> list[Deck]:
+        decks = []
+
         # 1st stage: Arena lines
         if self._arena_lines:
-            deck = ArenaParser(self._arena_lines, self._format).deck
-            if deck:
-                return deck
+            if deck := ArenaParser(self._arena_lines, self._derived_format).deck:
+                decks.append(deck)
         # 2nd stage: regular URLs
-        deck = self._process_urls(self.links)
-        if deck:
-            return deck
+        decks += self._process_urls(self.links)
         # 3rd stage: shortened URLs
         shortened_urls = [link for link in self.links
                           if any(hook in link for hook in self.SHORTENER_HOOKS)]
-        unshortened_urls = [unshorten(url) for url in shortened_urls]
-        return self._process_urls(unshortened_urls)
+        if shortened_urls:
+            self._unshortened_urls = [unshorten(url) for url in shortened_urls]
+            decks += self._process_urls(self._unshortened_urls)
+
+        return decks
 
 
 class Channel(list):

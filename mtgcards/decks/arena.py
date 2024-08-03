@@ -184,5 +184,5 @@ class ArenaParser(DeckParser):
         try:
             return Deck(mainboard, sideboard, commander, companion, self._metadata)
         except InvalidDeckError as err:
-            _log.warning(f"Scraping failed with: {err}")
+            _log.warning(f"Parsing failed with: {err}")
             return None

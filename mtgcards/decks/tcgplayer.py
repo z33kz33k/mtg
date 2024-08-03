@@ -13,7 +13,6 @@ from mtgcards.decks import Deck, DeckScraper
 
 # html parsing
 
-
 class TcgplayerScraper(DeckScraper):
     """Scraper of TCG Player decklist page.
     """

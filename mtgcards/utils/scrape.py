@@ -154,6 +154,14 @@ def http_requests_counted(operation="") -> Callable:
     return decorate
 
 
+def extract_source(url: str) -> str:
+    parts = [p for p in url.split("/") if p]
+    return parts[1] if "http" in parts[0] else parts[0]
+
+
+# SELENIUM
+
+
 @timed("getting dynamic soup")
 def get_dynamic_soup_by_xpath(
         url: str, xpath: str, click=False, consent_xpath="", clipboard_xpath="",

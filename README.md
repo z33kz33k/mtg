@@ -1,5 +1,5 @@
 # mtgcards
-Do something with MTG cards data.
+Scrape data on MtG decks.
 
 ### Description
 
