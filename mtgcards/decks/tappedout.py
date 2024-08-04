@@ -12,7 +12,7 @@ import logging
 from mtgcards.const import Json
 from mtgcards.decks import Deck, DeckScraper, InvalidDeckError
 from mtgcards.decks.arena import ArenaParser
-from mtgcards.utils import extract_ago_date, extract_int
+from mtgcards.utils import get_ago_date, extract_int
 from mtgcards.utils.scrape import getsoup
 
 
@@ -24,7 +24,7 @@ class TappedoutScraper(DeckScraper):
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        self._soup = getsoup("https://tappedout.net/mtg-decks/rakdos-orc-sac/?cb=1687559977")
+        self._soup = getsoup(url)
         self._scrape_metadata()
         self._deck = self._get_deck()
 
@@ -45,7 +45,7 @@ class TappedoutScraper(DeckScraper):
                 continue
             name_col, value_col = cols
             if name_col.text.strip() == "Last updated":
-                self._metadata["date"] = extract_ago_date(value_col.text.strip())
+                self._metadata["date"] = get_ago_date(value_col.text.strip())
             elif name_col.text.strip() == "Views":
                 if views := value_col.text.strip():
                     self._metadata["views"] = extract_int(views)

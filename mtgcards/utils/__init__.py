@@ -94,8 +94,8 @@ def extract_int(text: str) -> int:
 
 
 @type_checker(str)
-def extract_ago_date(date_text: str) -> date | None:
-    """Extract date from 'ago' text (e.g. '2 days ago').
+def get_ago_date(date_text: str) -> date | None:
+    """Parse 'ago' text (e.g. '2 days ago') into a Date object.
     """
     if not date_text:
         return None
