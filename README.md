@@ -6,10 +6,10 @@ Scrape data on MtG decks.
 This is a hobby project.
 
 It started as a card data scraping from `MTG Goldfish`. Then, some JumpIn! packets info scraping 
-was added. Then, there was some play with Limited data from `17lands.com` when I thought I had to 
-bear with utter boringness of that format (before the dawn of Golden Packs on Arena) [_This part 
-has been deprecated and moved to `archive` package_]. Then, I discovered I don't need to scrape 
-anything because [Scryfall](https://scryfall.com).
+was added. Then, there was some play with Limited data from [17lands](https://www.17lands.com) when 
+I thought I had to bear with utter boringness of that format (before the dawn of Golden Packs on 
+Arena) [_This part has been deprecated and moved to `archive` package_]. Then, I discovered I 
+don't need to scrape anything because [Scryfall](https://scryfall.com).
 
 Then, I quit (Arena).
 

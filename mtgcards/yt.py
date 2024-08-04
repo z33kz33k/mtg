@@ -9,8 +9,9 @@
 """
 import itertools
 import logging
+import re
 from collections import Counter, defaultdict
-from datetime import datetime
+from datetime import date
 from decimal import Decimal
 from functools import cached_property
 
@@ -21,15 +22,15 @@ from youtubesearchpython import Channel as YtspChannel
 
 from mtgcards.const import Json
 from mtgcards.decks import Deck
-from mtgcards.decks.arena import ArenaParser, is_arena_line, is_empty, is_playset_line
+from mtgcards.decks.aetherhub import AetherhubScraper
+from mtgcards.decks.arena import ArenaParser, is_arena_line
 from mtgcards.decks.cardhoarder import CardhoarderScraper
 from mtgcards.decks.goldfish import GoldfishScraper
-from mtgcards.decks.aetherhub import AetherhubScraper
 from mtgcards.decks.moxfield import MoxfieldScraper
+from mtgcards.decks.mtgazone import MtgazoneScraper
 from mtgcards.decks.streamdecker import StreamdeckerScraper
 from mtgcards.decks.tappedout import TappedoutScraper
 from mtgcards.decks.untapped import UntappedProfileDeckScraper, UntappedRegularDeckScraper
-from mtgcards.decks.mtgazone import MtgazoneScraper
 from mtgcards.scryfall import all_formats
 from mtgcards.utils import getrepr
 from mtgcards.utils.scrape import extract_source, extract_url, timed_request, unshorten
@@ -160,7 +161,7 @@ class Video:
         return self._keywords
 
     @property
-    def date(self) -> datetime:
+    def date(self) -> date:
         return self._date
 
     @property
@@ -214,6 +215,8 @@ class Video:
         }
         if self.derived_format:
             metadata["format"] = self.derived_format
+        if self._channel_subscribers:
+            metadata["video"]["channel_subscribers"] = self._channel_subscribers
         return metadata
 
     @property
@@ -240,24 +243,46 @@ class Video:
         self._decks = self._collect()
 
     def __repr__(self) -> str:
-        return getrepr(self.__class__,
-                       ("title", self.title),
-                       ("deck", len(self.decks)),
-                       ("date", str(self.date.date())),
-                       ("views", self.views)
-                       )
+        return getrepr(
+            self.__class__,
+            ("title", self.title),
+            ("deck", len(self.decks)),
+            ("date", str(self.date.date())),
+            ("views", self.views)
+        )
 
     def _get_pytube(self) -> pytubefix.YouTube:
         return pytubefix.YouTube(self.url)
+
+    def _extract_subscribers(self) -> int | None:
+        pattern = r'(\d+(?:\.\d+)?)\s*([KMB]?)\s*subscribers'
+        match = re.search(pattern, self._pytube.embed_html)
+
+        if match:
+            # extract the number and suffix from the match
+            number = float(match.group(1))
+            suffix = match.group(2)
+
+            # convert the number based on the suffix
+            if suffix == 'K':
+                return int(number * 1_000)
+            elif suffix == 'M':
+                return int(number * 1_000_000)
+            elif suffix == 'B':
+                return int(number * 1_000_000_000)
+            return int(number)
+
+        return None
 
     def _get_pytube_data(self) -> None:
         self._author = self._pytube.author
         self._description = self._pytube.description
         self._title = self._pytube.title
         self._keywords = self._pytube.keywords
-        self._date = self._pytube.publish_date
+        self._date = self._pytube.publish_date.date()
         self._views = self._pytube.views
         self._channel_id = self._pytube.channel_id
+        self._channel_subscribers = self._extract_subscribers()
 
     @staticmethod
     def _extract_formats(line: str) -> list[str]:
@@ -289,9 +314,6 @@ class Video:
             url = extract_url(line)
             if url:
                 links.append(url)
-            elif is_empty(line):
-                if i != len(self._desc_lines) - 1 and is_playset_line(self._desc_lines[i + 1]):
-                    arena_lines.append(line)
             elif is_arena_line(line):
                 arena_lines.append(line)
         return links, arena_lines
@@ -317,7 +339,7 @@ class Video:
             return TappedoutScraper(link, self.metadata).deck
         elif any(h in link for h in self.PASTEBIN_LIKE_HOOKS):
             lines = timed_request(link).splitlines()
-            lines = [l for l in lines if is_arena_line(l) or is_empty(l)]
+            lines = [l for l in lines if is_arena_line(l)]
             if lines:
                 return ArenaParser(lines, self.metadata).deck
         return None
@@ -335,7 +357,7 @@ class Video:
 
         # 1st stage: Arena lines
         if self._arena_lines:
-            if deck := ArenaParser(self._arena_lines, self._derived_format).deck:
+            if deck := ArenaParser(self._arena_lines, self.metadata).deck:
                 decks.append(deck)
         # 2nd stage: regular URLs
         decks += self._process_urls(self.links)
@@ -382,7 +404,7 @@ class Channel(list):
 
     @property
     def decks(self) -> list[Deck]:
-        return [video.deck for video in self if video.deck]
+        return [*itertools.chain(video.decks for video in self if video.decks)]
 
     @property
     def sources(self) -> list[str]:
@@ -401,6 +423,9 @@ class Channel(list):
         self._title = self._ytsp_data.result.get("title") if self._id else None
         self._tags = self._ytsp_data.result.get("tags") if self._id else None
         self._subscribers = self._parse_subscribers() if self._id else None
+        if not self._subscribers:
+            self._subscribers = self[0].metadata["video"].get(
+                "channel_subscribers") if self else None
         self._sources = {s for v in self for s in v.sources}
 
     def _parse_subscribers(self) -> int | None:
