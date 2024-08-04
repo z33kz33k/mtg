@@ -37,7 +37,7 @@ class UntappedProfileDeckScraper(DeckScraper):
             self._update_metadata()
             self._deck = self._get_deck()
         except selenium.common.exceptions.TimeoutException:
-            _log.warning(f"Scraping failed due to a Selenium timing out")
+            _log.warning(f"Scraping failed due to Selenium timing out")
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -71,7 +71,7 @@ class UntappedRegularDeckScraper(DeckScraper):
             self._update_metadata()
             self._deck = self._get_deck()
         except selenium.common.exceptions.TimeoutException:
-            _log.warning(f"Scraping failed due to a Selenium timing out")
+            _log.warning(f"Scraping failed due to Selenium timing out")
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -106,7 +106,7 @@ class UntappedMetaDeckScraper(DeckScraper):
             self._update_metadata()
             self._deck = self._get_deck()
         except selenium.common.exceptions.TimeoutException:
-            _log.warning(f"Scraping failed due to a Selenium timing out")
+            _log.warning(f"Scraping failed due to Selenium timing out")
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override

@@ -14,7 +14,7 @@ from collections import Counter, defaultdict
 from enum import Enum, auto
 from functools import cached_property, lru_cache
 from operator import attrgetter
-from typing import Any, Iterable
+from typing import Any, Iterable, Iterator
 
 from mtgcards.const import Json, OUTPUT_DIR, PathLike
 from mtgcards.scryfall import (
@@ -663,6 +663,9 @@ class Deck:
         return hash(frozenset((card, len(cards)) for card, cards in to_playsets(
             *self.cards).items()))
 
+    def __iter__(self) -> Iterator[Card]:
+        return iter(self.cards)
+
     def update_metadata(self, **data: Any) -> None:
         self._metadata.update(data)
 
@@ -1052,8 +1055,8 @@ class DeckScraper(DeckParser):
         self._validate_url(url)
         super().__init__(metadata)
         self._url = url
-        self._metadata["source"] = extract_source(self.url)
         self._metadata["url"] = self.url
+        self._metadata["source"] = extract_source(self.url)
 
     @classmethod
     def _validate_url(cls, url):

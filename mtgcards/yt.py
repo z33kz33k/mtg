@@ -164,8 +164,8 @@ class Video:
         return self._keywords
 
     @property
-    def publish_date(self) -> datetime:
-        return self._publish_date
+    def date(self) -> datetime:
+        return self._date
 
     @property
     def title(self) -> str:
@@ -212,7 +212,7 @@ class Video:
                 "title": self.title,
                 "description": self.description,
                 "keywords": self.keywords,
-                "date": self.publish_date,
+                "date": self.date,
                 "views": self.views
             }
         }
@@ -234,7 +234,7 @@ class Video:
         self._pytube = self._get_pytube()
         # description and title is also available in scrapetube data on Channel level
         self._author, self._description, self._title = None, None, None
-        self._keywords, self._publish_date, self._views = None, None, None
+        self._keywords, self._date, self._views = None, None, None
         self._sources = set()
         self._get_pytube_data()
         self._format_soup = self._get_format_soup()
@@ -245,11 +245,11 @@ class Video:
 
     def __repr__(self) -> str:
         return getrepr(self.__class__,
-            ("title", self.title),
-            ("deck", len(self.decks)),
-            ("date", str(self.publish_date.date())),
-            ("views", self.views)
-        )
+                       ("title", self.title),
+                       ("deck", len(self.decks)),
+                       ("date", str(self.date.date())),
+                       ("views", self.views)
+                       )
 
     def _get_pytube(self) -> pytubefix.YouTube:
         return pytubefix.YouTube(self.url)
@@ -259,7 +259,7 @@ class Video:
         self._description = self._pytube.description
         self._title = self._pytube.title
         self._keywords = self._pytube.keywords
-        self._publish_date = self._pytube.publish_date
+        self._date = self._pytube.publish_date
         self._views = self._pytube.views
         self._channel_id = self._pytube.channel_id
 
@@ -381,8 +381,16 @@ class Channel(list):
         return self._subscribers
 
     @property
+    def most_recent(self) -> Video:
+        return self[-1]
+
+    @property
     def decks(self) -> list[Deck]:
         return [video.deck for video in self if video.deck]
+
+    @property
+    def sources(self) -> list[str]:
+        return sorted(self._sources)
 
     def __init__(self, url: str, limit=10) -> None:
         try:
@@ -397,6 +405,7 @@ class Channel(list):
         self._title = self._ytsp_data.result.get("title") if self._id else None
         self._tags = self._ytsp_data.result.get("tags") if self._id else None
         self._subscribers = self._parse_subscribers() if self._id else None
+        self._sources = {s for v in self for s in v.sources}
 
     def _parse_subscribers(self) -> int | None:
         if not self._id:

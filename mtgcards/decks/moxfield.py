@@ -80,6 +80,16 @@ class MoxfieldScraper(DeckScraper):
         if desc := self._json_data["description"]:
             self._metadata["description"] = desc
 
+    def _parse_card(self, json_card: Json) -> list[Card]:
+        scryfall_id = json_card["card"]["scryfall_id"]
+        quantity = json_card["quantity"]
+        playset = self._get_playset_by_id(scryfall_id, quantity)
+        if playset:
+            return playset
+        set_code, name = json_card["card"]["set"], json_card["card"]["name"]
+        set_code = set_code if set_code in set(all_set_codes()) else ""
+        return get_playset(name, quantity, set_code, self.fmt)
+
     def _get_deck(self) -> Deck | None:  # override
         mainboard, sideboard, commander, companion = [], [], None, None
         for card in self._json_data["boards"]["mainboard"]["cards"].values():
@@ -100,13 +110,3 @@ class MoxfieldScraper(DeckScraper):
         except InvalidDeckError as err:
             _log.warning(f"Scraping failed with: {err}")
             return None
-
-    def _parse_card(self, json_card: Json) -> list[Card]:
-        scryfall_id = json_card["card"]["scryfall_id"]
-        quantity = json_card["quantity"]
-        playset = self._get_playset_by_id(scryfall_id, quantity)
-        if playset:
-            return playset
-        set_code, name = json_card["card"]["set"], json_card["card"]["name"]
-        set_code = set_code if set_code in set(all_set_codes()) else ""
-        return get_playset(name, quantity, set_code, self.fmt)
