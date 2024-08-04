@@ -37,14 +37,14 @@ class MtgazoneScraper(DeckScraper):
         super().__init__(url, metadata)
         self._deck_tag = deck_tag
         self._soup = deck_tag or getsoup(url)
-        self._update_metadata()
+        self._scrape_metadata()
         self._deck = self._get_deck()
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "mtgazone.com/user-decks/" in url or "mtgazone.com/deck/" in url
 
-    def _update_metadata(self) -> None:  # override
+    def _scrape_metadata(self) -> None:  # override
         name_author_tag = self._soup.find("div", class_="name-container")
         name_tag = name_author_tag.find("div", class_="name")
         name, author, event = name_tag.text.strip(), None, None
@@ -62,12 +62,7 @@ class MtgazoneScraper(DeckScraper):
             self._metadata["event"] = event
         fmt_tag = self._soup.find("div", class_="format")
         fmt = fmt_tag.text.strip().lower()
-        if fmt != self.fmt and fmt in all_formats():
-            if self.fmt:
-                _log.warning(
-                        f"Earlier specified format: {self.fmt!r} overwritten with a "
-                        f"scraped one: {fmt!r}")
-            self._metadata["format"] = fmt
+        self._update_fmt(fmt)
         if time_tag := self._soup.find("time", class_="ct-meta-element-date"):
             self._metadata["date"] = datetime.fromisoformat(time_tag.attrs["datetime"]).date()
 

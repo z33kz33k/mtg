@@ -9,6 +9,7 @@
 """
 import json
 import logging
+import re
 import time
 from functools import wraps
 from typing import Callable, Dict, Optional, Union
@@ -154,10 +155,32 @@ def http_requests_counted(operation="") -> Callable:
     return decorate
 
 
+@timed("unshortening")
+def unshorten(url: str) -> str:
+    """Unshorten URL shortened by services like bit.ly, tinyurl.com etc.
+
+    Pilfered from: https://stackoverflow.com/a/28918160/4465708
+    """
+    session = requests.Session()  # so connections are recycled
+    resp = session.head(url, allow_redirects=True)
+    return resp.url
+
+
+def extract_url(text: str, https=True) -> str | None:
+    """Extract (the first occurrence of) URL from ``text``.
+
+    Pilfered from: https://stackoverflow.com/a/840110/4465708
+    """
+    pattern = r"(?P<url>https?://[^\s'\"]+)" if https else r"(?P<url>http?://[^\s'\"]+)"
+    match = re.search(pattern, text)
+    return match.group("url") if match else None
+
+
 def extract_source(url: str) -> str:
+    """Extract source domain from ``url``.
+    """
     parts = [p for p in url.split("/") if p]
     return parts[1] if "http" in parts[0] else parts[0]
-
 
 # SELENIUM
 

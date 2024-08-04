@@ -47,7 +47,7 @@ class CardhoarderScraper(DeckScraper):
         super().__init__(url, metadata)
         self._soup = getsoup(url, headers=self.HEADERS)
         self._deck_data = self._get_deck_data()
-        self._update_metadata()
+        self._scrape_metadata()
         self._deck = self._get_deck()
 
     @staticmethod
@@ -62,7 +62,7 @@ class CardhoarderScraper(DeckScraper):
                 "Cardhoarder anti-bot measures")
         return json.loads(deck_tag.attrs["data-deck"])
 
-    def _update_metadata(self) -> None:  # override
+    def _scrape_metadata(self) -> None:  # override
         self._metadata["name"] = self._deck_data["name"]
 
     # TODO: commander, companion (example decks with such data needed)

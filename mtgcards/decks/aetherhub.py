@@ -55,26 +55,21 @@ class AetherhubScraper(DeckScraper):
         super().__init__(url, metadata)
         self._throttled = throttled
         self._soup = getsoup(url)
-        self._update_metadata()
+        self._scrape_metadata()
         self._deck = self._get_deck()
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "aetherhub.com/Deck/" in url
 
-    def _update_metadata(self) -> None:  # override
+    def _scrape_metadata(self) -> None:  # override
         # name and format
         if title_tag := self._soup.find("h2", class_="text-header-gold"):
             fmt_part, name_part = title_tag.text.strip().split("-", maxsplit=1)
             fmt_part = fmt_part.strip()
             if fmt_pair := self.FORMATS.get(fmt_part):
                 fmt, mode = fmt_pair
-                if fmt != self.fmt:
-                    if self.fmt:
-                        _log.warning(
-                                f"Earlier specified format: {self.fmt!r} overwritten with a "
-                                f"scraped one: {fmt!r}")
-                    self._metadata["format"] = fmt
+                self._update_fmt(fmt)
                 self._metadata["mode"] = mode.value
             self._metadata["name"] = name_part.strip()
 

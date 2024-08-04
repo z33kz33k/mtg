@@ -9,21 +9,18 @@
 """
 import itertools
 import logging
-import re
 from collections import Counter, defaultdict
 from datetime import datetime
 from decimal import Decimal
 from functools import cached_property
-from typing import Type
 
 import gspread
 import pytubefix
-import requests
 import scrapetube
 from youtubesearchpython import Channel as YtspChannel
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, DeckParser, DeckScraper
+from mtgcards.decks import Deck
 from mtgcards.decks.arena import ArenaParser, is_arena_line, is_empty, is_playset_line
 from mtgcards.decks.cardhoarder import CardhoarderScraper
 from mtgcards.decks.goldfish import GoldfishScraper
@@ -33,10 +30,9 @@ from mtgcards.decks.streamdecker import StreamdeckerScraper
 from mtgcards.decks.tappedout import TappedoutScraper
 from mtgcards.decks.untapped import UntappedProfileDeckScraper, UntappedRegularDeckScraper
 from mtgcards.decks.mtgazone import MtgazoneScraper
-from mtgcards.decks.tcgplayer import TcgplayerScraper
 from mtgcards.scryfall import all_formats
-from mtgcards.utils import getrepr, timed
-from mtgcards.utils.scrape import extract_source, timed_request
+from mtgcards.utils import getrepr
+from mtgcards.utils.scrape import extract_source, extract_url, timed_request, unshorten
 
 _log = logging.getLogger(__name__)
 
@@ -422,22 +418,3 @@ class Channel(list):
         return int(subscribers)
 
 
-@timed("unshortening")
-def unshorten(url: str) -> str:
-    """Unshorten URL shortened by services like bit.ly, tinyurl.com etc.
-
-    Pilfered from: https://stackoverflow.com/a/28918160/4465708
-    """
-    session = requests.Session()  # so connections are recycled
-    resp = session.head(url, allow_redirects=True)
-    return resp.url
-
-
-def extract_url(text: str, https=True) -> str | None:
-    """Extract (the first occurrence of) URL from ``text``.
-
-    Pilfered from: https://stackoverflow.com/a/840110/4465708
-    """
-    pattern = r"(?P<url>https?://[^\s'\"]+)" if https else r"(?P<url>http?://[^\s'\"]+)"
-    match = re.search(pattern, text)
-    return match.group("url") if match else None

@@ -8,13 +8,12 @@
 
 """
 import logging
-from datetime import date, timedelta
-
-from dateutil.relativedelta import relativedelta
+from datetime import date
 
 from mtgcards.const import Json
 from mtgcards.decks import Deck, InvalidDeckError, DeckScraper, find_card_by_name
 from mtgcards.scryfall import find_by_id
+from mtgcards.utils import extract_ago_date
 from mtgcards.utils.scrape import timed_request
 
 
@@ -32,7 +31,7 @@ class StreamdeckerScraper(DeckScraper):
         *_, self._decklist_id = url.split("/")
         self._json_data = timed_request(
             self.API_URL_TEMPLATE.format(self._decklist_id), return_json=True)["data"]
-        self._update_metadata()
+        self._scrape_metadata()
         self._mainboard, self._sideboard, self._commander, self._companion = [], [], None, None
         self._deck = self._get_deck()
 
@@ -41,19 +40,10 @@ class StreamdeckerScraper(DeckScraper):
         return "www.streamdecker.com/deck/" in url
 
     def _parse_date(self) -> date | None:
-        date_text = self._json_data["updatedAt"].removesuffix(" ago")
-        amount, time = date_text.split()
-        amount = int(amount)
-        dt = date.today()
-        if time in ("days", "day"):
-            return dt - timedelta(days=amount)
-        elif time in ("months", "month"):
-            return dt - relativedelta(months=amount)
-        elif time in ("years", "year"):
-            return date(dt.year - amount, dt.month, dt.day)
-        return None
+        date_text = self._json_data["updatedAt"]
+        return extract_ago_date(date_text)
 
-    def _update_metadata(self) -> None:  # override
+    def _scrape_metadata(self) -> None:  # override
         self._metadata.update({
             "name": self._json_data["name"],
             "views": self._json_data["views"]["counter"]

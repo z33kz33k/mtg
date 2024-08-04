@@ -60,9 +60,9 @@ class PlaysetLine:
         '4 Commit /// Memory (AKR) 54'
     """
     # matches '4 Commit /// Memory'
-    PATTERN = re.compile(r"\d{1,3}\s[A-Z][\w\s'&/,-]+")
+    PATTERN = re.compile(r"\d{1,3}x?\s[A-Z][\w\s'&/,-]+")
     # matches '4 Commit /// Memory (AKR) 54'
-    EXTENDED_PATTERN = re.compile(r"\d{1,3}\s[A-Z][\w\s'&/,-]+\([A-Z\d]{3}\)\s\d+")
+    EXTENDED_PATTERN = re.compile(r"\d{1,3}x?\s[A-Z][\w\s'&/,-]+\([A-Z\d]{3}\)\s\d+")
 
     @property
     def raw_line(self) -> str:
@@ -118,8 +118,12 @@ class PlaysetLine:
             a list of cards according to this line's quantity or an empty list if no card can be identified
         """
         if self.is_extended:
-            if card := find_by_collector_number(self.collector_number, self.set_code):
-                return [card] * self.quantity
+            try:
+                if card := find_by_collector_number(self.collector_number, self.set_code):
+                    return [card] * self.quantity
+            except ValueError as ve:  # Scryfall has different codes for Alchemy sets than Arena
+                if "Invalid set code" in str(ve):
+                    pass
         return get_playset(self.name, self.quantity, self.set_code, fmt)
 
 

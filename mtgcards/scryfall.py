@@ -433,6 +433,11 @@ class Card:
     def __hash__(self) -> int:
         return hash(self.id)
 
+    def __lt__(self, other: "Card") -> bool:
+        if not isinstance(other, Card):
+            return NotImplemented
+        return self.name < other.name
+
     def __str__(self) -> str:
         text = f"{self.name} ({self.set.upper()})"
         if self.collector_number:
@@ -497,8 +502,7 @@ class Card:
             `collector_number` can look like that:
                 {"12e", "67f", "233f", "A-268", "4e"}
         """
-        cn = "".join(char for char in self.collector_number if char.isdigit())
-        return getint(cn)
+        return getint(self.collector_number)
 
     @property
     def formats(self) -> list[str]:
@@ -973,6 +977,10 @@ class SetData:
     def is_core(self) -> bool:
         return self.set_type == "core"
 
+    @property
+    def is_alchemy(self) -> bool:
+        return self.set_type == "alchemy"
+
 
 @lru_cache
 def sets() -> set[SetData]:
@@ -1006,16 +1014,27 @@ def find_set(
     return from_iterable(data, predicate)
 
 
-def find_set_by_code(set_code: str, data: Iterable[SetData] | None = None) -> SetData | None:
+def find_set_by_code(*set_codes: str, data: Iterable[SetData] | None = None) -> SetData | None:
     """Return a MtG set designated by provided code or `None`.
     """
     data = data or sets()
-    return find_set(lambda s: s.set_code == set_code.lower(), data)
+    return find_set(lambda s: s.set_code in {sc.lower() for sc in set_codes}, data)
 
 
 @lru_cache
-def bulk_data() -> set[Card]:
+def bulk_data(official_only=True) -> set[Card]:
     """Return Scryfall JSON card data as set of Card objects.
+
+    Note:
+        According to: https://scryfall.com/docs/api/sets all sets with set codes three-letter
+        long are consider official. This strict metric excludes Alchemy cards though, so
+        this function takes care to consider Alchemy sets as official even if Scryfall doesn't.
+
+    Args:
+        official_only: return only cards from official sets, defaults to ``True``
+
+    Returns:
+        set of Card objects
     """
     source = getdir(DATA_DIR) / CARDS_FILENAME
     if not source.exists():
@@ -1024,7 +1043,13 @@ def bulk_data() -> set[Card]:
     with source.open() as f:
         data = json.load(f)
 
-    return {Card(card_data) for card_data in data}
+    cards = {Card(card_data) for card_data in data}
+
+    if official_only:
+        official_sets = {s.code for s in sets() if s.is_official or s.is_alchemy}
+        return {c for c in cards if c.set in official_sets}
+
+    return cards
 
 
 def games(data: Iterable[Card] | None = None) -> list[str]:
@@ -1198,8 +1223,8 @@ def find_by_collector_number(
     """Return a card designated by provided ``collector_number`` from ``data`` or
     `None`.
     """
-    data = [card for card in set_cards(set_code) if card.collector_number_int is not None]
-    return find_card(lambda c: c.collector_number == collector_number, data)
+    data = {card for card in set_cards(set_code) if card.collector_number_int is not None}
+    return find_card(lambda c: c.collector_number_int == collector_number, data)
 
 
 def find_by_id(scryfall_id: str, data: Iterable[Card] | None = None) -> Card | None:

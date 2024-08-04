@@ -988,7 +988,7 @@ class ParsingState(Enum):
 
 def find_card_by_name(name, set_code="", fmt="") -> Card:
     card = None
-    if set_code:
+    if set_code and set_code in all_set_codes():
         card = find_by_name(name, set_cards(set_code))
     if not card and fmt:
         card = find_by_name(name, format_cards(fmt))
@@ -1045,6 +1045,14 @@ class DeckParser(ABC):
             return None
         return [card] * quantity
 
+    def _update_fmt(self, fmt: str) -> None:
+        if fmt != self.fmt and fmt in all_formats():
+            if self.fmt:
+                _log.warning(
+                    f"Earlier specified format: {self.fmt!r} overwritten with a scraped "
+                    f"one: {fmt!r}")
+            self._metadata["format"] = fmt
+
 
 class DeckScraper(DeckParser):
     @property
@@ -1064,7 +1072,7 @@ class DeckScraper(DeckParser):
             raise ValueError(f"Not a deck URL: {url!r}")
 
     @abstractmethod
-    def _update_metadata(self) -> None:
+    def _scrape_metadata(self) -> None:
         raise NotImplementedError
 
     @staticmethod

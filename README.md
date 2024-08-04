@@ -27,11 +27,11 @@ descriptions).
   with Google APIs)
 * Arena, [Goldfish](https://www.mtggoldfish.com), [Moxfield](https://www.moxfield.com), 
   [Aetherhub](https://aetherhub.com), [Streamdecker](https://www.streamdecker.com/landing), 
-  [MTGAZone](https://mtgazone.com), [Cardhoarder](https://www.cardhoarder.com) and 
-  [Untapped](https://mtga.untapped.gg) deck parsers work, so:
+  [MTGAZone](https://mtgazone.com), [Cardhoarder](https://www.cardhoarder.com), 
+  [TappedOut](https://tappedout.net) and [Untapped](https://mtga.untapped.gg) deck parsers work, so:
     * Arena decklists pasted into video descriptions are parsed into Deck objects
-    * Goldfish, Moxfield, Aetherhub, Streamdecker, MTGAZone, Cardhoarder and Untapped links 
-      contained in those descriptions are parsed into Deck objects
+    * Goldfish, Moxfield, Aetherhub, Streamdecker, MTGAZone, Cardhoarder, TappedOut and Untapped 
+      links contained in those descriptions are parsed into Deck objects
     * Due to its dynamic nature, Untapped is scraped using 
       [Selenium](https://github.com/SeleniumHQ/Selenium)
     * Both Untapped decklist types featured in YT videos are supported: regular deck and profile deck

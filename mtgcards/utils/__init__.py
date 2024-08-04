@@ -11,7 +11,9 @@ import logging
 from datetime import datetime
 from functools import wraps
 from typing import Any, Callable, Iterable, Optional, Type
+from datetime import date, timedelta
 
+from dateutil.relativedelta import relativedelta
 from contexttimer import Timer
 
 from mtgcards.const import FILENAME_TIMESTAMP_FORMAT, T
@@ -89,6 +91,25 @@ def extract_int(text: str) -> int:
     if not num:
         raise ParsingError(f"No digits in text: {text!r}")
     return int(num)
+
+
+@type_checker(str)
+def extract_ago_date(date_text: str) -> date | None:
+    """Extract date from 'ago' text (e.g. '2 days ago').
+    """
+    if not date_text:
+        return None
+    date_text = date_text.removesuffix(" ago")
+    amount, time = date_text.split()
+    amount = int(amount)
+    dt = date.today()
+    if time in ("days", "day"):
+        return dt - timedelta(days=amount)
+    elif time in ("months", "month"):
+        return dt - relativedelta(months=amount)
+    elif time in ("years", "year"):
+        return date(dt.year - amount, dt.month, dt.day)
+    return None
 
 
 @type_checker(str, none_allowed=True)

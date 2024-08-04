@@ -51,21 +51,16 @@ class MoxfieldScraper(DeckScraper):
         self._json_data = timed_request(
             self.API_URL_TEMPLATE.format(self._decklist_id), return_json=True,
             headers=self.HEADERS)
-        self._update_metadata()
+        self._scrape_metadata()
         self._deck = self._get_deck()
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "www.moxfield.com/decks/" in url
 
-    def _update_metadata(self) -> None:  # override
+    def _scrape_metadata(self) -> None:  # override
         fmt = self._json_data["format"]
-        if fmt != self.fmt and fmt in all_formats():
-            if self.fmt:
-                _log.warning(
-                    f"Earlier specified format: {self.fmt!r} overwritten with a scraped "
-                    f"one: {fmt!r}")
-            self._metadata["format"] = fmt
+        self._update_fmt(fmt)
         name = self._json_data["name"]
         if " - " in name:
             *_, name = name.split(" - ")

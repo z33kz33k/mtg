@@ -74,14 +74,14 @@ class GoldfishScraper(DeckScraper):
         self._throttled = throttled
         self._soup = throttled_soup(
             url, headers=self.HEADERS) if self._throttled else getsoup(url, headers=self.HEADERS)
-        self._update_metadata()
+        self._scrape_metadata()
         self._deck = self._get_deck()
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "www.mtggoldfish.com/deck/" in url or "www.mtggoldfish.com/archetype/" in url
 
-    def _update_metadata(self) -> None:  # override
+    def _scrape_metadata(self) -> None:  # override
         title_tag = self._soup.find("h1", class_="title")
         self._metadata["name"], *_ = title_tag.text.strip().split("\n")
         if not self.author:
@@ -96,12 +96,7 @@ class GoldfishScraper(DeckScraper):
                 fmt = line.removeprefix("Format:").strip().lower()
                 if fmt in self.FMT_NAMES:
                     fmt = self.FMT_NAMES[fmt]
-                if fmt != self.fmt and fmt in all_formats():
-                    if self.fmt:
-                        _log.warning(
-                            f"Earlier specified format: {self.fmt!r} overwritten with a scraped "
-                            f"one: {fmt!r}")
-                    self._metadata["format"] = fmt
+                self._update_fmt(fmt)
             elif line.startswith("Event:"):
                 self._metadata["event"] = line.removeprefix("Event:").strip()
             elif line.startswith("Deck Source:"):
