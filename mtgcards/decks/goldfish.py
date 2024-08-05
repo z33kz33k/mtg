@@ -13,7 +13,7 @@ from datetime import datetime
 from bs4 import Tag
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, InvalidDeckError, Mode, ParsingState, DeckScraper, get_playset
+from mtgcards.decks import Deck, InvalidDeck, Mode, ParsingState, DeckScraper, get_playset
 from mtgcards.scryfall import Card, all_formats, all_set_codes
 from mtgcards.utils import extract_int, timed
 from mtgcards.utils.scrape import ScrapingError, getsoup, http_requests_counted, throttled_soup
@@ -139,7 +139,7 @@ class GoldfishScraper(DeckScraper):
 
         try:
             return Deck(mainboard, sideboard, commander, companion, metadata=self._metadata)
-        except InvalidDeckError as err:
+        except InvalidDeck as err:
             if self._throttled:
                 raise
             _log.warning(f"Scraping failed with: {err}")
@@ -187,7 +187,7 @@ def scrape_meta(fmt="standard") -> list[Deck]:
         try:
             deck = GoldfishScraper(
                 f"https://www.mtggoldfish.com{link}", {"format": fmt}, throttled=True).deck
-        except InvalidDeckError as err:
+        except InvalidDeck as err:
             raise ScrapingError(f"Scraping meta deck failed with: {err}")
         count = tile.find("span", class_="archetype-tile-statistic-value-extra-data").text.strip()
         count = extract_int(count)

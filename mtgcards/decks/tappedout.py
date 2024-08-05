@@ -10,7 +10,7 @@
 import logging
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, DeckScraper, InvalidDeckError
+from mtgcards.decks import Deck, DeckScraper, InvalidDeck
 from mtgcards.decks.arena import ArenaParser
 from mtgcards.utils import get_ago_date, extract_int
 from mtgcards.utils.scrape import getsoup
@@ -57,6 +57,6 @@ class TappedoutScraper(DeckScraper):
 
         try:
             return ArenaParser(lines, self._metadata).deck
-        except InvalidDeckError as err:
+        except InvalidDeck as err:
             _log.warning(f"Scraping failed with: {err}")
             return None

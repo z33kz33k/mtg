@@ -11,11 +11,11 @@ import logging
 import re
 
 from mtgcards.const import Json
-from mtgcards.decks import ARENA_MULTIPART_SEPARATOR, Deck, DeckParser, InvalidDeckError, \
+from mtgcards.decks import ARENA_MULTIFACE_SEPARATOR, Deck, DeckParser, InvalidDeck, \
     ParsingState, get_playset
-from mtgcards.scryfall import Card, MULTIPART_SEPARATOR as SCRYFALL_MULTIPART_SEPARATOR, \
+from mtgcards.scryfall import Card, MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, \
     find_by_collector_number
-from mtgcards.utils import extract_int, getint, getrepr
+from mtgcards.utils import ParsingError, extract_int, getint, getrepr
 
 
 _log = logging.getLogger(__name__)
@@ -92,7 +92,7 @@ class PlaysetLine:
             self._collector_number = getint(rest.strip())
         else:
             self._name, self._set_code, self._collector_number = rest, "", None
-        self._name = self._name.replace(ARENA_MULTIPART_SEPARATOR, SCRYFALL_MULTIPART_SEPARATOR)
+        self._name = self._name.replace(ARENA_MULTIFACE_SEPARATOR, SCRYFALL_MULTIFACE_SEPARATOR)
 
     def __repr__(self) -> str:
         pairs = [("quantity", self.quantity), ("name", self.name)]
@@ -146,9 +146,9 @@ class ArenaParser(DeckParser):
     """
     def __init__(self, lines: list[str], metadata: Json | None = None) -> None:
         super().__init__(metadata)
-        self._lines = [l for l in lines if is_arena_line(l)]
+        self._lines = [l.strip() for l in lines if is_arena_line(l.strip())]
         if not self._lines:
-            raise ValueError("No arena lines found")
+            raise ValueError("No Arena lines found")
         self._deck = self._get_deck()
 
     def _get_deck(self) -> Deck | None:  # override
@@ -173,17 +173,17 @@ class ArenaParser(DeckParser):
                         if result := PlaysetLine(line).to_playset(self.fmt):
                             commander = result[0]
                         else:
-                            raise InvalidDeckError(f"Invalid commander line: {line!r}")
+                            raise ParsingError(f"Invalid commander line: {line!r}")
                     elif self._state is ParsingState.COMPANION:
                         if result := PlaysetLine(line).to_playset(self.fmt):
                             companion = result[0]
                         else:
-                            raise InvalidDeckError(f"Invalid companion line: {line!r}")
+                            raise ParsingError(f"Invalid companion line: {line!r}")
                     elif self._state is ParsingState.MAINBOARD:
                         mainboard.extend(PlaysetLine(line).to_playset(self.fmt))
 
             return Deck(mainboard, sideboard, commander, companion, self._metadata)
 
-        except InvalidDeckError as err:
+        except (ParsingError, InvalidDeck) as err:
             _log.warning(f"Parsing failed with: {err}")
             return None

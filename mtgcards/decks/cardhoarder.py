@@ -11,7 +11,7 @@ import json
 import logging
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, DeckScraper, InvalidDeckError, find_card_by_name
+from mtgcards.decks import Deck, DeckScraper, InvalidDeck, find_card_by_name
 from mtgcards.utils.scrape import ScrapingError, getsoup
 
 _log = logging.getLogger(__name__)
@@ -86,6 +86,6 @@ class CardhoarderScraper(DeckScraper):
     def _get_deck(self) -> Deck | None:  # override
         try:
             return self._parse_deck_data()
-        except InvalidDeckError as err:
+        except InvalidDeck as err:
             _log.warning(f"Scraping failed with: {err}")
             return None

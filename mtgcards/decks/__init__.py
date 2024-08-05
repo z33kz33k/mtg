@@ -18,7 +18,7 @@ from typing import Any, Iterable, Iterator
 
 from mtgcards.const import Json, OUTPUT_DIR, PathLike
 from mtgcards.scryfall import (
-    Card, Color, MULTIPART_SEPARATOR as SCRYFALL_MULTIPART_SEPARATOR, all_formats, all_set_codes,
+    Card, Color, MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, all_formats, all_set_codes,
     find_by_id, find_by_name, find_sets, format_cards as scryfall_fmt_cards, set_cards as
     scryfall_set_cards)
 from mtgcards.utils import ParsingError, extract_int, from_iterable, getrepr
@@ -28,7 +28,7 @@ from mtgcards.utils.scrape import ScrapingError, extract_source
 _log = logging.getLogger(__name__)
 
 
-ARENA_MULTIPART_SEPARATOR = "///"  # this is different from Scryfall data where they use: '//'
+ARENA_MULTIFACE_SEPARATOR = "///"  # this is different from Scryfall data where they use: '//'
 
 
 # based on https://draftsim.com/mtg-archetypes/
@@ -41,7 +41,7 @@ class Archetype(Enum):
     CONTROL = "control"
     COMBO = "combo"
     TEMPO = "tempo"
-    RAMP= "ramp"
+    RAMP = "ramp"
 
 
 # this is needed when scraping meta-decks from sites that subdivide meta based on the mode of
@@ -344,7 +344,7 @@ THEMES = {
 }
 
 
-class InvalidDeckError(ValueError):
+class InvalidDeck(ValueError):
     """Raised on invalid decks.
     """
 
@@ -403,72 +403,82 @@ class Deck:
 
     @property
     def artifacts(self) -> list[Card]:
-        return [card for card in self.mainboard if card.is_artifact]
+        return [card for card in self.cards if card.is_artifact]
 
     @property
     def battles(self) -> list[Card]:
-        return [card for card in self.mainboard if card.is_battle]
+        return [card for card in self.cards if card.is_battle]
 
     @property
     def creatures(self) -> list[Card]:
-        return [card for card in self.mainboard if card.is_creature]
+        return [card for card in self.cards if card.is_creature]
 
     @property
     def enchantments(self) -> list[Card]:
-        return [card for card in self.mainboard if card.is_enchantment]
+        return [card for card in self.cards if card.is_enchantment]
 
     @property
     def instants(self) -> list[Card]:
-        return [card for card in self.mainboard if card.is_instant]
+        return [card for card in self.cards if card.is_instant]
 
     @property
     def lands(self) -> list[Card]:
-        return [card for card in self.mainboard if card.is_land]
+        return [card for card in self.cards if card.is_land]
 
     @property
     def planeswalkers(self) -> list[Card]:
-        return [card for card in self.mainboard if card.is_planeswalker]
+        return [card for card in self.cards if card.is_planeswalker]
 
     @property
     def sorceries(self) -> list[Card]:
-        return [card for card in self.mainboard if card.is_sorcery]
+        return [card for card in self.cards if card.is_sorcery]
 
     @property
     def commons(self) -> list[Card]:
-        return [card for card in self.mainboard if card.is_common]
+        return [card for card in self.cards if card.is_common]
 
     @property
     def uncommons(self) -> list[Card]:
-        return [card for card in self.mainboard if card.is_uncommon]
+        return [card for card in self.cards if card.is_uncommon]
 
     @property
     def rares(self) -> list[Card]:
-        return [card for card in self.mainboard if card.is_rare]
+        return [card for card in self.cards if card.is_rare]
 
     @property
     def mythics(self) -> list[Card]:
-        return [card for card in self.mainboard if card.is_mythic]
+        return [card for card in self.cards if card.is_mythic]
 
     @property
     def total_rarity_weight(self) -> float:
-        return sum(card.rarity.weight for card in self.mainboard)
+        return sum(card.rarity.weight for card in self.cards)
 
     @property
     def avg_rarity_weight(self):
-        return self.total_rarity_weight / len(self.mainboard)
+        return self.total_rarity_weight / len(self.cards)
 
     @property
     def avg_cmc(self) -> float:
-        cards = [card.cmc for card in self.mainboard if card.cmc]
-        return sum(cards) / len(cards)
+        manas = [card.cmc for card in self.cards if card.cmc]
+        return sum(manas) / len(manas)
 
     @property
-    def price(self) -> float:
-        return sum(c.price for c in self.mainboard if c.price)
+    def total_price(self) -> float:
+        return sum(c.price for c in self.cards if c.price)
 
     @property
-    def price_tix(self) -> float:
-        return sum(c.price_tix for c in self.mainboard if c.price_tix)
+    def avg_price(self) -> float:
+        cards = [card for card in self.cards if card.price]
+        return self.total_price / len(cards)
+
+    @property
+    def total_price_tix(self) -> float:
+        return sum(c.price_tix for c in self.cards if c.price_tix)
+
+    @property
+    def avg_price_tix(self) -> float:
+        cards = [card for card in self.cards if card.price_tix]
+        return self.total_price_tix / len(cards)
 
     @property
     def sets(self) -> list[str]:
@@ -548,8 +558,12 @@ class Deck:
         return self.metadata.get("format")
 
     @property
-    def is_meta(self) -> bool:
+    def is_meta_deck(self) -> bool:
         return self._metadata.get("meta") is not None
+
+    @property
+    def is_event_deck(self) -> bool:
+        return self._metadata.get("event") is not None
 
     @property
     def latest_set(self) -> str | None:
@@ -567,11 +581,11 @@ class Deck:
         if commander:
             if not commander.is_legendary or (
                     not commander.is_creature and not commander.is_planeswalker):
-                raise InvalidDeckError(
+                raise InvalidDeck(
                     f"Commander must be a legendary creature/planeswalker. '{commander}' is not")
         if companion:
             if not companion.is_companion:
-                raise InvalidDeckError(f"Not a companion card: '{commander}'")
+                raise InvalidDeck(f"Not a companion card: '{commander}'")
 
         sideboard = [*sideboard] if sideboard else []
         self._companion = companion
@@ -583,7 +597,7 @@ class Deck:
         if commander:
             for card in [*mainboard, *sideboard]:
                 if any(letter not in commander.colors for letter in card.colors):
-                    raise InvalidDeckError(
+                    raise InvalidDeck(
                         f"Color of '{card}' doesn't match commander color: "
                         f"{card.colors}!={commander.colors}")
 
@@ -607,7 +621,7 @@ class Deck:
             max_playset = self.max_playset_count if card.allowed_multiples is None \
                 else card.allowed_multiples
             if len(playset) > max_playset:
-                raise InvalidDeckError(
+                raise InvalidDeck(
                     f"Too many occurrences of {card.name!r}: "
                     f"{len(playset)} > {max_playset}")
 
@@ -616,7 +630,7 @@ class Deck:
             self._validate_playset(playset)
         length = len(self.mainboard) + (1 if self.commander else 0)
         if length < self.MIN_MAINBOARD_SIZE:
-            raise InvalidDeckError(
+            raise InvalidDeck(
                 f"Invalid deck size: {length} < {self.MIN_MAINBOARD_SIZE}")
 
     def _validate_sideboard(self) -> None:
@@ -624,7 +638,7 @@ class Deck:
         for playset in temp_playsets.values():
             self._validate_playset(playset)
         if len(self.sideboard) > self.MAX_SIDEBOARD_SIZE:
-            raise InvalidDeckError(
+            raise InvalidDeck(
                 f"Invalid sideboard size: {len(self.sideboard)} > {self.MAX_SIDEBOARD_SIZE}")
 
     def __repr__(self) -> str:
@@ -632,10 +646,11 @@ class Deck:
         if self.format:
             reprs += [("format", self.format)]
         reprs += [
+            ("color", self.color.name),
             ("mode", f"{Mode.BO3.value if self.is_bo3 else Mode.BO1.value}"),
             ("avg_cmc", f"{self.avg_cmc:.2f}"),
             ("avg_rarity_weight", f"{self.avg_rarity_weight:.1f}"),
-            ("color", self.color.name),
+            ("avg_price", f"${self.avg_price:.2f}"),
             ("artifacts", len(self.artifacts)),
             ("battles", len(self.battles)),
             ("creatures", len(self.creatures)),
@@ -669,14 +684,14 @@ class Deck:
     def update_metadata(self, **data: Any) -> None:
         self._metadata.update(data)
 
-    def to_dck(self, dstdir="", name="") -> None:
+    def to_forge(self, dstdir="", name="") -> None:
         """Export to a Forge MTG deckfile format (.dck).
 
         Args:
             dstdir: optionally, the destination directory (if not provided CWD is used)
             name: optionally, a custom name for the exported deck (if not provided a name based on this deck's data and metadata is constructed)
         """
-        Exporter(self, name).to_dck(dstdir)
+        Exporter(self, name).to_forge(dstdir)
 
     def to_arena(self, dstdir="", name="") -> None:
         """Export to a MTGA deckfile text format (as a .txt file).
@@ -688,13 +703,13 @@ class Deck:
         Exporter(self, name).to_arena(dstdir)
 
     @classmethod
-    def from_dck(cls, path: PathLike) -> "Deck":
+    def from_forge(cls, path: PathLike) -> "Deck":
         """Import a deck from a Forge MTG deckfile format (.dck).
 
         Args:
             path: path to a .dck file
         """
-        return Exporter.from_dck(path)
+        return Exporter.from_forge(path)
 
     @classmethod
     def from_arena(cls, path: PathLike) -> "Deck":
@@ -793,7 +808,7 @@ Name={}
     def _build_name(self) -> str:
         # prefix (source/author)
         source = self.SOURCE_NICKNAMES.get(self._deck.source) or ""
-        prefix = source if self._deck.is_meta and source else self._deck.metadata.get("author", "")
+        prefix = source if self._deck.is_meta_deck and source else self._deck.metadata.get("author", "")
         name = f"{prefix}{self.NAME_SEP}" if prefix else ""
         # format
         if self._deck.format:
@@ -803,7 +818,7 @@ Name={}
             if mode in {m.value for m in Mode}:
                 name += f"{mode}{self.NAME_SEP}"
         # meta
-        if self._deck.is_meta:
+        if self._deck.is_meta_deck:
             name += f"Meta{self.NAME_SEP}"
             meta = self._deck.metadata["meta"]
             if meta_place := meta.get("place"):
@@ -818,28 +833,28 @@ Name={}
         return name
 
     @staticmethod
-    def _to_dck_line(playset: list[Card]) -> str:
+    def _to_forge_line(playset: list[Card]) -> str:
         card = playset[0]
         return f"{len(playset)} {card.main_name}|{card.set.upper()}|1"
 
-    def _build_dck(self) -> str:
+    def _build_forge(self) -> str:
         commander = [
-            self._to_dck_line(playset) for playset in
+            self._to_forge_line(playset) for playset in
             to_playsets(self._deck.commander).values()] if self._deck.commander else []
         mainboard = [
-            self._to_dck_line(playset) for playset in to_playsets(*self._deck.mainboard).values()]
+            self._to_forge_line(playset) for playset in to_playsets(*self._deck.mainboard).values()]
         sideboard = [
-            self._to_dck_line(playset) for playset in
+            self._to_forge_line(playset) for playset in
             to_playsets(*self._deck.sideboard).values()] if self._deck.sideboard else []
         return self.DCK_TEMPLATE.format(
             self._name, "\n".join(commander), "\n".join(mainboard), "\n".join(sideboard))
 
-    def to_dck(self, dstdir="") -> None:
+    def to_forge(self, dstdir="") -> None:
         dstdir = dstdir or OUTPUT_DIR / "dck"
         dstdir = getdir(dstdir)
         dst = dstdir / f"{self._name}.dck"
         _log.info(f"Exporting deck to: '{dst}'...")
-        dst.write_text(self._build_dck(), encoding="utf-8")
+        dst.write_text(self._build_forge(), encoding="utf-8")
 
     @classmethod
     def _parse_name(cls, name: str) -> Json:
@@ -873,7 +888,7 @@ Name={}
         return metadata
 
     @staticmethod
-    def _parse_dck_line(line: str, fmt="") -> list[Card]:
+    def _parse_forge_line(line: str, fmt="") -> list[Card]:
         quantity, rest = line.split(maxsplit=1)
         name, set_code, _ = rest.split("|")
         set_code = set_code.lower()
@@ -883,7 +898,7 @@ Name={}
         return get_playset(name, int(quantity), set_code.lower(), fmt)
 
     @classmethod
-    def from_dck(cls, path: PathLike) -> Deck:
+    def from_forge(cls, path: PathLike) -> Deck:
         file = getfile(path, ext=".dck")
         commander, mainboard, sideboard, metadata = None, [], [], {}
         commander_on, mainboard_on, sideboard_on = False, False, False
@@ -905,11 +920,11 @@ Name={}
                 continue
 
             if commander_on:
-                commander = cls._parse_dck_line(line, fmt)[0]
+                commander = cls._parse_forge_line(line, fmt)[0]
             elif mainboard_on:
-                mainboard += cls._parse_dck_line(line, fmt)
+                mainboard += cls._parse_forge_line(line, fmt)
             elif sideboard_on:
-                sideboard += cls._parse_dck_line(line, fmt)
+                sideboard += cls._parse_forge_line(line, fmt)
 
         return Deck(mainboard, sideboard, commander, metadata=metadata)
 
@@ -917,8 +932,8 @@ Name={}
     def _to_arena_line(playset: list[Card]) -> str:
         card = playset[0]
         card_name = card.name.replace(
-            SCRYFALL_MULTIPART_SEPARATOR,
-            ARENA_MULTIPART_SEPARATOR) if card.is_multipart else card.name
+            SCRYFALL_MULTIFACE_SEPARATOR,
+            ARENA_MULTIFACE_SEPARATOR) if card.is_multiface else card.name
         line =  f"{len(playset)} {card_name}"
         if card.collector_number is not None:
             line += f" ({card.set.upper()}) {card.collector_number}"

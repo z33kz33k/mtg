@@ -33,6 +33,7 @@ from mtgcards.decks.tappedout import TappedoutScraper
 from mtgcards.decks.untapped import UntappedProfileDeckScraper, UntappedRegularDeckScraper
 from mtgcards.scryfall import all_formats
 from mtgcards.utils import getrepr
+from mtgcards.utils.gsheets import retrieve_from_gsheets_cols
 from mtgcards.utils.scrape import extract_source, extract_url, timed_request, unshorten
 
 _log = logging.getLogger(__name__)
@@ -41,17 +42,12 @@ _log = logging.getLogger(__name__)
 def channels() -> dict[str, str]:
     """Retrieve a channel addresses mapping from a private Google Sheet spreadsheet.
 
-    Mind that this operation takes about 2 seconds to complete.
+    Mind that this operation takes about 4 seconds to complete.
 
     Returns:
         a dictionary of channel names mapped to their addresses
     """
-    creds_file = "scraping_service_account.json"
-    client = gspread.service_account(filename=creds_file)
-    spreadsheet = client.open("mtga_yt")
-    worksheet = spreadsheet.worksheet("channels")
-    names = worksheet.col_values(1, value_render_option="UNFORMATTED_VALUE")[1:]
-    addresses = worksheet.col_values(3, value_render_option="UNFORMATTED_VALUE")[1:]
+    names, addresses = retrieve_from_gsheets_cols("mtga_yt", "channels", (1, 3), start_row=2)
     return dict((name, address) for name, address in zip(names, addresses))
 
 
@@ -247,7 +243,7 @@ class Video:
             self.__class__,
             ("title", self.title),
             ("deck", len(self.decks)),
-            ("date", str(self.date.date())),
+            ("date", str(self.date)),
             ("views", self.views)
         )
 
@@ -407,8 +403,16 @@ class Channel(list):
         return [*itertools.chain(video.decks for video in self if video.decks)]
 
     @property
+    def deck_sources(self) -> list[str]:
+        return sorted({d.source for d in self.decks})
+
+    @property
     def sources(self) -> list[str]:
         return sorted(self._sources)
+
+    @property
+    def staleness(self) -> int:
+        return (date.today() - self.most_recent.date).days
 
     def __init__(self, url: str, limit=10) -> None:
         try:

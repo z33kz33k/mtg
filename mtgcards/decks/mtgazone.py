@@ -13,7 +13,7 @@ from datetime import datetime
 from bs4 import Tag
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, DeckScraper, InvalidDeckError, Mode, get_playset
+from mtgcards.decks import Deck, DeckScraper, InvalidDeck, Mode, get_playset
 from mtgcards.scryfall import Card, all_formats, arena_formats
 from mtgcards.utils import extract_int, from_iterable, timed
 from mtgcards.utils.scrape import ScrapingError, getsoup
@@ -101,7 +101,7 @@ class MtgazoneScraper(DeckScraper):
 
         try:
             return Deck(mainboard, sideboard, commander, companion, self._metadata)
-        except InvalidDeckError as err:
+        except InvalidDeck as err:
             _log.warning(f"Scraping failed with: {err}")
             return None
 
@@ -119,7 +119,7 @@ def _parse_tiers(table: Tag) -> dict[str, int]:
 def _parse_deck(deck_tag: Tag, decks2tiers: dict[str, int], deck_place: int) -> Deck:
     try:
         deck = MtgazoneScraper("", deck_tag=deck_tag).deck
-    except InvalidDeckError as err:
+    except InvalidDeck as err:
         raise ScrapingError(f"Scraping meta deck failed with: {err}")
     meta = {
         "meta": {

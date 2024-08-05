@@ -27,7 +27,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from mtgcards.const import Json
-from mtgcards.utils import timed
+from mtgcards.utils import ParsingError, timed
 from mtgcards.utils.check_type import type_checker
 
 _log = logging.getLogger(__name__)
@@ -36,7 +36,7 @@ SELENIUM_TIMEOUT = 10.0  # seconds
 DEFAULT_THROTTLING = 0.5  # seconds
 
 
-class ScrapingError(IOError):
+class ScrapingError(ParsingError):
     """Raised whenever scraping produces unexpected results.
     """
 

@@ -11,7 +11,7 @@ import logging
 from datetime import date
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, InvalidDeckError, DeckScraper, find_card_by_name
+from mtgcards.decks import Deck, InvalidDeck, DeckScraper, find_card_by_name
 from mtgcards.scryfall import find_by_id
 from mtgcards.utils import get_ago_date
 from mtgcards.utils.scrape import timed_request
@@ -74,7 +74,7 @@ class StreamdeckerScraper(DeckScraper):
             self._parse_card(card)
         try:
             return Deck(self._mainboard, self._sideboard, self._commander, metadata=self._metadata)
-        except InvalidDeckError as err:
+        except InvalidDeck as err:
             _log.warning(f"Scraping failed with: {err}")
             return None
 

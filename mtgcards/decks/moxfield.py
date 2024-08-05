@@ -11,7 +11,7 @@ import logging
 from datetime import datetime
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, InvalidDeckError, DeckScraper, get_playset
+from mtgcards.decks import Deck, InvalidDeck, DeckScraper, get_playset
 from mtgcards.scryfall import Card, all_formats, all_set_codes
 from mtgcards.utils.scrape import timed_request
 
@@ -102,6 +102,6 @@ class MoxfieldScraper(DeckScraper):
 
         try:
             return Deck(mainboard, sideboard, commander, companion, metadata=self._metadata)
-        except InvalidDeckError as err:
+        except InvalidDeck as err:
             _log.warning(f"Scraping failed with: {err}")
             return None

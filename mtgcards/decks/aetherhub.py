@@ -13,7 +13,7 @@ from datetime import datetime
 from bs4 import Tag
 
 from mtgcards.const import Json
-from mtgcards.decks import Archetype, Deck, InvalidDeckError, Mode, DeckScraper, get_playset
+from mtgcards.decks import Archetype, Deck, InvalidDeck, Mode, DeckScraper, get_playset
 from mtgcards.scryfall import Card, all_set_codes
 from mtgcards.utils import extract_float, extract_int
 from mtgcards.utils.scrape import ScrapingError, getsoup
@@ -149,7 +149,7 @@ class AetherhubScraper(DeckScraper):
 
         try:
             return Deck(mainboard, sideboard, commander, metadata=self._metadata)
-        except InvalidDeckError as err:
+        except InvalidDeck as err:
             if self._throttled:
                 raise
             _log.warning(f"Scraping failed with: {err}")
