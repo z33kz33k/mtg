@@ -73,8 +73,11 @@ class MtgTop8Scraper(DeckScraper):
                 if sub_tag.name == "div" and sub_tag.attrs.get("class") == ['O14']:
                     if sub_tag.text == "SIDEBOARD":
                         cards = sideboard
+                        commander_on = False
                     elif sub_tag.text == "COMMANDER":
                         commander_on = True
+                    else:
+                        commander_on = False
                 if "deck_line" in sub_tag.attrs["class"]:
                     quantity, name = sub_tag.text.split(maxsplit=1)
                     card = find_card_by_name(name.strip(), fmt=self.fmt)
