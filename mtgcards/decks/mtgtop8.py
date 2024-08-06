@@ -11,16 +11,18 @@ import logging
 from datetime import datetime
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, DeckScraper
+from mtgcards.decks import Deck, DeckScraper, InvalidDeck, find_card_by_name
 from mtgcards.utils import extract_int
 from mtgcards.utils.scrape import getsoup
 
 _log = logging.getLogger(__name__)
 
 
-EVENT_RANKS = ("minor", "regular", "major")  # indicated by number of stars (1, 2, 3)
+EVENT_RANKS = "minor", "regular", "major"  # indicated by number of stars (1, 2, 3)
 
 
+# TODO: scrape event as an object (basically a list of decks with event metadata taken from the
+#  first), scrape metagame
 class MtgTop8Scraper(DeckScraper):
     """Scraper of MTGTop8 decklist page.
     """
@@ -59,15 +61,31 @@ class MtgTop8Scraper(DeckScraper):
         else:
             date_text = players_date_text
         self._metadata["event"]["date"] = datetime.strptime(date_text.strip(), '%d/%m/%y').date()
-        # source_tag = self._soup.find("div", string=lambda t: t and "Source:" in t)
         source_tag = self._soup.find("a", target="_blank")
         self._metadata["event"]["source"] = source_tag.text.strip()
 
     def _get_deck(self) -> Deck | None:  # override
-        pass
+        mainboard, sideboard, commander = [], [], None
+        deck_tag = self._soup.find("div", style="display:flex;align-content:stretch;")
+        cards, commander_on = mainboard, False
+        for block_tag in deck_tag:
+            for sub_tag in block_tag:
+                if sub_tag.name == "div" and sub_tag.attrs.get("class") == ['O14']:
+                    if sub_tag.text == "SIDEBOARD":
+                        cards = sideboard
+                    elif sub_tag.text == "COMMANDER":
+                        commander_on = True
+                if "deck_line" in sub_tag.attrs["class"]:
+                    quantity, name = sub_tag.text.split(maxsplit=1)
+                    card = find_card_by_name(name.strip(), fmt=self.fmt)
+                    if commander_on:
+                        commander = card
+                    else:
+                        quantity = extract_int(quantity)
+                        cards += [card] * quantity
 
-        # try:
-        #     return ArenaParser(lines, self._metadata).deck
-        # except InvalidDeck as err:
-        #     _log.warning(f"Scraping failed with: {err}")
-        #     return None
+        try:
+            return Deck(mainboard, sideboard, commander, metadata=self._metadata)
+        except InvalidDeck as err:
+            _log.warning(f"Scraping failed with: {err}")
+            return None
