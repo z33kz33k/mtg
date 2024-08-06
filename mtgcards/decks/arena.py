@@ -54,7 +54,8 @@ class PlaysetLine:
     # matches '4 Commit /// Memory'
     PATTERN = re.compile(r"\d{1,3}x?\s[A-Z][\w\s'&/,-]+")
     # matches '4 Commit /// Memory (AKR) 54'
-    EXTENDED_PATTERN = re.compile(r"\d{1,3}x?\s[A-Z][\w\s'&/,-]+\([A-Z\d]{3}\)\s\d+")
+    EXTENDED_PATTERN = re.compile(
+        r"\d{1,3}x?\s[A-Z][\w\s'&/,-]+\(([A-Za-z\d]{3,5})\)\s[A-Za-z\d]{3,6}")
 
     @property
     def raw_line(self) -> str:
@@ -74,10 +75,10 @@ class PlaysetLine:
 
     @property
     def set_code(self) -> str:
-        return self._set_code
+        return self._set_code.lower()
 
     @property
-    def collector_number(self) -> int | None:
+    def collector_number(self) -> str:
         return self._collector_number
 
     def __init__(self, line: str) -> None:
@@ -89,9 +90,9 @@ class PlaysetLine:
             self._name, rest = rest.split("(")
             self._name = self._name.strip()
             self._set_code, rest = rest.split(")")
-            self._collector_number = getint(rest.strip())
+            self._collector_number = rest.strip()
         else:
-            self._name, self._set_code, self._collector_number = rest, "", None
+            self._name, self._set_code, self._collector_number = rest, "", ""
         self._name = self._name.replace(ARENA_MULTIFACE_SEPARATOR, SCRYFALL_MULTIFACE_SEPARATOR)
 
     def __repr__(self) -> str:

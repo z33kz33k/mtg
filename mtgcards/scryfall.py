@@ -730,6 +730,10 @@ class Card:
         return sorted(
             [fmt for fmt, legality in self.legalities.items() if legality == "restricted"])
 
+    @property
+    def not_legal_anywhere(self) -> bool:
+        return all(v == "not_legal" for v in self.legalities.values())
+
     @lru_cache
     def parse_types(self) -> TypeLine | None:
         if self.is_multiface:
@@ -1021,8 +1025,14 @@ def find_set_by_code(*set_codes: str, data: Iterable[SetData] | None = None) -> 
     return find_set(lambda s: s.set_code in {sc.lower() for sc in set_codes}, data)
 
 
+# MtG sets with all cards not being legal anywhere
+ILLEGAL = {
+    'dsc', 'dsk', 'f12', 'f17', 'f18', 'h17', 'hho', 'l16', 'l17', 'p03', 'ptg', 'q07', 'ugl',
+    'und', 'unh', 'ust'}
+
+
 @lru_cache
-def bulk_data(official_only=True) -> set[Card]:
+def bulk_data(official_only=True, legal_only=True) -> set[Card]:
     """Return Scryfall JSON card data as set of Card objects.
 
     Note:
@@ -1032,6 +1042,7 @@ def bulk_data(official_only=True) -> set[Card]:
 
     Args:
         official_only: return only cards from official sets, defaults to ``True``
+        legal_only: return only cards from legal sets, defaults to ``True``
 
     Returns:
         set of Card objects
@@ -1047,7 +1058,12 @@ def bulk_data(official_only=True) -> set[Card]:
 
     if official_only:
         official_sets = {s.code for s in sets() if s.is_official or s.is_alchemy}
+        if legal_only:
+            return {c for c in cards if c.set in official_sets and c.set not in ILLEGAL}
         return {c for c in cards if c.set in official_sets}
+
+    if legal_only:
+        return {c for c in cards if c.set not in ILLEGAL}
 
     return cards
 
@@ -1218,13 +1234,18 @@ def find_by_parts(
     return find_card(lambda c: all(part.lower() in c.name.lower() for part in name_parts), data)
 
 
-def find_by_collector_number(
-        collector_number: int, set_code: str) -> Card | None:
-    """Return a card designated by provided ``collector_number`` from ``data`` or
-    `None`.
+def find_by_collector_number(collector_number: str | int, set_code: str) -> Card | None:
+    """Return a card designated by provided ``collector_number`` or `None` if it cannot be
+    found.
+
+    It tries to match by Card's `collector_number_int` if specified collector number is an integer
+    and by `collector_number` if it's a string.
     """
-    data = {card for card in set_cards(set_code) if card.collector_number_int is not None}
-    return find_card(lambda c: c.collector_number_int == collector_number, data)
+    data = set_cards(set_code)
+    if isinstance(collector_number, int):
+        data = {card for card in data if card.collector_number_int is not None}
+        return find_card(lambda c: c.collector_number_int == collector_number, data)
+    return find_card(lambda c: c.collector_number == collector_number, data)
 
 
 def find_by_id(scryfall_id: str, data: Iterable[Card] | None = None) -> Card | None:

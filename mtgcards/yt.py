@@ -15,7 +15,6 @@ from datetime import date
 from decimal import Decimal
 from functools import cached_property
 
-import gspread
 import pytubefix
 import scrapetube
 from youtubesearchpython import Channel as YtspChannel
