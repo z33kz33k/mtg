@@ -678,6 +678,11 @@ class Deck:
         return hash(frozenset((card, len(cards)) for card, cards in to_playsets(
             *self.cards).items()))
 
+    def __lt__(self, other: "Deck") -> bool:
+        if not isinstance(other, Deck):
+            return NotImplemented
+        return self.avg_cmc < other.avg_cmc
+
     def __iter__(self) -> Iterator[Card]:
         return iter(self.cards)
 

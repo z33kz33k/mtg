@@ -55,7 +55,7 @@ class PlaysetLine:
     PATTERN = re.compile(r"\d{1,3}x?\s[A-Z][\w\s'&/,-]+")
     # matches '4 Commit /// Memory (AKR) 54'
     EXTENDED_PATTERN = re.compile(
-        r"\d{1,3}x?\s[A-Z][\w\s'&/,-]+\(([A-Za-z\d]{3,5})\)\s[A-Za-z\d]{3,6}")
+        r"\d{1,3}x?\s[A-Z][\w\s'&/,-]+\(([A-Za-z\d]{3,5})\)\s[A-Za-z\d]{1,6}")
 
     @property
     def raw_line(self) -> str:
@@ -150,6 +150,8 @@ class ArenaParser(DeckParser):
         self._lines = [l.strip() for l in lines if is_arena_line(l.strip())]
         if not self._lines:
             raise ValueError("No Arena lines found")
+        if not self._metadata.get("source"):
+            self._metadata["source"] = "arena.decklist"
         self._deck = self._get_deck()
 
     def _get_deck(self) -> Deck | None:  # override

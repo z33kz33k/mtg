@@ -17,6 +17,7 @@ from functools import cached_property
 
 import pytubefix
 import scrapetube
+from contexttimer import Timer
 from youtubesearchpython import Channel as YtspChannel
 
 from mtgcards.const import Json
@@ -32,8 +33,8 @@ from mtgcards.decks.streamdecker import StreamdeckerScraper
 from mtgcards.decks.tappedout import TappedoutScraper
 from mtgcards.decks.untapped import UntappedProfileDeckScraper, UntappedRegularDeckScraper
 from mtgcards.scryfall import all_formats
-from mtgcards.utils import getrepr
-from mtgcards.utils.gsheets import retrieve_from_gsheets_cols
+from mtgcards.utils import getrepr, timed
+from mtgcards.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
 from mtgcards.utils.scrape import extract_source, extract_url, timed_request, unshorten
 
 _log = logging.getLogger(__name__)
@@ -49,6 +50,24 @@ def channels() -> dict[str, str]:
     """
     names, addresses = retrieve_from_gsheets_cols("mtga_yt", "channels", (1, 3), start_row=2)
     return dict((name, address) for name, address in zip(names, addresses))
+
+
+def batch_update(start_row=1, batch_size=10) -> None:
+    _log.info(f"Batch updating {batch_size} channel row(s)...")
+    data = []
+    start_idx, end_idx = start_row - 1, start_row - 1 + batch_size
+    for url in itertools.islice(channels().values(), start_idx, end_idx):
+        ch = Channel(url)
+        data.append([
+            url,
+            ch.staleness,
+            ch.total_views,
+            ch.subscribers,
+            ", ".join(ch.sources),
+            ", ".join(ch.deck_sources)
+        ])
+
+    extend_gsheet_rows_with_cols("mtga_yt", "channels", data, start_row=start_row + 1, start_col=5)
 
 
 class Video:
@@ -231,11 +250,15 @@ class Video:
         self._author, self._description, self._title = None, None, None
         self._keywords, self._date, self._views = None, None, None
         self._sources = set()
+        self._unshortened_links: list[str] = []
+        self._scrape()
+
+    @timed("gathering video data")
+    def _scrape(self):
         self._get_pytube_data()
         self._format_soup = self._get_format_soup()
         self._derived_format = self._derive_format()
         self._links, self._arena_lines = self._parse_lines()
-        self._unshortened_links: list[str] = []
         self._decks = self._collect()
 
     def __repr__(self) -> str:
@@ -351,22 +374,26 @@ class Video:
         return decks
 
     def _collect(self) -> list[Deck]:
-        decks = []
+        decks = set()
 
-        # 1st stage: Arena lines
+        # 1st stage: regular URLs
+        decks.update(self._process_urls(self.links))
+
+        # 2nd stage: shortened URLs
+        if not decks:
+            shortened_urls = [link for link in self.links
+                              if any(hook in link for hook in self.SHORTENER_HOOKS)]
+            if shortened_urls:
+                self._unshortened_urls = [unshorten(url) for url in shortened_urls]
+                decks.update(self._process_urls(self._unshortened_urls))
+
+        # 3rd stage: Arena lines
         if self._arena_lines:
+            self._sources.add("arena.decklist")
             if deck := ArenaParser(self._arena_lines, self.metadata).deck:
-                decks.append(deck)
-        # 2nd stage: regular URLs
-        decks += self._process_urls(self.links)
-        # 3rd stage: shortened URLs
-        shortened_urls = [link for link in self.links
-                          if any(hook in link for hook in self.SHORTENER_HOOKS)]
-        if shortened_urls:
-            self._unshortened_urls = [unshorten(url) for url in shortened_urls]
-            decks += self._process_urls(self._unshortened_urls)
+                decks.add(deck)
 
-        return decks
+        return sorted(decks)
 
 
 class Channel(list):
@@ -402,7 +429,7 @@ class Channel(list):
 
     @property
     def decks(self) -> list[Deck]:
-        return [*itertools.chain(video.decks for video in self if video.decks)]
+        return [d for v in self for d in v.decks]
 
     @property
     def deck_sources(self) -> list[str]:
@@ -416,23 +443,30 @@ class Channel(list):
     def staleness(self) -> int:
         return (date.today() - self.most_recent.date).days
 
+    @property
+    def total_views(self) -> int:
+        return sum(v.views for v in self)
+
     def __init__(self, url: str, limit=10) -> None:
-        try:
-            videos = [*scrapetube.get_channel(channel_url=url, limit=limit)]
-        except OSError:
-            raise ValueError(f"Invalid URL: {url!r}")
-        super().__init__([Video(data["videoId"]) for data in videos])
-        self._url = url
-        self._id = self[0].channel_id if self else None
-        self._ytsp_data = YtspChannel(self.id) if self._id else None
-        self._description = self._ytsp_data.result.get("description") if self._id else None
-        self._title = self._ytsp_data.result.get("title") if self._id else None
-        self._tags = self._ytsp_data.result.get("tags") if self._id else None
-        self._subscribers = self._parse_subscribers() if self._id else None
-        if not self._subscribers:
-            self._subscribers = self[0].metadata["video"].get(
-                "channel_subscribers") if self else None
-        self._sources = {s for v in self for s in v.sources}
+        with Timer() as t:
+            _log.info(f"Scraping channel: {url!r}, {limit} video(s)...")
+            try:
+                videos = [*scrapetube.get_channel(channel_url=url, limit=limit)]
+            except OSError:
+                raise ValueError(f"Invalid URL: {url!r}")
+            super().__init__([Video(data["videoId"]) for data in videos])
+            self._url = url
+            self._id = self[0].channel_id if self else None
+            self._ytsp_data = YtspChannel(self.id) if self._id else None
+            self._description = self._ytsp_data.result.get("description") if self._id else None
+            self._title = self._ytsp_data.result.get("title") if self._id else None
+            self._tags = self._ytsp_data.result.get("tags") if self._id else None
+            self._subscribers = self._parse_subscribers() if self._id else None
+            if not self._subscribers:
+                self._subscribers = self[0].metadata["video"].get(
+                    "channel_subscribers") if self else None
+            self._sources = {s for v in self for s in v.sources}
+        _log.info(f"Completed channel scraping in {t.elapsed:.2f} second(s)")
 
     def _parse_subscribers(self) -> int | None:
         if not self._id:

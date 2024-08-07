@@ -1198,19 +1198,11 @@ def format_cards(fmt: str, data: Iterable[Card] | None = None) -> set[Card]:
 
 
 def find_card(
-        predicate: Callable[[Card], bool], data: Iterable[Card] | None = None,
-        narrow_by_collector_number=False) -> Card | None:
+        predicate: Callable[[Card], bool], data: Iterable[Card] | None = None) -> Card | None:
     """Return a card from ``data`` that satisfies ``predicate`` or `None`.
     """
     data = data or bulk_data()
-    if not narrow_by_collector_number:
-        return from_iterable(data, predicate)
-
-    cards = find_cards(predicate, data)
-    cards = [card for card in cards if card.collector_number_int]
-    cards = sorted(cards, key=lambda c: c.collector_number_int)
-    # return card with the smallest collector number
-    return cards[0] if cards else None
+    return from_iterable(data, predicate)
 
 
 def find_by_name(card_name: str, data: Iterable[Card] | None = None) -> Card | None:
@@ -1218,10 +1210,10 @@ def find_by_name(card_name: str, data: Iterable[Card] | None = None) -> Card | N
     """
     data = data or bulk_data()
     if card := find_card(
-        lambda c: unidecode(c.name) == card_name, data, narrow_by_collector_number=True):
+        lambda c: unidecode(c.name) == unidecode(card_name), data):
         return card
     return find_card(
-        lambda c: unidecode(c.main_name) == card_name, data, narrow_by_collector_number=True)
+        lambda c: unidecode(c.main_name) == unidecode(card_name), data)
 
 
 def find_by_parts(
