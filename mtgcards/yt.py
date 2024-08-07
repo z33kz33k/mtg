@@ -23,7 +23,7 @@ from youtubesearchpython import Channel as YtspChannel
 from mtgcards.const import Json
 from mtgcards.decks import Deck
 from mtgcards.decks.aetherhub import AetherhubScraper
-from mtgcards.decks.arena import ArenaParser, is_arena_line
+from mtgcards.decks.arena import ArenaParser, is_arena_line, is_empty
 from mtgcards.decks.cardhoarder import CardhoarderScraper
 from mtgcards.decks.goldfish import GoldfishScraper
 from mtgcards.decks.moxfield import MoxfieldScraper
@@ -53,6 +53,12 @@ def channels() -> dict[str, str]:
 
 
 def batch_update(start_row=1, batch_size=10) -> None:
+    """Batch update "channels" Google Sheets worksheet.
+
+    Args:
+        start_row: start row of the batch (important: not a sheet row, 1 means 2 in a sheet)
+        batch_size: number of rows to update
+    """
     _log.info(f"Batch updating {batch_size} channel row(s)...")
     data = []
     start_idx, end_idx = start_row - 1, start_row - 1 + batch_size
@@ -335,6 +341,12 @@ class Video:
                 links.append(url)
             elif is_arena_line(line):
                 arena_lines.append(line)
+            elif (is_empty(line)
+                  and 0 < i < len(self._desc_lines) - 1
+                  and is_arena_line(self._desc_lines[i - 1])  # previous line
+                  and is_arena_line(self._desc_lines[i + 1])  # next line
+                  and self._desc_lines[i + 1] != "Sideboard"):
+                arena_lines.append("Sideboard")
         return links, arena_lines
 
     def _scrape_deck(self, link: str) -> Deck | None:
@@ -425,7 +437,7 @@ class Channel(list):
 
     @property
     def most_recent(self) -> Video:
-        return self[-1]
+        return self[0]
 
     @property
     def decks(self) -> list[Deck]:
