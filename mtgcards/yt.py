@@ -11,7 +11,7 @@ import itertools
 import logging
 import re
 from collections import Counter, defaultdict
-from datetime import date
+from datetime import date, datetime
 from decimal import Decimal
 from functools import cached_property
 
@@ -40,6 +40,7 @@ from mtgcards.utils.scrape import extract_source, extract_url, timed_request, un
 _log = logging.getLogger(__name__)
 
 
+# TODO: other fields (only when all rows get populated), export to JSON
 def channels() -> dict[str, str]:
     """Retrieve a channel addresses mapping from a private Google Sheet spreadsheet.
 
@@ -52,28 +53,37 @@ def channels() -> dict[str, str]:
     return dict((name, address) for name, address in zip(names, addresses))
 
 
-def batch_update(start_row=1, batch_size=10) -> None:
+def batch_update(start_row=2, batch_size=10) -> None:
     """Batch update "channels" Google Sheets worksheet.
 
     Args:
-        start_row: start row of the batch (important: not a sheet row, 1 means 2 in a sheet)
+        start_row: start row of the worksheet
         batch_size: number of rows to update
     """
+    if start_row < 2:
+        raise ValueError("Start row must not be lesser than 2")
+    if batch_size < 1:
+        raise ValueError("Batch size must be a positive integer")
     _log.info(f"Batch updating {batch_size} channel row(s)...")
     data = []
-    start_idx, end_idx = start_row - 1, start_row - 1 + batch_size
+    start_idx, end_idx = start_row - 2, start_row - 2 + batch_size
     for url in itertools.islice(channels().values(), start_idx, end_idx):
         ch = Channel(url)
         data.append([
             url,
+            ch.scrape_date.strftime("%Y-%m-%d"),
             ch.staleness,
+            ch.posting_interval,
+            len(ch),
+            len(ch.decks),
             ch.total_views,
+            ch.views_per_sub,
             ch.subscribers,
             ", ".join(ch.sources),
             ", ".join(ch.deck_sources)
         ])
 
-    extend_gsheet_rows_with_cols("mtga_yt", "channels", data, start_row=start_row + 1, start_col=5)
+    extend_gsheet_rows_with_cols("mtga_yt", "channels", data, start_row=start_row, start_col=5)
 
 
 class Video:
@@ -436,10 +446,6 @@ class Channel(list):
         return self._subscribers
 
     @property
-    def most_recent(self) -> Video:
-        return self[0]
-
-    @property
     def decks(self) -> list[Deck]:
         return [d for v in self for d in v.decks]
 
@@ -452,15 +458,32 @@ class Channel(list):
         return sorted(self._sources)
 
     @property
-    def staleness(self) -> int:
-        return (date.today() - self.most_recent.date).days
+    def staleness(self) -> int | None:
+        return (date.today() - self[0].date).days if self else None
 
     @property
     def total_views(self) -> int:
         return sum(v.views for v in self)
 
+    @property
+    def views_per_sub(self) -> float:
+        return self.total_views / self.subscribers
+
+    @property
+    def scrape_date(self) -> date:
+        return self._scrape_time.date()
+
+    @property
+    def span(self) -> int | None:
+        return (self.scrape_date - self[-1].date).days if self else None
+
+    @property
+    def posting_interval(self) -> float | None:
+        return self.span / len(self) if self else None
+
     def __init__(self, url: str, limit=10) -> None:
         with Timer() as t:
+            self._scrape_time = datetime.now()
             _log.info(f"Scraping channel: {url!r}, {limit} video(s)...")
             try:
                 videos = [*scrapetube.get_channel(channel_url=url, limit=limit)]
