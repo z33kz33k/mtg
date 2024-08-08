@@ -23,7 +23,7 @@ from youtubesearchpython import Channel as YtspChannel
 from mtgcards.const import Json
 from mtgcards.decks import Deck
 from mtgcards.decks.aetherhub import AetherhubScraper
-from mtgcards.decks.arena import ArenaParser, is_arena_line, is_empty
+from mtgcards.decks.arena import ArenaParser, get_arena_lines, is_arena_line, is_empty
 from mtgcards.decks.cardhoarder import CardhoarderScraper
 from mtgcards.decks.goldfish import GoldfishScraper
 from mtgcards.decks.moxfield import MoxfieldScraper
@@ -343,21 +343,15 @@ class Video:
         return None
 
     def _parse_lines(self) -> tuple[list[str], list[str]]:
-        links, arena_lines = [], []
+        links, other_lines = [], []
         for i, line in enumerate(self._desc_lines):
             self._extract_formats(line)
             url = extract_url(line)
             if url:
                 links.append(url)
-            elif is_arena_line(line):
-                arena_lines.append(line)
-            elif (is_empty(line)
-                  and 0 < i < len(self._desc_lines) - 1
-                  and is_arena_line(self._desc_lines[i - 1])  # previous line
-                  and is_arena_line(self._desc_lines[i + 1])  # next line
-                  and self._desc_lines[i + 1] != "Sideboard"):
-                arena_lines.append("Sideboard")
-        return links, arena_lines
+            else:
+                other_lines.append(line)
+        return links, [*get_arena_lines(*other_lines)]
 
     def _scrape_deck(self, link: str) -> Deck | None:
         if GoldfishScraper.is_deck_url(link):
@@ -382,9 +376,9 @@ class Video:
             return MtgTop8Scraper(link, self.metadata).deck
         elif any(h in link for h in self.PASTEBIN_LIKE_HOOKS):
             lines = timed_request(link).splitlines()
-            lines = [l for l in lines if is_arena_line(l)]
-            if lines:
-                return ArenaParser(lines, self.metadata).deck
+            arena_lines = [*get_arena_lines(*lines)]
+            if arena_lines:
+                return ArenaParser(arena_lines, self.metadata).deck
         return None
 
     def _process_urls(self, urls: list[str]) -> list[Deck]:

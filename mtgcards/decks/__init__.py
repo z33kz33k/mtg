@@ -981,8 +981,7 @@ Name={}
         if not all(is_arena_line(l) or is_empty(l) for l in lines):
             raise ValueError(f"Not an MTG Arena deck file: '{file}'")
         metadata = cls._parse_name(file.name)
-        deck = ArenaParser(lines, metadata.get("format", "")).deck
-        deck.update_metadata(**metadata)
+        deck = ArenaParser(lines, metadata).deck
         return deck
 
 

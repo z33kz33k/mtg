@@ -9,6 +9,7 @@
 """
 import logging
 import re
+from typing import Generator
 
 from mtgcards.const import Json
 from mtgcards.decks import ARENA_MULTIFACE_SEPARATOR, Deck, DeckParser, InvalidDeck, \
@@ -142,12 +143,24 @@ def is_arena_line(line: str) -> bool:
     return False
 
 
+def get_arena_lines(*lines: str) -> Generator[str, None, None]:
+    for i, line in enumerate(lines):
+        if is_arena_line(line):
+            yield line
+        elif (is_empty(line)
+              and 0 < i < len(lines) - 1
+              and is_arena_line(lines[i - 1])  # previous line
+              and is_arena_line(lines[i + 1])  # next line
+              and lines[i + 1] != "Sideboard"):
+            yield "Sideboard"
+
+
 class ArenaParser(DeckParser):
     """Parser of lines of text that denote a deck in Arena format.
     """
     def __init__(self, lines: list[str], metadata: Json | None = None) -> None:
         super().__init__(metadata)
-        self._lines = [l.strip() for l in lines if is_arena_line(l.strip())]
+        self._lines = [*get_arena_lines(*lines)]
         if not self._lines:
             raise ValueError("No Arena lines found")
         if not self._metadata.get("source"):
