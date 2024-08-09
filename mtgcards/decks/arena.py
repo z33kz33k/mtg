@@ -16,34 +16,9 @@ from mtgcards.decks import ARENA_MULTIFACE_SEPARATOR, Deck, DeckParser, InvalidD
     ParsingState, get_playset
 from mtgcards.scryfall import Card, MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, \
     find_by_collector_number
-from mtgcards.utils import ParsingError, extract_int, getint, getrepr
-
+from mtgcards.utils import ParsingError, extract_int, getrepr
 
 _log = logging.getLogger(__name__)
-
-
-def _shift_to_mainboard(current_state: ParsingState) -> ParsingState:
-    if current_state is ParsingState.MAINBOARD:
-        raise RuntimeError(f"Invalid transition to MAINBOARD from: {current_state.name}")
-    return ParsingState.MAINBOARD
-
-
-def _shift_to_sideboard(current_state: ParsingState) -> ParsingState:
-    if current_state is ParsingState.SIDEBOARD:
-        raise RuntimeError(f"Invalid transition to SIDEBOARD from: {current_state.name}")
-    return ParsingState.SIDEBOARD
-
-
-def _shift_to_commander(current_state: ParsingState) -> ParsingState:
-    if current_state is ParsingState.COMMANDER:
-        raise RuntimeError(f"Invalid transition to COMMANDER from: {current_state.name}")
-    return ParsingState.COMMANDER
-
-
-def _shift_to_companion(current_state: ParsingState) -> ParsingState:
-    if current_state is ParsingState.COMPANION:
-        raise RuntimeError(f"Invalid transition to COMPANION from: {current_state.name}")
-    return ParsingState.COMPANION
 
 
 class PlaysetLine:
@@ -172,16 +147,16 @@ class ArenaParser(DeckParser):
         try:
             for line in self._lines:
                 if line == "Deck":
-                    self._state = _shift_to_mainboard(self._state)
+                    self._shift_to_mainboard()
                 elif line == "Sideboard":
-                    self._state = _shift_to_sideboard(self._state)
+                    self._shift_to_sideboard()
                 elif line == "Commander":
-                    self._state = _shift_to_commander(self._state)
+                    self._shift_to_commander()
                 elif line == "Companion":
-                    self._state = _shift_to_companion(self._state)
+                    self._shift_to_companion()
                 elif is_playset_line(line):
                     if self._state is ParsingState.IDLE:
-                        self._state = _shift_to_mainboard(self._state)
+                        self._shift_to_mainboard()
 
                     if self._state is ParsingState.SIDEBOARD:
                         sideboard.extend(PlaysetLine(line).to_playset(self.fmt))

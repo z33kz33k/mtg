@@ -1072,6 +1072,26 @@ class DeckParser(ABC):
                     f"one: {fmt!r}")
             self._metadata["format"] = fmt
 
+    def _shift_to_mainboard(self) -> None:
+        if self._state is ParsingState.MAINBOARD:
+            raise RuntimeError(f"Invalid transition to MAINBOARD from: {self._state.name}")
+        self._state = ParsingState.MAINBOARD
+
+    def _shift_to_sideboard(self) -> None:
+        if self._state is ParsingState.SIDEBOARD:
+            raise RuntimeError(f"Invalid transition to SIDEBOARD from: {self._state.name}")
+        self._state = ParsingState.SIDEBOARD
+
+    def _shift_to_commander(self) -> None:
+        if self._state is ParsingState.COMMANDER:
+            raise RuntimeError(f"Invalid transition to COMMANDER from: {self._state.name}")
+        self._state = ParsingState.COMMANDER
+
+    def _shift_to_companion(self) -> None:
+        if self._state is ParsingState.COMPANION:
+            raise RuntimeError(f"Invalid transition to COMPANION from: {self._state.name}")
+        self._state = ParsingState.COMPANION
+
 
 class DeckScraper(DeckParser):
     @property

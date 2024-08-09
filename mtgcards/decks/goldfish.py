@@ -22,30 +22,6 @@ from mtgcards.utils.scrape import ScrapingError, getsoup, http_requests_counted,
 _log = logging.getLogger(__name__)
 
 
-def _shift_to_commander(current_state: ParsingState) -> ParsingState:
-    if current_state not in (ParsingState.IDLE, ParsingState.COMPANION):
-        raise RuntimeError(f"Invalid transition to COMMANDER from: {current_state.name}")
-    return ParsingState.COMMANDER
-
-
-def _shift_to_companion(current_state: ParsingState) -> ParsingState:
-    if current_state not in (ParsingState.IDLE, ParsingState.COMMANDER):
-        raise RuntimeError(f"Invalid transition to COMPANION from: {current_state.name}")
-    return ParsingState.COMPANION
-
-
-def _shift_to_mainboard(current_state: ParsingState) -> ParsingState:
-    if current_state not in (ParsingState.IDLE, ParsingState.COMMANDER, ParsingState.COMPANION):
-        raise RuntimeError(f"Invalid transition to MAINBOARD from: {current_state.name}")
-    return ParsingState.MAINBOARD
-
-
-def _shift_to_sideboard(current_state: ParsingState) -> "ParsingState":
-    if current_state is not ParsingState.MAINBOARD:
-        raise RuntimeError(f"Invalid transition to SIDEBOARD from: {current_state.name}")
-    return ParsingState.SIDEBOARD
-
-
 # alternative approach would be to scrape:
 # self._soup.find("input", id="deck_input_deck").attrs["value"] which contains a decklist in
 # Arena format (albeit with the need to .replace("sideboard", "Sideboard") or maybe some other
@@ -80,6 +56,26 @@ class GoldfishScraper(DeckScraper):
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "www.mtggoldfish.com/deck/" in url or "www.mtggoldfish.com/archetype/" in url
+
+    def _shift_to_commander(self) -> None:  # override
+        if self._state not in (ParsingState.IDLE, ParsingState.COMPANION):
+            raise RuntimeError(f"Invalid transition to COMMANDER from: {self._state.name}")
+        self._state = ParsingState.COMMANDER
+
+    def _shift_to_companion(self) -> None:  # override
+        if self._state not in (ParsingState.IDLE, ParsingState.COMMANDER):
+            raise RuntimeError(f"Invalid transition to COMPANION from: {self._state.name}")
+        self._state = ParsingState.COMPANION
+
+    def _shift_to_mainboard(self) -> None:  # override
+        if self._state not in (ParsingState.IDLE, ParsingState.COMMANDER, ParsingState.COMPANION):
+            raise RuntimeError(f"Invalid transition to MAINBOARD from: {self._state.name}")
+        self._state = ParsingState.MAINBOARD
+
+    def _shift_to_sideboard(self) -> None:  # override
+        if self._state is not ParsingState.MAINBOARD:
+            raise RuntimeError(f"Invalid transition to SIDEBOARD from: {self._state.name}")
+        self._state = ParsingState.SIDEBOARD
 
     def _scrape_metadata(self) -> None:  # override
         title_tag = self._soup.find("h1", class_="title")
@@ -116,14 +112,14 @@ class GoldfishScraper(DeckScraper):
         for row in rows:
             if row.has_attr("class") and "deck-category-header" in row.attrs["class"]:
                 if row.text.strip() == "Commander":
-                    self._state = _shift_to_commander(self._state)
+                    self._shift_to_commander()
                 elif row.text.strip().startswith("Companion"):
-                    self._state = _shift_to_companion(self._state)
+                    self._shift_to_companion()
                 elif any(h in row.text.strip() for h in headers
                          ) and self._state is not ParsingState.MAINBOARD:
-                    self._state = _shift_to_mainboard(self._state)
+                    self._shift_to_mainboard()
                 elif "Sideboard" in row.text.strip():
-                    self._state = _shift_to_sideboard(self._state)
+                    self._shift_to_sideboard()
             else:
                 cards = self._parse_row(row)
                 if self._state is ParsingState.COMMANDER:
