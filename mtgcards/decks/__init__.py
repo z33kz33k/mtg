@@ -19,7 +19,7 @@ from typing import Any, Iterable, Iterator
 from mtgcards.const import Json, OUTPUT_DIR, PathLike
 from mtgcards.scryfall import (
     Card, Color, MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, all_formats, all_set_codes,
-    find_by_id, find_by_name, find_sets, format_cards as scryfall_fmt_cards, set_cards as
+    bulk_data, find_by_id, find_by_name, find_sets, format_cards as scryfall_fmt_cards, set_cards as
     scryfall_set_cards)
 from mtgcards.utils import ParsingError, extract_int, from_iterable, getrepr
 from mtgcards.utils.files import getdir, getfile
@@ -395,11 +395,11 @@ class Deck:
 
     @property
     def color(self) -> Color:
-        return Color.from_cards(self.cards)
+        return Color.from_cards(*self.cards)
 
     @property
     def color_identity(self) -> Color:
-        return Color.from_cards(self.cards, identity=True)
+        return Color.from_cards(*self.cards, identity=True)
 
     @property
     def artifacts(self) -> list[Card]:
@@ -596,10 +596,11 @@ class Deck:
         self._commander = commander
         if commander:
             for card in [*mainboard, *sideboard]:
-                if any(letter not in commander.colors for letter in card.colors):
+                if any(letter not in commander.color_identity.value
+                       for letter in card.color_identity.value):
                     raise InvalidDeck(
-                        f"Color of '{card}' doesn't match commander color: "
-                        f"{card.colors}!={commander.colors}")
+                        f"Color identity of '{card}' ({card.color_identity}) doesn't match "
+                        f"commander's color identity ({commander.color_identity})")
 
         self._max_playset_count = 1 if commander is not None else 4
         self._playsets = to_playsets(*mainboard)
@@ -1014,7 +1015,9 @@ def find_card_by_name(name, set_code="", fmt="") -> Card:
     if not card and not fmt:
         card = find_by_name(name, format_cards("standard"))
     if not card:
-        card = find_by_name(name)  # look up the whole pool as the last resort
+        card = find_by_name(name)  # look up the whole pool as (almost) the last resort
+    if not card:  # look up the whole, unrestricted pool as the (real) last resort
+        card = find_by_name(name, bulk_data(False, False))
     if not card:
         raise ScrapingError(f"{name!r} card cannot be found")
     return card

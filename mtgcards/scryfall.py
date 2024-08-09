@@ -125,8 +125,8 @@ class Color(Enum):
         return len(self.value) > 1
 
     @staticmethod
-    def from_letters(letters: Iterable[str]) -> "Color":
-        letters = [*letters]
+    def from_letters(*letters: str) -> "Color":
+        letters = [l.upper() for l in letters]
         if (any(letter not in Color.ALL.value for letter in letters)
                 or any(letters.count(letter) > 1 for letter in letters)):
             raise ValueError(f"Invalid color letter designations: {letters}")
@@ -141,12 +141,12 @@ class Color(Enum):
         return result
 
     @staticmethod
-    def from_cards(cards: Iterable["Card"], identity=False) -> "Color":
+    def from_cards(*cards: "Card", identity=False) -> "Color":
         letters = set()
         for card in cards:
             color_value = card.color_identity.value if identity else card.color.value
             letters.update(color_value)
-        return Color.from_letters(letters)
+        return Color.from_letters(*letters)
 
 
 class Rarity(Enum):
@@ -478,12 +478,13 @@ class Card:
         if result := self.json.get("colors"):
             return result
         if self.is_multiface:
-            return self.card_faces[0].colors
+            clrs = {c for f in self.card_faces for c in f.colors}
+            return sorted(clrs)
         return []
 
     @property
     def color(self) -> Color:
-        return Color(tuple(self.colors))
+        return Color.from_letters(*self.colors)
 
     @property
     def collector_number(self) -> str:
@@ -1056,6 +1057,7 @@ def bulk_data(official_only=True, legal_only=True) -> set[Card]:
 
     cards = {Card(card_data) for card_data in data}
 
+    # BEWARE: this can limit official/legal cards if set data is not up-to-date
     if official_only:
         official_sets = {s.code for s in sets() if s.is_official or s.is_alchemy}
         if legal_only:

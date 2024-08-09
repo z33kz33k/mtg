@@ -31,6 +31,7 @@ from mtgcards.decks.mtgazone import MtgazoneScraper
 from mtgcards.decks.mtgtop8 import MtgTop8Scraper
 from mtgcards.decks.streamdecker import StreamdeckerScraper
 from mtgcards.decks.tappedout import TappedoutScraper
+from mtgcards.decks.tcgplayer import OldPageTcgplayerScraper
 from mtgcards.decks.untapped import UntappedProfileDeckScraper, UntappedRegularDeckScraper
 from mtgcards.scryfall import all_formats
 from mtgcards.utils import getrepr, timed
@@ -374,6 +375,8 @@ class Video:
             return TappedoutScraper(link, self.metadata).deck
         elif MtgTop8Scraper.is_deck_url(link):
             return MtgTop8Scraper(link, self.metadata).deck
+        elif OldPageTcgplayerScraper.is_deck_url(link):
+            return OldPageTcgplayerScraper(link, self.metadata).deck
         elif any(h in link for h in self.PASTEBIN_LIKE_HOOKS):
             lines = timed_request(link).splitlines()
             arena_lines = [*get_arena_lines(*lines)]
