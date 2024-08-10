@@ -41,7 +41,7 @@ descriptions).
     * All those mentioned above work even if they are behind shortener links and need unshortening first
     * Arena decklists in links to pastebin-like services (like 
       [Amazonian](https://www.youtube.com/@Amazonian) does) work too
-* Other decklist services are in plans (but does it seem I almost exhausted the possibilities already :))
+* Other decklist services are in plans (but, it does seem like I've pretty much exhausted the possibilities already :))
 * Scraping Goldfish and MGTAZone for meta-decks (others in plans)
 * Scraping a singular Untapped meta-deck decklist page
 * Exporting decks into a [Forge MTG](https://github.com/Card-Forge/forge) .dck format or Arena 
