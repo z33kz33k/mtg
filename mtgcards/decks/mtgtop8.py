@@ -11,7 +11,7 @@ import logging
 from datetime import datetime
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, DeckScraper, InvalidDeck, find_card_by_name
+from mtgcards.decks import Deck, DeckScraper, InvalidDeck, find_card_by_name, get_playset
 from mtgcards.utils import extract_int
 from mtgcards.utils.scrape import getsoup
 
@@ -85,7 +85,7 @@ class MtgTop8Scraper(DeckScraper):
                         commander = card
                     else:
                         quantity = extract_int(quantity)
-                        cards += [card] * quantity
+                        cards += get_playset(card, quantity)
 
         try:
             return Deck(mainboard, sideboard, commander, metadata=self._metadata)

@@ -11,11 +11,10 @@ import logging
 from datetime import date
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, InvalidDeck, DeckScraper, find_card_by_name
-from mtgcards.scryfall import find_by_id
+from mtgcards.decks import Deck, DeckScraper, InvalidDeck, find_card_by_id, find_card_by_name, \
+    get_playset
 from mtgcards.utils import get_ago_date
 from mtgcards.utils.scrape import timed_request
-
 
 _log = logging.getLogger(__name__)
 
@@ -54,27 +53,26 @@ class StreamdeckerScraper(DeckScraper):
         if dt := self._parse_date():
             self._metadata["date"] = dt
 
-    def _parse_card(self, json_card: Json) -> None:
+    def _parse_json_card(self, json_card: Json) -> None:
         scryfall_id = json_card["scryfallId"]
         name = json_card["name"]
-        card = find_by_id(scryfall_id)
+        card = find_card_by_id(scryfall_id, fmt=self.fmt)
         if not card:
             card = find_card_by_name(name, fmt=self.fmt)
         if json_card["main"]:
-            self._mainboard.extend([card] * json_card["main"])
+            self._mainboard.extend(get_playset(card, json_card["main"]))
         if json_card["sideboard"]:
-            self._sideboard.extend([card] * json_card["sideboard"])
+            self._sideboard.extend(get_playset(card, json_card["sideboard"]))
         if json_card["commander"]:
-            self._commander.extend([card] * json_card["commander"])
+            self._commander = card
         if json_card["companion"]:
-            self._companion.extend([card] * json_card["companion"])
+            self._companion = card
 
     def _get_deck(self) -> Deck | None:
-        for card in self._json_data["cardList"]:
-            self._parse_card(card)
+        for json_card in self._json_data["cardList"]:
+            self._parse_json_card(json_card)
         try:
             return Deck(self._mainboard, self._sideboard, self._commander, metadata=self._metadata)
         except InvalidDeck as err:
             _log.warning(f"Scraping failed with: {err}")
             return None
-

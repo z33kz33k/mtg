@@ -13,7 +13,8 @@ from datetime import datetime
 from bs4 import Tag
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, InvalidDeck, Mode, ParsingState, DeckScraper, get_playset
+from mtgcards.decks import Deck, InvalidDeck, Mode, ParsingState, DeckScraper, find_card_by_name, \
+    get_playset
 from mtgcards.scryfall import Card, all_formats, all_set_codes
 from mtgcards.utils import extract_int, timed
 from mtgcards.utils.scrape import ScrapingError, getsoup, http_requests_counted, throttled_soup
@@ -103,45 +104,7 @@ class GoldfishScraper(DeckScraper):
         if source_idx is not None:
             self._metadata["original_source"] = lines[source_idx].strip()
 
-    def _get_deck(self) -> Deck | None:  # override
-        mainboard, sideboard, commander, companion = [], [], None, None
-        table = self._soup.find("table", class_="deck-view-deck-table")
-        rows = table.find_all("tr")
-        headers = (
-            "Creatures", "Planeswalkers", "Spells", "Battles", "Artifacts", "Enchantments", "Lands")
-        for row in rows:
-            if row.has_attr("class") and "deck-category-header" in row.attrs["class"]:
-                if row.text.strip() == "Commander":
-                    self._shift_to_commander()
-                elif row.text.strip().startswith("Companion"):
-                    self._shift_to_companion()
-                elif any(h in row.text.strip() for h in headers
-                         ) and self._state is not ParsingState.MAINBOARD:
-                    self._shift_to_mainboard()
-                elif "Sideboard" in row.text.strip():
-                    self._shift_to_sideboard()
-            else:
-                cards = self._parse_row(row)
-                if self._state is ParsingState.COMMANDER:
-                    if cards:
-                        commander = cards[0]
-                elif self._state is ParsingState.COMPANION:
-                    if cards:
-                        companion = cards[0]
-                elif self._state is ParsingState.MAINBOARD:
-                    mainboard.extend(cards)
-                elif self._state is ParsingState.SIDEBOARD:
-                    sideboard.extend(cards)
-
-        try:
-            return Deck(mainboard, sideboard, commander, companion, metadata=self._metadata)
-        except InvalidDeck as err:
-            if self._throttled:
-                raise
-            _log.warning(f"Scraping failed with: {err}")
-            return None
-
-    def _parse_row(self, row: Tag) -> list[Card]:
+    def _to_playset(self, row: Tag) -> list[Card]:
         quantity_tag = row.find(class_="text-right")
         if not quantity_tag:
             raise ScrapingError("Can't find quantity data in a row tag")
@@ -163,7 +126,45 @@ class GoldfishScraper(DeckScraper):
 
         set_code = set_code[:-1].lower()
         set_code = set_code if set_code in set(all_set_codes()) else ""
-        return get_playset(name, quantity, set_code, self.fmt)
+        return get_playset(find_card_by_name(name, set_code, self.fmt), quantity)
+
+    def _get_deck(self) -> Deck | None:  # override
+        mainboard, sideboard, commander, companion = [], [], None, None
+        table = self._soup.find("table", class_="deck-view-deck-table")
+        rows = table.find_all("tr")
+        headers = (
+            "Creatures", "Planeswalkers", "Spells", "Battles", "Artifacts", "Enchantments", "Lands")
+        for row in rows:
+            if row.has_attr("class") and "deck-category-header" in row.attrs["class"]:
+                if row.text.strip() == "Commander":
+                    self._shift_to_commander()
+                elif row.text.strip().startswith("Companion"):
+                    self._shift_to_companion()
+                elif any(h in row.text.strip() for h in headers
+                         ) and self._state is not ParsingState.MAINBOARD:
+                    self._shift_to_mainboard()
+                elif "Sideboard" in row.text.strip():
+                    self._shift_to_sideboard()
+            else:
+                cards = self._to_playset(row)
+                if self._state is ParsingState.COMMANDER:
+                    if cards:
+                        commander = cards[0]
+                elif self._state is ParsingState.COMPANION:
+                    if cards:
+                        companion = cards[0]
+                elif self._state is ParsingState.MAINBOARD:
+                    mainboard.extend(cards)
+                elif self._state is ParsingState.SIDEBOARD:
+                    sideboard.extend(cards)
+
+        try:
+            return Deck(mainboard, sideboard, commander, companion, metadata=self._metadata)
+        except InvalidDeck as err:
+            if self._throttled:
+                raise
+            _log.warning(f"Scraping failed with: {err}")
+            return None
 
 
 @http_requests_counted("scraping meta decks")

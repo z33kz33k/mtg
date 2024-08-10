@@ -1006,7 +1006,35 @@ class ParsingState(Enum):
     COMPANION = auto()
 
 
+def find_card_by_id(scryfall_id: str, set_code="", fmt="") -> Card | None:
+    fmt = fmt.lower()
+    if fmt and fmt not in all_formats():
+        raise ValueError(
+            f"Invalid format: {fmt!r}. Can be only one of: {all_formats()}")
+    card = None
+    if set_code and set_code in all_set_codes():
+        card = find_by_id(scryfall_id, set_cards(set_code))
+    if not card and fmt:
+        card = find_by_id(scryfall_id, format_cards(fmt))
+    if not card and not fmt:
+        card = find_by_id(scryfall_id, format_cards("standard"))
+    if not card:
+        card = find_by_id(scryfall_id)  # look up the whole pool as (almost) the last resort
+    if not card:  # look up the whole, unrestricted pool as the (real) last resort
+        card = find_by_id(scryfall_id, bulk_data(False, False))
+    if not card:
+        _log.warning(
+                f"Not a valid Scryfall card ID: {scryfall_id!r}. Maybe Scryfall data is not up "
+                f"to date?")
+        return None
+    return card
+
+
 def find_card_by_name(name, set_code="", fmt="") -> Card:
+    fmt = fmt.lower()
+    if fmt and fmt not in all_formats():
+        raise ValueError(
+            f"Invalid format: {fmt!r}. Can be only one of: {all_formats()}")
     card = None
     if set_code and set_code in all_set_codes():
         card = find_by_name(name, set_cards(set_code))
@@ -1023,12 +1051,7 @@ def find_card_by_name(name, set_code="", fmt="") -> Card:
     return card
 
 
-def get_playset(name: str, quantity: int, set_code="", fmt="") -> list[Card]:
-    fmt = fmt.lower()
-    if fmt and fmt not in all_formats():
-        raise ValueError(
-            f"Invalid format: {fmt!r}. Can be only one of: {all_formats()}")
-    card = find_card_by_name(name, set_code, fmt)
+def get_playset(card: Card, quantity: int) -> list[Card]:
     return [card] * quantity
 
 
@@ -1055,17 +1078,6 @@ class DeckParser(ABC):
     @abstractmethod
     def _get_deck(self) -> Deck | None:
         raise NotImplementedError
-
-    @staticmethod
-    def _get_playset_by_id(scryfall_id: str, quantity: int) -> list[Card] | None:
-        scryfall_id = scryfall_id.lower()
-        card = find_by_id(scryfall_id)
-        if not card:
-            _log.warning(
-                f"Not a valid Scryfall card ID: {scryfall_id!r}. Maybe Scryfall data is not up "
-                f"to date?")
-            return None
-        return [card] * quantity
 
     def _update_fmt(self, fmt: str) -> None:
         if fmt != self.fmt and fmt in all_formats():

@@ -27,11 +27,11 @@ from mtgcards.decks.arena import ArenaParser, get_arena_lines, is_arena_line, is
 from mtgcards.decks.cardhoarder import CardhoarderScraper
 from mtgcards.decks.goldfish import GoldfishScraper
 from mtgcards.decks.moxfield import MoxfieldScraper
-from mtgcards.decks.mtgazone import MtgazoneScraper
+from mtgcards.decks.mtgazone import MtgaZoneScraper
 from mtgcards.decks.mtgtop8 import MtgTop8Scraper
 from mtgcards.decks.streamdecker import StreamdeckerScraper
 from mtgcards.decks.tappedout import TappedoutScraper
-from mtgcards.decks.tcgplayer import OldPageTcgplayerScraper
+from mtgcards.decks.tcgplayer import OldPageTcgPlayerScraper
 from mtgcards.decks.untapped import UntappedProfileDeckScraper, UntappedRegularDeckScraper
 from mtgcards.scryfall import all_formats
 from mtgcards.utils import getrepr, timed
@@ -367,16 +367,16 @@ class Video:
             return UntappedProfileDeckScraper(link, self.metadata).deck
         elif UntappedRegularDeckScraper.is_deck_url(link):
             return UntappedRegularDeckScraper(link, self.metadata).deck
-        elif MtgazoneScraper.is_deck_url(link):
-            return MtgazoneScraper(link, self.metadata).deck
+        elif MtgaZoneScraper.is_deck_url(link):
+            return MtgaZoneScraper(link, self.metadata).deck
         elif CardhoarderScraper.is_deck_url(link):
             return CardhoarderScraper(link, self.metadata).deck
         elif TappedoutScraper.is_deck_url(link):
             return TappedoutScraper(link, self.metadata).deck
         elif MtgTop8Scraper.is_deck_url(link):
             return MtgTop8Scraper(link, self.metadata).deck
-        elif OldPageTcgplayerScraper.is_deck_url(link):
-            return OldPageTcgplayerScraper(link, self.metadata).deck
+        elif OldPageTcgPlayerScraper.is_deck_url(link):
+            return OldPageTcgPlayerScraper(link, self.metadata).deck
         elif any(h in link for h in self.PASTEBIN_LIKE_HOOKS):
             lines = timed_request(link).splitlines()
             arena_lines = [*get_arena_lines(*lines)]

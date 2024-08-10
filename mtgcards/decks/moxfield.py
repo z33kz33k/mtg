@@ -11,10 +11,10 @@ import logging
 from datetime import datetime
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, InvalidDeck, DeckScraper, get_playset
-from mtgcards.scryfall import Card, all_formats, all_set_codes
+from mtgcards.decks import Deck, DeckScraper, InvalidDeck, find_card_by_id, find_card_by_name, \
+    get_playset
+from mtgcards.scryfall import Card, all_set_codes
 from mtgcards.utils.scrape import timed_request
-
 
 _log = logging.getLogger(__name__)
 
@@ -75,29 +75,28 @@ class MoxfieldScraper(DeckScraper):
         if desc := self._json_data["description"]:
             self._metadata["description"] = desc
 
-    def _parse_card(self, json_card: Json) -> list[Card]:
+    def _to_playset(self, json_card: Json) -> list[Card]:
         scryfall_id = json_card["card"]["scryfall_id"]
         quantity = json_card["quantity"]
-        playset = self._get_playset_by_id(scryfall_id, quantity)
-        if playset:
-            return playset
         set_code, name = json_card["card"]["set"], json_card["card"]["name"]
         set_code = set_code if set_code in set(all_set_codes()) else ""
-        return get_playset(name, quantity, set_code, self.fmt)
+        if card := find_card_by_id(scryfall_id, set_code, self.fmt):
+            return get_playset(card, quantity)
+        return get_playset(find_card_by_name(name, set_code, self.fmt), quantity)
 
     def _get_deck(self) -> Deck | None:  # override
         mainboard, sideboard, commander, companion = [], [], None, None
         for card in self._json_data["boards"]["mainboard"]["cards"].values():
-            mainboard.extend(self._parse_card(card))
+            mainboard.extend(self._to_playset(card))
         for card in self._json_data["boards"]["sideboard"]["cards"].values():
-            sideboard.extend(self._parse_card(card))
+            sideboard.extend(self._to_playset(card))
         if self._json_data["boards"]["commanders"]["cards"]:
             card = next(iter(self._json_data["boards"]["commanders"]["cards"].items()))[1]
-            result = self._parse_card(card)
+            result = self._to_playset(card)
             commander = result[0]
         if self._json_data["boards"]["companions"]["cards"]:
             card = next(iter(self._json_data["boards"]["companions"]["cards"].items()))[1]
-            result = self._parse_card(card)
+            result = self._to_playset(card)
             companion = result[0]
 
         try:

@@ -13,7 +13,7 @@ from typing import Generator
 
 from mtgcards.const import Json
 from mtgcards.decks import ARENA_MULTIFACE_SEPARATOR, Deck, DeckParser, InvalidDeck, \
-    ParsingState, get_playset
+    ParsingState, find_card_by_name, get_playset
 from mtgcards.scryfall import Card, MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, \
     find_by_collector_number
 from mtgcards.utils import ParsingError, extract_int, getrepr
@@ -89,11 +89,11 @@ class PlaysetLine:
         if self.is_extended:
             try:
                 if card := find_by_collector_number(self.collector_number, self.set_code):
-                    return [card] * self.quantity
+                    return get_playset(card, self.quantity)
             except ValueError as ve:  # Scryfall has different codes for Alchemy sets than Arena
                 if "Invalid set code" in str(ve):
                     pass
-        return get_playset(self.name, self.quantity, self.set_code, fmt)
+        return get_playset(find_card_by_name(self.name, self.set_code, fmt), self.quantity)
 
 
 def is_playset_line(line: str) -> bool:

@@ -13,11 +13,11 @@ from datetime import datetime
 from bs4 import Tag
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, DeckScraper, InvalidDeck, Mode, get_playset
-from mtgcards.scryfall import Card, all_formats, arena_formats
+from mtgcards.decks import Deck, DeckScraper, InvalidDeck, Mode, find_card_by_id, find_card_by_name, \
+    get_playset
+from mtgcards.scryfall import Card, arena_formats
 from mtgcards.utils import extract_int, from_iterable, timed
 from mtgcards.utils.scrape import ScrapingError, getsoup
-
 
 _log = logging.getLogger(__name__)
 
@@ -25,7 +25,7 @@ _log = logging.getLogger(__name__)
 # alternative approach would be to scrape:
 # self._soup.find("input", {"type": "hidden", "name": "c"}).attrs["value"].split("||")
 # but it has a downside of not having clear sideboard-mainboard separation
-class MtgazoneScraper(DeckScraper):
+class MtgaZoneScraper(DeckScraper):
     """Scraper of MTG Arena Zone decklist page.
 
     This scraper can be used both to scrape individual MTGAZone deck pages and to scrape
@@ -72,9 +72,9 @@ class MtgazoneScraper(DeckScraper):
         name = a_tag.text.strip()
         *_, scryfall_id = a_tag.attrs["data-cimg"].split("/")
         scryfall_id, *_ = scryfall_id.split(".jpg")
-        if playset := self._get_playset_by_id(scryfall_id, quantity):
-            return playset
-        return get_playset(name, quantity, fmt=self.fmt)
+        if card := find_card_by_id(scryfall_id, fmt=self.fmt):
+            return get_playset(card, quantity)
+        return get_playset(find_card_by_name(name, fmt=self.fmt), quantity)
 
     def _process_decklist(self, decklist_tag: Tag) -> list[Card]:
         decklist = []
@@ -118,7 +118,7 @@ def _parse_tiers(table: Tag) -> dict[str, int]:
 
 def _parse_deck(deck_tag: Tag, decks2tiers: dict[str, int], deck_place: int) -> Deck:
     try:
-        deck = MtgazoneScraper("", deck_tag=deck_tag).deck
+        deck = MtgaZoneScraper("", deck_tag=deck_tag).deck
     except InvalidDeck as err:
         raise ScrapingError(f"Scraping meta deck failed with: {err}")
     meta = {

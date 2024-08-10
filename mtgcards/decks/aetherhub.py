@@ -13,7 +13,8 @@ from datetime import datetime
 from bs4 import Tag
 
 from mtgcards.const import Json
-from mtgcards.decks import Archetype, Deck, InvalidDeck, Mode, DeckScraper, get_playset
+from mtgcards.decks import Archetype, Deck, InvalidDeck, Mode, DeckScraper, find_card_by_name, \
+    get_playset
 from mtgcards.scryfall import Card, all_set_codes
 from mtgcards.utils import extract_float, extract_int
 from mtgcards.utils.scrape import ScrapingError, getsoup
@@ -107,6 +108,18 @@ class AetherhubScraper(DeckScraper):
             count_text, _ = count_tag.text.strip().split("decks,")
             self._metadata["meta"]["count"] = extract_int(count_text)
 
+    def _to_playset(self, hover_tag: Tag) -> list[Card]:
+        quantity, *_ = hover_tag.text.split()
+        quantity = extract_int(quantity)
+
+        card_tag = hover_tag.find("a")
+        if card_tag is None:
+            raise ScrapingError(f"No 'a' tag inside 'hover-imglink' div tag: {hover_tag!r}")
+
+        name, set_code = card_tag.attrs["data-card-name"], card_tag.attrs["data-card-set"].lower()
+        set_code = set_code if set_code in set(all_set_codes()) else ""
+        return get_playset(find_card_by_name(name, set_code, self.fmt), quantity)
+
     def _get_deck(self) -> Deck | None:  # override
         mainboard, sideboard, commander = [], [], None
 
@@ -123,7 +136,7 @@ class AetherhubScraper(DeckScraper):
 
         if len(hovers[-1]) == 1:  # may be a commander
             hovers, commander_tag = hovers[:-1], hovers[-1][0]
-            result = self._parse_hover_tag(commander_tag)
+            result = self._to_playset(commander_tag)
             if result:
                 if (len(result) == 1 and result[0].is_legendary
                         and (result[0].is_creature or result[0].is_planeswalker)):
@@ -141,11 +154,11 @@ class AetherhubScraper(DeckScraper):
                 f"{len(hovers)}")
 
         for tag in main_list_tags:
-            mainboard.extend(self._parse_hover_tag(tag))
+            mainboard.extend(self._to_playset(tag))
 
         if not sideboard:
             for tag in sideboard_tags:
-                sideboard.extend(self._parse_hover_tag(tag))
+                sideboard.extend(self._to_playset(tag))
 
         try:
             return Deck(mainboard, sideboard, commander, metadata=self._metadata)
@@ -154,15 +167,3 @@ class AetherhubScraper(DeckScraper):
                 raise
             _log.warning(f"Scraping failed with: {err}")
             return None
-
-    def _parse_hover_tag(self, hover_tag: Tag) -> list[Card]:
-        quantity, *_ = hover_tag.text.split()
-        quantity = extract_int(quantity)
-
-        card_tag = hover_tag.find("a")
-        if card_tag is None:
-            raise ScrapingError(f"No 'a' tag inside 'hover-imglink' div tag: {hover_tag!r}")
-
-        name, set_code = card_tag.attrs["data-card-name"], card_tag.attrs["data-card-set"].lower()
-        set_code = set_code if set_code in set(all_set_codes()) else ""
-        return get_playset(name, quantity, set_code, self.fmt)

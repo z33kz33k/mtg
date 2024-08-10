@@ -11,7 +11,7 @@ import json
 import logging
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, DeckScraper, InvalidDeck, find_card_by_name
+from mtgcards.decks import Deck, DeckScraper, InvalidDeck, find_card_by_name, get_playset
 from mtgcards.utils.scrape import ScrapingError, getsoup
 
 _log = logging.getLogger(__name__)
@@ -77,9 +77,9 @@ class CardhoarderScraper(DeckScraper):
             quantity_main = int(data["SavedDeckItem"]["quantity_main"])
             quantity_sideboard = int(data["SavedDeckItem"]["quantity_sideboard"])
             card = find_card_by_name(name, fmt=self.fmt)
-            mainboard += [card] * quantity_main
+            mainboard += get_playset(card, quantity_main)
             if quantity_sideboard:
-                sideboard += [card] * quantity_sideboard
+                sideboard += get_playset(card, quantity_sideboard)
 
         return Deck(mainboard, sideboard, metadata=self._metadata)
 
