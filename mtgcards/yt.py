@@ -23,7 +23,7 @@ from youtubesearchpython import Channel as YtspChannel
 from mtgcards.const import Json
 from mtgcards.decks import Deck
 from mtgcards.decks.aetherhub import AetherhubScraper
-from mtgcards.decks.arena import ArenaParser, get_arena_lines, is_arena_line, is_empty
+from mtgcards.decks.arena import ArenaParser, get_arena_lines
 from mtgcards.decks.cardhoarder import CardhoarderScraper
 from mtgcards.decks.goldfish import GoldfishScraper
 from mtgcards.decks.moxfield import MoxfieldScraper
@@ -31,7 +31,7 @@ from mtgcards.decks.mtgazone import MtgaZoneScraper
 from mtgcards.decks.mtgtop8 import MtgTop8Scraper
 from mtgcards.decks.streamdecker import StreamdeckerScraper
 from mtgcards.decks.tappedout import TappedoutScraper
-from mtgcards.decks.tcgplayer import OldPageTcgPlayerScraper
+from mtgcards.decks.tcgplayer import NewPageTcgPlayerScraper, OldPageTcgPlayerScraper
 from mtgcards.decks.untapped import UntappedProfileDeckScraper, UntappedRegularDeckScraper
 from mtgcards.scryfall import all_formats
 from mtgcards.utils import getrepr, timed
@@ -377,6 +377,8 @@ class Video:
             return MtgTop8Scraper(link, self.metadata).deck
         elif OldPageTcgPlayerScraper.is_deck_url(link):
             return OldPageTcgPlayerScraper(link, self.metadata).deck
+        elif NewPageTcgPlayerScraper.is_deck_url(link):
+            return NewPageTcgPlayerScraper(link, self.metadata).deck
         elif any(h in link for h in self.PASTEBIN_LIKE_HOOKS):
             lines = timed_request(link).splitlines()
             arena_lines = [*get_arena_lines(*lines)]

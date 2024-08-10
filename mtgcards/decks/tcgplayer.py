@@ -107,31 +107,35 @@ class NewPageTcgPlayerScraper(DeckScraper):
             self._metadata["author"] = author_tag.text.strip()
         date_tag = self._soup.find("p", class_="event-name martech-text-sm")
         if date_tag:
-            self._metadata["date"] = dateutil.parser.parse(date_tag.text.strip()).date()
+            date_text = date_tag.text.strip()
+            if "-" in date_text:
+                *event_texts, date_text = date_text.split("-")
+                self._metadata["event"] = "".join(event_texts).strip()
+            self._metadata["date"] = dateutil.parser.parse(date_text.strip()).date()
 
-    def _process_deck_tag(self, deck_tag: Tag) -> list[Card]:
-        cards = []
-        # card_tags = deck_tag.find_all("a", class_="subdeck-group__card")
-        # for card_tag in card_tags:
-        #     quantity_tag, name_tag = card_tag.find_all("span")
-        #     quantity = extract_int(quantity_tag.text)
-        #     cards += get_playset(name_tag.text.strip(), quantity, fmt=self.fmt)
-        return cards
+    def _to_playset(self, card_tag: Tag) -> list[Card]:
+        quantity = extract_int(card_tag.find("span", class_="list__item-quanity").text)
+        name = card_tag.find("span", class_="list__item--wrapper").text.strip().removeprefix(
+            str(quantity))
+        return get_playset(find_card_by_name(name, fmt=self.fmt), quantity)
 
     def _get_deck(self) -> Deck | None:  # override
         mainboard, sideboard, commander = [], [], None
-        card_tags = self._soup.find_all("span", class_="list__item--wrapper")
-        # deck_tags = self._soup.find_all("div", class_="subdeck")
-        # for deck_tag in deck_tags:
-        #     if deck_tag.find("h3").text.lower().startswith("command"):
-        #         cards = self._process_deck_tag(deck_tag)
-        #         if not len(cards) == 1:
-        #             raise ScrapingError("Commander must have exactly one card")
-        #         commander = cards[0]
-        #     elif deck_tag.find("h3").text.lower().startswith("sideboard"):
-        #         sideboard = self._process_deck_tag(deck_tag)
-        #     else:
-        #         mainboard = self._process_deck_tag(deck_tag)
+
+        commander_tag = self._soup.find("div", class_="commandzone")
+        if commander_tag:
+            commander = self._to_playset(commander_tag.find("li", class_="list__item"))[0]
+
+        main_tag = self._soup.find("div", class_="maindeck")
+        card_tags = main_tag.find_all("li", class_="list__item")
+        for card_tag in card_tags:
+            mainboard += self._to_playset(card_tag)
+
+        side_tag = self._soup.find("div", class_="sideboard")
+        if side_tag:
+            card_tags = side_tag.find_all("li", class_="list__item")
+            for card_tag in card_tags:
+                sideboard += self._to_playset(card_tag)
 
         try:
             return Deck(mainboard, sideboard, commander, metadata=self._metadata)

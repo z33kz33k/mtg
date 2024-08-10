@@ -28,18 +28,20 @@ descriptions).
 * Arena, [Goldfish](https://www.mtggoldfish.com), [Moxfield](https://www.moxfield.com), 
   [Aetherhub](https://aetherhub.com), [Streamdecker](https://www.streamdecker.com/landing), 
   [MTGAZone](https://mtgazone.com), [Cardhoarder](https://www.cardhoarder.com), 
-  [TappedOut](https://tappedout.net), [Untapped](https://mtga.untapped.gg) 
-  and [MTGTop8](https://mtgtop8.com/index) deck parsers work, so:
+  [TappedOut](https://tappedout.net), [Untapped](https://mtga.untapped.gg), 
+  [TCGPlayer](https://infinite.tcgplayer.com) and [MTGTop8](https://mtgtop8.com/index) deck 
+  parsers work, so:
     * Arena decklists pasted into video descriptions are parsed into Deck objects
-    * Goldfish, Moxfield, Aetherhub, Streamdecker, MTGAZone, Cardhoarder, TappedOut, Untapped 
-      and MTGTop8 links contained in those descriptions are parsed into Deck objects
-    * Due to its dynamic nature, Untapped is scraped using 
-      [Selenium](https://github.com/SeleniumHQ/Selenium)
+    * Goldfish, Moxfield, Aetherhub, Streamdecker, MTGAZone, Cardhoarder, TappedOut, Untapped, 
+      TCGPlayer and MTGTop8 links contained in those descriptions are parsed into Deck objects
     * Both Untapped decklist types featured in YT videos are supported: regular deck and profile deck
+    * Both old and new TCGPlayer sites are supported
+    * Due to their dynamic nature, Untapped and TCGPlayer (new site) are scraped using 
+      [Selenium](https://github.com/SeleniumHQ/Selenium)
     * All those mentioned above work even if they are behind shortener links and need unshortening first
     * Arena decklists in links to pastebin-like services (like 
       [Amazonian](https://www.youtube.com/@Amazonian) does) work too
-* Other decklist services are in plans
+* Other decklist services are in plans (but does it seem I almost exhausted the possibilities already :))
 * Scraping Goldfish and MGTAZone for meta-decks (others in plans)
 * Scraping a singular Untapped meta-deck decklist page
 * Exporting decks into a [Forge MTG](https://github.com/Card-Forge/forge) .dck format or Arena 
