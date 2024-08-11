@@ -614,10 +614,6 @@ class Card:
         return self.rarity is Rarity.MYTHIC
 
     @property
-    def is_legendary(self) -> bool:
-        return "Legendary" in self.supertypes
-
-    @property
     def released_at(self) -> date:
         return date.fromisoformat(self.json["released_at"])
 
@@ -820,6 +816,18 @@ class Card:
         return self.parse_types().is_nonpermanent
 
     @property
+    def is_companion(self) -> bool:
+        return "Companion" in self.keywords
+
+    @property
+    def is_legendary(self) -> bool:
+        return "Legendary" in self.supertypes
+
+    @property
+    def is_token(self) -> bool:
+        return "Token" in self.supertypes
+
+    @property
     def is_alchemy_rebalance(self) -> bool:
         return self.name.startswith(ALCHEMY_REBALANCE_INDICATOR)
 
@@ -853,10 +861,6 @@ class Card:
     @property
     def has_alchemy_rebalance(self) -> bool:
         return self.alchemy_rebalance is not None
-
-    @property
-    def is_companion(self) -> bool:
-        return "Companion" in self.keywords
 
     @staticmethod
     def parse_lord_sentences(oracle_text: str) -> list[LordSentence]:
@@ -1033,17 +1037,20 @@ ILLEGAL = {
 
 
 @lru_cache
-def bulk_data(official_only=True, legal_only=True) -> set[Card]:
+def bulk_data(legal_only=True, non_token_only=True) -> set[Card]:
     """Return Scryfall JSON card data as set of Card objects.
 
     Note:
-        According to: https://scryfall.com/docs/api/sets all sets with set codes three-letter
-        long are consider official. This strict metric excludes Alchemy cards though, so
-        this function takes care to consider Alchemy sets as official even if Scryfall doesn't.
+        Earlier versions of this function had a ``official_only`` flag that was removed as
+        redundant with ``legal_only``.
+        Note about what's "official":
+            According to: https://scryfall.com/docs/api/sets all sets with set codes three-letter
+            long are consider official. This strict metric excludes Alchemy cards though, so
+            this function takes care to consider Alchemy sets as official even if Scryfall doesn't.
 
     Args:
-        official_only: return only cards from official sets, defaults to ``True``
-        legal_only: return only cards from legal sets, defaults to ``True``
+        legal_only: return only cards that are legal in at least one format, defaults to ``True``
+        non_token_only: return only non-token cards, defaults to ``True``
 
     Returns:
         set of Card objects
@@ -1057,15 +1064,11 @@ def bulk_data(official_only=True, legal_only=True) -> set[Card]:
 
     cards = {Card(card_data) for card_data in data}
 
-    # BEWARE: this can limit official/legal cards if set data is not up-to-date
-    if official_only:
-        official_sets = {s.code for s in sets() if s.is_official or s.is_alchemy}
-        if legal_only:
-            return {c for c in cards if c.set in official_sets and c.set not in ILLEGAL}
-        return {c for c in cards if c.set in official_sets}
-
     if legal_only:
-        return {c for c in cards if c.set not in ILLEGAL}
+        cards = {c for c in cards if not c.not_legal_anywhere}
+
+    if non_token_only:
+        cards = {c for c in cards if not c.is_token}
 
     return cards
 

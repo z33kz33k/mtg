@@ -8,6 +8,7 @@
 
 """
 import itertools
+import json
 import logging
 import re
 from collections import Counter, defaultdict
@@ -69,20 +70,28 @@ def batch_update(start_row=2, batch_size=10) -> None:
     data = []
     start_idx, end_idx = start_row - 2, start_row - 2 + batch_size
     for url in itertools.islice(channels().values(), start_idx, end_idx):
-        ch = Channel(url)
-        data.append([
-            url,
-            ch.scrape_date.strftime("%Y-%m-%d"),
-            ch.staleness,
-            ch.posting_interval,
-            len(ch),
-            len(ch.decks),
-            ch.total_views,
-            ch.views_per_sub,
-            ch.subscribers,
-            ", ".join(ch.sources),
-            ", ".join(ch.deck_sources)
-        ])
+        try:
+            ch = Channel(url)
+            data.append([
+                url,
+                ch.scrape_date.strftime("%Y-%m-%d"),
+                ch.staleness,
+                ch.posting_interval,
+                len(ch),
+                len(ch.decks),
+                ch.total_views,
+                ch.views_per_sub or "N/A",
+                ch.subscribers or "N/A",
+                ", ".join(ch.sources),
+                ", ".join(ch.deck_sources)
+            ])
+        except json.decoder.JSONDecodeError:
+            _log.warning(
+                f"scrapetube failed with JSON error for channel {url!r}. It probably doesn't "
+                f"exist anymore. Skipping...")
+            data.append(
+                ["NOT AVAILABLE", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A",
+                 "N/A"])
 
     extend_gsheet_rows_with_cols("mtga_yt", "channels", data, start_row=start_row, start_col=5)
 
@@ -465,8 +474,8 @@ class Channel(list):
         return sum(v.views for v in self)
 
     @property
-    def views_per_sub(self) -> float:
-        return self.total_views / self.subscribers
+    def views_per_sub(self) -> float | None:
+        return self.total_views / self.subscribers if self.subscribers else None
 
     @property
     def scrape_date(self) -> date:
@@ -499,6 +508,8 @@ class Channel(list):
             if not self._subscribers:
                 self._subscribers = self[0].metadata["video"].get(
                     "channel_subscribers") if self else None
+                if not self._subscribers:
+                    _log.warning(f"Subscribers data for {url!r} not available")
             self._sources = {s for v in self for s in v.sources}
         _log.info(f"Completed channel scraping in {t.elapsed:.2f} second(s)")
 

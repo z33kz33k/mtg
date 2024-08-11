@@ -19,7 +19,7 @@ from typing import Any, Iterable, Iterator
 from mtgcards.const import Json, OUTPUT_DIR, PathLike
 from mtgcards.scryfall import (
     Card, Color, MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, all_formats, all_set_codes,
-    bulk_data, find_by_id, find_by_name, find_sets, format_cards as scryfall_fmt_cards, set_cards as
+    find_by_id, find_by_name, find_sets, format_cards as scryfall_fmt_cards, set_cards as
     scryfall_set_cards)
 from mtgcards.utils import ParsingError, extract_int, from_iterable, getrepr
 from mtgcards.utils.files import getdir, getfile
@@ -1019,9 +1019,7 @@ def find_card_by_id(scryfall_id: str, set_code="", fmt="") -> Card | None:
     if not card and not fmt:
         card = find_by_id(scryfall_id, format_cards("standard"))
     if not card:
-        card = find_by_id(scryfall_id)  # look up the whole pool as (almost) the last resort
-    if not card:  # look up the whole, unrestricted pool as the (real) last resort
-        card = find_by_id(scryfall_id, bulk_data(False, False))
+        card = find_by_id(scryfall_id)  # look up the whole pool as the last resort
     if not card:
         _log.warning(
                 f"Not a valid Scryfall card ID: {scryfall_id!r}. Maybe Scryfall data is not up "
@@ -1043,9 +1041,7 @@ def find_card_by_name(name, set_code="", fmt="") -> Card:
     if not card and not fmt:
         card = find_by_name(name, format_cards("standard"))
     if not card:
-        card = find_by_name(name)  # look up the whole pool as (almost) the last resort
-    if not card:  # look up the whole, unrestricted pool as the (real) last resort
-        card = find_by_name(name, bulk_data(False, False))
+        card = find_by_name(name)  # look up the whole pool as the last resort
     if not card:
         raise ScrapingError(f"{name!r} card cannot be found")
     return card
