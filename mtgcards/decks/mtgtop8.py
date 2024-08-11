@@ -11,7 +11,7 @@ import logging
 from datetime import datetime
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, DeckScraper, InvalidDeck, find_card_by_name, get_playset
+from mtgcards.decks import Deck, DeckScraper, InvalidDeck
 from mtgcards.utils import extract_int
 from mtgcards.utils.scrape import getsoup
 
@@ -80,12 +80,12 @@ class MtgTop8Scraper(DeckScraper):
                         commander_on = False
                 if "deck_line" in sub_tag.attrs["class"]:
                     quantity, name = sub_tag.text.split(maxsplit=1)
-                    card = find_card_by_name(name.strip(), fmt=self.fmt)
+                    card = self.find_card(name.strip())
                     if commander_on:
                         commander = card
                     else:
                         quantity = extract_int(quantity)
-                        cards += get_playset(card, quantity)
+                        cards += self.get_playset(card, quantity)
 
         try:
             return Deck(mainboard, sideboard, commander, metadata=self._metadata)

@@ -11,8 +11,7 @@ import logging
 from datetime import date
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, DeckScraper, InvalidDeck, find_card_by_id, find_card_by_name, \
-    get_playset
+from mtgcards.decks import Deck, DeckScraper, InvalidDeck
 from mtgcards.utils import get_ago_date
 from mtgcards.utils.scrape import timed_request
 
@@ -56,13 +55,11 @@ class StreamdeckerScraper(DeckScraper):
     def _parse_json_card(self, json_card: Json) -> None:
         scryfall_id = json_card["scryfallId"]
         name = json_card["name"]
-        card = find_card_by_id(scryfall_id, fmt=self.fmt)
-        if not card:
-            card = find_card_by_name(name, fmt=self.fmt)
+        card = self.find_card(name, scryfall_id)
         if json_card["main"]:
-            self._mainboard.extend(get_playset(card, json_card["main"]))
+            self._mainboard.extend(self.get_playset(card, json_card["main"]))
         if json_card["sideboard"]:
-            self._sideboard.extend(get_playset(card, json_card["sideboard"]))
+            self._sideboard.extend(self.get_playset(card, json_card["sideboard"]))
         if json_card["commander"]:
             self._commander = card
         if json_card["companion"]:

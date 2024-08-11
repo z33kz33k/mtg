@@ -13,9 +13,8 @@ from typing import Generator
 
 from mtgcards.const import Json
 from mtgcards.decks import ARENA_MULTIFACE_SEPARATOR, Deck, DeckParser, InvalidDeck, \
-    ParsingState, find_card_by_name, get_playset
-from mtgcards.scryfall import Card, MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, \
-    find_by_collector_number
+    ParsingState
+from mtgcards.scryfall import Card, MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR
 from mtgcards.utils import ParsingError, extract_int, getrepr
 
 _log = logging.getLogger(__name__)
@@ -32,10 +31,6 @@ class PlaysetLine:
     # matches '4 Commit /// Memory (AKR) 54'
     EXTENDED_PATTERN = re.compile(
         r"\d{1,3}x?\s[A-Z][\w\s'&/,-]+\(([A-Za-z\d]{3,5})\)\s[A-Za-z\d]{1,6}")
-
-    @property
-    def raw_line(self) -> str:
-        return self._raw_line
 
     @property
     def is_extended(self) -> bool:
@@ -58,7 +53,7 @@ class PlaysetLine:
         return self._collector_number
 
     def __init__(self, line: str) -> None:
-        self._raw_line = line
+        line = ArenaParser.sanitize(line)
         self._is_extended = self.EXTENDED_PATTERN.match(line) is not None
         quantity, rest = line.split(maxsplit=1)
         self._quantity = extract_int(quantity)
@@ -69,6 +64,10 @@ class PlaysetLine:
             self._collector_number = rest.strip()
         else:
             self._name, self._set_code, self._collector_number = rest, "", ""
+            if "(" in self.name and ")" in self.name and (self.name and self.name[-1].isdigit()):
+                _log.warning(
+                    f"{self.name!r} looks fishy for a card name. It seems like {line!r} Arena line "
+                    f"is in extended format and hasn't been recognized as such by the parser")
         self._name = self._name.replace(ARENA_MULTIFACE_SEPARATOR, SCRYFALL_MULTIFACE_SEPARATOR)
 
     def __repr__(self) -> str:
@@ -77,23 +76,11 @@ class PlaysetLine:
             pairs += [("setcode", self.set_code), ("collector_number", self.collector_number)]
         return getrepr(self.__class__, *pairs)
 
-    def to_playset(self, fmt: str) -> list[Card]:
-        """Process this line into a playset of cards.
-
-        Args:
-            fmt: MtG format string designation
-
-        Returns:
-            a list of cards according to this line's quantity or an empty list if no card can be identified
-        """
-        if self.is_extended:
-            try:
-                if card := find_by_collector_number(self.collector_number, self.set_code):
-                    return get_playset(card, self.quantity)
-            except ValueError as ve:  # Scryfall has different codes for Alchemy sets than Arena
-                if "Invalid set code" in str(ve):
-                    pass
-        return get_playset(find_card_by_name(self.name, self.set_code, fmt), self.quantity)
+    def to_playset(self) -> list[Card]:
+        collector_number_and_set = (
+            self.collector_number, self.set_code) if self.is_extended else None
+        return ArenaParser.get_playset(ArenaParser.find_card(
+            self._name, collector_number_and_set=collector_number_and_set), self.quantity)
 
 
 def is_playset_line(line: str) -> bool:
@@ -159,19 +146,19 @@ class ArenaParser(DeckParser):
                         self._shift_to_mainboard()
 
                     if self._state is ParsingState.SIDEBOARD:
-                        sideboard.extend(PlaysetLine(line).to_playset(self.fmt))
+                        sideboard.extend(PlaysetLine(line).to_playset())
                     elif self._state is ParsingState.COMMANDER:
-                        if result := PlaysetLine(line).to_playset(self.fmt):
+                        if result := PlaysetLine(line).to_playset():
                             commander = result[0]
                         else:
                             raise ParsingError(f"Invalid commander line: {line!r}")
                     elif self._state is ParsingState.COMPANION:
-                        if result := PlaysetLine(line).to_playset(self.fmt):
+                        if result := PlaysetLine(line).to_playset():
                             companion = result[0]
                         else:
                             raise ParsingError(f"Invalid companion line: {line!r}")
                     elif self._state is ParsingState.MAINBOARD:
-                        mainboard.extend(PlaysetLine(line).to_playset(self.fmt))
+                        mainboard.extend(PlaysetLine(line).to_playset())
 
             return Deck(mainboard, sideboard, commander, companion, self._metadata)
 

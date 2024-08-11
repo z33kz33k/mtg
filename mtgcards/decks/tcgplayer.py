@@ -8,13 +8,13 @@
 
 """
 import logging
-import dateutil.parser
 from datetime import datetime
 
+import dateutil.parser
 from bs4 import Tag
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, DeckScraper, InvalidDeck, find_card_by_name, get_playset
+from mtgcards.decks import Deck, DeckScraper, InvalidDeck
 from mtgcards.scryfall import Card
 from mtgcards.utils import extract_int
 from mtgcards.utils.scrape import ScrapingError, get_dynamic_soup_by_xpath, getsoup
@@ -48,13 +48,14 @@ class OldPageTcgPlayerScraper(DeckScraper):
         _, date_text = date_tag.text.strip().split("On: ", maxsplit=1)
         self._metadata["date"] = datetime.strptime(date_text, "%d/%m/%Y").date()
 
-    def _process_deck_tag(self, deck_tag: Tag) -> list[Card]:
+    @classmethod
+    def _process_deck_tag(cls, deck_tag: Tag) -> list[Card]:
         cards = []
         card_tags = deck_tag.find_all("a", class_="subdeck-group__card")
         for card_tag in card_tags:
             quantity_tag, name_tag = card_tag.find_all("span")
             quantity = extract_int(quantity_tag.text)
-            cards += get_playset(find_card_by_name(name_tag.text.strip(), fmt=self.fmt), quantity)
+            cards += cls.get_playset(cls.find_card(name_tag.text.strip()), quantity)
         return cards
 
     def _get_deck(self) -> Deck | None:  # override
@@ -113,11 +114,12 @@ class NewPageTcgPlayerScraper(DeckScraper):
                 self._metadata["event"] = "".join(event_texts).strip()
             self._metadata["date"] = dateutil.parser.parse(date_text.strip()).date()
 
-    def _to_playset(self, card_tag: Tag) -> list[Card]:
+    @classmethod
+    def _to_playset(cls, card_tag: Tag) -> list[Card]:
         quantity = extract_int(card_tag.find("span", class_="list__item-quanity").text)
         name = card_tag.find("span", class_="list__item--wrapper").text.strip().removeprefix(
             str(quantity))
-        return get_playset(find_card_by_name(name, fmt=self.fmt), quantity)
+        return cls.get_playset(cls.find_card(name), quantity)
 
     def _get_deck(self) -> Deck | None:  # override
         mainboard, sideboard, commander = [], [], None

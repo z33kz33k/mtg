@@ -19,7 +19,8 @@ from typing import Any, Iterable, Iterator
 from mtgcards.const import Json, OUTPUT_DIR, PathLike
 from mtgcards.scryfall import (
     Card, Color, MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, all_formats, all_set_codes,
-    find_by_id, find_by_name, find_sets, format_cards as scryfall_fmt_cards, set_cards as
+    find_by_collector_number, find_by_id, find_by_name, find_sets,
+    format_cards as scryfall_fmt_cards, set_cards as
     scryfall_set_cards)
 from mtgcards.utils import ParsingError, extract_int, from_iterable, getrepr
 from mtgcards.utils.files import getdir, getfile
@@ -894,25 +895,19 @@ Name={}
         return metadata
 
     @staticmethod
-    def _parse_forge_line(line: str, fmt="") -> list[Card]:
+    def _parse_forge_line(line: str) -> list[Card]:
         quantity, rest = line.split(maxsplit=1)
-        name, set_code, _ = rest.split("|")
-        set_code = set_code.lower()
-        if set_code not in set(all_set_codes()):
-            raise ParsingError(
-                f"Invalid set code: {set_code!r}. Can be only one of: '{all_set_codes()}'")
-        return get_playset(name, int(quantity), set_code.lower(), fmt)
+        name, _, _ = rest.split("|")
+        return DeckParser.get_playset(DeckParser.find_card(name), int(quantity))
 
     @classmethod
     def from_forge(cls, path: PathLike) -> Deck:
         file = getfile(path, ext=".dck")
         commander, mainboard, sideboard, metadata = None, [], [], {}
         commander_on, mainboard_on, sideboard_on = False, False, False
-        fmt = ""
         for line in file.read_text(encoding="utf-8").splitlines():
             if line.startswith("Name="):
                 metadata = cls._parse_name(line.removeprefix("Name="))
-                fmt = metadata.get("format", "")
             elif line == "[Commander]":
                 commander_on = True
                 continue
@@ -926,13 +921,16 @@ Name={}
                 continue
 
             if commander_on:
-                commander = cls._parse_forge_line(line, fmt)[0]
+                commander = cls._parse_forge_line(line)[0]
             elif mainboard_on:
-                mainboard += cls._parse_forge_line(line, fmt)
+                mainboard += cls._parse_forge_line(line)
             elif sideboard_on:
-                sideboard += cls._parse_forge_line(line, fmt)
+                sideboard += cls._parse_forge_line(line)
 
-        return Deck(mainboard, sideboard, commander, metadata=metadata)
+        deck = Deck(mainboard, sideboard, commander, metadata=metadata)
+        if not deck:
+            raise ParsingError(f"Unable to parse '{path}' into a deck")
+        return deck
 
     @staticmethod
     def _to_arena_line(playset: list[Card]) -> str:
@@ -940,7 +938,7 @@ Name={}
         card_name = card.name.replace(
             SCRYFALL_MULTIFACE_SEPARATOR,
             ARENA_MULTIFACE_SEPARATOR) if card.is_multiface else card.name
-        line =  f"{len(playset)} {card_name}"
+        line = f"{len(playset)} {card_name}"
         if card.collector_number is not None:
             line += f" ({card.set.upper()}) {card.collector_number}"
         return line
@@ -983,6 +981,8 @@ Name={}
             raise ValueError(f"Not an MTG Arena deck file: '{file}'")
         metadata = cls._parse_name(file.name)
         deck = ArenaParser(lines, metadata).deck
+        if not deck:
+            raise ParsingError(f"Unable to parse '{path}' into a deck")
         return deck
 
 
@@ -1004,51 +1004,6 @@ class ParsingState(Enum):
     SIDEBOARD = auto()
     COMMANDER = auto()
     COMPANION = auto()
-
-
-def find_card_by_id(scryfall_id: str, set_code="", fmt="") -> Card | None:
-    fmt = fmt.lower()
-    if fmt and fmt not in all_formats():
-        raise ValueError(
-            f"Invalid format: {fmt!r}. Can be only one of: {all_formats()}")
-    card = None
-    if set_code and set_code in all_set_codes():
-        card = find_by_id(scryfall_id, set_cards(set_code))
-    if not card and fmt:
-        card = find_by_id(scryfall_id, format_cards(fmt))
-    if not card and not fmt:
-        card = find_by_id(scryfall_id, format_cards("standard"))
-    if not card:
-        card = find_by_id(scryfall_id)  # look up the whole pool as the last resort
-    if not card:
-        _log.warning(
-                f"Not a valid Scryfall card ID: {scryfall_id!r}. Maybe Scryfall data is not up "
-                f"to date?")
-        return None
-    return card
-
-
-def find_card_by_name(name, set_code="", fmt="") -> Card:
-    fmt = fmt.lower()
-    if fmt and fmt not in all_formats():
-        raise ValueError(
-            f"Invalid format: {fmt!r}. Can be only one of: {all_formats()}")
-    card = None
-    if set_code and set_code in all_set_codes():
-        card = find_by_name(name, set_cards(set_code))
-    if not card and fmt:
-        card = find_by_name(name, format_cards(fmt))
-    if not card and not fmt:
-        card = find_by_name(name, format_cards("standard"))
-    if not card:
-        card = find_by_name(name)  # look up the whole pool as the last resort
-    if not card:
-        raise ScrapingError(f"{name!r} card cannot be found")
-    return card
-
-
-def get_playset(card: Card, quantity: int) -> list[Card]:
-    return [card] * quantity
 
 
 class DeckParser(ABC):
@@ -1102,6 +1057,30 @@ class DeckParser(ABC):
         if self._state is ParsingState.COMPANION:
             raise RuntimeError(f"Invalid transition to COMPANION from: {self._state.name}")
         self._state = ParsingState.COMPANION
+
+    @classmethod
+    def find_card(
+            cls, name: str, scryfall_id="",
+            collector_number_and_set: tuple[str, str] | None = None) -> Card:
+        if collector_number_and_set:
+            if card := find_by_collector_number(*collector_number_and_set):
+                return card
+        if scryfall_id:
+            if card := find_by_id(scryfall_id):
+                return card
+        name = cls.sanitize(name)
+        card = find_by_name(name)
+        if not card:
+            raise ParsingError(f"Unable to find card {name!r}")
+        return card
+
+    @staticmethod
+    def get_playset(card: Card, quantity: int) -> list[Card]:
+        return [card] * quantity
+
+    @staticmethod
+    def sanitize(text: str) -> str:
+        return text.replace("’", "'")
 
 
 class DeckScraper(DeckParser):

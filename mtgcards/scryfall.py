@@ -9,6 +9,7 @@
 """
 import itertools
 import json
+import logging
 import math
 import re
 from collections import defaultdict, namedtuple
@@ -26,10 +27,11 @@ from unidecode import unidecode
 
 from mtgcards.const import DATA_DIR, Json
 from mtgcards.mtgwiki import CLASSES, RACES
-from mtgcards.utils import from_iterable, getfloat, getint, getrepr
+from mtgcards.utils import from_iterable, getfloat, getint, getrepr, timed
 from mtgcards.utils.files import download_file, getdir
 
 
+_log = logging.getLogger(__name__)
 CARDS_FILENAME = "scryfall_cards.json"
 SETS_FILENAME = "scryfall_sets.json"
 
@@ -1041,6 +1043,11 @@ def bulk_data(legal_only=True, non_token_only=True) -> set[Card]:
     """Return Scryfall JSON card data as set of Card objects.
 
     Note:
+        Returning legal-only and non-token-only cards enables quick lookups by a card name as
+        the only cards with duplicated names in Scryfall data are token cards (majority of cases)
+        and few examples that have a non-legal-anywhere counterpart (e.g. "Pick Your Poison").
+        So, discarding those removes any ambiguity.
+
         Earlier versions of this function had a ``official_only`` flag that was removed as
         redundant with ``legal_only``.
         Note about what's "official":
@@ -1210,46 +1217,58 @@ def find_card(
     return from_iterable(data, predicate)
 
 
-def find_by_name(card_name: str, data: Iterable[Card] | None = None) -> Card | None:
+# hashmap based lookups
+_NAME_MAP, _ID_MAP, _COLLECTOR_NUMBER_MAP = {}, {}, {}
+
+
+@timed("building card lookup maps")
+def _build_maps() -> None:
+    global _NAME_MAP, _ID_MAP, _COLLECTOR_NUMBER_MAP
+    _log.info("Mapping the cards for fast lookups...")
+    for card in bulk_data():
+        _NAME_MAP[unidecode(card.name)] = card
+        if card.is_multiface:
+            _NAME_MAP[unidecode(card.main_name)] = card
+        _ID_MAP[card.id] = card
+        _COLLECTOR_NUMBER_MAP[(card.set, card.collector_number)] = card
+
+
+def find_by_id(scryfall_id: str) -> Card | None:
+    """Return a card designated provided ``scryfall_id`` or `None`.
+    """
+    global _ID_MAP
+    if not _ID_MAP:
+        _build_maps()
+    return _ID_MAP.get(scryfall_id)
+
+
+# TODO: throw error if not found
+def find_by_name(card_name: str) -> Card | None:
     """Return a card designated by provided name or `None`.
     """
-    data = data or bulk_data()
-    if card := find_card(
-        lambda c: unidecode(c.name) == unidecode(card_name), data):
-        return card
-    return find_card(
-        lambda c: unidecode(c.main_name) == unidecode(card_name), data)
+    global _NAME_MAP
+    if not _NAME_MAP:
+        _build_maps()
+    return _NAME_MAP.get(unidecode(card_name))
 
 
-def find_by_parts(
-        name_parts: Iterable[str], data: Iterable[Card] | None = None) -> Card | None:
-    """Return a card designated by provided ``name_parts`` or `None`.
+def find_by_words(*words: str) -> set[Card]:
+    """Return a set of cards that contain all provided words in their name.
     """
-    if isinstance(name_parts, str):
-        name_parts = name_parts.split()
-    data = data or bulk_data()
-    return find_card(lambda c: all(part.lower() in c.name.lower() for part in name_parts), data)
+    global _NAME_MAP
+    if not _NAME_MAP:
+        _build_maps()
+    return {v for k, v in _NAME_MAP.items() if all(w.lower() in k.lower() for w in words)}
 
 
 def find_by_collector_number(collector_number: str | int, set_code: str) -> Card | None:
-    """Return a card designated by provided ``collector_number`` or `None` if it cannot be
-    found.
-
-    It tries to match by Card's `collector_number_int` if specified collector number is an integer
-    and by `collector_number` if it's a string.
+    """Return a card designated by provided ``collector_number`` and ``set_code`` or `None` if it
+    cannot be found.
     """
-    data = set_cards(set_code)
-    if isinstance(collector_number, int):
-        data = {card for card in data if card.collector_number_int is not None}
-        return find_card(lambda c: c.collector_number_int == collector_number, data)
-    return find_card(lambda c: c.collector_number == collector_number, data)
-
-
-def find_by_id(scryfall_id: str, data: Iterable[Card] | None = None) -> Card | None:
-    """Return a card designated provided ``scryfall_id`` or `None`.
-    """
-    data = data or bulk_data()
-    return from_iterable(data, lambda c: c.id == scryfall_id)
+    global _COLLECTOR_NUMBER_MAP
+    if not _COLLECTOR_NUMBER_MAP:
+        _build_maps()
+    return _COLLECTOR_NUMBER_MAP.get((set_code.lower(), collector_number))
 
 
 class ColorIdentityDistribution:
@@ -1271,8 +1290,6 @@ class ColorIdentityDistribution:
     def __init__(self, data: Iterable[Card] | None = None) -> None:
         self._data = bulk_data() if not data else data
         self._colorsmap = defaultdict(list)
-        # for card in self._data:
-        #     self._colorsmap[Color(tuple(card.color_identity))].append(card)
         for card in self._data:
             self._colorsmap[card.color_identity].append(card)
         self._colors = sorted(

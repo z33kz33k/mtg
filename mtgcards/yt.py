@@ -35,9 +35,10 @@ from mtgcards.decks.tappedout import TappedoutScraper
 from mtgcards.decks.tcgplayer import NewPageTcgPlayerScraper, OldPageTcgPlayerScraper
 from mtgcards.decks.untapped import UntappedProfileDeckScraper, UntappedRegularDeckScraper
 from mtgcards.scryfall import all_formats
-from mtgcards.utils import getrepr, timed
+from mtgcards.utils import extract_int, getint, getrepr, timed
 from mtgcards.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
-from mtgcards.utils.scrape import extract_source, extract_url, timed_request, unshorten
+from mtgcards.utils.scrape import extract_source, extract_url, get_dynamic_soup_by_xpath, \
+    timed_request, unshorten
 
 _log = logging.getLogger(__name__)
 
@@ -508,8 +509,8 @@ class Channel(list):
             if not self._subscribers:
                 self._subscribers = self[0].metadata["video"].get(
                     "channel_subscribers") if self else None
-                if not self._subscribers:
-                    _log.warning(f"Subscribers data for {url!r} not available")
+                if self._subscribers is None:
+                    self._subscribers = self._scrape_subscribers_with_selenium()
             self._sources = {s for v in self for s in v.sources}
         _log.info(f"Completed channel scraping in {t.elapsed:.2f} second(s)")
 
@@ -527,4 +528,8 @@ class Channel(list):
             subscribers *= 1_000_000
         return int(subscribers)
 
-
+    def _scrape_subscribers_with_selenium(self) -> int:
+        consent_xpath = "//button[@aria-label='Accept all']"
+        xpath = "//span[contains(., 'subscribers')]"
+        soup, _, _ = get_dynamic_soup_by_xpath(self.url, xpath, consent_xpath=consent_xpath)
+        return extract_int(soup.find("span", string=lambda t: t and "subscribers" in t).text)

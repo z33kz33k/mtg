@@ -13,12 +13,10 @@ from datetime import datetime
 from bs4 import Tag
 
 from mtgcards.const import Json
-from mtgcards.decks import Archetype, Deck, InvalidDeck, Mode, DeckScraper, find_card_by_name, \
-    get_playset
-from mtgcards.scryfall import Card, all_set_codes
+from mtgcards.decks import Archetype, Deck, DeckScraper, InvalidDeck, Mode
+from mtgcards.scryfall import Card
 from mtgcards.utils import extract_float, extract_int
 from mtgcards.utils.scrape import ScrapingError, getsoup
-
 
 _log = logging.getLogger(__name__)
 
@@ -108,7 +106,8 @@ class AetherhubScraper(DeckScraper):
             count_text, _ = count_tag.text.strip().split("decks,")
             self._metadata["meta"]["count"] = extract_int(count_text)
 
-    def _to_playset(self, hover_tag: Tag) -> list[Card]:
+    @classmethod
+    def _to_playset(cls, hover_tag: Tag) -> list[Card]:
         quantity, *_ = hover_tag.text.split()
         quantity = extract_int(quantity)
 
@@ -116,9 +115,8 @@ class AetherhubScraper(DeckScraper):
         if card_tag is None:
             raise ScrapingError(f"No 'a' tag inside 'hover-imglink' div tag: {hover_tag!r}")
 
-        name, set_code = card_tag.attrs["data-card-name"], card_tag.attrs["data-card-set"].lower()
-        set_code = set_code if set_code in set(all_set_codes()) else ""
-        return get_playset(find_card_by_name(name, set_code, self.fmt), quantity)
+        name = card_tag.attrs["data-card-name"]
+        return cls.get_playset(cls.find_card(name), quantity)
 
     def _get_deck(self) -> Deck | None:  # override
         mainboard, sideboard, commander = [], [], None

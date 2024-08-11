@@ -11,9 +11,8 @@ import logging
 from datetime import datetime
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, DeckScraper, InvalidDeck, find_card_by_id, find_card_by_name, \
-    get_playset
-from mtgcards.scryfall import Card, all_set_codes
+from mtgcards.decks import Deck, DeckScraper, InvalidDeck
+from mtgcards.scryfall import Card
 from mtgcards.utils.scrape import timed_request
 
 _log = logging.getLogger(__name__)
@@ -75,14 +74,12 @@ class MoxfieldScraper(DeckScraper):
         if desc := self._json_data["description"]:
             self._metadata["description"] = desc
 
-    def _to_playset(self, json_card: Json) -> list[Card]:
+    @classmethod
+    def _to_playset(cls, json_card: Json) -> list[Card]:
         scryfall_id = json_card["card"]["scryfall_id"]
         quantity = json_card["quantity"]
-        set_code, name = json_card["card"]["set"], json_card["card"]["name"]
-        set_code = set_code if set_code in set(all_set_codes()) else ""
-        if card := find_card_by_id(scryfall_id, set_code, self.fmt):
-            return get_playset(card, quantity)
-        return get_playset(find_card_by_name(name, set_code, self.fmt), quantity)
+        name = json_card["card"]["name"]
+        return cls.get_playset(cls.find_card(name, scryfall_id), quantity)
 
     def _get_deck(self) -> Deck | None:  # override
         mainboard, sideboard, commander, companion = [], [], None, None

@@ -13,8 +13,7 @@ from datetime import datetime
 from bs4 import Tag
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, DeckScraper, InvalidDeck, Mode, find_card_by_id, find_card_by_name, \
-    get_playset
+from mtgcards.decks import Deck, DeckScraper, InvalidDeck, Mode
 from mtgcards.scryfall import Card, arena_formats
 from mtgcards.utils import extract_int, from_iterable, timed
 from mtgcards.utils.scrape import ScrapingError, getsoup
@@ -66,15 +65,14 @@ class MtgaZoneScraper(DeckScraper):
         if time_tag := self._soup.find("time", class_="ct-meta-element-date"):
             self._metadata["date"] = datetime.fromisoformat(time_tag.attrs["datetime"]).date()
 
-    def _to_playset(self, card_tag) -> list[Card]:
+    @classmethod
+    def _to_playset(cls, card_tag) -> list[Card]:
         quantity = int(card_tag.attrs["data-quantity"])
         a_tag = card_tag.find("a")
         name = a_tag.text.strip()
         *_, scryfall_id = a_tag.attrs["data-cimg"].split("/")
         scryfall_id, *_ = scryfall_id.split(".jpg")
-        if card := find_card_by_id(scryfall_id, fmt=self.fmt):
-            return get_playset(card, quantity)
-        return get_playset(find_card_by_name(name, fmt=self.fmt), quantity)
+        return cls.get_playset(cls.find_card(name, scryfall_id), quantity)
 
     def _process_decklist(self, decklist_tag: Tag) -> list[Card]:
         decklist = []
@@ -96,8 +94,11 @@ class MtgaZoneScraper(DeckScraper):
         mainboard = self._process_decklist(main_tag)
 
         if sideboard_tags := self._soup.select("div.decklist.sideboard"):
-            sideboard_tag = sideboard_tags[1]
-            sideboard = self._process_decklist(sideboard_tag)
+            try:
+                sideboard_tag = sideboard_tags[1]
+                sideboard = self._process_decklist(sideboard_tag)
+            except IndexError:
+                pass
 
         try:
             return Deck(mainboard, sideboard, commander, companion, self._metadata)

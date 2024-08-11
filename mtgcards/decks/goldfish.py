@@ -13,12 +13,10 @@ from datetime import datetime
 from bs4 import Tag
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, InvalidDeck, Mode, ParsingState, DeckScraper, find_card_by_name, \
-    get_playset
-from mtgcards.scryfall import Card, all_formats, all_set_codes
+from mtgcards.decks import Deck, DeckScraper, InvalidDeck, Mode, ParsingState
+from mtgcards.scryfall import Card, all_formats
 from mtgcards.utils import extract_int, timed
 from mtgcards.utils.scrape import ScrapingError, getsoup, http_requests_counted, throttled_soup
-
 
 _log = logging.getLogger(__name__)
 
@@ -104,7 +102,8 @@ class GoldfishScraper(DeckScraper):
         if source_idx is not None:
             self._metadata["original_source"] = lines[source_idx].strip()
 
-    def _to_playset(self, row: Tag) -> list[Card]:
+    @classmethod
+    def _to_playset(cls, row: Tag) -> list[Card]:
         quantity_tag = row.find(class_="text-right")
         if not quantity_tag:
             raise ScrapingError("Can't find quantity data in a row tag")
@@ -118,15 +117,13 @@ class GoldfishScraper(DeckScraper):
             raise ScrapingError("Can't find name and set data a row tag")
         if "[" not in text or "]" not in text:
             raise ScrapingError(f"No set data in: {text!r}")
-        name, set_code = text.split("[")
+        name, _ = text.split("[")
         name = name.strip()
         if "<" in name:
             name, *rest = name.split("<")
             name = name.strip()
 
-        set_code = set_code[:-1].lower()
-        set_code = set_code if set_code in set(all_set_codes()) else ""
-        return get_playset(find_card_by_name(name, set_code, self.fmt), quantity)
+        return cls.get_playset(cls.find_card(name), quantity)
 
     def _get_deck(self) -> Deck | None:  # override
         mainboard, sideboard, commander, companion = [], [], None, None
