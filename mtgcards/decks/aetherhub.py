@@ -14,7 +14,7 @@ from bs4 import Tag
 
 from mtgcards.const import Json
 from mtgcards.decks import Archetype, Deck, DeckScraper, InvalidDeck, Mode
-from mtgcards.scryfall import Card
+from mtgcards.scryfall import Card, COMMANDER_FORMATS
 from mtgcards.utils import extract_float, extract_int
 from mtgcards.utils.scrape import ScrapingError, getsoup
 
@@ -51,6 +51,7 @@ class AetherhubScraper(DeckScraper):
     }
 
     def __init__(self, url: str, metadata: Json | None = None, throttled=False) -> None:
+        url = url.removesuffix("/Gallery")
         super().__init__(url, metadata)
         self._throttled = throttled
         self._soup = getsoup(url)
@@ -59,7 +60,7 @@ class AetherhubScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "aetherhub.com/Deck/" in url
+        return "aetherhub.com/Deck/" in url and "/MyDecks/" not in url
 
     def _scrape_metadata(self) -> None:  # override
         # name and format
@@ -119,7 +120,7 @@ class AetherhubScraper(DeckScraper):
         return cls.get_playset(cls.find_card(name), quantity)
 
     def _get_deck(self) -> Deck | None:  # override
-        mainboard, sideboard, commander = [], [], None
+        mainboard, sideboard, commander, companion = [], [], None, None
 
         tables = self._soup.select("table.table.table-borderless.bg-ae-dark")
         if not tables:
@@ -132,13 +133,16 @@ class AetherhubScraper(DeckScraper):
         hovers = [h for h in hovers if h]
         hovers = sorted([h for h in hovers if h], key=lambda h: len(h), reverse=True)
 
-        if len(hovers[-1]) == 1:  # may be a commander
+        if len(hovers[-1]) == 1:  # may be a commander or companion
             hovers, commander_tag = hovers[:-1], hovers[-1][0]
             result = self._to_playset(commander_tag)
             if result:
                 if (len(result) == 1 and result[0].is_legendary
                         and (result[0].is_creature or result[0].is_planeswalker)):
-                    commander = result[0]
+                    if self.fmt in COMMANDER_FORMATS:
+                        commander = result[0]
+                    else:
+                        companion = result[0]
                 else:
                     sideboard = result
 
@@ -159,7 +163,7 @@ class AetherhubScraper(DeckScraper):
                 sideboard.extend(self._to_playset(tag))
 
         try:
-            return Deck(mainboard, sideboard, commander, metadata=self._metadata)
+            return Deck(mainboard, sideboard, commander, companion, metadata=self._metadata)
         except InvalidDeck as err:
             if self._throttled:
                 raise

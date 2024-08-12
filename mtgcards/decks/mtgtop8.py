@@ -37,7 +37,8 @@ class MtgTop8Scraper(DeckScraper):
         return "mtgtop8.com/event?e=" in url and "&d=" in url
 
     def _scrape_metadata(self) -> None:  # override
-        event_tag, _, name_tag, *_ = self._soup.find_all("div", class_="event_title")
+        event_tag, name_tag = [tag for tag in self._soup.find_all("div", class_="event_title")
+                               if tag.find("a", class_="arrow") is None]
         self._metadata["event"] = {}
         self._metadata["event"]["name"] = event_tag.text.strip().removesuffix(" Event")
         place, name = name_tag.text.strip().split(maxsplit=1)
@@ -61,8 +62,8 @@ class MtgTop8Scraper(DeckScraper):
         else:
             date_text = players_date_text
         self._metadata["event"]["date"] = datetime.strptime(date_text.strip(), '%d/%m/%y').date()
-        source_tag = self._soup.find("a", target="_blank")
-        self._metadata["event"]["source"] = source_tag.text.strip()
+        if source_tag := self._soup.find("a", target="_blank"):
+            self._metadata["event"]["source"] = source_tag.text.strip()
 
     def _get_deck(self) -> Deck | None:  # override
         mainboard, sideboard, commander = [], [], None

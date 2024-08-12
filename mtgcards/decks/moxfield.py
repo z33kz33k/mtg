@@ -69,8 +69,13 @@ class MoxfieldScraper(DeckScraper):
         self._metadata["comments"] = self._json_data["commentCount"]
         if not self.author:
             self._metadata["author"] = self._json_data["createdByUser"]["displayName"]
-        self._metadata["date"] = datetime.strptime(
-            self._json_data["lastUpdatedAtUtc"], "%Y-%m-%dT%H:%M:%S.%fZ").date()
+        try:
+            self._metadata["date"] = datetime.strptime(
+                self._json_data["lastUpdatedAtUtc"], "%Y-%m-%dT%H:%M:%S.%fZ").date()
+        except ValueError:  # no fractional seconds part in the date string
+            self._metadata["date"] = datetime.strptime(
+                self._json_data["lastUpdatedAtUtc"], "%Y-%m-%dT%H:%M:%SZ").date()
+
         if desc := self._json_data["description"]:
             self._metadata["description"] = desc
 

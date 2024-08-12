@@ -14,7 +14,7 @@ from bs4 import Tag
 
 from mtgcards.const import Json
 from mtgcards.decks import Deck, DeckScraper, InvalidDeck, Mode
-from mtgcards.scryfall import Card, arena_formats
+from mtgcards.scryfall import Card, ARENA_FORMATS
 from mtgcards.utils import extract_int, from_iterable, timed
 from mtgcards.utils.scrape import ScrapingError, getsoup
 
@@ -140,7 +140,7 @@ def _parse_deck(deck_tag: Tag, decks2tiers: dict[str, int], deck_place: int) -> 
 
 @timed("scraping meta decks")
 def scrape_meta(fmt="standard", bo3=True) -> list[Deck]:
-    formats = {fmt for fmt in arena_formats() if fmt not in {"brawl", "standardbrawl"}}
+    formats = {fmt for fmt in ARENA_FORMATS if fmt not in {"brawl", "standardbrawl"}}
     formats = sorted({*formats, "pioneer"})
     fmt = fmt.lower()
     if fmt not in formats:

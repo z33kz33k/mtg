@@ -1131,10 +1131,11 @@ def all_formats() -> list[str]:
     return next(iter(bulk_data())).formats
 
 
-def arena_formats() -> list[str]:
-    """Return list of all string designations for MtG formats that can be played on MTG Arena.
-    """
-    return ["alchemy", "brawl", "explorer", "historic", "standard", "standardbrawl", "timeless"]
+ARENA_FORMATS = [
+    "alchemy", "brawl", "explorer", "historic", "standard", "standardbrawl", "timeless"]
+COMMANDER_FORMATS = [
+    'brawl', 'commander', 'duel', 'oathbreaker', 'oldschool', 'paupercommander', 'predh',
+    'standardbrawl']
 
 
 def layouts(data: Iterable[Card] | None = None) -> list[str]:
@@ -1242,7 +1243,6 @@ def find_by_id(scryfall_id: str) -> Card | None:
     return _ID_MAP.get(scryfall_id)
 
 
-# TODO: throw error if not found
 def find_by_name(card_name: str) -> Card | None:
     """Return a card designated by provided name or `None`.
     """

@@ -35,7 +35,7 @@ from mtgcards.decks.tappedout import TappedoutScraper
 from mtgcards.decks.tcgplayer import NewPageTcgPlayerScraper, OldPageTcgPlayerScraper
 from mtgcards.decks.untapped import UntappedProfileDeckScraper, UntappedRegularDeckScraper
 from mtgcards.scryfall import all_formats
-from mtgcards.utils import extract_int, getint, getrepr, timed
+from mtgcards.utils import extract_float, extract_int, getrepr, timed
 from mtgcards.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
 from mtgcards.utils.scrape import extract_source, extract_url, get_dynamic_soup_by_xpath, \
     timed_request, unshorten
@@ -355,13 +355,20 @@ class Video:
 
     def _parse_lines(self) -> tuple[list[str], list[str]]:
         links, other_lines = [], []
+        deck_lines, sideboard_lines = [], []
         for i, line in enumerate(self._desc_lines):
             self._extract_formats(line)
             url = extract_url(line)
             if url:
                 links.append(url)
             else:
-                other_lines.append(line)
+                if line == "Deck":
+                    deck_lines.append(line)
+                elif line == "Sideboard":
+                    sideboard_lines.append(line)
+                # prevent parsing two decklists as one
+                if not len(deck_lines) > 1 and not len(sideboard_lines) > 1:
+                    other_lines.append(line)
         return links, [*get_arena_lines(*other_lines)]
 
     def _scrape_deck(self, link: str) -> Deck | None:
@@ -400,8 +407,11 @@ class Video:
         decks = []
         for url in urls:
             self._sources.add(extract_source(url))
-            if deck := self._scrape_deck(url):
-                decks.append(deck)
+            try:
+                if deck := self._scrape_deck(url):
+                    decks.append(deck)
+            except Exception as e:
+                _log.exception(f"Deck scraping failed with: {e}")
         return decks
 
     def _collect(self) -> list[Deck]:
@@ -484,7 +494,7 @@ class Channel(list):
 
     @property
     def span(self) -> int | None:
-        return (self.scrape_date - self[-1].date).days if self else None
+        return (self[0].date - self[-1].date).days if self else None
 
     @property
     def posting_interval(self) -> float | None:
@@ -526,10 +536,22 @@ class Channel(list):
             subscribers *= 1000
         elif "M" in text:
             subscribers *= 1_000_000
+        elif "B" in text:
+            subscribers *= 1_000_000_000
         return int(subscribers)
 
     def _scrape_subscribers_with_selenium(self) -> int:
         consent_xpath = "//button[@aria-label='Accept all']"
         xpath = "//span[contains(., 'subscribers')]"
         soup, _, _ = get_dynamic_soup_by_xpath(self.url, xpath, consent_xpath=consent_xpath)
-        return extract_int(soup.find("span", string=lambda t: t and "subscribers" in t).text)
+        text = soup.find("span", string=lambda t: t and "subscribers" in t).text.removesuffix(
+            " subscribers")
+        number = extract_float(text)
+        if text and text[-1] in {"K", "M", "B"}:
+            if text[-1] == 'K':
+                return int(number * 1_000)
+            elif text[-1] == 'M':
+                return int(number * 1_000_000)
+            elif text[-1] == 'B':
+                return int(number * 1_000_000_000)
+        return int(number)
