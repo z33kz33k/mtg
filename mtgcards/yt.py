@@ -11,10 +11,11 @@ import itertools
 import json
 import logging
 import re
-from collections import Counter, defaultdict
+from collections import Counter, defaultdict, OrderedDict
 from datetime import date, datetime
 from decimal import Decimal
 from functools import cached_property
+from typing import Generator
 
 import pytubefix
 import scrapetube
@@ -35,7 +36,7 @@ from mtgcards.decks.tappedout import TappedoutScraper
 from mtgcards.decks.tcgplayer import NewPageTcgPlayerScraper, OldPageTcgPlayerScraper
 from mtgcards.decks.untapped import UntappedProfileDeckScraper, UntappedRegularDeckScraper
 from mtgcards.scryfall import all_formats
-from mtgcards.utils import extract_float, extract_int, getrepr, timed
+from mtgcards.utils import extract_float, getrepr, timed
 from mtgcards.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
 from mtgcards.utils.scrape import extract_source, extract_url, get_dynamic_soup_by_xpath, \
     timed_request, unshorten
@@ -44,33 +45,36 @@ _log = logging.getLogger(__name__)
 
 
 # TODO: other fields (only when all rows get populated), export to JSON
-def channels() -> dict[str, str]:
-    """Retrieve a channel addresses mapping from a private Google Sheet spreadsheet.
+def channels() -> Generator[tuple[str, str], None, None]:
+    """Yield a tuple (channel name, channel addresses) from a private Google Sheet spreadsheet.
 
     Mind that this operation takes about 4 seconds to complete.
-
-    Returns:
-        a dictionary of channel names mapped to their addresses
     """
     names, addresses = retrieve_from_gsheets_cols("mtga_yt", "channels", (1, 3), start_row=2)
-    return dict((name, address) for name, address in zip(names, addresses))
+    for name, address in zip(names, addresses):
+        yield name, address
 
 
-def batch_update(start_row=2, batch_size=10) -> None:
+def batch_update(start_row=2, batch_size: int | None = None) -> None:
     """Batch update "channels" Google Sheets worksheet.
 
     Args:
         start_row: start row of the worksheet
-        batch_size: number of rows to update
+        batch_size: number of rows to update ('None' (default) means all rows from start_row)
     """
     if start_row < 2:
         raise ValueError("Start row must not be lesser than 2")
-    if batch_size < 1:
-        raise ValueError("Batch size must be a positive integer")
+    if batch_size is not None and batch_size < 1:
+        raise ValueError("Batch size must be a positive integer or None")
     _log.info(f"Batch updating {batch_size} channel row(s)...")
     data = []
-    start_idx, end_idx = start_row - 2, start_row - 2 + batch_size
-    for url in itertools.islice(channels().values(), start_idx, end_idx):
+    if batch_size is None:
+        items = [*channels()][start_row - 2:]
+    else:
+        start_idx, end_idx = start_row - 2, start_row - 2 + batch_size
+        items = itertools.islice(channels(), start_idx, end_idx)
+
+    for _, url in items:
         try:
             ch = Channel(url)
             data.append([

@@ -180,7 +180,11 @@ def extract_source(url: str) -> str:
     """Extract source domain from ``url``.
     """
     parts = [p for p in url.split("/") if p]
-    return parts[1] if "http" in parts[0] else parts[0]
+    source = parts[1] if "http" in parts[0] else parts[0]
+    if "?" in source:
+        source, _ = source.split("?", maxsplit=1)
+    return source
+
 
 # SELENIUM
 

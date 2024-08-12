@@ -27,10 +27,10 @@ class PlaysetLine:
         '4 Commit /// Memory (AKR) 54'
     """
     # matches '4 Commit /// Memory'
-    PATTERN = re.compile(r"\d{1,3}x?\s[A-Z][\w\s'&/,-]+")
+    PATTERN = re.compile(r"\d{1,3}x?\s[A-Z][\w\s'&/,:-]+")
     # matches '4 Commit /// Memory (AKR) 54'
     EXTENDED_PATTERN = re.compile(
-        r"\d{1,3}x?\s[A-Z][\w\s'&/,-]+\(([A-Za-z\d]{3,5})\)\s[A-Za-z\d]{1,6}")
+        r"\d{1,3}x?\s[A-Z][\w\s'&/,:-]+\(([A-Za-z\d]{3,5})\)\s[A-Za-z\d]{1,6}")
 
     @property
     def is_extended(self) -> bool:
