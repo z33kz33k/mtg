@@ -26,13 +26,11 @@ CLIPBOARD_XPATH = "//span[text()='Copy to MTGA']"
 class UntappedProfileDeckScraper(DeckScraper):
     """Scraper of decklist page of Untapped.gg user's profile.
     """
-    _XPATH = "//div[@role='tab' and text()='SIDEBOARD']"
-
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
         try:
             self._soup, _, self._clipboard = get_dynamic_soup_by_xpath(
-                self._url, self._XPATH, consent_xpath=CONSENT_XPATH,
+                self._url, CLIPBOARD_XPATH, consent_xpath=CONSENT_XPATH,
                 clipboard_xpath=CLIPBOARD_XPATH)
             self._scrape_metadata()
             self._deck = self._get_deck()
@@ -60,13 +58,11 @@ class UntappedProfileDeckScraper(DeckScraper):
 class UntappedRegularDeckScraper(DeckScraper):
     """Scraper of a regular Untapped.gg decklist page.
     """
-    _XPATH = "//h1[contains(@class, 'styles__H1')]"
-
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(self._normalize_url(url), metadata)
         try:
             self._soup, _, self._clipboard = get_dynamic_soup_by_xpath(
-                self._url, self._XPATH, consent_xpath=CONSENT_XPATH,
+                self._url, CLIPBOARD_XPATH, consent_xpath=CONSENT_XPATH,
                 clipboard_xpath=CLIPBOARD_XPATH)
             self._scrape_metadata()
             self._deck = self._get_deck()
@@ -95,13 +91,11 @@ class UntappedRegularDeckScraper(DeckScraper):
 class UntappedMetaDeckScraper(DeckScraper):
     """Scraper of Untapped meta-deck page.
     """
-    _XPATH = "//div[contains(@class, 'DeckRow__StatsContainer')]"
-
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
         try:
             self._soup, _, self._clipboard = get_dynamic_soup_by_xpath(
-                self._url, self._XPATH, consent_xpath=CONSENT_XPATH,
+                self._url, CLIPBOARD_XPATH, consent_xpath=CONSENT_XPATH,
                 clipboard_xpath=CLIPBOARD_XPATH)
             self._scrape_metadata()
             self._deck = self._get_deck()

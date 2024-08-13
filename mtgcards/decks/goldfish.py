@@ -15,7 +15,7 @@ from bs4 import Tag
 from mtgcards.const import Json
 from mtgcards.decks import Deck, DeckScraper, InvalidDeck, Mode, ParsingState
 from mtgcards.scryfall import Card, all_formats
-from mtgcards.utils import extract_int, timed
+from mtgcards.utils import ParsingError, extract_int, timed
 from mtgcards.utils.scrape import ScrapingError, getsoup, http_requests_counted, throttled_soup
 
 _log = logging.getLogger(__name__)
@@ -58,22 +58,22 @@ class GoldfishScraper(DeckScraper):
 
     def _shift_to_commander(self) -> None:  # override
         if self._state not in (ParsingState.IDLE, ParsingState.COMPANION):
-            raise RuntimeError(f"Invalid transition to COMMANDER from: {self._state.name}")
+            raise ParsingError(f"Invalid transition to COMMANDER from: {self._state.name}")
         self._state = ParsingState.COMMANDER
 
     def _shift_to_companion(self) -> None:  # override
         if self._state not in (ParsingState.IDLE, ParsingState.COMMANDER):
-            raise RuntimeError(f"Invalid transition to COMPANION from: {self._state.name}")
+            raise ParsingError(f"Invalid transition to COMPANION from: {self._state.name}")
         self._state = ParsingState.COMPANION
 
     def _shift_to_mainboard(self) -> None:  # override
         if self._state not in (ParsingState.IDLE, ParsingState.COMMANDER, ParsingState.COMPANION):
-            raise RuntimeError(f"Invalid transition to MAINBOARD from: {self._state.name}")
+            raise ParsingError(f"Invalid transition to MAINBOARD from: {self._state.name}")
         self._state = ParsingState.MAINBOARD
 
     def _shift_to_sideboard(self) -> None:  # override
         if self._state is not ParsingState.MAINBOARD:
-            raise RuntimeError(f"Invalid transition to SIDEBOARD from: {self._state.name}")
+            raise ParsingError(f"Invalid transition to SIDEBOARD from: {self._state.name}")
         self._state = ParsingState.SIDEBOARD
 
     def _scrape_metadata(self) -> None:  # override
@@ -157,7 +157,7 @@ class GoldfishScraper(DeckScraper):
 
         try:
             return Deck(mainboard, sideboard, commander, companion, metadata=self._metadata)
-        except InvalidDeck as err:
+        except (ParsingError, InvalidDeck) as err:
             if self._throttled:
                 raise
             _log.warning(f"Scraping failed with: {err}")

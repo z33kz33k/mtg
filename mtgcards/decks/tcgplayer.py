@@ -46,7 +46,7 @@ class OldPageTcgPlayerScraper(DeckScraper):
         fmt = fmt_tag.find("a").text.strip().lower()
         self._update_fmt(fmt)
         _, date_text = date_tag.text.strip().split("On: ", maxsplit=1)
-        self._metadata["date"] = datetime.strptime(date_text, "%d/%m/%Y").date()
+        self._metadata["date"] = datetime.strptime(date_text, "%m/%d/%Y").date()
 
     @classmethod
     def _process_deck_tag(cls, deck_tag: Tag) -> list[Card]:

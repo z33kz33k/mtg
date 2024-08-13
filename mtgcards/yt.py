@@ -11,7 +11,7 @@ import itertools
 import json
 import logging
 import re
-from collections import Counter, defaultdict, OrderedDict
+from collections import Counter, defaultdict
 from datetime import date, datetime
 from decimal import Decimal
 from functools import cached_property
@@ -39,7 +39,7 @@ from mtgcards.scryfall import all_formats
 from mtgcards.utils import extract_float, getrepr, timed
 from mtgcards.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
 from mtgcards.utils.scrape import extract_source, extract_url, get_dynamic_soup_by_xpath, \
-    timed_request, unshorten
+    throttled, timed_request, unshorten
 
 _log = logging.getLogger(__name__)
 
@@ -275,6 +275,11 @@ class Video:
         Args:
             video_id: unique string identifying a YouTube video (the part after `v=` in the URL)
         """
+        self._process(video_id)
+
+    @throttled(1.5, 0.45)
+    def _process(self, video_id):
+        _log.info(f"Scraping video: 'https://www.youtube.com/watch?v={video_id}'...")
         self._id = video_id
         self._pytube = self._get_pytube()
         # description and title is also available in scrapetube data on Channel level

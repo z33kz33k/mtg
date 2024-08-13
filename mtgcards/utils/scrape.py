@@ -9,6 +9,7 @@
 """
 import json
 import logging
+import random
 import re
 import time
 from functools import wraps
@@ -101,17 +102,19 @@ def getsoup(url: str, headers: Dict[str, str] | None = None) -> BeautifulSoup:
     return BeautifulSoup(response.text, "lxml")
 
 
-def throttle(delay: float | Callable[..., float]) -> None:
-    amount = delay() if callable(delay) else delay
-    _log.info(f"Throttling for {amount} seconds...")
-    time.sleep(amount)
+def throttle(delay: float, offset=0.0) -> None:
+    if offset:
+        delay = round(random.uniform(delay - offset / 2, delay + offset / 2), 3)
+    _log.info(f"Throttling for {delay} seconds...")
+    time.sleep(delay)
 
 
-def throttled(delay: float | Callable[..., float]) -> Callable:
+def throttled(delay: float, offset=0.0) -> Callable:
     """Add throttling delay after the decorated operation.
 
     Args:
-        throttling delay in fraction of seconds
+        delay: throttling delay in fraction of seconds
+        offset: randomization offset of the delay in fraction of seconds
 
     Returns:
         the decorated function
@@ -120,7 +123,7 @@ def throttled(delay: float | Callable[..., float]) -> Callable:
         @wraps(func)
         def wrapper(*args, **kwargs):
             result = func(*args, **kwargs)
-            throttle(delay)
+            throttle(delay, offset)
             return result
         return wrapper
     return decorate
