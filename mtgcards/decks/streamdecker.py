@@ -8,6 +8,7 @@
 
 """
 import logging
+import re
 from datetime import date
 
 from mtgcards.const import Json
@@ -55,6 +56,9 @@ class StreamdeckerScraper(DeckScraper):
     def _parse_json_card(self, json_card: Json) -> None:
         scryfall_id = json_card["scryfallId"]
         name = json_card["name"]
+        if "/" in name:
+            # sanitize multiface names, e.g. "Wear/Tear" ==> "Wear // Tear"
+            name = re.sub(r'(?<=[a-zA-Z])/(?=[a-zA-Z])', r' // ', name)
         card = self.find_card(name, scryfall_id)
         if json_card["main"]:
             self._mainboard.extend(self.get_playset(card, json_card["main"]))
