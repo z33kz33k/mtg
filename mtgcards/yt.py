@@ -277,7 +277,7 @@ class Video:
         """
         self._process(video_id)
 
-    @throttled(1.5, 0.45)
+    @throttled(2, 0.45)
     def _process(self, video_id):
         _log.info(f"Scraping video: 'https://www.youtube.com/watch?v={video_id}'...")
         self._id = video_id

@@ -55,11 +55,19 @@ class MtgaZoneScraper(DeckScraper):
         if not self.author:
             if not author:
                 author_tag = name_author_tag.find("div", class_="by")
+                if not author_tag:
+                    raise ScrapingError(
+                        "Author tag not found. The deck you're trying to scrape has been most "
+                        "probably paywalled by MTGAZone")
                 author = author_tag.text.strip().removeprefix("by ")
             self._metadata["author"] = author
         if event:
             self._metadata["event"] = event
         fmt_tag = self._soup.find("div", class_="format")
+        if not fmt_tag:
+            raise ScrapingError(
+                "Format tag not found. The deck you're trying to scrape has been most probably "
+                "paywalled by MTGAZone")
         fmt = fmt_tag.text.strip().lower()
         self._update_fmt(fmt)
         if time_tag := self._soup.find("time", class_="ct-meta-element-date"):
@@ -117,7 +125,7 @@ def _parse_tiers(table: Tag) -> dict[str, int]:
     return tiers
 
 
-def _parse_deck(deck_tag: Tag, decks2tiers: dict[str, int], deck_place: int) -> Deck:
+def _parse_meta_deck(deck_tag: Tag, decks2tiers: dict[str, int], deck_place: int) -> Deck:
     try:
         deck = MtgaZoneScraper("", deck_tag=deck_tag).deck
     except InvalidDeck as err:
@@ -160,7 +168,7 @@ def scrape_meta(fmt="standard", bo3=True) -> list[Deck]:
 
     decks = []
     for i, deck_tag in enumerate(soup.find_all("div", class_="deck-block"), start=1):
-        deck = _parse_deck(deck_tag, decks2tiers, i)
+        deck = _parse_meta_deck(deck_tag, decks2tiers, i)
         deck.update_metadata(date=deck_date)
         deck.update_metadata(mode=mode[1:].title() if mode else Mode.BO3.value)
         decks.append(deck)

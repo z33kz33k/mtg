@@ -51,7 +51,10 @@ class AetherhubScraper(DeckScraper):
     }
 
     def __init__(self, url: str, metadata: Json | None = None, throttled=False) -> None:
-        url = url.removesuffix("/Gallery")
+        if url.endswith("/Gallery"):
+            url = url.removesuffix("/Gallery")
+        elif url.endswith("/Gallery/"):
+            url = url.removesuffix("/Gallery/")
         super().__init__(url, metadata)
         self._throttled = throttled
         self._soup = getsoup(url)
