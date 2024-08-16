@@ -1,7 +1,7 @@
 """
 
-    mtgcards.decks.goldfish.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtgcards.deck.scrapers.goldfish.py
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Parse MtGGoldfish decklists.
 
     @author: z33k
@@ -13,7 +13,8 @@ from datetime import datetime
 from bs4 import Tag
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, DeckScraper, InvalidDeck, Mode, ParsingState
+from mtgcards.deck import Deck, InvalidDeck, Mode, ParsingState
+from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.scryfall import Card, all_formats
 from mtgcards.utils import ParsingError, extract_int, timed
 from mtgcards.utils.scrape import ScrapingError, getsoup, http_requests_counted, throttled_soup
@@ -164,8 +165,8 @@ class GoldfishScraper(DeckScraper):
             return None
 
 
-@http_requests_counted("scraping meta decks")
-@timed("scraping meta decks", precision=1)
+@http_requests_counted("scraping meta deck")
+@timed("scraping meta deck", precision=1)
 def scrape_meta(fmt="standard") -> list[Deck]:
     fmt = fmt.lower()
     if fmt not in all_formats():

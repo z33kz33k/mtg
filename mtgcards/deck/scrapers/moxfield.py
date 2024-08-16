@@ -1,7 +1,7 @@
 """
 
-    mtgcards.decks.moxfield.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtgcards.deck.scrapers.moxfield.py
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Parse Moxfield decklist page.
 
     @author: z33k
@@ -11,7 +11,8 @@ import logging
 from datetime import datetime
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, DeckScraper, InvalidDeck
+from mtgcards.deck import Deck, InvalidDeck
+from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.scryfall import Card
 from mtgcards.utils.scrape import timed_request
 
@@ -55,7 +56,7 @@ class MoxfieldScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "www.moxfield.com/decks/" in url
+        return "www.moxfield.com/deck/" in url
 
     def _scrape_metadata(self) -> None:  # override
         fmt = self._json_data["format"]

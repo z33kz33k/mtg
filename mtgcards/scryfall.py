@@ -1317,3 +1317,8 @@ def print_color_identity_distribution(data: Iterable[Card] | None = None) -> Non
     dist.print()
 
 
+def aggregate(*cards: Card) -> defaultdict[Card, list[Card]]:
+    playsets = defaultdict(list)
+    for card in cards:
+        playsets[card].append(card)
+    return playsets

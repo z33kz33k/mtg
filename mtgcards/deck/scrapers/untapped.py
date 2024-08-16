@@ -1,7 +1,7 @@
 """
 
-    mtgcards.decks.untapped.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtgcards.deck.scrapers.untapped.py
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Parse Untapped.gg decklist page.
 
     @author: z33k
@@ -13,8 +13,9 @@ from datetime import datetime
 import selenium.common.exceptions
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, DeckScraper
-from mtgcards.decks.arena import ArenaParser
+from mtgcards.deck import Deck
+from mtgcards.deck.scrapers import DeckScraper
+from mtgcards.deck.arena import ArenaParser
 from mtgcards.utils import extract_float, extract_int
 from mtgcards.utils.scrape import get_dynamic_soup_by_xpath
 
@@ -71,7 +72,7 @@ class UntappedRegularDeckScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "mtga.untapped.gg/decks/" in url
+        return "mtga.untapped.gg/deck/" in url
 
     @staticmethod
     def _normalize_url(url: str) -> str:
@@ -89,7 +90,7 @@ class UntappedRegularDeckScraper(DeckScraper):
 
 
 class UntappedMetaDeckScraper(DeckScraper):
-    """Scraper of Untapped meta-deck page.
+    """Scraper of Untapped meta-decks page.
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -104,7 +105,7 @@ class UntappedMetaDeckScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "mtga.untapped.gg/meta/decks/" in url
+        return "mtga.untapped.gg/meta/deck/" in url
 
     def _scrape_metadata(self) -> None:  # override
         name_tag = self._soup.select_one("h1[class*='layouts__MetaPageHeaderTitle']")

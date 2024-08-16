@@ -1,7 +1,7 @@
 """
 
-    mtgcards.decks.cardhoarder.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtgcards.deck.scrapers.cardhoarder.py
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Parse Cardhoarder decklist page.
 
     @author: z33k
@@ -11,7 +11,8 @@ import json
 import logging
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, DeckScraper, InvalidDeck
+from mtgcards.deck import Deck, InvalidDeck
+from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils.scrape import ScrapingError, getsoup
 
 _log = logging.getLogger(__name__)
@@ -65,7 +66,7 @@ class CardhoarderScraper(DeckScraper):
     def _scrape_metadata(self) -> None:  # override
         self._metadata["name"] = self._deck_data["name"]
 
-    # TODO: commander, companion (example decks with such data needed)
+    # TODO: commander, companion (example deck with such data needed)
     def _parse_deck_data(self) -> Deck:
         mainboard, sideboard = [], []
         card_jsons = []

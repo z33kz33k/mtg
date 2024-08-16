@@ -23,18 +23,18 @@ from contexttimer import Timer
 from youtubesearchpython import Channel as YtspChannel
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck
-from mtgcards.decks.aetherhub import AetherhubScraper
-from mtgcards.decks.arena import ArenaParser, get_arena_lines
-from mtgcards.decks.cardhoarder import CardhoarderScraper
-from mtgcards.decks.goldfish import GoldfishScraper
-from mtgcards.decks.moxfield import MoxfieldScraper
-from mtgcards.decks.mtgazone import MtgaZoneScraper
-from mtgcards.decks.mtgtop8 import MtgTop8Scraper
-from mtgcards.decks.streamdecker import StreamdeckerScraper
-from mtgcards.decks.tappedout import TappedoutScraper
-from mtgcards.decks.tcgplayer import NewPageTcgPlayerScraper, OldPageTcgPlayerScraper
-from mtgcards.decks.untapped import UntappedProfileDeckScraper, UntappedRegularDeckScraper
+from mtgcards.deck import Deck
+from mtgcards.deck.scrapers.aetherhub import AetherhubScraper
+from mtgcards.deck.arena import ArenaParser, get_arena_lines
+from mtgcards.deck.scrapers.cardhoarder import CardhoarderScraper
+from mtgcards.deck.scrapers.goldfish import GoldfishScraper
+from mtgcards.deck.scrapers.moxfield import MoxfieldScraper
+from mtgcards.deck.scrapers.mtgazone import MtgaZoneScraper
+from mtgcards.deck.scrapers.mtgtop8 import MtgTop8Scraper
+from mtgcards.deck.scrapers.streamdecker import StreamdeckerScraper
+from mtgcards.deck.scrapers.tappedout import TappedoutScraper
+from mtgcards.deck.scrapers.tcgplayer import NewPageTcgPlayerScraper, OldPageTcgPlayerScraper
+from mtgcards.deck.scrapers.untapped import UntappedProfileDeckScraper, UntappedRegularDeckScraper
 from mtgcards.scryfall import all_formats
 from mtgcards.utils import extract_float, getrepr, timed
 from mtgcards.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols

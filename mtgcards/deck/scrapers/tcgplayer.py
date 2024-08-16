@@ -1,7 +1,7 @@
 """
 
-    mtgcards.decks.tcgplayer.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtgcards.deck.scrapers.tcgplayer.py
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Parse TCG Player decklist page.
 
     @author: z33k
@@ -14,7 +14,8 @@ import dateutil.parser
 from bs4 import Tag
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, DeckScraper, InvalidDeck
+from mtgcards.deck import Deck, InvalidDeck
+from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.scryfall import Card
 from mtgcards.utils import extract_int
 from mtgcards.utils.scrape import ScrapingError, get_dynamic_soup_by_xpath, getsoup
@@ -33,7 +34,7 @@ class OldPageTcgPlayerScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "decks.tcgplayer.com/" in url
+        return "deck.tcgplayer.com/" in url
 
     def _scrape_metadata(self) -> None:  # override
         info_tag = self._soup.find("div", class_="viewDeckHeader")
@@ -79,6 +80,10 @@ class OldPageTcgPlayerScraper(DeckScraper):
             return None
 
 
+# TODO: there's actually a request to API for JSON I forgot to check:
+#  https://infinite-api.tcgplayer.com/deck/magic/{DECK_ID}
+#  /?source=infinite-content&subDecks=true&cards=true&stats=true - so this could probably be scraped
+#  bypassing the soup (and Selenium)
 class NewPageTcgPlayerScraper(DeckScraper):
     """Scraper of TCG Player new-style decklist page.
     """

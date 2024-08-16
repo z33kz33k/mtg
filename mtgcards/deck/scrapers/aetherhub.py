@@ -1,7 +1,7 @@
 """
 
-    mtgcards.decks.aetherhub.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtgcards.deck.scrapers.aetherhub.py
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Parse AetherHub decklist page.
 
     @author: z33k
@@ -13,7 +13,8 @@ from datetime import datetime
 from bs4 import Tag
 
 from mtgcards.const import Json
-from mtgcards.decks import Archetype, Deck, DeckScraper, InvalidDeck, Mode
+from mtgcards.deck import Archetype, Deck, InvalidDeck, Mode
+from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.scryfall import Card, COMMANDER_FORMATS
 from mtgcards.utils import extract_float, extract_int
 from mtgcards.utils.scrape import ScrapingError, getsoup
@@ -107,7 +108,7 @@ class AetherhubScraper(DeckScraper):
             self._metadata["meta"]["share_change"] = extract_float(change_part)
 
             count_tag = self._soup.select("h4.text-center.pt-2")[0]
-            count_text, _ = count_tag.text.strip().split("decks,")
+            count_text, _ = count_tag.text.strip().split("deck,")
             self._metadata["meta"]["count"] = extract_int(count_text)
 
     @classmethod

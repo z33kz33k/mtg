@@ -1,6 +1,6 @@
 """
 
-    mtgcards.decks.arena.py
+    mtgcards.deck.arena.py
     ~~~~~~~~~~~~~~~~~~~~~~~~
     Parse Arena decklist text format.
 
@@ -12,7 +12,7 @@ import re
 from typing import Generator
 
 from mtgcards.const import Json
-from mtgcards.decks import ARENA_MULTIFACE_SEPARATOR, Deck, DeckParser, InvalidDeck, \
+from mtgcards.deck import ARENA_MULTIFACE_SEPARATOR, Deck, DeckParser, InvalidDeck, \
     ParsingState
 from mtgcards.scryfall import Card, MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR
 from mtgcards.utils import ParsingError, extract_int, getrepr

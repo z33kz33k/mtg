@@ -1,7 +1,7 @@
 """
 
-    mtgcards.decks.mtgdecksnet.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtgcards.deck.scrapers.mtgdecksnet.py
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Parse MTGDecks.net decklist page.
 
     @author: z33k
@@ -12,8 +12,9 @@ import logging
 import dateutil.parser
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, DeckScraper, InvalidDeck
-from mtgcards.decks.arena import ArenaParser
+from mtgcards.deck import Deck, InvalidDeck
+from mtgcards.deck.scrapers import DeckScraper
+from mtgcards.deck.arena import ArenaParser
 from mtgcards.utils.scrape import get_dynamic_soup_by_xpath
 
 _log = logging.getLogger(__name__)

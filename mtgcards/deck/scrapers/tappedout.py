@@ -1,7 +1,7 @@
 """
 
-    mtgcards.decks.tappedout.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtgcards.deck.scrapers.tappedout.py
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Parse TappedOut decklist page.
 
     @author: z33k
@@ -10,8 +10,9 @@
 import logging
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, DeckScraper, InvalidDeck
-from mtgcards.decks.arena import ArenaParser
+from mtgcards.deck import Deck, InvalidDeck
+from mtgcards.deck.scrapers import DeckScraper
+from mtgcards.deck.arena import ArenaParser
 from mtgcards.utils import get_ago_date, extract_int
 from mtgcards.utils.scrape import getsoup
 
@@ -30,7 +31,7 @@ class TappedoutScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "tappedout.net/mtg-decks/" in url
+        return "tappedout.net/mtg-deck/" in url
 
     def _scrape_metadata(self) -> None:  # override
         fmt_tag = self._soup.select_one("a.btn.btn-success.btn-xs")

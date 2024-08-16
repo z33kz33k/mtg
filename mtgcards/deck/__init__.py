@@ -1,8 +1,8 @@
 """
 
-    mtgcards.decks.__init__.py
+    mtgcards.deck.__init__.py
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Parse decklist URL/text for decks data.
+    Parse decklist URL/text for deck data.
 
     @author: z33k
 
@@ -10,7 +10,7 @@
 import itertools
 import logging
 from abc import ABC, abstractmethod
-from collections import Counter, defaultdict
+from collections import Counter
 from enum import Enum, auto
 from functools import cached_property, lru_cache
 from operator import attrgetter
@@ -18,13 +18,12 @@ from typing import Any, Iterable, Iterator
 
 from mtgcards.const import Json, OUTPUT_DIR, PathLike
 from mtgcards.scryfall import (
-    Card, Color, MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, all_formats, all_set_codes,
+    Card, Color, MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, aggregate, all_formats,
     find_by_collector_number, find_by_id, find_by_name, find_sets,
     format_cards as scryfall_fmt_cards, set_cards as
     scryfall_set_cards)
 from mtgcards.utils import ParsingError, extract_int, from_iterable, getrepr
 from mtgcards.utils.files import getdir, getfile
-from mtgcards.utils.scrape import ScrapingError, extract_source
 
 _log = logging.getLogger(__name__)
 
@@ -346,15 +345,8 @@ THEMES = {
 
 
 class InvalidDeck(ValueError):
-    """Raised on invalid decks.
+    """Raised on invalid deck.
     """
-
-
-def to_playsets(*cards: Card) -> defaultdict[Card, list[Card]]:
-    playsets = defaultdict(list)
-    for card in cards:
-        playsets[card].append(card)
-    return playsets
 
 
 class Deck:
@@ -604,11 +596,11 @@ class Deck:
                         f"commander's color identity ({commander.color_identity})")
 
         self._max_playset_count = 1 if commander is not None else 4
-        self._playsets = to_playsets(*mainboard)
+        self._playsets = aggregate(*mainboard)
         self._validate_mainboard()
         self._sideboard_playsets = None
         if sideboard:
-            self._sideboard_playsets = to_playsets(*sideboard)
+            self._sideboard_playsets = aggregate(*sideboard)
             self._validate_sideboard()
             if not self.companion:
                 comp = from_iterable(sideboard, lambda c: c.is_companion)
@@ -636,7 +628,7 @@ class Deck:
                 f"Invalid deck size: {length} < {self.MIN_MAINBOARD_SIZE}")
 
     def _validate_sideboard(self) -> None:
-        temp_playsets = to_playsets(*self.cards)
+        temp_playsets = aggregate(*self.cards)
         for playset in temp_playsets.values():
             self._validate_playset(playset)
         if len(self.sideboard) > self.MAX_SIDEBOARD_SIZE:
@@ -671,13 +663,13 @@ class Deck:
     def __eq__(self, other: "Deck") -> bool:
         if not isinstance(other, Deck):
             return False
-        playsets = frozenset((card, len(cards)) for card, cards in to_playsets(*self.cards).items())
+        playsets = frozenset((card, len(cards)) for card, cards in aggregate(*self.cards).items())
         other_playsets = frozenset(
-            (card, len(cards)) for card, cards in to_playsets(*other.cards).items())
+            (card, len(cards)) for card, cards in aggregate(*other.cards).items())
         return playsets == other_playsets
 
     def __hash__(self) -> int:
-        return hash(frozenset((card, len(cards)) for card, cards in to_playsets(
+        return hash(frozenset((card, len(cards)) for card, cards in aggregate(
             *self.cards).items()))
 
     def __lt__(self, other: "Deck") -> bool:
@@ -847,12 +839,12 @@ Name={}
     def _build_forge(self) -> str:
         commander = [
             self._to_forge_line(playset) for playset in
-            to_playsets(self._deck.commander).values()] if self._deck.commander else []
+            aggregate(self._deck.commander).values()] if self._deck.commander else []
         mainboard = [
-            self._to_forge_line(playset) for playset in to_playsets(*self._deck.mainboard).values()]
+            self._to_forge_line(playset) for playset in aggregate(*self._deck.mainboard).values()]
         sideboard = [
             self._to_forge_line(playset) for playset in
-            to_playsets(*self._deck.sideboard).values()] if self._deck.sideboard else []
+            aggregate(*self._deck.sideboard).values()] if self._deck.sideboard else []
         return self.DCK_TEMPLATE.format(
             self._name, "\n".join(commander), "\n".join(mainboard), "\n".join(sideboard))
 
@@ -946,22 +938,22 @@ Name={}
     def _build_arena(self) -> str:
         lines = []
         if self._deck.commander:
-            playset = to_playsets(self._deck.commander)[self._deck.commander]
+            playset = aggregate(self._deck.commander)[self._deck.commander]
             lines += ["Commander", self._to_arena_line(playset), ""]
         if self._deck.companion:
-            playset = to_playsets(self._deck.companion)[self._deck.companion]
+            playset = aggregate(self._deck.companion)[self._deck.companion]
             lines += ["Companion", self._to_arena_line(playset), ""]
         lines += [
             "Deck",
             *[self._to_arena_line(playset) for playset
-              in to_playsets(*self._deck.mainboard).values()]
+              in aggregate(*self._deck.mainboard).values()]
         ]
         if self._deck.sideboard:
             lines += [
                 "",
                 "Sideboard",
                 *[self._to_arena_line(playset) for playset
-                  in to_playsets(*self._deck.sideboard).values()]
+                  in aggregate(*self._deck.sideboard).values()]
             ]
         return "\n".join(lines)
 
@@ -974,7 +966,7 @@ Name={}
 
     @classmethod
     def from_arena(cls, path: PathLike) -> Deck:
-        from mtgcards.decks.arena import ArenaParser, is_arena_line, is_empty
+        from mtgcards.deck.arena import ArenaParser, is_arena_line, is_empty
         file = getfile(path, ext=".txt")
         lines = file.read_text(encoding="utf-8").splitlines()
         if not all(is_arena_line(l) or is_empty(l) for l in lines):
@@ -1081,30 +1073,3 @@ class DeckParser(ABC):
     @staticmethod
     def sanitize(text: str) -> str:
         return text.replace("’", "'")
-
-
-class DeckScraper(DeckParser):
-    @property
-    def url(self) -> str:
-        return self._url
-
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        self._validate_url(url)
-        super().__init__(metadata)
-        self._url = url
-        self._metadata["url"] = self.url
-        self._metadata["source"] = extract_source(self.url)
-
-    @classmethod
-    def _validate_url(cls, url):
-        if url and not cls.is_deck_url(url):
-            raise ValueError(f"Not a deck URL: {url!r}")
-
-    @abstractmethod
-    def _scrape_metadata(self) -> None:
-        raise NotImplementedError
-
-    @staticmethod
-    @abstractmethod
-    def is_deck_url(url: str) -> bool:
-        raise NotImplementedError

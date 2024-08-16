@@ -1,7 +1,7 @@
 """
 
-    mtgcards.decks.streamdecker.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtgcards.deck.scrapers.streamdecker.py
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Parse Streamdecker decklist page.
 
     @author: z33k
@@ -12,7 +12,8 @@ import re
 from datetime import date
 
 from mtgcards.const import Json
-from mtgcards.decks import Deck, DeckScraper, InvalidDeck
+from mtgcards.deck import Deck, InvalidDeck
+from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils import get_ago_date
 from mtgcards.utils.scrape import timed_request
 
