@@ -51,8 +51,7 @@ class MtgDecksNetScraper(DeckScraper):
         name_author_part, *event_parts, date_part = info.split("—")
         name, author = name_author_part.split("Builder:")
         self._metadata["name"] = name.strip().removesuffix(".")
-        if not self.author:
-            self._metadata["author"] = author.strip()
+        self._metadata["author"] = author.strip()
         self._metadata["event"] = "—".join(event_parts).strip().replace("\n", " ")
         if date_part:
             self._metadata["date"] = dateutil.parser.parse(date_part.strip()).date()

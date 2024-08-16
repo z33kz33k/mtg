@@ -8,6 +8,7 @@
 
 """
 import itertools
+import json
 import logging
 from abc import ABC, abstractmethod
 from collections import Counter
@@ -22,7 +23,7 @@ from mtgcards.scryfall import (
     find_by_collector_number, find_by_id, find_by_name, find_sets,
     format_cards as scryfall_fmt_cards, set_cards as
     scryfall_set_cards)
-from mtgcards.utils import ParsingError, extract_int, from_iterable, getrepr
+from mtgcards.utils import ParsingError, extract_int, from_iterable, getrepr, serialize_dates
 from mtgcards.utils.files import getdir, getfile
 
 _log = logging.getLogger(__name__)
@@ -719,6 +720,12 @@ class Deck:
         """
         return Exporter.from_arena(path)
 
+    @property
+    def json(self) -> str:
+        """Return a JSON representation of this deck.
+        """
+        return Exporter(self).json
+
 
 class Exporter:
     """Export a deck to Forge MTG .dck file or Arena deck file. Also, import a deck from those
@@ -931,8 +938,7 @@ Name={}
             SCRYFALL_MULTIFACE_SEPARATOR,
             ARENA_MULTIFACE_SEPARATOR) if card.is_multiface else card.name
         line = f"{len(playset)} {card_name}"
-        if card.collector_number is not None:
-            line += f" ({card.set.upper()}) {card.collector_number}"
+        line += f" ({card.set.upper()}) {card.collector_number}"
         return line
 
     def _build_arena(self) -> str:
@@ -977,15 +983,13 @@ Name={}
             raise ParsingError(f"Unable to parse '{path}' into a deck")
         return deck
 
-
-@lru_cache
-def format_cards(fmt: str) -> set[Card]:
-    return scryfall_fmt_cards(fmt)
-
-
-@lru_cache
-def set_cards(set_code: str) -> set[Card]:
-    return scryfall_set_cards(set_code)
+    @property
+    def json(self) -> str:
+        data = {
+            "metadata": self._deck.metadata,
+            "arena_decklist": self._build_arena(),
+        }
+        return json.dumps(data, indent=4, ensure_ascii=False, default=serialize_dates)
 
 
 class ParsingState(Enum):

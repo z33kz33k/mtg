@@ -36,7 +36,8 @@ from mtgcards.deck.scrapers.tappedout import TappedoutScraper
 from mtgcards.deck.scrapers.tcgplayer import NewPageTcgPlayerScraper, OldPageTcgPlayerScraper
 from mtgcards.deck.scrapers.untapped import UntappedProfileDeckScraper, UntappedRegularDeckScraper
 from mtgcards.scryfall import all_formats
-from mtgcards.utils import extract_float, getrepr, timed
+from mtgcards.utils import deserialize_dates, extract_float, getrepr, multiply_by_symbol, \
+    serialize_dates, timed
 from mtgcards.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
 from mtgcards.utils.scrape import extract_source, extract_url, get_dynamic_soup_by_xpath, \
     throttled, timed_request, unshorten
@@ -66,7 +67,8 @@ def batch_update(start_row=2, batch_size: int | None = None) -> None:
         raise ValueError("Start row must not be lesser than 2")
     if batch_size is not None and batch_size < 1:
         raise ValueError("Batch size must be a positive integer or None")
-    _log.info(f"Batch updating {batch_size} channel row(s)...")
+    txt = f" {batch_size}" if batch_size else ""
+    _log.info(f"Batch updating{txt} channel row(s)...")
     data = []
     if batch_size is None:
         items = [*channels()][start_row - 2:]
@@ -199,20 +201,20 @@ class Video:
         return self._author
 
     @property
+    def title(self) -> str:
+        return self._title
+
+    @property
     def description(self) -> str:
         return self._description
 
     @property
     def keywords(self) -> list[str]:
-        return self._keywords
+        return sorted(self._keywords)
 
     @property
     def date(self) -> date:
         return self._date
-
-    @property
-    def title(self) -> str:
-        return self._title
 
     @property
     def views(self) -> int:
@@ -221,6 +223,10 @@ class Video:
     @property
     def channel_id(self) -> str:
         return self._channel_id
+
+    @property
+    def channel_subscribers(self) -> int | None:
+        return self._channel_subscribers
 
     @cached_property
     def _desc_lines(self) -> list[str]:
@@ -239,6 +245,10 @@ class Video:
         return self._unshortened_links
 
     @property
+    def sources(self) -> list[str]:
+        return sorted(self._sources)
+
+    @property
     def derived_format(self) -> str:
         return self._derived_format
 
@@ -248,26 +258,7 @@ class Video:
 
     @property
     def metadata(self) -> Json:
-        metadata = {
-            "author": self.author,
-            "video": {
-                "url": self.url,
-                "title": self.title,
-                "description": self.description,
-                "keywords": self.keywords,
-                "date": self.date,
-                "views": self.views
-            }
-        }
-        if self.derived_format:
-            metadata["format"] = self.derived_format
-        if self._channel_subscribers:
-            metadata["video"]["channel_subscribers"] = self._channel_subscribers
-        return metadata
-
-    @property
-    def sources(self) -> list[str]:
-        return sorted(self._sources)
+        return {"format": self.derived_format} if self.derived_format else {}
 
     def __init__(self, video_id: str) -> None:
         """Initialize.
@@ -317,15 +308,7 @@ class Video:
             # extract the number and suffix from the match
             number = float(match.group(1))
             suffix = match.group(2)
-
-            # convert the number based on the suffix
-            if suffix == 'K':
-                return int(number * 1_000)
-            elif suffix == 'M':
-                return int(number * 1_000_000)
-            elif suffix == 'B':
-                return int(number * 1_000_000_000)
-            return int(number)
+            return multiply_by_symbol(number, suffix)
 
         return None
 
@@ -445,6 +428,23 @@ class Video:
 
         return sorted(decks)
 
+    @property
+    def json(self) -> str:
+        data = {
+            "id": self.id,
+            "url": self.url,
+            "author": self.author,
+            "title": self.title,
+            "description": self.description,
+            "keywords": self.keywords,
+            "date": self.date,
+            "views": self.views,
+            "sources": self.sources,
+            "derived_format": self.derived_format,
+            "decks": [json.loads(d.json, object_hook=deserialize_dates) for d in self.decks],
+        }
+        return json.dumps(data, indent=4, ensure_ascii=False, default=serialize_dates)
+
 
 class Channel(list):
     """A list of videos showcasing a MtG deck with its most important metadata.
@@ -467,7 +467,7 @@ class Channel(list):
 
     @property
     def tags(self) -> list[str] | None:
-        return self._tags
+        return sorted(set(self._tags))
 
     @property
     def subscribers(self) -> int | None:
@@ -478,16 +478,20 @@ class Channel(list):
         return [d for v in self for d in v.decks]
 
     @property
-    def deck_sources(self) -> list[str]:
-        return sorted({d.source for d in self.decks})
-
-    @property
     def sources(self) -> list[str]:
         return sorted(self._sources)
 
     @property
+    def deck_sources(self) -> list[str]:
+        return sorted({d.source for d in self.decks})
+
+    @property
     def staleness(self) -> int | None:
         return (date.today() - self[0].date).days if self else None
+
+    @property
+    def span(self) -> int | None:
+        return (self[0].date - self[-1].date).days if self else None
 
     @property
     def total_views(self) -> int:
@@ -498,16 +502,16 @@ class Channel(list):
         return self.total_views / self.subscribers if self.subscribers else None
 
     @property
-    def scrape_date(self) -> date:
-        return self._scrape_time.date()
-
-    @property
-    def span(self) -> int | None:
-        return (self[0].date - self[-1].date).days if self else None
-
-    @property
     def posting_interval(self) -> float | None:
         return self.span / len(self) if self else None
+
+    @property
+    def scrape_time(self) -> datetime:
+        return self._scrape_time
+
+    @property
+    def scrape_date(self) -> date:
+        return self.scrape_time.date()
 
     def __init__(self, url: str, limit=10) -> None:
         with Timer() as t:
@@ -526,8 +530,7 @@ class Channel(list):
             self._tags = self._ytsp_data.result.get("tags") if self._id else None
             self._subscribers = self._parse_subscribers() if self._id else None
             if not self._subscribers:
-                self._subscribers = self[0].metadata["video"].get(
-                    "channel_subscribers") if self else None
+                self._subscribers = self[0].channel_subscribers
                 if self._subscribers is None:
                     self._subscribers = self._scrape_subscribers_with_selenium()
             self._sources = {s for v in self for s in v.sources}
@@ -556,11 +559,27 @@ class Channel(list):
         text = soup.find("span", string=lambda t: t and "subscribers" in t).text.removesuffix(
             " subscribers")
         number = extract_float(text)
-        if text and text[-1] in {"K", "M", "B"}:
-            if text[-1] == 'K':
-                return int(number * 1_000)
-            elif text[-1] == 'M':
-                return int(number * 1_000_000)
-            elif text[-1] == 'B':
-                return int(number * 1_000_000_000)
+        if text and text[-1] in {"K", "M", "B", "T"}:
+            return multiply_by_symbol(number, text[-1])
         return int(number)
+
+    @property
+    def json(self) -> str:
+        data = {
+            "url": self.url,
+            "id": self.id,
+            "title": self.title,
+            "description": self.description,
+            "tags": self.tags,
+            "subscribers": self.subscribers,
+            "sources": self.sources,
+            "deck_sources": self.deck_sources,
+            "staleness": self.staleness,
+            "span": self.span,
+            "total_views": self.total_views,
+            "views_per_sub": self.views_per_sub,
+            "posting_interval": self.posting_interval,
+            "scrape_time": self.scrape_time,
+            "videos": [json.loads(v.json, object_hook=deserialize_dates) for v in self],
+        }
+        return json.dumps(data, indent=4, ensure_ascii=False, default=serialize_dates)

@@ -80,10 +80,9 @@ class GoldfishScraper(DeckScraper):
     def _scrape_metadata(self) -> None:  # override
         title_tag = self._soup.find("h1", class_="title")
         self._metadata["name"], *_ = title_tag.text.strip().split("\n")
-        if not self.author:
-            author_tag = title_tag.find("span")
-            if author_tag is not None:
-                self._metadata["author"] = author_tag.text.strip().removeprefix("by ")
+        author_tag = title_tag.find("span")
+        if author_tag is not None:
+            self._metadata["author"] = author_tag.text.strip().removeprefix("by ")
         info_tag = self._soup.find("p", class_="deck-container-information")
         lines = [l for l in info_tag.text.splitlines() if l]
         source_idx = None

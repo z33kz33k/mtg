@@ -46,11 +46,10 @@ class UntappedProfileDeckScraper(DeckScraper):
         name_tag = self._soup.select_one('span[class*="DeckListContainer__Title"]')
         strong_tag = name_tag.find("strong")
         self._metadata["name"] = strong_tag.text.strip()
-        if not self.author:
-            author_tag = self._soup.select_one(
-                'div[class*="ProfileHeader__DisplayName-sc-mu9foi-4 hrSMYV"]')
-            span_tag = author_tag.find("span")
-            self._metadata["author"] = span_tag.text.strip().removesuffix("'s Profile")
+        author_tag = self._soup.select_one(
+            'div[class*="ProfileHeader__DisplayName-sc-mu9foi-4 hrSMYV"]')
+        span_tag = author_tag.find("span")
+        self._metadata["author"] = span_tag.text.strip().removesuffix("'s Profile")
 
     def _get_deck(self) -> Deck | None:  # override
         return ArenaParser(self._clipboard.splitlines(), metadata=self._metadata).deck

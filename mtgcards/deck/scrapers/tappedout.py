@@ -37,8 +37,7 @@ class TappedoutScraper(DeckScraper):
         fmt_tag = self._soup.select_one("a.btn.btn-success.btn-xs")
         fmt = fmt_tag.text.strip().removesuffix("*").lower()
         self._update_fmt(fmt)
-        if not self.author:
-            self._metadata["author"] = self._soup.select_one('a[href*="/users/"]').text.strip()
+        self._metadata["author"] = self._soup.select_one('a[href*="/users/"]').text.strip()
         deck_details_table = self._soup.find("table", id="deck-details")
         for row in deck_details_table.find_all("tr"):
             cols = row.find_all("td")

@@ -16,7 +16,7 @@ from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 from contexttimer import Timer
 
-from mtgcards.const import FILENAME_TIMESTAMP_FORMAT, T
+from mtgcards.const import FILENAME_TIMESTAMP_FORMAT, READABLE_TIMESTAMP_FORMAT, T
 from mtgcards.utils.check_type import type_checker, uniform_type_checker
 
 _log = logging.getLogger(__name__)
@@ -224,3 +224,49 @@ def timestamp(format_=FILENAME_TIMESTAMP_FORMAT) -> str:
 class ParsingError(ValueError):
     """Raised on unexpected states of parsed data.
     """
+
+
+def serialize_dates(obj: Any) -> str:
+    """Custom serializer for dates.
+
+    To be used with json.dump() as ``default`` parameter.
+    """
+    if isinstance(obj, datetime):
+        return obj.strftime(READABLE_TIMESTAMP_FORMAT)
+    elif isinstance(obj, date):
+        return obj.isoformat()
+    raise TypeError(f"Type {type(obj)} not serializable")
+
+
+def deserialize_dates(dct: dict) -> dict:
+    """Custom deserializer for dates.
+
+    To be used with json.load() as ``object_hook`` parameter.
+    """
+    for key, value in dct.items():
+        if isinstance(value, str):
+            # Try to parse as datetime
+            try:
+                dct[key] = datetime.strptime(value, READABLE_TIMESTAMP_FORMAT)
+            except ValueError:
+                # If it fails, try to parse as date
+                try:
+                    dct[key] = date.fromisoformat(value)
+                except ValueError:
+                    pass  # Leave it as a string if both parsing attempts fail
+    return dct
+
+
+def multiply_by_symbol(number: float, symbol: str) -> int:
+    """Multiply ``number`` by ``symbol`` and return it.
+    """
+    if symbol in 'Kk':
+        return int(number * 1_000)
+    elif symbol in 'Mm':
+        return int(number * 1_000_000)
+    elif symbol in 'Bb':
+        return int(number * 1_000_000_000)
+    elif symbol in 'Tt':
+        return int(number * 1_000_000_000_000)
+    _log.warning(f"Unsupported symbol for multiplication: {symbol!r}")
+    return int(number)

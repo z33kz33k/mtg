@@ -48,8 +48,7 @@ class StreamdeckerScraper(DeckScraper):
             "name": self._json_data["name"],
             "views": self._json_data["views"]["counter"]
         })
-        if not self.author:
-            self._metadata["author"] = self._json_data["userProfile"]["displayName"]
+        self._metadata["author"] = self._json_data["userProfile"]["displayName"]
         self._metadata["author_twitch_id"] = self._json_data["userProfile"]["twitchId"]
         if dt := self._parse_date():
             self._metadata["date"] = dt

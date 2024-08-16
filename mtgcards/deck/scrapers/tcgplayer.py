@@ -40,9 +40,8 @@ class OldPageTcgPlayerScraper(DeckScraper):
         info_tag = self._soup.find("div", class_="viewDeckHeader")
         h1_tag = info_tag.find("h1")
         self._metadata["name"] = h1_tag.find("a").text.strip()
-        if not self.author:
-            h3_tag = info_tag.find("h3")
-            self._metadata["author"] = h3_tag.text.strip().removeprefix("by ")
+        h3_tag = info_tag.find("h3")
+        self._metadata["author"] = h3_tag.text.strip().removeprefix("by ")
         fmt_tag, _, date_tag, *_ = info_tag.find_all("div")[3:]
         fmt = fmt_tag.find("a").text.strip().lower()
         self._update_fmt(fmt)
@@ -107,10 +106,9 @@ class NewPageTcgPlayerScraper(DeckScraper):
             "a", class_="martech-base-link", href=lambda h: h and "/format/" in h)
         if fmt_tag:
             self._update_fmt(fmt_tag.text.strip().lower())
-        if not self.author:
-            author_tag = self._soup.find(
-                "a", class_="martech-base-link", href=lambda h: h and "/player/" in h)
-            self._metadata["author"] = author_tag.text.strip()
+        author_tag = self._soup.find(
+            "a", class_="martech-base-link", href=lambda h: h and "/player/" in h)
+        self._metadata["author"] = author_tag.text.strip()
         date_tag = self._soup.find("p", class_="event-name martech-text-sm")
         if date_tag:
             date_text = date_tag.text.strip()

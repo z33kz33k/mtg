@@ -68,8 +68,7 @@ class MoxfieldScraper(DeckScraper):
         self._metadata["likes"] = self._json_data["likeCount"]
         self._metadata["views"] = self._json_data["viewCount"]
         self._metadata["comments"] = self._json_data["commentCount"]
-        if not self.author:
-            self._metadata["author"] = self._json_data["createdByUser"]["displayName"]
+        self._metadata["author"] = self._json_data["createdByUser"]["displayName"]
         try:
             self._metadata["date"] = datetime.strptime(
                 self._json_data["lastUpdatedAtUtc"], "%Y-%m-%dT%H:%M:%S.%fZ").date()

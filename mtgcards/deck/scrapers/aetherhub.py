@@ -78,9 +78,8 @@ class AetherhubScraper(DeckScraper):
             self._metadata["name"] = name_part.strip()
 
         # author (only in user-submitted decklists)
-        if not self.author:
-            if author_tag := self._soup.find('a', href=lambda href: href and "/User/" in href):
-                self._metadata["author"] = author_tag.text
+        if author_tag := self._soup.find('a', href=lambda href: href and "/User/" in href):
+            self._metadata["author"] = author_tag.text
 
         # date and other (only in user-submitted decklists)
         if date_tags := self._soup.select(
