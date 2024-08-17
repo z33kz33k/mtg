@@ -7,6 +7,9 @@
     @author: z33k
 
 """
+from http.client import RemoteDisconnected
+
+import backoff
 import itertools
 import json
 import logging
@@ -20,9 +23,10 @@ from typing import Generator
 import pytubefix
 import scrapetube
 from contexttimer import Timer
+from requests import HTTPError, Timeout
 from youtubesearchpython import Channel as YtspChannel
 
-from mtgcards.const import Json
+from mtgcards.const import FILENAME_TIMESTAMP_FORMAT, Json, OUTPUT_DIR, PathLike
 from mtgcards.deck import Deck
 from mtgcards.deck.scrapers.aetherhub import AetherhubScraper
 from mtgcards.deck.arena import ArenaParser, get_arena_lines
@@ -37,7 +41,8 @@ from mtgcards.deck.scrapers.tcgplayer import NewPageTcgPlayerScraper, OldPageTcg
 from mtgcards.deck.scrapers.untapped import UntappedProfileDeckScraper, UntappedRegularDeckScraper
 from mtgcards.scryfall import all_formats
 from mtgcards.utils import deserialize_dates, extract_float, getrepr, multiply_by_symbol, \
-    serialize_dates, timed
+    sanitize_filename, serialize_dates, timed
+from mtgcards.utils.files import getdir
 from mtgcards.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
 from mtgcards.utils.scrape import extract_source, extract_url, get_dynamic_soup_by_xpath, \
     throttled, timed_request, unshorten
@@ -209,8 +214,8 @@ class Video:
         return self._description
 
     @property
-    def keywords(self) -> list[str]:
-        return sorted(self._keywords)
+    def keywords(self) -> list[str] | None:
+        return sorted(self._keywords) if self._keywords else None
 
     @property
     def date(self) -> date:
@@ -272,7 +277,12 @@ class Video:
     def _process(self, video_id):
         _log.info(f"Scraping video: 'https://www.youtube.com/watch?v={video_id}'...")
         self._id = video_id
-        self._pytube = self._get_pytube()
+        try:
+            self._pytube = self._get_pytube()
+        except RemoteDisconnected as e:
+            _log.warning(
+                f"`pytube` had a hiccup ({e}). Retrying with backoff (60 seconds max)...")
+            self._pytube = self._get_pytube_with_backoff()
         # description and title is also available in scrapetube data on Channel level
         self._author, self._description, self._title = None, None, None
         self._keywords, self._date, self._views = None, None, None
@@ -299,6 +309,10 @@ class Video:
 
     def _get_pytube(self) -> pytubefix.YouTube:
         return pytubefix.YouTube(self.url)
+
+    @backoff.on_exception(backoff.expo, (Timeout, HTTPError, RemoteDisconnected), max_time=60)
+    def _get_pytube_with_backoff(self) -> pytubefix.YouTube:
+        return self._get_pytube()
 
     def _extract_subscribers(self) -> int | None:
         pattern = r'(\d+(?:\.\d+)?)\s*([KMB]?)\s*subscribers'
@@ -445,6 +459,21 @@ class Video:
         }
         return json.dumps(data, indent=4, ensure_ascii=False, default=serialize_dates)
 
+    def dump(self, dstdir: PathLike = "", name="") -> None:
+        """Dump to a .json file.
+
+        Args:
+            dstdir: optionally, the destination directory (if not provided CWD is used)
+            name: optionally, a custom name for the exported video (if not provided a default name is used)
+        """
+        dstdir = dstdir or OUTPUT_DIR / "json"
+        dstdir = getdir(dstdir)
+        timestamp = self.date.isoformat().replace("-", "")
+        name = name or f"{self.author}_{timestamp}_video"
+        dst = dstdir / f"{sanitize_filename(name)}.json"
+        _log.info(f"Exporting deck to: '{dst}'...")
+        dst.write_text(self.json, encoding="utf-8")
+
 
 class Channel(list):
     """A list of videos showcasing a MtG deck with its most important metadata.
@@ -467,7 +496,7 @@ class Channel(list):
 
     @property
     def tags(self) -> list[str] | None:
-        return sorted(set(self._tags))
+        return sorted(set(self._tags)) if self._tags else None
 
     @property
     def subscribers(self) -> int | None:
@@ -516,11 +545,11 @@ class Channel(list):
     def __init__(self, url: str, limit=10) -> None:
         with Timer() as t:
             self._scrape_time = datetime.now()
-            _log.info(f"Scraping channel: {url!r}, {limit} video(s)...")
             try:
                 videos = [*scrapetube.get_channel(channel_url=url, limit=limit)]
             except OSError:
                 raise ValueError(f"Invalid URL: {url!r}")
+            _log.info(f"Scraping channel: {url!r}, {limit} video(s)...")
             super().__init__([Video(data["videoId"]) for data in videos])
             self._url = url
             self._id = self[0].channel_id if self else None
@@ -583,3 +612,18 @@ class Channel(list):
             "videos": [json.loads(v.json, object_hook=deserialize_dates) for v in self],
         }
         return json.dumps(data, indent=4, ensure_ascii=False, default=serialize_dates)
+
+    def dump(self, dstdir: PathLike = "", name="") -> None:
+        """Dump to a .json file.
+
+        Args:
+            dstdir: optionally, the destination directory (if not provided CWD is used)
+            name: optionally, a custom name for the exported video (if not provided a default name is used)
+        """
+        dstdir = dstdir or OUTPUT_DIR / "json"
+        dstdir = getdir(dstdir)
+        timestamp = self.scrape_time.strftime(FILENAME_TIMESTAMP_FORMAT)
+        name = name or f"{self.title}_{timestamp}_channel"
+        dst = dstdir / f"{sanitize_filename(name)}.json"
+        _log.info(f"Exporting deck to: '{dst}'...")
+        dst.write_text(self.json, encoding="utf-8")

@@ -8,6 +8,7 @@
 
 """
 import logging
+import re
 from datetime import datetime
 from functools import wraps
 from typing import Any, Callable, Iterable, Optional, Type
@@ -270,3 +271,33 @@ def multiply_by_symbol(number: float, symbol: str) -> int:
         return int(number * 1_000_000_000_000)
     _log.warning(f"Unsupported symbol for multiplication: {symbol!r}")
     return int(number)
+
+
+def sanitize_filename(text: str, replacement="_") -> str:  # perplexity
+    """Sanitize a string to make it suitable for use as a filename.
+
+    Args:
+        text: The string to be sanitized.
+        replacement: The character to replace invalid characters with (default is underscore).
+
+    Returns:
+        a sanitized string suitable for a filename.
+    """
+    # remove leading and trailing whitespace
+    sanitized = text.strip()
+
+    # replace invalid characters with the replacement character
+    sanitized = re.sub(r'[<>:"/\\|?*]', replacement, sanitized)
+
+    # replace any sequence of whitespace with a single underscore
+    sanitized = re.sub(r'\s+', replacement, sanitized)
+
+    # ensure the filename is not too long (most file systems have a limit of 255 characters)
+    max_length = 255
+    if len(sanitized) > max_length:
+        sanitized = sanitized[:max_length]
+
+    # ensure the filename does not end with a dot or space
+    sanitized = sanitized.rstrip('. ')
+
+    return sanitized

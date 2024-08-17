@@ -684,7 +684,7 @@ class Deck:
     def update_metadata(self, **data: Any) -> None:
         self._metadata.update(data)
 
-    def to_forge(self, dstdir="", name="") -> None:
+    def to_forge(self, dstdir: PathLike = "", name="") -> None:
         """Export to a Forge MTG deckfile format (.dck).
 
         Args:
@@ -693,7 +693,7 @@ class Deck:
         """
         Exporter(self, name).to_forge(dstdir)
 
-    def to_arena(self, dstdir="", name="") -> None:
+    def to_arena(self, dstdir: PathLike = "", name="") -> None:
         """Export to a MTGA deckfile text format (as a .txt file).
 
         Args:
@@ -725,6 +725,15 @@ class Deck:
         """Return a JSON representation of this deck.
         """
         return Exporter(self).json
+
+    def to_json(self, dstdir: PathLike = "", name="") -> None:
+        """Export to a .json file.
+
+        Args:
+            dstdir: optionally, the destination directory (if not provided CWD is used)
+            name: optionally, a custom name for the exported deck (if not provided a name based on this deck's data and metadata is constructed)
+        """
+        Exporter(self, name).to_json(dstdir)
 
 
 class Exporter:
@@ -855,7 +864,7 @@ Name={}
         return self.DCK_TEMPLATE.format(
             self._name, "\n".join(commander), "\n".join(mainboard), "\n".join(sideboard))
 
-    def to_forge(self, dstdir="") -> None:
+    def to_forge(self, dstdir: PathLike = "") -> None:
         dstdir = dstdir or OUTPUT_DIR / "dck"
         dstdir = getdir(dstdir)
         dst = dstdir / f"{self._name}.dck"
@@ -963,7 +972,7 @@ Name={}
             ]
         return "\n".join(lines)
 
-    def to_arena(self, dstdir="") -> None:
+    def to_arena(self, dstdir: PathLike = "") -> None:
         dstdir = dstdir or OUTPUT_DIR / "arena"
         dstdir = getdir(dstdir)
         dst = dstdir / f"{self._name}.txt"
@@ -990,6 +999,13 @@ Name={}
             "arena_decklist": self._build_arena(),
         }
         return json.dumps(data, indent=4, ensure_ascii=False, default=serialize_dates)
+
+    def to_json(self, dstdir: PathLike = "") -> None:
+        dstdir = dstdir or OUTPUT_DIR / "json"
+        dstdir = getdir(dstdir)
+        dst = dstdir / f"{self._name}.json"
+        _log.info(f"Exporting deck to: '{dst}'...")
+        dst.write_text(self.json, encoding="utf-8")
 
 
 class ParsingState(Enum):
