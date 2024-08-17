@@ -370,8 +370,12 @@ class Video:
             else:
                 if line == "Deck":
                     deck_lines.append(line)
+                    if not len(deck_lines) > 1:
+                        other_lines.append(line)
                 elif line == "Sideboard":
                     sideboard_lines.append(line)
+                    if not len(sideboard_lines) > 1:
+                        other_lines.append(line)
                 # prevent parsing two decklists as one
                 if not len(deck_lines) > 1 and not len(sideboard_lines) > 1:
                     other_lines.append(line)

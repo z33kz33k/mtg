@@ -31,7 +31,7 @@ class TappedoutScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "tappedout.net/mtg-deck/" in url
+        return "tappedout.net/mtg-decks/" in url
 
     def _scrape_metadata(self) -> None:  # override
         fmt_tag = self._soup.select_one("a.btn.btn-success.btn-xs")

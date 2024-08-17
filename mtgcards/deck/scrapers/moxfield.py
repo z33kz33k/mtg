@@ -56,7 +56,7 @@ class MoxfieldScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "www.moxfield.com/deck/" in url
+        return "www.moxfield.com/decks/" in url
 
     def _scrape_metadata(self) -> None:  # override
         fmt = self._json_data["format"]

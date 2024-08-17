@@ -261,13 +261,13 @@ def deserialize_dates(dct: dict) -> dict:
 def multiply_by_symbol(number: float, symbol: str) -> int:
     """Multiply ``number`` by ``symbol`` and return it.
     """
-    if symbol in 'Kk':
+    if symbol in ('K', 'k'):
         return int(number * 1_000)
-    elif symbol in 'Mm':
+    elif symbol in ('M', 'm'):
         return int(number * 1_000_000)
-    elif symbol in 'Bb':
+    elif symbol in ('B', 'b'):
         return int(number * 1_000_000_000)
-    elif symbol in 'Tt':
+    elif symbol in ('T', 't'):
         return int(number * 1_000_000_000_000)
     _log.warning(f"Unsupported symbol for multiplication: {symbol!r}")
     return int(number)

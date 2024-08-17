@@ -164,8 +164,8 @@ class GoldfishScraper(DeckScraper):
             return None
 
 
-@http_requests_counted("scraping meta deck")
-@timed("scraping meta deck", precision=1)
+@http_requests_counted("scraping meta decks")
+@timed("scraping meta decks", precision=1)
 def scrape_meta(fmt="standard") -> list[Deck]:
     fmt = fmt.lower()
     if fmt not in all_formats():

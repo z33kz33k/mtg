@@ -21,9 +21,10 @@ import requests
 from bs4 import BeautifulSoup
 from requests.exceptions import HTTPError
 from selenium import webdriver
-from selenium.common import TimeoutException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -194,7 +195,7 @@ def extract_source(url: str) -> str:
 
 @timed("getting dynamic soup")
 def get_dynamic_soup_by_xpath(
-        url: str, xpath: str, click=False, consent_xpath="", clipboard_xpath="",
+        url: str, xpath: str, *halt_xpaths, click=False, consent_xpath="", clipboard_xpath="",
         timeout=SELENIUM_TIMEOUT) -> tuple[BeautifulSoup, BeautifulSoup | None, str | None]:
     """Return BeautifulSoup object(s) from dynamically rendered page source at ``url`` using
     Selenium WebDriver that waits for presence of an element specified by ``xpath``.
@@ -209,6 +210,7 @@ def get_dynamic_soup_by_xpath(
     Args:
         url: webpage's URL
         xpath: XPath to locate the main element
+        halt_xpaths: XPaths to locate elements that should halt the wait
         click: if True, main element is clicked before returning the soups
         consent_xpath: XPath to locate a consent button (if present)
         clipboard_xpath: Xpath to locate a copy-to-clipboard button (if present)
@@ -224,11 +226,12 @@ def get_dynamic_soup_by_xpath(
     driver.get(url)
 
     if consent_xpath:
-        accept_consent(driver, consent_xpath)
+        _accept_consent(driver, consent_xpath)
 
     try:
-        element = WebDriverWait(driver, timeout).until(
-            EC.presence_of_element_located((By.XPATH, xpath)))
+        element = _wait_for_elements(driver, xpath, *halt_xpaths, timeout=timeout)
+        if not element:
+            raise NoSuchElementException(f"Element specified by {xpath!r} is not present")
         _log.info(f"Page has been loaded and element specified by {xpath!r} is present")
         page_source, soup2 = driver.page_source, None
         if click:
@@ -238,7 +241,7 @@ def get_dynamic_soup_by_xpath(
 
         clipboard = None
         if clipboard_xpath:
-            clipboard = click_for_clipboard(driver, clipboard_xpath)
+            clipboard = _click_for_clipboard(driver, clipboard_xpath)
 
         return soup, soup2, clipboard
 
@@ -256,7 +259,7 @@ def throttled_dynamic_soup_by_xpath(
     return get_dynamic_soup_by_xpath(url, xpath, click, consent_xpath, clipboard_xpath, timeout)
 
 
-def accept_consent(driver: WebDriver, xpath: str, timeout=SELENIUM_TIMEOUT / 2) -> None:
+def _accept_consent(driver: WebDriver, xpath: str, timeout=SELENIUM_TIMEOUT / 2) -> None:
     """Accept consent by clicking element located by ``xpath`` with the passed Chrome
     webdriver.
 
@@ -290,7 +293,7 @@ def accept_consent(driver: WebDriver, xpath: str, timeout=SELENIUM_TIMEOUT / 2) 
         raise
 
 
-def click_for_clipboard(driver: WebDriver, xpath: str, timeout=SELENIUM_TIMEOUT / 2) -> str:
+def _click_for_clipboard(driver: WebDriver, xpath: str, timeout=SELENIUM_TIMEOUT / 2) -> str:
     """Click element located by ``xpath`` with the passed Chrome webdriver and return clipboard
     contents.
 
@@ -303,11 +306,10 @@ def click_for_clipboard(driver: WebDriver, xpath: str, timeout=SELENIUM_TIMEOUT 
     Args:
         driver: a Chrome webdriver object
         xpath: XPath to locate the main element
-        timeout: timeout used in attempted actions (consent timeout is halved)
+        timeout: timeout used in attempted actions
 
     Returns:
-        BeautifulSoup object (or two such objects if located element was clicked) from dynamically
-        loaded page source
+        string clipboard content
     """
     _log.info("Attempting to click an element to populate clipboard...")
 
@@ -323,3 +325,37 @@ def click_for_clipboard(driver: WebDriver, xpath: str, timeout=SELENIUM_TIMEOUT 
         driver.quit()
         _log.error(f"Timed out waiting for element specified by {xpath!r} to be present")
         raise
+
+
+def _wait_for_elements(
+        driver: WebDriver, xpath: str, *halt_xpath: str,
+        timeout=SELENIUM_TIMEOUT) -> WebElement | None:
+    """Wait for elements specified by ``xpath`` and ``halt_xpath`` to be present in the current
+    page.
+
+    If ``xpath`` element is located return it. If any element designated by``halt_xpath`` is
+    located return `None`.
+
+    Args:
+        driver: a Chrome webdriver object
+        xpath: XPath to locate the main element
+        halt_xpath: XPaths to locate elements that should halt the wait
+        timeout: timeout used in attempted actions
+    """
+    if halt_xpath:
+        WebDriverWait(driver, timeout).until(
+        EC.any_of(
+            EC.presence_of_element_located((By.XPATH, xpath)),
+            *[EC.presence_of_element_located((By.XPATH, xp)) for xp in halt_xpath]
+        ))
+
+        # check which element was found
+        elements = driver.find_elements(By.XPATH, xpath)
+        if elements:
+            return elements[0]
+
+        _log.warning("Halting element found")
+        return None
+
+    return WebDriverWait(driver, timeout).until(
+        EC.presence_of_element_located((By.XPATH, xpath)))

@@ -42,7 +42,7 @@ class MtgaZoneScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "mtgazone.com/user-deck/" in url or "mtgazone.com/deck/" in url
+        return "mtgazone.com/user-decks/" in url or "mtgazone.com/deck/" in url
 
     def _scrape_metadata(self) -> None:  # override
         name_author_tag = self._soup.find("div", class_="name-container")
@@ -146,7 +146,7 @@ def _parse_meta_deck(deck_tag: Tag, decks2tiers: dict[str, int], deck_place: int
     return deck
 
 
-@timed("scraping meta deck")
+@timed("scraping meta decks")
 def scrape_meta(fmt="standard", bo3=True) -> list[Deck]:
     formats = {fmt for fmt in ARENA_FORMATS if fmt not in {"brawl", "standardbrawl"}}
     formats = sorted({*formats, "pioneer"})

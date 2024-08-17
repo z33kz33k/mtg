@@ -10,7 +10,7 @@
 import logging
 from datetime import datetime
 
-import selenium.common.exceptions
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
 from mtgcards.const import Json
 from mtgcards.deck import Deck
@@ -27,15 +27,22 @@ CLIPBOARD_XPATH = "//span[text()='Copy to MTGA']"
 class UntappedProfileDeckScraper(DeckScraper):
     """Scraper of decklist page of Untapped.gg user's profile.
     """
+    _NO_GAMES_XPATH = ("//div[text()='No games have been played with this deck in the selected "
+                       "time frame']")
+    _PRIVATE_XPATH = "//div[text()='This profile is private']"
+
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
         try:
             self._soup, _, self._clipboard = get_dynamic_soup_by_xpath(
-                self._url, CLIPBOARD_XPATH, consent_xpath=CONSENT_XPATH,
+                self._url, CLIPBOARD_XPATH, self._NO_GAMES_XPATH, self._PRIVATE_XPATH,
+                consent_xpath=CONSENT_XPATH,
                 clipboard_xpath=CLIPBOARD_XPATH)
             self._scrape_metadata()
             self._deck = self._get_deck()
-        except selenium.common.exceptions.TimeoutException:
+        except NoSuchElementException:
+            _log.warning("Scraping failed due to absence of the looked for element")
+        except TimeoutException:
             _log.warning(f"Scraping failed due to Selenium timing out")
 
     @staticmethod
@@ -66,12 +73,12 @@ class UntappedRegularDeckScraper(DeckScraper):
                 clipboard_xpath=CLIPBOARD_XPATH)
             self._scrape_metadata()
             self._deck = self._get_deck()
-        except selenium.common.exceptions.TimeoutException:
+        except TimeoutException:
             _log.warning(f"Scraping failed due to Selenium timing out")
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "mtga.untapped.gg/deck/" in url
+        return "mtga.untapped.gg/decks/" in url
 
     @staticmethod
     def _normalize_url(url: str) -> str:
@@ -99,12 +106,12 @@ class UntappedMetaDeckScraper(DeckScraper):
                 clipboard_xpath=CLIPBOARD_XPATH)
             self._scrape_metadata()
             self._deck = self._get_deck()
-        except selenium.common.exceptions.TimeoutException:
+        except TimeoutException:
             _log.warning(f"Scraping failed due to Selenium timing out")
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "mtga.untapped.gg/meta/deck/" in url
+        return "mtga.untapped.gg/meta/decks/" in url
 
     def _scrape_metadata(self) -> None:  # override
         name_tag = self._soup.select_one("h1[class*='layouts__MetaPageHeaderTitle']")

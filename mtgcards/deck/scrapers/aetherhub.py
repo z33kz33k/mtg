@@ -107,7 +107,7 @@ class AetherhubScraper(DeckScraper):
             self._metadata["meta"]["share_change"] = extract_float(change_part)
 
             count_tag = self._soup.select("h4.text-center.pt-2")[0]
-            count_text, _ = count_tag.text.strip().split("deck,")
+            count_text, _ = count_tag.text.strip().split("decks,")
             self._metadata["meta"]["count"] = extract_int(count_text)
 
     @classmethod

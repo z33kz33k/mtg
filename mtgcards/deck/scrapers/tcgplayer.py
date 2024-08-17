@@ -34,7 +34,7 @@ class OldPageTcgPlayerScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "deck.tcgplayer.com/" in url
+        return "decks.tcgplayer.com/" in url
 
     def _scrape_metadata(self) -> None:  # override
         info_tag = self._soup.find("div", class_="viewDeckHeader")
