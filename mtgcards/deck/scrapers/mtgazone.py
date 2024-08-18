@@ -36,7 +36,7 @@ class MtgaZoneScraper(DeckScraper):
     def __init__(self, url: str, metadata: Json | None = None, deck_tag: Tag | None = None) -> None:
         super().__init__(url, metadata)
         self._deck_tag = deck_tag
-        self._soup = deck_tag or getsoup(url)
+        self._soup = deck_tag or getsoup(self.url)
         self._scrape_metadata()
         self._deck = self._get_deck()
 

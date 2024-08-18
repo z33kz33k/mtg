@@ -29,7 +29,7 @@ class MtgTop8Scraper(DeckScraper):
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        self._soup = getsoup(url)
+        self._soup = getsoup(self.url)
         self._scrape_metadata()
         self._deck = self._get_deck()
 

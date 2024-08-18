@@ -49,7 +49,8 @@ class GoldfishScraper(DeckScraper):
         super().__init__(url, metadata)
         self._throttled = throttled
         self._soup = throttled_soup(
-            url, headers=self.HEADERS) if self._throttled else getsoup(url, headers=self.HEADERS)
+            self.url, headers=self.HEADERS) if self._throttled else getsoup(
+            self.url, headers=self.HEADERS)
         self._scrape_metadata()
         self._deck = self._get_deck()
 

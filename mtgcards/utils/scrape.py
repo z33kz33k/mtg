@@ -35,7 +35,7 @@ from mtgcards.utils.check_type import type_checker
 _log = logging.getLogger(__name__)
 REQUESTS_TIMEOUT = 15.0  # seconds
 SELENIUM_TIMEOUT = 10.0  # seconds
-DEFAULT_THROTTLING = 0.5  # seconds
+DEFAULT_THROTTLING = 1.0  # seconds
 
 
 class ScrapingError(ParsingError):

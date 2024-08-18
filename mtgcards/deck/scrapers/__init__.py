@@ -22,7 +22,7 @@ class DeckScraper(DeckParser):
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         self._validate_url(url)
         super().__init__(metadata)
-        self._url = url
+        self._url = self._sanitize_url(url)
         self._metadata["url"] = self.url
         self._metadata["source"] = extract_source(self.url)
 
@@ -39,3 +39,7 @@ class DeckScraper(DeckParser):
     @abstractmethod
     def is_deck_url(url: str) -> bool:
         raise NotImplementedError
+
+    @staticmethod
+    def _sanitize_url(url: str) -> str:
+        return url  # default implementation does nothing

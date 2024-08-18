@@ -37,7 +37,7 @@ class MtgDecksNetScraper(DeckScraper):
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
         self._soup, _, _ = get_dynamic_soup_by_xpath(
-            url, self._XPATH, consent_xpath=self._CONSENT_XPATH)
+            self.url, self._XPATH, consent_xpath=self._CONSENT_XPATH)
         self._scrape_metadata()
         self._deck = self._get_deck()
 

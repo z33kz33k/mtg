@@ -35,7 +35,7 @@ class UntappedProfileDeckScraper(DeckScraper):
         super().__init__(url, metadata)
         try:
             self._soup, _, self._clipboard = get_dynamic_soup_by_xpath(
-                self._url, CLIPBOARD_XPATH, self._NO_GAMES_XPATH, self._PRIVATE_XPATH,
+                self.url, CLIPBOARD_XPATH, self._NO_GAMES_XPATH, self._PRIVATE_XPATH,
                 consent_xpath=CONSENT_XPATH,
                 clipboard_xpath=CLIPBOARD_XPATH)
             self._scrape_metadata()
@@ -66,10 +66,10 @@ class UntappedRegularDeckScraper(DeckScraper):
     """Scraper of a regular Untapped.gg decklist page.
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(self._normalize_url(url), metadata)
+        super().__init__(url, metadata)
         try:
             self._soup, _, self._clipboard = get_dynamic_soup_by_xpath(
-                self._url, CLIPBOARD_XPATH, consent_xpath=CONSENT_XPATH,
+                self.url, CLIPBOARD_XPATH, consent_xpath=CONSENT_XPATH,
                 clipboard_xpath=CLIPBOARD_XPATH)
             self._scrape_metadata()
             self._deck = self._get_deck()
@@ -81,7 +81,7 @@ class UntappedRegularDeckScraper(DeckScraper):
         return "mtga.untapped.gg/decks/" in url
 
     @staticmethod
-    def _normalize_url(url: str) -> str:
+    def _sanitize_url(url: str) -> str:  # override
         return url.replace("input/", "") if "/input/" in url else url
 
     def _scrape_metadata(self) -> None:  # override
@@ -102,7 +102,7 @@ class UntappedMetaDeckScraper(DeckScraper):
         super().__init__(url, metadata)
         try:
             self._soup, _, self._clipboard = get_dynamic_soup_by_xpath(
-                self._url, CLIPBOARD_XPATH, consent_xpath=CONSENT_XPATH,
+                self.url, CLIPBOARD_XPATH, consent_xpath=CONSENT_XPATH,
                 clipboard_xpath=CLIPBOARD_XPATH)
             self._scrape_metadata()
             self._deck = self._get_deck()

@@ -47,7 +47,7 @@ class MoxfieldScraper(DeckScraper):
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        *_, self._decklist_id = url.split("/")
+        *_, self._decklist_id = self.url.split("/")
         self._json_data = timed_request(
             self.API_URL_TEMPLATE.format(self._decklist_id), return_json=True,
             headers=self.HEADERS)

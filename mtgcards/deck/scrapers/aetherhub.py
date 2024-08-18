@@ -52,19 +52,23 @@ class AetherhubScraper(DeckScraper):
     }
 
     def __init__(self, url: str, metadata: Json | None = None, throttled=False) -> None:
-        if url.endswith("/Gallery"):
-            url = url.removesuffix("/Gallery")
-        elif url.endswith("/Gallery/"):
-            url = url.removesuffix("/Gallery/")
         super().__init__(url, metadata)
         self._throttled = throttled
-        self._soup = getsoup(url)
+        self._soup = getsoup(self.url)
         self._scrape_metadata()
         self._deck = self._get_deck()
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "aetherhub.com/Deck/" in url and "/MyDecks/" not in url
+
+    @staticmethod
+    def _sanitize_url(url: str) -> str:  # override
+        if url.endswith("/Gallery"):
+            url = url.removesuffix("/Gallery")
+        elif url.endswith("/Gallery/"):
+            url = url.removesuffix("/Gallery/")
+        return url
 
     def _scrape_metadata(self) -> None:  # override
         # name and format
