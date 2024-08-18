@@ -1261,7 +1261,7 @@ def find_by_words(*words: str) -> set[Card]:
     return {v for k, v in _NAME_MAP.items() if all(w.lower() in k.lower() for w in words)}
 
 
-def find_by_collector_number(collector_number: str | int, set_code: str) -> Card | None:
+def find_by_collector_number(set_code: str, collector_number: str | int) -> Card | None:
     """Return a card designated by provided ``collector_number`` and ``set_code`` or `None` if it
     cannot be found.
     """

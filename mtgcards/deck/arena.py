@@ -77,10 +77,10 @@ class PlaysetLine:
         return getrepr(self.__class__, *pairs)
 
     def to_playset(self) -> list[Card]:
-        collector_number_and_set = (
-            self.collector_number, self.set_code) if self.is_extended else None
+        set_and_collector_number = (
+            self.set_code, self.collector_number) if self.is_extended else None
         return ArenaParser.get_playset(ArenaParser.find_card(
-            self._name, collector_number_and_set=collector_number_and_set), self.quantity)
+            self._name, set_and_collector_number=set_and_collector_number), self.quantity)
 
 
 def is_playset_line(line: str) -> bool:

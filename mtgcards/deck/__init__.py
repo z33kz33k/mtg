@@ -1073,9 +1073,9 @@ class DeckParser(ABC):
     @classmethod
     def find_card(
             cls, name: str, scryfall_id="",
-            collector_number_and_set: tuple[str, str] | None = None) -> Card:
-        if collector_number_and_set:
-            if card := find_by_collector_number(*collector_number_and_set):
+            set_and_collector_number: tuple[str, str] | None = None) -> Card:
+        if set_and_collector_number:
+            if card := find_by_collector_number(*set_and_collector_number):
                 return card
         if scryfall_id:
             if card := find_by_id(scryfall_id):
