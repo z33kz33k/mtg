@@ -8,7 +8,7 @@
 
 """
 import logging
-from datetime import datetime
+from datetime import date
 
 from bs4 import Tag
 
@@ -17,7 +17,7 @@ from mtgcards.deck import Deck, InvalidDeck
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.scryfall import Card
 from mtgcards.utils import extract_int
-from mtgcards.utils.scrape import ScrapingError, get_dynamic_soup_by_xpath, getsoup
+from mtgcards.utils.scrape import ScrapingError, getsoup
 
 _log = logging.getLogger(__name__)
 
@@ -42,7 +42,15 @@ class ScryfallScraper(DeckScraper):
         return f"{url}?as=list&with=usd"
 
     def _scrape_metadata(self) -> None:  # override
-        pass
+        *_, author_part = self.url.split("@")
+        author, *_ = author_part.split("/")
+        self._metadata["author"] = author
+        info_tag = self._soup.find("p", class_="deck-details-subtitle")
+        fmt = info_tag.find("strong").text.strip().lower()
+        self._update_fmt(fmt)
+        date_text = info_tag.find("abbr").attrs["title"]
+        date_text, _ = date_text.split(" ", maxsplit=1)
+        self._metadata["date"] = date.fromisoformat(date_text)
 
     @classmethod
     def _parse_section(cls, section_tag: Tag) -> list[Card]:
@@ -62,14 +70,14 @@ class ScryfallScraper(DeckScraper):
         mainboard, sideboard, commander = [], [], None
 
         for section_tag in self._soup.find_all("div", class_="deck-list-section"):
-            title_tag = section_tag.find("h6")
+            title = section_tag.find("h6").text
             cards = self._parse_section(section_tag)
 
-            if "Commander" in title_tag.text:
+            if "Commander" in title:
                 if len(cards) != 1:
                     raise ScrapingError("Multiple commander card tags")
                 commander = cards[0]
-            elif "Sideboard" in title_tag.text:
+            elif "Sideboard" in title:
                 sideboard = cards
             else:
                 mainboard += cards
