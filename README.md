@@ -27,14 +27,14 @@ descriptions).
   with Google APIs)
 * Arena, [Aetherhub](https://aetherhub.com), [Cardhoarder](https://www.cardhoarder.com), 
   [Goldfish](https://www.mtggoldfish.com), [Moxfield](https://www.moxfield.com), 
-  [MTGAZone](https://mtgazone.com), [MTGDecks.net](https://mtgdecks.net)
-  [MTGTop8](https://mtgtop8.com/index), [Scryfall](https://scryfall.com)
+  [MTGAZone](https://mtgazone.com), [MTGDecks.net](https://mtgdecks.net), 
+  [MTGTop8](https://mtgtop8.com/index), [Scryfall](https://scryfall.com), 
   [Streamdecker](https://www.streamdecker.com/landing), [TappedOut](https://tappedout.net), 
-  [TCGPlayer](https://infinite.tcgplayer.com) and [Untapped](https://mtga.untapped.gg)  
- deck parsers work, so:
+  [TCGPlayer](https://infinite.tcgplayer.com) and [Untapped](https://mtga.untapped.gg) deck parsers 
+  work, so:
     * Arena decklists pasted into video descriptions are parsed into Deck objects
     * Aetherhub, Cardhoarder, Goldfish, Moxfield, MTGAZone, MTGDecks.net, MTGTop8, Scryfall, 
-      Streamdecker, TappedOut, TCGPlayer andUntapped, links contained in those descriptions are 
+      Streamdecker, TappedOut, TCGPlayer and Untapped, links contained in those descriptions are 
       parsed into Deck objects
     * Both Untapped decklist types featured in YT videos are supported: regular deck and profile deck
     * Both old and new TCGPlayer sites are supported
