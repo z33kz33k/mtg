@@ -25,15 +25,17 @@ descriptions).
   [pytubefix](https://github.com/JuanBindez/pytubefix), and 
   [youtubesearchpython](https://github.com/alexmercerind/youtube-search-python) to avoid bothering 
   with Google APIs)
-* Arena, [Goldfish](https://www.mtggoldfish.com), [Moxfield](https://www.moxfield.com), 
-  [Aetherhub](https://aetherhub.com), [Streamdecker](https://www.streamdecker.com/landing), 
-  [MTGAZone](https://mtgazone.com), [Cardhoarder](https://www.cardhoarder.com), 
-  [TappedOut](https://tappedout.net), [Untapped](https://mtga.untapped.gg), 
-  [TCGPlayer](https://infinite.tcgplayer.com), [MTGTop8](https://mtgtop8.com/index) and
-  [MTGDecks.net](https://mtgdecks.net) deck parsers work, so:
+* Arena, [Aetherhub](https://aetherhub.com), [Cardhoarder](https://www.cardhoarder.com), 
+  [Goldfish](https://www.mtggoldfish.com), [Moxfield](https://www.moxfield.com), 
+  [MTGAZone](https://mtgazone.com), [MTGDecks.net](https://mtgdecks.net)
+  [MTGTop8](https://mtgtop8.com/index), [Scryfall](https://scryfall.com)
+  [Streamdecker](https://www.streamdecker.com/landing), [TappedOut](https://tappedout.net), 
+  [TCGPlayer](https://infinite.tcgplayer.com) and [Untapped](https://mtga.untapped.gg)  
+ deck parsers work, so:
     * Arena decklists pasted into video descriptions are parsed into Deck objects
-    * Goldfish, Moxfield, Aetherhub, Streamdecker, MTGAZone, Cardhoarder, TappedOut, Untapped, 
-      TCGPlayer, MTGTop8 and MTGDecks.net links contained in those descriptions are parsed into Deck objects
+    * Aetherhub, Cardhoarder, Goldfish, Moxfield, MTGAZone, MTGDecks.net, MTGTop8, Scryfall, 
+      Streamdecker, TappedOut, TCGPlayer andUntapped, links contained in those descriptions are 
+      parsed into Deck objects
     * Both Untapped decklist types featured in YT videos are supported: regular deck and profile deck
     * Both old and new TCGPlayer sites are supported
     * Due to their dynamic nature, Untapped, TCGPlayer (new site) and MTGDecks.net (not much of a 
@@ -50,3 +52,4 @@ descriptions).
   metadata
 * Importing back into a Deck from those formats
 * Export/import to other formats in plans
+* Dumping decks, YT videos and channels to .json
