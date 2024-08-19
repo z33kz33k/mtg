@@ -377,7 +377,7 @@ class Video:
                     if not len(sideboard_lines) > 1:
                         other_lines.append(line)
                 # prevent parsing two decklists as one
-                if not len(deck_lines) > 1 and not len(sideboard_lines) > 1:
+                elif not len(deck_lines) > 1 and not len(sideboard_lines) > 1:
                     other_lines.append(line)
         return links, [*get_arena_lines(*other_lines)]
 
