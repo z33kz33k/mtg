@@ -2,7 +2,7 @@
 
     mtgcards.deck.scrapers.tcgplayer.py
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Parse TCG Player decklist page.
+    Scrape TCG Player decklists.
 
     @author: z33k
 

@@ -2,7 +2,7 @@
 
     mtgcards.deck.scrapers.moxfield.py
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Parse Moxfield decklist page.
+    Scrape Moxfield decklists.
 
     @author: z33k
 

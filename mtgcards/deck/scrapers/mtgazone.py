@@ -2,7 +2,7 @@
 
     mtgcards.deck.scrapers.mtgazone.py
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Parse MTG Arena Zone decklist page.
+    Scrape MTG Arena Zone decklists.
 
     @author: z33k
 

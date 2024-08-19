@@ -2,7 +2,7 @@
 
     mtgcards.deck.scrapers.goldfish.py
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Parse MtGGoldfish decklists.
+    Scrape MtGGoldfish decklists.
 
     @author: z33k
 

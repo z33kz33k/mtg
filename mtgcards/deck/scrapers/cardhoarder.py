@@ -2,7 +2,7 @@
 
     mtgcards.deck.scrapers.cardhoarder.py
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Parse Cardhoarder decklist page.
+    Scrape Cardhoarder decklists.
 
     @author: z33k
 

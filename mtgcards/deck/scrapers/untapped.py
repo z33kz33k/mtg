@@ -2,7 +2,7 @@
 
     mtgcards.deck.scrapers.untapped.py
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Parse Untapped.gg decklist page.
+    Scrape Untapped.gg decklists.
 
     @author: z33k
 

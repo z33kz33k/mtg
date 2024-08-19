@@ -2,7 +2,7 @@
 
     mtgcards.deck.scrapers.tappedout.py
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Parse TappedOut decklist page.
+    Scrape TappedOut decklists.
 
     @author: z33k
 

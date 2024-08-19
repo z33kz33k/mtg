@@ -2,7 +2,7 @@
 
     mtgcards.deck.scrapers.scryfall.py
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Parse Scryfall decklist page.
+    Scrape Scryfall decklists.
 
     @author: z33k
 

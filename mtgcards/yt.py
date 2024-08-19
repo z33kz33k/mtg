@@ -26,6 +26,9 @@ from contexttimer import Timer
 from requests import HTTPError, Timeout
 from youtubesearchpython import Channel as YtspChannel
 
+from deck.scrapers.archidekt import ArchidektScraper
+from deck.scrapers.mtgdecksnet import MtgDecksNetScraper
+from deck.scrapers.scryfall import ScryfallScraper
 from mtgcards.const import FILENAME_TIMESTAMP_FORMAT, Json, OUTPUT_DIR, PathLike
 from mtgcards.deck import Deck
 from mtgcards.deck.scrapers.aetherhub import AetherhubScraper
@@ -382,30 +385,36 @@ class Video:
         return links, [*get_arena_lines(*other_lines)]
 
     def _scrape_deck(self, link: str) -> Deck | None:
-        if GoldfishScraper.is_deck_url(link):
-            return GoldfishScraper(link, self.metadata).deck
-        elif AetherhubScraper.is_deck_url(link):
+        if AetherhubScraper.is_deck_url(link):
             return AetherhubScraper(link, self.metadata).deck
+        elif ArchidektScraper.is_deck_url(link):
+            return ArchidektScraper(link, self.metadata).deck
+        elif CardhoarderScraper.is_deck_url(link):
+            return CardhoarderScraper(link, self.metadata).deck
+        elif GoldfishScraper.is_deck_url(link):
+            return GoldfishScraper(link, self.metadata).deck
         elif MoxfieldScraper.is_deck_url(link):
             return MoxfieldScraper(link, self.metadata).deck
+        elif MtgaZoneScraper.is_deck_url(link):
+            return MtgaZoneScraper(link, self.metadata).deck
+        elif MtgDecksNetScraper.is_deck_url(link):
+            return MtgDecksNetScraper(link, self.metadata).deck
+        elif MtgTop8Scraper.is_deck_url(link):
+            return MtgTop8Scraper(link, self.metadata).deck
+        elif NewPageTcgPlayerScraper.is_deck_url(link):
+            return NewPageTcgPlayerScraper(link, self.metadata).deck
+        elif OldPageTcgPlayerScraper.is_deck_url(link):
+            return OldPageTcgPlayerScraper(link, self.metadata).deck
+        elif ScryfallScraper.is_deck_url(link):
+            return ScryfallScraper(link, self.metadata).deck
         elif StreamdeckerScraper.is_deck_url(link):
             return StreamdeckerScraper(link, self.metadata).deck
+        elif TappedoutScraper.is_deck_url(link):
+            return TappedoutScraper(link, self.metadata).deck
         elif UntappedProfileDeckScraper.is_deck_url(link):
             return UntappedProfileDeckScraper(link, self.metadata).deck
         elif UntappedRegularDeckScraper.is_deck_url(link):
             return UntappedRegularDeckScraper(link, self.metadata).deck
-        elif MtgaZoneScraper.is_deck_url(link):
-            return MtgaZoneScraper(link, self.metadata).deck
-        elif CardhoarderScraper.is_deck_url(link):
-            return CardhoarderScraper(link, self.metadata).deck
-        elif TappedoutScraper.is_deck_url(link):
-            return TappedoutScraper(link, self.metadata).deck
-        elif MtgTop8Scraper.is_deck_url(link):
-            return MtgTop8Scraper(link, self.metadata).deck
-        elif OldPageTcgPlayerScraper.is_deck_url(link):
-            return OldPageTcgPlayerScraper(link, self.metadata).deck
-        elif NewPageTcgPlayerScraper.is_deck_url(link):
-            return NewPageTcgPlayerScraper(link, self.metadata).deck
         elif any(h in link for h in self.PASTEBIN_LIKE_HOOKS):
             lines = timed_request(link).splitlines()
             arena_lines = [*get_arena_lines(*lines)]

@@ -2,7 +2,7 @@
 
     mtgcards.deck.scrapers.mtgdecksnet.py
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Parse MTGDecks.net decklist page.
+    Scrape MTGDecks.net decklists.
 
     @author: z33k
 

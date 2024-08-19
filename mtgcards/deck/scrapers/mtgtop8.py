@@ -2,7 +2,7 @@
 
     mtgcards.deck.scrapers.mtgtop8.py
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Parse MTGTop8 decklist page.
+    Scrape MTGTop8 decklists.
 
     @author: z33k
 

@@ -2,7 +2,7 @@
 
     mtgcards.deck.scrapers.streamdecker.py
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Parse Streamdecker decklist page.
+    Scrape Streamdecker decklists.
 
     @author: z33k
 
