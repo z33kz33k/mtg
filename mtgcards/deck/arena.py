@@ -53,7 +53,7 @@ class PlaysetLine:
         return self._collector_number
 
     def __init__(self, line: str) -> None:
-        line = ArenaParser.sanitize(line)
+        line = ArenaParser.sanitize_card_name(line)
         self._is_extended = self.EXTENDED_PATTERN.match(line) is not None
         quantity, rest = line.split(maxsplit=1)
         self._quantity = extract_int(quantity)
@@ -129,8 +129,7 @@ class ArenaParser(DeckParser):
             self._metadata["source"] = "arena.decklist"
         self._deck = self._get_deck()
 
-    def _get_deck(self) -> Deck | None:  # override
-        mainboard, sideboard, commander, companion = [], [], None, None
+    def _get_deck(self) -> Deck | None:
         try:
             for line in self._lines:
                 if line == "Deck":
@@ -146,21 +145,22 @@ class ArenaParser(DeckParser):
                         self._shift_to_mainboard()
 
                     if self._state is ParsingState.SIDEBOARD:
-                        sideboard.extend(PlaysetLine(line).to_playset())
+                        self._sideboard.extend(PlaysetLine(line).to_playset())
                     elif self._state is ParsingState.COMMANDER:
                         if result := PlaysetLine(line).to_playset():
-                            commander = result[0]
+                            self._commander = result[0]
                         else:
                             raise ParsingError(f"Invalid commander line: {line!r}")
                     elif self._state is ParsingState.COMPANION:
                         if result := PlaysetLine(line).to_playset():
-                            companion = result[0]
+                            self._companion = result[0]
                         else:
                             raise ParsingError(f"Invalid companion line: {line!r}")
                     elif self._state is ParsingState.MAINBOARD:
-                        mainboard.extend(PlaysetLine(line).to_playset())
+                        self._mainboard.extend(PlaysetLine(line).to_playset())
 
-            return Deck(mainboard, sideboard, commander, companion, self._metadata)
+            return Deck(
+                self._mainboard, self._sideboard, self._commander, self._companion, self._metadata)
 
         except (ParsingError, InvalidDeck) as err:
             _log.warning(f"Parsing failed with: {err}")

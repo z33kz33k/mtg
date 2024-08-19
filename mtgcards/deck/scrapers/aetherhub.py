@@ -13,9 +13,9 @@ from datetime import datetime
 from bs4 import Tag
 
 from mtgcards.const import Json
-from mtgcards.deck import Archetype, Deck, InvalidDeck, Mode
+from mtgcards.deck import Archetype, Deck, Mode
 from mtgcards.deck.scrapers import DeckScraper
-from mtgcards.scryfall import Card, COMMANDER_FORMATS
+from mtgcards.scryfall import COMMANDER_FORMATS, Card
 from mtgcards.utils import extract_float, extract_int
 from mtgcards.utils.scrape import ScrapingError, getsoup
 
@@ -23,7 +23,6 @@ _log = logging.getLogger(__name__)
 
 
 # TODO: meta-decks
-# no apparent ways to scrape an Arena list
 class AetherhubScraper(DeckScraper):
     """Scraper of Aetherhub decklist page.
 
@@ -56,7 +55,7 @@ class AetherhubScraper(DeckScraper):
         self._throttled = throttled
         self._soup = getsoup(self.url)
         self._scrape_metadata()
-        self._deck = self._get_deck()
+        self._scrape_deck()
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -126,53 +125,51 @@ class AetherhubScraper(DeckScraper):
         name = card_tag.attrs["data-card-name"]
         return cls.get_playset(cls.find_card(name), quantity)
 
-    def _get_deck(self) -> Deck | None:  # override
-        mainboard, sideboard, commander, companion = [], [], None, None
-
-        tables = self._soup.select("table.table.table-borderless.bg-ae-dark")
-        if not tables:
-            raise ScrapingError(
-                f"No tables (that contain grouped card data) in the soup")
-
-        hovers = []
-        for table in tables:
-            hovers.append([*table.find_all("div", "hover-imglink")])
-        hovers = [h for h in hovers if h]
-        hovers = sorted([h for h in hovers if h], key=lambda h: len(h), reverse=True)
-
-        if len(hovers[-1]) == 1:  # may be a commander or companion
-            hovers, commander_tag = hovers[:-1], hovers[-1][0]
-            result = self._to_playset(commander_tag)
-            if result:
-                if (len(result) == 1 and result[0].is_legendary
-                        and (result[0].is_creature or result[0].is_planeswalker)):
-                    if self.fmt in COMMANDER_FORMATS:
-                        commander = result[0]
-                    else:
-                        companion = result[0]
-                else:
-                    sideboard = result
-
-        if len(hovers) == 2:
-            main_list_tags, sideboard_tags = hovers
-        elif len(hovers) == 1:
-            main_list_tags, sideboard_tags = hovers[0], []
-        else:
-            raise ScrapingError(
-                f"Unexpected number of 'hover-imglink' div tags (that contain card data): "
-                f"{len(hovers)}")
-
-        for tag in main_list_tags:
-            mainboard.extend(self._to_playset(tag))
-
-        if not sideboard:
-            for tag in sideboard_tags:
-                sideboard.extend(self._to_playset(tag))
-
+    def _scrape_deck(self) -> Deck | None:  # override
         try:
-            return Deck(mainboard, sideboard, commander, companion, metadata=self._metadata)
-        except InvalidDeck as err:
-            if self._throttled:
-                raise
+            tables = self._soup.select("table.table.table-borderless.bg-ae-dark")
+            if not tables:
+                raise ScrapingError(
+                    f"No tables (that contain grouped card data) in the soup")
+
+            hovers = []
+            for table in tables:
+                hovers.append([*table.find_all("div", "hover-imglink")])
+            hovers = [h for h in hovers if h]
+            hovers = sorted([h for h in hovers if h], key=lambda h: len(h), reverse=True)
+
+            if len(hovers[-1]) == 1:  # may be a commander or companion
+                hovers, commander_tag = hovers[:-1], hovers[-1][0]
+                result = self._to_playset(commander_tag)
+                if result:
+                    if (len(result) == 1 and result[0].is_legendary
+                            and (result[0].is_creature or result[0].is_planeswalker)):
+                        if self.fmt in COMMANDER_FORMATS:
+                            self._commander = result[0]
+                        elif result[0].is_companion:
+                            self._companion = result[0]
+                        else:
+                            self._commander = result[0]
+                    else:
+                        self._sideboard = result
+
+            if len(hovers) == 2:
+                main_list_tags, sideboard_tags = hovers
+            elif len(hovers) == 1:
+                main_list_tags, sideboard_tags = hovers[0], []
+            else:
+                raise ScrapingError(
+                    f"Unexpected number of 'hover-imglink' div tags (that contain card data): "
+                    f"{len(hovers)}")
+
+            for tag in main_list_tags:
+                self._mainboard.extend(self._to_playset(tag))
+
+            if not self._sideboard:
+                for tag in sideboard_tags:
+                    self._sideboard.extend(self._to_playset(tag))
+        except ScrapingError as err:
             _log.warning(f"Scraping failed with: {err}")
-            return None
+            return
+
+        self._build_deck()

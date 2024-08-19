@@ -269,7 +269,8 @@ def multiply_by_symbol(number: float, symbol: str) -> int:
         return int(number * 1_000_000_000)
     elif symbol in ('T', 't'):
         return int(number * 1_000_000_000_000)
-    _log.warning(f"Unsupported symbol for multiplication: {symbol!r}")
+    if symbol:
+        _log.warning(f"Unsupported symbol for multiplication: {symbol!r}")
     return int(number)
 
 

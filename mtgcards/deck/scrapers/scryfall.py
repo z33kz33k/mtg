@@ -13,7 +13,6 @@ from datetime import date
 from bs4 import Tag
 
 from mtgcards.const import Json
-from mtgcards.deck import Deck, InvalidDeck
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.scryfall import Card
 from mtgcards.utils import extract_int
@@ -29,7 +28,7 @@ class ScryfallScraper(DeckScraper):
         super().__init__(url, metadata)
         self._soup = getsoup(self.url)
         self._scrape_metadata()
-        self._deck = self._get_deck()
+        self._scrape_deck()
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -66,9 +65,7 @@ class ScryfallScraper(DeckScraper):
             cards += cls.get_playset(card, quantity)
         return cards
 
-    def _get_deck(self) -> Deck | None:  # override
-        mainboard, sideboard, commander = [], [], None
-
+    def _scrape_deck(self) -> None:  # override
         for section_tag in self._soup.find_all("div", class_="deck-list-section"):
             title = section_tag.find("h6").text
             cards = self._parse_section(section_tag)
@@ -76,14 +73,10 @@ class ScryfallScraper(DeckScraper):
             if "Commander" in title:
                 if len(cards) != 1:
                     raise ScrapingError("Multiple commander card tags")
-                commander = cards[0]
+                self._commander = cards[0]
             elif "Sideboard" in title:
-                sideboard = cards
+                self._sideboard = cards
             else:
-                mainboard += cards
+                self._mainboard += cards
 
-        try:
-            return Deck(mainboard, sideboard, commander, metadata=self._metadata)
-        except InvalidDeck as err:
-            _log.warning(f"Scraping failed with: {err}")
-            return None
+        self._build_deck()

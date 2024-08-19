@@ -417,6 +417,8 @@ class Video:
         decks = []
         for url in urls:
             self._sources.add(extract_source(url))
+            # TODO: decide if scraping a video (or channel for that matter)
+            #  with such a hiccup should be allowed
             try:
                 if deck := self._scrape_deck(url):
                     decks.append(deck)

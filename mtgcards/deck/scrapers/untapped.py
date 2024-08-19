@@ -10,12 +10,11 @@
 import logging
 from datetime import datetime
 
-from selenium.common.exceptions import TimeoutException, NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 
 from mtgcards.const import Json
-from mtgcards.deck import Deck
-from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.deck.arena import ArenaParser
+from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils import extract_float, extract_int
 from mtgcards.utils.scrape import get_dynamic_soup_by_xpath
 
@@ -39,7 +38,7 @@ class UntappedProfileDeckScraper(DeckScraper):
                 consent_xpath=CONSENT_XPATH,
                 clipboard_xpath=CLIPBOARD_XPATH)
             self._scrape_metadata()
-            self._deck = self._get_deck()
+            self._scrape_deck()
         except NoSuchElementException:
             _log.warning("Scraping failed due to absence of the looked for element")
         except TimeoutException:
@@ -58,8 +57,8 @@ class UntappedProfileDeckScraper(DeckScraper):
         span_tag = author_tag.find("span")
         self._metadata["author"] = span_tag.text.strip().removesuffix("'s Profile")
 
-    def _get_deck(self) -> Deck | None:  # override
-        return ArenaParser(self._clipboard.splitlines(), metadata=self._metadata).deck
+    def _scrape_deck(self) -> None:  # override
+        self._deck = ArenaParser(self._clipboard.splitlines(), metadata=self._metadata).deck
 
 
 class UntappedRegularDeckScraper(DeckScraper):
@@ -72,7 +71,7 @@ class UntappedRegularDeckScraper(DeckScraper):
                 self.url, CLIPBOARD_XPATH, consent_xpath=CONSENT_XPATH,
                 clipboard_xpath=CLIPBOARD_XPATH)
             self._scrape_metadata()
-            self._deck = self._get_deck()
+            self._scrape_deck()
         except TimeoutException:
             _log.warning(f"Scraping failed due to Selenium timing out")
 
@@ -91,8 +90,8 @@ class UntappedRegularDeckScraper(DeckScraper):
             name, *_ = name.split(" (")
         self._metadata["name"] = name
 
-    def _get_deck(self) -> Deck | None:  # override
-        return ArenaParser(self._clipboard.splitlines(), metadata=self._metadata).deck
+    def _scrape_deck(self) -> None:  # override
+        self._deck = ArenaParser(self._clipboard.splitlines(), metadata=self._metadata).deck
 
 
 class UntappedMetaDeckScraper(DeckScraper):
@@ -105,7 +104,7 @@ class UntappedMetaDeckScraper(DeckScraper):
                 self.url, CLIPBOARD_XPATH, consent_xpath=CONSENT_XPATH,
                 clipboard_xpath=CLIPBOARD_XPATH)
             self._scrape_metadata()
-            self._deck = self._get_deck()
+            self._scrape_deck()
         except TimeoutException:
             _log.warning(f"Scraping failed due to Selenium timing out")
 
@@ -130,6 +129,5 @@ class UntappedMetaDeckScraper(DeckScraper):
         time_range_tag = self._soup.select_one("div[class*='TimeRangeFilter__DateText']")
         self._metadata["meta"]["time_range_since"] = time_range_tag.text.removesuffix("Now")
 
-    def _get_deck(self) -> Deck | None:  # override
-        return ArenaParser(self._clipboard.splitlines(), metadata=self._metadata).deck
-
+    def _scrape_deck(self) -> None:  # override
+        self._deck = ArenaParser(self._clipboard.splitlines(), metadata=self._metadata).deck

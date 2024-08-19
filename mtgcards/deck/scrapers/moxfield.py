@@ -11,7 +11,6 @@ import logging
 from datetime import datetime
 
 from mtgcards.const import Json
-from mtgcards.deck import Deck, InvalidDeck
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.scryfall import Card
 from mtgcards.utils.scrape import timed_request
@@ -19,7 +18,6 @@ from mtgcards.utils.scrape import timed_request
 _log = logging.getLogger(__name__)
 
 
-# no apparent ways to scrape an Arena list
 class MoxfieldScraper(DeckScraper):
     """Scraper of Moxfield decklist page.
     """
@@ -52,7 +50,7 @@ class MoxfieldScraper(DeckScraper):
             self.API_URL_TEMPLATE.format(self._decklist_id), return_json=True,
             headers=self.HEADERS)
         self._scrape_metadata()
-        self._deck = self._get_deck()
+        self._scrape_deck()
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -86,23 +84,18 @@ class MoxfieldScraper(DeckScraper):
         name = json_card["card"]["name"]
         return cls.get_playset(cls.find_card(name, scryfall_id), quantity)
 
-    def _get_deck(self) -> Deck | None:  # override
-        mainboard, sideboard, commander, companion = [], [], None, None
+    def _scrape_deck(self) -> None:  # override
         for card in self._json_data["boards"]["mainboard"]["cards"].values():
-            mainboard.extend(self._to_playset(card))
+            self._mainboard.extend(self._to_playset(card))
         for card in self._json_data["boards"]["sideboard"]["cards"].values():
-            sideboard.extend(self._to_playset(card))
+            self._sideboard.extend(self._to_playset(card))
         if self._json_data["boards"]["commanders"]["cards"]:
             card = next(iter(self._json_data["boards"]["commanders"]["cards"].items()))[1]
             result = self._to_playset(card)
-            commander = result[0]
+            self._commander = result[0]
         if self._json_data["boards"]["companions"]["cards"]:
             card = next(iter(self._json_data["boards"]["companions"]["cards"].items()))[1]
             result = self._to_playset(card)
-            companion = result[0]
+            self._companion = result[0]
 
-        try:
-            return Deck(mainboard, sideboard, commander, companion, metadata=self._metadata)
-        except InvalidDeck as err:
-            _log.warning(f"Scraping failed with: {err}")
-            return None
+        self._build_deck()

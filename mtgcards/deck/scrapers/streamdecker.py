@@ -12,7 +12,6 @@ import re
 from datetime import date
 
 from mtgcards.const import Json
-from mtgcards.deck import Deck, InvalidDeck
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils import get_ago_date
 from mtgcards.utils.scrape import timed_request
@@ -20,7 +19,6 @@ from mtgcards.utils.scrape import timed_request
 _log = logging.getLogger(__name__)
 
 
-# no apparent ways to scrape an Arena list
 class StreamdeckerScraper(DeckScraper):
     """Scraper of Streamdecker deck page.
     """
@@ -32,8 +30,7 @@ class StreamdeckerScraper(DeckScraper):
         self._json_data = timed_request(
             self.API_URL_TEMPLATE.format(self._decklist_id), return_json=True)["data"]
         self._scrape_metadata()
-        self._mainboard, self._sideboard, self._commander, self._companion = [], [], None, None
-        self._deck = self._get_deck()
+        self._scrape_deck()
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -69,11 +66,7 @@ class StreamdeckerScraper(DeckScraper):
         if json_card["companion"]:
             self._companion = card
 
-    def _get_deck(self) -> Deck | None:
+    def _scrape_deck(self) -> None:
         for json_card in self._json_data["cardList"]:
             self._parse_json_card(json_card)
-        try:
-            return Deck(self._mainboard, self._sideboard, self._commander, metadata=self._metadata)
-        except InvalidDeck as err:
-            _log.warning(f"Scraping failed with: {err}")
-            return None
+        self._build_deck()

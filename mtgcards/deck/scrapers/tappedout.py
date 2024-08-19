@@ -10,12 +10,10 @@
 import logging
 
 from mtgcards.const import Json
-from mtgcards.deck import Deck, InvalidDeck
-from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.deck.arena import ArenaParser
-from mtgcards.utils import get_ago_date, extract_int
+from mtgcards.deck.scrapers import DeckScraper
+from mtgcards.utils import extract_int, get_ago_date
 from mtgcards.utils.scrape import getsoup
-
 
 _log = logging.getLogger(__name__)
 
@@ -27,7 +25,7 @@ class TappedoutScraper(DeckScraper):
         super().__init__(url, metadata)
         self._soup = getsoup(self.url)
         self._scrape_metadata()
-        self._deck = self._get_deck()
+        self._scrape_deck()
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -50,13 +48,8 @@ class TappedoutScraper(DeckScraper):
                 if views := value_col.text.strip():
                     self._metadata["views"] = extract_int(views)
 
-    def _get_deck(self) -> Deck | None:  # override
+    def _scrape_deck(self) -> None:  # override
         lines = self._soup.find("textarea", id="mtga-textarea").text.strip().splitlines()
         _, name_line, _, _, *lines = lines
         self._metadata["name"] = name_line.removeprefix("Name ")
-
-        try:
-            return ArenaParser(lines, self._metadata).deck
-        except InvalidDeck as err:
-            _log.warning(f"Scraping failed with: {err}")
-            return None
+        self._deck = ArenaParser(lines, self._metadata).deck

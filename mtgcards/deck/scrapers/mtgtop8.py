@@ -11,7 +11,6 @@ import logging
 from datetime import datetime
 
 from mtgcards.const import Json
-from mtgcards.deck import Deck, InvalidDeck
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils import extract_int
 from mtgcards.utils.scrape import getsoup
@@ -31,7 +30,7 @@ class MtgTop8Scraper(DeckScraper):
         super().__init__(url, metadata)
         self._soup = getsoup(self.url)
         self._scrape_metadata()
-        self._deck = self._get_deck()
+        self._scrape_deck()
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -66,15 +65,14 @@ class MtgTop8Scraper(DeckScraper):
         if source_tag := self._soup.find("a", target="_blank"):
             self._metadata["event"]["source"] = source_tag.text.strip()
 
-    def _get_deck(self) -> Deck | None:  # override
-        mainboard, sideboard, commander = [], [], None
+    def _scrape_deck(self) -> None:  # override
         deck_tag = self._soup.find("div", style="display:flex;align-content:stretch;")
-        cards, commander_on = mainboard, False
+        cards, commander_on = self._mainboard, False
         for block_tag in deck_tag:
             for sub_tag in block_tag:
                 if sub_tag.name == "div" and sub_tag.attrs.get("class") == ['O14']:
                     if sub_tag.text == "SIDEBOARD":
-                        cards = sideboard
+                        cards = self._sideboard
                         commander_on = False
                     elif sub_tag.text == "COMMANDER":
                         commander_on = True
@@ -84,13 +82,9 @@ class MtgTop8Scraper(DeckScraper):
                     quantity, name = sub_tag.text.split(maxsplit=1)
                     card = self.find_card(name.strip())
                     if commander_on:
-                        commander = card
+                        self._commander = card
                     else:
                         quantity = extract_int(quantity)
                         cards += self.get_playset(card, quantity)
 
-        try:
-            return Deck(mainboard, sideboard, commander, metadata=self._metadata)
-        except InvalidDeck as err:
-            _log.warning(f"Scraping failed with: {err}")
-            return None
+        self._build_deck()

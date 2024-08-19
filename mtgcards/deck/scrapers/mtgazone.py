@@ -38,7 +38,7 @@ class MtgaZoneScraper(DeckScraper):
         self._deck_tag = deck_tag
         self._soup = deck_tag or getsoup(self.url)
         self._scrape_metadata()
-        self._deck = self._get_deck()
+        self._scrape_deck()
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -89,30 +89,24 @@ class MtgaZoneScraper(DeckScraper):
             decklist.extend(self._to_playset(card_tag))
         return decklist
 
-    def _get_deck(self) -> Deck | None:  # override
-        mainboard, sideboard, commander, companion = [], [], None, None
-
+    def _scrape_deck(self) -> None:  # override
         if commander_tag := self._soup.select_one("div.decklist.short.commander"):
-            commander = self._process_decklist(commander_tag)[0]
+            self._commander = self._process_decklist(commander_tag)[0]
 
         if companion_tag := self._soup.select_one("div.decklist.short.companion"):
-            companion = self._process_decklist(companion_tag)[0]
+            self._companion = self._process_decklist(companion_tag)[0]
 
         main_tag = self._soup.select_one("div.decklist.main")
-        mainboard = self._process_decklist(main_tag)
+        self._mainboard = self._process_decklist(main_tag)
 
         if sideboard_tags := self._soup.select("div.decklist.sideboard"):
             try:
                 sideboard_tag = sideboard_tags[1]
-                sideboard = self._process_decklist(sideboard_tag)
+                self._sideboard = self._process_decklist(sideboard_tag)
             except IndexError:
                 pass
 
-        try:
-            return Deck(mainboard, sideboard, commander, companion, self._metadata)
-        except InvalidDeck as err:
-            _log.warning(f"Scraping failed with: {err}")
-            return None
+        self._build_deck()
 
 
 def _parse_tiers(table: Tag) -> dict[str, int]:

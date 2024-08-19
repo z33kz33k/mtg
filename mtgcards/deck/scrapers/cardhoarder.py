@@ -11,7 +11,6 @@ import json
 import logging
 
 from mtgcards.const import Json
-from mtgcards.deck import Deck, InvalidDeck
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils.scrape import ScrapingError, getsoup
 
@@ -49,7 +48,7 @@ class CardhoarderScraper(DeckScraper):
         self._soup = getsoup(self.url, headers=self.HEADERS)
         self._deck_data = self._get_deck_data()
         self._scrape_metadata()
-        self._deck = self._get_deck()
+        self._scrape_deck()
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -67,8 +66,7 @@ class CardhoarderScraper(DeckScraper):
         self._metadata["name"] = self._deck_data["name"]
 
     # TODO: commander, companion (example deck with such data needed)
-    def _parse_deck_data(self) -> Deck:
-        mainboard, sideboard = [], []
+    def _scrape_deck(self) -> None:  # override
         card_jsons = []
         for _, item in self._deck_data["items"].items():
             card_jsons += item["items"]
@@ -78,15 +76,8 @@ class CardhoarderScraper(DeckScraper):
             quantity_main = int(data["SavedDeckItem"]["quantity_main"])
             quantity_sideboard = int(data["SavedDeckItem"]["quantity_sideboard"])
             card = self.find_card(name)
-            mainboard += self.get_playset(card, quantity_main)
+            self._mainboard += self.get_playset(card, quantity_main)
             if quantity_sideboard:
-                sideboard += self.get_playset(card, quantity_sideboard)
+                self._sideboard += self.get_playset(card, quantity_sideboard)
 
-        return Deck(mainboard, sideboard, metadata=self._metadata)
-
-    def _get_deck(self) -> Deck | None:  # override
-        try:
-            return self._parse_deck_data()
-        except InvalidDeck as err:
-            _log.warning(f"Scraping failed with: {err}")
-            return None
+        self._build_deck()

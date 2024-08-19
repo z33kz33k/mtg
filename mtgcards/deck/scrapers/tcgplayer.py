@@ -14,7 +14,6 @@ import dateutil.parser
 from bs4 import Tag
 
 from mtgcards.const import Json
-from mtgcards.deck import Deck, InvalidDeck
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.scryfall import Card
 from mtgcards.utils import extract_int
@@ -30,7 +29,7 @@ class OldPageTcgPlayerScraper(DeckScraper):
         super().__init__(url, metadata)
         self._soup = getsoup(self.url)
         self._scrape_metadata()
-        self._deck = self._get_deck()
+        self._scrape_deck()
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -58,25 +57,20 @@ class OldPageTcgPlayerScraper(DeckScraper):
             cards += cls.get_playset(cls.find_card(name_tag.text.strip()), quantity)
         return cards
 
-    def _get_deck(self) -> Deck | None:  # override
-        mainboard, sideboard, commander = [], [], None
+    def _scrape_deck(self) -> None:  # override
         deck_tags = self._soup.find_all("div", class_="subdeck")
         for deck_tag in deck_tags:
             if deck_tag.find("h3").text.lower().startswith("command"):
                 cards = self._process_deck_tag(deck_tag)
                 if not len(cards) == 1:
                     raise ScrapingError("Commander must have exactly one card")
-                commander = cards[0]
+                self._commander = cards[0]
             elif deck_tag.find("h3").text.lower().startswith("sideboard"):
-                sideboard = self._process_deck_tag(deck_tag)
+                self._sideboard = self._process_deck_tag(deck_tag)
             else:
-                mainboard = self._process_deck_tag(deck_tag)
+                self._mainboard = self._process_deck_tag(deck_tag)
 
-        try:
-            return Deck(mainboard, sideboard, commander, metadata=self._metadata)
-        except InvalidDeck as err:
-            _log.warning(f"Scraping failed with: {err}")
-            return None
+        self._build_deck()
 
 
 # TODO: there's actually a request to API for JSON I forgot to check:
@@ -92,7 +86,7 @@ class NewPageTcgPlayerScraper(DeckScraper):
         super().__init__(url, metadata)
         self._soup, _, _ = get_dynamic_soup_by_xpath(self.url, self._XPATH)
         self._scrape_metadata()
-        self._deck = self._get_deck()
+        self._scrape_deck()
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -124,26 +118,20 @@ class NewPageTcgPlayerScraper(DeckScraper):
             str(quantity))
         return cls.get_playset(cls.find_card(name), quantity)
 
-    def _get_deck(self) -> Deck | None:  # override
-        mainboard, sideboard, commander = [], [], None
-
+    def _scrape_deck(self) -> None:  # override
         commander_tag = self._soup.find("div", class_="commandzone")
         if commander_tag:
-            commander = self._to_playset(commander_tag.find("li", class_="list__item"))[0]
+            self._commander = self._to_playset(commander_tag.find("li", class_="list__item"))[0]
 
         main_tag = self._soup.find("div", class_="maindeck")
         card_tags = main_tag.find_all("li", class_="list__item")
         for card_tag in card_tags:
-            mainboard += self._to_playset(card_tag)
+            self._mainboard += self._to_playset(card_tag)
 
         side_tag = self._soup.find("div", class_="sideboard")
         if side_tag:
             card_tags = side_tag.find_all("li", class_="list__item")
             for card_tag in card_tags:
-                sideboard += self._to_playset(card_tag)
+                self._sideboard += self._to_playset(card_tag)
 
-        try:
-            return Deck(mainboard, sideboard, commander, metadata=self._metadata)
-        except InvalidDeck as err:
-            _log.warning(f"Scraping failed with: {err}")
-            return None
+        self._build_deck()

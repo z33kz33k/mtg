@@ -1036,11 +1036,8 @@ class DeckParser(ABC):
     def __init__(self, metadata: Json | None = None) -> None:
         self._metadata = metadata or {}
         self._state = ParsingState.IDLE
+        self._mainboard, self._sideboard, self._commander, self._companion = [], [], None, None
         self._deck = None
-
-    @abstractmethod
-    def _get_deck(self) -> Deck | None:
-        raise NotImplementedError
 
     def _update_fmt(self, fmt: str) -> None:
         if fmt != self.fmt and fmt in all_formats():
@@ -1080,7 +1077,7 @@ class DeckParser(ABC):
         if scryfall_id:
             if card := find_by_id(scryfall_id):
                 return card
-        name = cls.sanitize(name)
+        name = cls.sanitize_card_name(name)
         card = find_by_name(name)
         if not card:
             raise ParsingError(f"Unable to find card {name!r}")
@@ -1091,5 +1088,5 @@ class DeckParser(ABC):
         return [card] * quantity
 
     @staticmethod
-    def sanitize(text: str) -> str:
+    def sanitize_card_name(text: str) -> str:
         return text.replace("’", "'")

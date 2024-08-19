@@ -12,9 +12,8 @@ import logging
 import dateutil.parser
 
 from mtgcards.const import Json
-from mtgcards.deck import Deck, InvalidDeck
-from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.deck.arena import ArenaParser
+from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils.scrape import get_dynamic_soup_by_xpath
 
 _log = logging.getLogger(__name__)
@@ -39,7 +38,7 @@ class MtgDecksNetScraper(DeckScraper):
         self._soup, _, _ = get_dynamic_soup_by_xpath(
             self.url, self._XPATH, consent_xpath=self._CONSENT_XPATH)
         self._scrape_metadata()
-        self._deck = self._get_deck()
+        self._scrape_deck()
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -64,10 +63,7 @@ class MtgDecksNetScraper(DeckScraper):
 
     # MTGDecks.net puts a commander into sideboard and among other cards to boot - making it
     # essentially unscrapable
-    def _get_deck(self) -> Deck | None:  # override
+    def _scrape_deck(self) -> None:  # override
         deck_tag = self._soup.find("textarea", id="arena_deck")
-        try:
-            return ArenaParser(deck_tag.text.strip().splitlines(), self._metadata).deck
-        except InvalidDeck as err:
-            _log.warning(f"Scraping failed with: {err}")
-            return None
+        self._deck = ArenaParser(
+            deck_tag.text.strip().splitlines(), self._metadata).deck
