@@ -27,6 +27,7 @@ from requests import HTTPError, Timeout
 from youtubesearchpython import Channel as YtspChannel
 
 from deck.scrapers.archidekt import ArchidektScraper
+from deck.scrapers.deckstats import DeckstatsScraper
 from deck.scrapers.mtgdecksnet import MtgDecksNetScraper
 from deck.scrapers.scryfall import ScryfallScraper
 from mtgcards.const import FILENAME_TIMESTAMP_FORMAT, Json, OUTPUT_DIR, PathLike
@@ -391,6 +392,8 @@ class Video:
             return ArchidektScraper(link, self.metadata).deck
         elif CardhoarderScraper.is_deck_url(link):
             return CardhoarderScraper(link, self.metadata).deck
+        elif DeckstatsScraper.is_deck_url(link):
+            return DeckstatsScraper(link, self.metadata).deck
         elif GoldfishScraper.is_deck_url(link):
             return GoldfishScraper(link, self.metadata).deck
         elif MoxfieldScraper.is_deck_url(link):
