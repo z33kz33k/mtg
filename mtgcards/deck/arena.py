@@ -148,7 +148,7 @@ class ArenaParser(DeckParser):
                         self._sideboard.extend(PlaysetLine(line).to_playset())
                     elif self._state is ParsingState.COMMANDER:
                         if result := PlaysetLine(line).to_playset():
-                            self._commander = result[0]
+                            self._set_commander(result[0])
                         else:
                             raise ParsingError(f"Invalid commander line: {line!r}")
                     elif self._state is ParsingState.COMPANION:
@@ -160,7 +160,8 @@ class ArenaParser(DeckParser):
                         self._mainboard.extend(PlaysetLine(line).to_playset())
 
             return Deck(
-                self._mainboard, self._sideboard, self._commander, self._companion, self._metadata)
+                self._mainboard, self._sideboard, self._commander, self._partner_commander,
+                self._companion, self._metadata)
 
         except (ParsingError, InvalidDeck) as err:
             _log.warning(f"Parsing failed with: {err}")

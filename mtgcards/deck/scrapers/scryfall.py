@@ -71,9 +71,8 @@ class ScryfallScraper(DeckScraper):
             cards = self._parse_section(section_tag)
 
             if "Commander" in title:
-                if len(cards) != 1:
-                    raise ScrapingError("Multiple commander card tags")
-                self._commander = cards[0]
+                for card in cards:
+                    self._set_commander(card)
             elif "Sideboard" in title:
                 self._sideboard = cards
             else:

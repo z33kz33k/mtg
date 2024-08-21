@@ -138,20 +138,23 @@ class AetherhubScraper(DeckScraper):
             hovers = [h for h in hovers if h]
             hovers = sorted([h for h in hovers if h], key=lambda h: len(h), reverse=True)
 
-            if len(hovers[-1]) == 1:  # may be a commander or companion
-                hovers, commander_tag = hovers[:-1], hovers[-1][0]
-                result = self._to_playset(commander_tag)
-                if result:
-                    if (len(result) == 1 and result[0].is_legendary
-                            and (result[0].is_creature or result[0].is_planeswalker)):
-                        if self.fmt in COMMANDER_FORMATS:
-                            self._commander = result[0]
-                        elif result[0].is_companion:
-                            self._companion = result[0]
+            if len(hovers[-1]) in (1, 2):  # may be a commander (or commanders) or companion
+                hovers, commander_tags = hovers[:-1], hovers[-1]
+                for commander_tag in commander_tags:
+                    result = self._to_playset(commander_tag)
+                    if result:
+                        if (len(result) == 1 and result[0].is_legendary
+                                and (result[0].is_creature or result[0].is_planeswalker)):
+                            if self.fmt in COMMANDER_FORMATS:
+                                self._set_commander(result[0])
+                            elif result[0].is_companion:
+                                if self._companion:
+                                    raise ScrapingError("Multiple companion cards in the same deck")
+                                self._companion = result[0]
+                            else:
+                                self._set_commander(result[0])
                         else:
-                            self._commander = result[0]
-                    else:
-                        self._sideboard = result
+                            self._sideboard += result
 
             if len(hovers) == 2:
                 main_list_tags, sideboard_tags = hovers

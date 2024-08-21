@@ -82,7 +82,7 @@ class MtgTop8Scraper(DeckScraper):
                     quantity, name = sub_tag.text.split(maxsplit=1)
                     card = self.find_card(name.strip())
                     if commander_on:
-                        self._commander = card
+                        self._set_commander(card)
                     else:
                         quantity = extract_int(quantity)
                         cards += self.get_playset(card, quantity)

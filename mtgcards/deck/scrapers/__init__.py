@@ -57,7 +57,8 @@ class DeckScraper(DeckParser):
     def _build_deck(self) -> None:
         try:
             self._deck = Deck(
-                self._mainboard, self._sideboard, self._commander, self._companion, self._metadata)
+                self._mainboard, self._sideboard, self._commander, self._partner_commander,
+                self._companion, self._metadata)
         except InvalidDeck as err:
             _log.warning(f"Scraping failed with: {err}")
             if self._throttled:

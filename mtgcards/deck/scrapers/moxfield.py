@@ -54,7 +54,7 @@ class MoxfieldScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "www.moxfield.com/decks/" in url
+        return "moxfield.com/decks/" in url
 
     def _scrape_metadata(self) -> None:  # override
         fmt = self._json_data["format"]
@@ -89,10 +89,9 @@ class MoxfieldScraper(DeckScraper):
             self._mainboard.extend(self._to_playset(card))
         for card in self._json_data["boards"]["sideboard"]["cards"].values():
             self._sideboard.extend(self._to_playset(card))
-        if self._json_data["boards"]["commanders"]["cards"]:
-            card = next(iter(self._json_data["boards"]["commanders"]["cards"].items()))[1]
+        for card in self._json_data["boards"]["commanders"]["cards"].values():
             result = self._to_playset(card)
-            self._commander = result[0]
+            self._set_commander(result[0])
         if self._json_data["boards"]["companions"]["cards"]:
             card = next(iter(self._json_data["boards"]["companions"]["cards"].items()))[1]
             result = self._to_playset(card)

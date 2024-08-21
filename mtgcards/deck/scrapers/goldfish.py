@@ -147,7 +147,7 @@ class GoldfishScraper(DeckScraper):
                     cards = self._to_playset(row)
                     if self._state is ParsingState.COMMANDER:
                         if cards:
-                            self._commander = cards[0]
+                            self._set_commander(cards[0])
                     elif self._state is ParsingState.COMPANION:
                         if cards:
                             self._companion = cards[0]

@@ -56,7 +56,7 @@ class ArchidektScraper(DeckScraper):
         card = self.find_card(name, (set_code, collector_number))
         playset = self.get_playset(card, quantity)
         if "Commander" in categories:
-            self._commander = card
+            self._set_commander(card)
         elif "Sideboard" in categories:
             self._sideboard.extend(playset)
         else:

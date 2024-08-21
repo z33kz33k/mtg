@@ -62,9 +62,8 @@ class OldPageTcgPlayerScraper(DeckScraper):
         for deck_tag in deck_tags:
             if deck_tag.find("h3").text.lower().startswith("command"):
                 cards = self._process_deck_tag(deck_tag)
-                if not len(cards) == 1:
-                    raise ScrapingError("Commander must have exactly one card")
-                self._commander = cards[0]
+                for card in cards:
+                    self._set_commander(card)
             elif deck_tag.find("h3").text.lower().startswith("sideboard"):
                 self._sideboard = self._process_deck_tag(deck_tag)
             else:
@@ -121,7 +120,9 @@ class NewPageTcgPlayerScraper(DeckScraper):
     def _scrape_deck(self) -> None:  # override
         commander_tag = self._soup.find("div", class_="commandzone")
         if commander_tag:
-            self._commander = self._to_playset(commander_tag.find("li", class_="list__item"))[0]
+            card_tags = commander_tag.find_all("li", class_="list__item")
+            for card_tag in card_tags:
+                self._set_commander(self._to_playset(card_tag)[0])
 
         main_tag = self._soup.find("div", class_="maindeck")
         card_tags = main_tag.find_all("li", class_="list__item")

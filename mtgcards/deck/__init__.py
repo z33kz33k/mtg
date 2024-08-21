@@ -1054,7 +1054,8 @@ class DeckParser(ABC):
     def __init__(self, metadata: Json | None = None) -> None:
         self._metadata = metadata or {}
         self._state = ParsingState.IDLE
-        self._mainboard, self._sideboard, self._commander, self._companion = [], [], None, None
+        self._mainboard, self._sideboard = [], []
+        self._commander, self._partner_commander, self._companion = None, None, None
         self._deck = None
 
     def _update_fmt(self, fmt: str) -> None:
@@ -1064,6 +1065,12 @@ class DeckParser(ABC):
                     f"Earlier specified format: {self.fmt!r} overwritten with a scraped "
                     f"one: {fmt!r}")
             self._metadata["format"] = fmt
+
+    def _set_commander(self, card: Card) -> None:
+        if self._commander:
+            self._partner_commander = card
+        else:
+            self._commander = card
 
     def _shift_to_mainboard(self) -> None:
         if self._state is ParsingState.MAINBOARD:

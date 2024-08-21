@@ -91,7 +91,8 @@ class MtgaZoneScraper(DeckScraper):
 
     def _scrape_deck(self) -> None:  # override
         if commander_tag := self._soup.select_one("div.decklist.short.commander"):
-            self._commander = self._process_decklist(commander_tag)[0]
+            for card in self._process_decklist(commander_tag):
+                self._set_commander(card)
 
         if companion_tag := self._soup.select_one("div.decklist.short.companion"):
             self._companion = self._process_decklist(companion_tag)[0]

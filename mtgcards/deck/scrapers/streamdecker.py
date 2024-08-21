@@ -62,7 +62,7 @@ class StreamdeckerScraper(DeckScraper):
         if json_card["sideboard"]:
             self._sideboard.extend(self.get_playset(card, json_card["sideboard"]))
         if json_card["commander"]:
-            self._commander = card
+            self._set_commander(card)
         if json_card["companion"]:
             self._companion = card
 
