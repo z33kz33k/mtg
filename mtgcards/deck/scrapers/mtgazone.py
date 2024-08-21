@@ -80,7 +80,7 @@ class MtgaZoneScraper(DeckScraper):
         name = a_tag.text.strip()
         *_, scryfall_id = a_tag.attrs["data-cimg"].split("/")
         scryfall_id, *_ = scryfall_id.split(".jpg")
-        return cls.get_playset(cls.find_card(name, scryfall_id), quantity)
+        return cls.get_playset(cls.find_card(name, scryfall_id=scryfall_id), quantity)
 
     def _process_decklist(self, decklist_tag: Tag) -> list[Card]:
         decklist = []

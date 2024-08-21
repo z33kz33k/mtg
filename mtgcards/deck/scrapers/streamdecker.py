@@ -56,7 +56,7 @@ class StreamdeckerScraper(DeckScraper):
         if "/" in name:
             # sanitize multiface names, e.g. "Wear/Tear" ==> "Wear // Tear"
             name = re.sub(r'(?<=[a-zA-Z])/(?=[a-zA-Z])', r' // ', name)
-        card = self.find_card(name, scryfall_id)
+        card = self.find_card(name, scryfall_id=scryfall_id)
         if json_card["main"]:
             self._mainboard.extend(self.get_playset(card, json_card["main"]))
         if json_card["sideboard"]:

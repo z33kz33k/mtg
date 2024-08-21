@@ -20,7 +20,10 @@ from typing import Any, Iterable, Iterator
 from mtgcards.const import Json, OUTPUT_DIR, PathLike
 from mtgcards.scryfall import (
     Card, Color, MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, aggregate, all_formats,
-    find_by_collector_number, find_by_scryfall_id, find_by_name, find_sets,
+    find_by_cardmarket_id, find_by_collector_number, find_by_mtgo_id, find_by_oracle_id,
+    find_by_scryfall_id,
+    find_by_name,
+    find_by_tcgplayer_id, find_sets,
     format_cards as scryfall_fmt_cards, set_cards as
     scryfall_set_cards)
 from mtgcards.utils import ParsingError, extract_int, from_iterable, getrepr, serialize_dates
@@ -1070,13 +1073,30 @@ class DeckParser(ABC):
 
     @classmethod
     def find_card(
-            cls, name: str, scryfall_id="",
-            set_and_collector_number: tuple[str, str] | None = None) -> Card:
+            cls, name: str,
+            set_and_collector_number: tuple[str, str] | None = None,
+            scryfall_id="",
+            oracle_id="",
+            tcgplayer_id: int | None = None,
+            cardmarket_id: int | None = None,
+            mtgo_id: int | None = None) -> Card:
         if set_and_collector_number:
             if card := find_by_collector_number(*set_and_collector_number):
                 return card
         if scryfall_id:
             if card := find_by_scryfall_id(scryfall_id):
+                return card
+        if oracle_id:
+            if card := find_by_oracle_id(oracle_id):
+                return card
+        if tcgplayer_id is not None:
+            if card := find_by_tcgplayer_id(tcgplayer_id):
+                return card
+        if cardmarket_id is not None:
+            if card := find_by_cardmarket_id(cardmarket_id):
+                return card
+        if mtgo_id is not None:
+            if card := find_by_mtgo_id(mtgo_id):
                 return card
         name = cls.sanitize_card_name(name)
         card = find_by_name(name)

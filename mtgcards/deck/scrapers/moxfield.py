@@ -82,7 +82,7 @@ class MoxfieldScraper(DeckScraper):
         scryfall_id = json_card["card"]["scryfall_id"]
         quantity = json_card["quantity"]
         name = json_card["card"]["name"]
-        return cls.get_playset(cls.find_card(name, scryfall_id), quantity)
+        return cls.get_playset(cls.find_card(name, scryfall_id=scryfall_id), quantity)
 
     def _scrape_deck(self) -> None:  # override
         for card in self._json_data["boards"]["mainboard"]["cards"].values():

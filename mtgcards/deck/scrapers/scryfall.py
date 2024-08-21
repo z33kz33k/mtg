@@ -61,7 +61,7 @@ class ScryfallScraper(DeckScraper):
             link = name_tag.find("a").attrs["href"]
             text = link.removeprefix("https://scryfall.com/card/")
             set_code, collector_number, *_ = text.split("/")
-            card = cls.find_card(name, set_and_collector_number=(set_code, collector_number))
+            card = cls.find_card(name, (set_code, collector_number))
             cards += cls.get_playset(card, quantity)
         return cards
 

@@ -53,7 +53,7 @@ class ArchidektScraper(DeckScraper):
         set_code = card_json["setCode"]
         collector_number = card_json["collectorNumber"]
         categories = card_json["categories"]
-        card = self.find_card(name, set_and_collector_number=(set_code, collector_number))
+        card = self.find_card(name, (set_code, collector_number))
         playset = self.get_playset(card, quantity)
         if "Commander" in categories:
             self._commander = card

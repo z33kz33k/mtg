@@ -80,7 +80,7 @@ class PlaysetLine:
         set_and_collector_number = (
             self.set_code, self.collector_number) if self.is_extended else None
         return ArenaParser.get_playset(ArenaParser.find_card(
-            self._name, set_and_collector_number=set_and_collector_number), self.quantity)
+            self._name, set_and_collector_number), self.quantity)
 
 
 def is_playset_line(line: str) -> bool:
