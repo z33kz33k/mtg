@@ -846,6 +846,10 @@ class Card:
         return "Token" in self.supertypes
 
     @property
+    def is_partner(self) -> bool:
+        return "Partner" in self.keywords
+
+    @property
     def is_alchemy_rebalance(self) -> bool:
         return self.name.startswith(ALCHEMY_REBALANCE_INDICATOR)
 

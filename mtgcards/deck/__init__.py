@@ -358,8 +358,8 @@ class Deck:
     """
     MIN_MAINBOARD_SIZE = 60
     MAX_SIDEBOARD_SIZE = 15
-    MIN_AGGRO_CMC = 2.3
-    MAX_CONTROL_CREATURES_COUNT = 10
+    MIN_AGGRO_CMC = 2.3  # arbitrary
+    MAX_CONTROL_CREATURES_COUNT = 10  # arbitrary
 
     @cached_property
     def mainboard(self) -> list[Card]:
@@ -377,6 +377,10 @@ class Deck:
     @property
     def commander(self) -> Card | None:
         return self._commander
+
+    @property
+    def partner_commander(self) -> Card | None:
+        return self._partner_commander
 
     @property
     def companion(self) -> Card | None:
@@ -573,32 +577,43 @@ class Deck:
 
     def __init__(
             self, mainboard: Iterable[Card], sideboard: Iterable[Card] | None = None,
-            commander: Card | None = None, companion: Card | None = None,
-            metadata: Json | None = None) -> None:
-        # TODO: support two commanders (Partner keyword)
-        if commander:
-            if not commander.is_legendary or (
-                    not commander.is_creature and not commander.is_planeswalker):
+            commander: Card | None = None, partner_commander: Card | None = None,
+            companion: Card | None = None, metadata: Json | None = None) -> None:
+        commanders = [c for c in [commander, partner_commander] if c]
+        for c in commanders:
+            if not c.is_legendary or (
+                    not c.is_creature and not c.is_planeswalker):
                 raise InvalidDeck(
-                    f"Commander must be a legendary creature/planeswalker. '{commander}' is not")
+                    f"Commander must be a legendary creature/planeswalker. '{c}' is not")
+        if partner_commander:
+            if not commander:
+                raise InvalidDeck("Partner commander without commander")
+            if non_partner := from_iterable(commanders, lambda c: not c.is_partner):
+                raise InvalidDeck(
+                    f"Each partner commander must have a 'Partner' keyword, '{non_partner}' "
+                    f"doesn't ")
+        if commanders:
+            identity = {clr for c in commanders for clr in c.color_identity.value}
+            for card in [*mainboard, *sideboard]:
+                if any(letter not in identity for letter in card.color_identity.value):
+                    raise InvalidDeck(
+                        f"Color identity of '{card}' ({card.color_identity}) doesn't match "
+                        f"commander's color identity ({identity})")
+        self._commander, self._partner_commander = commander, partner_commander
+        if self.partner_commander and self.partner_commander not in mainboard:
+            mainboard = [self.partner_commander, *mainboard]
+        if self.commander and self.commander not in mainboard:
+            mainboard = [self.commander, *mainboard]
+
         if companion:
             if not companion.is_companion:
-                raise InvalidDeck(f"Not a companion card: '{commander}'")
+                raise InvalidDeck(f"Not a companion card: '{companion}'")
 
         sideboard = [*sideboard] if sideboard else []
         self._companion = companion
         sideboard = [
             companion, *sideboard] if companion and companion not in sideboard else sideboard
         self._metadata = metadata or {}
-
-        self._commander = commander
-        if commander:
-            for card in [*mainboard, *sideboard]:
-                if any(letter not in commander.color_identity.value
-                       for letter in card.color_identity.value):
-                    raise InvalidDeck(
-                        f"Color identity of '{card}' ({card.color_identity}) doesn't match "
-                        f"commander's color identity ({commander.color_identity})")
 
         self._max_playset_count = 1 if commander is not None else 4
         self._playsets = aggregate(*mainboard)
@@ -627,10 +642,9 @@ class Deck:
     def _validate_mainboard(self) -> None:
         for playset in self._playsets.values():
             self._validate_playset(playset)
-        length = len(self.mainboard) + (1 if self.commander else 0)
-        if length < self.MIN_MAINBOARD_SIZE:
+        if len(self.mainboard) < self.MIN_MAINBOARD_SIZE:
             raise InvalidDeck(
-                f"Invalid deck size: {length} < {self.MIN_MAINBOARD_SIZE}")
+                f"Invalid deck size: {len(self.mainboard)} < {self.MIN_MAINBOARD_SIZE}")
 
     def _validate_sideboard(self) -> None:
         temp_playsets = aggregate(*self.cards)

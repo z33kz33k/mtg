@@ -14,6 +14,9 @@ from datetime import datetime
 from mtgcards.const import Json
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils.scrape import getsoup
+from scryfall import Card
+from utils import from_iterable
+from utils.scrape import ScrapingError
 
 _log = logging.getLogger(__name__)
 
@@ -44,13 +47,22 @@ class DeckstatsScraper(DeckScraper):
     def _scrape_metadata(self) -> None:  # override
         pass
 
-    def _parse_card_json(self, card_json: Json) -> None:
+    @classmethod
+    def _parse_card_json(cls, card_json: Json) -> list[Card]:
         name = card_json["name"]
         quantity = card_json["amount"]
-        # card = self.find_card(name, set_and_collector_number=(set_code, collector_number))
-        # playset = self.get_playset(card, quantity)
-        # self._mainboard.extend(playset)
+        tcgplayer_id = int(card_json["data"]["price_tcgplayer_id"])
+        mtgo_id = int(card_json["data"]["price_cardhoarder_id"])
+        card = cls.find_card(name, tcgplayer_id=tcgplayer_id, mtgo_id=mtgo_id)
+        return cls.get_playset(card, quantity)
 
     def _scrape_deck(self) -> None:  # override
-        pass
+        main_data = from_iterable(self._json_data["sections"], lambda d: d["name"] == "Main")
+        if not main_data:
+            raise ScrapingError("No 'Main' section in the requested page code's JSON data")
+        for card_json in main_data["cards"]:
+            self._mainboard.extend(self._parse_card_json(card_json))
+        if self._json_data["sideboard"]:
+            for card_json in self._json_data["sideboard"]:
+                self._sideboard.extend(self._parse_card_json(card_json))
         self._build_deck()
