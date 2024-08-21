@@ -522,6 +522,22 @@ class Card:
         return self.json["id"]
 
     @property
+    def oracle_id(self) -> str:
+        return self.json["oracle_id"]
+
+    @property
+    def tcgplayer_id(self) -> int | None:
+        return self.json.get("tcgplayer_id")
+
+    @property
+    def cardmarket_id(self) -> int | None:
+        return self.json.get("cardmarket_id")
+
+    @property
+    def mtgo_id(self) -> int | None:
+        return self.json.get("mtgo_id")
+
+    @property
     def keywords(self) -> list[str]:
         return self.json["keywords"]
 
@@ -1219,28 +1235,27 @@ def find_card(
 
 
 # hashmap based lookups
-_NAME_MAP, _ID_MAP, _COLLECTOR_NUMBER_MAP = {}, {}, {}
+_NAME_MAP, _SCRYFALL_ID_MAP, _COLLECTOR_NUMBER_MAP = {}, {}, {}
+_ORACLE_ID_MAP, _TCGPLAYER_ID_MAP, _CARDMARKET_ID_MAP, _MTGO_ID_MAP = {}, {}, {}, {}
 
 
 @timed("building card lookup maps")
 def _build_maps() -> None:
-    global _NAME_MAP, _ID_MAP, _COLLECTOR_NUMBER_MAP
+    global _NAME_MAP, _SCRYFALL_ID_MAP, _COLLECTOR_NUMBER_MAP
     _log.info("Mapping the cards for fast lookups...")
     for card in bulk_data():
         _NAME_MAP[unidecode(card.name)] = card
         if card.is_multiface:
             _NAME_MAP[unidecode(card.main_name)] = card
-        _ID_MAP[card.id] = card
+        _SCRYFALL_ID_MAP[card.id] = card
+        _ORACLE_ID_MAP[card.id] = card
+        if card.tcgplayer_id is not None:
+            _TCGPLAYER_ID_MAP[card.tcgplayer_id] = card
+        if card.cardmarket_id is not None:
+            _CARDMARKET_ID_MAP[card.cardmarket_id] = card
+        if card.mtgo_id is not None:
+            _MTGO_ID_MAP[card.mtgo_id] = card
         _COLLECTOR_NUMBER_MAP[(card.set, card.collector_number)] = card
-
-
-def find_by_id(scryfall_id: str) -> Card | None:
-    """Return a card designated provided ``scryfall_id`` or `None`.
-    """
-    global _ID_MAP
-    if not _ID_MAP:
-        _build_maps()
-    return _ID_MAP.get(scryfall_id)
 
 
 def find_by_name(card_name: str) -> Card | None:
@@ -1261,8 +1276,53 @@ def find_by_words(*words: str) -> set[Card]:
     return {v for k, v in _NAME_MAP.items() if all(w.lower() in k.lower() for w in words)}
 
 
+def find_by_scryfall_id(scryfall_id: str) -> Card | None:
+    """Return a card designated BY provided ``scryfall_id`` or `None`.
+    """
+    global _SCRYFALL_ID_MAP
+    if not _SCRYFALL_ID_MAP:
+        _build_maps()
+    return _SCRYFALL_ID_MAP.get(scryfall_id)
+
+
+def find_by_oracle_id(oracle_id: str) -> Card | None:
+    """Return a card designated BY provided ``oracle_id`` or `None`.
+    """
+    global _ORACLE_ID_MAP
+    if not _ORACLE_ID_MAP:
+        _build_maps()
+    return _ORACLE_ID_MAP.get(oracle_id)
+
+
+def find_by_tcgplayer_id(tcgplayer_id: int) -> Card | None:
+    """Return a card designated BY provided ``tcgplayer_id`` or `None`.
+    """
+    global _TCGPLAYER_ID_MAP
+    if not _TCGPLAYER_ID_MAP:
+        _build_maps()
+    return _TCGPLAYER_ID_MAP.get(tcgplayer_id)
+
+
+def find_by_cardmarket_id(cardmarket_id: int) -> Card | None:
+    """Return a card designated BY provided ``cardmarket_id`` or `None`.
+    """
+    global _CARDMARKET_ID_MAP
+    if not _CARDMARKET_ID_MAP:
+        _build_maps()
+    return _CARDMARKET_ID_MAP.get(cardmarket_id)
+
+
+def find_by_mtgo_id(mtgo_id: int) -> Card | None:
+    """Return a card designated BY provided ``mtgo_id`` or `None`.
+    """
+    global _MTGO_ID_MAP
+    if not _MTGO_ID_MAP:
+        _build_maps()
+    return _MTGO_ID_MAP.get(mtgo_id)
+
+
 def find_by_collector_number(set_code: str, collector_number: str | int) -> Card | None:
-    """Return a card designated by provided ``collector_number`` and ``set_code`` or `None` if it
+    """Return a card designated by provided ``set_code`` and ``collector_number`` or `None` if it
     cannot be found.
     """
     global _COLLECTOR_NUMBER_MAP

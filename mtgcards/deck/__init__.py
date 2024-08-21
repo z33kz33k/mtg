@@ -20,7 +20,7 @@ from typing import Any, Iterable, Iterator
 from mtgcards.const import Json, OUTPUT_DIR, PathLike
 from mtgcards.scryfall import (
     Card, Color, MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, aggregate, all_formats,
-    find_by_collector_number, find_by_id, find_by_name, find_sets,
+    find_by_collector_number, find_by_scryfall_id, find_by_name, find_sets,
     format_cards as scryfall_fmt_cards, set_cards as
     scryfall_set_cards)
 from mtgcards.utils import ParsingError, extract_int, from_iterable, getrepr, serialize_dates
@@ -572,6 +572,7 @@ class Deck:
             self, mainboard: Iterable[Card], sideboard: Iterable[Card] | None = None,
             commander: Card | None = None, companion: Card | None = None,
             metadata: Json | None = None) -> None:
+        # TODO: support two commanders (Partner keyword)
         if commander:
             if not commander.is_legendary or (
                     not commander.is_creature and not commander.is_planeswalker):
@@ -1075,7 +1076,7 @@ class DeckParser(ABC):
             if card := find_by_collector_number(*set_and_collector_number):
                 return card
         if scryfall_id:
-            if card := find_by_id(scryfall_id):
+            if card := find_by_scryfall_id(scryfall_id):
                 return card
         name = cls.sanitize_card_name(name)
         card = find_by_name(name)
