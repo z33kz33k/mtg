@@ -302,3 +302,9 @@ def sanitize_filename(text: str, replacement="_") -> str:  # perplexity
     sanitized = sanitized.rstrip('. ')
 
     return sanitized
+
+
+def sanitize_whitespace(text: str) -> str:
+    """Replace whitespace sequences longer than one space in ``text`` with a single space.
+    """
+    return re.sub(r'\s+', ' ', text)

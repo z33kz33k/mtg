@@ -28,8 +28,10 @@ from youtubesearchpython import Channel as YtspChannel
 
 from deck.scrapers.archidekt import ArchidektScraper
 from deck.scrapers.deckstats import DeckstatsScraper
+from deck.scrapers.manatraders import ManatradersScraper
 from deck.scrapers.mtgdecksnet import MtgDecksNetScraper
 from deck.scrapers.scryfall import ScryfallScraper
+from deck.scrapers.starcitygames import StarCityGamesScraper
 from mtgcards.const import FILENAME_TIMESTAMP_FORMAT, Json, OUTPUT_DIR, PathLike
 from mtgcards.deck import Deck
 from mtgcards.deck.scrapers.aetherhub import AetherhubScraper
@@ -396,6 +398,8 @@ class Video:
             return DeckstatsScraper(link, self.metadata).deck
         elif GoldfishScraper.is_deck_url(link):
             return GoldfishScraper(link, self.metadata).deck
+        elif ManatradersScraper.is_deck_url(link):
+            return ManatradersScraper(link, self.metadata).deck
         elif MoxfieldScraper.is_deck_url(link):
             return MoxfieldScraper(link, self.metadata).deck
         elif MtgaZoneScraper.is_deck_url(link):
@@ -408,6 +412,8 @@ class Video:
             return NewPageTcgPlayerScraper(link, self.metadata).deck
         elif OldPageTcgPlayerScraper.is_deck_url(link):
             return OldPageTcgPlayerScraper(link, self.metadata).deck
+        elif StarCityGamesScraper.is_deck_url(link):
+            return StarCityGamesScraper(link, self.metadata).deck
         elif ScryfallScraper.is_deck_url(link):
             return ScryfallScraper(link, self.metadata).deck
         elif StreamdeckerScraper.is_deck_url(link):

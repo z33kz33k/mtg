@@ -1046,10 +1046,6 @@ class DeckParser(ABC):
     def fmt(self) -> str:
         return self._metadata.get("format", "")
 
-    @property
-    def author(self) -> str | None:
-        return self._metadata.get("author")
-
     def __init__(self, metadata: Json | None = None) -> None:
         self._metadata = metadata or {}
         self._state = ParsingState.IDLE

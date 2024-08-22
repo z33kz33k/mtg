@@ -938,6 +938,8 @@ class Card:
 
     @property
     def commander_suitable(self) -> bool:
+        if "can be your commander" in self.oracle_text:
+            return True
         return self.is_legendary and (self.is_creature or self.is_planeswalker)
 
 
