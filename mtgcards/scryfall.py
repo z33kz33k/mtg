@@ -936,6 +936,10 @@ class Card:
             return 12
         return None
 
+    @property
+    def commander_suitable(self) -> bool:
+        return self.is_legendary and (self.is_creature or self.is_planeswalker)
+
 
 @dataclass(frozen=True)
 class SetData:

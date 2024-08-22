@@ -26,16 +26,16 @@ descriptions).
   [youtubesearchpython](https://github.com/alexmercerind/youtube-search-python) to avoid bothering 
   with Google APIs)
 * Arena, [Aetherhub](https://aetherhub.com), [Archidekt](https://archidekt.com), [Cardhoarder](https://www.cardhoarder.com), 
-  [Deckstats.net](https://deckstats.net), [Goldfish](https://www.mtggoldfish.com), [Moxfield](https://www.moxfield.com), 
-  [MTGAZone](https://mtgazone.com), [MTGDecks.net](https://mtgdecks.net), 
+  [Deckstats.net](https://deckstats.net), [Goldfish](https://www.mtggoldfish.com), [Manatraders](https://www.manatraders.com), 
+  [Moxfield](https://www.moxfield.com), [MTGAZone](https://mtgazone.com), [MTGDecks.net](https://mtgdecks.net), 
   [MTGTop8](https://mtgtop8.com/index), [Scryfall](https://scryfall.com), 
   [Streamdecker](https://www.streamdecker.com/landing), [TappedOut](https://tappedout.net), 
   [TCGPlayer](https://infinite.tcgplayer.com) and [Untapped](https://mtga.untapped.gg) deck parsers 
   work, so:
     * Arena decklists pasted into video descriptions are parsed into Deck objects
-    * Aetherhub, Archidekt, Cardhoarder, Deckstats.net, Goldfish, Moxfield, MTGAZone, MTGDecks.net, 
-      MTGTop8, Scryfall, Streamdecker, TappedOut, TCGPlayer and Untapped, links contained in those 
-      descriptions are parsed into Deck objects
+    * Aetherhub, Archidekt, Cardhoarder, Deckstats.net, Goldfish, Manatraders, Moxfield, MTGAZone, 
+      MTGDecks.net, MTGTop8, Scryfall, Streamdecker, TappedOut, TCGPlayer and Untapped, links 
+      contained in those descriptions are parsed into Deck objects
     * Both Untapped decklist types featured in YT videos are supported: regular deck and profile deck
     * Both old and new TCGPlayer sites are supported
     * Due to their dynamic nature, Untapped, TCGPlayer (new site) and MTGDecks.net (not much of a 

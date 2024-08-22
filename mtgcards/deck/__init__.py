@@ -581,8 +581,7 @@ class Deck:
             companion: Card | None = None, metadata: Json | None = None) -> None:
         commanders = [c for c in [commander, partner_commander] if c]
         for c in commanders:
-            if not c.is_legendary or (
-                    not c.is_creature and not c.is_planeswalker):
+            if not c.commander_suitable:
                 raise InvalidDeck(
                     f"Commander must be a legendary creature/planeswalker. '{c}' is not")
         if partner_commander:
