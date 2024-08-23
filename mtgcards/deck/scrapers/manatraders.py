@@ -61,8 +61,5 @@ class ManatradersScraper(DeckScraper):
     def _scrape_deck(self) -> None:  # override
         for card_data in self._json_data["cards"].values():
             self._parse_card_json(card_data)
-        if len(self._sideboard) in (1, 2) and all(c.commander_suitable for c in self._sideboard):
-            for c in self._sideboard:
-                self._set_commander(c)
-            self._sideboard = []
+        self._derive_commander_from_sideboard()
         self._build_deck()

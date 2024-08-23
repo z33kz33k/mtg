@@ -27,6 +27,7 @@ from requests import HTTPError, Timeout
 from youtubesearchpython import Channel as YtspChannel
 
 from deck.scrapers.archidekt import ArchidektScraper
+from deck.scrapers.cardsrealm import CardsrealmScraper
 from deck.scrapers.deckstats import DeckstatsScraper
 from deck.scrapers.manatraders import ManatradersScraper
 from deck.scrapers.mtgdecksnet import MtgDecksNetScraper
@@ -394,6 +395,8 @@ class Video:
             return ArchidektScraper(link, self.metadata).deck
         elif CardhoarderScraper.is_deck_url(link):
             return CardhoarderScraper(link, self.metadata).deck
+        elif CardsrealmScraper.is_deck_url(link):
+            return CardsrealmScraper(link, self.metadata).deck
         elif DeckstatsScraper.is_deck_url(link):
             return DeckstatsScraper(link, self.metadata).deck
         elif GoldfishScraper.is_deck_url(link):

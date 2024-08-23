@@ -19,7 +19,8 @@ from typing import Any, Iterable, Iterator
 
 from mtgcards.const import Json, OUTPUT_DIR, PathLike
 from mtgcards.scryfall import (
-    Card, Color, MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, aggregate, all_formats,
+    COMMANDER_FORMATS, Card, Color, MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, aggregate,
+    all_formats,
     find_by_cardmarket_id, find_by_collector_number, find_by_mtgo_id, find_by_oracle_id,
     find_by_scryfall_id,
     find_by_name,
@@ -1066,6 +1067,13 @@ class DeckParser(ABC):
             self._partner_commander = card
         else:
             self._commander = card
+
+    def _derive_commander_from_sideboard(self):
+        if self.fmt in COMMANDER_FORMATS and len(self._sideboard) in (1, 2) and all(
+                c.commander_suitable for c in self._sideboard):
+            for c in self._sideboard:
+                self._set_commander(c)
+            self._sideboard = []
 
     def _shift_to_mainboard(self) -> None:
         if self._state is ParsingState.MAINBOARD:
