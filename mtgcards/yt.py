@@ -7,9 +7,6 @@
     @author: z33k
 
 """
-from http.client import RemoteDisconnected
-
-import backoff
 import itertools
 import json
 import logging
@@ -18,30 +15,33 @@ from collections import Counter, defaultdict
 from datetime import date, datetime
 from decimal import Decimal
 from functools import cached_property
+from http.client import RemoteDisconnected
 from typing import Generator
 
+import backoff
 import pytubefix
 import scrapetube
 from contexttimer import Timer
 from requests import HTTPError, Timeout
 from youtubesearchpython import Channel as YtspChannel
 
-from deck.scrapers.archidekt import ArchidektScraper
-from deck.scrapers.cardsrealm import CardsrealmScraper
-from deck.scrapers.deckstats import DeckstatsScraper
-from deck.scrapers.manatraders import ManatradersScraper
-from deck.scrapers.mtgdecksnet import MtgDecksNetScraper
-from deck.scrapers.scryfall import ScryfallScraper
-from deck.scrapers.starcitygames import StarCityGamesScraper
+from deck.scrapers.manastack import ManaStackScraper
 from mtgcards.const import FILENAME_TIMESTAMP_FORMAT, Json, OUTPUT_DIR, PathLike
 from mtgcards.deck import Deck
-from mtgcards.deck.scrapers.aetherhub import AetherhubScraper
 from mtgcards.deck.arena import ArenaParser, get_arena_lines
+from mtgcards.deck.scrapers.aetherhub import AetherhubScraper
+from mtgcards.deck.scrapers.archidekt import ArchidektScraper
 from mtgcards.deck.scrapers.cardhoarder import CardhoarderScraper
+from mtgcards.deck.scrapers.cardsrealm import CardsrealmScraper
+from mtgcards.deck.scrapers.deckstats import DeckstatsScraper
 from mtgcards.deck.scrapers.goldfish import GoldfishScraper
+from mtgcards.deck.scrapers.manatraders import ManatradersScraper
 from mtgcards.deck.scrapers.moxfield import MoxfieldScraper
 from mtgcards.deck.scrapers.mtgazone import MtgaZoneScraper
+from mtgcards.deck.scrapers.mtgdecksnet import MtgDecksNetScraper
 from mtgcards.deck.scrapers.mtgtop8 import MtgTop8Scraper
+from mtgcards.deck.scrapers.scryfall import ScryfallScraper
+from mtgcards.deck.scrapers.starcitygames import StarCityGamesScraper
 from mtgcards.deck.scrapers.streamdecker import StreamdeckerScraper
 from mtgcards.deck.scrapers.tappedout import TappedoutScraper
 from mtgcards.deck.scrapers.tcgplayer import NewPageTcgPlayerScraper, OldPageTcgPlayerScraper
@@ -401,6 +401,8 @@ class Video:
             return DeckstatsScraper(link, self.metadata).deck
         elif GoldfishScraper.is_deck_url(link):
             return GoldfishScraper(link, self.metadata).deck
+        elif ManaStackScraper.is_deck_url(link):
+            return ManaStackScraper(link, self.metadata).deck
         elif ManatradersScraper.is_deck_url(link):
             return ManatradersScraper(link, self.metadata).deck
         elif MoxfieldScraper.is_deck_url(link):

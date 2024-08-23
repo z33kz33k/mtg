@@ -847,7 +847,7 @@ class Card:
 
     @property
     def is_partner(self) -> bool:
-        return "Partner" in self.keywords
+        return "Partner" in self.keywords or "Friends forever" in self.keywords
 
     @property
     def is_alchemy_rebalance(self) -> bool:

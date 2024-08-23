@@ -10,23 +10,19 @@
 import itertools
 import json
 import logging
-from abc import ABC, abstractmethod
+from abc import ABC
 from collections import Counter
 from enum import Enum, auto
-from functools import cached_property, lru_cache
+from functools import cached_property
 from operator import attrgetter
 from typing import Any, Iterable, Iterator
 
 from mtgcards.const import Json, OUTPUT_DIR, PathLike
-from mtgcards.scryfall import (
-    COMMANDER_FORMATS, Card, Color, MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, aggregate,
-    all_formats,
-    find_by_cardmarket_id, find_by_collector_number, find_by_mtgo_id, find_by_oracle_id,
-    find_by_scryfall_id,
-    find_by_name,
-    find_by_tcgplayer_id, find_sets,
-    format_cards as scryfall_fmt_cards, set_cards as
-    scryfall_set_cards)
+from mtgcards.scryfall import (COMMANDER_FORMATS, Card, Color,
+                               MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, aggregate,
+                               all_formats, find_by_cardmarket_id, find_by_collector_number,
+                               find_by_mtgo_id, find_by_name, find_by_oracle_id,
+                               find_by_scryfall_id, find_by_tcgplayer_id, find_sets)
 from mtgcards.utils import ParsingError, extract_int, from_iterable, getrepr, serialize_dates
 from mtgcards.utils.files import getdir, getfile
 
