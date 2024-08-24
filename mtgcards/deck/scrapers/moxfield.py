@@ -13,7 +13,7 @@ from datetime import datetime
 from mtgcards.const import Json
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.scryfall import Card
-from mtgcards.utils.scrape import timed_request
+from mtgcards.utils.scrape import throttled, timed_request
 
 _log = logging.getLogger(__name__)
 
@@ -45,6 +45,10 @@ class MoxfieldScraper(DeckScraper):
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
+        self._process()
+
+    @throttled(0.6, 0.15)
+    def _process(self):
         *_, self._decklist_id = self.url.split("/")
         self._json_data = timed_request(
             self.API_URL_TEMPLATE.format(self._decklist_id), return_json=True,

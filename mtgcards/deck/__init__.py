@@ -579,15 +579,14 @@ class Deck:
         commanders = [c for c in [commander, partner_commander] if c]
         for c in commanders:
             if not c.commander_suitable:
-                raise InvalidDeck(
-                    f"Commander must be a legendary creature/planeswalker. '{c}' is not")
+                raise InvalidDeck(f"'{c}' is not suitable for a commander role")
         if partner_commander:
             if not commander:
                 raise InvalidDeck("Partner commander without commander")
             if non_partner := from_iterable(commanders, lambda c: not c.is_partner):
                 raise InvalidDeck(
-                    f"Each partner commander must have a 'Partner' keyword, '{non_partner}' "
-                    f"doesn't ")
+                    f"Each partner commander must have a 'Partner' or 'Friends forever' keyword, "
+                    f"'{non_partner}' doesn't ")
         if commanders:
             identity = {clr for c in commanders for clr in c.color_identity.value}
             for card in [*mainboard, *sideboard]:

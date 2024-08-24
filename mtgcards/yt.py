@@ -25,7 +25,6 @@ from contexttimer import Timer
 from requests import HTTPError, Timeout
 from youtubesearchpython import Channel as YtspChannel
 
-from deck.scrapers.manastack import ManaStackScraper
 from mtgcards.const import FILENAME_TIMESTAMP_FORMAT, Json, OUTPUT_DIR, PathLike
 from mtgcards.deck import Deck
 from mtgcards.deck.arena import ArenaParser, get_arena_lines
@@ -34,7 +33,9 @@ from mtgcards.deck.scrapers.archidekt import ArchidektScraper
 from mtgcards.deck.scrapers.cardhoarder import CardhoarderScraper
 from mtgcards.deck.scrapers.cardsrealm import CardsrealmScraper
 from mtgcards.deck.scrapers.deckstats import DeckstatsScraper
+from mtgcards.deck.scrapers.flexslot import FlexslotScraper
 from mtgcards.deck.scrapers.goldfish import GoldfishScraper
+from mtgcards.deck.scrapers.manastack import ManaStackScraper
 from mtgcards.deck.scrapers.manatraders import ManatradersScraper
 from mtgcards.deck.scrapers.moxfield import MoxfieldScraper
 from mtgcards.deck.scrapers.mtgazone import MtgaZoneScraper
@@ -399,6 +400,8 @@ class Video:
             return CardsrealmScraper(link, self.metadata).deck
         elif DeckstatsScraper.is_deck_url(link):
             return DeckstatsScraper(link, self.metadata).deck
+        elif FlexslotScraper.is_deck_url(link):
+            return FlexslotScraper(link, self.metadata).deck
         elif GoldfishScraper.is_deck_url(link):
             return GoldfishScraper(link, self.metadata).deck
         elif ManaStackScraper.is_deck_url(link):
