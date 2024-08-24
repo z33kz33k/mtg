@@ -16,7 +16,7 @@ from datetime import date, datetime
 from decimal import Decimal
 from functools import cached_property
 from http.client import RemoteDisconnected
-from typing import Generator
+from typing import Generator, Iterator
 
 import backoff
 import pytubefix
@@ -54,11 +54,11 @@ from mtgcards.utils.files import getdir
 from mtgcards.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
 from mtgcards.utils.scrape import extract_source, extract_url, get_dynamic_soup_by_xpath, \
     throttled, timed_request, unshorten
+from utils.scrape import ScrapingError
 
 _log = logging.getLogger(__name__)
 
 
-# TODO: other fields (only when all rows get populated), export to JSON
 def channels() -> Generator[tuple[str, str], None, None]:
     """Yield a tuple (channel name, channel addresses) from a private Google Sheet spreadsheet.
 
@@ -69,6 +69,18 @@ def channels() -> Generator[tuple[str, str], None, None]:
         yield name, address
 
 
+def _channels_batch(start_row=2, batch_size: int | None = None) -> Iterator[tuple[str, str]]:
+    if start_row < 2:
+        raise ValueError("Start row must not be lesser than 2")
+    if batch_size is not None and batch_size < 1:
+        raise ValueError("Batch size must be a positive integer or None")
+    txt = f" {batch_size}" if batch_size else ""
+    _log.info(f"Batch updating{txt} channel row(s)...")
+    start_idx = start_row - 2
+    end_idx = None if batch_size is None else start_row - 2 + batch_size
+    return itertools.islice(channels(), start_idx, end_idx)
+
+
 def batch_update(start_row=2, batch_size: int | None = None) -> None:
     """Batch update "channels" Google Sheets worksheet.
 
@@ -76,20 +88,8 @@ def batch_update(start_row=2, batch_size: int | None = None) -> None:
         start_row: start row of the worksheet
         batch_size: number of rows to update ('None' (default) means all rows from start_row)
     """
-    if start_row < 2:
-        raise ValueError("Start row must not be lesser than 2")
-    if batch_size is not None and batch_size < 1:
-        raise ValueError("Batch size must be a positive integer or None")
-    txt = f" {batch_size}" if batch_size else ""
-    _log.info(f"Batch updating{txt} channel row(s)...")
     data = []
-    if batch_size is None:
-        items = [*channels()][start_row - 2:]
-    else:
-        start_idx, end_idx = start_row - 2, start_row - 2 + batch_size
-        items = itertools.islice(channels(), start_idx, end_idx)
-
-    for _, url in items:
+    for _, url in _channels_batch(start_row, batch_size):
         try:
             ch = Channel(url)
             data.append([
@@ -105,15 +105,28 @@ def batch_update(start_row=2, batch_size: int | None = None) -> None:
                 ", ".join(ch.sources),
                 ", ".join(ch.deck_sources)
             ])
-        except json.decoder.JSONDecodeError:
+        except ScrapingError as se:
             _log.warning(
-                f"scrapetube failed with JSON error for channel {url!r}. It probably doesn't "
-                f"exist anymore. Skipping...")
+                f"Scraping of channel {url!r} failed with: '{se}'. Skipping...")
             data.append(
                 ["NOT AVAILABLE", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A",
                  "N/A"])
 
     extend_gsheet_rows_with_cols("mtga_yt", "channels", data, start_row=start_row, start_col=5)
+
+
+def scrape_channels(
+        start_row=2, batch_size: int | None = None, videos=10, dstdir: PathLike = "") -> None:
+    """Scrape YouTube channels specified in private Google Sheet. Save the scraped data as .json
+    files.
+
+    Args:
+        start_row: start channel row of the worksheet
+        batch_size: number of channels to scrape ('None' (default) means all rows from start_row)
+        videos: number of videos to scrape per channel
+        dstdir: optionally, the destination directory (if not provided default location is used)
+    """
+    pass  # TODO:
 
 
 class Video:
@@ -226,8 +239,8 @@ class Video:
         return sorted(self._keywords) if self._keywords else None
 
     @property
-    def date(self) -> date:
-        return self._date
+    def publish_time(self) -> datetime:
+        return self._publish_time
 
     @property
     def views(self) -> int:
@@ -293,7 +306,7 @@ class Video:
             self._pytube = self._get_pytube_with_backoff()
         # description and title is also available in scrapetube data on Channel level
         self._author, self._description, self._title = None, None, None
-        self._keywords, self._date, self._views = None, None, None
+        self._keywords, self._publish_time, self._views = None, None, None
         self._sources = set()
         self._unshortened_links: list[str] = []
         self._scrape()
@@ -311,7 +324,7 @@ class Video:
             self.__class__,
             ("title", self.title),
             ("deck", len(self.decks)),
-            ("date", str(self.date)),
+            ("publish_time", str(self.publish_time)),
             ("views", self.views)
         )
 
@@ -339,7 +352,7 @@ class Video:
         self._description = self._pytube.description
         self._title = self._pytube.title
         self._keywords = self._pytube.keywords
-        self._date = self._pytube.publish_date.date()
+        self._publish_time = self._pytube.publish_date
         self._views = self._pytube.views
         self._channel_id = self._pytube.channel_id
         self._channel_subscribers = self._extract_subscribers()
@@ -483,7 +496,7 @@ class Video:
             "title": self.title,
             "description": self.description,
             "keywords": self.keywords,
-            "date": self.date,
+            "publish_time": self.publish_time,
             "views": self.views,
             "sources": self.sources,
             "derived_format": self.derived_format,
@@ -500,7 +513,7 @@ class Video:
         """
         dstdir = dstdir or OUTPUT_DIR / "json"
         dstdir = getdir(dstdir)
-        timestamp = self.date.isoformat().replace("-", "")
+        timestamp = self.publish_time.strftime(FILENAME_TIMESTAMP_FORMAT)
         name = name or f"{self.author}_{timestamp}_video"
         dst = dstdir / f"{sanitize_filename(name)}.json"
         _log.info(f"Exporting deck to: '{dst}'...")
@@ -581,6 +594,10 @@ class Channel(list):
                 videos = [*scrapetube.get_channel(channel_url=url, limit=limit)]
             except OSError:
                 raise ValueError(f"Invalid URL: {url!r}")
+            except json.decoder.JSONDecodeError:
+                raise ScrapingError(
+                    "scrapetube failed with JSON error. This channel probably doesn't exist "
+                    "anymore")
             _log.info(f"Scraping channel: {url!r}, {limit} video(s)...")
             super().__init__([Video(data["videoId"]) for data in videos])
             self._url = url
@@ -659,3 +676,5 @@ class Channel(list):
         dst = dstdir / f"{sanitize_filename(name)}.json"
         _log.info(f"Exporting deck to: '{dst}'...")
         dst.write_text(self.json, encoding="utf-8")
+
+
