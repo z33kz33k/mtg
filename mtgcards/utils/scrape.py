@@ -188,7 +188,7 @@ def extract_url(text: str, https=True) -> str | None:
     """
     pattern = r"(?P<url>https?://[^\s'\"]+)" if https else r"(?P<url>http?://[^\s'\"]+)"
     match = re.search(pattern, text)
-    return match.group("url") if match else None
+    return match.group("url").rstrip("]") if match else None
 
 
 def extract_source(url: str) -> str:
