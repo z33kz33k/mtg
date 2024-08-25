@@ -75,7 +75,7 @@ def _channels_batch(start_row=2, batch_size: int | None = None) -> Iterator[tupl
     if batch_size is not None and batch_size < 1:
         raise ValueError("Batch size must be a positive integer or None")
     txt = f" {batch_size}" if batch_size else ""
-    _log.info(f"Batch updating{txt} channel row(s)...")
+    _log.info(f"Batch updating{txt} channels...")
     start_idx = start_row - 2
     end_idx = None if batch_size is None else start_row - 2 + batch_size
     return itertools.islice(channels(), start_idx, end_idx)
@@ -106,8 +106,7 @@ def batch_update(start_row=2, batch_size: int | None = None) -> None:
                 ", ".join(ch.deck_sources)
             ])
         except ScrapingError as se:
-            _log.warning(
-                f"Scraping of channel {url!r} failed with: '{se}'. Skipping...")
+            _log.warning(f"Scraping of channel {url!r} failed with: '{se}'. Skipping...")
             data.append(
                 ["NOT AVAILABLE", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A",
                  "N/A"])
@@ -115,8 +114,9 @@ def batch_update(start_row=2, batch_size: int | None = None) -> None:
     extend_gsheet_rows_with_cols("mtga_yt", "channels", data, start_row=start_row, start_col=5)
 
 
+@timed("channels scraping", precision=1)
 def scrape_channels(
-        start_row=2, batch_size: int | None = None, videos=10, dstdir: PathLike = "") -> None:
+        start_row=2, batch_size: int | None = None, videos=15, dstdir: PathLike = "") -> None:
     """Scrape YouTube channels specified in private Google Sheet. Save the scraped data as .json
     files.
 
@@ -126,7 +126,14 @@ def scrape_channels(
         videos: number of videos to scrape per channel
         dstdir: optionally, the destination directory (if not provided default location is used)
     """
-    pass  # TODO:
+    root = dstdir or OUTPUT_DIR / "channels"
+    for _, url in _channels_batch(start_row, batch_size):
+        try:
+            ch = Channel(url, limit=videos)
+            dst = root / ch.handle
+            ch.dump(dst)
+        except ScrapingError as se:
+            _log.warning(f"Scraping of channel {url!r} failed with: '{se}'. Skipping...")
 
 
 class Video:
@@ -516,7 +523,7 @@ class Video:
         timestamp = self.publish_time.strftime(FILENAME_TIMESTAMP_FORMAT)
         name = name or f"{self.author}_{timestamp}_video"
         dst = dstdir / f"{sanitize_filename(name)}.json"
-        _log.info(f"Exporting deck to: '{dst}'...")
+        _log.info(f"Exporting video to: '{dst}'...")
         dst.write_text(self.json, encoding="utf-8")
 
 
@@ -525,7 +532,12 @@ class Channel(list):
     """
     @property
     def url(self) -> str:
-        return self._url
+        return self._url.rstrip("/")
+
+    @property
+    def handle(self) -> str:
+        _, handle = self.url.rsplit("/", maxsplit=1)
+        return handle
 
     @property
     def id(self) -> str | None:
@@ -561,11 +573,11 @@ class Channel(list):
 
     @property
     def staleness(self) -> int | None:
-        return (date.today() - self[0].date).days if self else None
+        return (date.today() - self[0].publish_time.date()).days if self else None
 
     @property
     def span(self) -> int | None:
-        return (self[0].date - self[-1].date).days if self else None
+        return (self[0].publish_time.date() - self[-1].publish_time.date()).days if self else None
 
     @property
     def total_views(self) -> int:
@@ -588,6 +600,7 @@ class Channel(list):
         return self.scrape_time.date()
 
     def __init__(self, url: str, limit=10) -> None:
+        url = url.rstrip("/")
         with Timer() as t:
             self._scrape_time = datetime.now()
             try:
@@ -672,9 +685,9 @@ class Channel(list):
         dstdir = dstdir or OUTPUT_DIR / "json"
         dstdir = getdir(dstdir)
         timestamp = self.scrape_time.strftime(FILENAME_TIMESTAMP_FORMAT)
-        name = name or f"{self.title}_{timestamp}_channel"
+        name = name or f"{self.handle.lstrip('@')}_{timestamp}_channel"
         dst = dstdir / f"{sanitize_filename(name)}.json"
-        _log.info(f"Exporting deck to: '{dst}'...")
+        _log.info(f"Exporting channel to: '{dst}'...")
         dst.write_text(self.json, encoding="utf-8")
 
 

@@ -51,7 +51,7 @@ class StreamdeckerScraper(DeckScraper):
             self._metadata["date"] = dt
 
     def _parse_json_card(self, json_card: Json) -> None:
-        scryfall_id = json_card["scryfallId"]
+        scryfall_id = json_card.get("scryfallId", "")
         name = json_card["name"]
         if "/" in name:
             # sanitize multiface names, e.g. "Wear/Tear" ==> "Wear // Tear"

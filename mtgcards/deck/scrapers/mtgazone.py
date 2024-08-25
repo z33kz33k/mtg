@@ -46,6 +46,10 @@ class MtgaZoneScraper(DeckScraper):
 
     def _scrape_metadata(self) -> None:  # override
         name_author_tag = self._soup.find("div", class_="name-container")
+        if not name_author_tag:
+            raise ScrapingError(
+                "Name tag not found. The deck you're trying to scrape has been most probably "
+                "paywalled by MTGAZone")
         name_tag = name_author_tag.find("div", class_="name")
         name, author, event = name_tag.text.strip(), None, None
         if " by " in name:
