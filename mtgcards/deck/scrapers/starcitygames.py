@@ -61,7 +61,7 @@ class StarCityGamesScraper(DeckScraper):
                 elif self._state is ParsingState.COMMANDER:
                     self._set_commander(cards[0])
                 elif self._state is ParsingState.COMPANION:
-                    self._companion = cards
+                    self._companion = cards[0]
 
         if self.fmt == "commander":
             deck_name = self._metadata["name"]

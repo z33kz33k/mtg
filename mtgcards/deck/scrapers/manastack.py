@@ -68,6 +68,6 @@ class ManaStackScraper(DeckScraper):
                     elif self._state is ParsingState.COMMANDER:
                         self._set_commander(cards[0])
                     elif self._state is ParsingState.COMPANION:
-                        self._companion = cards
+                        self._companion = cards[0]
 
         self._build_deck()
