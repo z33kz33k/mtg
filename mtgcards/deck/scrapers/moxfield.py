@@ -13,7 +13,7 @@ from datetime import datetime
 from mtgcards.const import Json
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.scryfall import Card
-from mtgcards.utils.scrape import throttled, timed_request
+from mtgcards.utils.scrape import timed_request
 
 _log = logging.getLogger(__name__)
 
@@ -43,12 +43,9 @@ class MoxfieldScraper(DeckScraper):
         "X-Moxfield-Version": "2024.07.26.5",
     }
 
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        self._process()
-
-    @throttled(0.6, 0.15)
-    def _process(self):
+    def __init__(
+            self, url: str, metadata: Json | None = None, throttled=False) -> None:
+        super().__init__(url, metadata, throttled)
         *_, self._decklist_id = self.url.split("/")
         self._json_data = timed_request(
             self.API_URL_TEMPLATE.format(self._decklist_id), return_json=True,
@@ -93,6 +90,10 @@ class MoxfieldScraper(DeckScraper):
             self._mainboard.extend(self._to_playset(card))
         for card in self._json_data["boards"]["sideboard"]["cards"].values():
             self._sideboard.extend(self._to_playset(card))
+        # Oathbreaker is not fully supported by Deck objects
+        if signature_spells := self._json_data["boards"]["signatureSpells"]:
+            for card in signature_spells["cards"].values():
+                self._mainboard.extend(self._to_playset(card))
         for card in self._json_data["boards"]["commanders"]["cards"].values():
             result = self._to_playset(card)
             self._set_commander(result[0])

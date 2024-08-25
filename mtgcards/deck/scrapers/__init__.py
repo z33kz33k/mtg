@@ -12,25 +12,35 @@ from abc import abstractmethod
 
 from mtgcards.const import Json
 from mtgcards.deck import Deck, DeckParser, InvalidDeck
-from mtgcards.scryfall import Card
-from mtgcards.utils.scrape import extract_source
-
+from mtgcards.utils.scrape import Throttling, extract_source
+from utils.scrape import throttle
 
 _log = logging.getLogger(__name__)
 
 
 class DeckScraper(DeckParser):
+    THROTTLING = Throttling(0.6, 0.15)
+
     @property
     def url(self) -> str:
         return self._url
 
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
+    @property
+    def throttled(self) -> bool:
+        return self._throttled
+
+    def __init__(
+            self, url: str, metadata: Json | None = None, throttled=False,
+            supress_invalid_deck=True) -> None:
         self._validate_url(url)
         super().__init__(metadata)
-        self._throttled = False
+        self._throttled = throttled
+        self._supress_invalid_deck = supress_invalid_deck
         self._url = self._sanitize_url(url)
         self._metadata["url"] = self.url
         self._metadata["source"] = extract_source(self.url)
+        if self.throttled:
+            throttle(*self.THROTTLING)
 
     @classmethod
     def _validate_url(cls, url):
@@ -61,5 +71,6 @@ class DeckScraper(DeckParser):
                 self._companion, self._metadata)
         except InvalidDeck as err:
             _log.warning(f"Scraping failed with: {err}")
-            if self._throttled:
+            if not self._supress_invalid_deck:
                 raise
+

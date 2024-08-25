@@ -43,12 +43,11 @@ class GoldfishScraper(DeckScraper):
         "standard brawl": "standardbrawl",
     }
 
-    def __init__(self, url: str, metadata: Json | None = None, throttled=False) -> None:
-        super().__init__(url, metadata)
-        self._throttled = throttled
-        self._soup = throttled_soup(
-            self.url, headers=self.HEADERS) if self._throttled else getsoup(
-            self.url, headers=self.HEADERS)
+    def __init__(
+            self, url: str, metadata: Json | None = None, throttled=False,
+            supress_invalid_deck=True) -> None:
+        super().__init__(url, metadata, throttled, supress_invalid_deck)
+        self._soup = getsoup(self.url, headers=self.HEADERS)
         self._scrape_metadata()
         self._scrape_deck()
 
@@ -58,6 +57,8 @@ class GoldfishScraper(DeckScraper):
 
     @staticmethod
     def _sanitize_url(url: str) -> str:  # override
+        if "/visual/" in url:
+            url = url.replace("/visual/", "/")
         if "#" in url:
             url, _ = url.rsplit("#", maxsplit=1)
             return url
@@ -136,7 +137,8 @@ def scrape_meta(fmt="standard") -> list[Deck]:
         link = tile.find("a").attrs["href"]
         try:
             deck = GoldfishScraper(
-                f"https://www.mtggoldfish.com{link}", {"format": fmt}, throttled=True).deck
+                f"https://www.mtggoldfish.com{link}", {"format": fmt}, throttled=True,
+                supress_invalid_deck=False).deck
         except InvalidDeck as err:
             raise ScrapingError(f"Scraping meta deck failed with: {err}")
         count = tile.find("span", class_="archetype-tile-statistic-value-extra-data").text.strip()

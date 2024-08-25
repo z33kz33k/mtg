@@ -49,8 +49,7 @@ class AetherhubScraper(DeckScraper):
     }
 
     def __init__(self, url: str, metadata: Json | None = None, throttled=False) -> None:
-        super().__init__(url, metadata)
-        self._throttled = throttled
+        super().__init__(url, metadata, throttled)
         self._soup = getsoup(self.url)
         self._scrape_metadata()
         self._scrape_deck()
@@ -101,15 +100,18 @@ class AetherhubScraper(DeckScraper):
 
         # meta (only in meta-decklists)
         if meta_tag := self._soup.find("h5", class_="text-center"):
-            text = meta_tag.text.strip()
-            share_part, change_part = text.split("of meta")
-            self._metadata["meta"] = {}
-            self._metadata["meta"]["share"] = extract_float(share_part)
-            self._metadata["meta"]["share_change"] = extract_float(change_part)
+            try:
+                text = meta_tag.text.strip()
+                share_part, change_part = text.split("of meta")
+                self._metadata["meta"] = {}
+                self._metadata["meta"]["share"] = extract_float(share_part)
+                self._metadata["meta"]["share_change"] = extract_float(change_part)
 
-            count_tag = self._soup.select("h4.text-center.pt-2")[0]
-            count_text, _ = count_tag.text.strip().split("decks,")
-            self._metadata["meta"]["count"] = extract_int(count_text)
+                count_tag = self._soup.select("h4.text-center.pt-2")[0]
+                count_text, _ = count_tag.text.strip().split("decks,")
+                self._metadata["meta"]["count"] = extract_int(count_text)
+            except (IndexError, ValueError):
+                _log.warning(f"No metagame data available for {self.url!r}")
 
     def _scrape_deck(self) -> None:  # override
         deck_tags = self._soup.find_all("div", class_="row")
@@ -130,6 +132,8 @@ class AetherhubScraper(DeckScraper):
                 if td_tags:
                     td_tag = td_tags[0]
                     lines = [l.strip() for l in td_tag.text.split("\n") if l.strip()]
+                    if len(lines) < 2:
+                        continue  # not a <td> card tag
                     qty_text, name = lines
                     quantity = int(qty_text)
                     card_tag = td_tag.find("a")

@@ -350,6 +350,10 @@ class InvalidDeck(ValueError):
     """
 
 
+# this class tries to be as generic as possible and still support multiple Constructed formats
+# this means some more complicated formats like Oathbreaker are not fully supported (e.g a Deck
+# knows nothing about signature spells) to not over-complicate things (by either going into an
+# inheritance hierarchy or bloating the generic API beyond comprehension)
 class Deck:
     """A deck of cards suitable for Constructed formats.
     """

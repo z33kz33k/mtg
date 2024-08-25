@@ -12,6 +12,7 @@ import logging
 import random
 import re
 import time
+from collections import namedtuple
 from functools import wraps
 from typing import Callable, Dict, Optional, Union
 
@@ -103,11 +104,21 @@ def getsoup(url: str, headers: Dict[str, str] | None = None) -> BeautifulSoup:
     return BeautifulSoup(response.text, "lxml")
 
 
+Throttling = namedtuple("Throttling", "delay offset")
+
+
 def throttle(delay: float, offset=0.0) -> None:
     if offset:
         delay = round(random.uniform(delay - offset / 2, delay + offset / 2), 3)
     _log.info(f"Throttling for {delay} seconds...")
     time.sleep(delay)
+
+
+def throttle_with_countdown(delay_seconds: int) -> None:
+    for i in range(delay_seconds, 0, -1):
+        print(f"Waiting {i} seconds before next batch...", end="\r")
+        time.sleep(1)
+    print("Ready for next batch!")
 
 
 def throttled(delay: float, offset=0.0) -> Callable:

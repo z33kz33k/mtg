@@ -54,8 +54,8 @@ from mtgcards.utils import deserialize_dates, extract_float, getrepr, multiply_b
 from mtgcards.utils.files import getdir, getfile
 from mtgcards.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
 from mtgcards.utils.scrape import extract_source, extract_url, get_dynamic_soup_by_xpath, \
-    throttled, timed_request, unshorten
-from utils.scrape import ScrapingError
+    http_requests_counted, throttled, timed_request, unshorten
+from utils.scrape import ScrapingError, throttle_with_countdown
 
 _log = logging.getLogger(__name__)
 
@@ -96,15 +96,15 @@ def batch_update(start_row=2, batch_size: int | None = None) -> None:
             data.append([
                 url,
                 ch.scrape_time.date().strftime("%Y-%m-%d"),
-                ch.staleness,
-                ch.posting_interval,
-                len(ch),
+                ch.data.staleness,
+                ch.data.posting_interval,
+                len(ch.videos),
                 len(ch.decks),
-                ch.total_views,
-                ch.views_per_sub or "N/A",
+                ch.data.total_views,
+                ch.data.subs_activity or "N/A",
                 ch.subscribers or "N/A",
-                ", ".join(ch.sources),
-                ", ".join(ch.deck_sources)
+                ", ".join(ch.data.sources),
+                ", ".join(ch.data.deck_sources)
             ])
         except ScrapingError as se:
             _log.warning(f"Scraping of channel {url!r} failed with: '{se}'. Skipping...")
@@ -115,6 +115,7 @@ def batch_update(start_row=2, batch_size: int | None = None) -> None:
     extend_gsheet_rows_with_cols("mtga_yt", "channels", data, start_row=start_row, start_col=5)
 
 
+@http_requests_counted("channels scraping")
 @timed("channels scraping", precision=1)
 def scrape_channels(
         start_row=2, batch_size: int | None = None, videos=15, dstdir: PathLike = "") -> None:
@@ -128,13 +129,16 @@ def scrape_channels(
         dstdir: optionally, the destination directory (if not provided default location is used)
     """
     root = dstdir or OUTPUT_DIR / "channels"
-    for _, url in _channels_batch(start_row, batch_size):
+    for i, (_, url) in enumerate(_channels_batch(start_row, batch_size), start=1):
         try:
             ch = Channel(url, limit=videos)
             dst = root / ch.handle
             ch.dump(dst)
         except ScrapingError as se:
             _log.warning(f"Scraping of channel {url!r} failed with: '{se}'. Skipping...")
+        if not i % 20:
+            _log.info(f"Throttling for 5 minutes before the next batch...")
+            throttle_with_countdown(5 * 60)
 
 
 class Video:
@@ -337,7 +341,7 @@ class Video:
         )
 
     def _get_pytube(self) -> pytubefix.YouTube:
-        return pytubefix.YouTube(self.url)
+        return pytubefix.YouTube(self.url, use_oauth=True, allow_oauth_cache=True)
 
     @backoff.on_exception(backoff.expo, (Timeout, HTTPError, RemoteDisconnected), max_time=60)
     def _get_pytube_with_backoff(self) -> pytubefix.YouTube:
@@ -412,7 +416,7 @@ class Video:
 
     def _scrape_deck(self, link: str) -> Deck | None:
         if AetherhubScraper.is_deck_url(link):
-            return AetherhubScraper(link, self.metadata).deck
+            return AetherhubScraper(link, self.metadata, throttled=True).deck
         elif ArchidektScraper.is_deck_url(link):
             return ArchidektScraper(link, self.metadata).deck
         elif CardhoarderScraper.is_deck_url(link):
@@ -430,7 +434,7 @@ class Video:
         elif ManatradersScraper.is_deck_url(link):
             return ManatradersScraper(link, self.metadata).deck
         elif MoxfieldScraper.is_deck_url(link):
-            return MoxfieldScraper(link, self.metadata).deck
+            return MoxfieldScraper(link, self.metadata, throttled=True).deck
         elif MtgaZoneScraper.is_deck_url(link):
             return MtgaZoneScraper(link, self.metadata).deck
         elif MtgDecksNetScraper.is_deck_url(link):
