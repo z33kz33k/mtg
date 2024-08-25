@@ -102,7 +102,7 @@ def get_ago_date(date_text: str) -> date | None:
         return None
     date_text = date_text.removesuffix(" ago")
     amount, time = date_text.split()
-    amount = int(amount)
+    amount = 1 if amount == "a" else int(amount)
     dt = date.today()
     if time in ("days", "day"):
         return dt - timedelta(days=amount)

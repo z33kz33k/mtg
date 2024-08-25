@@ -29,8 +29,11 @@ class ManatradersScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return ("www.manatraders.com/webshop/personal/" in url or
-                "www.manatraders.com/webshop/deck/") in url
+        if "www.manatraders.com/webshop/personal/" in url:
+            return True
+        if "www.manatraders.com/webshop/deck/" in url:
+            return True
+        return False
 
     @staticmethod
     def _sanitize_url(url: str) -> str:  # override

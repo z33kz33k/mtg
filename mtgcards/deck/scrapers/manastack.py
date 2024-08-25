@@ -9,6 +9,8 @@
 """
 import logging
 
+from selenium.common.exceptions import TimeoutException
+
 from mtgcards.const import Json
 from mtgcards.deck import ParsingState
 from mtgcards.deck.scrapers import DeckScraper
@@ -25,9 +27,12 @@ class ManaStackScraper(DeckScraper):
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        self._soup, _, _ = get_dynamic_soup_by_xpath(self.url, self._XPATH)
-        self._scrape_metadata()
-        self._scrape_deck()
+        try:
+            self._soup, _, _ = get_dynamic_soup_by_xpath(self.url, self._XPATH)
+            self._scrape_metadata()
+            self._scrape_deck()
+        except TimeoutException:
+            _log.warning(f"Scraping failed due to Selenium timing out")
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
