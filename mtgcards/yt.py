@@ -12,6 +12,7 @@ import json
 import logging
 import re
 from collections import Counter, defaultdict
+from dataclasses import asdict, dataclass
 from datetime import date, datetime
 from decimal import Decimal
 from functools import cached_property
@@ -50,7 +51,7 @@ from mtgcards.deck.scrapers.untapped import UntappedProfileDeckScraper, Untapped
 from mtgcards.scryfall import all_formats
 from mtgcards.utils import deserialize_dates, extract_float, getrepr, multiply_by_symbol, \
     sanitize_filename, serialize_dates, timed
-from mtgcards.utils.files import getdir
+from mtgcards.utils.files import getdir, getfile
 from mtgcards.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
 from mtgcards.utils.scrape import extract_source, extract_url, get_dynamic_soup_by_xpath, \
     throttled, timed_request, unshorten
@@ -94,7 +95,7 @@ def batch_update(start_row=2, batch_size: int | None = None) -> None:
             ch = Channel(url)
             data.append([
                 url,
-                ch.scrape_date.strftime("%Y-%m-%d"),
+                ch.scrape_time.date().strftime("%Y-%m-%d"),
                 ch.staleness,
                 ch.posting_interval,
                 len(ch),
@@ -330,7 +331,7 @@ class Video:
         return getrepr(
             self.__class__,
             ("title", self.title),
-            ("deck", len(self.decks)),
+            ("decks", len(self.decks)),
             ("publish_time", str(self.publish_time)),
             ("views", self.views)
         )
@@ -527,8 +528,70 @@ class Video:
         dst.write_text(self.json, encoding="utf-8")
 
 
-class Channel(list):
-    """A list of videos showcasing a MtG deck with its most important metadata.
+@dataclass
+class ChannelData:
+    url: str
+    id: str | None
+    title: str | None
+    description: str | None
+    tags: list[str] | None
+    subscribers: int
+    scrape_time: datetime
+    videos: list[dict]
+
+    @property
+    def decks(self) -> list[dict]:
+        return [d for v in self.videos for d in v["decks"]]
+
+    @property
+    def sources(self) -> list[str]:
+        return sorted({s for v in self.videos for s in v["sources"]})
+
+    @property
+    def deck_sources(self) -> Counter:
+        return Counter(d["metadata"]["source"] for d in self.decks)
+
+    @property
+    def deck_formats(self) -> Counter:
+        return Counter(d["metadata"]["format"] for d in self.decks)
+
+    @property
+    def staleness(self) -> int | None:
+        return (date.today() - self.videos[0]["publish_time"].date()).days if self.videos else None
+
+    @property
+    def span(self) -> int | None:
+        if self.videos:
+            return (self.videos[0]["publish_time"].date() - self.videos[-1]["publish_time"].date(
+                )).days
+        return None
+
+    @property
+    def posting_interval(self) -> float | None:
+        return self.span / len(self.videos) if self.videos else None
+
+    @property
+    def total_views(self) -> int:
+        return sum(v["views"] for v in self.videos)
+
+    @property
+    def subs_activity(self) -> float | None:
+        """Return amount of subscribers needed to generate one video view, if available.
+
+        The greater this number the lazier (less active) subscribers.
+        """
+        avg_views = self.total_views / len(self.videos)
+        return self.subscribers / avg_views if self.subscribers else None
+
+    @property
+    def decks_per_video(self) -> float | None:
+        if not self.decks:
+            return None
+        return len(self.videos) / len(self.decks)
+
+
+class Channel:
+    """YouTube channel showcasing MtG decks.
     """
     @property
     def url(self) -> str:
@@ -560,44 +623,20 @@ class Channel(list):
         return self._subscribers
 
     @property
-    def decks(self) -> list[Deck]:
-        return [d for v in self for d in v.decks]
-
-    @property
-    def sources(self) -> list[str]:
-        return sorted(self._sources)
-
-    @property
-    def deck_sources(self) -> list[str]:
-        return sorted({d.source for d in self.decks})
-
-    @property
-    def staleness(self) -> int | None:
-        return (date.today() - self[0].publish_time.date()).days if self else None
-
-    @property
-    def span(self) -> int | None:
-        return (self[0].publish_time.date() - self[-1].publish_time.date()).days if self else None
-
-    @property
-    def total_views(self) -> int:
-        return sum(v.views for v in self)
-
-    @property
-    def views_per_sub(self) -> float | None:
-        return self.total_views / self.subscribers if self.subscribers else None
-
-    @property
-    def posting_interval(self) -> float | None:
-        return self.span / len(self) if self else None
-
-    @property
     def scrape_time(self) -> datetime:
         return self._scrape_time
 
     @property
-    def scrape_date(self) -> date:
-        return self.scrape_time.date()
+    def videos(self) -> list[Video]:
+        return self._videos
+
+    @property
+    def decks(self) -> list[Deck]:
+        return [d for v in self.videos for d in v.decks]
+
+    @property
+    def data(self) -> ChannelData:
+        return self._data
 
     def __init__(self, url: str, limit=10) -> None:
         url = url.rstrip("/")
@@ -611,21 +650,41 @@ class Channel(list):
                 raise ScrapingError(
                     "scrapetube failed with JSON error. This channel probably doesn't exist "
                     "anymore")
+            if not videos:
+                raise ScrapingError(f"No video scrapetube data")
             _log.info(f"Scraping channel: {url!r}, {limit} video(s)...")
-            super().__init__([Video(data["videoId"]) for data in videos])
+            self._videos = [Video(data["videoId"]) for data in videos]
             self._url = url
-            self._id = self[0].channel_id if self else None
+            self._id = self.videos[0].channel_id if self else None
             self._ytsp_data = YtspChannel(self.id) if self._id else None
             self._description = self._ytsp_data.result.get("description") if self._id else None
             self._title = self._ytsp_data.result.get("title") if self._id else None
             self._tags = self._ytsp_data.result.get("tags") if self._id else None
             self._subscribers = self._parse_subscribers() if self._id else None
             if not self._subscribers:
-                self._subscribers = self[0].channel_subscribers
+                self._subscribers = self.videos[0].channel_subscribers
                 if self._subscribers is None:
                     self._subscribers = self._scrape_subscribers_with_selenium()
-            self._sources = {s for v in self for s in v.sources}
+            self._data = ChannelData(
+                url=url,
+                id=self.id,
+                title=self.title,
+                description=self.description,
+                tags=self.tags,
+                subscribers=self.subscribers,
+                scrape_time=self.scrape_time,
+                videos=[json.loads(v.json, object_hook=deserialize_dates) for v in self.videos],
+            )
         _log.info(f"Completed channel scraping in {t.elapsed:.2f} second(s)")
+
+    def __repr__(self) -> str:
+        return getrepr(
+            self.__class__,
+            ("handle", self.handle),
+            ("videos", len(self.videos)),
+            ("decks", len(self.decks)),
+            ("scrape_time", str(self.scrape_time)),
+        )
 
     def _parse_subscribers(self) -> int | None:
         if not self._id:
@@ -656,24 +715,7 @@ class Channel(list):
 
     @property
     def json(self) -> str:
-        data = {
-            "url": self.url,
-            "id": self.id,
-            "title": self.title,
-            "description": self.description,
-            "tags": self.tags,
-            "subscribers": self.subscribers,
-            "sources": self.sources,
-            "deck_sources": self.deck_sources,
-            "staleness": self.staleness,
-            "span": self.span,
-            "total_views": self.total_views,
-            "views_per_sub": self.views_per_sub,
-            "posting_interval": self.posting_interval,
-            "scrape_time": self.scrape_time,
-            "videos": [json.loads(v.json, object_hook=deserialize_dates) for v in self],
-        }
-        return json.dumps(data, indent=4, ensure_ascii=False, default=serialize_dates)
+        return json.dumps(asdict(self.data), indent=4, ensure_ascii=False, default=serialize_dates)
 
     def dump(self, dstdir: PathLike = "", name="") -> None:
         """Dump to a .json file.
@@ -691,3 +733,10 @@ class Channel(list):
         dst.write_text(self.json, encoding="utf-8")
 
 
+def load_channel(json_file: PathLike) -> ChannelData:
+    """Load channel data from a .json file.
+    """
+    file = getfile(json_file, ext=".json")
+    _log.info(f"Loading channel from: '{file}'...")
+    data = json.loads(file.read_text(encoding="utf-8"), object_hook=deserialize_dates)
+    return ChannelData(**data)

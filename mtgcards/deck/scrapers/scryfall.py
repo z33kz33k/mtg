@@ -16,7 +16,7 @@ from mtgcards.const import Json
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.scryfall import Card
 from mtgcards.utils import extract_int
-from mtgcards.utils.scrape import ScrapingError, getsoup
+from mtgcards.utils.scrape import getsoup
 
 _log = logging.getLogger(__name__)
 

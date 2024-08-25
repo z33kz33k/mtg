@@ -17,7 +17,7 @@ from mtgcards.const import Json
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.scryfall import Card
 from mtgcards.utils import extract_int
-from mtgcards.utils.scrape import ScrapingError, get_dynamic_soup_by_xpath, getsoup
+from mtgcards.utils.scrape import get_dynamic_soup_by_xpath, getsoup
 
 _log = logging.getLogger(__name__)
 
