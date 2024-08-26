@@ -597,7 +597,7 @@ class Deck:
                 if any(letter not in identity for letter in card.color_identity.value):
                     raise InvalidDeck(
                         f"Color identity of '{card}' ({card.color_identity}) doesn't match "
-                        f"commander's color identity ({identity})")
+                        f"commander's color identity ({Color.from_letters(*identity)})")
         self._commander, self._partner_commander = commander, partner_commander
         if self.partner_commander and self.partner_commander not in mainboard:
             mainboard = [self.partner_commander, *mainboard]
