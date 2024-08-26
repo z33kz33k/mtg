@@ -61,7 +61,7 @@ from utils.scrape import ScrapingError, throttle_with_countdown
 _log = logging.getLogger(__name__)
 
 
-CHANNEL_DIR = OUTPUT_DIR / "channels"
+CHANNELS_DIR = OUTPUT_DIR / "channels"
 
 
 @dataclass
@@ -89,7 +89,7 @@ class ChannelData:
 
     @property
     def deck_formats(self) -> Counter:
-        return Counter(d["metadata"]["format"] for d in self.decks)
+        return Counter(d["metadata"]["format"] for d in self.decks if d["metadata"].get("format"))
 
     @property
     def staleness(self) -> int | None:
@@ -193,7 +193,7 @@ def batch_update(start_row=2, batch_size: int | None = None) -> None:
     """
     data = []
     for _, url in _channels_batch(start_row, batch_size):
-        dst = getdir(CHANNEL_DIR / Channel.url2handle(url.rstrip("/")))
+        dst = getdir(CHANNELS_DIR / Channel.url2handle(url.rstrip("/")))
         try:
             ch = load_channel(dst)
             data.append([
@@ -207,8 +207,9 @@ def batch_update(start_row=2, batch_size: int | None = None) -> None:
                 ch.subs_activity if ch.subs_activity is not None else "N/A",
                 ch.decks_per_video or 0,
                 ch.subscribers or "N/A",
+                ", ".join(sorted(ch.deck_formats.keys())),
+                ", ".join(sorted(ch.deck_sources.keys())),
                 ", ".join(ch.sources),
-                ", ".join(sorted(ch.deck_sources.keys()))
             ])
         except FileNotFoundError:
             _log.warning(f"Channel data for {url!r} not found. Skipping...")
@@ -237,15 +238,19 @@ def scrape_channels(
         videos: number of videos to scrape per channel
         dstdir: optionally, the destination directory (if not provided default location is used)
     """
-    root = getdir(dstdir or CHANNEL_DIR)
-    for i, (_, url) in enumerate(_channels_batch(start_row, batch_size), start=1):
+    root = getdir(dstdir or CHANNELS_DIR)
+    count = 0
+    for _, url in _channels_batch(start_row, batch_size):
         try:
             ch = Channel(url, limit=videos)
-            dst = root / ch.handle
-            ch.dump(dst)
+            if ch.data:
+                dst = root / ch.handle
+                ch.dump(dst)
+                count += len(ch.videos)
         except ScrapingError as se:
             _log.warning(f"Scraping of channel {url!r} failed with: '{se}'. Skipping...")
-        if not i % 20:
+        if count > 200:
+            count = 0
             _log.info(f"Throttling for 5 minutes before the next batch...")
             throttle_with_countdown(5 * 60)
 
@@ -677,7 +682,7 @@ class Channel:
         return self._subscribers
 
     @property
-    def scrape_time(self) -> datetime:
+    def scrape_time(self) -> datetime | None:
         return self._scrape_time
 
     @property
@@ -689,26 +694,34 @@ class Channel:
         return [d for v in self.videos for d in v.decks]
 
     @property
-    def data(self) -> ChannelData:
+    def data(self) -> ChannelData | None:
         return self._data
 
     def __init__(self, url: str, limit=10) -> None:
-        url = url.rstrip("/")
+        self._url = url
+        self._id, self._title, self._description, self._tags = None, None, None, None
+        self._subscribers, self._scrape_time, self._videos = None, None, []
+        self._ytsp_data, self._data = None, None
+        video_ids = self.get_unscraped_ids(limit)
+        if not video_ids:
+            _log.info(f"Channel data for {self.handle!r} already up to date")
+        else:
+            self.scrape(*video_ids)
+
+    def get_unscraped_ids(self, limit=10) -> list[str]:
+        last_scraped_id = self._get_last_scraped_id()
+        video_ids = []
+        for vid in self.video_ids(self.url, limit=limit):
+            if vid == last_scraped_id:
+                break
+            video_ids.append(vid)
+        return video_ids
+
+    def scrape(self, *video_ids: str) -> None:
         with Timer() as t:
             self._scrape_time = datetime.now()
-            try:
-                videos = [*scrapetube.get_channel(channel_url=url, limit=limit)]
-            except OSError:
-                raise ValueError(f"Invalid URL: {url!r}")
-            except json.decoder.JSONDecodeError:
-                raise ScrapingError(
-                    "scrapetube failed with JSON error. This channel probably doesn't exist "
-                    "anymore")
-            if not videos:
-                raise ScrapingError(f"No video scrapetube data")
-            _log.info(f"Scraping channel: {url!r}, {limit} video(s)...")
-            self._videos = [Video(data["videoId"]) for data in videos]
-            self._url = url
+            _log.info(f"Scraping channel: {self.url!r}, {len(video_ids)} video(s)...")
+            self._videos = [Video(vid) for vid in video_ids]
             self._id = self.videos[0].channel_id if self else None
             self._ytsp_data = YtspChannel(self.id) if self._id else None
             self._description = self._ytsp_data.result.get("description") if self._id else None
@@ -720,7 +733,7 @@ class Channel:
                 if self._subscribers is None:
                     self._subscribers = self._scrape_subscribers_with_selenium()
             self._data = ChannelData(
-                url=url,
+                url=self.url,
                 id=self.id,
                 title=self.title,
                 description=self.description,
@@ -730,6 +743,27 @@ class Channel:
                 videos=[json.loads(v.json, object_hook=deserialize_dates) for v in self.videos],
             )
         _log.info(f"Completed channel scraping in {t.elapsed:.2f} second(s)")
+
+    def _get_last_scraped_id(self) -> str:
+        try:
+            data = load_channel(CHANNELS_DIR / self.handle)
+            if not data.videos:
+                return ""
+            return data.videos[0]["id"]
+        except FileNotFoundError:
+            return ""
+
+    @staticmethod
+    def video_ids(url: str, limit=10) -> Generator[str, None, None]:
+        try:
+            for ch_data in scrapetube.get_channel(channel_url=url, limit=limit):
+                yield ch_data["videoId"]
+        except OSError:
+            raise ValueError(f"Invalid URL: {url!r}")
+        except json.decoder.JSONDecodeError:
+            raise ScrapingError(
+                "scrapetube failed with JSON error. This channel probably doesn't exist "
+                "anymore")
 
     def __repr__(self) -> str:
         return getrepr(
