@@ -17,6 +17,7 @@ from datetime import date, datetime
 from decimal import Decimal
 from functools import cached_property
 from http.client import RemoteDisconnected
+from operator import attrgetter
 from typing import Generator, Iterator
 
 import backoff
@@ -60,6 +61,107 @@ from utils.scrape import ScrapingError, throttle_with_countdown
 _log = logging.getLogger(__name__)
 
 
+CHANNEL_DIR = OUTPUT_DIR / "channels"
+
+
+@dataclass
+class ChannelData:
+    url: str
+    id: str | None
+    title: str | None
+    description: str | None
+    tags: list[str] | None
+    subscribers: int
+    scrape_time: datetime
+    videos: list[dict]
+
+    @property
+    def decks(self) -> list[dict]:
+        return [d for v in self.videos for d in v["decks"]]
+
+    @property
+    def sources(self) -> list[str]:
+        return sorted({s for v in self.videos for s in v["sources"]})
+
+    @property
+    def deck_sources(self) -> Counter:
+        return Counter(d["metadata"]["source"] for d in self.decks)
+
+    @property
+    def deck_formats(self) -> Counter:
+        return Counter(d["metadata"]["format"] for d in self.decks)
+
+    @property
+    def staleness(self) -> int | None:
+        return (date.today() - self.videos[0]["publish_time"].date()).days if self.videos else None
+
+    @property
+    def span(self) -> int | None:
+        if self.videos:
+            return (self.videos[0]["publish_time"].date() - self.videos[-1]["publish_time"].date(
+                )).days
+        return None
+
+    @property
+    def posting_interval(self) -> float | None:
+        return self.span / len(self.videos) if self.videos else None
+
+    @property
+    def total_views(self) -> int:
+        return sum(v["views"] for v in self.videos)
+
+    @property
+    def subs_activity(self) -> float | None:
+        """Return ratio of subscribers needed to generate one video view in inverted relation to 10
+        subscribers, if available.
+
+        The greater this number the more active the subscribers. 1 means 10 subscribers are
+        needed to generate one video view. 2 means 5 subscribers are needed to generate one
+        video view, 10 means 1 subscriber is needed one and so on.
+        """
+        avg_views = self.total_views / len(self.videos)
+        return 10 / (self.subscribers / avg_views) if self.subscribers else None
+
+    @property
+    def decks_per_video(self) -> float | None:
+        if not self.videos:
+            return None
+        return len(self.decks) / len(self.videos)
+
+
+def load_channel(channel_dir: PathLike) -> ChannelData:
+    """Load channel data from all channel .json files at the provided channel directory.
+    """
+    channel_dir = getdir(channel_dir)
+    _log.info(f"Loading channel data from: '{channel_dir}'...")
+    files = [f for f in channel_dir.iterdir() if f.is_file() and f.suffix.lower() == ".json"]
+    if not files:
+        raise FileNotFoundError(f"No channel files found at: '{channel_dir}'")
+    files.sort(key=attrgetter("name"), reverse=True)
+    channels = []
+    for file in files:
+        channel = json.loads(file.read_text(encoding="utf-8"), object_hook=deserialize_dates)
+        channels.append(ChannelData(**channel))
+
+    seen, videos = set(), []
+    for video in itertools.chain(*[c.videos for c in channels]):
+        if video["id"] in seen:
+            continue
+        seen.add(video["id"])
+        videos.append(video)
+
+    return ChannelData(
+        url=channels[0].url,
+        id=channels[0].id,
+        title=channels[0].title,
+        description=channels[0].description,
+        tags=channels[0].tags,
+        subscribers=channels[0].subscribers,
+        scrape_time=channels[0].scrape_time,
+        videos=videos,
+    )
+
+
 def channels() -> Generator[tuple[str, str], None, None]:
     """Yield a tuple (channel name, channel addresses) from a private Google Sheet spreadsheet.
 
@@ -91,23 +193,30 @@ def batch_update(start_row=2, batch_size: int | None = None) -> None:
     """
     data = []
     for _, url in _channels_batch(start_row, batch_size):
+        dst = getdir(CHANNEL_DIR / Channel.url2handle(url.rstrip("/")))
         try:
-            ch = Channel(url)
+            ch = load_channel(dst)
             data.append([
                 url,
                 ch.scrape_time.date().strftime("%Y-%m-%d"),
-                ch.data.staleness,
-                ch.data.posting_interval,
+                ch.staleness if ch.staleness is not None else "N/A",
+                ch.posting_interval if ch.posting_interval is not None else "N/A",
                 len(ch.videos),
                 len(ch.decks),
-                ch.data.total_views,
-                ch.data.subs_activity or "N/A",
+                ch.total_views,
+                ch.subs_activity if ch.subs_activity is not None else "N/A",
+                ch.decks_per_video or 0,
                 ch.subscribers or "N/A",
-                ", ".join(ch.data.sources),
-                ", ".join(ch.data.deck_sources)
+                ", ".join(ch.sources),
+                ", ".join(sorted(ch.deck_sources.keys()))
             ])
-        except ScrapingError as se:
-            _log.warning(f"Scraping of channel {url!r} failed with: '{se}'. Skipping...")
+        except FileNotFoundError:
+            _log.warning(f"Channel data for {url!r} not found. Skipping...")
+            data.append(
+                ["NOT AVAILABLE", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A",
+                 "N/A"])
+        except AttributeError as err:
+            _log.warning(f"Corrupted Channel data for {url!r}: {err}. Skipping...")
             data.append(
                 ["NOT AVAILABLE", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A",
                  "N/A"])
@@ -128,7 +237,7 @@ def scrape_channels(
         videos: number of videos to scrape per channel
         dstdir: optionally, the destination directory (if not provided default location is used)
     """
-    root = dstdir or OUTPUT_DIR / "channels"
+    root = getdir(dstdir or CHANNEL_DIR)
     for i, (_, url) in enumerate(_channels_batch(start_row, batch_size), start=1):
         try:
             ch = Channel(url, limit=videos)
@@ -312,7 +421,7 @@ class Video:
         self._id = video_id
         try:
             self._pytube = self._get_pytube()
-        except RemoteDisconnected as e:
+        except (RemoteDisconnected, ScrapingError) as e:
             _log.warning(
                 f"`pytube` had a hiccup ({e}). Retrying with backoff (60 seconds max)...")
             self._pytube = self._get_pytube_with_backoff()
@@ -341,9 +450,13 @@ class Video:
         )
 
     def _get_pytube(self) -> pytubefix.YouTube:
-        return pytubefix.YouTube(self.url, use_oauth=True, allow_oauth_cache=True)
+        data = pytubefix.YouTube(self.url, use_oauth=True, allow_oauth_cache=True)
+        if not data.publish_date:
+            raise ScrapingError("pytube data missing publish date")
+        return data
 
-    @backoff.on_exception(backoff.expo, (Timeout, HTTPError, RemoteDisconnected), max_time=60)
+    @backoff.on_exception(
+        backoff.expo, (Timeout, HTTPError, RemoteDisconnected, ScrapingError), max_time=60)
     def _get_pytube_with_backoff(self) -> pytubefix.YouTube:
         return self._get_pytube()
 
@@ -532,68 +645,6 @@ class Video:
         dst.write_text(self.json, encoding="utf-8")
 
 
-@dataclass
-class ChannelData:
-    url: str
-    id: str | None
-    title: str | None
-    description: str | None
-    tags: list[str] | None
-    subscribers: int
-    scrape_time: datetime
-    videos: list[dict]
-
-    @property
-    def decks(self) -> list[dict]:
-        return [d for v in self.videos for d in v["decks"]]
-
-    @property
-    def sources(self) -> list[str]:
-        return sorted({s for v in self.videos for s in v["sources"]})
-
-    @property
-    def deck_sources(self) -> Counter:
-        return Counter(d["metadata"]["source"] for d in self.decks)
-
-    @property
-    def deck_formats(self) -> Counter:
-        return Counter(d["metadata"]["format"] for d in self.decks)
-
-    @property
-    def staleness(self) -> int | None:
-        return (date.today() - self.videos[0]["publish_time"].date()).days if self.videos else None
-
-    @property
-    def span(self) -> int | None:
-        if self.videos:
-            return (self.videos[0]["publish_time"].date() - self.videos[-1]["publish_time"].date(
-                )).days
-        return None
-
-    @property
-    def posting_interval(self) -> float | None:
-        return self.span / len(self.videos) if self.videos else None
-
-    @property
-    def total_views(self) -> int:
-        return sum(v["views"] for v in self.videos)
-
-    @property
-    def subs_activity(self) -> float | None:
-        """Return amount of subscribers needed to generate one video view, if available.
-
-        The greater this number the lazier (less active) subscribers.
-        """
-        avg_views = self.total_views / len(self.videos)
-        return self.subscribers / avg_views if self.subscribers else None
-
-    @property
-    def decks_per_video(self) -> float | None:
-        if not self.decks:
-            return None
-        return len(self.videos) / len(self.decks)
-
-
 class Channel:
     """YouTube channel showcasing MtG decks.
     """
@@ -603,8 +654,7 @@ class Channel:
 
     @property
     def handle(self) -> str:
-        _, handle = self.url.rsplit("/", maxsplit=1)
-        return handle
+        return self.url2handle(self.url)
 
     @property
     def id(self) -> str | None:
@@ -690,6 +740,13 @@ class Channel:
             ("scrape_time", str(self.scrape_time)),
         )
 
+    @staticmethod
+    def url2handle(url: str) -> str:
+        if "@" not in url:
+            raise ValueError(f"Not a channel URL: {url!r}")
+        _, handle = url.rsplit("/", maxsplit=1)
+        return handle
+
     def _parse_subscribers(self) -> int | None:
         if not self._id:
             return None
@@ -735,12 +792,3 @@ class Channel:
         dst = dstdir / f"{sanitize_filename(name)}.json"
         _log.info(f"Exporting channel to: '{dst}'...")
         dst.write_text(self.json, encoding="utf-8")
-
-
-def load_channel(json_file: PathLike) -> ChannelData:
-    """Load channel data from a .json file.
-    """
-    file = getfile(json_file, ext=".json")
-    _log.info(f"Loading channel from: '{file}'...")
-    data = json.loads(file.read_text(encoding="utf-8"), object_hook=deserialize_dates)
-    return ChannelData(**data)

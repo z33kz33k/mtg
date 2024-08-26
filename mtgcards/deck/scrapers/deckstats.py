@@ -7,6 +7,7 @@
     @author: z33k
 
 """
+import itertools
 import json
 import logging
 from datetime import datetime
@@ -88,10 +89,9 @@ class DeckstatsScraper(DeckScraper):
         return self.get_playset(card, quantity)
 
     def _scrape_deck(self) -> None:  # override
-        main_data = from_iterable(self._json_data["sections"], lambda d: d["name"] == "Main")
-        if not main_data:
-            raise ScrapingError("No 'Main' section in the requested page code's JSON data")
-        for card_json in main_data["cards"]:
+        cards = itertools.chain(
+            *[section["cards"] for section in self._json_data["sections"]])
+        for card_json in cards:
             self._mainboard.extend(self._parse_card_json(card_json))
         if sideboard := self._json_data.get("sideboard"):
             for card_json in sideboard:
