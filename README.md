@@ -16,8 +16,6 @@ Then, I quit (Arena).
 Now, the main focus is `decks` package and `yt` module (parsing data on youtubers' decks from YT videos 
 descriptions).
 
-![Sources & formats](https://i.ibb.co/rysMvJY/image.png)
-
 ### What works
 
 * Scryfall data management via downloading bulk data with 
@@ -59,4 +57,8 @@ descriptions).
 * Dumping decks, YT videos and channels to .json
 * I compiled a list of 300 YT channels that feature decks in their descriptions and successfully scraped them, 
   so this data only waits to be creatively used now!
+
+### Scraped decks breakdown
+
+![Sources & formats](https://i.ibb.co/rysMvJY/image.png)
 
