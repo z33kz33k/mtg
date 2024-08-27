@@ -17,7 +17,7 @@ from datetime import date, datetime
 from decimal import Decimal
 from functools import cached_property
 from http.client import RemoteDisconnected
-from operator import attrgetter
+from operator import attrgetter, itemgetter
 from typing import Generator, Iterator
 
 import backoff
@@ -52,7 +52,7 @@ from mtgcards.deck.scrapers.untapped import UntappedProfileDeckScraper, Untapped
 from mtgcards.scryfall import all_formats
 from mtgcards.utils import deserialize_dates, extract_float, getrepr, multiply_by_symbol, \
     sanitize_filename, serialize_dates, timed
-from mtgcards.utils.files import getdir, getfile
+from mtgcards.utils.files import getdir
 from mtgcards.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
 from mtgcards.utils.scrape import extract_source, extract_url, get_dynamic_soup_by_xpath, \
     http_requests_counted, throttled, timed_request, unshorten
@@ -137,11 +137,11 @@ def load_channel(channel_dir: PathLike) -> ChannelData:
     files = [f for f in channel_dir.iterdir() if f.is_file() and f.suffix.lower() == ".json"]
     if not files:
         raise FileNotFoundError(f"No channel files found at: '{channel_dir}'")
-    files.sort(key=attrgetter("name"), reverse=True)
     channels = []
     for file in files:
         channel = json.loads(file.read_text(encoding="utf-8"), object_hook=deserialize_dates)
         channels.append(ChannelData(**channel))
+    channels.sort(key=attrgetter("scrape_time"), reverse=True)
 
     seen, videos = set(), []
     for video in itertools.chain(*[c.videos for c in channels]):
@@ -149,6 +149,7 @@ def load_channel(channel_dir: PathLike) -> ChannelData:
             continue
         seen.add(video["id"])
         videos.append(video)
+    videos.sort(key=itemgetter("publish_time"), reverse=True)
 
     return ChannelData(
         url=channels[0].url,
