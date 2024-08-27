@@ -23,7 +23,6 @@ from typing import Generator, Iterator
 import backoff
 import pytubefix
 import scrapetube
-from contexttimer import Timer
 from requests import HTTPError, Timeout
 from youtubesearchpython import Channel as YtspChannel
 
@@ -129,10 +128,10 @@ class ChannelData:
         return len(self.decks) / len(self.videos)
 
 
-def load_channel(channel_dir: PathLike) -> ChannelData:
+def load_channel(channel_url: str) -> ChannelData:
     """Load channel data from all channel .json files at the provided channel directory.
     """
-    channel_dir = getdir(channel_dir)
+    channel_dir = getdir(CHANNELS_DIR / Channel.url2handle(channel_url.rstrip("/")))
     _log.info(f"Loading channel data from: '{channel_dir}'...")
     files = [f for f in channel_dir.iterdir() if f.is_file() and f.suffix.lower() == ".json"]
     if not files:
@@ -194,9 +193,8 @@ def batch_update(start_row=2, batch_size: int | None = None) -> None:
     """
     data = []
     for _, url in _channels_batch(start_row, batch_size):
-        dst = getdir(CHANNELS_DIR / Channel.url2handle(url.rstrip("/")))
         try:
-            ch = load_channel(dst)
+            ch = load_channel(url)
             data.append([
                 url,
                 ch.scrape_time.date().strftime("%Y-%m-%d"),
@@ -229,7 +227,8 @@ def batch_update(start_row=2, batch_size: int | None = None) -> None:
 @http_requests_counted("channels scraping")
 @timed("channels scraping", precision=1)
 def scrape_channels(
-        start_row=2, batch_size: int | None = None, videos=15, dstdir: PathLike = "") -> None:
+        start_row=2, batch_size: int | None = None, videos=15,
+        only_earlier_than_last=True) -> None:
     """Scrape YouTube channels specified in private Google Sheet. Save the scraped data as .json
     files.
 
@@ -237,20 +236,19 @@ def scrape_channels(
         start_row: start channel row of the worksheet
         batch_size: number of channels to scrape ('None' (default) means all rows from start_row)
         videos: number of videos to scrape per channel
-        dstdir: optionally, the destination directory (if not provided default location is used)
+        only_earlier_than_last: if True, only scrape videos earlier than the last one scraped
     """
-    root = getdir(dstdir or CHANNELS_DIR)
     count = 0
     for _, url in _channels_batch(start_row, batch_size):
         try:
-            ch = Channel(url, limit=videos)
+            ch = Channel(url, limit=videos, only_earlier_than_last=only_earlier_than_last)
             if ch.data:
-                dst = root / ch.handle
+                dst = getdir(CHANNELS_DIR / ch.handle)
                 ch.dump(dst)
                 count += len(ch.videos)
         except ScrapingError as se:
             _log.warning(f"Scraping of channel {url!r} failed with: '{se}'. Skipping...")
-        if count > 200:
+        if count > 500:
             count = 0
             _log.info(f"Throttling for 5 minutes before the next batch...")
             throttle_with_countdown(5 * 60)
@@ -698,8 +696,8 @@ class Channel:
     def data(self) -> ChannelData | None:
         return self._data
 
-    def __init__(self, url: str, limit=10) -> None:
-        self._url = url
+    def __init__(self, url: str, limit=10, only_earlier_than_last=True) -> None:
+        self._url, self._only_earlier_than_last = url, only_earlier_than_last
         self._id, self._title, self._description, self._tags = None, None, None, None
         self._subscribers, self._scrape_time, self._videos = None, None, []
         self._ytsp_data, self._data = None, None
@@ -710,49 +708,55 @@ class Channel:
             self.scrape(*video_ids)
 
     def get_unscraped_ids(self, limit=10) -> list[str]:
-        last_scraped_id = self._get_last_scraped_id()
-        video_ids = []
+        scraped_ids = self._get_scraped_ids()
+        if not scraped_ids:
+            last_scraped_id = None
+        else:
+            last_scraped_id = scraped_ids[0] if self._only_earlier_than_last else None
+
+        video_ids, scraped_ids = [], set(scraped_ids)
         for vid in self.video_ids(self.url, limit=limit):
             if vid == last_scraped_id:
                 break
-            video_ids.append(vid)
+            elif vid not in scraped_ids:
+                video_ids.append(vid)
+
         return video_ids
 
+    @timed("channel scraping", precision=2)
     def scrape(self, *video_ids: str) -> None:
-        with Timer() as t:
-            self._scrape_time = datetime.now()
-            _log.info(f"Scraping channel: {self.url!r}, {len(video_ids)} video(s)...")
-            self._videos = [Video(vid) for vid in video_ids]
-            self._id = self.videos[0].channel_id if self else None
-            self._ytsp_data = YtspChannel(self.id) if self._id else None
-            self._description = self._ytsp_data.result.get("description") if self._id else None
-            self._title = self._ytsp_data.result.get("title") if self._id else None
-            self._tags = self._ytsp_data.result.get("tags") if self._id else None
-            self._subscribers = self._parse_subscribers() if self._id else None
-            if not self._subscribers:
-                self._subscribers = self.videos[0].channel_subscribers
-                if self._subscribers is None:
-                    self._subscribers = self._scrape_subscribers_with_selenium()
-            self._data = ChannelData(
-                url=self.url,
-                id=self.id,
-                title=self.title,
-                description=self.description,
-                tags=self.tags,
-                subscribers=self.subscribers,
-                scrape_time=self.scrape_time,
-                videos=[json.loads(v.json, object_hook=deserialize_dates) for v in self.videos],
-            )
-        _log.info(f"Completed channel scraping in {t.elapsed:.2f} second(s)")
+        self._scrape_time = datetime.now()
+        _log.info(f"Scraping channel: {self.url!r}, {len(video_ids)} video(s)...")
+        self._videos = [Video(vid) for vid in video_ids]
+        self._id = self.videos[0].channel_id if self else None
+        self._ytsp_data = YtspChannel(self.id) if self._id else None
+        self._description = self._ytsp_data.result.get("description") if self._id else None
+        self._title = self._ytsp_data.result.get("title") if self._id else None
+        self._tags = self._ytsp_data.result.get("tags") if self._id else None
+        self._subscribers = self._parse_subscribers() if self._id else None
+        if not self._subscribers:
+            self._subscribers = self.videos[0].channel_subscribers
+            if self._subscribers is None:
+                self._subscribers = self._scrape_subscribers_with_selenium()
+        self._data = ChannelData(
+            url=self.url,
+            id=self.id,
+            title=self.title,
+            description=self.description,
+            tags=self.tags,
+            subscribers=self.subscribers,
+            scrape_time=self.scrape_time,
+            videos=[json.loads(v.json, object_hook=deserialize_dates) for v in self.videos],
+        )
 
-    def _get_last_scraped_id(self) -> str:
+    def _get_scraped_ids(self) -> list[str]:
         try:
-            data = load_channel(CHANNELS_DIR / self.handle)
+            data = load_channel(self.url)
             if not data.videos:
-                return ""
-            return data.videos[0]["id"]
+                return []
+            return [v["id"] for v in data.videos]
         except FileNotFoundError:
-            return ""
+            return []
 
     @staticmethod
     def video_ids(url: str, limit=10) -> Generator[str, None, None]:
