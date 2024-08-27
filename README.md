@@ -16,6 +16,8 @@ Then, I quit (Arena).
 Now, the main focus is `decks` package and `yt` module (parsing data on youtubers' decks from YT videos 
 descriptions).
 
+![img](https://imgur.com/PO88LQv)
+
 ### What works
 
 * Scryfall data management via downloading bulk data with 
