@@ -16,7 +16,7 @@ Then, I quit (Arena).
 Now, the main focus is `decks` package and `yt` module (parsing data on youtubers' decks from YT videos 
 descriptions).
 
-![img](https://ibb.co/NYSp7z5)
+![Sources & formats](https://i.ibb.co/rysMvJY/image.png)
 
 ### What works
 
