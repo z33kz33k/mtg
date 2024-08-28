@@ -58,6 +58,9 @@ descriptions).
 * I compiled a list of 300 YT channels that feature decks in their descriptions and successfully scraped them, 
   so this data only waits to be creatively used now!
 
+### How it looks in a Google Sheet
+![Most popular channels](https://i.ibb.co/741pC7B/image.png)
+
 ### Scraped decks breakdown
 
-![Sources & formats](https://i.ibb.co/rysMvJY/image.png)
+![Sources & formats](https://i.ibb.co/3SD0GNz/Rklhs4i.jpg)

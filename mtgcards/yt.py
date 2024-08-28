@@ -129,8 +129,30 @@ class ChannelData:
         return len(self.decks) / len(self.videos)
 
 
+def channels() -> Generator[tuple[str, str], None, None]:
+    """Yield a tuple (channel name, channel addresses) from a private Google Sheet spreadsheet.
+
+    Mind that this operation takes about 4 seconds to complete.
+    """
+    names, addresses = retrieve_from_gsheets_cols("mtga_yt", "channels", (1, 3), start_row=2)
+    for name, address in zip(names, addresses):
+        yield name, address
+
+
+def _channels_batch(start_row=2, batch_size: int | None = None) -> Iterator[tuple[str, str]]:
+    if start_row < 2:
+        raise ValueError("Start row must not be lesser than 2")
+    if batch_size is not None and batch_size < 1:
+        raise ValueError("Batch size must be a positive integer or None")
+    txt = f" {batch_size}" if batch_size else ""
+    _log.info(f"Batch updating{txt} channels...")
+    start_idx = start_row - 2
+    end_idx = None if batch_size is None else start_row - 2 + batch_size
+    return itertools.islice(channels(), start_idx, end_idx)
+
+
 def load_channel(channel_url: str) -> ChannelData:
-    """Load channel data from all channel .json files at the provided channel directory.
+    """Load all earlier scraped data for a channel designated by the provided URL.
     """
     channel_dir = getdir(CHANNELS_DIR / Channel.url2handle(channel_url.rstrip("/")))
     _log.info(f"Loading channel data from: '{channel_dir}'...")
@@ -163,26 +185,11 @@ def load_channel(channel_url: str) -> ChannelData:
     )
 
 
-def channels() -> Generator[tuple[str, str], None, None]:
-    """Yield a tuple (channel name, channel addresses) from a private Google Sheet spreadsheet.
-
-    Mind that this operation takes about 4 seconds to complete.
+def load_channels() -> Generator[ChannelData, None, None]:
+    """Load channel data for all channels recorded in a private Google Sheet.
     """
-    names, addresses = retrieve_from_gsheets_cols("mtga_yt", "channels", (1, 3), start_row=2)
-    for name, address in zip(names, addresses):
-        yield name, address
-
-
-def _channels_batch(start_row=2, batch_size: int | None = None) -> Iterator[tuple[str, str]]:
-    if start_row < 2:
-        raise ValueError("Start row must not be lesser than 2")
-    if batch_size is not None and batch_size < 1:
-        raise ValueError("Batch size must be a positive integer or None")
-    txt = f" {batch_size}" if batch_size else ""
-    _log.info(f"Batch updating{txt} channels...")
-    start_idx = start_row - 2
-    end_idx = None if batch_size is None else start_row - 2 + batch_size
-    return itertools.islice(channels(), start_idx, end_idx)
+    for _, url in channels():
+        yield load_channel(url)
 
 
 def update_gsheet() -> None:
@@ -249,6 +256,20 @@ def scrape_channels(
             count = 0
             _log.info(f"Throttling for 5 minutes before the next batch...")
             throttle_with_countdown(5 * 60)
+
+
+def get_aggregate_deck_data() -> tuple[Counter, Counter]:
+    """Get aggregated deck data across all channels.
+    """
+    decks = [d for ch in load_channels() for d in ch.decks]
+    sources = []
+    for d in decks:
+        src = d["metadata"]["source"]
+        src = src.removeprefix("www.") if src.startswith("www.") else src
+        sources.append(src)
+    source_counter = Counter(sources)
+    format_counter = Counter([d["metadata"]["format"] for d in decks if d["metadata"].get("format")])
+    return source_counter, format_counter
 
 
 class Video:
