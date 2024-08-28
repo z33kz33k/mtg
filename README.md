@@ -59,7 +59,7 @@ descriptions).
   so this data only waits to be creatively used now!
 
 ### How it looks in a Google Sheet
-![Most popular channels](https://i.ibb.co/GxHJ13r/channels.jpg)
+<img src="https://i.ibb.co/GxHJ13r/channels.jpg" alt="Most popular channels" width="1113" />
 
 ### Scraped decks breakdown
 
