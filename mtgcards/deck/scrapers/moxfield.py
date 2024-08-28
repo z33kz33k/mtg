@@ -67,7 +67,7 @@ class MoxfieldScraper(DeckScraper):
         return url
 
     def _scrape_metadata(self) -> None:  # override
-        fmt = self._json_data["format"]
+        fmt = self._json_data["format"].lower()
         self._update_fmt(fmt)
         name = self._json_data["name"]
         if " - " in name:

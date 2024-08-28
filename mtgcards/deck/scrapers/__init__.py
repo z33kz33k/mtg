@@ -13,9 +13,18 @@ from abc import abstractmethod
 from mtgcards.const import Json
 from mtgcards.deck import Deck, DeckParser, InvalidDeck
 from mtgcards.utils.scrape import Throttling, extract_source
+from scryfall import all_formats
 from utils.scrape import throttle
 
 _log = logging.getLogger(__name__)
+
+
+SANITIZED_FORMATS = {
+    "duelcommander": "duel",
+    "duel commander": "duel",
+    "historicbrawl": "brawl",
+    "artisan historic": "historic",
+}
 
 
 class DeckScraper(DeckParser):
@@ -65,6 +74,18 @@ class DeckScraper(DeckParser):
     @abstractmethod
     def _scrape_deck(self) -> None:
         raise NotImplementedError
+
+    def _update_fmt(self, fmt: str) -> None:
+        if fmt != self.fmt:
+            fmt = SANITIZED_FORMATS.get(fmt, fmt)
+            if fmt in all_formats():
+                if self.fmt:
+                    _log.warning(
+                        f"Earlier specified format: {self.fmt!r} overwritten with a scraped "
+                        f"one: {fmt!r}")
+                self._metadata["format"] = fmt
+            else:
+                _log.warning(f"Not a valid format: {fmt!r}")
 
     def _build_deck(self) -> None:
         try:

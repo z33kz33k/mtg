@@ -20,7 +20,7 @@ from typing import Any, Iterable, Iterator
 from mtgcards.const import Json, OUTPUT_DIR, PathLike
 from mtgcards.scryfall import (COMMANDER_FORMATS, Card, Color,
                                MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, aggregate,
-                               all_formats, find_by_cardmarket_id, find_by_collector_number,
+                               find_by_cardmarket_id, find_by_collector_number,
                                find_by_mtgo_id, find_by_name, find_by_oracle_id,
                                find_by_scryfall_id, find_by_tcgplayer_id, find_sets)
 from mtgcards.utils import ParsingError, extract_int, from_iterable, getrepr, serialize_dates
@@ -1052,17 +1052,6 @@ class DeckParser(ABC):
         self._mainboard, self._sideboard = [], []
         self._commander, self._partner_commander, self._companion = None, None, None
         self._deck = None
-
-    def _update_fmt(self, fmt: str) -> None:
-        if fmt != self.fmt:
-            if fmt in all_formats():
-                if self.fmt:
-                    _log.warning(
-                        f"Earlier specified format: {self.fmt!r} overwritten with a scraped "
-                        f"one: {fmt!r}")
-                self._metadata["format"] = fmt
-            else:
-                _log.warning(f"Not a valid format: {fmt!r}")
 
     def _set_commander(self, card: Card) -> None:
         if self._commander:

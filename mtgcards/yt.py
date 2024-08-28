@@ -185,15 +185,11 @@ def _channels_batch(start_row=2, batch_size: int | None = None) -> Iterator[tupl
     return itertools.islice(channels(), start_idx, end_idx)
 
 
-def batch_update(start_row=2, batch_size: int | None = None) -> None:
-    """Batch update "channels" Google Sheets worksheet.
-
-    Args:
-        start_row: start row of the worksheet
-        batch_size: number of rows to update ('None' (default) means all rows from start_row)
+def update_gsheet() -> None:
+    """Update "channels" Google Sheets worksheet.
     """
     data = []
-    for _, url in _channels_batch(start_row, batch_size):
+    for _, url in channels():
         try:
             ch = load_channel(url)
             data.append([
@@ -222,13 +218,13 @@ def batch_update(start_row=2, batch_size: int | None = None) -> None:
                 ["NOT AVAILABLE", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A",
                  "N/A"])
 
-    extend_gsheet_rows_with_cols("mtga_yt", "channels", data, start_row=start_row, start_col=5)
+    extend_gsheet_rows_with_cols("mtga_yt", "channels", data, start_row=2, start_col=5)
 
 
 @http_requests_counted("channels scraping")
 @timed("channels scraping", precision=1)
 def scrape_channels(
-        start_row=2, batch_size: int | None = None, videos=15,
+        start_row=2, batch_size: int | None = None, videos=25,
         only_earlier_than_last=True) -> None:
     """Scrape YouTube channels specified in private Google Sheet. Save the scraped data as .json
     files.
