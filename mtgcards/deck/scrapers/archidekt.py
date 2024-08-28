@@ -35,12 +35,13 @@ class ArchidektScraper(DeckScraper):
 
     def _scrape_metadata(self) -> None:  # override
         fmt_tag = self._soup.find("div", class_=lambda c: c and "deckHeader_format" in c)
-        fmt_text = fmt_tag.text
-        suffix = fmt_tag.find("div").text
-        fmt = fmt_text.removesuffix(suffix).strip().lower()
-        if "/" in fmt:
-            fmt, *_ = fmt.split("/")
-        self._update_fmt(fmt.strip())
+        if fmt_tag:
+            fmt_text = fmt_tag.text
+            suffix = fmt_tag.find("div").text
+            fmt = fmt_text.removesuffix(suffix).strip().lower()
+            if "/" in fmt:
+                fmt, *_ = fmt.split("/")
+            self._update_fmt(fmt.strip())
         self._metadata["name"] = self._deck_data["name"]
         self._metadata["author"] = self._deck_data["owner"]
         self._metadata["views"] = self._deck_data["viewCount"]

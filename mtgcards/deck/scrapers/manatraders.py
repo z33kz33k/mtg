@@ -10,6 +10,7 @@
 import json
 import logging
 
+from deck.scrapers.streamdecker import StreamdeckerScraper
 from mtgcards.const import Json
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils.scrape import getsoup
@@ -35,12 +36,6 @@ class ManatradersScraper(DeckScraper):
             return True
         return False
 
-    @staticmethod
-    def _sanitize_url(url: str) -> str:  # override
-        if "?" in url:
-            url, rest = url.split("?", maxsplit=1)
-        return url
-
     def _get_json_data(self) -> Json:
         json_data = self._soup.find(
             "div", {"data-react-class": "WebshopApp"}).attrs["data-react-props"]
@@ -55,7 +50,7 @@ class ManatradersScraper(DeckScraper):
 
     def _parse_card_json(self, card_json: Json) -> None:
         name = card_json["name"]
-        card = self.find_card(name)
+        card = self.find_card(StreamdeckerScraper.sanitize_card_name(name))
         if quantity := card_json.get("quantity"):
             self._mainboard += self.get_playset(card, quantity)
         if sideboard_qty := card_json.get("sideboardQuantity"):

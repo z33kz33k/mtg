@@ -42,11 +42,13 @@ class OldPageTcgPlayerScraper(DeckScraper):
         self._metadata["name"] = h1_tag.find("a").text.strip()
         h3_tag = info_tag.find("h3")
         self._metadata["author"] = h3_tag.text.strip().removeprefix("by ")
-        fmt_tag, _, date_tag, *_ = info_tag.find_all("div")[3:]
-        fmt = fmt_tag.find("a").text.strip().lower()
-        self._update_fmt(fmt)
-        _, date_text = date_tag.text.strip().split("On: ", maxsplit=1)
-        self._metadata["date"] = datetime.strptime(date_text, "%m/%d/%Y").date()
+        for sub_tag in info_tag.find_all("div"):
+            if "Format:" in sub_tag.text:
+                fmt = sub_tag.find("a").text.strip().lower()
+                self._update_fmt(fmt)
+            elif "Last Modified On:" in sub_tag.text:
+                _, date_text = sub_tag.text.strip().split("On: ", maxsplit=1)
+                self._metadata["date"] = datetime.strptime(date_text, "%m/%d/%Y").date()
 
     @classmethod
     def _process_deck_tag(cls, deck_tag: Tag) -> list[Card]:

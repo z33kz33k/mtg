@@ -57,13 +57,12 @@ class MtgaZoneScraper(DeckScraper):
         elif " – " in name:
             name, event = name.split(" – ")
         self._metadata["name"] = name
-        if not author:
-            author_tag = name_author_tag.find("div", class_="by")
-            if not author_tag:
-                raise ScrapingError(
-                    "Author tag not found. The deck you're trying to scrape has been most "
-                    "probably paywalled by MTGAZone")
-            author = author_tag.text.strip().removeprefix("by ")
+        author_tag = name_author_tag.find("div", class_="by")
+        if not author_tag:
+            raise ScrapingError(
+                "Author tag not found. The deck you're trying to scrape has been most "
+                "probably paywalled by MTGAZone")
+        author = author_tag.text.strip().removeprefix("by ")
         self._metadata["author"] = author
         if event:
             self._metadata["event"] = event

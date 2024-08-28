@@ -10,10 +10,14 @@
 import logging
 from datetime import datetime
 
+from selenium.common.exceptions import TimeoutException
+
+from deck import DeckParser
 from mtgcards.const import Json
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils import extract_int
-from mtgcards.utils.scrape import getsoup
+from scryfall import MULTIFACE_SEPARATOR
+from utils.scrape import get_dynamic_soup_by_xpath
 
 _log = logging.getLogger(__name__)
 
@@ -26,15 +30,32 @@ EVENT_RANKS = "minor", "regular", "major"  # indicated by number of stars (1, 2,
 class MtgTop8Scraper(DeckScraper):
     """Scraper of MTGTop8 decklist page.
     """
+    _XPATH = "//div[@class='event_title']"
+    _CONSENT_XPATH = "//button[text()='OK']"
+
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        self._soup = getsoup(self.url)
-        self._scrape_metadata()
-        self._scrape_deck()
+        try:
+            self._soup, _, _ = get_dynamic_soup_by_xpath(
+                self.url, self._XPATH, consent_xpath=self._CONSENT_XPATH,
+                wait_for_consent_disappearance=False)
+            self._scrape_metadata()
+            self._scrape_deck()
+        except TimeoutException:
+            _log.warning(f"Scraping failed due to Selenium timing out")
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "mtgtop8.com/event?e=" in url and "&d=" in url
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return url
+
+    @staticmethod
+    def sanitize_card_name(text: str) -> str:  # override
+        text = DeckParser.sanitize_card_name(text)
+        return text.replace(" / ", f" {MULTIFACE_SEPARATOR} ")
 
     def _scrape_metadata(self) -> None:  # override
         event_tag, name_tag = [tag for tag in self._soup.find_all("div", class_="event_title")
@@ -80,7 +101,7 @@ class MtgTop8Scraper(DeckScraper):
                         commander_on = False
                 if "deck_line" in sub_tag.attrs["class"]:
                     quantity, name = sub_tag.text.split(maxsplit=1)
-                    card = self.find_card(name.strip())
+                    card = self.find_card(self.sanitize_card_name(name.strip()))
                     if commander_on:
                         self._set_commander(card)
                     else:

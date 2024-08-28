@@ -1054,12 +1054,15 @@ class DeckParser(ABC):
         self._deck = None
 
     def _update_fmt(self, fmt: str) -> None:
-        if fmt != self.fmt and fmt in all_formats():
-            if self.fmt:
-                _log.warning(
-                    f"Earlier specified format: {self.fmt!r} overwritten with a scraped "
-                    f"one: {fmt!r}")
-            self._metadata["format"] = fmt
+        if fmt != self.fmt:
+            if fmt in all_formats():
+                if self.fmt:
+                    _log.warning(
+                        f"Earlier specified format: {self.fmt!r} overwritten with a scraped "
+                        f"one: {fmt!r}")
+                self._metadata["format"] = fmt
+            else:
+                _log.warning(f"Not a valid format: {fmt!r}")
 
     def _set_commander(self, card: Card) -> None:
         if self._commander:

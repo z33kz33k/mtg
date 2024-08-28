@@ -34,12 +34,6 @@ class CardsrealmScraper(DeckScraper):
     def is_deck_url(url: str) -> bool:  # override
         return "mtg.cardsrealm.com/" in url and "/decks/" in url
 
-    @staticmethod
-    def _sanitize_url(url: str) -> str:  # override
-        if "?" in url:
-            url, rest = url.split("?", maxsplit=1)
-        return url
-
     def _dissect_js(self) -> Json:
         start_hook, end_hook = "var deck_cards = ", 'var torneio_type ='
         text = self._soup.find(

@@ -40,9 +40,9 @@ descriptions).
       parsed into Deck objects
     * Both Untapped decklist types featured in YT videos are supported: regular deck and profile deck
     * Both old and new TCGPlayer sites are supported
-    * Due to their dynamic nature, Untapped, TCGPlayer (new site), ManaStack, Flexslot and 
-      MTGDecks.net (not much of a dynamic site, but you do need to click a consent button) are 
-      scraped using [Selenium](https://github.com/SeleniumHQ/Selenium)
+    * Due to their dynamic nature, Untapped, TCGPlayer (new site), ManaStack, Flexslot, MTGTop8 and 
+      MTGDecks.net (the last two are not much of a dynamic sites, but you do need to click a 
+      consent button) are scraped using [Selenium](https://github.com/SeleniumHQ/Selenium)
     * All those mentioned above work even if they are behind shortener links and need unshortening first
     * Arena decklists in links to pastebin-like services (like 
       [Amazonian](https://www.youtube.com/@Amazonian) does) work too
@@ -61,4 +61,3 @@ descriptions).
 ### Scraped decks breakdown
 
 ![Sources & formats](https://i.ibb.co/rysMvJY/image.png)
-

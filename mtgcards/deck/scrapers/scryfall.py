@@ -35,9 +35,8 @@ class ScryfallScraper(DeckScraper):
         return "scryfall.com/@" in url and "/decks/" in url
 
     @staticmethod
-    def _sanitize_url(url: str) -> str:  # override
-        if "?" in url:
-            url, rest = url.split("?", maxsplit=1)
+    def sanitize_url(url: str) -> str:  # override
+        url = DeckScraper.sanitize_url(url)
         return f"{url}?as=list&with=usd"
 
     def _scrape_metadata(self) -> None:  # override

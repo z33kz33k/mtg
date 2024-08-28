@@ -24,6 +24,7 @@ import backoff
 import pytubefix
 import scrapetube
 from requests import HTTPError, Timeout
+from selenium.common.exceptions import TimeoutException
 from youtubesearchpython import Channel as YtspChannel
 
 from mtgcards.const import FILENAME_TIMESTAMP_FORMAT, Json, OUTPUT_DIR, PathLike
@@ -460,7 +461,7 @@ class Video:
         return data
 
     @backoff.on_exception(
-        backoff.expo, (Timeout, HTTPError, RemoteDisconnected, ScrapingError), max_time=60)
+        backoff.expo, (Timeout, HTTPError, RemoteDisconnected, ScrapingError), max_time=300)
     def _get_pytube_with_backoff(self) -> pytubefix.YouTube:
         return self._get_pytube()
 
@@ -805,13 +806,16 @@ class Channel:
     def _scrape_subscribers_with_selenium(self) -> int:
         consent_xpath = "//button[@aria-label='Accept all']"
         xpath = "//span[contains(., 'subscribers')]"
-        soup, _, _ = get_dynamic_soup_by_xpath(self.url, xpath, consent_xpath=consent_xpath)
-        text = soup.find("span", string=lambda t: t and "subscribers" in t).text.removesuffix(
-            " subscribers")
-        number = extract_float(text)
-        if text and text[-1] in {"K", "M", "B", "T"}:
-            return multiply_by_symbol(number, text[-1])
-        return int(number)
+        try:
+            soup, _, _ = get_dynamic_soup_by_xpath(self.url, xpath, consent_xpath=consent_xpath)
+            text = soup.find("span", string=lambda t: t and "subscribers" in t).text.removesuffix(
+                " subscribers")
+            number = extract_float(text)
+            if text and text[-1] in {"K", "M", "B", "T"}:
+                return multiply_by_symbol(number, text[-1])
+            return int(number)
+        except TimeoutException:  # looking for "subscribers" is futile if there's only one :)
+            return 1
 
     @property
     def json(self) -> str:

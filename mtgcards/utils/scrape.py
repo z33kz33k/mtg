@@ -207,6 +207,7 @@ def extract_source(url: str) -> str:
 @timed("getting dynamic soup")
 def get_dynamic_soup_by_xpath(
         url: str, xpath: str, *halt_xpaths, click=False, consent_xpath="", clipboard_xpath="",
+        wait_for_consent_disappearance=True,
         timeout=SELENIUM_TIMEOUT) -> tuple[BeautifulSoup, BeautifulSoup | None, str | None]:
     """Return BeautifulSoup object(s) from dynamically rendered page source at ``url`` using
     Selenium WebDriver that waits for presence of an element specified by ``xpath``.
@@ -225,6 +226,7 @@ def get_dynamic_soup_by_xpath(
         click: if True, main element is clicked before returning the soups
         consent_xpath: XPath to locate a consent button (if present)
         clipboard_xpath: Xpath to locate a copy-to-clipboard button (if present)
+        wait_for_consent_disappearance: if True, wait for the consent window to disappear
         timeout: timeout used in attempted actions (consent timeout is halved)
 
     Returns:
@@ -237,8 +239,10 @@ def get_dynamic_soup_by_xpath(
     driver.get(url)
 
     if consent_xpath:
-        _accept_consent(driver, consent_xpath)
-
+        if wait_for_consent_disappearance:
+            _accept_consent(driver, consent_xpath)
+        else:
+            _accept_consent_without_wait(driver, consent_xpath)
     try:
         element = _wait_for_elements(driver, xpath, *halt_xpaths, timeout=timeout)
         if not element:
@@ -280,7 +284,7 @@ def _accept_consent(driver: WebDriver, xpath: str, timeout=SELENIUM_TIMEOUT / 2)
     Args:
         driver: a Chrome webdriver object
         xpath: XPath to locate the consent button to be clicked
-        timeout: wait this much for disappearance of the located element
+        timeout: wait this much for appearance or disappearance of the located element
     """
     _log.info("Attempting to close consent pop-up (if present)...")
     # locate and click the consent button if present
@@ -302,6 +306,31 @@ def _accept_consent(driver: WebDriver, xpath: str, timeout=SELENIUM_TIMEOUT / 2)
         driver.quit()
         _log.error("Timed out waiting for consent pop-up to disappear")
         raise
+
+
+def _accept_consent_without_wait(
+        driver: WebDriver, xpath: str, timeout=SELENIUM_TIMEOUT / 2) -> None:
+    """Accept consent by clicking element located by ``xpath`` with the passed Chrome
+    webdriver. Don't wait for the consent window to disappear.
+
+    If the located element is not present, this function just returns doing nothing. Otherwise,
+    the located element is clicked and the function returns without waiting.
+
+    Args:
+        driver: a Chrome webdriver object
+        xpath: XPath to locate the consent button to be clicked
+        timeout: wait this much for appearance of the located element
+    """
+    _log.info("Attempting to close consent pop-up (if present)...")
+    # locate and click the consent button if present
+    try:
+        consent_button = WebDriverWait(driver, timeout).until(
+        EC.presence_of_element_located((By.XPATH, xpath)))
+        consent_button.click()
+        _log.info("Consent button clicked")
+    except TimeoutException:
+        _log.info("No need for accepting. Consent window not found")
+        return None
 
 
 def _click_for_clipboard(driver: WebDriver, xpath: str, timeout=SELENIUM_TIMEOUT / 2) -> str:

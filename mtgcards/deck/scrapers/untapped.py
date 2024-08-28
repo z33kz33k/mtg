@@ -80,7 +80,8 @@ class UntappedRegularDeckScraper(DeckScraper):
         return "mtga.untapped.gg/decks/" in url
 
     @staticmethod
-    def _sanitize_url(url: str) -> str:  # override
+    def sanitize_url(url: str) -> str:  # override
+        url = DeckScraper.sanitize_url(url)
         return url.replace("input/", "") if "/input/" in url else url
 
     def _scrape_metadata(self) -> None:  # override

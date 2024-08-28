@@ -36,7 +36,7 @@ class DeckScraper(DeckParser):
         super().__init__(metadata)
         self._throttled = throttled
         self._supress_invalid_deck = supress_invalid_deck
-        self._url = self._sanitize_url(url)
+        self._url = self.sanitize_url(url)
         self._metadata["url"] = self.url
         self._metadata["source"] = extract_source(self.url)
         if self.throttled:
@@ -53,8 +53,10 @@ class DeckScraper(DeckParser):
         raise NotImplementedError
 
     @staticmethod
-    def _sanitize_url(url: str) -> str:
-        return url  # default implementation does nothing
+    def sanitize_url(url: str) -> str:
+        if "?" in url:
+            url, rest = url.split("?", maxsplit=1)
+        return url
 
     @abstractmethod
     def _scrape_metadata(self) -> None:

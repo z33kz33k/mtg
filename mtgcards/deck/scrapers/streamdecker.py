@@ -11,10 +11,12 @@ import logging
 import re
 from datetime import date
 
+from deck import DeckParser
 from mtgcards.const import Json
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils import get_ago_date
 from mtgcards.utils.scrape import timed_request
+from scryfall import MULTIFACE_SEPARATOR
 
 _log = logging.getLogger(__name__)
 
@@ -50,13 +52,18 @@ class StreamdeckerScraper(DeckScraper):
         if dt := self._parse_date():
             self._metadata["date"] = dt
 
+    @staticmethod
+    def sanitize_card_name(text: str) -> str:
+        text = DeckParser.sanitize_card_name(text)
+        if "/" in text:
+            # sanitize multiface names, e.g. "Wear/Tear" ==> "Wear // Tear"
+            text = re.sub(r'(?<=[a-zA-Z])/(?=[a-zA-Z])', f' {MULTIFACE_SEPARATOR} ', text)
+        return text
+
     def _parse_json_card(self, json_card: Json) -> None:
         scryfall_id = json_card.get("scryfallId", "")
         name = json_card["name"]
-        if "/" in name:
-            # sanitize multiface names, e.g. "Wear/Tear" ==> "Wear // Tear"
-            name = re.sub(r'(?<=[a-zA-Z])/(?=[a-zA-Z])', r' // ', name)
-        card = self.find_card(name, scryfall_id=scryfall_id)
+        card = self.find_card(self.sanitize_card_name(name), scryfall_id=scryfall_id)
         if json_card["main"]:
             self._mainboard.extend(self.get_playset(card, json_card["main"]))
         if json_card["sideboard"]:

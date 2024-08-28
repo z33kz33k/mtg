@@ -56,7 +56,8 @@ class GoldfishScraper(DeckScraper):
         return "www.mtggoldfish.com/deck/" in url or "www.mtggoldfish.com/archetype/" in url
 
     @staticmethod
-    def _sanitize_url(url: str) -> str:  # override
+    def sanitize_url(url: str) -> str:  # override
+        url = DeckScraper.sanitize_url(url)
         if "/visual/" in url:
             url = url.replace("/visual/", "/")
         if "#" in url:

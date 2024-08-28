@@ -57,6 +57,15 @@ class MoxfieldScraper(DeckScraper):
     def is_deck_url(url: str) -> bool:  # override
         return "moxfield.com/decks/" in url
 
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        url = DeckScraper.sanitize_url(url)
+        if url.endswith("/primer"):
+            return url.removesuffix("/primer")
+        elif url.endswith("/primer/"):
+            return url.removesuffix("/primer/")
+        return url
+
     def _scrape_metadata(self) -> None:  # override
         fmt = self._json_data["format"]
         self._update_fmt(fmt)

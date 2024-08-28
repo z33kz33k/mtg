@@ -59,7 +59,8 @@ class AetherhubScraper(DeckScraper):
         return "aetherhub.com/" in url and "/Deck/" in url and "/MyDecks/" not in url
 
     @staticmethod
-    def _sanitize_url(url: str) -> str:  # override
+    def sanitize_url(url: str) -> str:  # override
+        url = DeckScraper.sanitize_url(url)
         if url.endswith("/Gallery"):
             url = url.removesuffix("/Gallery")
         elif url.endswith("/Gallery/"):
