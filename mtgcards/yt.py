@@ -18,11 +18,13 @@ from decimal import Decimal
 from functools import cached_property
 from http.client import RemoteDisconnected
 from operator import attrgetter, itemgetter
+from types import EllipsisType
 from typing import Generator, Iterator
 
 import backoff
 import pytubefix
 import scrapetube
+from httpx import ReadTimeout
 from requests import HTTPError, Timeout
 from selenium.common.exceptions import TimeoutException
 from youtubesearchpython import Channel as YtspChannel
@@ -62,6 +64,8 @@ _log = logging.getLogger(__name__)
 
 
 CHANNELS_DIR = OUTPUT_DIR / "channels"
+DORMANT_STALENESS = 30 * 3
+ABANDONED_STALENESS = 30 * 12
 
 
 @dataclass
@@ -94,6 +98,15 @@ class ChannelData:
     @property
     def staleness(self) -> int | None:
         return (date.today() - self.videos[0]["publish_time"].date()).days if self.videos else None
+
+    @property
+    def deck_staleness(self) -> int | None | EllipsisType:
+        if not self.videos:
+            return None
+        deck_videos = [v for v in self.videos if v["decks"]]
+        if not deck_videos:
+            return Ellipsis
+        return (date.today() - deck_videos[0]["publish_time"].date()).days
 
     @property
     def span(self) -> int | None:
@@ -139,7 +152,7 @@ def channels() -> Generator[tuple[str, str], None, None]:
         yield name, address
 
 
-def _channels_batch(start_row=2, batch_size: int | None = None) -> Iterator[tuple[str, str]]:
+def channels_batch(start_row=2, batch_size: int | None = None) -> Iterator[tuple[str, str]]:
     if start_row < 2:
         raise ValueError("Start row must not be lesser than 2")
     if batch_size is not None and batch_size < 1:
@@ -231,21 +244,35 @@ def update_gsheet() -> None:
 @http_requests_counted("channels scraping")
 @timed("channels scraping", precision=1)
 def scrape_channels(
-        start_row=2, batch_size: int | None = None, videos=25,
-        only_earlier_than_last=True) -> None:
+        *urls: str,
+        videos=25,
+        only_earlier_than_last=True,
+        staleness_threshold: int | None = None,
+        deck_staleness_threshold: int | None = None) -> None:
     """Scrape YouTube channels specified in private Google Sheet. Save the scraped data as .json
     files.
 
     Args:
-        start_row: start channel row of the worksheet
-        batch_size: number of channels to scrape ('None' (default) means all rows from start_row)
+        urls: URLs of channels to scrape
         videos: number of videos to scrape per channel
         only_earlier_than_last: if True, only scrape videos earlier than the last one scraped
+        staleness_threshold: scrape only channels with at most this many days of staleness
+        deck_staleness_threshold: scrape only channels with at most this many days of deck staleness
     """
     count = 0
-    for _, url in _channels_batch(start_row, batch_size):
+    for url in urls:
         try:
-            ch = Channel(url, limit=videos, only_earlier_than_last=only_earlier_than_last)
+            ch = Channel(url, only_earlier_than_last=only_earlier_than_last)
+            if (staleness_threshold and ch.earlier_data and ch.earlier_data.staleness and
+                    ch.earlier_data.staleness > staleness_threshold):
+                _log.info(f"{ch.handle!r} too stale. Skipping...")
+                continue
+            if deck_staleness_threshold and ch.earlier_data and ch.earlier_data.deck_staleness:
+                if (ch.earlier_data.deck_staleness is Ellipsis or ch.earlier_data.deck_staleness
+                        > deck_staleness_threshold):
+                    _log.info(f"{ch.handle!r} too stale. Skipping...")
+                    continue
+            ch.scrape(videos)
             if ch.data:
                 dst = getdir(CHANNELS_DIR / ch.handle)
                 ch.dump(dst)
@@ -256,6 +283,66 @@ def scrape_channels(
             count = 0
             _log.info(f"Throttling for 5 minutes before the next batch...")
             throttle_with_countdown(5 * 60)
+
+
+def scrape_non_dormant(videos=25, only_earlier_than_last=True) -> None:
+    """Scrape these YouTube channels specified in private Google Sheet that are not dormant. Save
+    the scraped data as .json files.
+    """
+    urls = []
+    for _, url in channels():
+        data = load_channel(url)
+        if not data:
+            urls.append(url)
+        elif not data.staleness:
+            urls.append(url)
+        elif data.staleness <= DORMANT_STALENESS:
+            urls.append(url)
+    scrape_channels(
+        *urls, videos=videos, only_earlier_than_last=only_earlier_than_last)
+
+
+def scrape_non_abandoned(videos=25, only_earlier_than_last=True) -> None:
+    """Scrape these YouTube channels specified in private Google Sheet that are not abandoned. Save
+    the scraped data as .json files.
+    """
+    urls = []
+    for _, url in channels():
+        data = load_channel(url)
+        if not data:
+            urls.append(url)
+        elif not data.staleness:
+            urls.append(url)
+        elif data.staleness <= ABANDONED_STALENESS:
+            urls.append(url)
+    scrape_channels(
+        *urls, videos=videos, only_earlier_than_last=only_earlier_than_last)
+
+
+def scrape_dormant(videos=25, only_earlier_than_last=True) -> None:
+    """Scrape these YouTube channels specified in private Google Sheet that are dormant. Save
+    the scraped data as .json files.
+    """
+    urls = []
+    for _, url in channels():
+        data = load_channel(url)
+        if data and data.staleness and data.staleness > DORMANT_STALENESS:
+            urls.append(url)
+    scrape_channels(
+        *urls, videos=videos, only_earlier_than_last=only_earlier_than_last)
+
+
+def scrape_abandoned(videos=25, only_earlier_than_last=True) -> None:
+    """Scrape these YouTube channels specified in private Google Sheet that are abandoned. Save
+    the scraped data as .json files.
+    """
+    urls = []
+    for _, url in channels():
+        data = load_channel(url)
+        if data and data.staleness and data.staleness > DORMANT_STALENESS:
+            urls.append(url)
+    scrape_channels(
+        *urls, videos=videos, only_earlier_than_last=only_earlier_than_last)
 
 
 def get_aggregate_deck_data() -> tuple[Counter, Counter]:
@@ -714,19 +801,22 @@ class Channel:
     def data(self) -> ChannelData | None:
         return self._data
 
-    def __init__(self, url: str, limit=10, only_earlier_than_last=True) -> None:
+    @property
+    def earlier_data(self) -> ChannelData | None:
+        return self._earlier_data
+
+    def __init__(self, url: str, only_earlier_than_last=True) -> None:
         self._url, self._only_earlier_than_last = url, only_earlier_than_last
         self._id, self._title, self._description, self._tags = None, None, None, None
         self._subscribers, self._scrape_time, self._videos = None, None, []
         self._ytsp_data, self._data = None, None
-        video_ids = self.get_unscraped_ids(limit)
-        if not video_ids:
-            _log.info(f"Channel data for {self.handle!r} already up to date")
-        else:
-            self.scrape(*video_ids)
+        try:
+            self._earlier_data = load_channel(self.url)
+        except FileNotFoundError:
+            self._earlier_data = None
 
     def get_unscraped_ids(self, limit=10) -> list[str]:
-        scraped_ids = self._get_scraped_ids()
+        scraped_ids = [v["id"] for v in self.earlier_data.videos] if self.earlier_data else []
         if not scraped_ids:
             last_scraped_id = None
         else:
@@ -742,12 +832,19 @@ class Channel:
         return video_ids
 
     @timed("channel scraping", precision=2)
-    def scrape(self, *video_ids: str) -> None:
+    def scrape(self, limit=10) -> None:
+        video_ids = self.get_unscraped_ids(limit)
+        if not video_ids:
+            _log.info(f"Channel data for {self.handle!r} already up to date")
+            return
         self._scrape_time = datetime.now()
         _log.info(f"Scraping channel: {self.url!r}, {len(video_ids)} video(s)...")
         self._videos = [Video(vid) for vid in video_ids]
         self._id = self.videos[0].channel_id if self else None
-        self._ytsp_data = YtspChannel(self.id) if self._id else None
+        try:
+            self._ytsp_data = self._get_ytsp() if self._id else None
+        except ReadTimeout:
+            self._ytsp_data = self._get_ytsp_with_backoff()
         self._description = self._ytsp_data.result.get("description") if self._id else None
         self._title = self._ytsp_data.result.get("title") if self._id else None
         self._tags = self._ytsp_data.result.get("tags") if self._id else None
@@ -766,15 +863,6 @@ class Channel:
             scrape_time=self.scrape_time,
             videos=[json.loads(v.json, object_hook=deserialize_dates) for v in self.videos],
         )
-
-    def _get_scraped_ids(self) -> list[str]:
-        try:
-            data = load_channel(self.url)
-            if not data.videos:
-                return []
-            return [v["id"] for v in data.videos]
-        except FileNotFoundError:
-            return []
 
     @staticmethod
     def video_ids(url: str, limit=10) -> Generator[str, None, None]:
@@ -803,6 +891,14 @@ class Channel:
             raise ValueError(f"Not a channel URL: {url!r}")
         _, handle = url.rsplit("/", maxsplit=1)
         return handle
+
+    def _get_ytsp(self) -> YtspChannel:
+        return YtspChannel(self.id)
+
+    @backoff.on_exception(
+        backoff.expo, (Timeout, HTTPError, RemoteDisconnected, ReadTimeout), max_time=300)
+    def _get_ytsp_with_backoff(self) -> YtspChannel:
+        return self._get_ytsp()
 
     def _parse_subscribers(self) -> int | None:
         if not self._id:
