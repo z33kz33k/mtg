@@ -142,17 +142,15 @@ class ChannelData:
         return len(self.decks) / len(self.videos)
 
 
-def channels() -> Generator[tuple[str, str], None, None]:
-    """Yield a tuple (channel name, channel addresses) from a private Google Sheet spreadsheet.
+def retrieve_urls() -> list[str]:
+    """Retrieve channel URLs from a private Google Sheet spreadsheet.
 
     Mind that this operation takes about 4 seconds to complete.
     """
-    names, addresses = retrieve_from_gsheets_cols("mtga_yt", "channels", (1, 3), start_row=2)
-    for name, address in zip(names, addresses):
-        yield name, address
+    return retrieve_from_gsheets_cols("mtga_yt", "channels", (3, ), start_row=2)[0]
 
 
-def channels_batch(start_row=2, batch_size: int | None = None) -> Iterator[tuple[str, str]]:
+def channels_batch(start_row=2, batch_size: int | None = None) -> Iterator[str]:
     if start_row < 2:
         raise ValueError("Start row must not be lesser than 2")
     if batch_size is not None and batch_size < 1:
@@ -161,7 +159,7 @@ def channels_batch(start_row=2, batch_size: int | None = None) -> Iterator[tuple
     _log.info(f"Batch updating{txt} channels...")
     start_idx = start_row - 2
     end_idx = None if batch_size is None else start_row - 2 + batch_size
-    return itertools.islice(channels(), start_idx, end_idx)
+    return itertools.islice(retrieve_urls(), start_idx, end_idx)
 
 
 def load_channel(channel_url: str) -> ChannelData:
@@ -201,7 +199,7 @@ def load_channel(channel_url: str) -> ChannelData:
 def load_channels() -> Generator[ChannelData, None, None]:
     """Load channel data for all channels recorded in a private Google Sheet.
     """
-    for _, url in channels():
+    for url in retrieve_urls():
         yield load_channel(url)
 
 
@@ -209,7 +207,7 @@ def update_gsheet() -> None:
     """Update "channels" Google Sheets worksheet.
     """
     data = []
-    for _, url in channels():
+    for url in retrieve_urls():
         try:
             ch = load_channel(url)
             data.append([
@@ -290,7 +288,7 @@ def scrape_non_dormant(videos=25, only_earlier_than_last=True) -> None:
     the scraped data as .json files.
     """
     urls = []
-    for _, url in channels():
+    for url in retrieve_urls():
         data = load_channel(url)
         if not data:
             urls.append(url)
@@ -307,7 +305,7 @@ def scrape_non_abandoned(videos=25, only_earlier_than_last=True) -> None:
     the scraped data as .json files.
     """
     urls = []
-    for _, url in channels():
+    for url in retrieve_urls():
         data = load_channel(url)
         if not data:
             urls.append(url)
@@ -324,7 +322,7 @@ def scrape_dormant(videos=25, only_earlier_than_last=True) -> None:
     the scraped data as .json files.
     """
     urls = []
-    for _, url in channels():
+    for url in retrieve_urls():
         data = load_channel(url)
         if data and data.staleness and data.staleness > DORMANT_STALENESS:
             urls.append(url)
@@ -337,7 +335,7 @@ def scrape_abandoned(videos=25, only_earlier_than_last=True) -> None:
     the scraped data as .json files.
     """
     urls = []
-    for _, url in channels():
+    for url in retrieve_urls():
         data = load_channel(url)
         if data and data.staleness and data.staleness > DORMANT_STALENESS:
             urls.append(url)
@@ -353,6 +351,9 @@ def get_aggregate_deck_data() -> tuple[Counter, Counter]:
     for d in decks:
         src = d["metadata"]["source"]
         src = src.removeprefix("www.") if src.startswith("www.") else src
+        if "tcgplayer" in src:
+            _, *parts = src.split(".")
+            src = ".".join(parts)
         sources.append(src)
     source_counter = Counter(sources)
     format_counter = Counter([d["metadata"]["format"] for d in decks if d["metadata"].get("format")])
