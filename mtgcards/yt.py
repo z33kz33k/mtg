@@ -244,9 +244,7 @@ def update_gsheet() -> None:
 def scrape_channels(
         *urls: str,
         videos=25,
-        only_earlier_than_last=True,
-        staleness_threshold: int | None = None,
-        deck_staleness_threshold: int | None = None) -> None:
+        only_earlier_than_last=True) -> None:
     """Scrape YouTube channels specified in private Google Sheet. Save the scraped data as .json
     files.
 
@@ -254,33 +252,26 @@ def scrape_channels(
         urls: URLs of channels to scrape
         videos: number of videos to scrape per channel
         only_earlier_than_last: if True, only scrape videos earlier than the last one scraped
-        staleness_threshold: scrape only channels with at most this many days of staleness
-        deck_staleness_threshold: scrape only channels with at most this many days of deck staleness
     """
-    count = 0
-    for url in urls:
+    count, total_count = 0, 0
+    for i, url in enumerate(urls, start=1):
         try:
             ch = Channel(url, only_earlier_than_last=only_earlier_than_last)
-            if (staleness_threshold and ch.earlier_data and ch.earlier_data.staleness and
-                    ch.earlier_data.staleness > staleness_threshold):
-                _log.info(f"{ch.handle!r} too stale. Skipping...")
-                continue
-            if deck_staleness_threshold and ch.earlier_data and ch.earlier_data.deck_staleness:
-                if (ch.earlier_data.deck_staleness is Ellipsis or ch.earlier_data.deck_staleness
-                        > deck_staleness_threshold):
-                    _log.info(f"{ch.handle!r} too stale. Skipping...")
-                    continue
+            _log.info(f"Scraping channel {i}/{len(urls)}: {ch.handle!r}...")
             ch.scrape(videos)
             if ch.data:
                 dst = getdir(CHANNELS_DIR / ch.handle)
                 ch.dump(dst)
                 count += len(ch.videos)
+                total_count += len(ch.videos)
         except ScrapingError as se:
             _log.warning(f"Scraping of channel {url!r} failed with: '{se}'. Skipping...")
         if count > 500:
             count = 0
             _log.info(f"Throttling for 5 minutes before the next batch...")
             throttle_with_countdown(5 * 60)
+
+    _log.info(f"Scraped {total_count} video(s) from {len(urls)} channel(s)")
 
 
 def scrape_non_dormant(videos=25, only_earlier_than_last=True) -> None:
@@ -296,6 +287,7 @@ def scrape_non_dormant(videos=25, only_earlier_than_last=True) -> None:
             urls.append(url)
         elif data.staleness <= DORMANT_STALENESS:
             urls.append(url)
+    _log.info(f"Scraping {len(urls)} non-dormant channel(s)...")
     scrape_channels(
         *urls, videos=videos, only_earlier_than_last=only_earlier_than_last)
 
@@ -313,6 +305,7 @@ def scrape_non_abandoned(videos=25, only_earlier_than_last=True) -> None:
             urls.append(url)
         elif data.staleness <= ABANDONED_STALENESS:
             urls.append(url)
+    _log.info(f"Scraping {len(urls)} non-abandoned channel(s)...")
     scrape_channels(
         *urls, videos=videos, only_earlier_than_last=only_earlier_than_last)
 
@@ -324,8 +317,9 @@ def scrape_dormant(videos=25, only_earlier_than_last=True) -> None:
     urls = []
     for url in retrieve_urls():
         data = load_channel(url)
-        if data and data.staleness and data.staleness > DORMANT_STALENESS:
+        if data and data.staleness and ABANDONED_STALENESS >= data.staleness > DORMANT_STALENESS:
             urls.append(url)
+    _log.info(f"Scraping {len(urls)} dormant channel(s)...")
     scrape_channels(
         *urls, videos=videos, only_earlier_than_last=only_earlier_than_last)
 
@@ -337,8 +331,9 @@ def scrape_abandoned(videos=25, only_earlier_than_last=True) -> None:
     urls = []
     for url in retrieve_urls():
         data = load_channel(url)
-        if data and data.staleness and data.staleness > DORMANT_STALENESS:
+        if data and data.staleness and data.staleness > ABANDONED_STALENESS:
             urls.append(url)
+    _log.info(f"Scraping {len(urls)} abandoned channel(s)...")
     scrape_channels(
         *urls, videos=videos, only_earlier_than_last=only_earlier_than_last)
 
