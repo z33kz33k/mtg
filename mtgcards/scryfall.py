@@ -580,8 +580,12 @@ class Card:
         return {part for face in self.card_faces for part in face.name_parts}
 
     @property
-    def main_name(self) -> str:
+    def first_face_name(self) -> str:
         return self.card_faces[0].name if self.is_multiface else self.name
+
+    @property
+    def second_face_name(self) -> str:
+        return self.card_faces[1].name if self.is_multiface else self.name
 
     @property
     def power(self) -> int | None:
@@ -1256,7 +1260,8 @@ def _build_maps() -> None:
     for card in bulk_data():
         _NAME_MAP[unidecode(card.name)] = card
         if card.is_multiface:
-            _NAME_MAP[unidecode(card.main_name)] = card
+            _NAME_MAP[unidecode(card.first_face_name)] = card
+            _NAME_MAP[unidecode(card.second_face_name)] = card
         _SCRYFALL_ID_MAP[card.id] = card
         _ORACLE_ID_MAP[card.id] = card
         if card.tcgplayer_id is not None:

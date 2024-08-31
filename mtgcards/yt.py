@@ -646,7 +646,7 @@ class Video:
         elif FlexslotScraper.is_deck_url(link):
             return FlexslotScraper(link, self.metadata).deck
         elif GoldfishScraper.is_deck_url(link):
-            return GoldfishScraper(link, self.metadata).deck
+            return GoldfishScraper(link, self.metadata, throttled=True).deck
         elif ManaStackScraper.is_deck_url(link):
             return ManaStackScraper(link, self.metadata).deck
         elif ManatradersScraper.is_deck_url(link):
@@ -883,9 +883,11 @@ class Channel:
 
     @staticmethod
     def url2handle(url: str) -> str:
-        if "@" not in url:
+        if "@" not in url and "/c/" not in url:
             raise ValueError(f"Not a channel URL: {url!r}")
         _, handle = url.rsplit("/", maxsplit=1)
+        if "/c/" in url:
+            handle = f"c_{handle}"
         return handle
 
     def _get_ytsp(self) -> YtspChannel:
@@ -940,7 +942,8 @@ class Channel:
         dstdir = dstdir or OUTPUT_DIR / "json"
         dstdir = getdir(dstdir)
         timestamp = self.scrape_time.strftime(FILENAME_TIMESTAMP_FORMAT)
-        name = name or f"{self.handle.lstrip('@')}_{timestamp}_channel"
+        handle = self.handle.removeprefix("@").removeprefix("c_")
+        name = name or f"{handle}_{timestamp}_channel"
         dst = dstdir / f"{sanitize_filename(name)}.json"
         _log.info(f"Exporting channel to: '{dst}'...")
         dst.write_text(self.json, encoding="utf-8")

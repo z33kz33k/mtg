@@ -57,9 +57,10 @@ class GoldfishScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        url = DeckScraper.sanitize_url(url)
         if "/visual/" in url:
             url = url.replace("/visual/", "/")
+        if "popout?id=" in url:
+            url = url.replace("popout?id=", "")
         if "#" in url:
             url, _ = url.rsplit("#", maxsplit=1)
             return url

@@ -867,7 +867,7 @@ Name={}
     @staticmethod
     def _to_forge_line(playset: list[Card]) -> str:
         card = playset[0]
-        return f"{len(playset)} {card.main_name}|{card.set.upper()}|1"
+        return f"{len(playset)} {card.first_face_name}|{card.set.upper()}|1"
 
     def _build_forge(self) -> str:
         commander = [
