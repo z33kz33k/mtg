@@ -29,7 +29,7 @@ from requests import HTTPError, Timeout
 from selenium.common.exceptions import TimeoutException
 from youtubesearchpython import Channel as YtspChannel
 
-from mtgcards.const import FILENAME_TIMESTAMP_FORMAT, Json, OUTPUT_DIR, PathLike
+from mtgcards import FILENAME_TIMESTAMP_FORMAT, Json, OUTPUT_DIR, PathLike
 from mtgcards.deck import Deck
 from mtgcards.deck.arena import ArenaParser, get_arena_lines
 from mtgcards.deck.scrapers.aetherhub import AetherhubScraper

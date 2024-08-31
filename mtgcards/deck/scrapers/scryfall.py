@@ -12,7 +12,7 @@ from datetime import date
 
 from bs4 import Tag
 
-from mtgcards.const import Json
+from mtgcards import Json
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.scryfall import Card
 from mtgcards.utils import extract_int

@@ -11,7 +11,7 @@ import json
 import logging
 from datetime import datetime
 
-from mtgcards.const import Json
+from mtgcards import Json
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils.scrape import getsoup
 

@@ -11,7 +11,7 @@ import logging
 
 from selenium.common.exceptions import TimeoutException
 
-from mtgcards.const import Json
+from mtgcards import Json
 from mtgcards.deck import ParsingState
 from mtgcards.deck.scrapers import DeckScraper
 from utils import get_ago_date

@@ -12,7 +12,7 @@ from datetime import datetime
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 
-from mtgcards.const import Json
+from mtgcards import Json
 from mtgcards.deck.arena import ArenaParser
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils import extract_float, extract_int

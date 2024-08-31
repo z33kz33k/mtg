@@ -13,7 +13,7 @@
 from functools import wraps
 from typing import Any, Iterable, Type
 
-from mtgcards.const import Method, Function
+from mtgcards import Function, Method
 
 
 def fullqualname(class_: Type) -> str:

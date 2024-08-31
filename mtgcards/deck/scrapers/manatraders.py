@@ -11,7 +11,7 @@ import json
 import logging
 
 from deck.scrapers.streamdecker import StreamdeckerScraper
-from mtgcards.const import Json
+from mtgcards import Json
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils.scrape import getsoup
 

@@ -13,7 +13,7 @@ from datetime import datetime
 from selenium.common.exceptions import TimeoutException
 
 from deck import DeckParser
-from mtgcards.const import Json
+from mtgcards import Json
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils import extract_int
 from scryfall import MULTIFACE_SEPARATOR

@@ -10,7 +10,7 @@
 import logging
 
 from mtgcards.deck import ParsingState
-from mtgcards.const import Json
+from mtgcards import Json
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils.scrape import getsoup
 from utils import from_iterable, sanitize_whitespace

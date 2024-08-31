@@ -12,7 +12,7 @@ from datetime import datetime
 
 from bs4 import Tag
 
-from mtgcards.const import Json
+from mtgcards import Json
 from mtgcards.deck import Deck, InvalidDeck, Mode
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.scryfall import Card, ARENA_FORMATS

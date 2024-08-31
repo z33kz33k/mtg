@@ -12,7 +12,7 @@ import re
 from datetime import date
 
 from deck import DeckParser
-from mtgcards.const import Json
+from mtgcards import Json
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils import get_ago_date
 from mtgcards.utils.scrape import timed_request

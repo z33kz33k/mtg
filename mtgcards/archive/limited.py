@@ -17,7 +17,7 @@ from typing import Optional, Union
 
 import numpy as np
 
-from mtgcards.const import DATA_DIR, OUTPUT_DIR
+from mtgcards import DATA_DIR, OUTPUT_DIR
 from mtgcards.archive.goldfish.cards import Mana
 from mtgcards.archive.goldfish.sets import MtgSet
 from mtgcards.utils.files import getfile

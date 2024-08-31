@@ -11,7 +11,7 @@ import logging
 import re
 from typing import Generator
 
-from mtgcards.const import Json
+from mtgcards import Json
 from mtgcards.deck import ARENA_MULTIFACE_SEPARATOR, Deck, DeckParser, InvalidDeck, \
     ParsingState
 from mtgcards.scryfall import Card, MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR

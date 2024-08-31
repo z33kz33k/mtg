@@ -12,7 +12,7 @@ import logging
 
 import dateutil.parser
 
-from mtgcards.const import Json
+from mtgcards import Json
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils.scrape import getsoup
 from scryfall import Card

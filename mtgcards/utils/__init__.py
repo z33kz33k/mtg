@@ -17,7 +17,7 @@ from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 from contexttimer import Timer
 
-from mtgcards.const import FILENAME_TIMESTAMP_FORMAT, READABLE_TIMESTAMP_FORMAT, T
+from mtgcards import FILENAME_TIMESTAMP_FORMAT, READABLE_TIMESTAMP_FORMAT, T
 from mtgcards.utils.check_type import type_checker, uniform_type_checker
 
 _log = logging.getLogger(__name__)

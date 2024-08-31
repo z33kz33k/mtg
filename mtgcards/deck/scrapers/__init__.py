@@ -10,7 +10,7 @@
 import logging
 from abc import abstractmethod
 
-from mtgcards.const import Json
+from mtgcards import Json
 from mtgcards.deck import Deck, DeckParser, InvalidDeck
 from mtgcards.utils.scrape import Throttling, extract_source
 from scryfall import all_formats
@@ -20,10 +20,28 @@ _log = logging.getLogger(__name__)
 
 
 SANITIZED_FORMATS = {
-    "duelcommander": "duel",
-    "duel commander": "duel",
-    "historicbrawl": "brawl",
     "artisan historic": "historic",
+    "artisanhistoric": "historic",
+    "cedh": "commander",
+    "commander / edh": "commander",
+    "commander/edh": "commander",
+    "commanderprecon": "commander",
+    "commanderprecons": "commander",
+    "duel commander": "duel",
+    "duelcommander": "duel",
+    "edh": "commander",
+    "highlander australian": "commander",
+    "highlander canadian": "commander",
+    "highlander european": "commander",
+    "highlander": "commander",
+    "highlanderaustralian": "commander",
+    "highlandercanadian": "commander",
+    "highlandereuropean": "commander",
+    "historic brawl": "brawl",
+    "historic pauper": "historic",
+    "historic-pauper": "historic",
+    "historicbrawl": "brawl",
+    "historicpauper": "historic",
 }
 
 
@@ -76,8 +94,9 @@ class DeckScraper(DeckParser):
         raise NotImplementedError
 
     def _update_fmt(self, fmt: str) -> None:
+        fmt = fmt.strip().lower()
+        fmt = SANITIZED_FORMATS.get(fmt, fmt)
         if fmt != self.fmt:
-            fmt = SANITIZED_FORMATS.get(fmt, fmt)
             if fmt in all_formats():
                 if self.fmt:
                     _log.warning(

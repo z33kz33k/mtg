@@ -15,7 +15,7 @@ from time import sleep
 import requests
 from tqdm import tqdm
 
-from mtgcards.const import PathLike
+from mtgcards import PathLike
 from mtgcards.utils.check_type import type_checker
 
 _log = getLogger(__name__)

@@ -12,7 +12,7 @@ import logging
 import dateutil.parser
 from selenium.common.exceptions import TimeoutException
 
-from mtgcards.const import Json
+from mtgcards import Json
 from mtgcards.deck.arena import ArenaParser
 from mtgcards.deck.scrapers import DeckScraper
 from utils.scrape import get_dynamic_soup_by_xpath

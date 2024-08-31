@@ -7,12 +7,10 @@
     @author: z33k
 
 """
-from pathlib import Path
-
 from bs4 import BeautifulSoup
 from bs4.element import Tag
 
-from mtgcards.const import DATA_DIR
+from mtgcards import DATA_DIR
 from mtgcards.utils.files import download_file
 
 FILENAME = "creature_type.html"

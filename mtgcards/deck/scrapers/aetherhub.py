@@ -10,7 +10,7 @@
 import logging
 from datetime import datetime
 
-from mtgcards.const import Json
+from mtgcards import Json
 from mtgcards.deck import Archetype, Mode, ParsingState
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils import extract_float, extract_int

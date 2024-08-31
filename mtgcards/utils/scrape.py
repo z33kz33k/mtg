@@ -29,7 +29,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-from mtgcards.const import Json
+from mtgcards import Json
 from mtgcards.utils import ParsingError, timed
 from mtgcards.utils.check_type import type_checker
 

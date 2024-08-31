@@ -17,7 +17,7 @@ from functools import cached_property
 from operator import attrgetter
 from typing import Any, Iterable, Iterator
 
-from mtgcards.const import Json, OUTPUT_DIR, PathLike
+from mtgcards import Json, OUTPUT_DIR, PathLike
 from mtgcards.scryfall import (COMMANDER_FORMATS, Card, Color,
                                MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, aggregate,
                                find_by_cardmarket_id, find_by_collector_number,

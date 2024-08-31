@@ -10,7 +10,7 @@
 import logging
 from datetime import datetime
 
-from mtgcards.const import Json
+from mtgcards import Json
 from mtgcards.deck import Deck, InvalidDeck, Mode, ParsingState
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.scryfall import all_formats

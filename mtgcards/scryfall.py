@@ -25,7 +25,7 @@ import scrython
 from tqdm import tqdm
 from unidecode import unidecode
 
-from mtgcards.const import DATA_DIR, Json
+from mtgcards import DATA_DIR, Json
 from mtgcards.mtgwiki import CLASSES, RACES
 from mtgcards.utils import from_iterable, getfloat, getint, getrepr, timed
 from mtgcards.utils.files import download_file, getdir
@@ -964,7 +964,7 @@ class SetData:
         return hash(self.id)
 
     def __str__(self) -> str:
-        text = f"{self.name} ({self.code})"
+        return f"{self.name} ({self.code})"
 
     def __repr__(self) -> str:
         reprs = [
