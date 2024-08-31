@@ -108,7 +108,7 @@ class ChannelData:
             return len(self.videos)
         video_ids = [v["id"] for v in self.videos]
         deck_ids = [v["id"] for v in self.videos if v["decks"]]
-        return len(self.videos[video_ids.index(deck_ids[0]):])
+        return len(self.videos[:video_ids.index(deck_ids[0])])
 
     @property
     def span(self) -> int | None:
