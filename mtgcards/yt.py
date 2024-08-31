@@ -64,8 +64,9 @@ _log = logging.getLogger(__name__)
 
 
 CHANNELS_DIR = OUTPUT_DIR / "channels"
-DORMANT_STALENESS = 30 * 3
-ABANDONED_STALENESS = 30 * 12
+DORMANT_STALENESS = 30 * 3  # days
+ABANDONED_STALENESS = 30 * 12  # days
+DECK_STALENESS = 50  # videos
 
 
 @dataclass
@@ -100,13 +101,14 @@ class ChannelData:
         return (date.today() - self.videos[0]["publish_time"].date()).days if self.videos else None
 
     @property
-    def deck_staleness(self) -> int | None | EllipsisType:
-        if not self.videos:
-            return None
-        deck_videos = [v for v in self.videos if v["decks"]]
-        if not deck_videos:
-            return Ellipsis
-        return (date.today() - deck_videos[0]["publish_time"].date()).days
+    def deck_staleness(self) -> int:
+        """Return number of last scraped videos without a deck.
+        """
+        if not self.decks:
+            return len(self.videos)
+        video_ids = [v["id"] for v in self.videos]
+        deck_ids = [v["id"] for v in self.videos if v["decks"]]
+        return len(self.videos[video_ids.index(deck_ids[0]):])
 
     @property
     def span(self) -> int | None:
@@ -217,6 +219,7 @@ def update_gsheet() -> None:
                 ch.posting_interval if ch.posting_interval is not None else "N/A",
                 len(ch.videos),
                 len(ch.decks),
+                ch.deck_staleness,
                 ch.total_views,
                 ch.subs_activity if ch.subs_activity is not None else "N/A",
                 ch.decks_per_video or 0,
@@ -274,38 +277,50 @@ def scrape_channels(
     _log.info(f"Scraped {total_count} video(s) from {len(urls)} channel(s)")
 
 
-def scrape_non_dormant(videos=25, only_earlier_than_last=True) -> None:
+def scrape_non_dormant(videos=25, only_earlier_than_last=True, only_non_deck_stale=True) -> None:
     """Scrape these YouTube channels specified in private Google Sheet that are not dormant. Save
     the scraped data as .json files.
     """
     urls = []
     for url in retrieve_urls():
-        data = load_channel(url)
+        try:
+            data = load_channel(url)
+        except FileNotFoundError:
+            data = None
         if not data:
             urls.append(url)
         elif not data.staleness:
             urls.append(url)
         elif data.staleness <= DORMANT_STALENESS:
+            if only_non_deck_stale and data.deck_staleness > DECK_STALENESS:
+                continue
             urls.append(url)
-    _log.info(f"Scraping {len(urls)} non-dormant channel(s)...")
+    text = "non-dormant and non-deck-stale" if only_non_deck_stale else "non-dormant"
+    _log.info(f"Scraping {len(urls)} {text} channel(s)...")
     scrape_channels(
         *urls, videos=videos, only_earlier_than_last=only_earlier_than_last)
 
 
-def scrape_non_abandoned(videos=25, only_earlier_than_last=True) -> None:
+def scrape_non_abandoned(videos=25, only_earlier_than_last=True, only_non_deck_stale=True) -> None:
     """Scrape these YouTube channels specified in private Google Sheet that are not abandoned. Save
     the scraped data as .json files.
     """
     urls = []
     for url in retrieve_urls():
-        data = load_channel(url)
+        try:
+            data = load_channel(url)
+        except FileNotFoundError:
+            data = None
         if not data:
             urls.append(url)
         elif not data.staleness:
             urls.append(url)
         elif data.staleness <= ABANDONED_STALENESS:
+            if only_non_deck_stale and data.deck_staleness > DECK_STALENESS:
+                continue
             urls.append(url)
-    _log.info(f"Scraping {len(urls)} non-abandoned channel(s)...")
+    text = "non-abandoned and non-deck-stale" if only_non_deck_stale else "non-abandoned"
+    _log.info(f"Scraping {len(urls)} {text} channel(s)...")
     scrape_channels(
         *urls, videos=videos, only_earlier_than_last=only_earlier_than_last)
 
@@ -316,7 +331,10 @@ def scrape_dormant(videos=25, only_earlier_than_last=True) -> None:
     """
     urls = []
     for url in retrieve_urls():
-        data = load_channel(url)
+        try:
+            data = load_channel(url)
+        except FileNotFoundError:
+            data = None
         if data and data.staleness and ABANDONED_STALENESS >= data.staleness > DORMANT_STALENESS:
             urls.append(url)
     _log.info(f"Scraping {len(urls)} dormant channel(s)...")
@@ -330,10 +348,30 @@ def scrape_abandoned(videos=25, only_earlier_than_last=True) -> None:
     """
     urls = []
     for url in retrieve_urls():
-        data = load_channel(url)
+        try:
+            data = load_channel(url)
+        except FileNotFoundError:
+            data = None
         if data and data.staleness and data.staleness > ABANDONED_STALENESS:
             urls.append(url)
     _log.info(f"Scraping {len(urls)} abandoned channel(s)...")
+    scrape_channels(
+        *urls, videos=videos, only_earlier_than_last=only_earlier_than_last)
+
+
+def scrape_deck_stale(videos=25, only_earlier_than_last=True) -> None:
+    """Scrape these YouTube channels specified in private Google Sheet that are considered
+    deck-stale. Save the scraped data as .json files.
+    """
+    urls = []
+    for url in retrieve_urls():
+        try:
+            data = load_channel(url)
+        except FileNotFoundError:
+            data = None
+        if data and data.deck_staleness > DECK_STALENESS:
+            urls.append(url)
+    _log.info(f"Scraping {len(urls)} deck-stale channel(s)...")
     scrape_channels(
         *urls, videos=videos, only_earlier_than_last=only_earlier_than_last)
 
@@ -819,11 +857,18 @@ class Channel:
             last_scraped_id = scraped_ids[0] if self._only_earlier_than_last else None
 
         video_ids, scraped_ids = [], set(scraped_ids)
+        count = 0
         for vid in self.video_ids(self.url, limit=limit):
             if vid == last_scraped_id:
                 break
             elif vid not in scraped_ids:
                 video_ids.append(vid)
+            count += 1
+
+        if not count:
+            raise ScrapingError(
+                "scrapetube failed to yield any video IDs. Are you sure the channel has a 'Videos' "
+                "tab?")
 
         return video_ids
 
