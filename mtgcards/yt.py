@@ -40,6 +40,7 @@ from mtgcards.deck.scrapers.flexslot import FlexslotScraper
 from mtgcards.deck.scrapers.goldfish import GoldfishScraper
 from mtgcards.deck.scrapers.manastack import ManaStackScraper
 from mtgcards.deck.scrapers.manatraders import ManatradersScraper
+from mtgcards.deck.scrapers.melee import MeleeGgScraper
 from mtgcards.deck.scrapers.moxfield import MoxfieldScraper
 from mtgcards.deck.scrapers.mtgarenapro import MtgArenaProScraper
 from mtgcards.deck.scrapers.mtgazone import MtgaZoneScraper
@@ -690,6 +691,8 @@ class Video:
             return ManaStackScraper(link, self.metadata).deck
         elif ManatradersScraper.is_deck_url(link):
             return ManatradersScraper(link, self.metadata).deck
+        elif MeleeGgScraper.is_deck_url(link):
+            return MeleeGgScraper(link, self.metadata).deck
         elif MoxfieldScraper.is_deck_url(link):
             return MoxfieldScraper(link, self.metadata, throttled=True).deck
         elif MtgaZoneScraper.is_deck_url(link):
