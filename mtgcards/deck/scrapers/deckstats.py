@@ -8,7 +8,6 @@
 
 """
 import itertools
-import json
 import logging
 from datetime import datetime
 
@@ -43,7 +42,7 @@ class DeckstatsScraper(DeckScraper):
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
         self._soup = getsoup(self.url)
-        self._json_data = self._dissect_js()
+        self._json_data = self._get_json()
         self._scrape_metadata()
         self._scrape_deck()
 
@@ -51,14 +50,9 @@ class DeckstatsScraper(DeckScraper):
     def is_deck_url(url: str) -> bool:  # override
         return "deckstats.net/decks/" in url
 
-    def _dissect_js(self) -> Json:
-        start_hook, end_hook = "init_deck_data(", "deck_display();"
-        text = self._soup.find(
-            "script", string=lambda s: s and start_hook in s and end_hook in s).text
-        *_, first = text.split(start_hook)
-        second, *_ = first.split(end_hook)
-        obj = second.removesuffix(", false);")
-        return json.loads(obj)
+    def _get_json(self) -> Json:
+        return self.dissect_js(
+            self._soup, "init_deck_data(", "deck_display();", lambda s: s.removesuffix(", false);"))
 
     def _scrape_metadata(self) -> None:  # override
         author_text = self._soup.find("div", id="deck_folder_subtitle").text.strip()

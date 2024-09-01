@@ -7,7 +7,6 @@
     @author: z33k
 
 """
-import json
 import logging
 
 import dateutil.parser
@@ -26,7 +25,7 @@ class CardsrealmScraper(DeckScraper):
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
         self._soup = getsoup(self.url)
-        self._json_data = self._dissect_js()
+        self._json_data = self._get_json()
         self._scrape_metadata()
         self._scrape_deck()
 
@@ -34,14 +33,12 @@ class CardsrealmScraper(DeckScraper):
     def is_deck_url(url: str) -> bool:  # override
         return "mtg.cardsrealm.com/" in url and "/decks/" in url
 
-    def _dissect_js(self) -> Json:
-        start_hook, end_hook = "var deck_cards = ", 'var torneio_type ='
-        text = self._soup.find(
-            "script", string=lambda s: s and start_hook in s and end_hook in s).text
-        *_, first = text.split(start_hook)
-        second, *_ = first.split(end_hook)
-        obj, _ = second.rsplit("]", maxsplit=1)
-        return json.loads(obj + "]")
+    def _get_json(self) -> Json:
+        def process(text: str) -> str:
+            obj, _ = text.rsplit("]", maxsplit=1)
+            return obj + "]"
+        return self.dissect_js(
+            self._soup, "var deck_cards = ", 'var torneio_type =', end_processor=process)
 
     def _scrape_metadata(self) -> None:  # override
         card_data = self._json_data[0]

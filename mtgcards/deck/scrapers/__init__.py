@@ -7,8 +7,12 @@
     @author: z33k
 
 """
+import json
 import logging
 from abc import abstractmethod
+from typing import Callable
+
+from bs4 import BeautifulSoup
 
 from mtgcards import Json
 from mtgcards.deck import Deck, DeckParser, InvalidDeck
@@ -64,6 +68,7 @@ class DeckScraper(DeckParser):
         self._throttled = throttled
         self._supress_invalid_deck = supress_invalid_deck
         self._url = self.sanitize_url(url)
+        self._soup: BeautifulSoup | None = None
         self._metadata["url"] = self.url
         self._metadata["source"] = extract_source(self.url)
         if self.throttled:
@@ -105,6 +110,17 @@ class DeckScraper(DeckParser):
                 self._metadata["format"] = fmt
             else:
                 _log.warning(f"Not a valid format: {fmt!r}")
+
+    def dissect_js(
+            self, start_hook: str, end_hook: str,
+            end_processor: Callable[[str], str] | None = None) -> Json:
+        text = self._soup.find(
+            "script", string=lambda s: s and start_hook in s and end_hook in s).text
+        *_, first = text.split(start_hook)
+        second, *_ = first.split(end_hook)
+        if end_processor:
+            second = end_processor(second)
+        return json.loads(second)
 
     def _build_deck(self) -> None:
         try:

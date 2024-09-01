@@ -368,25 +368,25 @@ def _click_for_clipboard(driver: WebDriver, xpath: str, timeout=SELENIUM_TIMEOUT
 
 
 def _wait_for_elements(
-        driver: WebDriver, xpath: str, *halt_xpath: str,
+        driver: WebDriver, xpath: str, *halt_xpaths: str,
         timeout=SELENIUM_TIMEOUT) -> WebElement | None:
-    """Wait for elements specified by ``xpath`` and ``halt_xpath`` to be present in the current
+    """Wait for elements specified by ``xpath`` and ``halt_xpaths`` to be present in the current
     page.
 
-    If ``xpath`` element is located return it. If any element designated by``halt_xpath`` is
+    If ``xpath`` element is located return it. If any element designated by``halt_xpaths`` is
     located return `None`.
 
     Args:
         driver: a Chrome webdriver object
         xpath: XPath to locate the main element
-        halt_xpath: XPaths to locate elements that should halt the wait
+        halt_xpaths: XPaths to locate elements that should halt the wait
         timeout: timeout used in attempted actions
     """
-    if halt_xpath:
+    if halt_xpaths:
         WebDriverWait(driver, timeout).until(
         EC.any_of(
             EC.presence_of_element_located((By.XPATH, xpath)),
-            *[EC.presence_of_element_located((By.XPATH, xp)) for xp in halt_xpath]
+            *[EC.presence_of_element_located((By.XPATH, xp)) for xp in halt_xpaths]
         ))
 
         # check which element was found
