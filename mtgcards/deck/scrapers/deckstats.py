@@ -52,7 +52,7 @@ class DeckstatsScraper(DeckScraper):
 
     def _get_json(self) -> Json:
         return self.dissect_js(
-            self._soup, "init_deck_data(", "deck_display();", lambda s: s.removesuffix(", false);"))
+            "init_deck_data(", "deck_display();", lambda s: s.removesuffix(", false);"))
 
     def _scrape_metadata(self) -> None:  # override
         author_text = self._soup.find("div", id="deck_folder_subtitle").text.strip()

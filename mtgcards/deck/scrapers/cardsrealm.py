@@ -37,8 +37,7 @@ class CardsrealmScraper(DeckScraper):
         def process(text: str) -> str:
             obj, _ = text.rsplit("]", maxsplit=1)
             return obj + "]"
-        return self.dissect_js(
-            self._soup, "var deck_cards = ", 'var torneio_type =', end_processor=process)
+        return self.dissect_js("var deck_cards = ", 'var torneio_type =', end_processor=process)
 
     def _scrape_metadata(self) -> None:  # override
         card_data = self._json_data[0]
