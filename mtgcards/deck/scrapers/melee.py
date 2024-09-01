@@ -31,7 +31,7 @@ class MeleeGgScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "melee.gg/Decklist/" in url
+        return "melee.gg/Decklist/" in url or "mtgmelee.com/Decklist/" in url
 
     def _scrape_metadata(self) -> None:  # override
         self._metadata["name"] = self._soup.select_one("a.decklist-card-title").text.strip()

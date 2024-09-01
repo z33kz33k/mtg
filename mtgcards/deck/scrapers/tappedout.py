@@ -13,7 +13,7 @@ from mtgcards import Json
 from mtgcards.deck.arena import ArenaParser
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils import extract_int, get_date_from_ago_text
-from mtgcards.utils.scrape import getsoup
+from mtgcards.utils.scrape import Throttling, getsoup
 
 _log = logging.getLogger(__name__)
 
@@ -21,8 +21,8 @@ _log = logging.getLogger(__name__)
 class TappedoutScraper(DeckScraper):
     """Scraper of TappedOut decklist page.
     """
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
+    def __init__(self, url: str, metadata: Json | None = None, throttled=False) -> None:
+        super().__init__(url, metadata, throttled)
         self._soup = getsoup(self.url)
         self._scrape_metadata()
         self._scrape_deck()

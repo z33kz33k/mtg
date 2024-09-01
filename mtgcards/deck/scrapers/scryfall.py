@@ -57,6 +57,8 @@ class ScryfallScraper(DeckScraper):
             quantity = extract_int(li_tag.find("span", class_="deck-list-entry-count").text)
             name_tag = li_tag.find("span", class_="deck-list-entry-name")
             name = name_tag.text.strip()
+            if name.endswith("✶"):
+                name = name.removesuffix("✶").strip()
             link = name_tag.find("a").attrs["href"]
             text = link.removeprefix("https://scryfall.com/card/")
             set_code, collector_number, *_ = text.split("/")
