@@ -31,7 +31,7 @@ _log = logging.getLogger(__name__)
 
 ARENA_MULTIFACE_SEPARATOR = "///"  # this is different from Scryfall data where they use: '//'
 
-
+# TODO: look here: https://pennydreadfulmagic.com/archetypes/
 # based on https://draftsim.com/mtg-archetypes/
 # this listing omits combo-control as it's too long a name to be efficiently used as a component
 # of a catchy deck name

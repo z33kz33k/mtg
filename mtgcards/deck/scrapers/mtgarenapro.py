@@ -33,11 +33,6 @@ class MtgArenaProScraper(DeckScraper):
     def is_deck_url(url: str) -> bool:  # override
         return "mtgarena.pro/decks/" in url
 
-    @staticmethod
-    def sanitize_url(url: str) -> str:  # override
-        url = DeckScraper.sanitize_url(url)
-        return url
-
     def _get_json(self) -> Json:
         return self.dissect_js("var precachedDeck=", '"card_ids":', lambda s: s + '"card_ids":[]}')
 

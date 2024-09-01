@@ -14,6 +14,7 @@ from functools import wraps
 from typing import Any, Callable, Iterable, Optional, Type
 from datetime import date, timedelta
 
+import dateutil.parser
 from dateutil.relativedelta import relativedelta
 from contexttimer import Timer
 
@@ -95,13 +96,13 @@ def extract_int(text: str) -> int:
 
 
 @type_checker(str)
-def get_ago_date(date_text: str) -> date | None:
+def get_date_from_ago_text(ago_text: str) -> date | None:
     """Parse 'ago' text (e.g. '2 days ago') into a Date object.
     """
-    if not date_text:
+    if not ago_text:
         return None
-    date_text = date_text.removesuffix(" ago")
-    amount, time = date_text.split()
+    ago_text = ago_text.removesuffix(" ago")
+    amount, time = ago_text.split()
     amount = 1 if amount == "a" else int(amount)
     dt = date.today()
     if time in ("days", "day"):
@@ -111,6 +112,23 @@ def get_ago_date(date_text: str) -> date | None:
     elif time in ("years", "year"):
         return date(dt.year - amount, dt.month, dt.day)
     return None
+
+
+@type_checker(str)
+def get_date_from_month_text(month_text: str) -> date | None:
+    """Parse 'month' text (e.g. 'June 27th') into a Date object.
+
+    Month text may or may not include a valid year, eg. 'June 27th 2021' or 'June 27th'. In case
+    it's missing a current year is assumed.
+    """
+    current_year = datetime.now().year
+    # clean the input string by removing ordinal suffixes
+    cleaned_month_text = month_text.replace(
+        'st', '').replace('nd', '').replace('rd', '').replace('th', '')
+
+    parsed_date = dateutil.parser.parse(
+        cleaned_month_text, default=datetime(current_year, 1, 1))
+    return parsed_date.date()
 
 
 @type_checker(str, none_allowed=True)

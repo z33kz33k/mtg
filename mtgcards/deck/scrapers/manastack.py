@@ -14,7 +14,7 @@ from selenium.common.exceptions import TimeoutException
 from mtgcards import Json
 from mtgcards.deck import ParsingState
 from mtgcards.deck.scrapers import DeckScraper
-from utils import get_ago_date
+from utils import get_date_from_ago_text
 from utils.scrape import get_dynamic_soup_by_xpath
 
 _log = logging.getLogger(__name__)
@@ -46,7 +46,7 @@ class ManaStackScraper(DeckScraper):
         author_tag =  self._soup.find("div", class_="deck-meta-user")
         self._metadata["author"] = author_tag.find("a").text.strip()
         *_, date_text = author_tag.text.strip().split("Last updated")
-        self._metadata["date"] = get_ago_date(date_text.strip())
+        self._metadata["date"] = get_date_from_ago_text(date_text.strip())
 
     def _scrape_deck(self) -> None:  # override
         deck_tag = self._soup.find("div", class_="deck-list-container")

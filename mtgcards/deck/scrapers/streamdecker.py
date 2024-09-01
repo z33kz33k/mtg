@@ -14,7 +14,7 @@ from datetime import date
 from deck import DeckParser
 from mtgcards import Json
 from mtgcards.deck.scrapers import DeckScraper
-from mtgcards.utils import get_ago_date
+from mtgcards.utils import get_date_from_ago_text
 from mtgcards.utils.scrape import timed_request
 from scryfall import MULTIFACE_SEPARATOR
 
@@ -40,7 +40,7 @@ class StreamdeckerScraper(DeckScraper):
 
     def _parse_date(self) -> date | None:
         date_text = self._json_data["updatedAt"]
-        return get_ago_date(date_text)
+        return get_date_from_ago_text(date_text)
 
     def _scrape_metadata(self) -> None:  # override
         self._metadata.update({
