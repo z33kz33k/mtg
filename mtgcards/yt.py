@@ -18,7 +18,6 @@ from decimal import Decimal
 from functools import cached_property
 from http.client import RemoteDisconnected
 from operator import attrgetter, itemgetter
-from types import EllipsisType
 from typing import Generator, Iterator
 
 import backoff
@@ -42,6 +41,7 @@ from mtgcards.deck.scrapers.goldfish import GoldfishScraper
 from mtgcards.deck.scrapers.manastack import ManaStackScraper
 from mtgcards.deck.scrapers.manatraders import ManatradersScraper
 from mtgcards.deck.scrapers.moxfield import MoxfieldScraper
+from mtgcards.deck.scrapers.mtgarenapro import MtgArenaProScraper
 from mtgcards.deck.scrapers.mtgazone import MtgaZoneScraper
 from mtgcards.deck.scrapers.mtgdecksnet import MtgDecksNetScraper
 from mtgcards.deck.scrapers.mtgtop8 import MtgTop8Scraper
@@ -693,6 +693,8 @@ class Video:
             return MoxfieldScraper(link, self.metadata, throttled=True).deck
         elif MtgaZoneScraper.is_deck_url(link):
             return MtgaZoneScraper(link, self.metadata).deck
+        elif MtgArenaProScraper.is_deck_url(link):
+            return MtgArenaProScraper(link, self.metadata).deck
         elif MtgDecksNetScraper.is_deck_url(link):
             return MtgDecksNetScraper(link, self.metadata).deck
         elif MtgTop8Scraper.is_deck_url(link):
