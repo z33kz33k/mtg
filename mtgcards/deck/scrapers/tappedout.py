@@ -13,7 +13,7 @@ from mtgcards import Json
 from mtgcards.deck.arena import ArenaParser
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils import extract_int, get_date_from_ago_text
-from mtgcards.utils.scrape import Throttling, getsoup
+from mtgcards.utils.scrape import getsoup
 
 _log = logging.getLogger(__name__)
 

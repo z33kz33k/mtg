@@ -10,6 +10,7 @@
 import itertools
 import json
 import logging
+import re
 from abc import ABC
 from collections import Counter
 from enum import Enum, auto
@@ -1125,4 +1126,10 @@ class DeckParser(ABC):
 
     @staticmethod
     def sanitize_card_name(text: str) -> str:
-        return text.replace("’", "'")
+        text = text.replace("’", "'")
+        if "/" in text:
+            text = text.replace(" / ", f" {SCRYFALL_MULTIFACE_SEPARATOR} ").replace(
+                f" {ARENA_MULTIFACE_SEPARATOR} ", f" {SCRYFALL_MULTIFACE_SEPARATOR} ")
+            # "Wear/Tear" ==> "Wear // Tear"
+            text = re.sub(r'(?<=[a-zA-Z])/(?=[a-zA-Z])', f' {SCRYFALL_MULTIFACE_SEPARATOR} ', text)
+        return text

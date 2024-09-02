@@ -12,11 +12,9 @@ from datetime import datetime
 
 from selenium.common.exceptions import TimeoutException
 
-from deck import DeckParser
 from mtgcards import Json
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils import extract_int
-from scryfall import MULTIFACE_SEPARATOR
 from utils.scrape import get_dynamic_soup_by_xpath
 
 _log = logging.getLogger(__name__)
@@ -51,11 +49,6 @@ class MtgTop8Scraper(DeckScraper):
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
         return url
-
-    @staticmethod
-    def sanitize_card_name(text: str) -> str:  # override
-        text = DeckParser.sanitize_card_name(text)
-        return text.replace(" / ", f" {MULTIFACE_SEPARATOR} ")
 
     def _scrape_metadata(self) -> None:  # override
         event_tag, name_tag = [tag for tag in self._soup.find_all("div", class_="event_title")

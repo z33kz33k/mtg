@@ -26,6 +26,10 @@ _log = logging.getLogger(__name__)
 SANITIZED_FORMATS = {
     "artisan historic": "historic",
     "artisanhistoric": "historic",
+    "australian highlander": "commander",
+    "australianhighlander": "commander",
+    "canadian highlander": "commander",
+    "canadianhighlander": "commander",
     "cedh": "commander",
     "commander / edh": "commander",
     "commander/edh": "commander",
@@ -34,6 +38,8 @@ SANITIZED_FORMATS = {
     "duel commander": "duel",
     "duelcommander": "duel",
     "edh": "commander",
+    "european highlander": "commander",
+    "europeanhighlander": "commander",
     "highlander australian": "commander",
     "highlander canadian": "commander",
     "highlander european": "commander",
@@ -46,6 +52,8 @@ SANITIZED_FORMATS = {
     "historic-pauper": "historic",
     "historicbrawl": "brawl",
     "historicpauper": "historic",
+    "pauper edh": "paupercommander",
+    "pauperedh": "paupercommander",
 }
 
 
