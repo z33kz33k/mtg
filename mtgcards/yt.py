@@ -214,6 +214,10 @@ def update_gsheet() -> None:
     for url in retrieve_urls():
         try:
             ch = load_channel(url)
+            formats = sorted(ch.deck_formats.items(), key=itemgetter(1), reverse=True)
+            formats = [pair[0] for pair in formats]
+            deck_sources = sorted(ch.deck_sources.items(), key=itemgetter(1), reverse=True)
+            deck_sources = [pair[0] for pair in deck_sources]
             data.append([
                 url,
                 ch.scrape_time.date().strftime("%Y-%m-%d"),
@@ -226,8 +230,8 @@ def update_gsheet() -> None:
                 ch.subs_activity if ch.subs_activity is not None else "N/A",
                 ch.decks_per_video or 0,
                 ch.subscribers or "N/A",
-                ", ".join(sorted(ch.deck_formats.keys())),
-                ", ".join(sorted(ch.deck_sources.keys())),
+                ", ".join(formats),
+                ", ".join(deck_sources),
                 ", ".join(ch.sources),
             ])
         except FileNotFoundError:
@@ -249,19 +253,19 @@ def update_gsheet() -> None:
 def scrape_channels(
         *urls: str,
         videos=25,
-        only_earlier_than_last=True) -> None:
+        only_earlier_than_last_scraped=True) -> None:
     """Scrape YouTube channels specified in private Google Sheet. Save the scraped data as .json
     files.
 
     Args:
         urls: URLs of channels to scrape
         videos: number of videos to scrape per channel
-        only_earlier_than_last: if True, only scrape videos earlier than the last one scraped
+        only_earlier_than_last_scraped: if True, only scrape videos earlier than the last one scraped
     """
     count, total_count = 0, 0
     for i, url in enumerate(urls, start=1):
         try:
-            ch = Channel(url, only_earlier_than_last=only_earlier_than_last)
+            ch = Channel(url, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
             _log.info(f"Scraping channel {i}/{len(urls)}: {ch.handle!r}...")
             ch.scrape(videos)
             if ch.data:
@@ -279,7 +283,8 @@ def scrape_channels(
     _log.info(f"Scraped {total_count} video(s) from {len(urls)} channel(s)")
 
 
-def scrape_non_dormant(videos=25, only_earlier_than_last=True, only_non_deck_stale=True) -> None:
+def scrape_non_dormant(
+        videos=25, only_earlier_than_last_scraped=True, only_non_deck_stale=True) -> None:
     """Scrape these YouTube channels specified in private Google Sheet that are not dormant. Save
     the scraped data as .json files.
     """
@@ -300,10 +305,11 @@ def scrape_non_dormant(videos=25, only_earlier_than_last=True, only_non_deck_sta
     text = "non-dormant and non-deck-stale" if only_non_deck_stale else "non-dormant"
     _log.info(f"Scraping {len(urls)} {text} channel(s)...")
     scrape_channels(
-        *urls, videos=videos, only_earlier_than_last=only_earlier_than_last)
+        *urls, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
 
 
-def scrape_non_abandoned(videos=25, only_earlier_than_last=True, only_non_deck_stale=True) -> None:
+def scrape_non_abandoned(
+        videos=25, only_earlier_than_last_scraped=True, only_non_deck_stale=True) -> None:
     """Scrape these YouTube channels specified in private Google Sheet that are not abandoned. Save
     the scraped data as .json files.
     """
@@ -324,10 +330,11 @@ def scrape_non_abandoned(videos=25, only_earlier_than_last=True, only_non_deck_s
     text = "non-abandoned and non-deck-stale" if only_non_deck_stale else "non-abandoned"
     _log.info(f"Scraping {len(urls)} {text} channel(s)...")
     scrape_channels(
-        *urls, videos=videos, only_earlier_than_last=only_earlier_than_last)
+        *urls, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
 
 
-def scrape_dormant(videos=25, only_earlier_than_last=True) -> None:
+def scrape_dormant(
+        videos=25, only_earlier_than_last_scraped=True, only_non_deck_stale=True) -> None:
     """Scrape these YouTube channels specified in private Google Sheet that are dormant. Save
     the scraped data as .json files.
     """
@@ -338,13 +345,16 @@ def scrape_dormant(videos=25, only_earlier_than_last=True) -> None:
         except FileNotFoundError:
             data = None
         if data and data.staleness and ABANDONED_STALENESS >= data.staleness > DORMANT_STALENESS:
+            if only_non_deck_stale and data.deck_staleness > DECK_STALENESS:
+                continue
             urls.append(url)
     _log.info(f"Scraping {len(urls)} dormant channel(s)...")
     scrape_channels(
-        *urls, videos=videos, only_earlier_than_last=only_earlier_than_last)
+        *urls, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
 
 
-def scrape_abandoned(videos=25, only_earlier_than_last=True) -> None:
+def scrape_abandoned(
+        videos=25, only_earlier_than_last_scraped=True, only_non_deck_stale=True) -> None:
     """Scrape these YouTube channels specified in private Google Sheet that are abandoned. Save
     the scraped data as .json files.
     """
@@ -355,13 +365,15 @@ def scrape_abandoned(videos=25, only_earlier_than_last=True) -> None:
         except FileNotFoundError:
             data = None
         if data and data.staleness and data.staleness > ABANDONED_STALENESS:
+            if only_non_deck_stale and data.deck_staleness > DECK_STALENESS:
+                continue
             urls.append(url)
     _log.info(f"Scraping {len(urls)} abandoned channel(s)...")
     scrape_channels(
-        *urls, videos=videos, only_earlier_than_last=only_earlier_than_last)
+        *urls, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
 
 
-def scrape_deck_stale(videos=25, only_earlier_than_last=True) -> None:
+def scrape_deck_stale(videos=25, only_earlier_than_last_scraped=True) -> None:
     """Scrape these YouTube channels specified in private Google Sheet that are considered
     deck-stale. Save the scraped data as .json files.
     """
@@ -375,7 +387,7 @@ def scrape_deck_stale(videos=25, only_earlier_than_last=True) -> None:
             urls.append(url)
     _log.info(f"Scraping {len(urls)} deck-stale channel(s)...")
     scrape_channels(
-        *urls, videos=videos, only_earlier_than_last=only_earlier_than_last)
+        *urls, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
 
 
 def get_aggregate_deck_data() -> tuple[Counter, Counter]:
@@ -882,8 +894,8 @@ class Channel:
     def earlier_data(self) -> ChannelData | None:
         return self._earlier_data
 
-    def __init__(self, url: str, only_earlier_than_last=True) -> None:
-        self._url, self._only_earlier_than_last = url, only_earlier_than_last
+    def __init__(self, url: str, only_earlier_than_last_scraped=True) -> None:
+        self._url, self._only_earlier_than_last = url, only_earlier_than_last_scraped
         self._id, self._title, self._description, self._tags = None, None, None, None
         self._subscribers, self._scrape_time, self._videos = None, None, []
         self._ytsp_data, self._data = None, None
