@@ -23,6 +23,8 @@ _log = logging.getLogger(__name__)
 class MeleeGgScraper(DeckScraper):
     """Scraper of Melee.gg decklist page.
     """
+    ALT_DOMAIN = "mtgmelee.com"
+
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
         self._soup = getsoup(self.url, headers=GoldfishScraper.HEADERS)

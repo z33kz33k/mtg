@@ -188,7 +188,11 @@ def extract_url(text: str, https=True) -> str | None:
     """
     pattern = r"(?P<url>https?://[^\s'\"]+)" if https else r"(?P<url>http?://[^\s'\"]+)"
     match = re.search(pattern, text)
-    return match.group("url").rstrip("])") if match else None
+    if not match:
+        return None
+    url = match.group("url").rstrip("])")
+    prefix = "https://" if https else "http://"
+    return url.removeprefix(prefix) if url.startswith(prefix * 2) else url
 
 
 def extract_source(url: str) -> str:

@@ -401,6 +401,8 @@ def get_aggregate_deck_data() -> tuple[Counter, Counter]:
         if "tcgplayer" in src:
             _, *parts = src.split(".")
             src = ".".join(parts)
+        elif MeleeGgScraper.ALT_DOMAIN in src:
+            src = "melee.gg"
         sources.append(src)
     source_counter = Counter(sources)
     format_counter = Counter([d["metadata"]["format"] for d in decks if d["metadata"].get("format")])
