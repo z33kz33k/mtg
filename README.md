@@ -30,14 +30,14 @@ descriptions).
   [Flexslot](https://flexslot.gg), [Goldfish](https://www.mtggoldfish.com), [Manatraders](https://www.manatraders.com),  
   [ManaStack](https://manastack.com/home), [Melee.gg](https://melee.gg), [Moxfield](https://www.moxfield.com), 
   [MTGArena.Pro](https://mtgarena.pro), [MTGAZone](https://mtgazone.com), [MTGDecks.net](https://mtgdecks.net), 
-  [MTGTop8](https://mtgtop8.com/index), [PennyDreadfulMagic](https://pennydreadfulmagic.com), [StarCityGames](https://starcitygames.com), 
-  [Scryfall](https://scryfall.com), [Streamdecker](https://www.streamdecker.com/landing), [TappedOut](https://tappedout.net), 
-  [TCGPlayer](https://infinite.tcgplayer.com) and [Untapped](https://mtga.untapped.gg) deck parsers 
+  [MTGO Traders](https://www.mtgotraders.com/store/index.html), [MTGTop8](https://mtgtop8.com/index), [PennyDreadfulMagic](https://pennydreadfulmagic.com), 
+  [StarCityGames](https://starcitygames.com), [Scryfall](https://scryfall.com), [Streamdecker](https://www.streamdecker.com/landing), 
+  [TappedOut](https://tappedout.net),[TCGPlayer](https://infinite.tcgplayer.com) and [Untapped](https://mtga.untapped.gg) deck parsers 
   work, so:
     * Arena decklists pasted into video descriptions are parsed into Deck objects
     * Aetherhub, Archidekt, Cardhoarder, Cardsrealm, Deckstats.net, Flexslot, Goldfish, 
-      Manatraders, ManaStack, Melee.gg, Moxfield, MTGArena.Pro, MTGAZone, MTGDecks.net, MTGTop8, 
-      PennyDreadfulMagic StarCityGames, Scryfall, Streamdecker, TappedOut, TCGPlayer and Untapped, 
+      Manatraders, ManaStack, Melee.gg, Moxfield, MTGArena.Pro, MTGAZone, MTGDecks.net, MTGO Traders 
+      MTGTop8, PennyDreadfulMagic StarCityGames, Scryfall, Streamdecker, TappedOut, TCGPlayer and Untapped, 
       links contained in those descriptions are parsed into Deck objects
     * Both Untapped decklist types featured in YT videos are supported: regular deck and profile deck
     * Both old and new TCGPlayer sites are supported

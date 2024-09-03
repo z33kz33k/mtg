@@ -50,6 +50,7 @@ from mtgcards.deck.scrapers.penny import PennyDreadfulMagicScraper
 from mtgcards.deck.scrapers.scryfall import ScryfallScraper
 from mtgcards.deck.scrapers.starcitygames import StarCityGamesScraper
 from mtgcards.deck.scrapers.streamdecker import StreamdeckerScraper
+from mtgcards.deck.scrapers.traders import MtgoTradersScraper
 from mtgcards.deck.scrapers.tappedout import TappedoutScraper
 from mtgcards.deck.scrapers.tcgplayer import NewPageTcgPlayerScraper, OldPageTcgPlayerScraper
 from mtgcards.deck.scrapers.untapped import UntappedProfileDeckScraper, UntappedRegularDeckScraper
@@ -750,6 +751,8 @@ class Video:
             return MtgArenaProScraper(link, self.metadata).deck
         elif MtgDecksNetScraper.is_deck_url(link):
             return MtgDecksNetScraper(link, self.metadata).deck
+        elif MtgoTradersScraper.is_deck_url(link):
+            return MtgoTradersScraper(link, self.metadata).deck
         elif MtgTop8Scraper.is_deck_url(link):
             return MtgTop8Scraper(link, self.metadata).deck
         elif NewPageTcgPlayerScraper.is_deck_url(link):
