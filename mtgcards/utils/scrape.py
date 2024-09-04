@@ -190,7 +190,7 @@ def extract_url(text: str, https=True) -> str | None:
     match = re.search(pattern, text)
     if not match:
         return None
-    url = match.group("url").rstrip("])")
+    url = match.group("url").rstrip("])}")
     prefix = "https://" if https else "http://"
     return url.removeprefix(prefix) if url.startswith(prefix * 2) else url
 

@@ -324,5 +324,6 @@ def sanitize_filename(text: str, replacement="_") -> str:  # perplexity
 
 def sanitize_whitespace(text: str) -> str:
     """Replace whitespace sequences longer than one space in ``text`` with a single space.
+    Replace non-breaking space with a regular one.
     """
-    return re.sub(r'\s+', ' ', text)
+    return re.sub(r'\s+', ' ', text).replace(' ', " ")
