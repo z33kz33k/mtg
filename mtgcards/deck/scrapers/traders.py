@@ -8,11 +8,10 @@
 
 """
 import logging
-from datetime import date, datetime
+from datetime import datetime
 
 from mtgcards import Json
 from mtgcards.deck.scrapers import DeckScraper
-from mtgcards.utils import get_date_from_ago_text
 from mtgcards.utils.scrape import timed_request
 from scryfall import Card
 

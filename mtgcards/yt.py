@@ -226,10 +226,10 @@ def update_gsheet() -> None:
                 ch.posting_interval if ch.posting_interval is not None else "N/A",
                 len(ch.videos),
                 len(ch.decks),
+                ch.decks_per_video or 0,
                 ch.deck_staleness,
                 ch.total_views,
                 ch.subs_activity if ch.subs_activity is not None else "N/A",
-                ch.decks_per_video or 0,
                 ch.subscribers or "N/A",
                 ", ".join(formats),
                 ", ".join(deck_sources),
@@ -408,6 +408,20 @@ def get_aggregate_deck_data() -> tuple[Counter, Counter]:
     source_counter = Counter(sources)
     format_counter = Counter([d["metadata"]["format"] for d in decks if d["metadata"].get("format")])
     return source_counter, format_counter
+
+
+def get_duplicates() -> list[str]:
+    """Get list of duplicate YouTube channels.
+    """
+    urls = retrieve_urls()
+    seen = set()
+    duplicates = []
+    for url in urls:
+        if url in seen:
+            duplicates.append(url)
+        else:
+            seen.add(url)
+    return duplicates
 
 
 class Video:

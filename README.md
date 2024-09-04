@@ -56,7 +56,7 @@ descriptions).
 * Importing back into a Deck from those formats
 * Export/import to other formats in plans
 * Dumping decks, YT videos and channels to .json
-* I compiled a list of almost 500 YT channels that feature decks in their descriptions and successfully scraped them, 
+* I compiled a list of almost 600 YT channels that feature decks in their descriptions and successfully scraped them, 
   so this data only waits to be creatively used now!
 
 ### How it looks in a Google Sheet

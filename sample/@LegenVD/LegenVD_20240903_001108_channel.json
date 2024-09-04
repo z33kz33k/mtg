@@ -1,0 +1,103 @@
+{
+    "url": "https://www.youtube.com/@LegenVD",
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "blb",
+        "bloomburrow",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 129000,
+    "scrape_time": "2024-09-03 00:11:08",
+    "videos": [
+        {
+            "id": "N-rhbYqDeQ8",
+            "url": "https://www.youtube.com/watch?v=N-rhbYqDeQ8",
+            "author": "LegenVD",
+            "title": "Beating people with their own cards.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a white/blue/red or Jeskai combo deck, featuring Portal to Phyrexia, One with the Multiverse and Builder's Talent from Bloomburrow in Standard. \n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:45 - Match 1\n09:59 - Match 2\n14:22 - Match 3\n19:17 - Match 4\n27:31 - Match 5\n33:10 - Match 6\n36:45 - Match 7\n41:47 - Match 8\n45:09 - Match 9\n48:34 - Match 10\n\nDecklist: \nhttps://aetherhub.com/Deck/builders-talent-combo\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGBloomburrow #mtgblb #mtg",
+            "keywords": [
+                "Mythic",
+                "Standard MTG",
+                "bird",
+                "blb",
+                "blb standard",
+                "bloomburrow",
+                "bloomburrow standard",
+                "blue",
+                "builder",
+                "builders talent",
+                "combo",
+                "control",
+                "deck",
+                "decks",
+                "gameplay",
+                "guide",
+                "jeskai",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "new standard",
+                "one with the multiverse",
+                "phyrexia",
+                "portal",
+                "reanimator",
+                "red",
+                "repair and recharge",
+                "standard",
+                "standard deck",
+                "white"
+            ],
+            "publish_time": "2024-09-02 09:00:31",
+            "views": 13515,
+            "sources": [
+                "aetherhub.com",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "derived_format": "standard",
+            "decks": [
+                {
+                    "metadata": {
+                        "format": "standard",
+                        "url": "https://aetherhub.com/Deck/builders-talent-combo",
+                        "source": "aetherhub.com",
+                        "mode": "Bo1",
+                        "name": "Builder's Talent Combo",
+                        "author": "LegenVD",
+                        "date": "2024-09-02",
+                        "views": 485,
+                        "exports": 312,
+                        "comments": 0,
+                        "archetype": "control"
+                    },
+                    "arena_decklist": "Deck\n2 Lightning Helix (MKM) 218\n2 Abrade (LCI) 131\n3 Repair and Recharge (BRO) 24\n4 One with the Multiverse (BRO) 59\n2 Stern Lesson (BRO) 64\n2 Brotherhood's End (BRO) 128\n4 Portal to Phyrexia (BRO) 240\n2 Torch the Tower (WOE) 153\n2 Get Lost (LCI) 14\n4 Ill-Timed Explosion (MKM) 207\n4 Three Steps Ahead (OTJ) 75\n4 Builder's Talent (BLB) 5\n1 Zurgo and Ojutai (MOM) 258\n2 Plains (BLB) 369\n2 Island (BLB) 371\n2 Mountain (BLB) 375\n2 Battlefield Forge (OTC) 271\n2 Shivan Reef (OTC) 320\n2 Inspiring Vantage (OTJ) 269\n2 Spirebluff Canal (OTJ) 270\n4 Fabled Passage (BLB) 252\n2 Elegant Parlor (MKM) 260\n2 Meticulous Archive (MKM) 264\n2 Thundering Falls (MKM) 269"
+                }
+            ]
+        }
+    ]
+}
