@@ -1,7 +1,7 @@
 """
 
-    mtgcards.deck.scrapers.traders.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtgcards.deck.scrapers.mtgotraders.py
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape MTGO Traders decklists.
 
     @author: z33k

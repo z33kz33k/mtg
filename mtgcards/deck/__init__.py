@@ -780,6 +780,7 @@ Name={}
         'moxfield.com': "Moxfield",
         "mtg.cardsrealm.com": "Cardsrealm",
         "mtga.untapped.gg": "Untapped",
+        "mtgarena.pro": "MGTArenaPro",
         "mtgazone.com": "MGTAZone",
         'mtgdecks.net': "MTGDecks",
         'mtgmelee.com': "MTGMelee",
@@ -793,6 +794,7 @@ Name={}
         'www.manatraders.com': "Manatraders",
         'www.moxfield.com': "Moxfield",
         'www.mtggoldfish.com': "Goldfish",
+        'www.mtgotraders.com': "MTGOTraders",
         'www.mtgtop8.com': "MTGTop8",
         'www.streamdecker.com': "Streamdecker",
     }

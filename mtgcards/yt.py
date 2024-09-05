@@ -50,7 +50,7 @@ from mtgcards.deck.scrapers.penny import PennyDreadfulMagicScraper
 from mtgcards.deck.scrapers.scryfall import ScryfallScraper
 from mtgcards.deck.scrapers.starcitygames import StarCityGamesScraper
 from mtgcards.deck.scrapers.streamdecker import StreamdeckerScraper
-from mtgcards.deck.scrapers.traders import MtgoTradersScraper
+from mtgcards.deck.scrapers.mtgotraders import MtgoTradersScraper
 from mtgcards.deck.scrapers.tappedout import TappedoutScraper
 from mtgcards.deck.scrapers.tcgplayer import NewPageTcgPlayerScraper, OldPageTcgPlayerScraper
 from mtgcards.deck.scrapers.untapped import UntappedProfileDeckScraper, UntappedRegularDeckScraper
