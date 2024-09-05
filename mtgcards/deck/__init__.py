@@ -770,29 +770,45 @@ Name={}
     NAME_SEP = "_"
 
     SOURCE_NICKNAMES = {
-        "www.mtggoldfish.com": "Goldfish",
         "aetherhub.com": "Aetherhub",
-        "www.moxfield.com": "Moxfield",
-        "www.streamdecker.com": "Streamdecker",
+        "archidekt.com": "Archidekt",
+        'decks.tcgplayer.com': "TCGplayer",
+        'deckstats.net': "Deckstats",
+        'flexslot.gg': "Flexslot",
+        'infinite.tcgplayer.com': "TCGplayer",
+        'manastack.com': "Manastack",
+        'moxfield.com': "Moxfield",
+        "mtg.cardsrealm.com": "Cardsrealm",
         "mtga.untapped.gg": "Untapped",
         "mtgazone.com": "MGTAZone",
-        "www.tcgplayer.com": "TCGPlayer",
-        "www.cardhoarder.com": "Cardhoarder",
+        'mtgdecks.net': "MTGDecks",
+        'mtgmelee.com': "MTGMelee",
+        'mtgtop8.com': "MTGTop8",
+        'old.starcitygames.com': "Scarcity",
+        'pennydreadfulmagic.com': "PDMagic",
+        'scryfall.com': "Scryfall",
         "tappedout.net": "TappedOut",
+        'www.archidekt.com': "Archidekt",
+        "www.cardhoarder.com": "Cardhoarder",
+        'www.manatraders.com': "Manatraders",
+        'www.moxfield.com': "Moxfield",
+        'www.mtggoldfish.com': "Goldfish",
+        'www.mtgtop8.com': "MTGTop8",
+        'www.streamdecker.com': "Streamdecker",
     }
 
     FMT_NICKNAMES = {
-        'alchemy': "Alch",
-        'brawl': "Brwl",
-        'commander': "Cmdr",
-        'duel': "Duel",
-        'explorer': "Expl",
+        'alchemy': "Alh",
+        'brawl': "Bwl",
+        'commander': "Cmd",
+        'duel': "Dl",
+        'explorer': "Exp",
         'future': "Ftr",
         'gladiator': "Gld",
         'historic': "Hst",
         'legacy': "Lgc",
         'modern': "Mdn",
-        'oathbreaker': "Obr",
+        'oathbreaker': "Oth",
         'oldschool': "Old",
         'pauper': "Ppr",
         'paupercommander': "PprCmd",
@@ -801,7 +817,7 @@ Name={}
         'predh': "Pdh",
         'premodern': "PreMdn",
         'standard': "Std",
-        'standardbrawl': "StdBrl",
+        'standardbrawl': "StdBwl",
         'timeless': "Tml",
         'vintage': "Vnt",
     }
@@ -841,7 +857,8 @@ Name={}
     def _build_name(self) -> str:
         # prefix (source/author)
         source = self.SOURCE_NICKNAMES.get(self._deck.source) or ""
-        prefix = source if self._deck.is_meta_deck and source else self._deck.metadata.get("author", "")
+        prefix = source if self._deck.is_meta_deck and source else self._deck.metadata.get(
+            "author", "")
         name = f"{prefix}{self.NAME_SEP}" if prefix else ""
         # format
         if self._deck.format:

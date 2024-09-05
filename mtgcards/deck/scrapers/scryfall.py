@@ -47,12 +47,12 @@ class ScryfallScraper(DeckScraper):
             self._metadata["name"] = sanitize_whitespace(name_tag.text.strip())
         info_tag = self._soup.find("p", class_="deck-details-subtitle")
         if fmt_tag := info_tag.find("strong"):
-            self._update_fmt(fmt_tag.text.strip())
+            self._update_fmt(sanitize_whitespace(fmt_tag.text.strip()))
         date_text = info_tag.find("abbr").attrs["title"]
         date_text, _ = date_text.split(" ", maxsplit=1)
         self._metadata["date"] = date.fromisoformat(date_text)
         if desc_tag := self._soup.find("div", class_="deck-details-description"):
-            self._metadata["description"] = desc_tag.text.strip()
+            self._metadata["description"] = sanitize_whitespace(desc_tag.text.strip())
 
     @classmethod
     def _parse_section(cls, section_tag: Tag) -> list[Card]:
