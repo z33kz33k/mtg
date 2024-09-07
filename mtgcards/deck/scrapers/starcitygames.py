@@ -13,7 +13,7 @@ from mtgcards.deck import ParsingState
 from mtgcards import Json
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils.scrape import ScrapingError, getsoup
-from utils import from_iterable, sanitize_whitespace
+from mtgcards.utils import from_iterable, sanitize_whitespace
 
 _log = logging.getLogger(__name__)
 

@@ -38,6 +38,7 @@ from mtgcards.deck.scrapers.cardsrealm import CardsrealmScraper
 from mtgcards.deck.scrapers.deckstats import DeckstatsScraper
 from mtgcards.deck.scrapers.flexslot import FlexslotScraper
 from mtgcards.deck.scrapers.goldfish import GoldfishScraper
+from mtgcards.deck.scrapers.hareruya import HareruyaScraper
 from mtgcards.deck.scrapers.manastack import ManaStackScraper
 from mtgcards.deck.scrapers.manatraders import ManatradersScraper
 from mtgcards.deck.scrapers.melee import MeleeGgScraper
@@ -45,12 +46,12 @@ from mtgcards.deck.scrapers.moxfield import MoxfieldScraper
 from mtgcards.deck.scrapers.mtgarenapro import MtgArenaProScraper
 from mtgcards.deck.scrapers.mtgazone import MtgaZoneScraper
 from mtgcards.deck.scrapers.mtgdecksnet import MtgDecksNetScraper
+from mtgcards.deck.scrapers.mtgotraders import MtgoTradersScraper
 from mtgcards.deck.scrapers.mtgtop8 import MtgTop8Scraper
 from mtgcards.deck.scrapers.penny import PennyDreadfulMagicScraper
 from mtgcards.deck.scrapers.scryfall import ScryfallScraper
 from mtgcards.deck.scrapers.starcitygames import StarCityGamesScraper
 from mtgcards.deck.scrapers.streamdecker import StreamdeckerScraper
-from mtgcards.deck.scrapers.mtgotraders import MtgoTradersScraper
 from mtgcards.deck.scrapers.tappedout import TappedoutScraper
 from mtgcards.deck.scrapers.tcgplayer import NewPageTcgPlayerScraper, OldPageTcgPlayerScraper
 from mtgcards.deck.scrapers.untapped import UntappedProfileDeckScraper, UntappedRegularDeckScraper
@@ -59,9 +60,9 @@ from mtgcards.utils import deserialize_dates, extract_float, getrepr, multiply_b
     sanitize_filename, serialize_dates, timed
 from mtgcards.utils.files import getdir
 from mtgcards.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
-from mtgcards.utils.scrape import extract_source, extract_url, get_dynamic_soup_by_xpath, \
-    http_requests_counted, throttled, timed_request, unshorten
-from utils.scrape import ScrapingError, throttle_with_countdown
+from mtgcards.utils.scrape import ScrapingError, extract_source, extract_url, \
+    get_dynamic_soup_by_xpath, http_requests_counted, throttle_with_countdown, throttled, \
+    timed_request, unshorten
 
 _log = logging.getLogger(__name__)
 
@@ -751,6 +752,8 @@ class Video:
             return FlexslotScraper(link, self.metadata).deck
         elif GoldfishScraper.is_deck_url(link):
             return GoldfishScraper(link, self.metadata, throttled=True).deck
+        elif HareruyaScraper.is_deck_url(link):
+            return HareruyaScraper(link, self.metadata).deck
         elif ManaStackScraper.is_deck_url(link):
             return ManaStackScraper(link, self.metadata).deck
         elif ManatradersScraper.is_deck_url(link):

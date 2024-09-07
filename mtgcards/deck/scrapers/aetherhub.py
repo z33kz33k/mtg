@@ -13,10 +13,8 @@ from datetime import datetime
 from mtgcards import Json
 from mtgcards.deck import Archetype, Mode, ParsingState
 from mtgcards.deck.scrapers import DeckScraper
-from mtgcards.utils import extract_float, extract_int
-from mtgcards.utils.scrape import getsoup
-from utils import from_iterable
-from utils.scrape import ScrapingError
+from mtgcards.utils import extract_float, extract_int, from_iterable
+from mtgcards.utils.scrape import getsoup, ScrapingError
 
 _log = logging.getLogger(__name__)
 

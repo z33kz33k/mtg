@@ -15,7 +15,7 @@ from selenium.common.exceptions import TimeoutException
 from mtgcards import Json
 from mtgcards.deck.arena import ArenaParser
 from mtgcards.deck.scrapers import DeckScraper
-from utils.scrape import get_dynamic_soup_by_xpath
+from mtgcards.utils.scrape import get_dynamic_soup_by_xpath
 
 _log = logging.getLogger(__name__)
 

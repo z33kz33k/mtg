@@ -16,9 +16,8 @@ from bs4 import BeautifulSoup
 
 from mtgcards import Json
 from mtgcards.deck import Deck, DeckParser, InvalidDeck
-from mtgcards.utils.scrape import Throttling, extract_source
-from scryfall import all_formats
-from utils.scrape import throttle
+from mtgcards.utils.scrape import Throttling, extract_source, throttle
+from mtgcards.scryfall import all_formats
 
 _log = logging.getLogger(__name__)
 

@@ -66,6 +66,8 @@ class MoxfieldScraper(DeckScraper):
             return url.removesuffix("/primer")
         elif url.endswith("/primer/"):
             return url.removesuffix("/primer/")
+        if url.endswith("/"):
+            return url.removesuffix("/")
         return url
 
     def _scrape_metadata(self) -> None:  # override

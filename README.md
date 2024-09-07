@@ -27,15 +27,15 @@ descriptions).
   with Google APIs)
 * Arena, [Aetherhub](https://aetherhub.com), [Archidekt](https://archidekt.com), [Cardhoarder](https://www.cardhoarder.com), 
   [Cardsrealm](https://mtg.cardsrealm.com/en-us/), [Deckstats.net](https://deckstats.net), 
-  [Flexslot](https://flexslot.gg), [Goldfish](https://www.mtggoldfish.com), [Manatraders](https://www.manatraders.com),  
-  [ManaStack](https://manastack.com/home), [Melee.gg](https://melee.gg), [Moxfield](https://www.moxfield.com), 
-  [MTGArena.Pro](https://mtgarena.pro), [MTGAZone](https://mtgazone.com), [MTGDecks.net](https://mtgdecks.net), 
-  [MTGO Traders](https://www.mtgotraders.com/store/index.html), [MTGTop8](https://mtgtop8.com/index), [PennyDreadfulMagic](https://pennydreadfulmagic.com), 
-  [StarCityGames](https://starcitygames.com), [Scryfall](https://scryfall.com), [Streamdecker](https://www.streamdecker.com/landing), 
-  [TappedOut](https://tappedout.net),[TCGPlayer](https://infinite.tcgplayer.com) and [Untapped](https://mtga.untapped.gg) deck parsers 
-  work, so:
+  [Flexslot](https://flexslot.gg), [Goldfish](https://www.mtggoldfish.com), [Hareruya](https://www.hareruyamtg.com/en/) 
+  [Manatraders](https://www.manatraders.com), [ManaStack](https://manastack.com/home), [Melee.gg](https://melee.gg), 
+  [Moxfield](https://www.moxfield.com), [MTGArena.Pro](https://mtgarena.pro), [MTGAZone](https://mtgazone.com), 
+  [MTGDecks.net](https://mtgdecks.net), [MTGO Traders](https://www.mtgotraders.com/store/index.html), [MTGTop8](https://mtgtop8.com/index), 
+  [PennyDreadfulMagic](https://pennydreadfulmagic.com), [StarCityGames](https://starcitygames.com), [Scryfall](https://scryfall.com), 
+  [Streamdecker](https://www.streamdecker.com/landing), [TappedOut](https://tappedout.net),[TCGPlayer](https://infinite.tcgplayer.com) 
+  and [Untapped](https://mtga.untapped.gg) deck parsers work, so:
     * Arena decklists pasted into video descriptions are parsed into Deck objects
-    * Aetherhub, Archidekt, Cardhoarder, Cardsrealm, Deckstats.net, Flexslot, Goldfish, 
+    * Aetherhub, Archidekt, Cardhoarder, Cardsrealm, Deckstats.net, Flexslot, Goldfish, Hareruya, 
       Manatraders, ManaStack, Melee.gg, Moxfield, MTGArena.Pro, MTGAZone, MTGDecks.net, MTGO Traders 
       MTGTop8, PennyDreadfulMagic StarCityGames, Scryfall, Streamdecker, TappedOut, TCGPlayer and Untapped, 
       links contained in those descriptions are parsed into Deck objects

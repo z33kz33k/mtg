@@ -14,8 +14,8 @@ from selenium.common.exceptions import TimeoutException
 from mtgcards import Json
 from mtgcards.deck import ParsingState
 from mtgcards.deck.scrapers import DeckScraper
-from utils import get_date_from_ago_text
-from utils.scrape import get_dynamic_soup_by_xpath
+from mtgcards.utils import get_date_from_ago_text
+from mtgcards.utils.scrape import get_dynamic_soup_by_xpath
 
 _log = logging.getLogger(__name__)
 

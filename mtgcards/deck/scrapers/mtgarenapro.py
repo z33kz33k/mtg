@@ -13,7 +13,7 @@ from datetime import datetime
 from mtgcards import Json
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils.scrape import ScrapingError, getsoup
-from scryfall import Card
+from mtgcards.scryfall import Card
 
 _log = logging.getLogger(__name__)
 

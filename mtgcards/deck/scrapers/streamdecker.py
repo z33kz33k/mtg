@@ -37,6 +37,13 @@ class StreamdeckerScraper(DeckScraper):
     def is_deck_url(url: str) -> bool:  # override
         return "www.streamdecker.com/deck/" in url
 
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        url = DeckScraper.sanitize_url(url)
+        if url.endswith("/"):
+            return url.removesuffix("/")
+        return url
+
     def _parse_date(self) -> date | None:
         date_text = self._json_data["updatedAt"]
         return get_date_from_ago_text(date_text)
