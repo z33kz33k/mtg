@@ -27,7 +27,7 @@ descriptions).
   with Google APIs)
 * Arena, [Aetherhub](https://aetherhub.com), [Archidekt](https://archidekt.com), [Cardhoarder](https://www.cardhoarder.com), 
   [Cardsrealm](https://mtg.cardsrealm.com/en-us/), [Deckstats.net](https://deckstats.net), 
-  [Flexslot](https://flexslot.gg), [Goldfish](https://www.mtggoldfish.com), [Hareruya](https://www.hareruyamtg.com/en/) 
+  [Flexslot](https://flexslot.gg), [Goldfish](https://www.mtggoldfish.com), [Hareruya](https://www.hareruyamtg.com/en/),  
   [Manatraders](https://www.manatraders.com), [ManaStack](https://manastack.com/home), [Melee.gg](https://melee.gg), 
   [Moxfield](https://www.moxfield.com), [MTGArena.Pro](https://mtgarena.pro), [MTGAZone](https://mtgazone.com), 
   [MTGDecks.net](https://mtgdecks.net), [MTGO Traders](https://www.mtgotraders.com/store/index.html), [MTGTop8](https://mtgtop8.com/index), 
@@ -56,8 +56,8 @@ descriptions).
 * Importing back into a Deck from those formats
 * Export/import to other formats in plans
 * Dumping decks, YT videos and channels to .json
-* I compiled a list of over 650 YT channels that feature decks in their descriptions and successfully scraped them, 
-  so this data only waits to be creatively used now!
+* I compiled a list of over 650 YT channels that feature decks in their descriptions and successfully 
+  scraped them (at least 25 videos deep) so this data only waits to be creatively used now!
 
 ### How it looks in a Google Sheet
 ![Most popular channels](assets/channels.jpg)

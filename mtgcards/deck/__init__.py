@@ -1150,5 +1150,8 @@ class DeckParser(ABC):
             text = text.replace(" / ", f" {SCRYFALL_MULTIFACE_SEPARATOR} ").replace(
                 f" {ARENA_MULTIFACE_SEPARATOR} ", f" {SCRYFALL_MULTIFACE_SEPARATOR} ")
             # "Wear/Tear" ==> "Wear // Tear"
-            text = re.sub(r'(?<=[a-zA-Z])/(?=[a-zA-Z])', f' {SCRYFALL_MULTIFACE_SEPARATOR} ', text)
+            # "Wear//Tear" ==> "Wear // Tear"
+            # "Wear///Tear" ==> "Wear // Tear"
+            text = re.sub(
+                r'(?<=[a-zA-Z])/{1,3}(?=[a-zA-Z])', f' {SCRYFALL_MULTIFACE_SEPARATOR} ', text)
         return text

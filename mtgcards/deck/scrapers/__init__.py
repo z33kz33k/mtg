@@ -51,6 +51,7 @@ SANITIZED_FORMATS = {
     "historic-pauper": "historic",
     "historicbrawl": "brawl",
     "historicpauper": "historic",
+    "no banned list modern": "modern",
     "pauper edh": "paupercommander",
     "pauperedh": "paupercommander",
 }
