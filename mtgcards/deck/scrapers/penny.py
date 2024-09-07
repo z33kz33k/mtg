@@ -14,7 +14,7 @@ from bs4 import Tag
 from mtgcards import Json
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.scryfall import Card
-from mtgcards.utils.scrape import getsoup
+from mtgcards.utils.scrape import ScrapingError, getsoup
 from utils import from_iterable, get_date_from_ago_text, get_date_from_month_text
 
 _log = logging.getLogger(__name__)
@@ -26,6 +26,8 @@ class PennyDreadfulMagicScraper(DeckScraper):
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
         self._soup = getsoup(self.url)
+        if not self._soup:
+            raise ScrapingError("Page not available")
         self._scrape_metadata()
         self._scrape_deck()
 

@@ -16,7 +16,7 @@ from mtgcards import Json
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.scryfall import Card
 from mtgcards.utils import extract_int, sanitize_whitespace
-from mtgcards.utils.scrape import getsoup
+from mtgcards.utils.scrape import ScrapingError, getsoup
 
 _log = logging.getLogger(__name__)
 
@@ -27,6 +27,8 @@ class ScryfallScraper(DeckScraper):
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
         self._soup = getsoup(self.url)
+        if not self._soup:
+            raise ScrapingError("Page not available")
         self._scrape_metadata()
         self._scrape_deck()
 

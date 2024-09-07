@@ -13,7 +13,7 @@ from datetime import date
 from mtgcards import Json
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils import get_date_from_ago_text
-from mtgcards.utils.scrape import timed_request
+from mtgcards.utils.scrape import ScrapingError, timed_request
 
 _log = logging.getLogger(__name__)
 
@@ -28,6 +28,8 @@ class StreamdeckerScraper(DeckScraper):
         *_, self._decklist_id = self.url.split("/")
         self._json_data = timed_request(
             self.API_URL_TEMPLATE.format(self._decklist_id), return_json=True)["data"]
+        if not self._json_data:
+            raise ScrapingError("Data not available")
         self._scrape_metadata()
         self._scrape_deck()
 

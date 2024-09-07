@@ -51,7 +51,7 @@ http_requests_count = 0
 @type_checker(str)
 def timed_request(
         url: str, postdata: Optional[Json] = None, return_json=False,
-        **requests_kwargs) -> Union[list[Json], Json, str]:
+        **requests_kwargs) -> list[Json] | Json | str | None:
     _log.info(f"Retrieving data from: '{url}'...")
     global http_requests_count
     if postdata:
@@ -64,6 +64,7 @@ def timed_request(
         if response.status_code in (502, 503, 504):
             raise HTTPError(msg)
         _log.warning(msg)
+        return None
 
     # handle brotli compression
     if response.headers.get("Content-Encoding") == "br":
@@ -82,7 +83,7 @@ def timed_request(
 
 @timed("request")
 @type_checker(str)
-def getsoup(url: str, headers: Dict[str, str] | None = None) -> BeautifulSoup:
+def getsoup(url: str, headers: Dict[str, str] | None = None) -> BeautifulSoup | None:
     """Return BeautifulSoup object based on ``url``.
 
     Args:
@@ -90,7 +91,7 @@ def getsoup(url: str, headers: Dict[str, str] | None = None) -> BeautifulSoup:
         headers: a dictionary of headers to add to the request
 
     Returns:
-        a BeautifulSoup object
+        a BeautifulSoup object or None on client-side errors
     """
     _log.info(f"Requesting: {url!r}...")
     global http_requests_count
@@ -101,6 +102,7 @@ def getsoup(url: str, headers: Dict[str, str] | None = None) -> BeautifulSoup:
         if response.status_code in (502, 503, 504):
             raise HTTPError(msg)
         _log.warning(msg)
+        return None
     return BeautifulSoup(response.text, "lxml")
 
 
@@ -142,7 +144,7 @@ def throttled(delay: float, offset=0.0) -> Callable:
 
 
 @throttled(DEFAULT_THROTTLING)
-def throttled_soup(url: str, headers: Dict[str, str] | None = None) -> BeautifulSoup:
+def throttled_soup(url: str, headers: Dict[str, str] | None = None) -> BeautifulSoup | None:
     return getsoup(url, headers=headers)
 
 
@@ -190,7 +192,7 @@ def extract_url(text: str, https=True) -> str | None:
     match = re.search(pattern, text)
     if not match:
         return None
-    url = match.group("url").rstrip("])}")
+    url = match.group("url").rstrip("])}/")
     prefix = "https://" if https else "http://"
     return url.removeprefix(prefix) if url.startswith(prefix * 2) else url
 

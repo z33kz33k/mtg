@@ -12,7 +12,7 @@ from datetime import datetime
 
 from mtgcards import Json
 from mtgcards.deck.scrapers import DeckScraper
-from mtgcards.utils.scrape import timed_request
+from mtgcards.utils.scrape import ScrapingError, timed_request
 from scryfall import Card
 
 _log = logging.getLogger(__name__)
@@ -28,6 +28,8 @@ class MtgoTradersScraper(DeckScraper):
         *_, self._decklist_id = self.url.split("?deck=")
         self._json_data = timed_request(
             self.REQUEST_URL_TEMPLATE.format(self._decklist_id), return_json=True)
+        if not self._json_data:
+            raise ScrapingError("Data not available")
         self._scrape_metadata()
         self._scrape_deck()
 

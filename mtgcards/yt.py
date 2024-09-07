@@ -788,10 +788,12 @@ class Video:
         elif UntappedRegularDeckScraper.is_deck_url(link):
             return UntappedRegularDeckScraper(link, self.metadata).deck
         elif any(h in link for h in self.PASTEBIN_LIKE_HOOKS):
-            lines = timed_request(link).splitlines()
-            arena_lines = [*get_arena_lines(*lines)]
-            if arena_lines:
-                return ArenaParser(arena_lines, self.metadata).deck
+            data = timed_request(link)
+            if data:
+                lines = data.splitlines()
+                arena_lines = [*get_arena_lines(*lines)]
+                if arena_lines:
+                    return ArenaParser(arena_lines, self.metadata).deck
         return None
 
     def _process_urls(self, urls: list[str]) -> list[Deck]:

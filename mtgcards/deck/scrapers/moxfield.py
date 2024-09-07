@@ -13,7 +13,7 @@ from datetime import datetime
 from mtgcards import Json
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.scryfall import Card
-from mtgcards.utils.scrape import timed_request
+from mtgcards.utils.scrape import ScrapingError, timed_request
 
 _log = logging.getLogger(__name__)
 
@@ -50,12 +50,14 @@ class MoxfieldScraper(DeckScraper):
         self._json_data = timed_request(
             self.API_URL_TEMPLATE.format(self._decklist_id), return_json=True,
             headers=self.HEADERS)
+        if not self._json_data:
+            raise ScrapingError("Data not available")
         self._scrape_metadata()
         self._scrape_deck()
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "moxfield.com/decks/" in url
+        return "moxfield.com/decks/" in url and "/personal" not in url and "/history" not in url
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override

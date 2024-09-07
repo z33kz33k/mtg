@@ -37,6 +37,8 @@ class MtgaZoneScraper(DeckScraper):
         super().__init__(url, metadata)
         self._deck_tag = deck_tag
         self._soup = deck_tag or getsoup(self.url)
+        if not self._soup:
+            raise ScrapingError("Soup not available")
         self._scrape_metadata()
         self._scrape_deck()
 
@@ -158,6 +160,8 @@ def scrape_meta(fmt="standard", bo3=True) -> list[Deck]:
     url = f"https://mtgazone.com/{fmt}{mode}-metagame-tier-list/"
 
     soup = getsoup(url)
+    if not soup:
+        raise ScrapingError("Page not available")
     time_tag = soup.find("time", class_="ct-meta-element-date")
     deck_date = datetime.fromisoformat(time_tag.attrs["datetime"]).date()
     tier_table = soup.find("figure", class_="wp-block-table")

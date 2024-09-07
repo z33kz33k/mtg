@@ -46,6 +46,8 @@ class CardhoarderScraper(DeckScraper):
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
         self._soup = getsoup(self.url, headers=self.HEADERS)
+        if not self._soup:
+            raise ScrapingError("Page not available")
         self._deck_data = self._get_deck_data()
         self._scrape_metadata()
         self._scrape_deck()

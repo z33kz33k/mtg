@@ -48,6 +48,8 @@ class GoldfishScraper(DeckScraper):
             supress_invalid_deck=True) -> None:
         super().__init__(url, metadata, throttled, supress_invalid_deck)
         self._soup = getsoup(self.url, headers=self.HEADERS)
+        if not self._soup:
+            raise ScrapingError("Page not available")
         self._scrape_metadata()
         self._scrape_deck()
 
@@ -131,6 +133,8 @@ def scrape_meta(fmt="standard") -> list[Deck]:
         raise ValueError(f"Invalid format: {fmt!r}. Can be only one of: {all_formats()}")
     url = f"https://www.mtggoldfish.com/metagame/{fmt}/full"
     soup = throttled_soup(url, headers=GoldfishScraper.HEADERS)
+    if not soup:
+        raise ScrapingError("Page not available")
     tiles = soup.find_all("div", class_="archetype-tile")
     if not tiles:
         raise ScrapingError("No deck tiles tags found")

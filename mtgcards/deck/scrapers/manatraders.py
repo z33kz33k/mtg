@@ -13,7 +13,7 @@ import logging
 from mtgcards import Json
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.deck.scrapers.streamdecker import StreamdeckerScraper
-from mtgcards.utils.scrape import getsoup
+from mtgcards.utils.scrape import ScrapingError, getsoup
 
 _log = logging.getLogger(__name__)
 
@@ -24,6 +24,8 @@ class ManatradersScraper(DeckScraper):
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
         self._soup = getsoup(self.url)
+        if not self._soup:
+            raise ScrapingError("Page not available")
         self._json_data = self._get_json_data()
         self._scrape_metadata()
         self._scrape_deck()

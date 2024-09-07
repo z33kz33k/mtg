@@ -13,7 +13,7 @@ from datetime import datetime
 
 from mtgcards import Json
 from mtgcards.deck.scrapers import DeckScraper
-from mtgcards.utils.scrape import getsoup
+from mtgcards.utils.scrape import ScrapingError, getsoup
 
 _log = logging.getLogger(__name__)
 
@@ -24,6 +24,8 @@ class ArchidektScraper(DeckScraper):
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
         self._soup = getsoup(self.url)
+        if not self._soup:
+            raise ScrapingError("Page not available")
         self._json_data = json.loads(self._soup.find("script", id="__NEXT_DATA__").text)
         self._deck_data = self._json_data["props"]["pageProps"]["redux"]["deck"]
         self._scrape_metadata()

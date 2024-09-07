@@ -16,6 +16,7 @@ from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils import extract_float, extract_int
 from mtgcards.utils.scrape import getsoup
 from utils import from_iterable
+from utils.scrape import ScrapingError
 
 _log = logging.getLogger(__name__)
 
@@ -51,6 +52,8 @@ class AetherhubScraper(DeckScraper):
     def __init__(self, url: str, metadata: Json | None = None, throttled=False) -> None:
         super().__init__(url, metadata, throttled)
         self._soup = getsoup(self.url)
+        if not self._soup:
+            raise ScrapingError("Page not available")
         self._scrape_metadata()
         self._scrape_deck()
 

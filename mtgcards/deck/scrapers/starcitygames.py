@@ -12,7 +12,7 @@ import logging
 from mtgcards.deck import ParsingState
 from mtgcards import Json
 from mtgcards.deck.scrapers import DeckScraper
-from mtgcards.utils.scrape import getsoup
+from mtgcards.utils.scrape import ScrapingError, getsoup
 from utils import from_iterable, sanitize_whitespace
 
 _log = logging.getLogger(__name__)
@@ -24,6 +24,8 @@ class StarCityGamesScraper(DeckScraper):
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
         self._soup = getsoup(self.url)
+        if not self._soup:
+            raise ScrapingError("Page not available")
         self._scrape_metadata()
         self._scrape_deck()
 
