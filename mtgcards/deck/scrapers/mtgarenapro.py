@@ -28,6 +28,8 @@ class MtgArenaProScraper(DeckScraper):
         if not self._soup:
             raise ScrapingError("Page not available")
         self._json_data = self._get_json()
+        if not self._json_data or not self._json_data.get("deck_order"):
+            raise ScrapingError("Data not available")
         self._scrape_metadata()
         self._scrape_deck()
 

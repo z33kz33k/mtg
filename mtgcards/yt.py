@@ -153,7 +153,7 @@ def retrieve_urls() -> list[str]:
 
     Mind that this operation takes about 4 seconds to complete.
     """
-    return retrieve_from_gsheets_cols("mtga_yt", "channels", (3, ), start_row=2)[0]
+    return retrieve_from_gsheets_cols("mtga_yt", "channels", (1, ), start_row=2)[0]
 
 
 def channels_batch(start_row=2, batch_size: int | None = None) -> Iterator[str]:
@@ -247,7 +247,7 @@ def update_gsheet() -> None:
                 ["NOT AVAILABLE", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A",
                  "N/A"])
 
-    extend_gsheet_rows_with_cols("mtga_yt", "channels", data, start_row=2, start_col=5)
+    extend_gsheet_rows_with_cols("mtga_yt", "channels", data, start_row=2, start_col=3)
 
 
 @http_requests_counted("channels scraping")
@@ -285,8 +285,8 @@ def scrape_channels(
     _log.info(f"Scraped {total_count} video(s) from {len(urls)} channel(s)")
 
 
-def scrape_non_dormant(
-        videos=25, only_earlier_than_last_scraped=True, only_non_deck_stale=True) -> None:
+def scrape_active(
+        videos=25, only_earlier_than_last_scraped=True, only_deck_fresh=True) -> None:
     """Scrape these YouTube channels specified in private Google Sheet that are not dormant. Save
     the scraped data as .json files.
     """
@@ -301,42 +301,17 @@ def scrape_non_dormant(
         elif not data.staleness:
             urls.append(url)
         elif data.staleness <= DORMANT_STALENESS:
-            if only_non_deck_stale and data.deck_staleness > DECK_STALENESS:
+            if only_deck_fresh and data.deck_staleness > DECK_STALENESS:
                 continue
             urls.append(url)
-    text = "non-dormant and non-deck-stale" if only_non_deck_stale else "non-dormant"
-    _log.info(f"Scraping {len(urls)} {text} channel(s)...")
-    scrape_channels(
-        *urls, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
-
-
-def scrape_non_abandoned(
-        videos=25, only_earlier_than_last_scraped=True, only_non_deck_stale=True) -> None:
-    """Scrape these YouTube channels specified in private Google Sheet that are not abandoned. Save
-    the scraped data as .json files.
-    """
-    urls = []
-    for url in retrieve_urls():
-        try:
-            data = load_channel(url)
-        except FileNotFoundError:
-            data = None
-        if not data:
-            urls.append(url)
-        elif not data.staleness:
-            urls.append(url)
-        elif data.staleness <= ABANDONED_STALENESS:
-            if only_non_deck_stale and data.deck_staleness > DECK_STALENESS:
-                continue
-            urls.append(url)
-    text = "non-abandoned and non-deck-stale" if only_non_deck_stale else "non-abandoned"
+    text = "active and deck-fresh" if only_deck_fresh else "active"
     _log.info(f"Scraping {len(urls)} {text} channel(s)...")
     scrape_channels(
         *urls, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
 
 
 def scrape_dormant(
-        videos=25, only_earlier_than_last_scraped=True, only_non_deck_stale=True) -> None:
+        videos=25, only_earlier_than_last_scraped=True, only_deck_fresh=True) -> None:
     """Scrape these YouTube channels specified in private Google Sheet that are dormant. Save
     the scraped data as .json files.
     """
@@ -347,16 +322,17 @@ def scrape_dormant(
         except FileNotFoundError:
             data = None
         if data and data.staleness and ABANDONED_STALENESS >= data.staleness > DORMANT_STALENESS:
-            if only_non_deck_stale and data.deck_staleness > DECK_STALENESS:
+            if only_deck_fresh and data.deck_staleness > DECK_STALENESS:
                 continue
             urls.append(url)
-    _log.info(f"Scraping {len(urls)} dormant channel(s)...")
+    text = "dormant and deck-fresh" if only_deck_fresh else "dormant"
+    _log.info(f"Scraping {len(urls)} {text} channel(s)...")
     scrape_channels(
         *urls, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
 
 
 def scrape_abandoned(
-        videos=25, only_earlier_than_last_scraped=True, only_non_deck_stale=True) -> None:
+        videos=25, only_earlier_than_last_scraped=True, only_deck_fresh=True) -> None:
     """Scrape these YouTube channels specified in private Google Sheet that are abandoned. Save
     the scraped data as .json files.
     """
@@ -367,15 +343,16 @@ def scrape_abandoned(
         except FileNotFoundError:
             data = None
         if data and data.staleness and data.staleness > ABANDONED_STALENESS:
-            if only_non_deck_stale and data.deck_staleness > DECK_STALENESS:
+            if only_deck_fresh and data.deck_staleness > DECK_STALENESS:
                 continue
             urls.append(url)
-    _log.info(f"Scraping {len(urls)} abandoned channel(s)...")
+    text = "abandoned and deck-fresh" if only_deck_fresh else "abandoned"
+    _log.info(f"Scraping {len(urls)} {text} channel(s)...")
     scrape_channels(
         *urls, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
 
 
-def scrape_deck_stale(videos=25, only_earlier_than_last_scraped=True) -> None:
+def scrape_deck_stale(videos=25, only_earlier_than_last_scraped=True, only_active=True) -> None:
     """Scrape these YouTube channels specified in private Google Sheet that are considered
     deck-stale. Save the scraped data as .json files.
     """
@@ -386,8 +363,11 @@ def scrape_deck_stale(videos=25, only_earlier_than_last_scraped=True) -> None:
         except FileNotFoundError:
             data = None
         if data and data.deck_staleness > DECK_STALENESS:
+            if only_active and data.staleness and data.staleness > DORMANT_STALENESS:
+                continue
             urls.append(url)
-    _log.info(f"Scraping {len(urls)} deck-stale channel(s)...")
+    text = "deck-stale and active" if only_active else "deck-stale"
+    _log.info(f"Scraping {len(urls)} {text} channel(s)...")
     scrape_channels(
         *urls, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
 

@@ -23,6 +23,7 @@ _log = logging.getLogger(__name__)
 
 
 SANITIZED_FORMATS = {
+    "archon": "commander",
     "artisan historic": "historic",
     "artisanhistoric": "historic",
     "australian highlander": "commander",
@@ -96,7 +97,7 @@ class DeckScraper(DeckParser):
     def sanitize_url(url: str) -> str:
         if "?" in url:
             url, rest = url.split("?", maxsplit=1)
-        return url
+        return url.removesuffix("/")
 
     @abstractmethod
     def _scrape_metadata(self) -> None:

@@ -50,7 +50,12 @@ class DeckstatsScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "deckstats.net/decks/" in url
+        if not "deckstats.net/decks/" in url:
+            return False
+        url = DeckScraper.sanitize_url(url)
+        _, right_part = url.split("deckstats.net/decks/")
+        right_part = "deckstats.net/decks/" + right_part
+        return len(right_part.split("/")) > 3
 
     def _get_json(self) -> Json:
         return self.dissect_js(
