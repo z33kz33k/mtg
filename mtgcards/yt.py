@@ -448,6 +448,7 @@ class Video:
         "spoo.me/",
         "switchy.io/",
         "t.ly/",
+        "pxf.io",  # e.g. tcgplayer.pxf.io affiliate referral link
         "tinu.be/",
         "tiny.cc/",
         "tinyurl.com/",
@@ -607,7 +608,6 @@ class Video:
 
     @throttled(2, 0.45)
     def _process(self, video_id):
-        _log.info(f"Scraping video: 'https://www.youtube.com/watch?v={video_id}'...")
         self._id = video_id
         try:
             self._pytube = self._get_pytube()
@@ -939,10 +939,18 @@ class Channel:
             return
         self._scrape_time = datetime.now()
         _log.info(f"Scraping channel: {self.url!r}, {len(video_ids)} video(s)...")
-        self._videos = [Video(vid) for vid in video_ids]
+        self._videos = []
+        for i, vid in enumerate(video_ids, start=1):
+            _log.info(
+                f"Scraping video {i}/{len(video_ids)}: 'https://www.youtube.com/watch?v={vid}'...")
+            self._videos.append(Video(vid))
         self._id = self.videos[0].channel_id if self else None
         try:
             self._ytsp_data = self._get_ytsp() if self._id else None
+        except TypeError:
+            raise ScrapingError(
+                "YTSP failed with TypeError. Are you sure the channel has at least two tabs "
+                "(one being 'Videos')?")
         except ReadTimeout:
             self._ytsp_data = self._get_ytsp_with_backoff()
         self._description = self._ytsp_data.result.get("description") if self._id else None

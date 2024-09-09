@@ -40,6 +40,7 @@ SANITIZED_FORMATS = {
     "edh": "commander",
     "european highlander": "commander",
     "europeanhighlander": "commander",
+    "future standard": "future",
     "highlander australian": "commander",
     "highlander canadian": "commander",
     "highlander european": "commander",

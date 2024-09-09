@@ -582,21 +582,14 @@ class Deck:
             commander: Card | None = None, partner_commander: Card | None = None,
             companion: Card | None = None, metadata: Json | None = None) -> None:
         commanders = [c for c in [commander, partner_commander] if c]
-        for c in commanders:
-            if not c.commander_suitable:
-                raise InvalidDeck(f"'{c}' is not suitable for a commander role")
         if partner_commander:
             if not commander:
                 raise InvalidDeck("Partner commander without commander")
-            if non_partner := from_iterable(commanders, lambda c: not c.is_partner):
-                raise InvalidDeck(
-                    f"Each partner commander must have a 'Partner' or 'Friends forever' keyword, "
-                    f"'{non_partner}' doesn't ")
         if commanders:
             identity = {clr for c in commanders for clr in c.color_identity.value}
             for card in [*mainboard, *sideboard]:
                 if any(letter not in identity for letter in card.color_identity.value):
-                    raise InvalidDeck(
+                    _log.warning(
                         f"Color identity of '{card}' ({card.color_identity}) doesn't match "
                         f"commander's color identity ({Color.from_letters(*identity)})")
         self._commander, self._partner_commander = commander, partner_commander
@@ -1074,8 +1067,19 @@ class DeckParser(ABC):
         self._deck = None
 
     def _set_commander(self, card: Card) -> None:
+        if not card.commander_suitable:
+            _log.warning(f"'{card}' is not suitable for a commander role as per regular rules")
+
         if self._commander:
-            self._partner_commander = card
+            if self._partner_commander:
+                _log.warning("Partner commander already set")
+                self._mainboard.append(card)
+            else:
+                if non_partner := from_iterable((self._commander, card), lambda c: not c.is_partner):
+                    _log.warning(
+                        f"Each partner commander should have a 'Partner' or 'Friends forever' "
+                        f"keyword, '{non_partner}' doesn't")
+                self._partner_commander = card
         else:
             self._commander = card
 

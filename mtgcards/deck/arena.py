@@ -91,14 +91,36 @@ def is_empty(line: str) -> bool:
     return not line or line.isspace()
 
 
+def is_mainboard_line(line: str) -> bool:
+    names = "Main", "Maindeck", "Mainboard", "Deck"
+    if line in names:
+        return True
+    if line in [f"{name}:" for name in names]:
+        return True
+    return False
+
+
+def is_commander_line(line: str) -> bool:
+    return line == "Commander" or line == "Commander:"
+
+
+def is_companion_line(line: str) -> bool:
+    return line == "Companion" or line == "Companion:"
+
+
+def is_sideboard_line(line: str) -> bool:
+    names = "Side", "Sideboard", "Sidedeck"
+    if line in names:
+        return True
+    if line in [f"{name}:" for name in names]:
+        return True
+    return False
+
+
 def is_arena_line(line: str) -> bool:
-    if line == "Deck":
+    if is_mainboard_line(line) or is_sideboard_line(line):
         return True
-    elif line == "Commander":
-        return True
-    elif line == "Companion":
-        return True
-    elif line == "Sideboard":
+    elif is_commander_line(line) or is_companion_line(line):
         return True
     elif is_playset_line(line):
         return True
@@ -113,7 +135,7 @@ def get_arena_lines(*lines: str) -> Generator[str, None, None]:
               and 0 < i < len(lines) - 1
               and is_arena_line(lines[i - 1])  # previous line
               and is_arena_line(lines[i + 1])  # next line
-              and lines[i + 1] != "Sideboard"):
+              and not is_sideboard_line(lines[i + 1])):
             yield "Sideboard"
 
 
@@ -132,13 +154,13 @@ class ArenaParser(DeckParser):
     def _get_deck(self) -> Deck | None:
         try:
             for line in self._lines:
-                if line == "Deck":
+                if is_mainboard_line(line):
                     self._shift_to_mainboard()
-                elif line == "Sideboard":
+                elif is_sideboard_line(line):
                     self._shift_to_sideboard()
-                elif line == "Commander":
+                elif is_commander_line(line):
                     self._shift_to_commander()
-                elif line == "Companion":
+                elif is_companion_line(line):
                     self._shift_to_companion()
                 elif is_playset_line(line):
                     if self._state is ParsingState.IDLE:
