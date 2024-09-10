@@ -30,7 +30,7 @@ descriptions).
     * Links to decklist services are scraped into Deck objects. 24 services are supported so far:
         * [Aetherhub](https://aetherhub.com)
         * [Archidekt](https://archidekt.com)
-        * _[Cardhoarder](https://www.cardhoarder.com) (uses anti-bot measures and ceased to work)_
+        * [Cardhoarder](https://www.cardhoarder.com)
         * [Cardsrealm](https://mtg.cardsrealm.com/en-us/)
         * [Deckstats.net](https://deckstats.net)
         * [Flexslot](https://flexslot.gg)
@@ -56,9 +56,10 @@ descriptions).
       possibilities already :))
     * Both Untapped decklist types featured in YT videos are supported: regular deck and profile deck
     * Both old and new TCGPlayer sites are supported
-    * Due to their dynamic nature, Untapped, TCGPlayer (new site), ManaStack, Flexslot, MTGTop8 and 
-      MTGDecks.net (the last two are not much of a dynamic sites, but you do need to click a 
-      consent button) are scraped using [Selenium](https://github.com/SeleniumHQ/Selenium)
+    * Due to their dynamic nature, Untapped, TCGPlayer (new site), ManaStack, Flexslot are scraped 
+      using [Selenium](https://github.com/SeleniumHQ/Selenium). It's also used to scrape MTGTop8, MTGDecks.net and Cardhoarder, even 
+      though those are very much static sites. Selenium is still helpful here (either to click a 
+      consent button or bypass anti-bot measures)
     * All those mentioned above work even if they are behind shortener links and need unshortening first
     * Text decklists in links to pastebin-like services (like [Amazonian](https://www.youtube.com/@Amazonian) does) work too
 * Assessing the meta:
