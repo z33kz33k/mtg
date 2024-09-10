@@ -56,7 +56,7 @@ class CardsrealmScraper(DeckScraper):
         if card_json["deck_sideboard"]:
             self._sideboard += self.get_playset(card, quantity)
         else:
-            self._mainboard += self.get_playset(card, quantity)
+            self._maindeck += self.get_playset(card, quantity)
 
     def _scrape_deck(self) -> None:  # override
         for card_data in self._json_data:

@@ -83,6 +83,6 @@ class ScryfallScraper(DeckScraper):
             elif "Sideboard" in title:
                 self._sideboard = cards
             else:
-                self._mainboard += cards
+                self._maindeck += cards
 
         self._build_deck()

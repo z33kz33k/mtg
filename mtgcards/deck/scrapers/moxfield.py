@@ -100,13 +100,13 @@ class MoxfieldScraper(DeckScraper):
 
     def _scrape_deck(self) -> None:  # override
         for card in self._json_data["boards"]["mainboard"]["cards"].values():
-            self._mainboard.extend(self._to_playset(card))
+            self._maindeck.extend(self._to_playset(card))
         for card in self._json_data["boards"]["sideboard"]["cards"].values():
             self._sideboard.extend(self._to_playset(card))
         # Oathbreaker is not fully supported by Deck objects
         if signature_spells := self._json_data["boards"]["signatureSpells"]:
             for card in signature_spells["cards"].values():
-                self._mainboard.extend(self._to_playset(card))
+                self._maindeck.extend(self._to_playset(card))
         for card in self._json_data["boards"]["commanders"]["cards"].values():
             result = self._to_playset(card)
             self._set_commander(result[0])

@@ -73,7 +73,7 @@ class MtgArenaProScraper(DeckScraper):
 
     def _scrape_deck(self) -> None:  # override
         for card_json in self._json_data["deck_order"]:
-            self._mainboard.extend(self._parse_card_json(card_json))
+            self._maindeck.extend(self._parse_card_json(card_json))
         for card_json in self._json_data["sidedeck_order"]:
             self._sideboard.extend(self._parse_card_json(card_json))
         for card_json in self._json_data["commander_order"]:

@@ -91,7 +91,7 @@ def is_empty(line: str) -> bool:
     return not line or line.isspace()
 
 
-def is_mainboard_line(line: str) -> bool:
+def is_maindeck_line(line: str) -> bool:
     names = "Main", "Maindeck", "Mainboard", "Deck"
     if line in names:
         return True
@@ -118,7 +118,7 @@ def is_sideboard_line(line: str) -> bool:
 
 
 def is_arena_line(line: str) -> bool:
-    if is_mainboard_line(line) or is_sideboard_line(line):
+    if is_maindeck_line(line) or is_sideboard_line(line):
         return True
     elif is_commander_line(line) or is_companion_line(line):
         return True
@@ -154,8 +154,8 @@ class ArenaParser(DeckParser):
     def _get_deck(self) -> Deck | None:
         try:
             for line in self._lines:
-                if is_mainboard_line(line):
-                    self._shift_to_mainboard()
+                if is_maindeck_line(line):
+                    self._shift_to_maindeck()
                 elif is_sideboard_line(line):
                     self._shift_to_sideboard()
                 elif is_commander_line(line):
@@ -164,7 +164,7 @@ class ArenaParser(DeckParser):
                     self._shift_to_companion()
                 elif is_playset_line(line):
                     if self._state is ParsingState.IDLE:
-                        self._shift_to_mainboard()
+                        self._shift_to_maindeck()
 
                     if self._state is ParsingState.SIDEBOARD:
                         self._sideboard.extend(PlaysetLine(line).to_playset())
@@ -178,11 +178,11 @@ class ArenaParser(DeckParser):
                             self._companion = result[0]
                         else:
                             raise ParsingError(f"Invalid companion line: {line!r}")
-                    elif self._state is ParsingState.MAINBOARD:
-                        self._mainboard.extend(PlaysetLine(line).to_playset())
+                    elif self._state is ParsingState.MAINDECK:
+                        self._maindeck.extend(PlaysetLine(line).to_playset())
 
             return Deck(
-                self._mainboard, self._sideboard, self._commander, self._partner_commander,
+                self._maindeck, self._sideboard, self._commander, self._partner_commander,
                 self._companion, self._metadata)
 
         except (ParsingError, InvalidDeck) as err:

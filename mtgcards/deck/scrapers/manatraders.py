@@ -54,7 +54,7 @@ class ManatradersScraper(DeckScraper):
         name = card_json["name"]
         card = self.find_card(StreamdeckerScraper.sanitize_card_name(name))
         if quantity := card_json.get("quantity"):
-            self._mainboard += self.get_playset(card, quantity)
+            self._maindeck += self.get_playset(card, quantity)
         if sideboard_qty := card_json.get("sideboardQuantity"):
             self._sideboard += self.get_playset(card, sideboard_qty)
 

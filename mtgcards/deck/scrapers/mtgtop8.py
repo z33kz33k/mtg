@@ -81,7 +81,7 @@ class MtgTop8Scraper(DeckScraper):
 
     def _scrape_deck(self) -> None:  # override
         deck_tag = self._soup.find("div", style="display:flex;align-content:stretch;")
-        cards, commander_on = self._mainboard, False
+        cards, commander_on = self._maindeck, False
         for block_tag in deck_tag:
             for sub_tag in block_tag:
                 if sub_tag.name == "div" and sub_tag.attrs.get("class") == ['O14']:

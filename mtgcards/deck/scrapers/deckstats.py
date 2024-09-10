@@ -91,7 +91,7 @@ class DeckstatsScraper(DeckScraper):
         cards = itertools.chain(
             *[section["cards"] for section in self._json_data["sections"]])
         for card_json in cards:
-            self._mainboard.extend(self._parse_card_json(card_json))
+            self._maindeck.extend(self._parse_card_json(card_json))
         if sideboard := self._json_data.get("sideboard"):
             for card_json in sideboard:
                 self._sideboard.extend(self._parse_card_json(card_json))

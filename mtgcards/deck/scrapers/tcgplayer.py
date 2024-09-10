@@ -72,7 +72,7 @@ class OldPageTcgPlayerScraper(DeckScraper):
             elif deck_tag.find("h3").text.lower().startswith("sideboard"):
                 self._sideboard = self._process_deck_tag(deck_tag)
             else:
-                self._mainboard = self._process_deck_tag(deck_tag)
+                self._maindeck = self._process_deck_tag(deck_tag)
 
         self._build_deck()
 
@@ -135,7 +135,7 @@ class NewPageTcgPlayerScraper(DeckScraper):
         main_tag = self._soup.find("div", class_="maindeck")
         card_tags = main_tag.find_all("li", class_="list__item")
         for card_tag in card_tags:
-            self._mainboard += self._to_playset(card_tag)
+            self._maindeck += self._to_playset(card_tag)
 
         side_tag = self._soup.find("div", class_="sideboard")
         if side_tag:

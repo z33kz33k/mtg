@@ -78,7 +78,7 @@ class CardhoarderScraper(DeckScraper):
             quantity_main = int(data["SavedDeckItem"]["quantity_main"])
             quantity_sideboard = int(data["SavedDeckItem"]["quantity_sideboard"])
             card = self.find_card(name)
-            self._mainboard += self.get_playset(card, quantity_main)
+            self._maindeck += self.get_playset(card, quantity_main)
             if quantity_sideboard:
                 self._sideboard += self.get_playset(card, quantity_sideboard)
 

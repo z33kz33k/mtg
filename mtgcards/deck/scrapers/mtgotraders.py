@@ -61,7 +61,7 @@ class MtgoTradersScraper(DeckScraper):
 
     def _scrape_deck(self) -> None:
         for json_card in self._json_data["main"]:
-            self._mainboard += self._parse_json_card(json_card)
+            self._maindeck += self._parse_json_card(json_card)
         if sideboard := self._json_data.get("sideboard"):
             for json_card in sideboard:
                 self._sideboard += self._parse_json_card(json_card)

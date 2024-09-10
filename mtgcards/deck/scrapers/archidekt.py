@@ -63,7 +63,7 @@ class ArchidektScraper(DeckScraper):
         elif "Sideboard" in categories:
             self._sideboard.extend(playset)
         else:
-            self._mainboard.extend(playset)
+            self._maindeck.extend(playset)
 
     def _scrape_deck(self) -> None:  # override
         for v in self._deck_data["cardMap"].values():

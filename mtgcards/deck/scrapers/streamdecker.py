@@ -63,7 +63,7 @@ class StreamdeckerScraper(DeckScraper):
         name = json_card["name"]
         card = self.find_card(self.sanitize_card_name(name), scryfall_id=scryfall_id)
         if json_card["main"]:
-            self._mainboard.extend(self.get_playset(card, json_card["main"]))
+            self._maindeck.extend(self.get_playset(card, json_card["main"]))
         if json_card["sideboard"]:
             self._sideboard.extend(self.get_playset(card, json_card["sideboard"]))
         if json_card.get("commander"):

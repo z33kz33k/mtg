@@ -76,6 +76,6 @@ class PennyDreadfulMagicScraper(DeckScraper):
                     if "Sideboard" in section:
                         self._sideboard += cards
                     else:
-                        self._mainboard += cards
+                        self._maindeck += cards
 
         self._build_deck()

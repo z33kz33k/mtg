@@ -358,13 +358,13 @@ class InvalidDeck(ValueError):
 class Deck:
     """A deck of cards suitable for Constructed formats.
     """
-    MIN_MAINBOARD_SIZE = 60
+    MIN_MAINDECK_SIZE = 60
     MAX_SIDEBOARD_SIZE = 15
     MIN_AGGRO_CMC = 2.3  # arbitrary
     MAX_CONTROL_CREATURES_COUNT = 10  # arbitrary
 
     @cached_property
-    def mainboard(self) -> list[Card]:
+    def maindeck(self) -> list[Card]:
         return [*itertools.chain(*self._playsets.values())]
 
     @cached_property
@@ -394,7 +394,7 @@ class Deck:
 
     @property
     def cards(self) -> list[Card]:
-        return [*self.mainboard, *self.sideboard]
+        return [*self.maindeck, *self.sideboard]
 
     @property
     def color(self) -> Color:
@@ -532,7 +532,7 @@ class Deck:
             if arch:
                 return arch
             # combo
-            card_parts = {p for card in self.mainboard for p in card.name_parts}
+            card_parts = {p for card in self.maindeck for p in card.name_parts}
             if any(p.title() in THEMES for p in nameparts):  # a themed deck is not a combo deck
                 pass
             elif nameparts and any(p.lower() in card_parts for p in nameparts):
@@ -578,7 +578,7 @@ class Deck:
         return [s.code for s in sets][-1]
 
     def __init__(
-            self, mainboard: Iterable[Card], sideboard: Iterable[Card] | None = None,
+            self, maindeck: Iterable[Card], sideboard: Iterable[Card] | None = None,
             commander: Card | None = None, partner_commander: Card | None = None,
             companion: Card | None = None, metadata: Json | None = None) -> None:
         commanders = [c for c in [commander, partner_commander] if c]
@@ -587,16 +587,16 @@ class Deck:
                 raise InvalidDeck("Partner commander without commander")
         if commanders:
             identity = {clr for c in commanders for clr in c.color_identity.value}
-            for card in [*mainboard, *sideboard]:
+            for card in [*maindeck, *sideboard]:
                 if any(letter not in identity for letter in card.color_identity.value):
                     _log.warning(
                         f"Color identity of '{card}' ({card.color_identity}) doesn't match "
                         f"commander's color identity ({Color.from_letters(*identity)})")
         self._commander, self._partner_commander = commander, partner_commander
-        if self.partner_commander and self.partner_commander not in mainboard:
-            mainboard = [self.partner_commander, *mainboard]
-        if self.commander and self.commander not in mainboard:
-            mainboard = [self.commander, *mainboard]
+        if self.partner_commander and self.partner_commander not in maindeck:
+            maindeck = [self.partner_commander, *maindeck]
+        if self.commander and self.commander not in maindeck:
+            maindeck = [self.commander, *maindeck]
 
         if companion:
             if not companion.is_companion:
@@ -609,8 +609,8 @@ class Deck:
         self._metadata = metadata or {}
 
         self._max_playset_count = 1 if commander is not None else 4
-        self._playsets = aggregate(*mainboard)
-        self._validate_mainboard()
+        self._playsets = aggregate(*maindeck)
+        self._validate_maindeck()
         self._sideboard_playsets = None
         if sideboard:
             self._sideboard_playsets = aggregate(*sideboard)
@@ -632,12 +632,12 @@ class Deck:
                     f"Too many occurrences of {card.name!r}: "
                     f"{len(playset)} > {max_playset}")
 
-    def _validate_mainboard(self) -> None:
+    def _validate_maindeck(self) -> None:
         for playset in self._playsets.values():
             self._validate_playset(playset)
-        if len(self.mainboard) < self.MIN_MAINBOARD_SIZE:
+        if len(self.maindeck) < self.MIN_MAINDECK_SIZE:
             raise InvalidDeck(
-                f"Invalid deck size: {len(self.mainboard)} < {self.MIN_MAINBOARD_SIZE}")
+                f"Invalid deck size: {len(self.maindeck)} < {self.MIN_MAINDECK_SIZE}")
 
     def _validate_sideboard(self) -> None:
         temp_playsets = aggregate(*self.cards)
@@ -886,13 +886,13 @@ Name={}
         commander = [
             self._to_forge_line(playset) for playset in
             aggregate(self._deck.commander).values()] if self._deck.commander else []
-        mainboard = [
-            self._to_forge_line(playset) for playset in aggregate(*self._deck.mainboard).values()]
+        maindeck = [
+            self._to_forge_line(playset) for playset in aggregate(*self._deck.maindeck).values()]
         sideboard = [
             self._to_forge_line(playset) for playset in
             aggregate(*self._deck.sideboard).values()] if self._deck.sideboard else []
         return self.DCK_TEMPLATE.format(
-            self._name, "\n".join(commander), "\n".join(mainboard), "\n".join(sideboard))
+            self._name, "\n".join(commander), "\n".join(maindeck), "\n".join(sideboard))
 
     def to_forge(self, dstdir: PathLike = "") -> None:
         dstdir = dstdir or OUTPUT_DIR / "dck"
@@ -941,8 +941,8 @@ Name={}
     @classmethod
     def from_forge(cls, path: PathLike) -> Deck:
         file = getfile(path, ext=".dck")
-        commander, mainboard, sideboard, metadata = None, [], [], {}
-        commander_on, mainboard_on, sideboard_on = False, False, False
+        commander, maindeck, sideboard, metadata = None, [], [], {}
+        commander_on, maindeck_on, sideboard_on = False, False, False
         for line in file.read_text(encoding="utf-8").splitlines():
             if line.startswith("Name="):
                 metadata = cls._parse_name(line.removeprefix("Name="))
@@ -950,22 +950,22 @@ Name={}
                 commander_on = True
                 continue
             elif line == "[Main]":
-                commander_on, mainboard_on = False, True
+                commander_on, maindeck_on = False, True
                 continue
             elif line == "[Sideboard]":
-                mainboard_on, sideboard_on = False, True
+                maindeck_on, sideboard_on = False, True
                 continue
             elif not line:
                 continue
 
             if commander_on:
                 commander = cls._parse_forge_line(line)[0]
-            elif mainboard_on:
-                mainboard += cls._parse_forge_line(line)
+            elif maindeck_on:
+                maindeck += cls._parse_forge_line(line)
             elif sideboard_on:
                 sideboard += cls._parse_forge_line(line)
 
-        deck = Deck(mainboard, sideboard, commander, metadata=metadata)
+        deck = Deck(maindeck, sideboard, commander, metadata=metadata)
         if not deck:
             raise ParsingError(f"Unable to parse '{path}' into a deck")
         return deck
@@ -991,7 +991,7 @@ Name={}
         lines += [
             "Deck",
             *[self._to_arena_line(playset) for playset
-              in aggregate(*self._deck.mainboard).values()]
+              in aggregate(*self._deck.maindeck).values()]
         ]
         if self._deck.sideboard:
             lines += [
@@ -1042,7 +1042,7 @@ class ParsingState(Enum):
     """State machine for deck parsing.
     """
     IDLE = auto()
-    MAINBOARD = auto()
+    MAINDECK = auto()
     SIDEBOARD = auto()
     COMMANDER = auto()
     COMPANION = auto()
@@ -1062,7 +1062,7 @@ class DeckParser(ABC):
     def __init__(self, metadata: Json | None = None) -> None:
         self._metadata = metadata or {}
         self._state = ParsingState.IDLE
-        self._mainboard, self._sideboard = [], []
+        self._maindeck, self._sideboard = [], []
         self._commander, self._partner_commander, self._companion = None, None, None
         self._deck = None
 
@@ -1073,7 +1073,7 @@ class DeckParser(ABC):
         if self._commander:
             if self._partner_commander:
                 _log.warning("Partner commander already set")
-                self._mainboard.append(card)
+                self._maindeck.append(card)
             else:
                 if non_partner := from_iterable((self._commander, card), lambda c: not c.is_partner):
                     _log.warning(
@@ -1090,10 +1090,10 @@ class DeckParser(ABC):
                 self._set_commander(c)
             self._sideboard = []
 
-    def _shift_to_mainboard(self) -> None:
-        if self._state is ParsingState.MAINBOARD:
-            raise ParsingError(f"Invalid transition to MAINBOARD from: {self._state.name}")
-        self._state = ParsingState.MAINBOARD
+    def _shift_to_maindeck(self) -> None:
+        if self._state is ParsingState.MAINDECK:
+            raise ParsingError(f"Invalid transition to MAINDECK from: {self._state.name}")
+        self._state = ParsingState.MAINDECK
 
     def _shift_to_sideboard(self) -> None:
         if self._state is ParsingState.SIDEBOARD:

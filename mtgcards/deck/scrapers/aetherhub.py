@@ -127,8 +127,8 @@ class AetherhubScraper(DeckScraper):
                     self._shift_to_commander()
                 elif "Companion" in tag.text:
                     self._shift_to_companion()
-                elif self._state is not ParsingState.MAINBOARD:
-                    self._shift_to_mainboard()
+                elif self._state is not ParsingState.MAINDECK:
+                    self._shift_to_maindeck()
             elif tag.name == "tr":
                 td_tags = tag.find_all("td")
                 if td_tags:
@@ -143,8 +143,8 @@ class AetherhubScraper(DeckScraper):
                     collector = card_tag.attrs.get("data-card-number")
                     set_col = (set_code, collector) if set_code and collector else None
                     cards = self.get_playset(self.find_card(name, set_col), quantity)
-                    if self._state is ParsingState.MAINBOARD:
-                        self._mainboard += cards
+                    if self._state is ParsingState.MAINDECK:
+                        self._maindeck += cards
                     elif self._state is ParsingState.SIDEBOARD:
                         self._sideboard += cards
                     elif self._state is ParsingState.COMMANDER:

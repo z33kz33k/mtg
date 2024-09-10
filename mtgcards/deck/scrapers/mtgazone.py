@@ -24,7 +24,7 @@ _log = logging.getLogger(__name__)
 
 # alternative approach would be to scrape:
 # self._soup.find("input", {"type": "hidden", "name": "c"}).attrs["value"].split("||")
-# but it has a downside of not having clear sideboard-mainboard separation
+# but it has a downside of not having clear sideboard-maindeck separation
 class MtgaZoneScraper(DeckScraper):
     """Scraper of MTG Arena Zone decklist page.
 
@@ -103,7 +103,7 @@ class MtgaZoneScraper(DeckScraper):
             self._companion = self._process_decklist(companion_tag)[0]
 
         main_tag = self._soup.select_one("div.decklist.main")
-        self._mainboard = self._process_decklist(main_tag)
+        self._maindeck = self._process_decklist(main_tag)
 
         if sideboard_tags := self._soup.select("div.decklist.sideboard"):
             try:

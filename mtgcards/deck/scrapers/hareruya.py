@@ -74,8 +74,8 @@ class HareruyaScraper(DeckScraper):
                         self._shift_to_sideboard()
                     elif "Commander" in sub_tag.text:
                         self._shift_to_commander()
-                    elif self._state is not ParsingState.MAINBOARD:
-                        self._shift_to_mainboard()
+                    elif self._state is not ParsingState.MAINDECK:
+                        self._shift_to_maindeck()
             else:
                 name_tag = sub_tag.find("a", class_="popup_product")
                 if not name_tag:
@@ -86,8 +86,8 @@ class HareruyaScraper(DeckScraper):
                     continue
                 quantity = int(qty_tag.text)
                 cards = self.get_playset(self.find_card(name), quantity)
-                if self._state is ParsingState.MAINBOARD:
-                    self._mainboard += cards
+                if self._state is ParsingState.MAINDECK:
+                    self._maindeck += cards
                 elif self._state is ParsingState.SIDEBOARD:
                     self._sideboard += cards
                 elif self._state is ParsingState.COMMANDER:
