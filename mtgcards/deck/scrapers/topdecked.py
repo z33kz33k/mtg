@@ -25,24 +25,29 @@ from mtgcards import Json
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.scryfall import Card
 from mtgcards.utils import extract_int
-from mtgcards.utils.scrape import ScrapingError, get_dynamic_soup_by_xpath, getsoup, SELENIUM_TIMEOUT
+from mtgcards.utils.scrape import ScrapingError, get_dynamic_soup_by_xpath, getsoup, \
+    SELENIUM_TIMEOUT, scroll_down, scroll_down_with_arrows, scroll_with_mouse_wheel
 
 _log = logging.getLogger(__name__)
 
 
+# TODO: scrap this bullshit and try to click 'Share to Arena' option to get Arena decklist from
+#  clipboard
 class TopDeckedScraper(DeckScraper):
     """Scraper of TopDecked decklist page.
     """
-    _XPATH = ("//ion-segment-button[contains(@class, 'md') and contains(@class, 'in-toolbar') "
+    _DECK_XPATH = ("//ion-segment-button[contains(@class, 'md') and contains(@class, 'in-toolbar') "
+              "and contains(@class, 'segment-button-checked')]")
+    _SIDE_XPATH = ("//ion-segment-button[contains(@class, 'md') and contains(@class, 'in-toolbar') "
               "and contains(@class, 'segment-button-after-checked')]")
-    # _CONSENT_XPATH = "//ion-button[text()=' Ok! ']"
     _CARD_XPATH = ("//span[contains(@class, 'card-block__invisible__name') "
                    "and contains(@class, 'ng-star-inserted')]")
+    _CONSENT_XPATH = "//ion-button[contains(., 'Ok!')]"
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
         try:
-            self._main_names, self._side_names = self._get_card_data()
+            self._main_names, self._side_names = self._get_card_names()
             self._scrape_metadata()
             self._scrape_deck()
         except TimeoutException:
@@ -52,37 +57,53 @@ class TopDeckedScraper(DeckScraper):
     def is_deck_url(url: str) -> bool:  # override
         return "www.topdecked.com/decks/" in url
 
-    def _get_card_data(self) -> tuple[list[str], list[str]]:
+    def _get_card_names(self) -> tuple[list[str], list[str]]:
         driver = webdriver.Chrome()
         _log.info(f"Webdriving using Chrome to: '{self.url}'...")
         driver.get(self.url)
 
         try:
-            side_btn = WebDriverWait(driver, SELENIUM_TIMEOUT).until(
-                EC.presence_of_element_located((By.XPATH, self._XPATH)))
-            if not side_btn:
-                raise NoSuchElementException(f"Unable to find 'SIDE' button")
-            _log.info(f"Page has been loaded and 'SIDE' button is present")
-
-            main_elements = WebDriverWait(driver, SELENIUM_TIMEOUT).until(
-                EC.presence_of_all_elements_located((By.XPATH, self._CARD_XPATH)))
-            main_names = [element.text.strip() for element in main_elements]
-            main_names = [name for name in main_names if name]
-
-            side_btn.click()
-            _log.info("'SIDE' button clicked")
+            consent = WebDriverWait(driver, 30).until(
+                EC.element_to_be_clickable((By.XPATH, self._CONSENT_XPATH)))
+            consent.click()
+            WebDriverWait(driver, SELENIUM_TIMEOUT).until_not(
+                EC.presence_of_element_located((By.XPATH, self._CONSENT_XPATH)))
+            _log.info("Consent pop-up closed")
 
             time.sleep(1)
 
-            side_elements = WebDriverWait(driver, SELENIUM_TIMEOUT).until(
+            main_elements = WebDriverWait(driver, 30).until(
                 EC.presence_of_all_elements_located((By.XPATH, self._CARD_XPATH)))
-            side_names = [element.text.strip() for element in side_elements]
-            side_names = [name for name in side_names if name]
+            main_names = [element.text.strip() for element in main_elements]
 
-            return main_names, side_names
+            scroll_down_with_arrows(driver, 45)
+            time.sleep(1)
+
+            main_elements = WebDriverWait(driver, 30).until(
+                EC.presence_of_all_elements_located((By.XPATH, self._CARD_XPATH)))
+            main_names += [element.text.strip() for element in main_elements]
+
+            try:
+                side_btn = WebDriverWait(driver, SELENIUM_TIMEOUT).until(
+                    EC.element_to_be_clickable((By.XPATH, self._SIDE_XPATH)))
+            except TimeoutException:
+                _log.warning(f"'SIDE' button cannot be located")
+                side_names = []
+            else:
+                side_btn.click()
+                _log.info("'SIDE' button clicked")
+
+                time.sleep(1)
+
+                side_elements = WebDriverWait(driver, SELENIUM_TIMEOUT).until(
+                    EC.presence_of_all_elements_located((By.XPATH, self._CARD_XPATH)))
+                side_names = [element.text.strip() for element in side_elements]
+
+            return [n for n in main_names if n], [sn for sn in side_names if sn]
 
         finally:
             driver.quit()
+
 
     def _scrape_metadata(self) -> None:  # override
         pass

@@ -1037,7 +1037,8 @@ class Channel:
             if text and text[-1] in {"K", "M", "B", "T"}:
                 return multiply_by_symbol(number, text[-1])
             return int(number)
-        except TimeoutException:  # looking for "subscribers" is futile if there's only one :)
+        # looking for subscribers is futile if there's only one (or none) :)
+        except TimeoutException:
             return 1
 
     @property

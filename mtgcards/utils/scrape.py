@@ -23,6 +23,7 @@ from bs4 import BeautifulSoup
 from requests.exceptions import HTTPError
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.webdriver import ActionChains, Keys
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
@@ -405,3 +406,29 @@ def _wait_for_elements(
 
     return WebDriverWait(driver, timeout).until(
         EC.presence_of_element_located((By.XPATH, xpath)))
+
+
+def scroll_down(driver: WebDriver, element: WebElement | None = None, pixel_offset: int = 0) -> None:
+    """Scroll down to the element specified or to the bottom of the page.
+    """
+    if element:
+        driver.execute_script("arguments[0].scrollIntoView(true);", element)
+    elif pixel_offset:
+        driver.execute_script(f"window.scrollBy(0, {pixel_offset});")
+    else:
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+
+def scroll_with_mouse_wheel(
+        driver: WebDriver, delta_y: int, element: WebElement | None = None) -> None:
+    element = element or driver.find_element(By.TAG_NAME, "body")
+    action = ActionChains(driver)
+    action.move_to_element(element).click_and_hold().move_by_offset(0, delta_y).release().perform()
+
+
+def scroll_down_with_arrows(driver, times=5) -> None:
+    body = driver.find_element(By.TAG_NAME, "body")
+    for _ in range(times):
+        body.send_keys(Keys.ARROW_DOWN)
+        driver.implicitly_wait(0.5)  # small wait between scrolls
+
