@@ -58,11 +58,10 @@ class TopDeckedScraper(DeckScraper):
         return "www.topdecked.com/decks/" in url
 
     def _get_card_names(self) -> tuple[list[str], list[str]]:
-        driver = webdriver.Chrome()
-        _log.info(f"Webdriving using Chrome to: '{self.url}'...")
-        driver.get(self.url)
+        with webdriver.Chrome() as driver:
+            _log.info(f"Webdriving using Chrome to: '{self.url}'...")
+            driver.get(self.url)
 
-        try:
             consent = WebDriverWait(driver, 30).until(
                 EC.element_to_be_clickable((By.XPATH, self._CONSENT_XPATH)))
             consent.click()
@@ -100,10 +99,6 @@ class TopDeckedScraper(DeckScraper):
                 side_names = [element.text.strip() for element in side_elements]
 
             return [n for n in main_names if n], [sn for sn in side_names if sn]
-
-        finally:
-            driver.quit()
-
 
     def _scrape_metadata(self) -> None:  # override
         pass

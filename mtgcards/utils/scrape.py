@@ -241,37 +241,36 @@ def get_dynamic_soup_by_xpath(
         the located element was clicked), clipboard content (if copy-to-clipboard element was
         clicked)
     """
-    driver = webdriver.Chrome()
-    _log.info(f"Webdriving using Chrome to: '{url}'...")
-    driver.get(url)
+    with webdriver.Chrome() as driver:
+        try:
+            _log.info(f"Webdriving using Chrome to: '{url}'...")
+            driver.get(url)
 
-    if consent_xpath:
-        if wait_for_consent_disappearance:
-            _accept_consent(driver, consent_xpath)
-        else:
-            _accept_consent_without_wait(driver, consent_xpath)
-    try:
-        element = _wait_for_elements(driver, xpath, *halt_xpaths, timeout=timeout)
-        if not element:
-            raise NoSuchElementException(f"Element specified by {xpath!r} is not present")
-        _log.info(f"Page has been loaded and element specified by {xpath!r} is present")
-        page_source, soup2 = driver.page_source, None
-        if click:
-            element.click()
-            soup2 = BeautifulSoup(driver.page_source, "lxml")
-        soup = BeautifulSoup(page_source, "lxml")
+            if consent_xpath:
+                if wait_for_consent_disappearance:
+                    _accept_consent(driver, consent_xpath)
+                else:
+                    _accept_consent_without_wait(driver, consent_xpath)
 
-        clipboard = None
-        if clipboard_xpath:
-            clipboard = _click_for_clipboard(driver, clipboard_xpath)
+            element = _wait_for_elements(driver, xpath, *halt_xpaths, timeout=timeout)
+            if not element:
+                raise NoSuchElementException(f"Element specified by {xpath!r} is not present")
+            _log.info(f"Page has been loaded and element specified by {xpath!r} is present")
+            page_source, soup2 = driver.page_source, None
+            if click:
+                element.click()
+                soup2 = BeautifulSoup(driver.page_source, "lxml")
+            soup = BeautifulSoup(page_source, "lxml")
 
-        return soup, soup2, clipboard
+            clipboard = None
+            if clipboard_xpath:
+                clipboard = _click_for_clipboard(driver, clipboard_xpath)
 
-    except TimeoutException:
-        _log.error(f"Timed out waiting for element specified by {xpath!r} to be present")
-        raise
-    finally:
-        driver.quit()
+            return soup, soup2, clipboard
+
+        except TimeoutException:
+            _log.error(f"Timed out waiting for element specified by {xpath!r} to be present")
+            raise
 
 
 @throttled(DEFAULT_THROTTLING)
