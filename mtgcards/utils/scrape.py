@@ -22,6 +22,7 @@ import requests
 from bs4 import BeautifulSoup
 from requests.exceptions import HTTPError
 from selenium import webdriver
+from selenium.common import ElementClickInterceptedException
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver import ActionChains, Keys
 from selenium.webdriver.chrome.webdriver import WebDriver
@@ -264,7 +265,7 @@ def get_dynamic_soup_by_xpath(
 
             clipboard = None
             if clipboard_xpath:
-                clipboard = _click_for_clipboard(driver, clipboard_xpath)
+                clipboard = click_for_clipboard(driver, clipboard_xpath)
 
             return soup, soup2, clipboard
 
@@ -339,7 +340,8 @@ def _accept_consent_without_wait(
         return None
 
 
-def _click_for_clipboard(driver: WebDriver, xpath: str, timeout=SELENIUM_TIMEOUT / 2) -> str:
+def click_for_clipboard(
+        driver: WebDriver, xpath: str, delay=0.5, timeout=SELENIUM_TIMEOUT / 2) -> str:
     """Click element located by ``xpath`` with the passed Chrome webdriver and return clipboard
     contents.
 
@@ -352,6 +354,7 @@ def _click_for_clipboard(driver: WebDriver, xpath: str, timeout=SELENIUM_TIMEOUT
     Args:
         driver: a Chrome webdriver object
         xpath: XPath to locate the main element
+        delay: delay in seconds to wait for clipboard to be populated
         timeout: timeout used in attempted actions
 
     Returns:
@@ -361,10 +364,10 @@ def _click_for_clipboard(driver: WebDriver, xpath: str, timeout=SELENIUM_TIMEOUT
 
     try:
         copy_element = WebDriverWait(driver, timeout).until(
-            EC.presence_of_element_located((By.XPATH, xpath)))
+            EC.element_to_be_clickable((By.XPATH, xpath)))
         copy_element.click()
         _log.info(f"Copy-to-clipboard element clicked")
-        time.sleep(0.2)
+        time.sleep(delay)
         return pyperclip.paste()
 
     except TimeoutException:
