@@ -36,7 +36,6 @@ def _sanitize_element_text(text: str) -> str:
 class TopDeckedScraper(DeckScraper):
     """Scraper of TopDecked decklist page.
     """
-
     _CONSENT_XPATH = "//ion-button[contains(., 'Ok!')]"
     _CONSENT_TIMEOUT = 30
     _SHARE_XPATH = "//ion-button[@tourstep='decklist_view_share']"

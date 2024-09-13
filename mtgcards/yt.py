@@ -54,6 +54,7 @@ from mtgcards.deck.scrapers.starcitygames import StarCityGamesScraper
 from mtgcards.deck.scrapers.streamdecker import StreamdeckerScraper
 from mtgcards.deck.scrapers.tappedout import TappedoutScraper
 from mtgcards.deck.scrapers.tcgplayer import NewPageTcgPlayerScraper, OldPageTcgPlayerScraper
+from mtgcards.deck.scrapers.topdecked import TopDeckedScraper, TopDeckedMetadeckScraper
 from mtgcards.deck.scrapers.untapped import UntappedProfileDeckScraper, UntappedRegularDeckScraper
 from mtgcards.scryfall import all_formats
 from mtgcards.utils import deserialize_dates, extract_float, getrepr, multiply_by_symbol, \
@@ -766,6 +767,10 @@ class Video:
             return StreamdeckerScraper(link, self.metadata).deck
         elif TappedoutScraper.is_deck_url(link):
             return TappedoutScraper(link, self.metadata, throttled=True).deck
+        elif TopDeckedScraper.is_deck_url(link):
+            return TopDeckedScraper(link, self.metadata).deck
+        elif TopDeckedMetadeckScraper.is_deck_url(link):
+            return TopDeckedMetadeckScraper(link, self.metadata).deck
         elif UntappedProfileDeckScraper.is_deck_url(link):
             return UntappedProfileDeckScraper(link, self.metadata).deck
         elif UntappedRegularDeckScraper.is_deck_url(link):
@@ -783,8 +788,6 @@ class Video:
         decks = []
         for url in urls:
             self._sources.add(extract_source(url))
-            # TODO: decide if scraping a video (or channel for that matter)
-            #  with such a hiccup should be allowed
             try:
                 if deck := self._scrape_deck(url):
                     decks.append(deck)

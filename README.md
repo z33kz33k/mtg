@@ -27,7 +27,7 @@ descriptions).
   with Google APIs)
 * Scraping YT videos description's for decks:    
     * Text decklists in Arena/MTGO format pasted into video descriptions are parsed into Deck objects
-    * Links to decklist services are scraped into Deck objects. 24 services are supported so far:
+    * Links to decklist services are scraped into Deck objects. 25 services are supported so far:
         * [Aetherhub](https://aetherhub.com)
         * [Archidekt](https://archidekt.com)
         * [Cardhoarder](https://www.cardhoarder.com)
@@ -51,15 +51,16 @@ descriptions).
         * [Streamdecker](https://www.streamdecker.com/landing)
         * [TappedOut](https://tappedout.net)
         * [TCGPlayer](https://infinite.tcgplayer.com)
+        * [TopDecked](https://www.topdecked.com)
         * [Untapped](https://mtga.untapped.gg) 
     * Other decklist services are in plans (but, it does seem like I've pretty much exhausted the 
       possibilities already :))
     * Both Untapped decklist types featured in YT videos are supported: regular deck and profile deck
     * Both old and new TCGPlayer sites are supported
-    * Due to their dynamic nature, Untapped, TCGPlayer (new site), ManaStack, Flexslot are scraped 
-      using [Selenium](https://github.com/SeleniumHQ/Selenium). It's also used to scrape MTGTop8, MTGDecks.net and Cardhoarder, even 
-      though those are very much static sites. Selenium is still helpful here (either to click a 
-      consent button or bypass anti-bot measures)
+    * Due to their dynamic nature, Untapped, TCGPlayer (new site), ManaStack, Flexslot and TopDecked 
+      are scraped using [Selenium](https://github.com/SeleniumHQ/Selenium). It's also used to scrape MTGTop8, MTGDecks.net and 
+      Cardhoarder, even though those are very much static sites. Selenium is still helpful here 
+      (either to click a consent button or bypass anti-bot measures)
     * All those mentioned above work even if they are behind shortener links and need unshortening first
     * Text decklists in links to pastebin-like services (like [Amazonian](https://www.youtube.com/@Amazonian) does) work too
 * Assessing the meta:
@@ -71,7 +72,7 @@ descriptions).
 * Importing back into a Deck from those formats
 * Export/import to other formats in plans
 * Dumping decks, YT videos and channels to .json
-* I compiled a list of over 750 YT channels that feature decks in their descriptions and successfully 
+* I compiled a list of almost 800 YT channels that feature decks in their descriptions and successfully 
   scraped them (at least 25 videos deep) so this data only waits to be creatively used now!
 
 ### How it looks in a Google Sheet
