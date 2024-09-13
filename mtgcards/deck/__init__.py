@@ -562,11 +562,11 @@ class Deck:
 
     @property
     def is_meta_deck(self) -> bool:
-        return self._metadata.get("meta") is not None
+        return any(k.startswith("meta") for k in self.metadata)
 
     @property
     def is_event_deck(self) -> bool:
-        return self._metadata.get("event") is not None
+        return any(k.startswith("event") for k in self.metadata)
 
     @property
     def latest_set(self) -> str | None:
