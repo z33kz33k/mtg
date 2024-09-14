@@ -9,6 +9,7 @@
 """
 import logging
 
+import dateutil.parser
 from selenium import webdriver
 from selenium.common import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
@@ -51,6 +52,9 @@ class TopDeckedScraper(DeckScraper):
         try:
             self._arena_decklist = self._get_data()
             self._scrape_deck()
+        except NoSuchElementException as err:
+            err_text, *_ = str(err).split("(Session info")
+            _log.warning(f"Scraping failed due to: '{err_text.strip()}'")
         except TimeoutException:
             _log.warning(f"Scraping failed due to Selenium timing out")
 
@@ -89,8 +93,11 @@ class TopDeckedScraper(DeckScraper):
         self._update_fmt(_sanitize_element_text(fmt_el.text))
         try:
             date_el = driver.find_element(By.XPATH, self._DATE_XPATH)
-            self._metadata["date"] = get_date_from_ago_text(
-                _sanitize_element_text(date_el.text))
+            date_text = _sanitize_element_text(date_el.text)
+            if "ago" in date_text:
+                self._metadata["date"] = get_date_from_ago_text(date_text)
+            else:
+                self._metadata["date"] = dateutil.parser.parse(date_text)
         except NoSuchElementException:  # meta-decks feature no date data
             pass
 
