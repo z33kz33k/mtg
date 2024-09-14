@@ -69,9 +69,9 @@ _log = logging.getLogger(__name__)
 
 
 CHANNELS_DIR = OUTPUT_DIR / "channels"
-DORMANT_STALENESS = 30 * 3  # days
-ABANDONED_STALENESS = 30 * 12  # days
-DECK_STALENESS = 50  # videos
+DORMANT_THRESHOLD = 30 * 3  # days
+ABANDONED_THRESHOLD = 30 * 12  # days
+DECK_STALE_THRESHOLD = 50  # videos
 
 
 @dataclass
@@ -147,6 +147,27 @@ class ChannelData:
         if not self.videos:
             return None
         return len(self.decks) / len(self.videos)
+
+    @property
+    def is_dormant(self) -> bool:
+        return (self.staleness is not None
+                and ABANDONED_THRESHOLD >= self.staleness > DORMANT_THRESHOLD)
+
+    @property
+    def is_abandoned(self) -> bool:
+        return self.staleness is not None and self.staleness > ABANDONED_THRESHOLD
+
+    @property
+    def is_active(self) -> bool:
+        return not self.is_dormant and not self.is_abandoned
+
+    @property
+    def is_deck_stale(self) -> bool:
+        return self.deck_staleness > DECK_STALE_THRESHOLD
+
+    @property
+    def is_deck_fresh(self) -> bool:
+        return not self.is_deck_stale
 
 
 def retrieve_urls() -> list[str]:
@@ -299,10 +320,8 @@ def scrape_active(
             data = None
         if not data:
             urls.append(url)
-        elif not data.staleness:
-            urls.append(url)
-        elif data.staleness <= DORMANT_STALENESS:
-            if only_deck_fresh and data.deck_staleness > DECK_STALENESS:
+        elif data.is_active:
+            if only_deck_fresh and data.is_deck_stale:
                 continue
             urls.append(url)
     text = "active and deck-fresh" if only_deck_fresh else "active"
@@ -322,8 +341,8 @@ def scrape_dormant(
             data = load_channel(url)
         except FileNotFoundError:
             data = None
-        if data and data.staleness and ABANDONED_STALENESS >= data.staleness > DORMANT_STALENESS:
-            if only_deck_fresh and data.deck_staleness > DECK_STALENESS:
+        if data and data.is_dormant:
+            if only_deck_fresh and data.is_deck_stale:
                 continue
             urls.append(url)
     text = "dormant and deck-fresh" if only_deck_fresh else "dormant"
@@ -343,8 +362,8 @@ def scrape_abandoned(
             data = load_channel(url)
         except FileNotFoundError:
             data = None
-        if data and data.staleness and data.staleness > ABANDONED_STALENESS:
-            if only_deck_fresh and data.deck_staleness > DECK_STALENESS:
+        if data and data.is_abandoned:
+            if only_deck_fresh and data.is_deck_stale:
                 continue
             urls.append(url)
     text = "abandoned and deck-fresh" if only_deck_fresh else "abandoned"
@@ -363,8 +382,8 @@ def scrape_deck_stale(videos=25, only_earlier_than_last_scraped=True, only_activ
             data = load_channel(url)
         except FileNotFoundError:
             data = None
-        if data and data.deck_staleness > DECK_STALENESS:
-            if only_active and data.staleness and data.staleness > DORMANT_STALENESS:
+        if data and data.is_deck_stale:
+            if only_active and not data.is_active:
                 continue
             urls.append(url)
     text = "deck-stale and active" if only_active else "deck-stale"
