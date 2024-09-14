@@ -29,16 +29,11 @@ from mtgcards import DATA_DIR, Json
 from mtgcards.mtgwiki import CLASSES, RACES
 from mtgcards.utils import from_iterable, getfloat, getint, getrepr, timed
 from mtgcards.utils.files import download_file, getdir
-
+from mtgcards.utils.scrape import throttle
 
 _log = logging.getLogger(__name__)
 CARDS_FILENAME = "scryfall_cards.json"
 SETS_FILENAME = "scryfall_sets.json"
-
-
-class ScryfallError(ValueError):
-    """Raised on invalid Scryfall data.
-    """
 
 
 def download_scryfall_bulk_data() -> None:
@@ -454,9 +449,11 @@ class Card:
 
     def __post_init__(self) -> None:
         if self.is_multiface and self.card_faces is None:
-            raise ScryfallError(f"Card faces data missing for multiface card {self.name!r}")
+            raise scrython.ScryfallError(
+                f"Card faces data missing for multiface card {self.name!r}")
         if self.is_multiface and self.layout not in MULTIFACE_LAYOUTS:
-            raise ScryfallError(f"Invalid layout {self.layout!r} for multiface card {self.name!r}")
+            raise scrython.ScryfallError(
+                f"Invalid layout {self.layout!r} for multiface card {self.name!r}")
 
     @property
     def card_faces(self) -> list[CardFace]:
@@ -1280,6 +1277,29 @@ def find_by_name(card_name: str) -> Card | None:
     if not _NAME_MAP:
         _build_maps()
     return _NAME_MAP.get(unidecode(card_name))
+
+
+def foreign_to_english(card_name: str) -> str | None:
+    """Return English equivalent of foreign card name or `None`.
+
+    Calls Scryfall API.
+    """
+    card_name = unidecode(card_name)
+    try:
+        result = scrython.cards.Search(q=f"!{card_name}", include_multilingual=True).data()
+    except scrython.foundation.ScryfallError:
+        result = None
+    if not result:
+        throttle(0.2)
+        try:
+            result = scrython.cards.Search(q=card_name, include_multilingual=True).data()
+        except scrython.foundation.ScryfallError:
+            result = None
+        if not result :
+            return None
+    if len(result) > 1:
+        result.sort(key=lambda card: date.fromisoformat(card["released_at"]), reverse=True)
+    return result[0]["name"]
 
 
 def find_by_words(*words: str) -> set[Card]:

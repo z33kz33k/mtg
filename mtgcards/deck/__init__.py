@@ -1048,6 +1048,11 @@ class ParsingState(Enum):
     COMPANION = auto()
 
 
+class CardNotFound(ParsingError):
+    """Raised on card not being found.
+    """
+
+
 class DeckParser(ABC):
     """Abstract base deck parser.
     """
@@ -1140,7 +1145,7 @@ class DeckParser(ABC):
         name = cls.sanitize_card_name(name)
         card = find_by_name(name)
         if not card:
-            raise ParsingError(f"Unable to find card {name!r}")
+            raise CardNotFound(f"Unable to find card {name!r}")
         return card
 
     @staticmethod

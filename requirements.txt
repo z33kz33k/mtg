@@ -1,6 +1,7 @@
 beautifulsoup4~=4.13.0b2
 contexttimer~=0.3.3
 gspread~=5.8.0
+lingua-language-detector~=2.0.2
 lxml~=4.9.2
 pyperclip~=1.9.0
 python-dateutil~=2.9.0.post0

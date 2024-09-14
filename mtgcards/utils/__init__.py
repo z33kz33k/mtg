@@ -17,6 +17,7 @@ from datetime import date, timedelta
 import dateutil.parser
 from dateutil.relativedelta import relativedelta
 from contexttimer import Timer
+from lingua import Language, LanguageDetectorBuilder
 
 from mtgcards import FILENAME_TIMESTAMP_FORMAT, READABLE_TIMESTAMP_FORMAT, T
 from mtgcards.utils.check_type import type_checker, uniform_type_checker
@@ -327,3 +328,39 @@ def sanitize_whitespace(text: str) -> str:
     Replace non-breaking space with a regular one.
     """
     return re.sub(r'\s+', ' ', text).replace(' ', " ")
+
+
+# list of languages Magic: The Gathering cards have been printed in
+MTG_LANGS = {
+    Language.ENGLISH,
+    Language.FRENCH,
+    Language.GERMAN,
+    Language.ITALIAN,
+    Language.SPANISH,
+    Language.JAPANESE,
+    Language.PORTUGUESE,
+    Language.CHINESE,
+    Language.RUSSIAN,
+    Language.KOREAN,
+}
+
+
+def detect_lang(text: str) -> Language:
+    """Detect language of ``text`` checking against those that Magic: The Gathering cards have
+    been printed in.
+
+    Args:
+        text: MtG card text to detect the language of
+
+    Raises:
+        ValueError: if the detected language is not a Magic: The Gathering card language
+
+    Returns:
+        lingua.Language object
+    """
+    detector = LanguageDetectorBuilder.from_languages(*MTG_LANGS).build()
+    detected_lang = detector.detect_language_of(text)
+    if detected_lang in MTG_LANGS:
+        return detected_lang
+    raise ValueError(
+        f"Detected language {detected_lang.name} is not a Magic: The Gathering card language")

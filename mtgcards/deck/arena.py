@@ -13,9 +13,11 @@ from typing import Generator
 
 from mtgcards import Json
 from mtgcards.deck import ARENA_MULTIFACE_SEPARATOR, Deck, DeckParser, InvalidDeck, \
-    ParsingState
-from mtgcards.scryfall import Card, MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR
+    ParsingState, CardNotFound
+from mtgcards.scryfall import Card, MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, \
+    foreign_to_english
 from mtgcards.utils import ParsingError, extract_int, getrepr
+from mtgcards.utils import detect_lang
 
 _log = logging.getLogger(__name__)
 
@@ -76,11 +78,30 @@ class PlaysetLine:
             pairs += [("setcode", self.set_code), ("collector_number", self.collector_number)]
         return getrepr(self.__class__, *pairs)
 
+    def _handle_foreign(self) -> list[Card] | None:
+        try:
+            lang = detect_lang(self._name)
+        except ValueError:
+            return None
+        if lang.iso_code_639_1.name.lower() == "en":
+            return None
+        _log.info(
+            f"Querying Scryfall for English name of {self._name!r} ({lang.name.title()})...")
+        if name := foreign_to_english(self._name):
+            _log.info(f"Acquired English name: {name!r}")
+            return ArenaParser.get_playset(ArenaParser.find_card(name), self.quantity)
+        return None
+
     def to_playset(self) -> list[Card]:
         set_and_collector_number = (
             self.set_code, self.collector_number) if self.is_extended else None
-        return ArenaParser.get_playset(ArenaParser.find_card(
-            self._name, set_and_collector_number), self.quantity)
+        try:
+            return ArenaParser.get_playset(ArenaParser.find_card(
+                self._name, set_and_collector_number), self.quantity)
+        except CardNotFound as cnf:
+            if cards := self._handle_foreign():
+                return cards
+            raise cnf
 
 
 def is_playset_line(line: str) -> bool:
@@ -149,42 +170,41 @@ class ArenaParser(DeckParser):
             raise ValueError("No Arena lines found")
         if not self._metadata.get("source"):
             self._metadata["source"] = "arena.decklist"
-        self._deck = self._get_deck()
-
-    def _get_deck(self) -> Deck | None:
         try:
-            for line in self._lines:
-                if is_maindeck_line(line):
-                    self._shift_to_maindeck()
-                elif is_sideboard_line(line):
-                    self._shift_to_sideboard()
-                elif is_commander_line(line):
-                    self._shift_to_commander()
-                elif is_companion_line(line):
-                    self._shift_to_companion()
-                elif is_playset_line(line):
-                    if self._state is ParsingState.IDLE:
-                        self._shift_to_maindeck()
-
-                    if self._state is ParsingState.SIDEBOARD:
-                        self._sideboard.extend(PlaysetLine(line).to_playset())
-                    elif self._state is ParsingState.COMMANDER:
-                        if result := PlaysetLine(line).to_playset():
-                            self._set_commander(result[0])
-                        else:
-                            raise ParsingError(f"Invalid commander line: {line!r}")
-                    elif self._state is ParsingState.COMPANION:
-                        if result := PlaysetLine(line).to_playset():
-                            self._companion = result[0]
-                        else:
-                            raise ParsingError(f"Invalid companion line: {line!r}")
-                    elif self._state is ParsingState.MAINDECK:
-                        self._maindeck.extend(PlaysetLine(line).to_playset())
-
-            return Deck(
-                self._maindeck, self._sideboard, self._commander, self._partner_commander,
-                self._companion, self._metadata)
-
+            self._deck = self._get_deck()
         except (ParsingError, InvalidDeck) as err:
             _log.warning(f"Parsing failed with: {err}")
-            return None
+            self._deck = None
+
+    def _get_deck(self) -> Deck | None:
+        for line in self._lines:
+            if is_maindeck_line(line):
+                self._shift_to_maindeck()
+            elif is_sideboard_line(line):
+                self._shift_to_sideboard()
+            elif is_commander_line(line):
+                self._shift_to_commander()
+            elif is_companion_line(line):
+                self._shift_to_companion()
+            elif is_playset_line(line):
+                if self._state is ParsingState.IDLE:
+                    self._shift_to_maindeck()
+
+                if self._state is ParsingState.SIDEBOARD:
+                    self._sideboard.extend(PlaysetLine(line).to_playset())
+                elif self._state is ParsingState.COMMANDER:
+                    if result := PlaysetLine(line).to_playset():
+                        self._set_commander(result[0])
+                    else:
+                        raise ParsingError(f"Invalid commander line: {line!r}")
+                elif self._state is ParsingState.COMPANION:
+                    if result := PlaysetLine(line).to_playset():
+                        self._companion = result[0]
+                    else:
+                        raise ParsingError(f"Invalid companion line: {line!r}")
+                elif self._state is ParsingState.MAINDECK:
+                    self._maindeck.extend(PlaysetLine(line).to_playset())
+
+        return Deck(
+            self._maindeck, self._sideboard, self._commander, self._partner_commander,
+            self._companion, self._metadata)

@@ -22,7 +22,6 @@ import requests
 from bs4 import BeautifulSoup
 from requests.exceptions import HTTPError
 from selenium import webdriver
-from selenium.common import ElementClickInterceptedException
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver import ActionChains, Keys
 from selenium.webdriver.chrome.webdriver import WebDriver
