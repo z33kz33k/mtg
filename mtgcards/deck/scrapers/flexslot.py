@@ -22,6 +22,7 @@ from utils.scrape import ScrapingError
 _log = logging.getLogger(__name__)
 
 
+@DeckScraper.registered
 class FlexslotScraper(DeckScraper):
     """Scraper of Flexslot.gg decklist page.
     """

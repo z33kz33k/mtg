@@ -20,6 +20,7 @@ from mtgcards.utils import from_iterable, get_date_from_ago_text, get_date_from_
 _log = logging.getLogger(__name__)
 
 
+@DeckScraper.registered
 class PennyDreadfulMagicScraper(DeckScraper):
     """Scraper of Scryfall decklist page.
     """

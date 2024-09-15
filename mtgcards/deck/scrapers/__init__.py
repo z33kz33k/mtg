@@ -10,7 +10,7 @@
 import json
 import logging
 from abc import abstractmethod
-from typing import Callable, Type
+from typing import Callable, Optional, Type
 
 from bs4 import BeautifulSoup
 
@@ -165,8 +165,18 @@ class DeckScraper(DeckParser):
             return None
 
     @classmethod
-    def register_scraper(cls, scraper_type: Type["DeckScraper"]) -> None:
+    def registered(cls, scraper_type: Type["DeckScraper"]) -> Type["DeckScraper"]:
+        """Class decorator for registering subclasses of DeckScraper.
+        """
         if issubclass(scraper_type, DeckScraper):
             cls._REGISTRY.add(scraper_type)
         else:
             raise TypeError(f"Not a subclass of DeckScraper: {scraper_type!r}")
+        return scraper_type
+
+    @classmethod
+    def from_url(cls, url: str, metadata: Json | None = None) -> Optional["DeckScraper"]:
+        for scraper_type in cls._REGISTRY:
+            if scraper_type.is_deck_url(url):
+                return scraper_type(url, metadata)
+        return None

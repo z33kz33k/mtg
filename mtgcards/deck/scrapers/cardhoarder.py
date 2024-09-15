@@ -22,6 +22,7 @@ _log = logging.getLogger(__name__)
 
 # Cardhoarder has anti-scraping protection (I doubt they care much about user-posted decks
 # though), but it seems it's bypassed by Selenium
+@DeckScraper.registered
 class CardhoarderScraper(DeckScraper):
     """Scraper of Cardhoarder decklist page.
     """

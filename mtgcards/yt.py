@@ -31,31 +31,8 @@ from youtubesearchpython import Channel as YtspChannel
 from mtgcards import FILENAME_TIMESTAMP_FORMAT, Json, OUTPUT_DIR, PathLike
 from mtgcards.deck import Deck
 from mtgcards.deck.arena import ArenaParser, get_arena_lines
-from mtgcards.deck.scrapers.aetherhub import AetherhubScraper
-from mtgcards.deck.scrapers.archidekt import ArchidektScraper
-from mtgcards.deck.scrapers.cardhoarder import CardhoarderScraper
-from mtgcards.deck.scrapers.cardsrealm import CardsrealmScraper
-from mtgcards.deck.scrapers.deckstats import DeckstatsScraper
-from mtgcards.deck.scrapers.flexslot import FlexslotScraper
-from mtgcards.deck.scrapers.goldfish import GoldfishScraper
-from mtgcards.deck.scrapers.hareruya import HareruyaScraper
-from mtgcards.deck.scrapers.manastack import ManaStackScraper
-from mtgcards.deck.scrapers.manatraders import ManatradersScraper
-from mtgcards.deck.scrapers.melee import MeleeGgScraper
-from mtgcards.deck.scrapers.moxfield import MoxfieldScraper
-from mtgcards.deck.scrapers.mtgarenapro import MtgArenaProScraper
-from mtgcards.deck.scrapers.mtgazone import MtgaZoneScraper
-from mtgcards.deck.scrapers.mtgdecksnet import MtgDecksNetScraper
-from mtgcards.deck.scrapers.mtgotraders import MtgoTradersScraper
-from mtgcards.deck.scrapers.mtgtop8 import MtgTop8Scraper
-from mtgcards.deck.scrapers.penny import PennyDreadfulMagicScraper
-from mtgcards.deck.scrapers.scryfall import ScryfallScraper
-from mtgcards.deck.scrapers.starcitygames import StarCityGamesScraper
-from mtgcards.deck.scrapers.streamdecker import StreamdeckerScraper
-from mtgcards.deck.scrapers.tappedout import TappedoutScraper
-from mtgcards.deck.scrapers.tcgplayer import NewPageTcgPlayerScraper, OldPageTcgPlayerScraper
-from mtgcards.deck.scrapers.topdecked import TopDeckedScraper, TopDeckedMetadeckScraper
-from mtgcards.deck.scrapers.untapped import UntappedProfileDeckScraper, UntappedRegularDeckScraper
+from mtgcards.deck.scrapers import DeckScraper
+from mtgcards.deck.scrapers.melee import ALT_DOMAIN as MELEE_ALT_DOMAIN
 from mtgcards.scryfall import all_formats
 from mtgcards.utils import deserialize_dates, extract_float, getrepr, multiply_by_symbol, \
     sanitize_filename, serialize_dates, timed
@@ -403,7 +380,7 @@ def get_aggregate_deck_data() -> tuple[Counter, Counter]:
         if "tcgplayer" in src:
             _, *parts = src.split(".")
             src = ".".join(parts)
-        elif MeleeGgScraper.ALT_DOMAIN in src:
+        elif MELEE_ALT_DOMAIN in src:
             src = "melee.gg"
         sources.append(src)
     source_counter = Counter(sources)
@@ -545,6 +522,7 @@ class Video:
         "www.paste4btc.com/",
         "www.pastebin.pt/",
     }
+    _THROTTLED = "aetherhub.com", "mtggoldfish.com", "moxfield.com", "tappedout.com"
 
     @property
     def id(self) -> str:
@@ -738,62 +716,11 @@ class Video:
         return links, [*get_arena_lines(*other_lines)]
 
     def _process_deck(self, link: str) -> Deck | None:
-        if AetherhubScraper.is_deck_url(link):
-            return AetherhubScraper(link, self.metadata).scrape(throttled=True)
-        elif ArchidektScraper.is_deck_url(link):
-            return ArchidektScraper(link, self.metadata).scrape()
-        elif CardhoarderScraper.is_deck_url(link):
-            return CardhoarderScraper(link, self.metadata).scrape()
-        elif CardsrealmScraper.is_deck_url(link):
-            return CardsrealmScraper(link, self.metadata).scrape()
-        elif DeckstatsScraper.is_deck_url(link):
-            return DeckstatsScraper(link, self.metadata).scrape()
-        elif FlexslotScraper.is_deck_url(link):
-            return FlexslotScraper(link, self.metadata).scrape()
-        elif GoldfishScraper.is_deck_url(link):
-            return GoldfishScraper(link, self.metadata).scrape(throttled=True)
-        elif HareruyaScraper.is_deck_url(link):
-            return HareruyaScraper(link, self.metadata).scrape()
-        elif ManaStackScraper.is_deck_url(link):
-            return ManaStackScraper(link, self.metadata).scrape()
-        elif ManatradersScraper.is_deck_url(link):
-            return ManatradersScraper(link, self.metadata).scrape()
-        elif MeleeGgScraper.is_deck_url(link):
-            return MeleeGgScraper(link, self.metadata).scrape()
-        elif MoxfieldScraper.is_deck_url(link):
-            return MoxfieldScraper(link, self.metadata).scrape(throttled=True)
-        elif MtgaZoneScraper.is_deck_url(link):
-            return MtgaZoneScraper(link, self.metadata).scrape()
-        elif MtgArenaProScraper.is_deck_url(link):
-            return MtgArenaProScraper(link, self.metadata).scrape()
-        elif MtgDecksNetScraper.is_deck_url(link):
-            return MtgDecksNetScraper(link, self.metadata).scrape()
-        elif MtgoTradersScraper.is_deck_url(link):
-            return MtgoTradersScraper(link, self.metadata).scrape()
-        elif MtgTop8Scraper.is_deck_url(link):
-            return MtgTop8Scraper(link, self.metadata).scrape()
-        elif NewPageTcgPlayerScraper.is_deck_url(link):
-            return NewPageTcgPlayerScraper(link, self.metadata).scrape()
-        elif OldPageTcgPlayerScraper.is_deck_url(link):
-            return OldPageTcgPlayerScraper(link, self.metadata).scrape()
-        elif PennyDreadfulMagicScraper.is_deck_url(link):
-            return PennyDreadfulMagicScraper(link, self.metadata).scrape()
-        elif StarCityGamesScraper.is_deck_url(link):
-            return StarCityGamesScraper(link, self.metadata).scrape()
-        elif ScryfallScraper.is_deck_url(link):
-            return ScryfallScraper(link, self.metadata).scrape()
-        elif StreamdeckerScraper.is_deck_url(link):
-            return StreamdeckerScraper(link, self.metadata).scrape()
-        elif TappedoutScraper.is_deck_url(link):
-            return TappedoutScraper(link, self.metadata).scrape(throttled=True)
-        elif TopDeckedScraper.is_deck_url(link):
-            return TopDeckedScraper(link, self.metadata).scrape()
-        elif TopDeckedMetadeckScraper.is_deck_url(link):
-            return TopDeckedMetadeckScraper(link, self.metadata).scrape()
-        elif UntappedProfileDeckScraper.is_deck_url(link):
-            return UntappedProfileDeckScraper(link, self.metadata).scrape()
-        elif UntappedRegularDeckScraper.is_deck_url(link):
-            return UntappedRegularDeckScraper(link, self.metadata).scrape()
+        if scraper := DeckScraper.from_url(link, self.metadata):
+            if any(site in link for site in self._THROTTLED):
+                return scraper.scrape(throttled=True)
+            else:
+                return scraper.scrape()
         elif any(h in link for h in self.PASTEBIN_LIKE_HOOKS):
             data = timed_request(link)
             if data:

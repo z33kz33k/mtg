@@ -36,6 +36,7 @@ _FORMATS = {
 }
 
 
+@DeckScraper.registered
 class DeckstatsScraper(DeckScraper):
     """Scraper of Deckstats.net decklist page.
     """

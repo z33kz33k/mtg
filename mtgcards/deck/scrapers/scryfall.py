@@ -21,6 +21,7 @@ from mtgcards.utils.scrape import ScrapingError, getsoup
 _log = logging.getLogger(__name__)
 
 
+@DeckScraper.registered
 class ScryfallScraper(DeckScraper):
     """Scraper of Scryfall decklist page.
     """

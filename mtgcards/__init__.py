@@ -13,6 +13,7 @@ from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from typing import Any, Callable, TypeVar
 
+
 __appname__ = __name__
 __version__ = "0.4.0"
 __description__ = "Scrape data on MtG cards and do other stuff."
@@ -70,3 +71,31 @@ def init_log() -> None:
 
 
 init_log()
+
+
+# import scraper modules so they get registered for the factory method
+from mtgcards.deck.scrapers.aetherhub import AetherhubScraper
+from mtgcards.deck.scrapers.archidekt import ArchidektScraper
+from mtgcards.deck.scrapers.cardhoarder import CardhoarderScraper
+from mtgcards.deck.scrapers.cardsrealm import CardsrealmScraper
+from mtgcards.deck.scrapers.deckstats import DeckstatsScraper
+from mtgcards.deck.scrapers.flexslot import FlexslotScraper
+from mtgcards.deck.scrapers.goldfish import GoldfishScraper
+from mtgcards.deck.scrapers.hareruya import HareruyaScraper
+from mtgcards.deck.scrapers.manastack import ManaStackScraper
+from mtgcards.deck.scrapers.manatraders import ManatradersScraper
+from mtgcards.deck.scrapers.melee import MeleeGgScraper
+from mtgcards.deck.scrapers.moxfield import MoxfieldScraper
+from mtgcards.deck.scrapers.mtgarenapro import MtgArenaProScraper
+from mtgcards.deck.scrapers.mtgazone import MtgaZoneScraper
+from mtgcards.deck.scrapers.mtgdecksnet import MtgDecksNetScraper
+from mtgcards.deck.scrapers.mtgotraders import MtgoTradersScraper
+from mtgcards.deck.scrapers.mtgtop8 import MtgTop8Scraper
+from mtgcards.deck.scrapers.penny import PennyDreadfulMagicScraper
+from mtgcards.deck.scrapers.scryfall import ScryfallScraper
+from mtgcards.deck.scrapers.starcitygames import StarCityGamesScraper
+from mtgcards.deck.scrapers.streamdecker import StreamdeckerScraper
+from mtgcards.deck.scrapers.tappedout import TappedoutScraper
+from mtgcards.deck.scrapers.tcgplayer import NewPageTcgPlayerScraper, OldPageTcgPlayerScraper
+from mtgcards.deck.scrapers.topdecked import TopDeckedScraper, TopDeckedMetadeckScraper
+from mtgcards.deck.scrapers.untapped import UntappedProfileDeckScraper, UntappedRegularDeckScraper

@@ -18,6 +18,7 @@ from mtgcards.utils.scrape import ScrapingError, timed_request
 _log = logging.getLogger(__name__)
 
 
+@DeckScraper.registered
 class StreamdeckerScraper(DeckScraper):
     """Scraper of Streamdecker deck page.
     """

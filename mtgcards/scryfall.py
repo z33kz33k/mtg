@@ -1281,27 +1281,25 @@ def find_by_name(card_name: str) -> Card | None:
     return _NAME_MAP.get(unidecode(card_name).casefold())
 
 
-def foreign_to_english(card_name: str) -> str | None:
-    """Return English equivalent of foreign card name or `None`.
-
-    Calls Scryfall API.
+def query_api_for_card(card_name: str, foreign=False) -> Card | None:
+    """Query Scryfall API for a card designated by provided name.
     """
     card_name = unidecode(card_name)
     try:
-        result = scrython.cards.Search(q=f"!{card_name}", include_multilingual=True).data()
+        result = scrython.cards.Search(q=f"!{card_name}", include_multilingual=foreign).data()
     except scrython.foundation.ScryfallError:
         result = None
     if not result:
         throttle(0.2)
         try:
-            result = scrython.cards.Search(q=card_name, include_multilingual=True).data()
+            result = scrython.cards.Search(q=card_name, include_multilingual=foreign).data()
         except scrython.foundation.ScryfallError:
             result = None
         if not result :
             return None
     if len(result) > 1:
         result.sort(key=lambda card: date.fromisoformat(card["released_at"]), reverse=True)
-    return result[0]["name"]
+    return Card(result[0])
 
 
 def find_by_words(*words: str) -> set[Card]:

@@ -25,6 +25,7 @@ _log = logging.getLogger(__name__)
 # alternative approach would be to scrape:
 # self._soup.find("input", {"type": "hidden", "name": "c"}).attrs["value"].split("||")
 # but it has a downside of not having clear sideboard-maindeck separation
+@DeckScraper.registered
 class MtgaZoneScraper(DeckScraper):
     """Scraper of MTG Arena Zone decklist page.
 

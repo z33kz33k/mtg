@@ -18,6 +18,7 @@ from mtgcards.scryfall import Card
 _log = logging.getLogger(__name__)
 
 
+@DeckScraper.registered
 class MtgArenaProScraper(DeckScraper):
     """Scraper of MTGArena.Pro decklist page.
     """

@@ -38,12 +38,13 @@ _HEADERS = {
     "Priority": "u=0, i",
     "TE": "trailers",
 }
+ALT_DOMAIN = "mtgmelee.com"
 
 
+@DeckScraper.registered
 class MeleeGgScraper(DeckScraper):
     """Scraper of Melee.gg decklist page.
     """
-    ALT_DOMAIN = "mtgmelee.com"
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -51,7 +52,7 @@ class MeleeGgScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "melee.gg/Decklist/" in url or "mtgmelee.com/Decklist/" in url
+        return "melee.gg/Decklist/" in url or f"{ALT_DOMAIN}/Decklist/" in url
 
     def _pre_process(self) -> None:  # override
         self._soup = getsoup(self.url, headers=_HEADERS)

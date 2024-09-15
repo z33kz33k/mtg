@@ -25,6 +25,7 @@ CONSENT_XPATH = '//button[contains(@class, "fc-button fc-cta-consent") and @aria
 CLIPBOARD_XPATH = "//span[text()='Copy to MTGA']"
 
 
+@DeckScraper.registered
 class UntappedProfileDeckScraper(DeckScraper):
     """Scraper of decklist page of Untapped.gg user's profile.
     """
@@ -68,6 +69,7 @@ class UntappedProfileDeckScraper(DeckScraper):
         pass
 
 
+@DeckScraper.registered
 class UntappedRegularDeckScraper(DeckScraper):
     """Scraper of a regular Untapped.gg decklist page.
     """
@@ -107,6 +109,7 @@ class UntappedRegularDeckScraper(DeckScraper):
         pass
 
 
+@DeckScraper.registered
 class UntappedMetaDeckScraper(DeckScraper):
     """Scraper of Untapped meta-decks page.
     """

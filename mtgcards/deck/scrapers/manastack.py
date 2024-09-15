@@ -21,6 +21,7 @@ from utils.scrape import ScrapingError
 _log = logging.getLogger(__name__)
 
 
+@DeckScraper.registered
 class ManaStackScraper(DeckScraper):
     """Scraper of ManaStack decklist page.
     """

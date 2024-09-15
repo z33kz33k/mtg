@@ -23,6 +23,7 @@ _log = logging.getLogger(__name__)
 
 
 # TODO: scrape the meta
+@DeckScraper.registered
 class MtgDecksNetScraper(DeckScraper):
     """Scraper of MTGDecks.net decklist page.
     """

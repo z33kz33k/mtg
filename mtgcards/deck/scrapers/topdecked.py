@@ -36,6 +36,7 @@ def _sanitize_element_text(text: str) -> str:
     return text
 
 
+@DeckScraper.registered
 class TopDeckedScraper(DeckScraper):
     """Scraper of TopDecked decklist page.
     """
@@ -133,6 +134,7 @@ class TopDeckedScraper(DeckScraper):
             self._handle_commander()
 
 
+@DeckScraper.registered
 class TopDeckedMetadeckScraper(TopDeckedScraper):
     """Scarper of TopDecked meta-deck decklist page.
     """

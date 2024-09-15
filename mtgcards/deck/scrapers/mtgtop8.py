@@ -26,6 +26,7 @@ EVENT_RANKS = "minor", "regular", "major"  # indicated by number of stars (1, 2,
 
 # TODO: scrape event as an object (basically a list of decks with event metadata taken from the
 #  first), scrape metagame
+@DeckScraper.registered
 class MtgTop8Scraper(DeckScraper):
     """Scraper of MTGTop8 decklist page.
     """

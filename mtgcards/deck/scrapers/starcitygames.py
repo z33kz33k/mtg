@@ -18,6 +18,7 @@ from mtgcards.utils import from_iterable, sanitize_whitespace
 _log = logging.getLogger(__name__)
 
 
+@DeckScraper.registered
 class StarCityGamesScraper(DeckScraper):
     """Scraper of StarCityGames decklist page.
     """

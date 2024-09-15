@@ -20,6 +20,7 @@ _log = logging.getLogger(__name__)
 
 
 # TODO: meta-decks
+@DeckScraper.registered
 class AetherhubScraper(DeckScraper):
     """Scraper of Aetherhub decklist page.
 

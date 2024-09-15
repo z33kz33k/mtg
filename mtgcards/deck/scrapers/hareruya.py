@@ -21,6 +21,7 @@ from mtgcards.utils.scrape import ScrapingError, getsoup
 _log = logging.getLogger(__name__)
 
 
+@DeckScraper.registered
 class HareruyaScraper(DeckScraper):
     """Scraper of Hareruya decklist page.
     """

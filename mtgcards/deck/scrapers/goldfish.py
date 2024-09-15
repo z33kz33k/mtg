@@ -27,6 +27,7 @@ _log = logging.getLogger(__name__)
 # yet another alternative approach would be to scrape:
 # https://www.mtggoldfish.com/deck/arena_download/{DECK_ID} but this entails another request and
 # parsing a DECK_ID from the first URL
+@DeckScraper.registered
 class GoldfishScraper(DeckScraper):
     """Scraper of MtGGoldfish decklist page.
     """

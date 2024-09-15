@@ -19,6 +19,7 @@ from mtgcards.scryfall import Card
 _log = logging.getLogger(__name__)
 
 
+@DeckScraper.registered
 class CardsrealmScraper(DeckScraper):
     """Scraper of Cardsrealm decklist page.
     """
@@ -50,7 +51,7 @@ class CardsrealmScraper(DeckScraper):
         self._metadata["views"] = card_data["deck_views"]
         self._update_fmt(card_data["tour_type_name"].lower())
 
-    def _parse_card_json(self, card_json: Json) -> list[Card]:
+    def _parse_card_json(self, card_json: Json) -> None:
         name = card_json["name_of_card"]
         quantity = card_json["deck_quantity"]
         card = self.find_card(name)

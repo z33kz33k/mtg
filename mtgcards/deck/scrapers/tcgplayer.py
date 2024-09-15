@@ -23,6 +23,7 @@ from mtgcards.utils.scrape import ScrapingError, get_dynamic_soup_by_xpath, gets
 _log = logging.getLogger(__name__)
 
 
+@DeckScraper.registered
 class OldPageTcgPlayerScraper(DeckScraper):
     """Scraper of TCG Player old-style decklist page.
     """
@@ -79,6 +80,7 @@ class OldPageTcgPlayerScraper(DeckScraper):
 #  https://infinite-api.tcgplayer.com/deck/magic/{DECK_ID}
 #  /?source=infinite-content&subDecks=true&cards=true&stats=true - so this could probably be scraped
 #  bypassing the soup (and Selenium)
+@DeckScraper.registered
 class NewPageTcgPlayerScraper(DeckScraper):
     """Scraper of TCG Player new-style decklist page.
     """

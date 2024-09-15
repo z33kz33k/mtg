@@ -9,14 +9,12 @@
 """
 import logging
 import re
-from abc import abstractmethod
 from typing import Generator
 
 from mtgcards import Json
-from mtgcards.deck import ARENA_MULTIFACE_SEPARATOR, Deck, DeckParser, InvalidDeck, \
-    ParsingState, CardNotFound
+from mtgcards.deck import ARENA_MULTIFACE_SEPARATOR, CardNotFound, DeckParser, ParsingState
 from mtgcards.scryfall import Card, MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, \
-    foreign_to_english
+    query_api_for_card
 from mtgcards.utils import ParsingError, extract_int, getrepr
 from mtgcards.utils import detect_lang
 
@@ -87,10 +85,10 @@ class PlaysetLine:
         if lang.iso_code_639_1.name.lower() == "en":
             return None
         _log.info(
-            f"Querying Scryfall for English name of {self._name!r} ({lang.name.title()})...")
-        if name := foreign_to_english(self._name):
-            _log.info(f"Acquired English name: {name!r}")
-            return ArenaParser.get_playset(ArenaParser.find_card(name), self.quantity)
+            f"Querying Scryfall for English equivalent of {self._name!r} ({lang.name.title()})...")
+        if card := query_api_for_card(self._name, foreign=True):
+            _log.info(f"Acquired English card: {card.name!r}")
+            return ArenaParser.get_playset(card, self.quantity)
         return None
 
     def to_playset(self) -> list[Card]:
