@@ -737,70 +737,70 @@ class Video:
                     other_lines.append(line)
         return links, [*get_arena_lines(*other_lines)]
 
-    def _scrape_deck(self, link: str) -> Deck | None:
+    def _process_deck(self, link: str) -> Deck | None:
         if AetherhubScraper.is_deck_url(link):
-            return AetherhubScraper(link, self.metadata, throttled=True).deck
+            return AetherhubScraper(link, self.metadata).scrape(throttled=True)
         elif ArchidektScraper.is_deck_url(link):
-            return ArchidektScraper(link, self.metadata).deck
+            return ArchidektScraper(link, self.metadata).scrape()
         elif CardhoarderScraper.is_deck_url(link):
-            return CardhoarderScraper(link, self.metadata).deck
+            return CardhoarderScraper(link, self.metadata).scrape()
         elif CardsrealmScraper.is_deck_url(link):
-            return CardsrealmScraper(link, self.metadata).deck
+            return CardsrealmScraper(link, self.metadata).scrape()
         elif DeckstatsScraper.is_deck_url(link):
-            return DeckstatsScraper(link, self.metadata).deck
+            return DeckstatsScraper(link, self.metadata).scrape()
         elif FlexslotScraper.is_deck_url(link):
-            return FlexslotScraper(link, self.metadata).deck
+            return FlexslotScraper(link, self.metadata).scrape()
         elif GoldfishScraper.is_deck_url(link):
-            return GoldfishScraper(link, self.metadata, throttled=True).deck
+            return GoldfishScraper(link, self.metadata).scrape(throttled=True)
         elif HareruyaScraper.is_deck_url(link):
-            return HareruyaScraper(link, self.metadata).deck
+            return HareruyaScraper(link, self.metadata).scrape()
         elif ManaStackScraper.is_deck_url(link):
-            return ManaStackScraper(link, self.metadata).deck
+            return ManaStackScraper(link, self.metadata).scrape()
         elif ManatradersScraper.is_deck_url(link):
-            return ManatradersScraper(link, self.metadata).deck
+            return ManatradersScraper(link, self.metadata).scrape()
         elif MeleeGgScraper.is_deck_url(link):
-            return MeleeGgScraper(link, self.metadata).deck
+            return MeleeGgScraper(link, self.metadata).scrape()
         elif MoxfieldScraper.is_deck_url(link):
-            return MoxfieldScraper(link, self.metadata, throttled=True).deck
+            return MoxfieldScraper(link, self.metadata).scrape(throttled=True)
         elif MtgaZoneScraper.is_deck_url(link):
-            return MtgaZoneScraper(link, self.metadata).deck
+            return MtgaZoneScraper(link, self.metadata).scrape()
         elif MtgArenaProScraper.is_deck_url(link):
-            return MtgArenaProScraper(link, self.metadata).deck
+            return MtgArenaProScraper(link, self.metadata).scrape()
         elif MtgDecksNetScraper.is_deck_url(link):
-            return MtgDecksNetScraper(link, self.metadata).deck
+            return MtgDecksNetScraper(link, self.metadata).scrape()
         elif MtgoTradersScraper.is_deck_url(link):
-            return MtgoTradersScraper(link, self.metadata).deck
+            return MtgoTradersScraper(link, self.metadata).scrape()
         elif MtgTop8Scraper.is_deck_url(link):
-            return MtgTop8Scraper(link, self.metadata).deck
+            return MtgTop8Scraper(link, self.metadata).scrape()
         elif NewPageTcgPlayerScraper.is_deck_url(link):
-            return NewPageTcgPlayerScraper(link, self.metadata).deck
+            return NewPageTcgPlayerScraper(link, self.metadata).scrape()
         elif OldPageTcgPlayerScraper.is_deck_url(link):
-            return OldPageTcgPlayerScraper(link, self.metadata).deck
+            return OldPageTcgPlayerScraper(link, self.metadata).scrape()
         elif PennyDreadfulMagicScraper.is_deck_url(link):
-            return PennyDreadfulMagicScraper(link, self.metadata).deck
+            return PennyDreadfulMagicScraper(link, self.metadata).scrape()
         elif StarCityGamesScraper.is_deck_url(link):
-            return StarCityGamesScraper(link, self.metadata).deck
+            return StarCityGamesScraper(link, self.metadata).scrape()
         elif ScryfallScraper.is_deck_url(link):
-            return ScryfallScraper(link, self.metadata).deck
+            return ScryfallScraper(link, self.metadata).scrape()
         elif StreamdeckerScraper.is_deck_url(link):
-            return StreamdeckerScraper(link, self.metadata).deck
+            return StreamdeckerScraper(link, self.metadata).scrape()
         elif TappedoutScraper.is_deck_url(link):
-            return TappedoutScraper(link, self.metadata, throttled=True).deck
+            return TappedoutScraper(link, self.metadata).scrape(throttled=True)
         elif TopDeckedScraper.is_deck_url(link):
-            return TopDeckedScraper(link, self.metadata).deck
+            return TopDeckedScraper(link, self.metadata).scrape()
         elif TopDeckedMetadeckScraper.is_deck_url(link):
-            return TopDeckedMetadeckScraper(link, self.metadata).deck
+            return TopDeckedMetadeckScraper(link, self.metadata).scrape()
         elif UntappedProfileDeckScraper.is_deck_url(link):
-            return UntappedProfileDeckScraper(link, self.metadata).deck
+            return UntappedProfileDeckScraper(link, self.metadata).scrape()
         elif UntappedRegularDeckScraper.is_deck_url(link):
-            return UntappedRegularDeckScraper(link, self.metadata).deck
+            return UntappedRegularDeckScraper(link, self.metadata).scrape()
         elif any(h in link for h in self.PASTEBIN_LIKE_HOOKS):
             data = timed_request(link)
             if data:
                 lines = data.splitlines()
                 arena_lines = [*get_arena_lines(*lines)]
                 if arena_lines:
-                    return ArenaParser(arena_lines, self.metadata).deck
+                    return ArenaParser(arena_lines, self.metadata).parse()
         return None
 
     def _process_urls(self, urls: list[str]) -> list[Deck]:
@@ -808,7 +808,7 @@ class Video:
         for url in urls:
             self._sources.add(extract_source(url))
             try:
-                if deck := self._scrape_deck(url):
+                if deck := self._process_deck(url):
                     decks.append(deck)
             except Exception as e:
                 _log.exception(f"Deck scraping failed with: {e}")
@@ -831,7 +831,7 @@ class Video:
         # 3rd stage: Arena lines
         if self._arena_lines:
             self._sources.add("arena.decklist")
-            if deck := ArenaParser(self._arena_lines, self.metadata).deck:
+            if deck := ArenaParser(self._arena_lines, self.metadata).parse():
                 decks.add(deck)
 
         return sorted(decks)

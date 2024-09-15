@@ -26,12 +26,7 @@ class StreamdeckerScraper(DeckScraper):
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
         *_, self._decklist_id = self.url.split("/")
-        self._json_data = timed_request(
-            self.API_URL_TEMPLATE.format(self._decklist_id), return_json=True)["data"]
-        if not self._json_data:
-            raise ScrapingError("Data not available")
-        self._scrape_metadata()
-        self._scrape_deck()
+        self._json_data: Json | None = None
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -44,11 +39,17 @@ class StreamdeckerScraper(DeckScraper):
             return url.removesuffix("/")
         return url
 
+    def _pre_process(self) -> None:  # override
+        self._json_data = timed_request(
+            self.API_URL_TEMPLATE.format(self._decklist_id), return_json=True)["data"]
+        if not self._json_data:
+            raise ScrapingError("Data not available")
+
     def _parse_date(self) -> date | None:
         date_text = self._json_data["updatedAt"]
         return get_date_from_ago_text(date_text)
 
-    def _scrape_metadata(self) -> None:  # override
+    def _process_metadata(self) -> None:  # override
         self._metadata.update({
             "name": self._json_data["name"],
             "views": self._json_data["views"]["counter"]
@@ -73,7 +74,6 @@ class StreamdeckerScraper(DeckScraper):
         if json_card.get("companion"):
             self._companion = card
 
-    def _scrape_deck(self) -> None:
+    def _process_deck(self) -> None:
         for json_card in self._json_data["cardList"]:
             self._parse_json_card(json_card)
-        self._build_deck()

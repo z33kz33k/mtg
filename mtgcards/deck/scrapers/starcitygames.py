@@ -23,24 +23,24 @@ class StarCityGamesScraper(DeckScraper):
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            raise ScrapingError("Page not available")
-        self._scrape_metadata()
-        self._scrape_deck()
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "old.starcitygames.com/decks/" in url
 
-    def _scrape_metadata(self) -> None:  # override
+    def _pre_process(self) -> None:  # override
+        self._soup = getsoup(self.url)
+        if not self._soup:
+            raise ScrapingError("Page not available")
+
+    def _process_metadata(self) -> None:  # override
         self._metadata["name"] = self._soup.find("header", class_="deck_title").text.strip()
         self._metadata["author"] = self._soup.find("header", class_="player_name").text.strip()
         if event_tag := self._soup.find("header", class_="deck_played_placed"):
             self._metadata["event"] = sanitize_whitespace(event_tag.text.strip())
         self._update_fmt(self._soup.find("div", class_="deck_format").text.strip().lower())
 
-    def _scrape_deck(self) -> None:  # override
+    def _process_deck(self) -> None:  # override
         deck_tag = self._soup.find("div", class_="deck_card_wrapper")
         for tag in deck_tag.descendants:
             if tag.name == "h3":
@@ -69,5 +69,3 @@ class StarCityGamesScraper(DeckScraper):
             deck_name = self._metadata["name"]
             if commander := from_iterable(self._maindeck, lambda c: c.name == deck_name):
                 self._set_commander(commander)
-
-        self._build_deck()

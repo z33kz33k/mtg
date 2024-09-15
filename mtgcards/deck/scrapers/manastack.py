@@ -16,6 +16,7 @@ from mtgcards.deck import ParsingState
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils import get_date_from_ago_text
 from mtgcards.utils.scrape import get_dynamic_soup_by_xpath
+from utils.scrape import ScrapingError
 
 _log = logging.getLogger(__name__)
 
@@ -27,18 +28,18 @@ class ManaStackScraper(DeckScraper):
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        try:
-            self._soup, _, _ = get_dynamic_soup_by_xpath(self.url, self._XPATH)
-            self._scrape_metadata()
-            self._scrape_deck()
-        except TimeoutException:
-            _log.warning(f"Scraping failed due to Selenium timing out")
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "manastack.com/deck/" in url
 
-    def _scrape_metadata(self) -> None:  # override
+    def _pre_process(self) -> None:  # override
+        try:
+            self._soup, _, _ = get_dynamic_soup_by_xpath(self.url, self._XPATH)
+        except TimeoutException:
+            raise ScrapingError(f"Scraping failed due to Selenium timing out")
+
+    def _process_metadata(self) -> None:  # override
         self._metadata["name"] = self._soup.find("h3", class_="deck-name").text.strip()
         self._update_fmt(self._soup.find("div", class_="format-listing").text.strip().lower())
         if desc_tag := self._soup.select_one("div.deck-description.text"):
@@ -48,7 +49,7 @@ class ManaStackScraper(DeckScraper):
         *_, date_text = author_tag.text.strip().split("Last updated")
         self._metadata["date"] = get_date_from_ago_text(date_text.strip())
 
-    def _scrape_deck(self) -> None:  # override
+    def _process_deck(self) -> None:  # override
         deck_tag = self._soup.find("div", class_="deck-list-container")
         for tag in deck_tag.descendants:
             if tag.name == "h4":
@@ -74,5 +75,3 @@ class ManaStackScraper(DeckScraper):
                         self._set_commander(cards[0])
                     elif self._state is ParsingState.COMPANION:
                         self._companion = cards[0]
-
-        self._build_deck()

@@ -1255,10 +1255,10 @@ def _build_maps() -> None:
     global _NAME_MAP, _SCRYFALL_ID_MAP, _COLLECTOR_NUMBER_MAP
     _log.info("Mapping the cards for fast lookups...")
     for card in bulk_data():
-        _NAME_MAP[unidecode(card.name)] = card
+        _NAME_MAP[unidecode(card.name).casefold()] = card
         if card.is_multiface:
-            _NAME_MAP[unidecode(card.first_face_name)] = card
-            _NAME_MAP[unidecode(card.second_face_name)] = card
+            _NAME_MAP[unidecode(card.first_face_name).casefold()] = card
+            _NAME_MAP[unidecode(card.second_face_name).casefold()] = card
         _SCRYFALL_ID_MAP[card.id] = card
         _ORACLE_ID_MAP[card.id] = card
         if card.tcgplayer_id is not None:
@@ -1272,11 +1272,13 @@ def _build_maps() -> None:
 
 def find_by_name(card_name: str) -> Card | None:
     """Return a card designated by provided name or `None`.
+
+    Case-insensitive.
     """
     global _NAME_MAP
     if not _NAME_MAP:
         _build_maps()
-    return _NAME_MAP.get(unidecode(card_name))
+    return _NAME_MAP.get(unidecode(card_name).casefold())
 
 
 def foreign_to_english(card_name: str) -> str | None:

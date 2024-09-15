@@ -25,17 +25,17 @@ class PennyDreadfulMagicScraper(DeckScraper):
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            raise ScrapingError("Page not available")
-        self._scrape_metadata()
-        self._scrape_deck()
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "pennydreadfulmagic.com/decks/" in url
 
-    def _scrape_metadata(self) -> None:  # override
+    def _pre_process(self) -> None:  # override
+        self._soup = getsoup(self.url)
+        if not self._soup:
+            raise ScrapingError("Page not available")
+
+    def _process_metadata(self) -> None:  # override
         self._update_fmt("penny")
         self._metadata["name"] = self._soup.find("h1", class_="deck-name").text.strip()
         info_tag = self._soup.find("div", class_="title")
@@ -60,7 +60,7 @@ class PennyDreadfulMagicScraper(DeckScraper):
         quantity = int(qty_text)
         return cls.get_playset(cls.find_card(name), quantity)
 
-    def _scrape_deck(self) -> None:  # override
+    def _process_deck(self) -> None:  # override
         for section_tag in self._soup.find_all("section"):
             if section_tag.find("section"):  # skip higher-order sections
                 continue
@@ -77,5 +77,3 @@ class PennyDreadfulMagicScraper(DeckScraper):
                         self._sideboard += cards
                     else:
                         self._maindeck += cards
-
-        self._build_deck()

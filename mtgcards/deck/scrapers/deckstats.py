@@ -41,12 +41,7 @@ class DeckstatsScraper(DeckScraper):
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            raise ScrapingError("Page not available")
-        self._json_data = self._get_json()
-        self._scrape_metadata()
-        self._scrape_deck()
+        self._json_data: Json | None = None
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -61,7 +56,13 @@ class DeckstatsScraper(DeckScraper):
         return self.dissect_js(
             "init_deck_data(", "deck_display();", lambda s: s.removesuffix(", false);"))
 
-    def _scrape_metadata(self) -> None:  # override
+    def _pre_process(self) -> None:  # override
+        self._soup = getsoup(self.url)
+        if not self._soup:
+            raise ScrapingError("Page not available")
+        self._json_data = self._get_json()
+
+    def _process_metadata(self) -> None:  # override
         author_text = self._soup.find("div", id="deck_folder_subtitle").text.strip()
         self._metadata["author"] = author_text.removeprefix("in  ").removesuffix("'s Decks")
         self._metadata["name"] = self._json_data["name"]
@@ -87,7 +88,7 @@ class DeckstatsScraper(DeckScraper):
             self._set_commander(card)
         return self.get_playset(card, quantity)
 
-    def _scrape_deck(self) -> None:  # override
+    def _process_deck(self) -> None:  # override
         cards = itertools.chain(
             *[section["cards"] for section in self._json_data["sections"]])
         for card_json in cards:
@@ -95,4 +96,3 @@ class DeckstatsScraper(DeckScraper):
         if sideboard := self._json_data.get("sideboard"):
             for card_json in sideboard:
                 self._sideboard.extend(self._parse_card_json(card_json))
-        self._build_deck()

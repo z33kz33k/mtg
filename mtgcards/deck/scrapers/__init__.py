@@ -10,7 +10,7 @@
 import json
 import logging
 from abc import abstractmethod
-from typing import Callable
+from typing import Callable, Type
 
 from bs4 import BeautifulSoup
 
@@ -18,6 +18,7 @@ from mtgcards import Json
 from mtgcards.deck import Deck, DeckParser, InvalidDeck
 from mtgcards.utils.scrape import Throttling, extract_source, throttle
 from mtgcards.scryfall import all_formats
+from utils.scrape import ScrapingError
 
 _log = logging.getLogger(__name__)
 
@@ -61,28 +62,19 @@ SANITIZED_FORMATS = {
 
 class DeckScraper(DeckParser):
     THROTTLING = Throttling(0.6, 0.15)
+    _REGISTRY = set()
 
     @property
     def url(self) -> str:
         return self._url
 
-    @property
-    def throttled(self) -> bool:
-        return self._throttled
-
-    def __init__(
-            self, url: str, metadata: Json | None = None, throttled=False,
-            supress_invalid_deck=True) -> None:
+    def __init__(self, url: str, metadata: Json | None = None) -> None:
         self._validate_url(url)
         super().__init__(metadata)
-        self._throttled = throttled
-        self._supress_invalid_deck = supress_invalid_deck
         self._url = self.sanitize_url(url)
         self._soup: BeautifulSoup | None = None
         self._metadata["url"] = self.url
         self._metadata["source"] = extract_source(self.url)
-        if self.throttled:
-            throttle(*self.THROTTLING)
 
     @classmethod
     def _validate_url(cls, url):
@@ -99,14 +91,6 @@ class DeckScraper(DeckParser):
         if "?" in url:
             url, rest = url.split("?", maxsplit=1)
         return url.removesuffix("/")
-
-    @abstractmethod
-    def _scrape_metadata(self) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
-    def _scrape_deck(self) -> None:
-        raise NotImplementedError
 
     def _update_fmt(self, fmt: str) -> None:
         fmt = fmt.strip().lower()
@@ -132,13 +116,57 @@ class DeckScraper(DeckParser):
             second = end_processor(second)
         return json.loads(second)
 
-    def _build_deck(self) -> None:
-        try:
-            self._deck = Deck(
-                self._maindeck, self._sideboard, self._commander, self._partner_commander,
-                self._companion, self._metadata)
-        except InvalidDeck as err:
-            _log.warning(f"Scraping failed with: {err}")
-            if not self._supress_invalid_deck:
-                raise
+    @abstractmethod
+    def _pre_process(self) -> None:
+        raise NotImplementedError
 
+    @abstractmethod
+    def _process_metadata(self) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def _process_deck(self) -> None:
+        raise NotImplementedError
+
+    def parse(
+            self, supress_parsing_errors=True, supress_invalid_deck=True) -> Deck | None: # override
+        return self.scrape(
+            supress_scraping_errors=supress_parsing_errors,
+            supress_invalid_deck=supress_invalid_deck
+        )
+
+    def _build_deck(self) -> Deck:
+        return Deck(
+            self._maindeck, self._sideboard, self._commander, self._partner_commander,
+            self._companion, self._metadata)
+
+    def scrape(
+            self, throttled=False, supress_scraping_errors=True,
+            supress_invalid_deck=True) -> Deck | None:
+        if throttled:
+            throttle(*self.THROTTLING)
+        try:
+            self._pre_process()
+            self._process_metadata()
+            self._process_deck()
+        except ScrapingError as se:
+            if not supress_scraping_errors:
+                _log.error(f"Scraping failed with: {se}")
+                raise se
+            _log.warning(f"Scraping failed with: {se}")
+            return None
+        try:
+            return self._build_deck()
+        except InvalidDeck as err:
+            if not supress_invalid_deck:
+                _log.error(f"Scraping failed with: {err}")
+                raise err
+            _log.warning(f"Scraping failed with: {err}")
+            return None
+
+    @classmethod
+    def register_scraper(cls, scraper_type: Type["DeckScraper"]) -> None:
+        if issubclass(scraper_type, DeckScraper):
+            cls._REGISTRY.add(scraper_type)
+        else:
+            raise TypeError(f"Not a subclass of DeckScraper: {scraper_type!r}")

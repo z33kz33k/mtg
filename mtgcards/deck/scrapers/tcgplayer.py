@@ -28,17 +28,17 @@ class OldPageTcgPlayerScraper(DeckScraper):
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            raise ScrapingError("Page not available")
-        self._scrape_metadata()
-        self._scrape_deck()
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "decks.tcgplayer.com/" in url and "/search" not in url
 
-    def _scrape_metadata(self) -> None:  # override
+    def _pre_process(self) -> None:  # override
+        self._soup = getsoup(self.url)
+        if not self._soup:
+            raise ScrapingError("Page not available")
+
+    def _process_metadata(self) -> None:  # override
         info_tag = self._soup.find("div", class_="viewDeckHeader")
         h1_tag = info_tag.find("h1")
         self._metadata["name"] = h1_tag.find("a").text.strip()
@@ -62,7 +62,7 @@ class OldPageTcgPlayerScraper(DeckScraper):
             cards += cls.get_playset(cls.find_card(name_tag.text.strip()), quantity)
         return cards
 
-    def _scrape_deck(self) -> None:  # override
+    def _process_deck(self) -> None:  # override
         deck_tags = self._soup.find_all("div", class_="subdeck")
         for deck_tag in deck_tags:
             if deck_tag.find("h3").text.lower().startswith("command"):
@@ -73,8 +73,6 @@ class OldPageTcgPlayerScraper(DeckScraper):
                 self._sideboard = self._process_deck_tag(deck_tag)
             else:
                 self._maindeck = self._process_deck_tag(deck_tag)
-
-        self._build_deck()
 
 
 # TODO: there's actually a request to API for JSON I forgot to check:
@@ -88,18 +86,18 @@ class NewPageTcgPlayerScraper(DeckScraper):
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        try:
-            self._soup, _, _ = get_dynamic_soup_by_xpath(self.url, self._XPATH)
-            self._scrape_metadata()
-            self._scrape_deck()
-        except TimeoutException:
-            _log.warning(f"Scraping failed due to Selenium timing out")
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "infinite.tcgplayer.com/magic-the-gathering/deck/" in url
 
-    def _scrape_metadata(self) -> None:  # override
+    def _pre_process(self) -> None:  # override
+        try:
+            self._soup, _, _ = get_dynamic_soup_by_xpath(self.url, self._XPATH)
+        except TimeoutException:
+            raise ScrapingError(f"Scraping failed due to Selenium timing out")
+
+    def _process_metadata(self) -> None:  # override
         name_tag = self._soup.find(
             "h2", class_=lambda c: c and "martech-heading" in c and "martech-inter" in c)
         self._metadata["name"] = name_tag.text.strip()
@@ -125,7 +123,7 @@ class NewPageTcgPlayerScraper(DeckScraper):
             str(quantity))
         return cls.get_playset(cls.find_card(name), quantity)
 
-    def _scrape_deck(self) -> None:  # override
+    def _process_deck(self) -> None:  # override
         commander_tag = self._soup.find("div", class_="commandzone")
         if commander_tag:
             card_tags = commander_tag.find_all("li", class_="list__item")
@@ -142,5 +140,3 @@ class NewPageTcgPlayerScraper(DeckScraper):
             card_tags = side_tag.find_all("li", class_="list__item")
             for card_tag in card_tags:
                 self._sideboard += self._to_playset(card_tag)
-
-        self._build_deck()

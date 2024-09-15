@@ -9,6 +9,7 @@
 """
 import logging
 import re
+from abc import abstractmethod
 from typing import Generator
 
 from mtgcards import Json
@@ -165,18 +166,16 @@ class ArenaParser(DeckParser):
     """
     def __init__(self, lines: list[str], metadata: Json | None = None) -> None:
         super().__init__(metadata)
-        self._lines = [*get_arena_lines(*lines)]
+        self._lines = lines
+
+    def _pre_process(self) -> None:  # override
+        self._lines = [*get_arena_lines(*self._lines)]
         if not self._lines:
             raise ValueError("No Arena lines found")
         if not self._metadata.get("source"):
             self._metadata["source"] = "arena.decklist"
-        try:
-            self._deck = self._get_deck()
-        except (ParsingError, InvalidDeck) as err:
-            _log.warning(f"Parsing failed with: {err}")
-            self._deck = None
 
-    def _get_deck(self) -> Deck | None:
+    def _process_deck(self) -> None:  # override
         for line in self._lines:
             if is_maindeck_line(line):
                 self._shift_to_maindeck()
@@ -204,7 +203,3 @@ class ArenaParser(DeckParser):
                         raise ParsingError(f"Invalid companion line: {line!r}")
                 elif self._state is ParsingState.MAINDECK:
                     self._maindeck.extend(PlaysetLine(line).to_playset())
-
-        return Deck(
-            self._maindeck, self._sideboard, self._commander, self._partner_commander,
-            self._companion, self._metadata)

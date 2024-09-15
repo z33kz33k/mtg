@@ -11,7 +11,7 @@ import logging
 from datetime import datetime
 
 from mtgcards import Json
-from mtgcards.deck import Deck, InvalidDeck, Mode, ParsingState
+from mtgcards.deck import Deck, Mode, ParsingState
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.scryfall import all_formats
 from mtgcards.utils import extract_int, timed
@@ -44,14 +44,8 @@ class GoldfishScraper(DeckScraper):
     }
 
     def __init__(
-            self, url: str, metadata: Json | None = None, throttled=False,
-            supress_invalid_deck=True) -> None:
-        super().__init__(url, metadata, throttled, supress_invalid_deck)
-        self._soup = getsoup(self.url, headers=self.HEADERS)
-        if not self._soup:
-            raise ScrapingError("Page not available")
-        self._scrape_metadata()
-        self._scrape_deck()
+            self, url: str, metadata: Json | None = None) -> None:
+        super().__init__(url, metadata)
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -68,7 +62,12 @@ class GoldfishScraper(DeckScraper):
             return url
         return url
 
-    def _scrape_metadata(self) -> None:  # override
+    def _pre_process(self) -> None:  # override
+        self._soup = getsoup(self.url, headers=self.HEADERS)
+        if not self._soup:
+            raise ScrapingError("Page not available")
+
+    def _process_metadata(self) -> None:  # override
         title_tag = self._soup.find("h1", class_="title")
         self._metadata["name"], *_ = title_tag.text.strip().split("\n")
         author_tag = title_tag.find("span")
@@ -93,7 +92,7 @@ class GoldfishScraper(DeckScraper):
         if source_idx is not None:
             self._metadata["original_source"] = lines[source_idx].strip()
 
-    def _scrape_deck(self) -> None:  # override
+    def _process_deck(self) -> None:  # override
         deck_tag = self._soup.find("table", class_="deck-view-deck-table")
         for tag in deck_tag.descendants:
             if tag.name == "tr" and tag.has_attr(
@@ -122,8 +121,6 @@ class GoldfishScraper(DeckScraper):
                     elif self._state is ParsingState.COMPANION:
                         self._companion = cards[0]
 
-        self._build_deck()
-
 
 @http_requests_counted("scraping meta decks")
 @timed("scraping meta decks", precision=1)
@@ -141,12 +138,9 @@ def scrape_meta(fmt="standard") -> list[Deck]:
     decks, metas = [], []
     for i, tile in enumerate(tiles, start=1):
         link = tile.find("a").attrs["href"]
-        try:
-            deck = GoldfishScraper(
-                f"https://www.mtggoldfish.com{link}", {"format": fmt}, throttled=True,
-                supress_invalid_deck=False).deck
-        except InvalidDeck as err:
-            raise ScrapingError(f"Scraping meta deck failed with: {err}")
+        deck = GoldfishScraper(
+            f"https://www.mtggoldfish.com{link}", {"format": fmt}).scrape(
+            throttled=True, supress_invalid_deck=False)
         count = tile.find("span", class_="archetype-tile-statistic-value-extra-data").text.strip()
         count = extract_int(count)
         metas.append({"place": i, "count": count})

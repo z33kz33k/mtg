@@ -44,20 +44,21 @@ class MoxfieldScraper(DeckScraper):
     }
 
     def __init__(
-            self, url: str, metadata: Json | None = None, throttled=False) -> None:
-        super().__init__(url, metadata, throttled)
+            self, url: str, metadata: Json | None = None) -> None:
+        super().__init__(url, metadata)
         *_, self._decklist_id = self.url.split("/")
+        self._json_data: Json | None = None
+
+    @staticmethod
+    def is_deck_url(url: str) -> bool:  # override
+        return "moxfield.com/decks/" in url and "/personal" not in url and "/history" not in url
+
+    def _pre_process(self) -> None:  # override
         self._json_data = timed_request(
             self.API_URL_TEMPLATE.format(self._decklist_id), return_json=True,
             headers=self.HEADERS)
         if not self._json_data:
             raise ScrapingError("Data not available")
-        self._scrape_metadata()
-        self._scrape_deck()
-
-    @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
-        return "moxfield.com/decks/" in url and "/personal" not in url and "/history" not in url
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
@@ -70,7 +71,7 @@ class MoxfieldScraper(DeckScraper):
             return url.removesuffix("/")
         return url
 
-    def _scrape_metadata(self) -> None:  # override
+    def _process_metadata(self) -> None:  # override
         fmt = self._json_data["format"].lower()
         self._update_fmt(fmt)
         name = self._json_data["name"]
@@ -98,7 +99,7 @@ class MoxfieldScraper(DeckScraper):
         name = json_card["card"]["name"]
         return cls.get_playset(cls.find_card(name, scryfall_id=scryfall_id), quantity)
 
-    def _scrape_deck(self) -> None:  # override
+    def _process_deck(self) -> None:  # override
         for card in self._json_data["boards"]["mainboard"]["cards"].values():
             self._maindeck.extend(self._to_playset(card))
         for card in self._json_data["boards"]["sideboard"]["cards"].values():
@@ -114,5 +115,3 @@ class MoxfieldScraper(DeckScraper):
             card = next(iter(self._json_data["boards"]["companions"]["cards"].items()))[1]
             result = self._to_playset(card)
             self._companion = result[0]
-
-        self._build_deck()

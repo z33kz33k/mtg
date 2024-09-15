@@ -36,17 +36,17 @@ class MtgaZoneScraper(DeckScraper):
     def __init__(self, url: str, metadata: Json | None = None, deck_tag: Tag | None = None) -> None:
         super().__init__(url, metadata)
         self._deck_tag = deck_tag
-        self._soup = deck_tag or getsoup(self.url)
-        if not self._soup:
-            raise ScrapingError("Soup not available")
-        self._scrape_metadata()
-        self._scrape_deck()
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "mtgazone.com/user-decks/" in url or "mtgazone.com/deck/" in url
 
-    def _scrape_metadata(self) -> None:  # override
+    def _pre_process(self) -> None:  # override
+        self._soup = self._deck_tag or getsoup(self.url)
+        if not self._soup:
+            raise ScrapingError("Soup not available")
+
+    def _process_metadata(self) -> None:  # override
         name_author_tag = self._soup.find("div", class_="name-container")
         if not name_author_tag:
             raise ScrapingError(
@@ -94,7 +94,7 @@ class MtgaZoneScraper(DeckScraper):
             decklist.extend(self._to_playset(card_tag))
         return decklist
 
-    def _scrape_deck(self) -> None:  # override
+    def _process_deck(self) -> None:  # override
         if commander_tag := self._soup.select_one("div.decklist.short.commander"):
             for card in self._process_decklist(commander_tag):
                 self._set_commander(card)
@@ -112,8 +112,6 @@ class MtgaZoneScraper(DeckScraper):
             except IndexError:
                 pass
 
-        self._build_deck()
-
 
 def _parse_tiers(table: Tag) -> dict[str, int]:
     tiers = {}
@@ -126,10 +124,7 @@ def _parse_tiers(table: Tag) -> dict[str, int]:
 
 
 def _parse_meta_deck(deck_tag: Tag, decks2tiers: dict[str, int], deck_place: int) -> Deck:
-    try:
-        deck = MtgaZoneScraper("", deck_tag=deck_tag).deck
-    except InvalidDeck as err:
-        raise ScrapingError(f"Scraping meta deck failed with: {err}")
+    deck = MtgaZoneScraper("", deck_tag=deck_tag).scrape(supress_invalid_deck=False)
     meta = {
         "meta": {
             "place": deck_place
@@ -176,5 +171,3 @@ def scrape_meta(fmt="standard", bo3=True) -> list[Deck]:
         decks.append(deck)
 
     return decks
-
-

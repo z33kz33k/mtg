@@ -17,12 +17,14 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
+from deck import Deck
 from mtgcards import Json
 from mtgcards.deck.arena import ArenaParser, PlaysetLine
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils.scrape import SELENIUM_TIMEOUT, click_for_clipboard
 from mtgcards.utils import get_date_from_ago_text, extract_float
 from mtgcards.scryfall import COMMANDER_FORMATS
+from utils.scrape import ScrapingError
 
 _log = logging.getLogger(__name__)
 
@@ -49,18 +51,26 @@ class TopDeckedScraper(DeckScraper):
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        try:
-            self._arena_decklist = self._get_data()
-            self._scrape_deck()
-        except NoSuchElementException as err:
-            err_text, *_ = str(err).split("(Session info")
-            _log.warning(f"Scraping failed due to: '{err_text.strip()}'")
-        except TimeoutException:
-            _log.warning(f"Scraping failed due to Selenium timing out")
+        self._arena_decklist = []
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "www.topdecked.com/decks/" in url
+
+    def _process_metadata_with_selenium(self, driver: webdriver.Chrome) -> None:
+        name_el = driver.find_element(By.XPATH, self._NAME_XPATH)
+        self._metadata["name"] = _sanitize_element_text(name_el.text)
+        fmt_el = driver.find_element(By.XPATH, self._FMT_XPATH)
+        self._update_fmt(_sanitize_element_text(fmt_el.text))
+        try:
+            date_el = driver.find_element(By.XPATH, self._DATE_XPATH)
+            date_text = _sanitize_element_text(date_el.text)
+            if "ago" in date_text:
+                self._metadata["date"] = get_date_from_ago_text(date_text)
+            else:
+                self._metadata["date"] = dateutil.parser.parse(date_text)
+        except NoSuchElementException:  # meta-decks feature no date data
+            pass
 
     def _get_data(self) -> list[str]:
         with webdriver.Chrome() as driver:
@@ -76,7 +86,7 @@ class TopDeckedScraper(DeckScraper):
             _log.info("Consent pop-up closed")
 
             # metadata
-            self._scrape_metadata_with_selenium(driver)
+            self._process_metadata_with_selenium(driver)
 
             # arena decklist
             share_btn = WebDriverWait(driver, SELENIUM_TIMEOUT).until(
@@ -86,22 +96,17 @@ class TopDeckedScraper(DeckScraper):
             arena = click_for_clipboard(driver, self._ARENA_XPATH, self._ARENA_DELAY)
             return arena.splitlines()
 
-    def _scrape_metadata_with_selenium(self, driver: webdriver.Chrome) -> None:
-        name_el = driver.find_element(By.XPATH, self._NAME_XPATH)
-        self._metadata["name"] = _sanitize_element_text(name_el.text)
-        fmt_el = driver.find_element(By.XPATH, self._FMT_XPATH)
-        self._update_fmt(_sanitize_element_text(fmt_el.text))
+    # pre-process does all the work here
+    def _pre_process(self) -> None:  # override
         try:
-            date_el = driver.find_element(By.XPATH, self._DATE_XPATH)
-            date_text = _sanitize_element_text(date_el.text)
-            if "ago" in date_text:
-                self._metadata["date"] = get_date_from_ago_text(date_text)
-            else:
-                self._metadata["date"] = dateutil.parser.parse(date_text)
-        except NoSuchElementException:  # meta-decks feature no date data
-            pass
+            self._arena_decklist = self._get_data()
+        except NoSuchElementException as err:
+            err_text, *_ = str(err).split("(Session info")
+            raise ScrapingError(f"Scraping failed due to: '{err_text.strip()}'")
+        except TimeoutException:
+            raise ScrapingError(f"Scraping failed due to Selenium timing out")
 
-    def _scrape_metadata(self) -> None:  # override
+    def _process_metadata(self) -> None:  # override
         pass
 
     def _handle_commander(self) -> None:
@@ -120,11 +125,12 @@ class TopDeckedScraper(DeckScraper):
             self._arena_decklist.insert(1, commander_line)
             self._arena_decklist.insert(2, "")
 
-    def _scrape_deck(self) -> None:  # override
+    def _build_deck(self) -> Deck:  # override
+        return ArenaParser(self._arena_decklist, self._metadata).parse(supress_invalid_deck=False)
+
+    def _process_deck(self) -> None:  # override
         if self.fmt and self.fmt in COMMANDER_FORMATS:
             self._handle_commander()
-
-        self._deck = ArenaParser(self._arena_decklist, self._metadata).deck
 
 
 class TopDeckedMetadeckScraper(TopDeckedScraper):
@@ -139,7 +145,7 @@ class TopDeckedMetadeckScraper(TopDeckedScraper):
     def is_deck_url(url: str) -> bool:  # override
         return "www.topdecked.com/metagame/" in url and "/decks/" in url
 
-    def _scrape_metadata_with_selenium(self, driver: webdriver.Chrome) -> None:  # override
-        super()._scrape_metadata_with_selenium(driver)
+    def _process_metadata_with_selenium(self, driver: webdriver.Chrome) -> None:  # override
+        super()._process_metadata_with_selenium(driver)
         meta_share_el = driver.find_element(By.XPATH, self._META_SHARE_XPATH)
         self._metadata["meta_share"] = extract_float(_sanitize_element_text(meta_share_el.text))

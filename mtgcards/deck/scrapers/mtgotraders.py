@@ -26,12 +26,7 @@ class MtgoTradersScraper(DeckScraper):
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
         *_, self._decklist_id = self.url.split("?deck=")
-        self._json_data = timed_request(
-            self.REQUEST_URL_TEMPLATE.format(self._decklist_id), return_json=True)
-        if not self._json_data:
-            raise ScrapingError("Data not available")
-        self._scrape_metadata()
-        self._scrape_deck()
+        self._json_data: Json | None = None
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -41,7 +36,13 @@ class MtgoTradersScraper(DeckScraper):
     def sanitize_url(url: str) -> str:  # override
         return url
 
-    def _scrape_metadata(self) -> None:  # override
+    def _pre_process(self) -> None:  # override
+        self._json_data = timed_request(
+            self.REQUEST_URL_TEMPLATE.format(self._decklist_id), return_json=True)
+        if not self._json_data:
+            raise ScrapingError("Data not available")
+
+    def _process_metadata(self) -> None:  # override
         self._metadata["name"] = self._json_data["Name"]
         if desc :=self._json_data.get("Description"):
             self._metadata["description"] = desc
@@ -59,7 +60,7 @@ class MtgoTradersScraper(DeckScraper):
         quantity = json_card["qty"]
         return self.get_playset(self.find_card(name), quantity)
 
-    def _scrape_deck(self) -> None:
+    def _process_deck(self) -> None:
         for json_card in self._json_data["main"]:
             self._maindeck += self._parse_json_card(json_card)
         if sideboard := self._json_data.get("sideboard"):
@@ -70,5 +71,3 @@ class MtgoTradersScraper(DeckScraper):
             commander = self._sideboard[0]
             if commander.commander_suitable:
                 self._set_commander(commander)
-
-        self._build_deck()

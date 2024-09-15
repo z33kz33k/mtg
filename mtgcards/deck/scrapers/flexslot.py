@@ -12,10 +12,12 @@ import logging
 import dateutil.parser
 from selenium.common.exceptions import TimeoutException
 
+from deck import Deck
 from mtgcards import Json
 from mtgcards.deck.arena import ArenaParser
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils.scrape import get_dynamic_soup_by_xpath
+from utils.scrape import ScrapingError
 
 _log = logging.getLogger(__name__)
 
@@ -29,20 +31,21 @@ class FlexslotScraper(DeckScraper):
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        try:
-            self._soup, _, self._clipboard = get_dynamic_soup_by_xpath(
-                self.url, self._XPATH, consent_xpath=self._CONSENT_XPATH,
-                clipboard_xpath=self._CLIPBOARD_XPATH)
-            self._scrape_metadata()
-            self._scrape_deck()
-        except TimeoutException:
-            _log.warning(f"Scraping failed due to Selenium timing out")
+        self._clipboard, self._arena_decklist = "", []
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "flexslot.gg/decks/" in url
 
-    def _scrape_metadata(self) -> None:  # override
+    def _pre_process(self) -> None:  # override
+        try:
+            self._soup, _, self._clipboard = get_dynamic_soup_by_xpath(
+                self.url, self._XPATH, consent_xpath=self._CONSENT_XPATH,
+                clipboard_xpath=self._CLIPBOARD_XPATH)
+        except TimeoutException:
+            raise ScrapingError(f"Scraping failed due to Selenium timing out")
+
+    def _process_metadata(self) -> None:  # override
         if name_tag := self._soup.select_one("div.sideboardtitle.my-2.text-center"):
             self._metadata["name"] = name_tag.text.strip()
         info_text = self._soup.find("h3", class_="text-center").text.strip()
@@ -53,6 +56,9 @@ class FlexslotScraper(DeckScraper):
             self._metadata["date"] = dateutil.parser.parse(
                 date_tag.text.strip().removeprefix("Last Updated ")).date()
 
-    def _scrape_deck(self) -> None:  # override
-        decklist = [line.rstrip(":") for line in self._clipboard.splitlines()]
-        self._deck = ArenaParser(decklist, metadata=self._metadata).deck
+    def _build_deck(self) -> Deck:  # override
+        return ArenaParser(self._arena_decklist, metadata=self._metadata).parse(
+            supress_invalid_deck=False)
+
+    def _process_deck(self) -> None:  # override
+        self._arena_decklist = [line.rstrip(":") for line in self._clipboard.splitlines()]

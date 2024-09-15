@@ -9,6 +9,7 @@
 """
 import logging
 
+from deck import Deck
 from mtgcards import Json
 from mtgcards.deck.arena import ArenaParser
 from mtgcards.deck.scrapers import DeckScraper
@@ -21,19 +22,20 @@ _log = logging.getLogger(__name__)
 class TappedoutScraper(DeckScraper):
     """Scraper of TappedOut decklist page.
     """
-    def __init__(self, url: str, metadata: Json | None = None, throttled=False) -> None:
-        super().__init__(url, metadata, throttled)
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            raise ScrapingError("Page not available")
-        self._scrape_metadata()
-        self._scrape_deck()
+    def __init__(self, url: str, metadata: Json | None = None) -> None:
+        super().__init__(url, metadata)
+        self._arena_decklist = []
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "tappedout.net/mtg-decks/" in url
 
-    def _scrape_metadata(self) -> None:  # override
+    def _pre_process(self) -> None:  # override
+        self._soup = getsoup(self.url)
+        if not self._soup:
+            raise ScrapingError("Page not available")
+
+    def _process_metadata(self) -> None:  # override
         fmt_tag = self._soup.select_one("a.btn.btn-success.btn-xs")
         fmt = fmt_tag.text.strip().removesuffix("*").lower()
         self._update_fmt(fmt)
@@ -50,8 +52,11 @@ class TappedoutScraper(DeckScraper):
                 if views := value_col.text.strip():
                     self._metadata["views"] = extract_int(views)
 
-    def _scrape_deck(self) -> None:  # override
+    def _build_deck(self) -> Deck:  # override
+        return ArenaParser(self._arena_decklist, self._metadata).parse(supress_invalid_deck=False)
+
+    def _process_deck(self) -> None:  # override
         lines = self._soup.find("textarea", id="mtga-textarea").text.strip().splitlines()
         _, name_line, _, _, *lines = lines
+        self._arena_decklist = [*lines]
         self._metadata["name"] = name_line.removeprefix("Name ")
-        self._deck = ArenaParser(lines, self._metadata).deck

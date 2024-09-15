@@ -12,10 +12,12 @@ import logging
 import dateutil.parser
 from selenium.common.exceptions import TimeoutException
 
+from deck import Deck
 from mtgcards import Json
 from mtgcards.deck.arena import ArenaParser
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils.scrape import get_dynamic_soup_by_xpath
+from utils.scrape import ScrapingError
 
 _log = logging.getLogger(__name__)
 
@@ -36,19 +38,20 @@ class MtgDecksNetScraper(DeckScraper):
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        try:
-            self._soup, _, _ = get_dynamic_soup_by_xpath(
-                self.url, self._XPATH, consent_xpath=self._CONSENT_XPATH)
-            self._scrape_metadata()
-            self._scrape_deck()
-        except TimeoutException:
-            _log.warning(f"Scraping failed due to Selenium timing out")
+        self._arena_decklist = []
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "mtgdecks.net/" in url and "-decklist-" in url
 
-    def _scrape_metadata(self) -> None:  # override
+    def _pre_process(self) -> None:  # override
+        try:
+            self._soup, _, _ = get_dynamic_soup_by_xpath(
+                self.url, self._XPATH, consent_xpath=self._CONSENT_XPATH)
+        except TimeoutException:
+            raise ScrapingError(f"Scraping failed due to Selenium timing out")
+
+    def _process_metadata(self) -> None:  # override
         info_tag = self._soup.find("div", class_="col-md-6")
         info = info_tag.text.strip()
         name_author_part, *event_parts, date_part = info.split("—")
@@ -65,9 +68,9 @@ class MtgDecksNetScraper(DeckScraper):
             fmt = found
         self._update_fmt(fmt)
 
-    # MTGDecks.net puts a commander into sideboard and among other cards to boot - making it
-    # essentially unscrapable
-    def _scrape_deck(self) -> None:  # override
+    def _build_deck(self) -> Deck:  # override
+        return ArenaParser(self._arena_decklist, self._metadata).parse(supress_invalid_deck=False)
+
+    def _process_deck(self) -> None:  # override
         deck_tag = self._soup.find("textarea", id="arena_deck")
-        self._deck = ArenaParser(
-            deck_tag.text.strip().splitlines(), self._metadata).deck
+        self._arena_decklist = deck_tag.text.strip().splitlines()

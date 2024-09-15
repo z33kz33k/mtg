@@ -23,19 +23,20 @@ class ArchidektScraper(DeckScraper):
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            raise ScrapingError("Page not available")
-        self._json_data = json.loads(self._soup.find("script", id="__NEXT_DATA__").text)
-        self._deck_data = self._json_data["props"]["pageProps"]["redux"]["deck"]
-        self._scrape_metadata()
-        self._scrape_deck()
+        self._deck_data: Json | None = None
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "archidekt.com/decks/" in url
 
-    def _scrape_metadata(self) -> None:  # override
+    def _pre_process(self) -> None:  # override
+        self._soup = getsoup(self.url)
+        if not self._soup:
+            raise ScrapingError("Page not available")
+        json_data = json.loads(self._soup.find("script", id="__NEXT_DATA__").text)
+        self._deck_data = json_data["props"]["pageProps"]["redux"]["deck"]
+
+    def _process_metadata(self) -> None:  # override
         fmt_tag = self._soup.find("div", class_=lambda c: c and "deckHeader_format" in c)
         if fmt_tag:
             fmt_text = fmt_tag.text
@@ -65,7 +66,6 @@ class ArchidektScraper(DeckScraper):
         else:
             self._maindeck.extend(playset)
 
-    def _scrape_deck(self) -> None:  # override
+    def _process_deck(self) -> None:  # override
         for v in self._deck_data["cardMap"].values():
             self._parse_card_json(v)
-        self._build_deck()

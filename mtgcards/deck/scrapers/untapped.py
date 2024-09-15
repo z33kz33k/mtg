@@ -12,11 +12,13 @@ from datetime import datetime
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 
+from deck import Deck
 from mtgcards import Json
 from mtgcards.deck.arena import ArenaParser
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils import extract_float, extract_int
 from mtgcards.utils.scrape import get_dynamic_soup_by_xpath
+from utils.scrape import ScrapingError
 
 _log = logging.getLogger(__name__)
 CONSENT_XPATH = '//button[contains(@class, "fc-button fc-cta-consent") and @aria-label="Consent"]'
@@ -32,23 +34,24 @@ class UntappedProfileDeckScraper(DeckScraper):
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        try:
-            self._soup, _, self._clipboard = get_dynamic_soup_by_xpath(
-                self.url, CLIPBOARD_XPATH, self._NO_GAMES_XPATH, self._PRIVATE_XPATH,
-                consent_xpath=CONSENT_XPATH,
-                clipboard_xpath=CLIPBOARD_XPATH)
-            self._scrape_metadata()
-            self._scrape_deck()
-        except NoSuchElementException:
-            _log.warning("Scraping failed due to absence of the looked for element")
-        except TimeoutException:
-            _log.warning(f"Scraping failed due to Selenium timing out")
+        self._clipboard = ""
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "mtga.untapped.gg/profile/" in url and "/deck/" in url
 
-    def _scrape_metadata(self) -> None:  # override
+    def _pre_process(self) -> None:  # override
+        try:
+            self._soup, _, self._clipboard = get_dynamic_soup_by_xpath(
+                self.url, CLIPBOARD_XPATH, self._NO_GAMES_XPATH, self._PRIVATE_XPATH,
+                consent_xpath=CONSENT_XPATH,
+                clipboard_xpath=CLIPBOARD_XPATH)
+        except NoSuchElementException:
+            raise ScrapingError("Scraping failed due to absence of the looked for element")
+        except TimeoutException:
+            raise ScrapingError(f"Scraping failed due to Selenium timing out")
+
+    def _process_metadata(self) -> None:  # override
         name_tag = self._soup.select_one('span[class*="DeckListContainer__Title"]')
         strong_tag = name_tag.find("strong")
         self._metadata["name"] = strong_tag.text.strip()
@@ -57,8 +60,12 @@ class UntappedProfileDeckScraper(DeckScraper):
         span_tag = author_tag.find("span")
         self._metadata["author"] = span_tag.text.strip().removesuffix("'s Profile")
 
-    def _scrape_deck(self) -> None:  # override
-        self._deck = ArenaParser(self._clipboard.splitlines(), metadata=self._metadata).deck
+    def _build_deck(self) -> Deck:
+        return ArenaParser(self._clipboard.splitlines(), metadata=self._metadata).parse(
+            supress_invalid_deck=False)
+
+    def _process_deck(self) -> None:  # override
+        pass
 
 
 class UntappedRegularDeckScraper(DeckScraper):
@@ -66,14 +73,7 @@ class UntappedRegularDeckScraper(DeckScraper):
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        try:
-            self._soup, _, self._clipboard = get_dynamic_soup_by_xpath(
-                self.url, CLIPBOARD_XPATH, consent_xpath=CONSENT_XPATH,
-                clipboard_xpath=CLIPBOARD_XPATH)
-            self._scrape_metadata()
-            self._scrape_deck()
-        except TimeoutException:
-            _log.warning(f"Scraping failed due to Selenium timing out")
+        self._clipboard = ""
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -84,15 +84,27 @@ class UntappedRegularDeckScraper(DeckScraper):
         url = DeckScraper.sanitize_url(url)
         return url.replace("input/", "") if "/input/" in url else url
 
-    def _scrape_metadata(self) -> None:  # override
+    def _pre_process(self) -> None:  # override
+        try:
+            self._soup, _, self._clipboard = get_dynamic_soup_by_xpath(
+                self.url, CLIPBOARD_XPATH, consent_xpath=CONSENT_XPATH,
+                clipboard_xpath=CLIPBOARD_XPATH)
+        except TimeoutException:
+            raise ScrapingError(f"Scraping failed due to Selenium timing out")
+
+    def _process_metadata(self) -> None:  # override
         name_tag = self._soup.select("h1[class*='styles__H1']")[-1]
         name = name_tag.text.strip()
         if " (" in name:
             name, *_ = name.split(" (")
         self._metadata["name"] = name
 
-    def _scrape_deck(self) -> None:  # override
-        self._deck = ArenaParser(self._clipboard.splitlines(), metadata=self._metadata).deck
+    def _build_deck(self) -> Deck:  # override
+        return ArenaParser(self._clipboard.splitlines(), metadata=self._metadata).parse(
+            supress_invalid_deck=False)
+
+    def _process_deck(self) -> None:  # override
+        pass
 
 
 class UntappedMetaDeckScraper(DeckScraper):
@@ -100,20 +112,21 @@ class UntappedMetaDeckScraper(DeckScraper):
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        try:
-            self._soup, _, self._clipboard = get_dynamic_soup_by_xpath(
-                self.url, CLIPBOARD_XPATH, consent_xpath=CONSENT_XPATH,
-                clipboard_xpath=CLIPBOARD_XPATH)
-            self._scrape_metadata()
-            self._scrape_deck()
-        except TimeoutException:
-            _log.warning(f"Scraping failed due to Selenium timing out")
+        self._clipboard = ""
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "mtga.untapped.gg/meta/decks/" in url
 
-    def _scrape_metadata(self) -> None:  # override
+    def _pre_process(self) -> None:  # override
+        try:
+            self._soup, _, self._clipboard = get_dynamic_soup_by_xpath(
+                self.url, CLIPBOARD_XPATH, consent_xpath=CONSENT_XPATH,
+                clipboard_xpath=CLIPBOARD_XPATH)
+        except TimeoutException:
+            raise ScrapingError(f"Scraping failed due to Selenium timing out")
+
+    def _process_metadata(self) -> None:  # override
         name_tag = self._soup.select_one("h1[class*='layouts__MetaPageHeaderTitle']")
         name = name_tag.text.strip().removesuffix(" Deck")
         self._metadata["name"] = name
@@ -130,5 +143,9 @@ class UntappedMetaDeckScraper(DeckScraper):
         time_range_tag = self._soup.select_one("div[class*='TimeRangeFilter__DateText']")
         self._metadata["meta"]["time_range_since"] = time_range_tag.text.removesuffix("Now")
 
-    def _scrape_deck(self) -> None:  # override
-        self._deck = ArenaParser(self._clipboard.splitlines(), metadata=self._metadata).deck
+    def _build_deck(self) -> Deck:  # override
+        return ArenaParser(self._clipboard.splitlines(), metadata=self._metadata).parse(
+            supress_invalid_deck=False)
+
+    def _process_deck(self) -> None:  # override
+        pass

@@ -30,15 +30,7 @@ class CardhoarderScraper(DeckScraper):
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        try:
-            self._soup, _, _ = get_dynamic_soup_by_xpath(
-                self.url, self._XPATH, consent_xpath=CONSENT_XPATH)
-            self._deck_data = self._get_deck_data()
-            self._scrape_metadata()
-            self._scrape_deck()
-        except TimeoutException:
-            _log.warning(f"Scraping failed due to Selenium timing out")
-
+        self._deck_data: Json | None = None
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -52,11 +44,19 @@ class CardhoarderScraper(DeckScraper):
                 "Cardhoarder anti-bot measures")
         return json.loads(deck_tag.attrs["data-deck"])
 
-    def _scrape_metadata(self) -> None:  # override
+    def _pre_process(self) -> None:  # override
+        try:
+            self._soup, _, _ = get_dynamic_soup_by_xpath(
+                self.url, self._XPATH, consent_xpath=CONSENT_XPATH)
+            self._deck_data = self._get_deck_data()
+        except TimeoutException:
+            raise ScrapingError(f"Scraping failed due to Selenium timing out")
+
+    def _process_metadata(self) -> None:  # override
         self._metadata["name"] = self._deck_data["name"]
 
     # TODO: commander handling is only derived, no such input has been seen so far
-    def _scrape_deck(self) -> None:  # override
+    def _process_deck(self) -> None:  # override
         card_jsons = []
         for _, item in self._deck_data["items"].items():
             card_jsons += item["items"]
@@ -73,5 +73,3 @@ class CardhoarderScraper(DeckScraper):
                 self._maindeck += self.get_playset(card, quantity_main)
                 if quantity_sideboard:
                     self._sideboard += self.get_playset(card, quantity_sideboard)
-
-        self._build_deck()

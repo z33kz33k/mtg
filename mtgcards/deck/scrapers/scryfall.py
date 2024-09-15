@@ -26,11 +26,6 @@ class ScryfallScraper(DeckScraper):
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            raise ScrapingError("Page not available")
-        self._scrape_metadata()
-        self._scrape_deck()
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -41,7 +36,12 @@ class ScryfallScraper(DeckScraper):
         url = DeckScraper.sanitize_url(url)
         return f"{url}?as=list&with=usd"
 
-    def _scrape_metadata(self) -> None:  # override
+    def _pre_process(self) -> None:  # override
+        self._soup = getsoup(self.url)
+        if not self._soup:
+            raise ScrapingError("Page not available")
+
+    def _process_metadata(self) -> None:  # override
         *_, author_part = self.url.split("@")
         author, *_ = author_part.split("/")
         self._metadata["author"] = author
@@ -72,7 +72,7 @@ class ScryfallScraper(DeckScraper):
             cards += cls.get_playset(card, quantity)
         return cards
 
-    def _scrape_deck(self) -> None:  # override
+    def _process_deck(self) -> None:  # override
         for section_tag in self._soup.find_all("div", class_="deck-list-section"):
             title = section_tag.find("h6").text
             cards = self._parse_section(section_tag)
@@ -84,5 +84,3 @@ class ScryfallScraper(DeckScraper):
                 self._sideboard = cards
             else:
                 self._maindeck += cards
-
-        self._build_deck()

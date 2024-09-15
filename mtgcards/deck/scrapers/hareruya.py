@@ -26,17 +26,17 @@ class HareruyaScraper(DeckScraper):
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        self._soup = getsoup(self.url, headers=GoldfishScraper.HEADERS)
-        if not self._soup:
-            raise ScrapingError("Page not available")
-        self._scrape_metadata()
-        self._scrape_deck()
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "hareruyamtg.com" in url and "/deck/" in url
 
-    def _scrape_metadata(self) -> None:  # override
+    def _pre_process(self) -> None:  # override
+        self._soup = getsoup(self.url, headers=GoldfishScraper.HEADERS)
+        if not self._soup:
+            raise ScrapingError("Page not available")
+
+    def _process_metadata(self) -> None:  # override
         info_tag = self._soup.find("div", class_="deckSearch-deckList__information__flex")
         for ul_tag in info_tag.find_all("ul"):
             li_tags = ul_tag.find_all("li")
@@ -61,7 +61,7 @@ class HareruyaScraper(DeckScraper):
         if not self._metadata.get("name") and self._metadata.get("hareruya_archetype"):
             self._metadata["name"] = self._metadata["hareruya_archetype"]
 
-    def _scrape_deck(self) -> None:  # override
+    def _process_deck(self) -> None:  # override
         main_tag = self._soup.find("div", class_="deckSearch-deckList__deckList__wrapper")
 
         for sub_tag in main_tag.descendants:
@@ -92,5 +92,3 @@ class HareruyaScraper(DeckScraper):
                     self._sideboard += cards
                 elif self._state is ParsingState.COMMANDER:
                     self._set_commander(cards[0])
-
-        self._build_deck()

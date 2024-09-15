@@ -11,6 +11,7 @@ import logging
 
 import dateutil.parser
 
+from deck import Deck
 from mtgcards import Json
 from mtgcards.deck.arena import ArenaParser
 from mtgcards.deck.scrapers import DeckScraper
@@ -46,17 +47,18 @@ class MeleeGgScraper(DeckScraper):
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        self._soup = getsoup(self.url, headers=_HEADERS)
-        if not self._soup:
-            raise ScrapingError("Page not available")
-        self._scrape_metadata()
-        self._scrape_deck()
+        self._arena_decklist = []
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "melee.gg/Decklist/" in url or "mtgmelee.com/Decklist/" in url
 
-    def _scrape_metadata(self) -> None:  # override
+    def _pre_process(self) -> None:  # override
+        self._soup = getsoup(self.url, headers=_HEADERS)
+        if not self._soup:
+            raise ScrapingError("Page not available")
+
+    def _process_metadata(self) -> None:  # override
         self._metadata["name"] = self._soup.select_one("a.decklist-card-title").text.strip()
         self._metadata["author"] = self._soup.select_one(
             "span.decklist-card-title-author").text.strip().removeprefix("by ")
@@ -70,7 +72,10 @@ class MeleeGgScraper(DeckScraper):
             else:
                 self._update_fmt(tag.text.strip())
 
-    def _scrape_deck(self) -> None:  # override
-        lines = self._soup.select_one(
+    def _build_deck(self) -> Deck:  # override
+        return ArenaParser(self._arena_decklist, metadata=self._metadata).parse(
+            supress_invalid_deck=False)
+
+    def _process_deck(self) -> None:  # override
+        self._arena_decklist = self._soup.select_one(
             "textarea.decklist-builder-paste-field").text.strip().splitlines()
-        self._deck = ArenaParser(lines, self._metadata).deck

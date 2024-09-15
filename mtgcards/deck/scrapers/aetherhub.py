@@ -47,13 +47,8 @@ class AetherhubScraper(DeckScraper):
         "Oathbreaker": ("oathbreaker", Mode.BO3),
     }
 
-    def __init__(self, url: str, metadata: Json | None = None, throttled=False) -> None:
-        super().__init__(url, metadata, throttled)
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            raise ScrapingError("Page not available")
-        self._scrape_metadata()
-        self._scrape_deck()
+    def __init__(self, url: str, metadata: Json | None = None) -> None:
+        super().__init__(url, metadata)
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -68,7 +63,12 @@ class AetherhubScraper(DeckScraper):
             url = url.removesuffix("/Gallery/")
         return url
 
-    def _scrape_metadata(self) -> None:  # override
+    def _pre_process(self) -> None:  # override
+        self._soup = getsoup(self.url)
+        if not self._soup:
+            raise ScrapingError("Page not available")
+
+    def _process_metadata(self) -> None:  # override
         # name and format
         if title_tag := self._soup.find("h2", class_="text-header-gold"):
             fmt_part, name_part = title_tag.text.strip().split("-", maxsplit=1)
@@ -115,7 +115,7 @@ class AetherhubScraper(DeckScraper):
             except (IndexError, ValueError):
                 _log.warning(f"No metagame data available for {self.url!r}")
 
-    def _scrape_deck(self) -> None:  # override
+    def _process_deck(self) -> None:  # override
         deck_tags = self._soup.find_all("div", class_="row")
         deck_tag = from_iterable(
             deck_tags, lambda t: t.text.strip().startswith(("Main", "Commander", "Companion")))
@@ -151,5 +151,3 @@ class AetherhubScraper(DeckScraper):
                         self._set_commander(cards[0])
                     elif self._state is ParsingState.COMPANION:
                         self._companion = cards[0]
-
-        self._build_deck()

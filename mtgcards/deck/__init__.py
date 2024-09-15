@@ -11,7 +11,7 @@ import itertools
 import json
 import logging
 import re
-from abc import ABC
+from abc import ABC, abstractmethod
 from collections import Counter
 from enum import Enum, auto
 from functools import cached_property
@@ -1057,10 +1057,6 @@ class DeckParser(ABC):
     """Abstract base deck parser.
     """
     @property
-    def deck(self) -> Deck | None:
-        return self._deck
-
-    @property
     def fmt(self) -> str:
         return self._metadata.get("format", "")
 
@@ -1164,3 +1160,34 @@ class DeckParser(ABC):
             text = re.sub(
                 r'(?<=[a-zA-Z])/{1,3}(?=[a-zA-Z])', f' {SCRYFALL_MULTIFACE_SEPARATOR} ', text)
         return text
+
+    @abstractmethod
+    def _pre_process(self) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def _process_deck(self) -> None:
+        raise NotImplementedError
+
+    def parse(
+            self, supress_parsing_errors=True,
+            supress_invalid_deck=True) -> Deck | None:  # override
+        try:
+            self._pre_process()
+            self._process_deck()
+        except ParsingError as pe:
+            if not supress_parsing_errors:
+                _log.error(f"Parsing failed with: {pe}")
+                raise pe
+            _log.warning(f"Parsing failed with: {pe}")
+            return None
+        try:
+            return Deck(
+                self._maindeck, self._sideboard, self._commander, self._partner_commander,
+                self._companion, self._metadata)
+        except InvalidDeck as err:
+            if not supress_invalid_deck:
+                _log.error(f"Parsing failed with: {err}")
+                raise err
+            _log.warning(f"Parsing failed with: {err}")
+            return None
