@@ -84,10 +84,7 @@ class PlaysetLine:
             return None
         if lang.iso_code_639_1.name.lower() == "en":
             return None
-        _log.info(
-            f"Querying Scryfall for English equivalent of {self._name!r} ({lang.name.title()})...")
         if card := query_api_for_card(self._name, foreign=True):
-            _log.info(f"Acquired English card: {card.name!r}")
             return ArenaParser.get_playset(card, self.quantity)
         return None
 

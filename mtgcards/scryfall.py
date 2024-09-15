@@ -1270,36 +1270,45 @@ def _build_maps() -> None:
         _COLLECTOR_NUMBER_MAP[(card.set, card.collector_number)] = card
 
 
-def find_by_name(card_name: str) -> Card | None:
-    """Return a card designated by provided name or `None`.
-
-    Case-insensitive.
-    """
-    global _NAME_MAP
-    if not _NAME_MAP:
-        _build_maps()
-    return _NAME_MAP.get(unidecode(card_name).casefold())
-
-
 def query_api_for_card(card_name: str, foreign=False) -> Card | None:
     """Query Scryfall API for a card designated by provided name.
     """
+    _log.info(f"Querying Scryfall for {card_name!r}...")
     card_name = unidecode(card_name)
     try:
+        throttle(0.15)
         result = scrython.cards.Search(q=f"!{card_name}", include_multilingual=foreign).data()
     except scrython.foundation.ScryfallError:
         result = None
     if not result:
-        throttle(0.2)
+        throttle(0.15)
         try:
             result = scrython.cards.Search(q=card_name, include_multilingual=foreign).data()
         except scrython.foundation.ScryfallError:
             result = None
         if not result :
-            return None
+            throttle(0.15)
+            try:
+                result = scrython.cards.Named(fuzzy=card_name)
+                return Card(result.scryfallJson)
+            except scrython.foundation.ScryfallError:
+                return None
     if len(result) > 1:
         result.sort(key=lambda card: date.fromisoformat(card["released_at"]), reverse=True)
     return Card(result[0])
+
+
+def find_by_name(card_name: str) -> Card | None:
+    """Return a card designated by provided name or `None`.
+
+    Case-insensitive. Calls Scryfall API on failure to find card in the bulk data.
+    """
+    global _NAME_MAP
+    if not _NAME_MAP:
+        _build_maps()
+    if card := _NAME_MAP.get(unidecode(card_name).casefold()):
+        return card
+    return query_api_for_card(card_name)
 
 
 def find_by_words(*words: str) -> set[Card]:
