@@ -63,7 +63,7 @@ class UntappedProfileDeckScraper(DeckScraper):
 
     def _build_deck(self) -> Deck:
         return ArenaParser(self._clipboard.splitlines(), metadata=self._metadata).parse(
-            supress_invalid_deck=False)
+            suppress_invalid_deck=False)
 
     def _parse_deck(self) -> None:  # override
         pass
@@ -103,7 +103,7 @@ class UntappedRegularDeckScraper(DeckScraper):
 
     def _build_deck(self) -> Deck:  # override
         return ArenaParser(self._clipboard.splitlines(), metadata=self._metadata).parse(
-            supress_invalid_deck=False)
+            suppress_invalid_deck=False)
 
     def _parse_deck(self) -> None:  # override
         pass
@@ -148,7 +148,7 @@ class UntappedMetaDeckScraper(DeckScraper):
 
     def _build_deck(self) -> Deck:  # override
         return ArenaParser(self._clipboard.splitlines(), metadata=self._metadata).parse(
-            supress_invalid_deck=False)
+            suppress_invalid_deck=False)
 
     def _parse_deck(self) -> None:  # override
         pass

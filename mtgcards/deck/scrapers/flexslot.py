@@ -59,7 +59,7 @@ class FlexslotScraper(DeckScraper):
 
     def _build_deck(self) -> Deck:  # override
         return ArenaParser(self._arena_decklist, metadata=self._metadata).parse(
-            supress_invalid_deck=False)
+            suppress_invalid_deck=False)
 
     def _parse_deck(self) -> None:  # override
         self._arena_decklist = [line.rstrip(":") for line in self._clipboard.splitlines()]

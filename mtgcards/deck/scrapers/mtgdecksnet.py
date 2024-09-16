@@ -70,7 +70,7 @@ class MtgDecksNetScraper(DeckScraper):
         self._update_fmt(fmt)
 
     def _build_deck(self) -> Deck:  # override
-        return ArenaParser(self._arena_decklist, self._metadata).parse(supress_invalid_deck=False)
+        return ArenaParser(self._arena_decklist, self._metadata).parse(suppress_invalid_deck=False)
 
     def _parse_deck(self) -> None:  # override
         deck_tag = self._soup.find("textarea", id="arena_deck")

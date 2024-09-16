@@ -141,7 +141,7 @@ def scrape_meta(fmt="standard") -> list[Deck]:
         link = tile.find("a").attrs["href"]
         deck = GoldfishScraper(
             f"https://www.mtggoldfish.com{link}", {"format": fmt}).scrape(
-            throttled=True, supress_invalid_deck=False)
+            throttled=True, suppress_invalid_deck=False)
         count = tile.find("span", class_="archetype-tile-statistic-value-extra-data").text.strip()
         count = extract_int(count)
         metas.append({"place": i, "count": count})

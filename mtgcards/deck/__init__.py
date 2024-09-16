@@ -12,7 +12,7 @@ import json
 import logging
 import re
 from abc import ABC, abstractmethod
-from collections import Counter
+from collections import Counter, OrderedDict
 from enum import Enum, auto
 from functools import cached_property
 from operator import attrgetter
@@ -364,14 +364,13 @@ class Deck:
     MIN_AGGRO_CMC = 2.3  # arbitrary
     MAX_CONTROL_CREATURES_COUNT = 10  # arbitrary
 
-    @cached_property
+    @property
     def maindeck(self) -> list[Card]:
-        return [*itertools.chain(*self._playsets.values())]
+        return self._maindeck
 
     @cached_property
     def sideboard(self) -> list[Card]:
-        return [*itertools.chain(
-            *self._sideboard_playsets.values())] if self._sideboard_playsets else []
+        return self._sideboard
 
     @property
     def has_sideboard(self) -> bool:
@@ -390,12 +389,11 @@ class Deck:
         return self._companion
 
     @property
-    def max_playset_count(self) -> int:
-        return self._max_playset_count
-
-    @property
     def cards(self) -> list[Card]:
-        return [*self.maindeck, *self.sideboard]
+        commanders = [self.commander] if self.commander else []
+        if self.partner_commander:
+            commanders.append(self.partner_commander)
+        return [*commanders, *self.maindeck, *self.sideboard]
 
     @property
     def color(self) -> Color:
@@ -504,7 +502,7 @@ class Deck:
     def is_bo1(self) -> bool:
         return not self.is_bo3
 
-    @property
+    @cached_property
     def theme(self) -> str | None:
         if theme := self.metadata.get("theme"):
             return theme
@@ -516,7 +514,7 @@ class Deck:
         return from_iterable(
                 THEMES, lambda th: any(p.title() == th.title() for p in nameparts))
 
-    @property
+    @cached_property
     def archetype(self) -> Archetype:
         if arch := self.metadata.get("archetype"):
             try:
@@ -533,7 +531,7 @@ class Deck:
             if arch:
                 return arch
             # combo
-            card_parts = {p for card in self.maindeck for p in card.name_parts}
+            card_parts = {p for card in self.cards for p in card.name_parts}
             if any(p.title() in THEMES for p in nameparts):  # a themed deck is not a combo deck
                 pass
             elif nameparts and any(p.lower() in card_parts for p in nameparts):
@@ -569,7 +567,7 @@ class Deck:
     def is_event_deck(self) -> bool:
         return any(k.startswith("event") for k in self.metadata)
 
-    @property
+    @cached_property
     def latest_set(self) -> str | None:
         set_codes = {c.set for c in self.cards if not c.is_basic_land}
         sets = find_sets(lambda s: s.code in set_codes and s.is_expansion)
@@ -587,6 +585,8 @@ class Deck:
             if not commander:
                 raise InvalidDeck("Partner commander without commander")
         if commanders:
+            if any(cmd in {*maindeck, *sideboard} for cmd in commanders):
+                raise InvalidDeck(f"Redundant commander maindeck/sideboard inclusion")
             identity = {clr for c in commanders for clr in c.color_identity.value}
             for card in [*maindeck, *sideboard]:
                 if any(letter not in identity for letter in card.color_identity.value):
@@ -594,59 +594,56 @@ class Deck:
                         f"Color identity of '{card}' ({card.color_identity}) doesn't match "
                         f"commander's color identity ({Color.from_letters(*identity)})")
         self._commander, self._partner_commander = commander, partner_commander
-        if self.partner_commander and self.partner_commander not in maindeck:
-            maindeck = [self.partner_commander, *maindeck]
-        if self.commander and self.commander not in maindeck:
-            maindeck = [self.commander, *maindeck]
 
         if companion:
             if not companion.is_companion:
                 raise InvalidDeck(f"Not a companion card: '{companion}'")
+        self._companion = companion
 
         sideboard = [*sideboard] if sideboard else []
-        self._companion = companion
         sideboard = [
             companion, *sideboard] if companion and companion not in sideboard else sideboard
         self._metadata = metadata or {}
 
         self._max_playset_count = 1 if commander is not None else 4
-        self._playsets = aggregate(*maindeck)
-        self._validate_maindeck()
-        self._sideboard_playsets = None
+        playsets = aggregate(*maindeck)
+        for playset in playsets.values():
+            self._validate_playset(playset)
+        self._maindeck = [*itertools.chain(
+            *sorted(playsets.values(), key=lambda l: l[0].name))]
+
+        if (len(self.maindeck) + len(commanders)) < self.MIN_MAINDECK_SIZE:
+            raise InvalidDeck(
+                f"Invalid deck size: {len(self.maindeck) + len(commanders)} "
+                f"< {self.MIN_MAINDECK_SIZE}")
+
+        self._sideboard = []
         if sideboard:
-            self._sideboard_playsets = aggregate(*sideboard)
-            self._validate_sideboard()
             if not self.companion:
                 comp = from_iterable(sideboard, lambda c: c.is_companion)
                 if comp:
                     self._companion = comp
+            self._sideboard_playsets = aggregate(*sideboard)
+            self._sideboard = [*itertools.chain(
+                *sorted(self._sideboard_playsets.values(), key=lambda l: l[0].name))]
+            temp_playsets = aggregate(*self.cards)
+            for playset in temp_playsets.values():
+                self._validate_playset(playset)
+            if len(self.sideboard) > self.MAX_SIDEBOARD_SIZE:
+                raise InvalidDeck(
+                    f"Invalid sideboard size: {len(self.sideboard)} > {self.MAX_SIDEBOARD_SIZE}")
 
     def _validate_playset(self, playset: list[Card]) -> None:
         card = playset[0]
         if card.is_basic_land or card.allowed_multiples is Ellipsis:
             pass
         else:
-            max_playset = self.max_playset_count if card.allowed_multiples is None \
+            max_playset = self._max_playset_count if card.allowed_multiples is None \
                 else card.allowed_multiples
             if len(playset) > max_playset:
                 raise InvalidDeck(
                     f"Too many occurrences of {card.name!r}: "
                     f"{len(playset)} > {max_playset}")
-
-    def _validate_maindeck(self) -> None:
-        for playset in self._playsets.values():
-            self._validate_playset(playset)
-        if len(self.maindeck) < self.MIN_MAINDECK_SIZE:
-            raise InvalidDeck(
-                f"Invalid deck size: {len(self.maindeck)} < {self.MIN_MAINDECK_SIZE}")
-
-    def _validate_sideboard(self) -> None:
-        temp_playsets = aggregate(*self.cards)
-        for playset in temp_playsets.values():
-            self._validate_playset(playset)
-        if len(self.sideboard) > self.MAX_SIDEBOARD_SIZE:
-            raise InvalidDeck(
-                f"Invalid sideboard size: {len(self.sideboard)} > {self.MAX_SIDEBOARD_SIZE}")
 
     def __repr__(self) -> str:
         reprs = [("name", self.name)] if self.name else []
@@ -676,14 +673,10 @@ class Deck:
     def __eq__(self, other: "Deck") -> bool:
         if not isinstance(other, Deck):
             return False
-        playsets = frozenset((card, len(cards)) for card, cards in aggregate(*self.cards).items())
-        other_playsets = frozenset(
-            (card, len(cards)) for card, cards in aggregate(*other.cards).items())
-        return playsets == other_playsets
+        return self.json == other.json
 
     def __hash__(self) -> int:
-        return hash(frozenset((card, len(cards)) for card, cards in aggregate(
-            *self.cards).items()))
+        return hash(self.json)
 
     def __lt__(self, other: "Deck") -> bool:
         if not isinstance(other, Deck):
@@ -737,6 +730,14 @@ class Deck:
         """Return a JSON representation of this deck.
         """
         return Exporter(self).json
+
+    @property
+    def arena_decklist(self) -> str:
+        return Exporter(self).build_arena()
+
+    @property
+    def arena_decklist_extended(self) -> str:
+        return Exporter(self).build_arena(extended=True)
 
     def to_json(self, dstdir: PathLike = "", name="") -> None:
         """Export to a .json file.
@@ -883,6 +884,7 @@ Name={}
         card = playset[0]
         return f"{len(playset)} {card.first_face_name}|{card.set.upper()}|1"
 
+    # TODO: handle partner commanders
     def _build_forge(self) -> str:
         commander = [
             self._to_forge_line(playset) for playset in
@@ -972,34 +974,45 @@ Name={}
         return deck
 
     @staticmethod
-    def _to_arena_line(playset: list[Card]) -> str:
+    def _to_arena_line(playset: list[Card], extended=False) -> str:
         card = playset[0]
         card_name = card.name.replace(
             SCRYFALL_MULTIFACE_SEPARATOR,
             ARENA_MULTIFACE_SEPARATOR) if card.is_multiface else card.name
         line = f"{len(playset)} {card_name}"
-        line += f" ({card.set.upper()}) {card.collector_number}"
+        if extended:
+            line += f" ({card.set.upper()}) {card.collector_number}"
         return line
 
-    def _build_arena(self) -> str:
+    def build_arena(self, extended=False) -> str:
         lines = []
         if self._deck.commander:
             playset = aggregate(self._deck.commander)[self._deck.commander]
-            lines += ["Commander", self._to_arena_line(playset), ""]
+            lines += ["Commander", self._to_arena_line(playset, extended=extended)]
+            if self._deck.partner_commander:
+                playset = aggregate(self._deck.partner_commander)[self._deck.partner_commander]
+                lines += [self._to_arena_line(playset, extended=extended)]
+            lines += [""]
         if self._deck.companion:
             playset = aggregate(self._deck.companion)[self._deck.companion]
-            lines += ["Companion", self._to_arena_line(playset), ""]
+            lines += ["Companion", self._to_arena_line(playset, extended=extended), ""]
+        deck_playsets = sorted(
+            (playset for playset in aggregate(*self._deck.maindeck).values()),
+            key=lambda l: l[0].name)
         lines += [
             "Deck",
-            *[self._to_arena_line(playset) for playset
-              in aggregate(*self._deck.maindeck).values()]
+            *[self._to_arena_line(playset, extended=extended) for playset
+              in deck_playsets]
         ]
         if self._deck.sideboard:
+            side_playsets = sorted(
+                (playset for playset in aggregate(*self._deck.sideboard).values()),
+                key=lambda l: l[0].name)
             lines += [
                 "",
                 "Sideboard",
-                *[self._to_arena_line(playset) for playset
-                  in aggregate(*self._deck.sideboard).values()]
+                *[self._to_arena_line(playset, extended=extended) for playset
+                  in side_playsets]
             ]
         return "\n".join(lines)
 
@@ -1008,17 +1021,19 @@ Name={}
         dstdir = getdir(dstdir)
         dst = dstdir / f"{self._name}.txt"
         _log.info(f"Exporting deck to: '{dst}'...")
-        dst.write_text(self._build_arena(), encoding="utf-8")
+        dst.write_text(self.build_arena(), encoding="utf-8")
 
     @classmethod
     def from_arena(cls, path: PathLike) -> Deck:
+        # TODO: solve circular imports more elegantly
         from mtgcards.deck.arena import ArenaParser, is_arena_line, is_empty
         file = getfile(path, ext=".txt")
         lines = file.read_text(encoding="utf-8").splitlines()
         if not all(is_arena_line(l) or is_empty(l) for l in lines):
             raise ValueError(f"Not an MTG Arena deck file: '{file}'")
         metadata = cls._parse_name(file.name)
-        deck = ArenaParser(lines, metadata).deck
+        deck = ArenaParser(lines, metadata).parse(
+            suppress_parsing_errors=False, suppress_invalid_deck=False)
         if not deck:
             raise ParsingError(f"Unable to parse '{path}' into a deck")
         return deck
@@ -1026,8 +1041,8 @@ Name={}
     @property
     def json(self) -> str:
         data = {
-            "metadata": self._deck.metadata,
-            "arena_decklist": self._build_arena(),
+            "metadata": OrderedDict(sorted((k, v) for k, v in self._deck.metadata.items())),
+            "arena_decklist": self.build_arena(extended=True),
         }
         return json.dumps(data, indent=4, ensure_ascii=False, default=serialize_dates)
 
@@ -1066,7 +1081,6 @@ class DeckParser(ABC):
         self._state = ParsingState.IDLE
         self._maindeck, self._sideboard = [], []
         self._commander, self._partner_commander, self._companion = None, None, None
-        self._deck = None
 
     def _set_commander(self, card: Card) -> None:
         if not card.commander_suitable:
@@ -1175,13 +1189,13 @@ class DeckParser(ABC):
         raise NotImplementedError
 
     def parse(
-            self, supress_parsing_errors=True,
-            supress_invalid_deck=True) -> Deck | None:  # override
+            self, suppress_parsing_errors=True,
+            suppress_invalid_deck=True) -> Deck | None:  # override
         try:
             self._pre_parse()
             self._parse_deck()
         except ParsingError as pe:
-            if not supress_parsing_errors:
+            if not suppress_parsing_errors:
                 _log.error(f"Parsing failed with: {pe}")
                 raise pe
             _log.warning(f"Parsing failed with: {pe}")
@@ -1191,7 +1205,7 @@ class DeckParser(ABC):
                 self._maindeck, self._sideboard, self._commander, self._partner_commander,
                 self._companion, self._metadata)
         except InvalidDeck as err:
-            if not supress_invalid_deck:
+            if not suppress_invalid_deck:
                 _log.error(f"Parsing failed with: {err}")
                 raise err
             _log.warning(f"Parsing failed with: {err}")

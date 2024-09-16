@@ -19,6 +19,7 @@ from mtgcards.deck import Deck, DeckParser, InvalidDeck
 from mtgcards.utils.scrape import Throttling, extract_source, throttle
 from mtgcards.scryfall import all_formats
 from mtgcards.utils import ParsingError
+from mtgcards.utils.scrape import ScrapingError
 
 _log = logging.getLogger(__name__)
 
@@ -129,10 +130,10 @@ class DeckScraper(DeckParser):
         raise NotImplementedError
 
     def parse(
-            self, supress_parsing_errors=True, supress_invalid_deck=True) -> Deck | None: # override
+            self, suppress_parsing_errors=True, suppress_invalid_deck=True) -> Deck | None: # override
         return self.scrape(
-            supress_scraping_errors=supress_parsing_errors,
-            supress_invalid_deck=supress_invalid_deck
+            suppress_scraping_errors=suppress_parsing_errors,
+            suppress_invalid_deck=suppress_invalid_deck
         )
 
     def _build_deck(self) -> Deck:
@@ -141,16 +142,22 @@ class DeckScraper(DeckParser):
             self._companion, self._metadata)
 
     def scrape(
-            self, throttled=False, supress_scraping_errors=True,
-            supress_invalid_deck=True) -> Deck | None:
+            self, throttled=False, suppress_parsing_errors=True, suppress_scraping_errors=True,
+            suppress_invalid_deck=True) -> Deck | None:
         if throttled:
             throttle(*self.THROTTLING)
         try:
             self._pre_parse()
             self._parse_metadata()
             self._parse_deck()
+        except ScrapingError as se:
+            if not suppress_scraping_errors:
+                _log.error(f"Scraping failed with: {se}")
+                raise se
+            _log.warning(f"Scraping failed with: {se}")
+            return None
         except ParsingError as pe:
-            if not supress_scraping_errors:
+            if not suppress_parsing_errors:
                 _log.error(f"Scraping failed with: {pe}")
                 raise pe
             _log.warning(f"Scraping failed with: {pe}")
@@ -158,7 +165,7 @@ class DeckScraper(DeckParser):
         try:
             return self._build_deck()
         except InvalidDeck as err:
-            if not supress_invalid_deck:
+            if not suppress_invalid_deck:
                 _log.error(f"Scraping failed with: {err}")
                 raise err
             _log.warning(f"Scraping failed with: {err}")

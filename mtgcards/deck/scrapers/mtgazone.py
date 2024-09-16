@@ -125,7 +125,7 @@ def _parse_tiers(table: Tag) -> dict[str, int]:
 
 
 def _parse_meta_deck(deck_tag: Tag, decks2tiers: dict[str, int], deck_place: int) -> Deck:
-    deck = MtgaZoneScraper("", deck_tag=deck_tag).scrape(supress_invalid_deck=False)
+    deck = MtgaZoneScraper("", deck_tag=deck_tag).scrape(suppress_invalid_deck=False)
     meta = {
         "meta": {
             "place": deck_place
