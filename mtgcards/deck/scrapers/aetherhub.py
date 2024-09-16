@@ -64,12 +64,12 @@ class AetherhubScraper(DeckScraper):
             url = url.removesuffix("/Gallery/")
         return url
 
-    def _pre_process(self) -> None:  # override
+    def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)
         if not self._soup:
             raise ScrapingError("Page not available")
 
-    def _process_metadata(self) -> None:  # override
+    def _parse_metadata(self) -> None:  # override
         # name and format
         if title_tag := self._soup.find("h2", class_="text-header-gold"):
             fmt_part, name_part = title_tag.text.strip().split("-", maxsplit=1)
@@ -116,7 +116,7 @@ class AetherhubScraper(DeckScraper):
             except (IndexError, ValueError):
                 _log.warning(f"No metagame data available for {self.url!r}")
 
-    def _process_deck(self) -> None:  # override
+    def _parse_deck(self) -> None:  # override
         deck_tags = self._soup.find_all("div", class_="row")
         deck_tag = from_iterable(
             deck_tags, lambda t: t.text.strip().startswith(("Main", "Commander", "Companion")))

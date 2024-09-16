@@ -364,3 +364,13 @@ def detect_lang(text: str) -> Language:
         return detected_lang
     raise ValueError(
         f"Detected language {detected_lang.name} is not a Magic: The Gathering card language")
+
+
+def is_foreign(text: str) -> bool:
+    try:
+        lang = detect_lang(text)
+    except ValueError:
+        return False
+    if lang.iso_code_639_1.name.lower() == "en":
+        return True
+    return False

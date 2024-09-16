@@ -63,12 +63,12 @@ class GoldfishScraper(DeckScraper):
             return url
         return url
 
-    def _pre_process(self) -> None:  # override
+    def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url, headers=self.HEADERS)
         if not self._soup:
             raise ScrapingError("Page not available")
 
-    def _process_metadata(self) -> None:  # override
+    def _parse_metadata(self) -> None:  # override
         title_tag = self._soup.find("h1", class_="title")
         self._metadata["name"], *_ = title_tag.text.strip().split("\n")
         author_tag = title_tag.find("span")
@@ -93,7 +93,7 @@ class GoldfishScraper(DeckScraper):
         if source_idx is not None:
             self._metadata["original_source"] = lines[source_idx].strip()
 
-    def _process_deck(self) -> None:  # override
+    def _parse_deck(self) -> None:  # override
         deck_tag = self._soup.find("table", class_="deck-view-deck-table")
         for tag in deck_tag.descendants:
             if tag.name == "tr" and tag.has_attr(

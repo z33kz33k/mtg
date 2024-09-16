@@ -42,12 +42,12 @@ class MtgaZoneScraper(DeckScraper):
     def is_deck_url(url: str) -> bool:  # override
         return "mtgazone.com/user-decks/" in url or "mtgazone.com/deck/" in url
 
-    def _pre_process(self) -> None:  # override
+    def _pre_parse(self) -> None:  # override
         self._soup = self._deck_tag or getsoup(self.url)
         if not self._soup:
             raise ScrapingError("Soup not available")
 
-    def _process_metadata(self) -> None:  # override
+    def _parse_metadata(self) -> None:  # override
         name_author_tag = self._soup.find("div", class_="name-container")
         if not name_author_tag:
             raise ScrapingError(
@@ -95,7 +95,7 @@ class MtgaZoneScraper(DeckScraper):
             decklist.extend(self._to_playset(card_tag))
         return decklist
 
-    def _process_deck(self) -> None:  # override
+    def _parse_deck(self) -> None:  # override
         if commander_tag := self._soup.select_one("div.decklist.short.commander"):
             for card in self._process_decklist(commander_tag):
                 self._set_commander(card)

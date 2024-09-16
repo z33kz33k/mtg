@@ -34,12 +34,12 @@ class OldPageTcgPlayerScraper(DeckScraper):
     def is_deck_url(url: str) -> bool:  # override
         return "decks.tcgplayer.com/" in url and "/search" not in url
 
-    def _pre_process(self) -> None:  # override
+    def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)
         if not self._soup:
             raise ScrapingError("Page not available")
 
-    def _process_metadata(self) -> None:  # override
+    def _parse_metadata(self) -> None:  # override
         info_tag = self._soup.find("div", class_="viewDeckHeader")
         h1_tag = info_tag.find("h1")
         self._metadata["name"] = h1_tag.find("a").text.strip()
@@ -63,7 +63,7 @@ class OldPageTcgPlayerScraper(DeckScraper):
             cards += cls.get_playset(cls.find_card(name_tag.text.strip()), quantity)
         return cards
 
-    def _process_deck(self) -> None:  # override
+    def _parse_deck(self) -> None:  # override
         deck_tags = self._soup.find_all("div", class_="subdeck")
         for deck_tag in deck_tags:
             if deck_tag.find("h3").text.lower().startswith("command"):
@@ -93,13 +93,13 @@ class NewPageTcgPlayerScraper(DeckScraper):
     def is_deck_url(url: str) -> bool:  # override
         return "infinite.tcgplayer.com/magic-the-gathering/deck/" in url
 
-    def _pre_process(self) -> None:  # override
+    def _pre_parse(self) -> None:  # override
         try:
             self._soup, _, _ = get_dynamic_soup_by_xpath(self.url, self._XPATH)
         except TimeoutException:
             raise ScrapingError(f"Scraping failed due to Selenium timing out")
 
-    def _process_metadata(self) -> None:  # override
+    def _parse_metadata(self) -> None:  # override
         name_tag = self._soup.find(
             "h2", class_=lambda c: c and "martech-heading" in c and "martech-inter" in c)
         self._metadata["name"] = name_tag.text.strip()
@@ -125,7 +125,7 @@ class NewPageTcgPlayerScraper(DeckScraper):
             str(quantity))
         return cls.get_playset(cls.find_card(name), quantity)
 
-    def _process_deck(self) -> None:  # override
+    def _parse_deck(self) -> None:  # override
         commander_tag = self._soup.find("div", class_="commandzone")
         if commander_tag:
             card_tags = commander_tag.find_all("li", class_="list__item")

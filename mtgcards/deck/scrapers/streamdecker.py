@@ -40,7 +40,7 @@ class StreamdeckerScraper(DeckScraper):
             return url.removesuffix("/")
         return url
 
-    def _pre_process(self) -> None:  # override
+    def _pre_parse(self) -> None:  # override
         self._json_data = timed_request(
             self.API_URL_TEMPLATE.format(self._decklist_id), return_json=True)["data"]
         if not self._json_data:
@@ -50,7 +50,7 @@ class StreamdeckerScraper(DeckScraper):
         date_text = self._json_data["updatedAt"]
         return get_date_from_ago_text(date_text)
 
-    def _process_metadata(self) -> None:  # override
+    def _parse_metadata(self) -> None:  # override
         self._metadata.update({
             "name": self._json_data["name"],
             "views": self._json_data["views"]["counter"]
@@ -75,6 +75,6 @@ class StreamdeckerScraper(DeckScraper):
         if json_card.get("companion"):
             self._companion = card
 
-    def _process_deck(self) -> None:
+    def _parse_deck(self) -> None:
         for json_card in self._json_data["cardList"]:
             self._parse_json_card(json_card)

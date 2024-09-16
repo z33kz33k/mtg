@@ -57,13 +57,13 @@ class DeckstatsScraper(DeckScraper):
         return self.dissect_js(
             "init_deck_data(", "deck_display();", lambda s: s.removesuffix(", false);"))
 
-    def _pre_process(self) -> None:  # override
+    def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)
         if not self._soup:
             raise ScrapingError("Page not available")
         self._json_data = self._get_json()
 
-    def _process_metadata(self) -> None:  # override
+    def _parse_metadata(self) -> None:  # override
         author_text = self._soup.find("div", id="deck_folder_subtitle").text.strip()
         self._metadata["author"] = author_text.removeprefix("in  ").removesuffix("'s Decks")
         self._metadata["name"] = self._json_data["name"]
@@ -89,7 +89,7 @@ class DeckstatsScraper(DeckScraper):
             self._set_commander(card)
         return self.get_playset(card, quantity)
 
-    def _process_deck(self) -> None:  # override
+    def _parse_deck(self) -> None:  # override
         cards = itertools.chain(
             *[section["cards"] for section in self._json_data["sections"]])
         for card_json in cards:

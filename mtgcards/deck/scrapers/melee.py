@@ -11,7 +11,7 @@ import logging
 
 import dateutil.parser
 
-from deck import Deck
+from mtgcards.deck import Deck
 from mtgcards import Json
 from mtgcards.deck.arena import ArenaParser
 from mtgcards.deck.scrapers import DeckScraper
@@ -54,15 +54,19 @@ class MeleeGgScraper(DeckScraper):
     def is_deck_url(url: str) -> bool:  # override
         return "melee.gg/Decklist/" in url or f"{ALT_DOMAIN}/Decklist/" in url
 
-    def _pre_process(self) -> None:  # override
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return url.replace(ALT_DOMAIN, "melee.gg")
+
+    def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url, headers=_HEADERS)
         if not self._soup:
             raise ScrapingError("Page not available")
 
-    def _process_metadata(self) -> None:  # override
+    def _parse_metadata(self) -> None:  # override
         self._metadata["name"] = self._soup.select_one("a.decklist-card-title").text.strip()
-        self._metadata["author"] = self._soup.select_one(
-            "span.decklist-card-title-author").text.strip().removeprefix("by ")
+        if author_tag := self._soup.select_one("span.decklist-card-title-author"):
+            self._metadata["author"] = author_tag.text.strip().removeprefix("by ")
         if event_tag := self._soup.select_one("div.decklist-card-info-tournament"):
             self._metadata["event"] = event_tag.text.strip()
         info_tags = [tag for tag in self._soup.select("div.decklist-card-info")
@@ -77,6 +81,6 @@ class MeleeGgScraper(DeckScraper):
         return ArenaParser(self._arena_decklist, metadata=self._metadata).parse(
             supress_invalid_deck=False)
 
-    def _process_deck(self) -> None:  # override
+    def _parse_deck(self) -> None:  # override
         self._arena_decklist = self._soup.select_one(
             "textarea.decklist-builder-paste-field").text.strip().splitlines()

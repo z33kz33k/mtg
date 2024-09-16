@@ -24,7 +24,7 @@ from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils.scrape import SELENIUM_TIMEOUT, click_for_clipboard
 from mtgcards.utils import get_date_from_ago_text, extract_float
 from mtgcards.scryfall import COMMANDER_FORMATS
-from utils.scrape import ScrapingError
+from mtgcards.utils.scrape import ScrapingError
 
 _log = logging.getLogger(__name__)
 
@@ -44,7 +44,7 @@ class TopDeckedScraper(DeckScraper):
     _CONSENT_TIMEOUT = 30
     _SHARE_XPATH = "//ion-button[@tourstep='decklist_view_share']"
     _ARENA_XPATH = "//button[descendant::*[contains(text(), 'Share to Arena')]]"
-    _ARENA_DELAY = 4
+    _ARENA_DELAY = 5
     _NAME_XPATH = "//ion-title[contains(@class, 'title-default')]"
     _FMT_XPATH = "//span[contains(@class, 'format') and contains(@class, 'text-uppercase')]"
     _DATE_XPATH = ("//span[contains(@class, 'prefix') and contains(@class, 'text-none') and "
@@ -98,7 +98,7 @@ class TopDeckedScraper(DeckScraper):
             return arena.splitlines()
 
     # pre-process does all the work here
-    def _pre_process(self) -> None:  # override
+    def _pre_parse(self) -> None:  # override
         try:
             self._arena_decklist = self._get_data()
         except NoSuchElementException as err:
@@ -107,7 +107,7 @@ class TopDeckedScraper(DeckScraper):
         except TimeoutException:
             raise ScrapingError(f"Scraping failed due to Selenium timing out")
 
-    def _process_metadata(self) -> None:  # override
+    def _parse_metadata(self) -> None:  # override
         pass
 
     def _handle_commander(self) -> None:
@@ -129,7 +129,7 @@ class TopDeckedScraper(DeckScraper):
     def _build_deck(self) -> Deck:  # override
         return ArenaParser(self._arena_decklist, self._metadata).parse(supress_invalid_deck=False)
 
-    def _process_deck(self) -> None:  # override
+    def _parse_deck(self) -> None:  # override
         if self.fmt and self.fmt in COMMANDER_FORMATS:
             self._handle_commander()
 

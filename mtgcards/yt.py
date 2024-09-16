@@ -274,8 +274,8 @@ def scrape_channels(
                 ch.dump(dst)
                 count += len(ch.videos)
                 total_count += len(ch.videos)
-        except ScrapingError as se:
-            _log.warning(f"Scraping of channel {url!r} failed with: '{se}'. Skipping...")
+        except Exception as err:
+            _log.exception(f"Scraping of channel {url!r} failed with: '{err}'. Skipping...")
         if count > 500:
             count = 0
             _log.info(f"Throttling for 5 minutes before the next batch...")
@@ -734,11 +734,10 @@ class Video:
         decks = []
         for url in urls:
             self._sources.add(extract_source(url))
-            try:
-                if deck := self._process_deck(url):
-                    decks.append(deck)
-            except Exception as e:
-                _log.exception(f"Deck scraping failed with: {e}")
+            if deck := self._process_deck(url):
+                start = f"{deck.name!r} deck" if deck.name else "Deck"
+                _log.info(f"{start} scraped successfully")
+                decks.append(deck)
         return decks
 
     def _collect(self) -> list[Deck]:
@@ -759,6 +758,8 @@ class Video:
         if self._arena_lines:
             self._sources.add("arena.decklist")
             if deck := ArenaParser(self._arena_lines, self.metadata).parse():
+                start = f"{deck.name!r} deck" if deck.name else "Deck"
+                _log.info(f"{start} scraped successfully")
                 decks.add(deck)
 
         return sorted(decks)

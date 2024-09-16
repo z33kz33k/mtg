@@ -16,7 +16,7 @@ from mtgcards import Json
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils import extract_int
 from mtgcards.utils.scrape import get_dynamic_soup_by_xpath
-from utils.scrape import ScrapingError
+from mtgcards.utils.scrape import ScrapingError
 
 _log = logging.getLogger(__name__)
 
@@ -44,7 +44,7 @@ class MtgTop8Scraper(DeckScraper):
     def sanitize_url(url: str) -> str:  # override
         return url
 
-    def _pre_process(self) -> None:  # override
+    def _pre_parse(self) -> None:  # override
         try:
             self._soup, _, _ = get_dynamic_soup_by_xpath(
                 self.url, self._XPATH, consent_xpath=self._CONSENT_XPATH,
@@ -52,7 +52,7 @@ class MtgTop8Scraper(DeckScraper):
         except TimeoutException:
             raise ScrapingError(f"Scraping failed due to Selenium timing out")
 
-    def _process_metadata(self) -> None:  # override
+    def _parse_metadata(self) -> None:  # override
         event_tag, name_tag = [tag for tag in self._soup.find_all("div", class_="event_title")
                                if tag.find("a", class_="arrow") is None]
         self._metadata["event"] = {}
@@ -81,7 +81,7 @@ class MtgTop8Scraper(DeckScraper):
         if source_tag := self._soup.find("a", target="_blank"):
             self._metadata["event"]["source"] = source_tag.text.strip()
 
-    def _process_deck(self) -> None:  # override
+    def _parse_deck(self) -> None:  # override
         deck_tag = self._soup.find("div", style="display:flex;align-content:stretch;")
         cards, commander_on = self._maindeck, False
         for block_tag in deck_tag:

@@ -29,19 +29,19 @@ class StarCityGamesScraper(DeckScraper):
     def is_deck_url(url: str) -> bool:  # override
         return "old.starcitygames.com/decks/" in url
 
-    def _pre_process(self) -> None:  # override
+    def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)
         if not self._soup:
             raise ScrapingError("Page not available")
 
-    def _process_metadata(self) -> None:  # override
+    def _parse_metadata(self) -> None:  # override
         self._metadata["name"] = self._soup.find("header", class_="deck_title").text.strip()
         self._metadata["author"] = self._soup.find("header", class_="player_name").text.strip()
         if event_tag := self._soup.find("header", class_="deck_played_placed"):
             self._metadata["event"] = sanitize_whitespace(event_tag.text.strip())
         self._update_fmt(self._soup.find("div", class_="deck_format").text.strip().lower())
 
-    def _process_deck(self) -> None:  # override
+    def _parse_deck(self) -> None:  # override
         deck_tag = self._soup.find("div", class_="deck_card_wrapper")
         for tag in deck_tag.descendants:
             if tag.name == "h3":

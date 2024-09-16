@@ -31,12 +31,12 @@ class PennyDreadfulMagicScraper(DeckScraper):
     def is_deck_url(url: str) -> bool:  # override
         return "pennydreadfulmagic.com/decks/" in url
 
-    def _pre_process(self) -> None:  # override
+    def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)
         if not self._soup:
             raise ScrapingError("Page not available")
 
-    def _process_metadata(self) -> None:  # override
+    def _parse_metadata(self) -> None:  # override
         self._update_fmt("penny")
         self._metadata["name"] = self._soup.find("h1", class_="deck-name").text.strip()
         info_tag = self._soup.find("div", class_="title")
@@ -61,7 +61,7 @@ class PennyDreadfulMagicScraper(DeckScraper):
         quantity = int(qty_text)
         return cls.get_playset(cls.find_card(name), quantity)
 
-    def _process_deck(self) -> None:  # override
+    def _parse_deck(self) -> None:  # override
         for section_tag in self._soup.find_all("section"):
             if section_tag.find("section"):  # skip higher-order sections
                 continue

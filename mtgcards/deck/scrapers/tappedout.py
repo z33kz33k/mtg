@@ -31,12 +31,12 @@ class TappedoutScraper(DeckScraper):
     def is_deck_url(url: str) -> bool:  # override
         return "tappedout.net/mtg-decks/" in url
 
-    def _pre_process(self) -> None:  # override
+    def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)
         if not self._soup:
             raise ScrapingError("Page not available")
 
-    def _process_metadata(self) -> None:  # override
+    def _parse_metadata(self) -> None:  # override
         fmt_tag = self._soup.select_one("a.btn.btn-success.btn-xs")
         fmt = fmt_tag.text.strip().removesuffix("*").lower()
         self._update_fmt(fmt)
@@ -56,7 +56,7 @@ class TappedoutScraper(DeckScraper):
     def _build_deck(self) -> Deck:  # override
         return ArenaParser(self._arena_decklist, self._metadata).parse(supress_invalid_deck=False)
 
-    def _process_deck(self) -> None:  # override
+    def _parse_deck(self) -> None:  # override
         lines = self._soup.find("textarea", id="mtga-textarea").text.strip().splitlines()
         _, name_line, _, _, *lines = lines
         self._arena_decklist = [*lines]

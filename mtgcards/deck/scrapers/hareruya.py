@@ -32,12 +32,16 @@ class HareruyaScraper(DeckScraper):
     def is_deck_url(url: str) -> bool:  # override
         return "hareruyamtg.com" in url and "/deck/" in url
 
-    def _pre_process(self) -> None:  # override
+    @staticmethod
+    def sanitize_url(url: str) -> str:
+        return url.replace("/ja/","/en/")
+
+    def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url, headers=GoldfishScraper.HEADERS)
         if not self._soup:
             raise ScrapingError("Page not available")
 
-    def _process_metadata(self) -> None:  # override
+    def _parse_metadata(self) -> None:  # override
         info_tag = self._soup.find("div", class_="deckSearch-deckList__information__flex")
         for ul_tag in info_tag.find_all("ul"):
             li_tags = ul_tag.find_all("li")
@@ -62,7 +66,7 @@ class HareruyaScraper(DeckScraper):
         if not self._metadata.get("name") and self._metadata.get("hareruya_archetype"):
             self._metadata["name"] = self._metadata["hareruya_archetype"]
 
-    def _process_deck(self) -> None:  # override
+    def _parse_deck(self) -> None:  # override
         main_tag = self._soup.find("div", class_="deckSearch-deckList__deckList__wrapper")
 
         for sub_tag in main_tag.descendants:

@@ -39,13 +39,13 @@ class ManatradersScraper(DeckScraper):
             "div", {"data-react-class": "WebshopApp"}).attrs["data-react-props"]
         return json.loads(json_data)["deck"]
 
-    def _pre_process(self) -> None:  # override
+    def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)
         if not self._soup:
             raise ScrapingError("Page not available")
         self._json_data = self._get_json_data()
 
-    def _process_metadata(self) -> None:  # override
+    def _parse_metadata(self) -> None:  # override
         self._metadata["name"] = self._json_data["name"]
         if author := self._json_data.get("playerName"):
             self._metadata["author"] = author
@@ -60,7 +60,7 @@ class ManatradersScraper(DeckScraper):
         if sideboard_qty := card_json.get("sideboardQuantity"):
             self._sideboard += self.get_playset(card, sideboard_qty)
 
-    def _process_deck(self) -> None:  # override
+    def _parse_deck(self) -> None:  # override
         for card_data in self._json_data["cards"].values():
             self._parse_card_json(card_data)
         self._derive_commander_from_sideboard()

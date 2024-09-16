@@ -37,13 +37,13 @@ class CardsrealmScraper(DeckScraper):
             return obj + "]"
         return self.dissect_js("var deck_cards = ", 'var torneio_type =', end_processor=process)
 
-    def _pre_process(self) -> None:  # override
+    def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)
         if not self._soup:
             raise ScrapingError("Page not available")
         self._json_data = self._get_json()
 
-    def _process_metadata(self) -> None:  # override
+    def _parse_metadata(self) -> None:  # override
         card_data = self._json_data[0]
         self._metadata["name"] = card_data["deck_title"]
         self._metadata["date"] = dateutil.parser.parse(card_data["deck_lastchange"]).date()
@@ -60,7 +60,7 @@ class CardsrealmScraper(DeckScraper):
         else:
             self._maindeck += self.get_playset(card, quantity)
 
-    def _process_deck(self) -> None:  # override
+    def _parse_deck(self) -> None:  # override
         for card_data in self._json_data:
             self._parse_card_json(card_data)
         self._derive_commander_from_sideboard()

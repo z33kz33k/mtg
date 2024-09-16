@@ -54,7 +54,7 @@ class MoxfieldScraper(DeckScraper):
     def is_deck_url(url: str) -> bool:  # override
         return "moxfield.com/decks/" in url and "/personal" not in url and "/history" not in url
 
-    def _pre_process(self) -> None:  # override
+    def _pre_parse(self) -> None:  # override
         self._json_data = timed_request(
             self.API_URL_TEMPLATE.format(self._decklist_id), return_json=True,
             headers=self.HEADERS)
@@ -72,7 +72,7 @@ class MoxfieldScraper(DeckScraper):
             return url.removesuffix("/")
         return url
 
-    def _process_metadata(self) -> None:  # override
+    def _parse_metadata(self) -> None:  # override
         fmt = self._json_data["format"].lower()
         self._update_fmt(fmt)
         name = self._json_data["name"]
@@ -100,7 +100,7 @@ class MoxfieldScraper(DeckScraper):
         name = json_card["card"]["name"]
         return cls.get_playset(cls.find_card(name, scryfall_id=scryfall_id), quantity)
 
-    def _process_deck(self) -> None:  # override
+    def _parse_deck(self) -> None:  # override
         for card in self._json_data["boards"]["mainboard"]["cards"].values():
             self._maindeck.extend(self._to_playset(card))
         for card in self._json_data["boards"]["sideboard"]["cards"].values():

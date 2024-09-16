@@ -34,7 +34,7 @@ class MtgArenaProScraper(DeckScraper):
     def _get_json(self) -> Json:
         return self.dissect_js("var precachedDeck=", '"card_ids":', lambda s: s + '"card_ids":[]}')
 
-    def _pre_process(self) -> None:  # override
+    def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)
         if not self._soup:
             raise ScrapingError("Page not available")
@@ -59,7 +59,7 @@ class MtgArenaProScraper(DeckScraper):
             return "standard"
         return ""
 
-    def _process_metadata(self) -> None:  # override
+    def _parse_metadata(self) -> None:  # override
         self._metadata["author"] = self._json_data["author"]
         self._metadata["name"] = self._json_data["humanname"]
         if fmt := self._parse_fmt():
@@ -73,7 +73,7 @@ class MtgArenaProScraper(DeckScraper):
         card = cls.find_card(name)
         return cls.get_playset(card, quantity)
 
-    def _process_deck(self) -> None:  # override
+    def _parse_deck(self) -> None:  # override
         for card_json in self._json_data["deck_order"]:
             self._maindeck.extend(self._parse_card_json(card_json))
         for card_json in self._json_data["sidedeck_order"]:

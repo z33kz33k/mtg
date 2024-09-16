@@ -17,7 +17,7 @@ from mtgcards import Json
 from mtgcards.deck.arena import ArenaParser
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils.scrape import get_dynamic_soup_by_xpath
-from utils.scrape import ScrapingError
+from mtgcards.utils.scrape import ScrapingError
 
 _log = logging.getLogger(__name__)
 
@@ -45,14 +45,14 @@ class MtgDecksNetScraper(DeckScraper):
     def is_deck_url(url: str) -> bool:  # override
         return "mtgdecks.net/" in url and "-decklist-" in url
 
-    def _pre_process(self) -> None:  # override
+    def _pre_parse(self) -> None:  # override
         try:
             self._soup, _, _ = get_dynamic_soup_by_xpath(
                 self.url, self._XPATH, consent_xpath=self._CONSENT_XPATH)
         except TimeoutException:
             raise ScrapingError(f"Scraping failed due to Selenium timing out")
 
-    def _process_metadata(self) -> None:  # override
+    def _parse_metadata(self) -> None:  # override
         info_tag = self._soup.find("div", class_="col-md-6")
         info = info_tag.text.strip()
         name_author_part, *event_parts, date_part = info.split("—")
@@ -72,6 +72,6 @@ class MtgDecksNetScraper(DeckScraper):
     def _build_deck(self) -> Deck:  # override
         return ArenaParser(self._arena_decklist, self._metadata).parse(supress_invalid_deck=False)
 
-    def _process_deck(self) -> None:  # override
+    def _parse_deck(self) -> None:  # override
         deck_tag = self._soup.find("textarea", id="arena_deck")
         self._arena_decklist = deck_tag.text.strip().splitlines()

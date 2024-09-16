@@ -17,7 +17,7 @@ from mtgcards import Json
 from mtgcards.deck.arena import ArenaParser
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils.scrape import get_dynamic_soup_by_xpath
-from utils.scrape import ScrapingError
+from mtgcards.utils.scrape import ScrapingError
 
 _log = logging.getLogger(__name__)
 
@@ -38,7 +38,7 @@ class FlexslotScraper(DeckScraper):
     def is_deck_url(url: str) -> bool:  # override
         return "flexslot.gg/decks/" in url
 
-    def _pre_process(self) -> None:  # override
+    def _pre_parse(self) -> None:  # override
         try:
             self._soup, _, self._clipboard = get_dynamic_soup_by_xpath(
                 self.url, self._XPATH, consent_xpath=self._CONSENT_XPATH,
@@ -46,7 +46,7 @@ class FlexslotScraper(DeckScraper):
         except TimeoutException:
             raise ScrapingError(f"Scraping failed due to Selenium timing out")
 
-    def _process_metadata(self) -> None:  # override
+    def _parse_metadata(self) -> None:  # override
         if name_tag := self._soup.select_one("div.sideboardtitle.my-2.text-center"):
             self._metadata["name"] = name_tag.text.strip()
         info_text = self._soup.find("h3", class_="text-center").text.strip()
@@ -61,5 +61,5 @@ class FlexslotScraper(DeckScraper):
         return ArenaParser(self._arena_decklist, metadata=self._metadata).parse(
             supress_invalid_deck=False)
 
-    def _process_deck(self) -> None:  # override
+    def _parse_deck(self) -> None:  # override
         self._arena_decklist = [line.rstrip(":") for line in self._clipboard.splitlines()]

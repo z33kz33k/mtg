@@ -16,7 +16,7 @@ from mtgcards.deck import ARENA_MULTIFACE_SEPARATOR, CardNotFound, DeckParser, P
 from mtgcards.scryfall import Card, MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, \
     query_api_for_card
 from mtgcards.utils import ParsingError, extract_int, getrepr
-from mtgcards.utils import detect_lang
+from mtgcards.utils import is_foreign
 
 _log = logging.getLogger(__name__)
 
@@ -78,14 +78,9 @@ class PlaysetLine:
         return getrepr(self.__class__, *pairs)
 
     def _handle_foreign(self) -> list[Card] | None:
-        try:
-            lang = detect_lang(self._name)
-        except ValueError:
-            return None
-        if lang.iso_code_639_1.name.lower() == "en":
-            return None
-        if card := query_api_for_card(self._name, foreign=True):
-            return ArenaParser.get_playset(card, self.quantity)
+        if is_foreign(self._name):
+            if card := query_api_for_card(self._name, foreign=True):
+                return ArenaParser.get_playset(card, self.quantity)
         return None
 
     def to_playset(self) -> list[Card]:
@@ -150,9 +145,8 @@ def get_arena_lines(*lines: str) -> Generator[str, None, None]:
             yield line
         elif (is_empty(line)
               and 0 < i < len(lines) - 1
-              and is_arena_line(lines[i - 1])  # previous line
-              and is_arena_line(lines[i + 1])  # next line
-              and not is_sideboard_line(lines[i + 1])):
+              and is_playset_line(lines[i - 1])  # previous line
+              and is_playset_line(lines[i + 1])):  # next line
             yield "Sideboard"
 
 
@@ -163,14 +157,21 @@ class ArenaParser(DeckParser):
         super().__init__(metadata)
         self._lines = lines
 
-    def _pre_process(self) -> None:  # override
+    def _pre_parse(self) -> None:  # override
         self._lines = [*get_arena_lines(*self._lines)]
         if not self._lines:
             raise ValueError("No Arena lines found")
+        idx = None
+        for i, line in enumerate(self._lines):
+            if is_maindeck_line(line):
+                idx = i
+                break
+        if idx in (1, 2):
+            self._lines.insert(0, "Commander")
         if not self._metadata.get("source"):
             self._metadata["source"] = "arena.decklist"
 
-    def _process_deck(self) -> None:  # override
+    def _parse_deck(self) -> None:  # override
         for line in self._lines:
             if is_maindeck_line(line):
                 self._shift_to_maindeck()

@@ -23,7 +23,8 @@ from mtgcards.scryfall import (COMMANDER_FORMATS, Card, Color,
                                MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, aggregate,
                                find_by_cardmarket_id, find_by_collector_number,
                                find_by_mtgo_id, find_by_name, find_by_oracle_id,
-                               find_by_scryfall_id, find_by_tcgplayer_id, find_sets)
+                               find_by_scryfall_id, find_by_tcgplayer_id, find_sets,
+                               query_api_for_card)
 from mtgcards.utils import ParsingError, extract_int, from_iterable, getrepr, serialize_dates
 from mtgcards.utils.files import getdir, getfile
 
@@ -1119,7 +1120,8 @@ class DeckParser(ABC):
             oracle_id="",
             tcgplayer_id: int | None = None,
             cardmarket_id: int | None = None,
-            mtgo_id: int | None = None) -> Card:
+            mtgo_id: int | None = None,
+            foreign=False) -> Card:
         if set_and_collector_number:
             if card := find_by_collector_number(*set_and_collector_number):
                 return card
@@ -1139,7 +1141,10 @@ class DeckParser(ABC):
             if card := find_by_mtgo_id(mtgo_id):
                 return card
         name = cls.sanitize_card_name(name)
-        card = find_by_name(name)
+        if foreign:
+            card = query_api_for_card(name, foreign=True)
+        else:
+            card = find_by_name(name)
         if not card:
             raise CardNotFound(f"Unable to find card {name!r}")
         return card
@@ -1162,19 +1167,19 @@ class DeckParser(ABC):
         return text
 
     @abstractmethod
-    def _pre_process(self) -> None:
+    def _pre_parse(self) -> None:
         raise NotImplementedError
 
     @abstractmethod
-    def _process_deck(self) -> None:
+    def _parse_deck(self) -> None:
         raise NotImplementedError
 
     def parse(
             self, supress_parsing_errors=True,
             supress_invalid_deck=True) -> Deck | None:  # override
         try:
-            self._pre_process()
-            self._process_deck()
+            self._pre_parse()
+            self._parse_deck()
         except ParsingError as pe:
             if not supress_parsing_errors:
                 _log.error(f"Parsing failed with: {pe}")

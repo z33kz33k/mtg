@@ -18,7 +18,7 @@ from mtgcards import Json
 from mtgcards.deck import Deck, DeckParser, InvalidDeck
 from mtgcards.utils.scrape import Throttling, extract_source, throttle
 from mtgcards.scryfall import all_formats
-from utils.scrape import ScrapingError
+from mtgcards.utils import ParsingError
 
 _log = logging.getLogger(__name__)
 
@@ -117,15 +117,15 @@ class DeckScraper(DeckParser):
         return json.loads(second)
 
     @abstractmethod
-    def _pre_process(self) -> None:
+    def _pre_parse(self) -> None:
         raise NotImplementedError
 
     @abstractmethod
-    def _process_metadata(self) -> None:
+    def _parse_metadata(self) -> None:
         raise NotImplementedError
 
     @abstractmethod
-    def _process_deck(self) -> None:
+    def _parse_deck(self) -> None:
         raise NotImplementedError
 
     def parse(
@@ -146,14 +146,14 @@ class DeckScraper(DeckParser):
         if throttled:
             throttle(*self.THROTTLING)
         try:
-            self._pre_process()
-            self._process_metadata()
-            self._process_deck()
-        except ScrapingError as se:
+            self._pre_parse()
+            self._parse_metadata()
+            self._parse_deck()
+        except ParsingError as pe:
             if not supress_scraping_errors:
-                _log.error(f"Scraping failed with: {se}")
-                raise se
-            _log.warning(f"Scraping failed with: {se}")
+                _log.error(f"Scraping failed with: {pe}")
+                raise pe
+            _log.warning(f"Scraping failed with: {pe}")
             return None
         try:
             return self._build_deck()
