@@ -25,6 +25,7 @@ _log = logging.getLogger(__name__)
 
 
 SANITIZED_FORMATS = {
+    "1v1 commander": "commander",
     "archon": "commander",
     "artisan historic": "historic",
     "artisanhistoric": "historic",
@@ -56,6 +57,7 @@ SANITIZED_FORMATS = {
     "historicbrawl": "brawl",
     "historicpauper": "historic",
     "no banned list modern": "modern",
+    "oldschool 93/94": "oldschool",
     "pauper edh": "paupercommander",
     "pauperedh": "paupercommander",
 }
@@ -97,6 +99,7 @@ class DeckScraper(DeckParser):
         fmt = fmt.strip().lower()
         fmt = SANITIZED_FORMATS.get(fmt, fmt)
         if fmt != self.fmt:
+
             if fmt in all_formats():
                 if self.fmt:
                     _log.warning(

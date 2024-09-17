@@ -72,3 +72,4 @@ class MtgoTradersScraper(DeckScraper):
             commander = self._sideboard[0]
             if commander.commander_suitable:
                 self._set_commander(commander)
+                self._sideboard = []

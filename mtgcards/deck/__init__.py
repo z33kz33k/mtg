@@ -585,7 +585,8 @@ class Deck:
             if not commander:
                 raise InvalidDeck("Partner commander without commander")
         if commanders:
-            if any(cmd in {*maindeck, *sideboard} for cmd in commanders):
+            cards = {*maindeck, *sideboard}
+            if any(cmd in cards for cmd in commanders):
                 raise InvalidDeck(f"Redundant commander maindeck/sideboard inclusion")
             identity = {clr for c in commanders for clr in c.color_identity.value}
             for card in [*maindeck, *sideboard]:
