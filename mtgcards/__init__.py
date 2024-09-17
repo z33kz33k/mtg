@@ -81,7 +81,7 @@ from mtgcards.deck.scrapers.cardsrealm import CardsrealmScraper
 from mtgcards.deck.scrapers.deckstats import DeckstatsScraper
 from mtgcards.deck.scrapers.flexslot import FlexslotScraper
 from mtgcards.deck.scrapers.goldfish import GoldfishScraper
-from mtgcards.deck.scrapers.hareruya import HareruyaScraper
+from mtgcards.deck.scrapers.hareruya import InternationalHareruyaScraper
 from mtgcards.deck.scrapers.manastack import ManaStackScraper
 from mtgcards.deck.scrapers.manatraders import ManatradersScraper
 from mtgcards.deck.scrapers.melee import MeleeGgScraper

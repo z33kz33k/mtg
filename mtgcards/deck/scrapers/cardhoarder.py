@@ -12,7 +12,6 @@ import logging
 
 from selenium.common.exceptions import TimeoutException
 
-from deck.scrapers.untapped import CONSENT_XPATH
 from mtgcards import Json
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils.scrape import ScrapingError, get_dynamic_soup_by_xpath
@@ -48,7 +47,7 @@ class CardhoarderScraper(DeckScraper):
     def _pre_parse(self) -> None:  # override
         try:
             self._soup, _, _ = get_dynamic_soup_by_xpath(
-                self.url, self._XPATH, consent_xpath=CONSENT_XPATH)
+                self.url, self._XPATH, consent_xpath=self._CONSENT_XPATH)
             self._deck_data = self._get_deck_data()
         except TimeoutException:
             raise ScrapingError(f"Scraping failed due to Selenium timing out")

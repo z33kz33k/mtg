@@ -9,8 +9,8 @@
 """
 import logging
 
-from deck import Deck
 from mtgcards import Json
+from mtgcards.deck import Deck
 from mtgcards.deck.arena import ArenaParser
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils import extract_int, get_date_from_ago_text

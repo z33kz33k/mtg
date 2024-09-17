@@ -17,8 +17,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-from deck import Deck
 from mtgcards import Json
+from mtgcards.deck import Deck
 from mtgcards.deck.arena import ArenaParser, PlaysetLine
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.utils.scrape import SELENIUM_TIMEOUT, click_for_clipboard
