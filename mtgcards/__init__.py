@@ -74,28 +74,28 @@ init_log()
 
 
 # import scraper modules so they get registered for the factory method
-from mtgcards.deck.scrapers.aetherhub import AetherhubScraper
-from mtgcards.deck.scrapers.archidekt import ArchidektScraper
-from mtgcards.deck.scrapers.cardhoarder import CardhoarderScraper
-from mtgcards.deck.scrapers.cardsrealm import CardsrealmScraper
-from mtgcards.deck.scrapers.deckstats import DeckstatsScraper
-from mtgcards.deck.scrapers.flexslot import FlexslotScraper
-from mtgcards.deck.scrapers.goldfish import GoldfishScraper
-from mtgcards.deck.scrapers.hareruya import InternationalHareruyaScraper
-from mtgcards.deck.scrapers.manastack import ManaStackScraper
-from mtgcards.deck.scrapers.manatraders import ManatradersScraper
-from mtgcards.deck.scrapers.melee import MeleeGgScraper
-from mtgcards.deck.scrapers.moxfield import MoxfieldScraper
-from mtgcards.deck.scrapers.mtgarenapro import MtgArenaProScraper
-from mtgcards.deck.scrapers.mtgazone import MtgaZoneScraper
-from mtgcards.deck.scrapers.mtgdecksnet import MtgDecksNetScraper
-from mtgcards.deck.scrapers.mtgotraders import MtgoTradersScraper
-from mtgcards.deck.scrapers.mtgtop8 import MtgTop8Scraper
-from mtgcards.deck.scrapers.penny import PennyDreadfulMagicScraper
-from mtgcards.deck.scrapers.scryfall import ScryfallScraper
-from mtgcards.deck.scrapers.starcitygames import StarCityGamesScraper
-from mtgcards.deck.scrapers.streamdecker import StreamdeckerScraper
-from mtgcards.deck.scrapers.tappedout import TappedoutScraper
-from mtgcards.deck.scrapers.tcgplayer import NewPageTcgPlayerScraper, OldPageTcgPlayerScraper
-from mtgcards.deck.scrapers.topdecked import TopDeckedScraper, TopDeckedMetadeckScraper
-from mtgcards.deck.scrapers.untapped import UntappedProfileDeckScraper, UntappedRegularDeckScraper
+from mtgcards.deck.scrapers.aetherhub import DeckScraper
+from mtgcards.deck.scrapers.archidekt import DeckScraper
+from mtgcards.deck.scrapers.cardhoarder import DeckScraper
+from mtgcards.deck.scrapers.cardsrealm import DeckScraper
+from mtgcards.deck.scrapers.deckstats import DeckScraper
+from mtgcards.deck.scrapers.flexslot import DeckScraper
+from mtgcards.deck.scrapers.goldfish import DeckScraper
+from mtgcards.deck.scrapers.hareruya import DeckScraper
+from mtgcards.deck.scrapers.manastack import DeckScraper
+from mtgcards.deck.scrapers.manatraders import DeckScraper
+from mtgcards.deck.scrapers.melee import DeckScraper
+from mtgcards.deck.scrapers.moxfield import DeckScraper
+from mtgcards.deck.scrapers.mtgarenapro import DeckScraper
+from mtgcards.deck.scrapers.mtgazone import DeckScraper
+from mtgcards.deck.scrapers.mtgdecksnet import DeckScraper
+from mtgcards.deck.scrapers.mtgotraders import DeckScraper
+from mtgcards.deck.scrapers.mtgtop8 import DeckScraper
+from mtgcards.deck.scrapers.penny import DeckScraper
+from mtgcards.deck.scrapers.scryfall import DeckScraper
+from mtgcards.deck.scrapers.starcitygames import DeckScraper
+from mtgcards.deck.scrapers.streamdecker import DeckScraper
+from mtgcards.deck.scrapers.tappedout import DeckScraper
+from mtgcards.deck.scrapers.tcgplayer import DeckScraper
+from mtgcards.deck.scrapers.topdecked import DeckScraper
+from mtgcards.deck.scrapers.untapped import DeckScraper

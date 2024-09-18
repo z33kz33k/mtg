@@ -581,10 +581,16 @@ class Deck:
             commander: Card | None = None, partner_commander: Card | None = None,
             companion: Card | None = None, metadata: Json | None = None) -> None:
         commanders = [c for c in [commander, partner_commander] if c]
+        maindeck, sideboard = [*maindeck], [*sideboard] if sideboard else []
         if partner_commander:
             if not commander:
                 raise InvalidDeck("Partner commander without commander")
         if commanders:
+            for cmd in commanders:
+                if cmd in maindeck:
+                    maindeck.remove(cmd)
+                if cmd in sideboard:
+                    sideboard.remove(cmd)
             cards = {*maindeck, *sideboard}
             if any(cmd in cards for cmd in commanders):
                 raise InvalidDeck(f"Redundant commander maindeck/sideboard inclusion")

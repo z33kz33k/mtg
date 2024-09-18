@@ -57,6 +57,7 @@ descriptions).
       possibilities already :))
     * Both Untapped decklist types featured in YT videos are supported: regular deck and profile deck
     * Both old and new TCGPlayer sites are supported
+    * Both international and Japanese Hareruya sites are supported 
     * Due to their dynamic nature, Untapped, TCGPlayer (new site), ManaStack, Flexslot and TopDecked 
       are scraped using [Selenium](https://github.com/SeleniumHQ/Selenium). It's also used to scrape MTGTop8, MTGDecks.net and 
       Cardhoarder, even though those are very much static sites. Selenium is still helpful here 
@@ -72,7 +73,7 @@ descriptions).
 * Importing back into a Deck from those formats
 * Export/import to other formats in plans
 * Dumping decks, YT videos and channels to .json
-* I compiled a list of almost 800 YT channels that feature decks in their descriptions and successfully 
+* I compiled a list of over 900 YT channels that feature decks in their descriptions and successfully 
   scraped them (at least 25 videos deep) so this data only waits to be creatively used now!
 
 ### How it looks in a Google Sheet

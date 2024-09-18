@@ -9,6 +9,7 @@
 """
 import logging
 import re
+from collections import Counter
 from datetime import datetime
 from functools import wraps
 from typing import Any, Callable, Iterable, Optional, Type
@@ -374,3 +375,25 @@ def is_foreign(text: str) -> bool:
     if lang.iso_code_639_1.name.lower() == "en":
         return True
     return False
+
+
+def print_counter(counter: Counter, title="") -> None:
+    max_name = max(len(name) for name in counter)
+    max_ord = len(str(len(counter)))
+    max_count = len(str(max(count for count in counter.values())))
+    if title:
+        print(f" {title} ".center(max_ord + max_name + max_count + 16, "-"))
+    for j, (name, count) in enumerate(counter.most_common(), start=1):
+        percent = f"{count * 100 / counter.total():.2f} %"
+        print(
+            f"{j}.".ljust(max_ord + 1),
+            name.ljust(max_name + 1),
+            str(count).rjust(max_count + 1),
+            f"({percent})".rjust(10),
+        )
+    print(
+        f"".ljust(max_ord + 1),
+        "TOTAL".ljust(max_name + 1),
+        str(counter.total()).rjust(max_count + 1),
+        f"({100:.2f} %)".rjust(10),
+    )

@@ -58,6 +58,7 @@ SANITIZED_FORMATS = {
     "historicpauper": "historic",
     "no banned list modern": "modern",
     "oldschool 93/94": "oldschool",
+    "past standard": "standard",
     "pauper edh": "paupercommander",
     "pauperedh": "paupercommander",
 }

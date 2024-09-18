@@ -50,7 +50,8 @@ class GoldfishScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "www.mtggoldfish.com/deck/" in url or "www.mtggoldfish.com/archetype/" in url
+        return (("www.mtggoldfish.com/deck/" in url or "www.mtggoldfish.com/archetype/" in url)
+                and "/custom/" not in url)
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override

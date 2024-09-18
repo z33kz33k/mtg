@@ -30,7 +30,8 @@ class InternationalHareruyaScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "hareruyamtg.com" in url and "/deck/" in url
+        return ("hareruyamtg.com" in url and "/deck/" in url
+                and not "deck.hareruyamtg.com/deck/" in url)
 
     @staticmethod
     def sanitize_url(url: str) -> str:
@@ -117,10 +118,13 @@ class JapaneseHareruyaScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "hareruyamtg.com/decks/list/" in url or "hareruyamtg.com/decks/" in url
+        return ("hareruyamtg.com/decks/list/" in url or "hareruyamtg.com/decks/" in url
+                or "deck.hareruyamtg.com/deck/" in url) and "/user/" not in url
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
+        if "deck.hareruyamtg.com/deck/" in url:
+            return url.replace("deck.hareruyamtg.com/deck/", "www.hareruyamtg.com/decks/")
         return url
 
     def _pre_parse(self) -> None:  # override
@@ -153,7 +157,7 @@ class JapaneseHareruyaScraper(DeckScraper):
             self._metadata.setdefault("event", {})
             self._metadata["event"]["ranking"] = event_ranking
         if source_url := self._json_data.get("source_url"):
-            self._metadata["source_url"] = source_url
+            self._metadata["original_source"] = source_url
         self._metadata["date"] = dateutil.parser.parse(self._json_data["update_date"]).date()
 
     def _process_card(self, json_card: Json) -> None:

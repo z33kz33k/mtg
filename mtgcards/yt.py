@@ -384,7 +384,11 @@ def get_aggregate_deck_data() -> tuple[Counter, Counter]:
             src = "melee.gg"
         sources.append(src)
     source_counter = Counter(sources)
-    format_counter = Counter([d["metadata"]["format"] for d in decks if d["metadata"].get("format")])
+    fmts = [d["metadata"]["format"] for d in decks if d["metadata"].get("format")]
+    delta = len(decks) - len(fmts)
+    if delta > 0:
+        fmts += ["undefined"] * delta
+    format_counter = Counter(fmts)
     return source_counter, format_counter
 
 
@@ -522,7 +526,8 @@ class Video:
         "www.paste4btc.com/",
         "www.pastebin.pt/",
     }
-    _THROTTLED = "aetherhub.com", "mtggoldfish.com", "moxfield.com", "tappedout.net"
+    _THROTTLED = (
+        "aetherhub.com", "mtggoldfish.com", "moxfield.com", "tappedout.net", "hareruyamtg.com")
 
     @property
     def id(self) -> str:
