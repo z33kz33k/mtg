@@ -80,8 +80,8 @@ descriptions).
 ![Most popular channels](assets/channels.jpg)
 
 ### Scraped decks breakdown
-| No | Source | Count | Percentage |
-|:---|:-----|------:|-----------:|
+| No | Format          | Count | Percentage |
+|:---|:----------------|------:|-----------:|
 | 1  | standard        | 4874 |    30.82 % |
 | 2  | commander       | 3996 |    25.27 % |
 | 3  | modern          | 1610 |    10.18 % |
@@ -106,8 +106,8 @@ descriptions).
 | 22 | gladiator       |    4 |     0.03 % |
 |  | TOTAL           | 15815 | 100.00 %|
 
-| No | Format | Count | Percentage |
-|:---|:-----|------:|-----------:|
+| No | Source                 | Count | Percentage |
+|:---|:-----------------------|------:|-----------:|
 | 1  | moxfield.com           | 5315 |    33.61 % |
 | 2  | aetherhub.com          | 2952 |    18.67 % |
 | 3  | arena.decklist         | 2202 |    13.92 % |
