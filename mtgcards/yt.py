@@ -11,7 +11,7 @@ import itertools
 import json
 import logging
 import re
-from collections import Counter, defaultdict
+from collections import defaultdict
 from dataclasses import asdict, dataclass
 from datetime import date, datetime
 from decimal import Decimal
@@ -35,7 +35,7 @@ from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.deck.scrapers.melee import ALT_DOMAIN as MELEE_ALT_DOMAIN
 from mtgcards.scryfall import all_formats
 from mtgcards.utils import deserialize_dates, extract_float, getrepr, multiply_by_symbol, \
-    sanitize_filename, serialize_dates, timed
+    sanitize_filename, serialize_dates, timed, Counter
 from mtgcards.utils.files import getdir
 from mtgcards.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
 from mtgcards.utils.scrape import ScrapingError, extract_source, extract_url, \

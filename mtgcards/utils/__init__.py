@@ -9,7 +9,7 @@
 """
 import logging
 import re
-from collections import Counter
+from collections import Counter as PyCounter
 from datetime import datetime
 from functools import wraps
 from typing import Any, Callable, Iterable, Optional, Type
@@ -377,23 +377,56 @@ def is_foreign(text: str) -> bool:
     return False
 
 
-def print_counter(counter: Counter, title="") -> None:
-    max_ord = len(str(len(counter)))
-    max_name = max(len(name) for name in counter)
-    max_count = len(str(max(count for count in counter.values())))
-    if title:
-        print(f" {title} ".center(max_ord + max_name + max_count + 16, "-"))
-    for j, (name, count) in enumerate(counter.most_common(), start=1):
-        percent = f"{count * 100 / counter.total():.2f} %"
+class Counter(PyCounter):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self._max_ord = len(str(len(self)))
+        self._max_name = max(len(name) for name in self)
+        self._max_count = len(str(max(count for count in self.values())))
+
+    def print(self, title="") -> None:
+        """Print this object in a neat table (with an optional title).
+        """
+        if title:
+            print(f" {title} ".center(
+                self._max_ord + self._max_name + self._max_count + 16, "-"))
+        for j, (name, count) in enumerate(self.most_common(), start=1):
+            percent = f"{count * 100 / self.total():.2f} %"
+            print(
+                f"{j}.".ljust(self._max_ord + 1),
+                name.ljust(self._max_name + 1),
+                str(count).rjust(self._max_count + 1),
+                f"({percent})".rjust(10),
+            )
         print(
-            f"{j}.".ljust(max_ord + 1),
-            name.ljust(max_name + 1),
-            str(count).rjust(max_count + 1),
-            f"({percent})".rjust(10),
+            f"".ljust(self._max_ord + 1),
+            "TOTAL".ljust(self._max_name + 1),
+            str(self.total()).rjust(self._max_count + 1),
+            f"({100:.2f} %)".rjust(10),
         )
-    print(
-        f"".ljust(max_ord + 1),
-        "TOTAL".ljust(max_name + 1),
-        str(counter.total()).rjust(max_count + 1),
-        f"({100:.2f} %)".rjust(10),
-    )
+
+    def to_markdown(self, col_name="") -> str:
+        """Turn this object into a Markdown table.
+
+        Args:
+            col_name: name of the main column
+        """
+        markdown = []
+
+        col_name = col_name or "Name"
+        markdown.append(f"| No | {col_name} | Count | Percentage |")
+        markdown.append("|:---|:-----|------:|-----------:|")
+
+        total_count = self.total()
+
+        for j, (name, count) in enumerate(self.most_common(), start=1):
+            percent = f"{count * 100 / total_count:.2f} %"
+            markdown.append(
+                f"| {j:<{self._max_ord}} | {name:<{self._max_name}} "
+                f"| {count:>{self._max_count}} | {percent:>10} |")
+
+        markdown.append(
+            f"|{'':<{self._max_ord}}| {'TOTAL':<{self._max_name}} "
+            f"| {self.total():>{self._max_count}} | {100:.2f} %|")
+
+        return "\n".join(markdown)

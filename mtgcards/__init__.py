@@ -30,10 +30,10 @@ Function = Callable[[tuple[Any, ...]], Any]  # function with signature def funcn
 FILENAME_TIMESTAMP_FORMAT = "%Y%m%d_%H%M%S"
 READABLE_TIMESTAMP_FORMAT = "%Y-%m-%d %H:%M:%S"
 SECONDS_IN_YEAR = 365.25 * 24 * 60 * 60  # with leap years
-_VAR_DIR = Path(os.getcwd()) / "var"
-DATA_DIR = _VAR_DIR / "data"
-OUTPUT_DIR = _VAR_DIR / "output"
-LOG_DIR = _VAR_DIR / "logs" if _VAR_DIR.exists() else Path(os.getcwd())
+VAR_DIR = Path(os.getcwd()) / "var"
+DATA_DIR = VAR_DIR / "data"
+OUTPUT_DIR = VAR_DIR / "output"
+LOG_DIR = VAR_DIR / "logs" if VAR_DIR.exists() else Path(os.getcwd())
 
 
 _logging_initialized = False
