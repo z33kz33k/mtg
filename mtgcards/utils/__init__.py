@@ -380,13 +380,16 @@ def is_foreign(text: str) -> bool:
 class Counter(PyCounter):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self._max_ord = len(str(len(self)))
-        self._max_name = max(len(name) for name in self)
-        self._max_count = len(str(max(count for count in self.values())))
+        self._max_ord = len(str(len(self))) if self else 0
+        self._max_name = max(len(name) for name in self) if self else 0
+        self._max_count = len(str(max(count for count in self.values()))) if self else 0
 
     def print(self, title="") -> None:
         """Print this object in a neat table (with an optional title).
         """
+        if not self:
+            return
+
         if title:
             print(f" {title} ".center(
                 self._max_ord + self._max_name + self._max_count + 16, "-"))
@@ -411,6 +414,9 @@ class Counter(PyCounter):
         Args:
             col_name: name of the main column
         """
+        if not self:
+            return ""
+
         markdown = []
 
         col_name = col_name or "Name"
