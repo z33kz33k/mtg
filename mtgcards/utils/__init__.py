@@ -378,8 +378,8 @@ def is_foreign(text: str) -> bool:
 
 
 def print_counter(counter: Counter, title="") -> None:
-    max_name = max(len(name) for name in counter)
     max_ord = len(str(len(counter)))
+    max_name = max(len(name) for name in counter)
     max_count = len(str(max(count for count in counter.values())))
     if title:
         print(f" {title} ".center(max_ord + max_name + max_count + 16, "-"))

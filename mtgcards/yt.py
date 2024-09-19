@@ -263,7 +263,8 @@ def scrape_channels(
         videos: number of videos to scrape per channel
         only_earlier_than_last_scraped: if True, only scrape videos earlier than the last one scraped
     """
-    count, total_count = 0, 0
+    current_videos, total_videos = 0, 0
+    total_channels = 0
     for i, url in enumerate(urls, start=1):
         try:
             ch = Channel(url, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
@@ -272,16 +273,17 @@ def scrape_channels(
             if ch.data:
                 dst = getdir(CHANNELS_DIR / ch.handle)
                 ch.dump(dst)
-                count += len(ch.videos)
-                total_count += len(ch.videos)
+                current_videos += len(ch.videos)
+                total_videos += len(ch.videos)
+                total_channels += 1
         except Exception as err:
             _log.exception(f"Scraping of channel {url!r} failed with: '{err}'. Skipping...")
-        if count > 500:
-            count = 0
+        if current_videos > 500:
+            current_videos = 0
             _log.info(f"Throttling for 5 minutes before the next batch...")
             throttle_with_countdown(5 * 60)
 
-    _log.info(f"Scraped {total_count} video(s) from {len(urls)} channel(s)")
+    _log.info(f"Scraped {total_videos} video(s) from {total_channels} channel(s)")
 
 
 def scrape_active(
@@ -718,7 +720,7 @@ class Video:
                 # prevent parsing two decklists as one
                 elif not len(deck_lines) > 1 and not len(sideboard_lines) > 1:
                     other_lines.append(line)
-        return links, [*get_arena_lines(*other_lines)]
+        return links, [*get_arena_lines(*other_lines)]  # TODO: using get_arena_lines() twice
 
     def _process_deck(self, link: str) -> Deck | None:
         if scraper := DeckScraper.from_url(link, self.metadata):
@@ -729,10 +731,7 @@ class Video:
         elif any(h in link for h in self.PASTEBIN_LIKE_HOOKS):
             data = timed_request(link)
             if data:
-                lines = data.splitlines()
-                arena_lines = [*get_arena_lines(*lines)]
-                if arena_lines:
-                    return ArenaParser(arena_lines, self.metadata).parse()
+                return ArenaParser(data.splitlines(), self.metadata).parse()
         return None
 
     def _process_urls(self, urls: list[str]) -> list[Deck]:

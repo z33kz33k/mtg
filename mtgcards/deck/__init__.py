@@ -1176,7 +1176,7 @@ class DeckParser(ABC):
 
     @staticmethod
     def sanitize_card_name(text: str) -> str:
-        text = text.replace("’", "'")
+        text = text.replace("’", "'").replace("‑", "-")
         if "/" in text:
             text = text.replace(" / ", f" {SCRYFALL_MULTIFACE_SEPARATOR} ").replace(
                 f" {ARENA_MULTIFACE_SEPARATOR} ", f" {SCRYFALL_MULTIFACE_SEPARATOR} ")

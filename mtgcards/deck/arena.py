@@ -15,7 +15,7 @@ from mtgcards import Json
 from mtgcards.deck import ARENA_MULTIFACE_SEPARATOR, CardNotFound, DeckParser, ParsingState
 from mtgcards.scryfall import Card, MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, \
     query_api_for_card
-from mtgcards.utils import ParsingError, extract_int, getrepr
+from mtgcards.utils import ParsingError, extract_int, from_iterable, getrepr
 from mtgcards.utils import is_foreign
 
 _log = logging.getLogger(__name__)
@@ -113,15 +113,25 @@ def is_maindeck_line(line: str) -> bool:
 
 
 def is_commander_line(line: str) -> bool:
-    return line == "Commander" or line == "Commander:"
+    names = "Commander", "Comandante"
+    if line in names:
+        return True
+    if line in [f"{name}:" for name in names]:
+        return True
+    return False
 
 
 def is_companion_line(line: str) -> bool:
-    return line == "Companion" or line == "Companion:"
+    names = "Companion", "Companheiro"
+    if line in names:
+        return True
+    if line in [f"{name}:" for name in names]:
+        return True
+    return False
 
 
 def is_sideboard_line(line: str) -> bool:
-    names = "Side", "Sideboard", "Sidedeck"
+    names = "Side", "Sideboard", "Sidedeck", "Reserva"
     if line in names:
         return True
     if line in [f"{name}:" for name in names]:
@@ -158,16 +168,22 @@ class ArenaParser(DeckParser):
         self._lines = lines
 
     def _pre_parse(self) -> None:  # override
+        name_line = from_iterable(self._lines, lambda l: l.startswith("Name "))
+        if name_line:
+            self._metadata["name"] = name_line.removeprefix("Name ")
+
         self._lines = [*get_arena_lines(*self._lines)]
         if not self._lines:
             raise ValueError("No Arena lines found")
-        idx = None
-        for i, line in enumerate(self._lines):
-            if is_maindeck_line(line):
-                idx = i
-                break
-        if idx in (1, 2):
-            self._lines.insert(0, "Commander")
+
+        if not any(is_commander_line(l) for l in self._lines):
+            idx = None
+            for i, line in enumerate(self._lines):
+                if is_maindeck_line(line):
+                    idx = i
+                    break
+            if idx in (1, 2):
+                self._lines.insert(0, "Commander")
         if not self._metadata.get("source"):
             self._metadata["source"] = "arena.decklist"
 
