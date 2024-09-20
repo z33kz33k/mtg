@@ -28,7 +28,7 @@ from requests import HTTPError, Timeout
 from selenium.common.exceptions import TimeoutException
 from youtubesearchpython import Channel as YtspChannel
 
-from mtgcards import FILENAME_TIMESTAMP_FORMAT, Json, OUTPUT_DIR, PathLike
+from mtgcards import FILENAME_TIMESTAMP_FORMAT, Json, OUTPUT_DIR, PathLike, README
 from mtgcards.deck import Deck
 from mtgcards.deck.arena import ArenaParser, get_arena_lines
 from mtgcards.deck.scrapers import DeckScraper
@@ -392,6 +392,20 @@ def get_aggregate_deck_data() -> tuple[Counter, Counter]:
         fmts += ["undefined"] * delta
     format_counter = Counter(fmts)
     return source_counter, format_counter
+
+
+def update_readme_with_deck_data() -> None:
+    """Update README.md with aggregated deck data.
+    """
+    _log.info("Updating README.md with aggregated deck data...")
+    src_c, fmt_c = get_aggregate_deck_data()
+    table_lines = fmt_c.markdown("Format").splitlines() + [""] + src_c.markdown(
+        "Source").splitlines() + [""]
+    old_lines = README.read_text(encoding="utf-8").splitlines()
+    idx = old_lines.index("### Scraped decks breakdown")
+    new_lines = old_lines[:idx + 1] + table_lines
+    README.write_text("\n".join(new_lines), encoding="utf-8")
+    _log.info("README.md updates done")
 
 
 def get_duplicates() -> list[str]:

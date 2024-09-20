@@ -408,7 +408,7 @@ class Counter(PyCounter):
             f"({100:.2f} %)".rjust(10),
         )
 
-    def to_markdown(self, col_name="") -> str:
+    def markdown(self, col_name="") -> str:
         """Turn this object into a Markdown table.
 
         Args:

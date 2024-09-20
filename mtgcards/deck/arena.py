@@ -104,7 +104,7 @@ def is_empty(line: str) -> bool:
 
 
 def is_maindeck_line(line: str) -> bool:
-    names = "Main", "Maindeck", "Mainboard", "Deck"
+    names = "Main", "Maindeck", "Mainboard", "Deck", "Decklist"
     if line in names:
         return True
     if line in [f"{name}:" for name in names]:

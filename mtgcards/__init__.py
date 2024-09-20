@@ -34,6 +34,7 @@ VAR_DIR = Path(os.getcwd()) / "var"
 DATA_DIR = VAR_DIR / "data"
 OUTPUT_DIR = VAR_DIR / "output"
 LOG_DIR = VAR_DIR / "logs" if VAR_DIR.exists() else Path(os.getcwd())
+README = Path(os.getcwd()) / "README.md"
 
 
 _logging_initialized = False
