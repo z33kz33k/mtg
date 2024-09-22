@@ -150,14 +150,35 @@ def is_arena_line(line: str) -> bool:
 
 
 def get_arena_lines(*lines: str) -> Generator[str, None, None]:
+    last_yielded_line = None
     for i, line in enumerate(lines):
-        if is_arena_line(line):
+        if is_maindeck_line(line):
+            if last_yielded_line != "Maindeck":
+                last_yielded_line = "Maindeck"
+                yield "Maindeck"
+        elif is_commander_line(line):
+            if last_yielded_line != "Commander":
+                last_yielded_line = "Commander"
+                yield "Commander"
+        elif is_companion_line(line):
+            if last_yielded_line != "Companion":
+                last_yielded_line = "Companion"
+                yield "Companion"
+        elif is_playset_line(line):
+            last_yielded_line = line
             yield line
+        elif is_sideboard_line(line):
+            if last_yielded_line != "Sideboard":
+                last_yielded_line = "Sideboard"
+                yield "Sideboard"
         elif (is_empty(line)
-              and 0 < i < len(lines) - 1
+              and 1 < i < len(lines) - 1
+              and is_playset_line(lines[i - 2])  # previous previous line
               and is_playset_line(lines[i - 1])  # previous line
-              and is_playset_line(lines[i + 1])):  # next line
-            yield "Sideboard"
+              and (is_playset_line(lines[i + 1]) or is_sideboard_line(lines[i + 1]))):  # next line
+            if not is_sideboard_line(lines[i + 1]) and last_yielded_line != "Sideboard":
+                last_yielded_line = "Sideboard"
+                yield "Sideboard"
 
 
 class ArenaParser(DeckParser):

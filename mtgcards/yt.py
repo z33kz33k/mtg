@@ -728,18 +728,8 @@ class Video:
             if url:
                 links.append(url)
             else:
-                if line == "Deck":
-                    deck_lines.append(line)
-                    if not len(deck_lines) > 1:
-                        other_lines.append(line)
-                elif line == "Sideboard":
-                    sideboard_lines.append(line)
-                    if not len(sideboard_lines) > 1:
-                        other_lines.append(line)
-                # prevent parsing two decklists as one
-                elif not len(deck_lines) > 1 and not len(sideboard_lines) > 1:
-                    other_lines.append(line)
-        return links, [*get_arena_lines(*other_lines)]  # TODO: using get_arena_lines() twice
+                other_lines.append(line)
+        return links, [*get_arena_lines(*other_lines)]
 
     def _process_deck(self, link: str) -> Deck | None:
         if scraper := DeckScraper.from_url(link, self.metadata):
