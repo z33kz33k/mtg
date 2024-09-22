@@ -174,14 +174,18 @@ def http_requests_counted(operation="") -> Callable:
 
 
 @timed("unshortening")
-def unshorten(url: str) -> str:
+def unshorten(url: str) -> str | None:
     """Unshorten URL shortened by services like bit.ly, tinyurl.com etc.
 
     Pilfered from: https://stackoverflow.com/a/28918160/4465708
     """
-    session = requests.Session()  # so connections are recycled
-    resp = session.head(url, allow_redirects=True)
-    return resp.url
+    try:
+        session = requests.Session()  # so connections are recycled
+        resp = session.head(url, allow_redirects=True)
+        return resp.url
+    except requests.exceptions.SSLError:
+        _log.warning(f"Unshortening of {url!r} failed with SSL error")
+        return None
 
 
 def extract_url(text: str, https=True) -> str | None:
@@ -280,7 +284,7 @@ def throttled_dynamic_soup_by_xpath(
     return get_dynamic_soup_by_xpath(url, xpath, click, consent_xpath, clipboard_xpath, timeout)
 
 
-def _accept_consent(driver: WebDriver, xpath: str, timeout=SELENIUM_TIMEOUT / 2) -> None:
+def _accept_consent(driver: WebDriver, xpath: str, timeout=SELENIUM_TIMEOUT) -> None:
     """Accept consent by clicking element located by ``xpath`` with the passed Chrome
     webdriver.
 
@@ -296,7 +300,7 @@ def _accept_consent(driver: WebDriver, xpath: str, timeout=SELENIUM_TIMEOUT / 2)
     # locate and click the consent button if present
     try:
         consent_button = WebDriverWait(driver, timeout).until(
-        EC.presence_of_element_located((By.XPATH, xpath)))
+            EC.element_to_be_clickable((By.XPATH, xpath)))
         consent_button.click()
         _log.info("Consent button clicked")
     except TimeoutException:
@@ -315,7 +319,7 @@ def _accept_consent(driver: WebDriver, xpath: str, timeout=SELENIUM_TIMEOUT / 2)
 
 
 def _accept_consent_without_wait(
-        driver: WebDriver, xpath: str, timeout=SELENIUM_TIMEOUT / 2) -> None:
+        driver: WebDriver, xpath: str, timeout=SELENIUM_TIMEOUT) -> None:
     """Accept consent by clicking element located by ``xpath`` with the passed Chrome
     webdriver. Don't wait for the consent window to disappear.
 
@@ -331,7 +335,7 @@ def _accept_consent_without_wait(
     # locate and click the consent button if present
     try:
         consent_button = WebDriverWait(driver, timeout).until(
-        EC.presence_of_element_located((By.XPATH, xpath)))
+            EC.element_to_be_clickable((By.XPATH, xpath)))
         consent_button.click()
         _log.info("Consent button clicked")
     except TimeoutException:

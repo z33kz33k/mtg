@@ -12,7 +12,9 @@ import logging
 from abc import abstractmethod
 from typing import Callable, Optional, Type
 
+import backoff
 from bs4 import BeautifulSoup
+from requests import ConnectionError
 
 from mtgcards import Json
 from mtgcards.deck import Deck, DeckParser, InvalidDeck
@@ -174,6 +176,16 @@ class DeckScraper(DeckParser):
                 raise err
             _log.warning(f"Scraping failed with: {err}")
             return None
+
+    @backoff.on_exception(  # TODO: see if more errors should be such handled
+        backoff.expo, (ConnectionError,), max_time=60)
+    def scrape_with_backoff(
+            self, throttled=False, suppress_parsing_errors=True, suppress_scraping_errors=True,
+            suppress_invalid_deck=True) -> Deck | None:
+        return self.scrape(
+            throttled=throttled, suppress_parsing_errors=suppress_parsing_errors,
+            suppress_scraping_errors=suppress_scraping_errors,
+            suppress_invalid_deck=suppress_invalid_deck)
 
     @classmethod
     def registered(cls, scraper_type: Type["DeckScraper"]) -> Type["DeckScraper"]:

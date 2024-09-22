@@ -24,7 +24,7 @@ import backoff
 import pytubefix
 import scrapetube
 from httpx import ReadTimeout
-from requests import HTTPError, Timeout
+from requests import HTTPError, Timeout, ConnectionError
 from selenium.common.exceptions import TimeoutException
 from youtubesearchpython import Channel as YtspChannel
 
@@ -739,9 +739,17 @@ class Video:
     def _process_deck(self, link: str) -> Deck | None:
         if scraper := DeckScraper.from_url(link, self.metadata):
             if any(site in link for site in self._THROTTLED):
-                return scraper.scrape(throttled=True)
+                try:
+                    return scraper.scrape(throttled=True)
+                except ConnectionError:
+                    _log.warning("Scraping failed with connection error. Re-trying with backoff...")
+                    return scraper.scrape_with_backoff(throttled=True)
             else:
-                return scraper.scrape()
+                try:
+                    return scraper.scrape()
+                except ConnectionError:
+                    _log.warning("Scraping failed with connection error. Re-trying with backoff...")
+                    return scraper.scrape_with_backoff(throttled=True)
         elif any(h in link for h in self.PASTEBIN_LIKE_HOOKS):
             data = timed_request(link)
             if data:
@@ -769,7 +777,8 @@ class Video:
             shortened_urls = [link for link in self.links
                               if any(hook in link for hook in self.SHORTENER_HOOKS)]
             if shortened_urls:
-                self._unshortened_urls = [unshorten(url) for url in shortened_urls]
+                unshortened_urls = [unshorten(url) for url in shortened_urls]
+                self._unshortened_urls = [url for url in unshortened_urls if url]
                 decks.update(self._process_urls(self._unshortened_urls))
 
         # 3rd stage: Arena lines
@@ -920,6 +929,7 @@ class Channel:
                 "YTSP failed with TypeError. Are you sure the channel has at least two tabs "
                 "(one being 'Videos')?")
         except ReadTimeout:
+            _log.warning(f"YTSP timed out on {self.url!r}, re-trying with backoff...")
             self._ytsp_data = self._get_ytsp_with_backoff()
         self._description = self._ytsp_data.result.get("description") if self._id else None
         self._title = self._ytsp_data.result.get("title") if self._id else None
