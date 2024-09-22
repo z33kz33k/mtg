@@ -103,40 +103,33 @@ def is_empty(line: str) -> bool:
     return not line or line.isspace()
 
 
-def is_maindeck_line(line: str) -> bool:
-    names = "Main", "Maindeck", "Mainboard", "Deck", "Decklist"
-    if line in names:
-        return True
-    if line in [f"{name}:" for name in names]:
+def _is_section_line(line: str, *sections: str) -> bool:
+    sections = {*sections}
+    sections.update({section.upper() for section in sections})
+    sections.update({f"{section}:" for section in sections})
+    if line in sections:
         return True
     return False
+
+
+def is_maindeck_line(line: str) -> bool:
+    return _is_section_line(
+        line, "Main", "Maindeck", "Mainboard", "Deck", "Decklist", "Main Deck", "Main Board",
+        "Deck List")
 
 
 def is_commander_line(line: str) -> bool:
-    names = "Commander", "Comandante"
-    if line in names:
-        return True
-    if line in [f"{name}:" for name in names]:
-        return True
-    return False
+    return _is_section_line(line, "Commander", "Comandante")
 
 
 def is_companion_line(line: str) -> bool:
-    names = "Companion", "Companheiro"
-    if line in names:
-        return True
-    if line in [f"{name}:" for name in names]:
-        return True
-    return False
+    return _is_section_line(line, "Companion", "Companheiro")
 
 
 def is_sideboard_line(line: str) -> bool:
-    names = "Side", "Sideboard", "Sidedeck", "Reserva"
-    if line in names:
-        return True
-    if line in [f"{name}:" for name in names]:
-        return True
-    return False
+    return _is_section_line(
+        line, "Side", "Sideboard", "Sidedeck", "Sidelist", "Reserva", "Side Board", "Side Deck",
+        "Side List")
 
 
 def is_arena_line(line: str) -> bool:
@@ -153,9 +146,9 @@ def get_arena_lines(*lines: str) -> Generator[str, None, None]:
     last_yielded_line = None
     for i, line in enumerate(lines):
         if is_maindeck_line(line):
-            if last_yielded_line != "Maindeck":
-                last_yielded_line = "Maindeck"
-                yield "Maindeck"
+            if last_yielded_line != "Deck":
+                last_yielded_line = "Deck"
+                yield "Deck"
         elif is_commander_line(line):
             if last_yielded_line != "Commander":
                 last_yielded_line = "Commander"
@@ -165,6 +158,9 @@ def get_arena_lines(*lines: str) -> Generator[str, None, None]:
                 last_yielded_line = "Companion"
                 yield "Companion"
         elif is_playset_line(line):
+            if last_yielded_line is None:
+                last_yielded_line = "Deck"
+                yield "Deck"
             last_yielded_line = line
             yield line
         elif is_sideboard_line(line):
@@ -179,6 +175,29 @@ def get_arena_lines(*lines: str) -> Generator[str, None, None]:
             if not is_sideboard_line(lines[i + 1]) and last_yielded_line != "Sideboard":
                 last_yielded_line = "Sideboard"
                 yield "Sideboard"
+
+
+def group_arena_lines(*arena_lines: str) -> Generator[list[str], None, None]:
+    current_group, commander_on, companion_on = [], False, False
+    for line in arena_lines:
+        if is_commander_line(line):
+            commander_on = True
+            if current_group and not companion_on:
+                yield current_group
+                current_group = []  # reset
+        elif is_companion_line(line):
+            companion_on = True
+            if current_group and not commander_on:
+                yield current_group
+                current_group = []  # reset
+        elif is_maindeck_line(line):
+            if current_group and (not commander_on or not companion_on):
+                commander_on, companion_on = False, False
+                yield current_group
+                current_group = []  # reset
+        current_group.append(line)
+    if current_group:
+        yield current_group
 
 
 class ArenaParser(DeckParser):

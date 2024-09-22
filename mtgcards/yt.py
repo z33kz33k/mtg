@@ -30,7 +30,7 @@ from youtubesearchpython import Channel as YtspChannel
 
 from mtgcards import FILENAME_TIMESTAMP_FORMAT, Json, OUTPUT_DIR, PathLike, README
 from mtgcards.deck import Deck
-from mtgcards.deck.arena import ArenaParser, get_arena_lines
+from mtgcards.deck.arena import ArenaParser, get_arena_lines, group_arena_lines
 from mtgcards.deck.scrapers import DeckScraper
 from mtgcards.deck.scrapers.melee import ALT_DOMAIN as MELEE_ALT_DOMAIN
 from mtgcards.scryfall import all_formats
@@ -264,7 +264,7 @@ def scrape_channels(
         only_earlier_than_last_scraped: if True, only scrape videos earlier than the last one scraped
     """
     current_videos, total_videos = 0, 0
-    total_channels = 0
+    total_channels, total_decks = 0, 0
     for i, url in enumerate(urls, start=1):
         try:
             ch = Channel(url, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
@@ -276,6 +276,7 @@ def scrape_channels(
                 current_videos += len(ch.videos)
                 total_videos += len(ch.videos)
                 total_channels += 1
+                total_decks += len(ch.decks)
         except Exception as err:
             _log.exception(f"Scraping of channel {url!r} failed with: '{err}'. Skipping...")
         if current_videos > 500:
@@ -283,7 +284,9 @@ def scrape_channels(
             _log.info(f"Throttling for 5 minutes before the next batch...")
             throttle_with_countdown(5 * 60)
 
-    _log.info(f"Scraped {total_videos} video(s) from {total_channels} channel(s)")
+    _log.info(
+        f"Scraped {total_decks} deck(s) from {total_videos} video(s) from {total_channels} "
+        f"channel(s)")
 
 
 def scrape_active(
@@ -721,8 +724,7 @@ class Video:
 
     def _parse_lines(self) -> tuple[list[str], list[str]]:
         links, other_lines = [], []
-        deck_lines, sideboard_lines = [], []
-        for i, line in enumerate(self._desc_lines):
+        for line in self._desc_lines:
             self._extract_formats(line)
             url = extract_url(line)
             if url:
@@ -779,10 +781,12 @@ class Video:
         # 3rd stage: Arena lines
         if self._arena_lines:
             self._sources.add("arena.decklist")
-            if deck := ArenaParser(self._arena_lines, self.metadata).parse():
-                start = f"{deck.name!r} deck" if deck.name else "Deck"
-                _log.info(f"{start} scraped successfully")
-                decks.add(deck)
+            for decklist in group_arena_lines(*self._arena_lines):
+                if len(decklist) > 2:
+                    if deck := ArenaParser(decklist, self.metadata).parse():
+                        start = f"{deck.name!r} deck" if deck.name else "Deck"
+                        _log.info(f"{start} scraped successfully")
+                        decks.add(deck)
 
         return sorted(decks)
 
