@@ -110,7 +110,8 @@ class DeckScraper(DeckParser):
                         f"one: {fmt!r}")
                 self._metadata["format"] = fmt
             else:
-                _log.warning(f"Not a valid format: {fmt!r}")
+                _log.warning(f"Irregular format: {fmt!r}")
+                self._metadata["irregular_format"] = fmt
 
     def dissect_js(
             self, start_hook: str, end_hook: str,

@@ -375,6 +375,16 @@ def get_aggregate_deck_data() -> tuple[Counter, Counter]:
     """Get aggregated deck data across all channels.
     """
     decks = [d for ch in load_channels() for d in ch.decks]
+    fmts = []
+    for d in decks:
+        if fmt := d["metadata"].get("format"):
+            fmts.append(fmt)
+        elif d["metadata"].get("irregular_format"):
+            fmts.append("irregular")
+    delta = len(decks) - len(fmts)
+    if delta > 0:
+        fmts += ["undefined"] * delta
+    format_counter = Counter(fmts)
     sources = []
     for d in decks:
         src = d["metadata"]["source"]
@@ -386,19 +396,14 @@ def get_aggregate_deck_data() -> tuple[Counter, Counter]:
             src = "melee.gg"
         sources.append(src)
     source_counter = Counter(sources)
-    fmts = [d["metadata"]["format"] for d in decks if d["metadata"].get("format")]
-    delta = len(decks) - len(fmts)
-    if delta > 0:
-        fmts += ["undefined"] * delta
-    format_counter = Counter(fmts)
-    return source_counter, format_counter
+    return format_counter, source_counter
 
 
 def update_readme_with_deck_data() -> None:
     """Update README.md with aggregated deck data.
     """
     _log.info("Updating README.md with aggregated deck data...")
-    src_c, fmt_c = get_aggregate_deck_data()
+    fmt_c, src_c = get_aggregate_deck_data()
     table_lines = fmt_c.markdown("Format").splitlines() + [""] + src_c.markdown(
         "Source").splitlines() + [""]
     old_lines = README.read_text(encoding="utf-8").splitlines()
