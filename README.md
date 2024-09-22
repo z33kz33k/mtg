@@ -73,7 +73,7 @@ descriptions).
 * Importing back into a Deck from those formats
 * Export/import to other formats in plans
 * Dumping decks, YT videos and channels to .json
-* I compiled a list of over 900 YT channels that feature decks in their descriptions and successfully 
+* I compiled a list of almost 1k YT channels that feature decks in their descriptions and successfully 
   scraped them (at least 25 videos deep) so this data only waits to be creatively used now!
 
 ### How it looks in a Google Sheet
@@ -82,17 +82,17 @@ descriptions).
 ### Scraped decks breakdown
 | No | Format | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | standard        | 5164 |    30.71 % |
-| 2  | commander       | 4414 |    26.25 % |
-| 3  | modern          | 1697 |    10.09 % |
-| 4  | historic        |  746 |     4.44 % |
-| 5  | brawl           |  645 |     3.84 % |
-| 6  | pioneer         |  641 |     3.81 % |
-| 7  | timeless        |  627 |     3.73 % |
-| 8  | explorer        |  595 |     3.54 % |
-| 9  | undefined       |  550 |     3.27 % |
+| 1  | standard        | 5164 |    30.64 % |
+| 2  | commander       | 4427 |    26.27 % |
+| 3  | modern          | 1700 |    10.09 % |
+| 4  | historic        |  746 |     4.43 % |
+| 5  | brawl           |  645 |     3.83 % |
+| 6  | pioneer         |  644 |     3.82 % |
+| 7  | timeless        |  627 |     3.72 % |
+| 8  | explorer        |  595 |     3.53 % |
+| 9  | undefined       |  550 |     3.26 % |
 | 10 | pauper          |  542 |     3.22 % |
-| 11 | legacy          |  519 |     3.09 % |
+| 11 | legacy          |  540 |     3.20 % |
 | 12 | premodern       |  156 |     0.93 % |
 | 13 | alchemy         |  133 |     0.79 % |
 | 14 | penny           |   93 |     0.55 % |
@@ -105,21 +105,21 @@ descriptions).
 | 21 | future          |    7 |     0.04 % |
 | 22 | irregular       |    5 |     0.03 % |
 | 23 | gladiator       |    4 |     0.02 % |
-|  | TOTAL           | 16813 | 100.00 %|
+|  | TOTAL           | 16853 | 100.00 %|
 
 | No | Source | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | moxfield.com           | 5618 |    33.41 % |
-| 2  | aetherhub.com          | 3126 |    18.59 % |
-| 3  | arena.decklist         | 2396 |    14.25 % |
-| 4  | mtggoldfish.com        | 1748 |    10.40 % |
-| 5  | archidekt.com          |  629 |     3.74 % |
+| 1  | moxfield.com           | 5621 |    33.35 % |
+| 2  | aetherhub.com          | 3126 |    18.55 % |
+| 3  | arena.decklist         | 2405 |    14.27 % |
+| 4  | mtggoldfish.com        | 1764 |    10.47 % |
+| 5  | archidekt.com          |  629 |     3.73 % |
 | 6  | streamdecker.com       |  522 |     3.10 % |
-| 7  | tcgplayer.com          |  479 |     2.85 % |
-| 8  | mtga.untapped.gg       |  433 |     2.58 % |
-| 9  | tappedout.net          |  398 |     2.37 % |
+| 7  | tcgplayer.com          |  479 |     2.84 % |
+| 8  | mtga.untapped.gg       |  433 |     2.57 % |
+| 9  | tappedout.net          |  398 |     2.36 % |
 | 10 | melee.gg               |  286 |     1.70 % |
-| 11 | deckstats.net          |  197 |     1.17 % |
+| 11 | deckstats.net          |  199 |     1.18 % |
 | 12 | mtgdecks.net           |  172 |     1.02 % |
 | 13 | mtgazone.com           |  147 |     0.87 % |
 | 14 | scryfall.com           |  131 |     0.78 % |
@@ -127,12 +127,12 @@ descriptions).
 | 16 | flexslot.gg            |   72 |     0.43 % |
 | 17 | pennydreadfulmagic.com |   67 |     0.40 % |
 | 18 | mtgtop8.com            |   58 |     0.34 % |
-| 19 | manatraders.com        |   49 |     0.29 % |
-| 20 | topdecked.com          |   42 |     0.25 % |
+| 19 | topdecked.com          |   52 |     0.31 % |
+| 20 | manatraders.com        |   49 |     0.29 % |
 | 21 | mtg.cardsrealm.com     |   39 |     0.23 % |
 | 22 | manastack.com          |   36 |     0.21 % |
 | 23 | mtgarena.pro           |   23 |     0.14 % |
 | 24 | cardhoarder.com        |   20 |     0.12 % |
 | 25 | old.starcitygames.com  |    1 |     0.01 % |
 | 26 | mtgotraders.com        |    1 |     0.01 % |
-|  | TOTAL                  | 16813 | 100.00 %|
+|  | TOTAL                  | 16853 | 100.00 %|
