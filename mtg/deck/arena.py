@@ -107,10 +107,11 @@ def _is_section_line(line: str, *sections: str) -> bool:
     sections = {*sections}
     sections.update({section.upper() for section in sections})
     sections.update({f"{section}:" for section in sections})
-    if line in sections:
-        return True
-    # TODO: account for lines like "Main (60)" or "Sideboard(15)"
-    return False
+    pattern = re.compile(
+        r"^\s*(" + "|".join(re.escape(section) for section in sections) + r")"
+        r"(\s*[\[\(:]?\s*\d{1,3}[\]\)]?)?\s*:?$", re.IGNORECASE
+    )
+    return bool(pattern.match(line))
 
 
 def is_maindeck_line(line: str) -> bool:
