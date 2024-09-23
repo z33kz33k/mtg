@@ -1,4 +1,4 @@
-# mtgcards
+# mtg
 Scrape data on MtG decks.
 
 ### Description
@@ -8,7 +8,7 @@ This is a hobby project.
 It started as a card data scraping from `MTG Goldfish`. Then, some JumpIn! packets info scraping 
 was added. Then, there was some play with Limited data from [17lands](https://www.17lands.com) when 
 I thought I had to bear with utter boringness of that format (before the dawn of Golden Packs on 
-Arena) [_This part has been deprecated and moved to `archive` package_]. Then, I discovered I 
+Arena) [_This part has been deprecated and moved to [archive](https://github.com/z33kz33k/mtg/tree/2d5eb0c758953d38ac51840ed3e49c2c25b4fe91/mtgcards/archive) package_]. Then, I discovered I 
 don't need to scrape anything because [Scryfall](https://scryfall.com).
 
 Then, I quit (Arena).
@@ -83,7 +83,7 @@ descriptions).
 | No | Format | Count | Percentage |
 |:---|:-----|------:|-----------:|
 | 1  | standard        | 5164 |    30.64 % |
-| 2  | commander       | 4427 |    26.27 % |
+| 2  | commander       | 4428 |    26.27 % |
 | 3  | modern          | 1700 |    10.09 % |
 | 4  | historic        |  746 |     4.43 % |
 | 5  | brawl           |  645 |     3.83 % |
@@ -105,11 +105,11 @@ descriptions).
 | 21 | future          |    7 |     0.04 % |
 | 22 | irregular       |    5 |     0.03 % |
 | 23 | gladiator       |    4 |     0.02 % |
-|  | TOTAL           | 16853 | 100.00 %|
+|  | TOTAL           | 16854 | 100.00 %|
 
 | No | Source | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | moxfield.com           | 5621 |    33.35 % |
+| 1  | moxfield.com           | 5622 |    33.36 % |
 | 2  | aetherhub.com          | 3126 |    18.55 % |
 | 3  | arena.decklist         | 2405 |    14.27 % |
 | 4  | mtggoldfish.com        | 1764 |    10.47 % |
@@ -135,4 +135,4 @@ descriptions).
 | 24 | cardhoarder.com        |   20 |     0.12 % |
 | 25 | old.starcitygames.com  |    1 |     0.01 % |
 | 26 | mtgotraders.com        |    1 |     0.01 % |
-|  | TOTAL                  | 16853 | 100.00 %|
+|  | TOTAL                  | 16854 | 100.00 %|

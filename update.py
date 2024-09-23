@@ -7,9 +7,9 @@
     @author: z33k
 
 """
-from mtgcards.scryfall import download_scryfall_bulk_data, download_scryfall_set_data
-from mtgcards.mtgwiki import download_creature_type_page
-from mtgcards.yt import update_readme_with_deck_data
+from mtg.scryfall import download_scryfall_bulk_data, download_scryfall_set_data
+from mtg.mtgwiki import download_creature_type_page
+from mtg.yt import update_readme_with_deck_data
 
 
 if __name__ == '__main__':

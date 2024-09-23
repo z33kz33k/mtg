@@ -5,9 +5,10 @@
 /input
 /output
 /var
+/archive
 *service_account.json
 *api_creds.json
-/mtgcards/data/**
+/mtg/data/**
 run.py
 tests.py
 
