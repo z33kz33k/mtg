@@ -135,14 +135,17 @@ class UntappedMetaDeckScraper(DeckScraper):
         self._metadata["name"] = name
         fmt_tag = self._soup.find("div", id="filter-format")
         self._metadata["format"] = fmt_tag.text.strip().lower()
-        time_tag = self._soup.find("time")
-        self._metadata["date"] = datetime.strptime(
-            time_tag.attrs["datetime"], "%Y-%m-%dT%H:%M:%S.%fZ").date()
+        if time_tag := self._soup.find("time"):
+            self._metadata["date"] = datetime.strptime(
+                time_tag.attrs["datetime"], "%Y-%m-%dT%H:%M:%S.%fZ").date()
         winrate, matches, avg_duration = self._soup.select("span[class*='LabledStat__Value']")
         self._metadata["meta"] = {}
-        self._metadata["meta"]["winrate"] = extract_float(winrate.text)
-        self._metadata["meta"]["matches"] = extract_int(matches.text)
-        self._metadata["meta"]["avg_minutes"] = extract_float(avg_duration.text)
+        if winrate.text.strip():
+            self._metadata["meta"]["winrate"] = extract_float(winrate.text.strip())
+        if matches.text.strip():
+            self._metadata["meta"]["matches"] = extract_int(matches.text.strip())
+        if avg_duration.text.strip():
+            self._metadata["meta"]["avg_minutes"] = extract_float(avg_duration.text.strip())
         time_range_tag = self._soup.select_one("div[class*='TimeRangeFilter__DateText']")
         self._metadata["meta"]["time_range_since"] = time_range_tag.text.removesuffix("Now")
 

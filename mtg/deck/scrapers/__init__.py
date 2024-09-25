@@ -36,6 +36,7 @@ SANITIZED_FORMATS = {
     "canadian highlander": "commander",
     "canadianhighlander": "commander",
     "cedh": "commander",
+    "commander 1v1": "commander",
     "commander / edh": "commander",
     "commander/edh": "commander",
     "commanderprecon": "commander",
