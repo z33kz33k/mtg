@@ -25,7 +25,7 @@ from mtg.scryfall import (COMMANDER_FORMATS, Card, Color,
                           find_by_mtgo_id, find_by_name, find_by_oracle_id,
                           find_by_scryfall_id, find_by_tcgplayer_id, find_sets,
                           query_api_for_card)
-from mtg.utils import ParsingError, extract_int, from_iterable, getrepr, serialize_dates
+from mtg.utils import ParsingError, extract_int, from_iterable, getid, getrepr, serialize_dates
 from mtg.utils.files import getdir, getfile
 
 _log = logging.getLogger(__name__)
@@ -738,13 +738,21 @@ class Deck:
         """
         return Exporter(self).json
 
-    @property
+    @cached_property
     def decklist(self) -> str:
         return Exporter(self).build_decklist()
 
     @property
+    def decklist_id(self) -> str:
+        return getid(self.decklist)
+
+    @cached_property
     def decklist_extended(self) -> str:
         return Exporter(self).build_decklist(extended=True)
+
+    @property
+    def decklist_extended_id(self) -> str:
+        return getid(self.decklist_extended)
 
     def to_json(self, dstdir: PathLike = "", name="") -> None:
         """Export to a .json file.
