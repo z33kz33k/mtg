@@ -7,6 +7,7 @@
     @author: z33k
 
 """
+import hashlib
 import logging
 import re
 from collections import Counter as PyCounter
@@ -436,3 +437,22 @@ class Counter(PyCounter):
             f"| {self.total():>{self._max_count}} | {100:.2f} %|")
 
         return "\n".join(markdown)
+
+
+def digest(text: str) -> str:
+    """Return SHA-256 hash of ``text``.
+    """
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def getid(text: str) -> str:
+    """Turn ``text`` into a unique identifier resembling Scryfall ones.
+    """
+    sha = digest(text)[:32]
+    id_ = []
+    for i, ch in enumerate(sha):
+        if i == 8 or i == 12 or i == 16 or i == 20:
+            id_.append("-")
+        id_.append(ch)
+    return "".join(id_)
+

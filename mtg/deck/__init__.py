@@ -739,12 +739,12 @@ class Deck:
         return Exporter(self).json
 
     @property
-    def arena_decklist(self) -> str:
-        return Exporter(self).build_arena()
+    def decklist(self) -> str:
+        return Exporter(self).build_decklist()
 
     @property
-    def arena_decklist_extended(self) -> str:
-        return Exporter(self).build_arena(extended=True)
+    def decklist_extended(self) -> str:
+        return Exporter(self).build_decklist(extended=True)
 
     def to_json(self, dstdir: PathLike = "", name="") -> None:
         """Export to a .json file.
@@ -779,26 +779,29 @@ Name={}
         'flexslot.gg': "Flexslot",
         'infinite.tcgplayer.com': "TCGplayer",
         'manastack.com': "Manastack",
+        "melee.gg": "MeleeGG",
         'moxfield.com': "Moxfield",
         "mtg.cardsrealm.com": "Cardsrealm",
         "mtga.untapped.gg": "Untapped",
         "mtgarena.pro": "MGTArenaPro",
         "mtgazone.com": "MGTAZone",
         'mtgdecks.net': "MTGDecks",
-        'mtgmelee.com': "MTGMelee",
+        'mtgmelee.com': "MeleeGG",
         'mtgtop8.com': "MTGTop8",
-        'old.starcitygames.com': "Scarcity",
+        'old.starcitygames.com': "Starcity",
         'pennydreadfulmagic.com': "PDMagic",
         'scryfall.com': "Scryfall",
         "tappedout.net": "TappedOut",
         'www.archidekt.com': "Archidekt",
         "www.cardhoarder.com": "Cardhoarder",
+        "www.hareruya.com": "Hareruya",
         'www.manatraders.com': "Manatraders",
         'www.moxfield.com': "Moxfield",
         'www.mtggoldfish.com': "Goldfish",
         'www.mtgotraders.com': "MTGOTraders",
         'www.mtgtop8.com': "MTGTop8",
         'www.streamdecker.com': "Streamdecker",
+        'www.topdecked.com': "TopDecked",
     }
 
     FMT_NICKNAMES = {
@@ -981,7 +984,7 @@ Name={}
         return deck
 
     @staticmethod
-    def _to_arena_line(playset: list[Card], extended=False) -> str:
+    def _to_playset_line(playset: list[Card], extended=False) -> str:
         card = playset[0]
         card_name = card.name.replace(
             SCRYFALL_MULTIFACE_SEPARATOR,
@@ -991,24 +994,24 @@ Name={}
             line += f" ({card.set.upper()}) {card.collector_number}"
         return line
 
-    def build_arena(self, extended=False) -> str:
+    def build_decklist(self, extended=False) -> str:
         lines = []
         if self._deck.commander:
             playset = aggregate(self._deck.commander)[self._deck.commander]
-            lines += ["Commander", self._to_arena_line(playset, extended=extended)]
+            lines += ["Commander", self._to_playset_line(playset, extended=extended)]
             if self._deck.partner_commander:
                 playset = aggregate(self._deck.partner_commander)[self._deck.partner_commander]
-                lines += [self._to_arena_line(playset, extended=extended)]
+                lines += [self._to_playset_line(playset, extended=extended)]
             lines += [""]
         if self._deck.companion:
             playset = aggregate(self._deck.companion)[self._deck.companion]
-            lines += ["Companion", self._to_arena_line(playset, extended=extended), ""]
+            lines += ["Companion", self._to_playset_line(playset, extended=extended), ""]
         deck_playsets = sorted(
             (playset for playset in aggregate(*self._deck.maindeck).values()),
             key=lambda l: l[0].name)
         lines += [
             "Deck",
-            *[self._to_arena_line(playset, extended=extended) for playset
+            *[self._to_playset_line(playset, extended=extended) for playset
               in deck_playsets]
         ]
         if self._deck.sideboard:
@@ -1018,7 +1021,7 @@ Name={}
             lines += [
                 "",
                 "Sideboard",
-                *[self._to_arena_line(playset, extended=extended) for playset
+                *[self._to_playset_line(playset, extended=extended) for playset
                   in side_playsets]
             ]
         return "\n".join(lines)
@@ -1028,7 +1031,7 @@ Name={}
         dstdir = getdir(dstdir)
         dst = dstdir / f"{self._name}.txt"
         _log.info(f"Exporting deck to: '{dst}'...")
-        dst.write_text(self.build_arena(), encoding="utf-8")
+        dst.write_text(self.build_decklist(), encoding="utf-8")
 
     @classmethod
     def from_arena(cls, path: PathLike) -> Deck:
@@ -1049,7 +1052,7 @@ Name={}
     def json(self) -> str:
         data = {
             "metadata": OrderedDict(sorted((k, v) for k, v in self._deck.metadata.items())),
-            "arena_decklist": self.build_arena(extended=True),
+            "arena_decklist": self.build_decklist(extended=True),
         }
         return json.dumps(data, indent=4, ensure_ascii=False, default=serialize_dates)
 
