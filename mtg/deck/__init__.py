@@ -696,23 +696,23 @@ class Deck:
     def update_metadata(self, **data: Any) -> None:
         self._metadata.update(data)
 
-    def to_forge(self, dstdir: PathLike = "", name="") -> None:
+    def to_forge(self, dstdir: PathLike = "", filename="") -> None:
         """Export to a Forge MTG deckfile format (.dck).
 
         Args:
             dstdir: optionally, the destination directory (if not provided CWD is used)
-            name: optionally, a custom name for the exported deck (if not provided a name based on this deck's data and metadata is constructed)
+            filename: optionally, a custom filename for the exported deck (if not provided a name based on this deck's data and metadata is constructed)
         """
-        Exporter(self, name).to_forge(dstdir)
+        Exporter(self, filename).to_forge(dstdir)
 
-    def to_arena(self, dstdir: PathLike = "", name="") -> None:
+    def to_arena(self, dstdir: PathLike = "", filename="") -> None:
         """Export to a MTGA deckfile text format (as a .txt file).
 
         Args:
             dstdir: optionally, the destination directory (if not provided CWD is used)
-            name: optionally, a custom name for the exported deck (if not provided a name based on this deck's data and metadata is constructed)
+            filename: optionally, a custom filename for the exported deck (if not provided a name based on this deck's data and metadata is constructed)
         """
-        Exporter(self, name).to_arena(dstdir)
+        Exporter(self, filename).to_arena(dstdir)
 
     @classmethod
     def from_forge(cls, path: PathLike) -> "Deck":
@@ -740,7 +740,7 @@ class Deck:
 
     @cached_property
     def decklist(self) -> str:
-        return Exporter(self).build_decklist()
+        return Exporter(self).build_decklist(extended=False, about=False)
 
     @property
     def decklist_id(self) -> str:
@@ -748,20 +748,20 @@ class Deck:
 
     @cached_property
     def decklist_extended(self) -> str:
-        return Exporter(self).build_decklist(extended=True)
+        return Exporter(self).build_decklist(extended=True, about=False)
 
     @property
     def decklist_extended_id(self) -> str:
         return getid(self.decklist_extended)
 
-    def to_json(self, dstdir: PathLike = "", name="") -> None:
+    def to_json(self, dstdir: PathLike = "", filename="") -> None:
         """Export to a .json file.
 
         Args:
             dstdir: optionally, the destination directory (if not provided CWD is used)
-            name: optionally, a custom name for the exported deck (if not provided a name based on this deck's data and metadata is constructed)
+            filename: optionally, a custom filename for the exported deck (if not provided a name based on this deck's data and metadata is constructed)
         """
-        Exporter(self, name).to_json(dstdir)
+        Exporter(self, filename).to_json(dstdir)
 
 
 class Exporter:
@@ -837,9 +837,9 @@ Name={}
         'vintage': "Vnt",
     }
 
-    def __init__(self, deck: Deck, name="") -> None:
+    def __init__(self, deck: Deck, filename="") -> None:
         self._deck = deck
-        self._name = name or self._build_name()
+        self._filename = filename or self._build_filename()
 
     @classmethod
     def _normalize(cls, name: str) -> str:
@@ -851,7 +851,7 @@ Name={}
             f"Four{cls.NAME_SEP}Color{cls.NAME_SEP}", f"4C{cls.NAME_SEP}")
         return name
 
-    def _build_core_name(self) -> str:
+    def _build_filename_core(self) -> str:
         core = ""
         # color
         if len(self._deck.color.value) == 1:
@@ -869,7 +869,7 @@ Name={}
         core += f"{self._deck.archetype.name.title()}{self.NAME_SEP}"
         return core
 
-    def _build_name(self) -> str:
+    def _build_filename(self) -> str:
         # prefix (source/author)
         source = self.SOURCE_NICKNAMES.get(self._deck.source) or ""
         prefix = source if self._deck.is_meta_deck and source else self._deck.metadata.get(
@@ -891,7 +891,7 @@ Name={}
         if self._deck.name:
             name += f"{self._normalize(self._deck.name)}{self.NAME_SEP}"
         else:
-            name += self._build_core_name()
+            name += self._build_filename_core()
         # set
         if set_code := self._deck.latest_set:
             name += set_code.upper()
@@ -902,28 +902,31 @@ Name={}
         card = playset[0]
         return f"{len(playset)} {card.first_face_name}|{card.set.upper()}|1"
 
-    # TODO: handle partner commanders
+    # TODO: stop using filename to encode deck metadata (see use of self._parse_filename())
     def _build_forge(self) -> str:
         commander = [
             self._to_forge_line(playset) for playset in
             aggregate(self._deck.commander).values()] if self._deck.commander else []
+        if self._deck.partner_commander:
+            commander += [self._to_forge_line(playset) for playset in aggregate(
+                self._deck.partner_commander).values()]
         maindeck = [
             self._to_forge_line(playset) for playset in aggregate(*self._deck.maindeck).values()]
         sideboard = [
             self._to_forge_line(playset) for playset in
             aggregate(*self._deck.sideboard).values()] if self._deck.sideboard else []
         return self.DCK_TEMPLATE.format(
-            self._name, "\n".join(commander), "\n".join(maindeck), "\n".join(sideboard))
+            self._filename, "\n".join(commander), "\n".join(maindeck), "\n".join(sideboard))
 
     def to_forge(self, dstdir: PathLike = "") -> None:
         dstdir = dstdir or OUTPUT_DIR / "dck"
         dstdir = getdir(dstdir)
-        dst = dstdir / f"{self._name}.dck"
+        dst = dstdir / f"{self._filename}.dck"
         _log.info(f"Exporting deck to: '{dst}'...")
         dst.write_text(self._build_forge(), encoding="utf-8")
 
     @classmethod
-    def _parse_name(cls, name: str) -> Json:
+    def _parse_filename(cls, name: str) -> Json:
         metadata = {}
         nameparts = name.split(cls.NAME_SEP)
         if src := from_iterable(
@@ -966,7 +969,8 @@ Name={}
         commander_on, maindeck_on, sideboard_on = False, False, False
         for line in file.read_text(encoding="utf-8").splitlines():
             if line.startswith("Name="):
-                metadata = cls._parse_name(line.removeprefix("Name="))
+                # TODO: stop using filename to encode deck metadata
+                metadata = cls._parse_filename(line.removeprefix("Name="))
             elif line == "[Commander]":
                 commander_on = True
                 continue
@@ -1002,8 +1006,10 @@ Name={}
             line += f" ({card.set.upper()}) {card.collector_number}"
         return line
 
-    def build_decklist(self, extended=False) -> str:
+    def build_decklist(self, extended=True, about=True) -> str:
         lines = []
+        if about and self._deck.metadata.get("name"):
+            lines += ["About", f'Name {self._deck.metadata["name"]}', ""]
         if self._deck.commander:
             playset = aggregate(self._deck.commander)[self._deck.commander]
             lines += ["Commander", self._to_playset_line(playset, extended=extended)]
@@ -1037,7 +1043,7 @@ Name={}
     def to_arena(self, dstdir: PathLike = "") -> None:
         dstdir = dstdir or OUTPUT_DIR / "arena"
         dstdir = getdir(dstdir)
-        dst = dstdir / f"{self._name}.txt"
+        dst = dstdir / f"{self._filename}.txt"
         _log.info(f"Exporting deck to: '{dst}'...")
         dst.write_text(self.build_decklist(), encoding="utf-8")
 
@@ -1049,7 +1055,7 @@ Name={}
         lines = file.read_text(encoding="utf-8").splitlines()
         if not all(is_arena_line(l) or is_empty(l) for l in lines):
             raise ValueError(f"Not an MTG Arena deck file: '{file}'")
-        metadata = cls._parse_name(file.name)
+        metadata = cls._parse_filename(file.name)
         deck = ArenaParser(lines, metadata).parse(
             suppress_parsing_errors=False, suppress_invalid_deck=False)
         if not deck:
@@ -1060,14 +1066,14 @@ Name={}
     def json(self) -> str:
         data = {
             "metadata": OrderedDict(sorted((k, v) for k, v in self._deck.metadata.items())),
-            "arena_decklist": self.build_decklist(extended=True),
+            "arena_decklist": self.build_decklist(about=False),
         }
         return json.dumps(data, indent=4, ensure_ascii=False, default=serialize_dates)
 
     def to_json(self, dstdir: PathLike = "") -> None:
         dstdir = dstdir or OUTPUT_DIR / "json"
         dstdir = getdir(dstdir)
-        dst = dstdir / f"{self._name}.json"
+        dst = dstdir / f"{self._filename}.json"
         _log.info(f"Exporting deck to: '{dst}'...")
         dst.write_text(self.json, encoding="utf-8")
 

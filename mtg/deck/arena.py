@@ -95,7 +95,7 @@ class PlaysetLine:
             raise cnf
 
 
-def is_playset_line(line: str) -> bool:
+def _is_playset_line(line: str) -> bool:
     return bool(PlaysetLine.PATTERN.match(line))
 
 
@@ -114,32 +114,42 @@ def _is_section_line(line: str, *sections: str) -> bool:
     return bool(pattern.match(line))
 
 
-def is_maindeck_line(line: str) -> bool:
+def _is_about_line(line: str) -> bool:
+    return _is_section_line(line, "About")
+
+
+def _is_name_line(line: str) -> bool:
+    return line.startswith("Name ")
+
+
+def _is_maindeck_line(line: str) -> bool:
     return _is_section_line(
         line, "Main", "Maindeck", "Mainboard", "Deck", "Decklist", "Main Deck", "Main Board",
         "Deck List")
 
 
-def is_commander_line(line: str) -> bool:
+def _is_commander_line(line: str) -> bool:
     return _is_section_line(line, "Commander", "Comandante")
 
 
-def is_companion_line(line: str) -> bool:
+def _is_companion_line(line: str) -> bool:
     return _is_section_line(line, "Companion", "Companheiro")
 
 
-def is_sideboard_line(line: str) -> bool:
+def _is_sideboard_line(line: str) -> bool:
     return _is_section_line(
         line, "Side", "Sideboard", "Sidedeck", "Sidelist", "Reserva", "Side Board", "Side Deck",
         "Side List")
 
 
 def is_arena_line(line: str) -> bool:
-    if is_maindeck_line(line) or is_sideboard_line(line):
+    if _is_maindeck_line(line) or _is_sideboard_line(line):
         return True
-    elif is_commander_line(line) or is_companion_line(line):
+    elif _is_commander_line(line) or _is_companion_line(line):
         return True
-    elif is_playset_line(line):
+    elif _is_about_line(line) or _is_name_line(line):
+        return True
+    elif _is_playset_line(line):
         return True
     return False
 
@@ -147,54 +157,67 @@ def is_arena_line(line: str) -> bool:
 def get_arena_lines(*lines: str) -> Generator[str, None, None]:
     last_yielded_line = None
     for i, line in enumerate(lines):
-        if is_maindeck_line(line):
+        if _is_about_line(line) and i < len(lines) - 1:
+            if _is_name_line(lines[i + 1]):
+                last_yielded_line = "About"
+                yield "About"
+        elif _is_name_line(line) and i > 0:
+            if _is_about_line(lines[i - 1]):
+                last_yielded_line = line
+                yield line
+        elif _is_maindeck_line(line):
             if last_yielded_line != "Deck":
                 last_yielded_line = "Deck"
                 yield "Deck"
-        elif is_commander_line(line):
+        elif _is_commander_line(line):
             if last_yielded_line != "Commander":
                 last_yielded_line = "Commander"
                 yield "Commander"
-        elif is_companion_line(line):
+        elif _is_companion_line(line):
             if last_yielded_line != "Companion":
                 last_yielded_line = "Companion"
                 yield "Companion"
-        elif is_playset_line(line):
+        elif _is_playset_line(line):
             if last_yielded_line is None:
                 last_yielded_line = "Deck"
                 yield "Deck"
             last_yielded_line = line
             yield line
-        elif is_sideboard_line(line):
+        elif _is_sideboard_line(line):
             if last_yielded_line != "Sideboard":
                 last_yielded_line = "Sideboard"
                 yield "Sideboard"
         elif (is_empty(line)
               and 1 < i < len(lines) - 1
-              and is_playset_line(lines[i - 2])  # previous previous line
-              and is_playset_line(lines[i - 1])  # previous line
-              and (is_playset_line(lines[i + 1]) or is_sideboard_line(lines[i + 1]))):  # next line
-            if not is_sideboard_line(lines[i + 1]) and last_yielded_line != "Sideboard":
+              and _is_playset_line(lines[i - 2])  # previous previous line
+              and _is_playset_line(lines[i - 1])  # previous line
+              and (_is_playset_line(lines[i + 1]) or _is_sideboard_line(lines[i + 1]))):  # next line
+            if not _is_sideboard_line(lines[i + 1]) and last_yielded_line != "Sideboard":
                 last_yielded_line = "Sideboard"
                 yield "Sideboard"
 
 
 def group_arena_lines(*arena_lines: str) -> Generator[list[str], None, None]:
-    current_group, commander_on, companion_on = [], False, False
+    current_group, about_on, commander_on, companion_on = [], False, False, False
     for line in arena_lines:
-        if is_commander_line(line):
+        if _is_about_line(line):
+            about_on = True
+            if current_group and not (commander_on or companion_on):
+                yield current_group
+                current_group = []  # reset
+        elif _is_commander_line(line):
             commander_on = True
-            if current_group and not companion_on:
+            if current_group and not (companion_on or about_on):
                 yield current_group
                 current_group = []  # reset
-        elif is_companion_line(line):
+        elif _is_companion_line(line):
             companion_on = True
-            if current_group and not commander_on:
+            if current_group and not (commander_on or about_on):
                 yield current_group
                 current_group = []  # reset
-        elif is_maindeck_line(line):
-            if current_group and (not commander_on or not companion_on):
-                commander_on, companion_on = False, False
+        elif _is_maindeck_line(line):
+            if current_group and not (commander_on or companion_on or about_on):
+                about_on, commander_on, companion_on = False, False, False
                 yield current_group
                 current_group = []  # reset
         current_group.append(line)
@@ -209,37 +232,39 @@ class ArenaParser(DeckParser):
         super().__init__(metadata)
         self._lines = lines
 
-    def _pre_parse(self) -> None:  # override
-        name_line = from_iterable(self._lines, lambda l: l.startswith("Name "))
-        if name_line:
-            self._metadata["name"] = name_line.removeprefix("Name ")
+    def _handle_missing_commander_line(self):
+        if not any(_is_commander_line(l) for l in self._lines):
+            idx = None
+            for i, line in enumerate(self._lines):
+                if _is_maindeck_line(line):
+                    idx = i
+                    break
+            if idx in (1, 2) and all(_is_playset_line(l) for l in self._lines[:idx]):
+                self._lines.insert(0, "Commander")
 
+    def _pre_parse(self) -> None:  # override
         self._lines = [*get_arena_lines(*self._lines)]
         if not self._lines:
             raise ValueError("No Arena lines found")
 
-        if not any(is_commander_line(l) for l in self._lines):
-            idx = None
-            for i, line in enumerate(self._lines):
-                if is_maindeck_line(line):
-                    idx = i
-                    break
-            if idx in (1, 2):
-                self._lines.insert(0, "Commander")
+        self._handle_missing_commander_line()
+
         if not self._metadata.get("source"):
             self._metadata["source"] = "arena.decklist"
 
     def _parse_deck(self) -> None:  # override
         for line in self._lines:
-            if is_maindeck_line(line):
+            if _is_maindeck_line(line):
                 self._shift_to_maindeck()
-            elif is_sideboard_line(line):
+            elif _is_sideboard_line(line):
                 self._shift_to_sideboard()
-            elif is_commander_line(line):
+            elif _is_commander_line(line):
                 self._shift_to_commander()
-            elif is_companion_line(line):
+            elif _is_companion_line(line):
                 self._shift_to_companion()
-            elif is_playset_line(line):
+            elif _is_name_line(line):
+                self._metadata["name"] = line.removeprefix("Name ")
+            elif _is_playset_line(line):
                 if self._state is ParsingState.IDLE:
                     self._shift_to_maindeck()
 
