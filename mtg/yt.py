@@ -623,7 +623,14 @@ class Video:
 
     @property
     def metadata(self) -> Json:
-        return {"format": self.derived_format} if self.derived_format else {}
+        metadata = {}
+        if self.derived_format:
+            metadata["format"] = self.derived_format
+        if self.author:
+            metadata["author"] = self.author
+        if self.publish_time:
+            metadata["date"] = self.publish_time.date()
+        return metadata
 
     def __init__(self, video_id: str) -> None:
         """Initialize.
