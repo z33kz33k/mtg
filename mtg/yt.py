@@ -31,10 +31,10 @@ from youtubesearchpython import Channel as YtspChannel
 from mtg import FILENAME_TIMESTAMP_FORMAT, Json, OUTPUT_DIR, PathLike, README
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser, get_arena_lines, group_arena_lines
-from mtg.deck.scrapers import DeckScraper
+from mtg.deck.scrapers import DeckScraper, SANITIZED_FORMATS
 from mtg.deck.scrapers.melee import ALT_DOMAIN as MELEE_ALT_DOMAIN
-from mtg.scryfall import all_formats
-from mtg.utils import deserialize_dates, extract_float, getrepr, multiply_by_symbol, \
+from mtg.scryfall import all_formats, keywords
+from mtg.utils import deserialize_dates, extract_float, from_iterable, getrepr, multiply_by_symbol, \
     sanitize_filename, serialize_dates, timed, Counter
 from mtg.utils.files import getdir
 from mtg.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
@@ -701,6 +701,8 @@ class Video:
 
     @staticmethod
     def _extract_formats(line: str) -> list[str]:
+        if sanitized_fmt := from_iterable(SANITIZED_FORMATS, lambda k: k in line.lower()):
+            return [SANITIZED_FORMATS[sanitized_fmt]]
         words = [word.lower() for word in line.strip().split()]
         return [fmt for fmt in all_formats() if any(fmt in word for word in words)]
 
@@ -712,6 +714,13 @@ class Video:
         return fmt_soup
 
     def _derive_format(self) -> str | None:
+        # first, check the keywords
+        if self.keywords:
+            keywords = [kw.lower() for kw in self.keywords]
+            if sanitized_fmt := from_iterable(SANITIZED_FORMATS, lambda k: k in keywords):
+                return SANITIZED_FORMATS[sanitized_fmt]
+            if fmt := from_iterable(all_formats(), lambda k: k in keywords):
+                return fmt
         # if format soup has been populated, take the most common item
         if self._format_soup:
             two_best = Counter(itertools.chain(*self._format_soup.values())).most_common(2)

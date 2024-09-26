@@ -1,12 +1,12 @@
-beautifulsoup4~=4.13.0b2
+beautifulsoup4~=4.12.3
 contexttimer~=0.3.3
-gspread~=5.8.0
+gspread~=5.11.3
 lingua-language-detector~=2.0.2
-lxml~=4.9.2
+lxml~=5.2.1
 pyperclip~=1.9.0
 python-dateutil~=2.9.0.post0
-pytubefix~=6.5.1
-requests~=2.32.3
+pytubefix~=6.6.3
+requests~=2.31.0
 selenium~=4.23.1
 scrapetube~=2.5.1
 scrython~=1.11.0
