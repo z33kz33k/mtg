@@ -545,7 +545,7 @@ class Deck:
 
     @property
     def metadata(self) -> Json:
-        return self._metadata
+        return OrderedDict(sorted((k, v) for k, v in self._metadata.items()))
 
     @property
     def name(self) -> str | None:
@@ -732,12 +732,6 @@ class Deck:
         """
         return Exporter.from_arena(path)
 
-    @property
-    def json(self) -> str:
-        """Return a JSON representation of this deck.
-        """
-        return Exporter(self).json
-
     @cached_property
     def decklist(self) -> str:
         return Exporter(self).build_decklist(extended=False, about=False)
@@ -753,6 +747,17 @@ class Deck:
     @property
     def decklist_extended_id(self) -> str:
         return getid(self.decklist_extended)
+
+    @property
+    def json(self) -> str:
+        """Return a JSON representation of this deck.
+        """
+        data = {
+            "metadata": self.metadata,
+            "decklist_id": self.decklist_id,
+            "decklist_extended_id": self.decklist_extended_id,
+        }
+        return json.dumps(data, indent=4, ensure_ascii=False, default=serialize_dates)
 
     def to_json(self, dstdir: PathLike = "", filename="") -> None:
         """Export to a .json file.
@@ -1065,8 +1070,8 @@ Name={}
     @property
     def json(self) -> str:
         data = {
-            "metadata": OrderedDict(sorted((k, v) for k, v in self._deck.metadata.items())),
-            "arena_decklist": self.build_decklist(about=False),
+            "metadata": self._deck.metadata,
+            "decklist": self.build_decklist(),
         }
         return json.dumps(data, indent=4, ensure_ascii=False, default=serialize_dates)
 
@@ -1193,7 +1198,7 @@ class DeckParser(ABC):
 
     @staticmethod
     def sanitize_card_name(text: str) -> str:
-        text = text.replace("’", "'").replace("‑", "-")
+        text = text.replace("’", "'").replace("‑", "-").replace("꞉", ":")
         if "/" in text:
             text = text.replace(" / ", f" {SCRYFALL_MULTIFACE_SEPARATOR} ").replace(
                 f" {ARENA_MULTIFACE_SEPARATOR} ", f" {SCRYFALL_MULTIFACE_SEPARATOR} ")

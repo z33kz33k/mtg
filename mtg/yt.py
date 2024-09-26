@@ -430,6 +430,44 @@ def get_duplicates() -> list[str]:
     return duplicates
 
 
+def process_channel_data() -> None:
+    regular_decklists, extended_decklists = {}, {}
+    channel_dirs = [getdir(d) for d in CHANNELS_DIR.iterdir()]
+    new_channels_dir = getdir(CHANNELS_DIR.with_name("channels2"))
+
+    for channel_dir in channel_dirs:
+        for file in channel_dir.iterdir():
+            ch = json.loads(file.read_text(encoding="utf-8"), object_hook=deserialize_dates)
+            for video in ch["videos"][::-1]:
+                for deck in video["decks"]:
+                    d = ArenaParser(deck["arena_decklist"].splitlines(), deck["metadata"]).parse()
+                    if not d:
+                        _log.warning(f"Failed to parse back deck: {deck} from: '{file}'")
+                        continue
+                    del deck["arena_decklist"]
+                    deck["metadata"] = d.metadata
+                    deck["decklist_id"] = d.decklist_id
+                    deck["decklist_extended_id"] = d.decklist_extended_id
+                    regular_decklists.setdefault(d.decklist_id, d.decklist)
+                    extended_decklists.setdefault(d.decklist_extended_id, d.decklist_extended)
+            ch_dir = new_channels_dir / channel_dir.name
+            ch_dir.mkdir(parents=True, exist_ok=True)
+            new_file = ch_dir / file.name
+            _log.info(f"Dumping '{new_file}'...")
+            new_file.write_text(json.dumps(
+                ch, indent=4, ensure_ascii=False, default=serialize_dates), encoding="utf-8")
+
+    regular_file = new_channels_dir / "regular_decklists.json"
+    _log.info(f"Dumping '{regular_file}'...")
+    regular_file.write_text(json.dumps(
+        regular_decklists, indent=4, ensure_ascii=False, default=serialize_dates), encoding="utf-8")
+    extended_file = new_channels_dir / "extended_decklists.json"
+    _log.info(f"Dumping '{extended_file}'...")
+    extended_file.write_text(json.dumps(
+        extended_decklists, indent=4, ensure_ascii=False, default=serialize_dates),
+        encoding="utf-8")
+
+
 class Video:
     """YouTube video showcasing a MtG deck with its most important metadata.
     """

@@ -1,7 +1,7 @@
 """
 
     mtg.deck.scrapers.streamdecker.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Streamdecker decklists.
 
     @author: z33k
