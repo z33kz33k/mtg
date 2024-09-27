@@ -186,6 +186,9 @@ def unshorten(url: str) -> str | None:
     except requests.exceptions.SSLError:
         _log.warning(f"Unshortening of {url!r} failed with SSL error")
         return None
+    except requests.exceptions.TooManyRedirects:
+        _log.warning(f"Unshortening of {url!r} failed due too many redirections")
+        return None
 
 
 def extract_url(text: str, https=True) -> str | None:

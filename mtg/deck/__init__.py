@@ -762,6 +762,8 @@ class Deck:
     def to_json(self, dstdir: PathLike = "", filename="") -> None:
         """Export to a .json file.
 
+        JSON exported to file holds the whole decklist (in extended format) on not only IDs.
+
         Args:
             dstdir: optionally, the destination directory (if not provided CWD is used)
             filename: optionally, a custom filename for the exported deck (if not provided a name based on this deck's data and metadata is constructed)
@@ -1067,20 +1069,17 @@ Name={}
             raise ParsingError(f"Unable to parse '{path}' into a deck")
         return deck
 
-    @property
-    def json(self) -> str:
+    def to_json(self, dstdir: PathLike = "") -> None:
         data = {
             "metadata": self._deck.metadata,
             "decklist": self.build_decklist(),
         }
-        return json.dumps(data, indent=4, ensure_ascii=False, default=serialize_dates)
-
-    def to_json(self, dstdir: PathLike = "") -> None:
+        data = json.dumps(data, indent=4, ensure_ascii=False, default=serialize_dates)
         dstdir = dstdir or OUTPUT_DIR / "json"
         dstdir = getdir(dstdir)
         dst = dstdir / f"{self._filename}.json"
         _log.info(f"Exporting deck to: '{dst}'...")
-        dst.write_text(self.json, encoding="utf-8")
+        dst.write_text(data, encoding="utf-8")
 
 
 class ParsingState(Enum):

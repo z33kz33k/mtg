@@ -18,7 +18,8 @@ from decimal import Decimal
 from functools import cached_property
 from http.client import RemoteDisconnected
 from operator import attrgetter, itemgetter
-from typing import Generator, Iterator
+from typing import Generator, Iterator, Type
+from types import TracebackType
 
 import backoff
 import pytubefix
@@ -46,6 +47,8 @@ _log = logging.getLogger(__name__)
 
 
 CHANNELS_DIR = OUTPUT_DIR / "channels"
+REGULAR_DECKLISTS_FILE = CHANNELS_DIR / "regular_decklists.json"
+EXTENDED_DECKLISTS_FILE = CHANNELS_DIR / "extended_decklists.json"
 DORMANT_THRESHOLD = 30 * 3  # days
 ABANDONED_THRESHOLD = 30 * 12  # days
 DECK_STALE_THRESHOLD = 50  # videos
@@ -249,6 +252,58 @@ def update_gsheet() -> None:
     extend_gsheet_rows_with_cols("mtga_yt", "channels", data, start_row=2, start_col=3)
 
 
+class ScrapingSession:
+    def __init__(self) -> None:
+        self._regular_decklists, self._extended_decklists = {}, {}
+        self._regular_count, self._extended_count = 0, 0
+
+    def __enter__(self) -> "ScrapingSession":
+        self._regular_decklists = json.loads(REGULAR_DECKLISTS_FILE.read_text(
+            encoding="utf-8")) if REGULAR_DECKLISTS_FILE.is_file() else {}
+        _log.info(
+            f"Loaded {len(self._regular_decklists)} regular decklist(s) from the global repository")
+        self._extended_decklists = json.loads(EXTENDED_DECKLISTS_FILE.read_text(
+            encoding="utf-8")) if EXTENDED_DECKLISTS_FILE.is_file() else {}
+        _log.info(
+            f"Loaded {len(self._extended_decklists)} extended decklist(s) from the global "
+            f"repository")
+        return self
+
+    def __exit__(
+            self, exc_type: Type[BaseException] | None, exc_val: BaseException | None,
+            exc_tb: TracebackType | None) -> None:
+        _log.info(f"Dumping '{REGULAR_DECKLISTS_FILE}'...")
+        REGULAR_DECKLISTS_FILE.write_text(
+            json.dumps(self._regular_decklists, indent=4, ensure_ascii=False), encoding="utf-8")
+        _log.info(f"Dumping '{EXTENDED_DECKLISTS_FILE}'...")
+        EXTENDED_DECKLISTS_FILE.write_text(
+            json.dumps(self._extended_decklists, indent=4, ensure_ascii=False),encoding="utf-8")
+        _log.info(
+            f"Total of {self._regular_count} unique regular decklist(s) added to the global "
+            f"repository")
+        _log.info(
+            f"Total of {self._extended_count} unique extended decklist(s) added to the global "
+            f"repository")
+
+    def update_regular(self, id_: str, decklist: str) -> None:
+        if id_ not in self._regular_decklists:
+            self._regular_decklists[id_] = decklist
+            self._regular_count += 1
+
+    def update_extended(self, id_: str, decklist: str) -> None:
+        if id_ not in self._extended_decklists:
+            self._extended_decklists[id_] = decklist
+            self._extended_count += 1
+
+
+def retrieve_decklist(id_: str) -> str | None:
+    decklists = json.loads(REGULAR_DECKLISTS_FILE.read_text(
+            encoding="utf-8")) if REGULAR_DECKLISTS_FILE.is_file() else {}
+    decklists.update(json.loads(EXTENDED_DECKLISTS_FILE.read_text(
+            encoding="utf-8")) if EXTENDED_DECKLISTS_FILE.is_file() else {})
+    return decklists.get(id_)
+
+
 @http_requests_counted("channels scraping")
 @timed("channels scraping", precision=1)
 def scrape_channels(
@@ -263,30 +318,34 @@ def scrape_channels(
         videos: number of videos to scrape per channel
         only_earlier_than_last_scraped: if True, only scrape videos earlier than the last one scraped
     """
-    current_videos, total_videos = 0, 0
-    total_channels, total_decks = 0, 0
-    for i, url in enumerate(urls, start=1):
-        try:
-            ch = Channel(url, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
-            _log.info(f"Scraping channel {i}/{len(urls)}: {ch.handle!r}...")
-            ch.scrape(videos)
-            if ch.data:
-                dst = getdir(CHANNELS_DIR / ch.handle)
-                ch.dump(dst)
-                current_videos += len(ch.videos)
-                total_videos += len(ch.videos)
-                total_channels += 1
-                total_decks += len(ch.decks)
-        except Exception as err:
-            _log.exception(f"Scraping of channel {url!r} failed with: '{err}'. Skipping...")
-        if current_videos > 500:
-            current_videos = 0
-            _log.info(f"Throttling for 5 minutes before the next batch...")
-            throttle_with_countdown(5 * 60)
+    with ScrapingSession() as session:
+        current_videos, total_videos = 0, 0
+        total_channels, total_decks = 0, 0
+        for i, url in enumerate(urls, start=1):
+            try:
+                ch = Channel(url, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
+                _log.info(f"Scraping channel {i}/{len(urls)}: {ch.handle!r}...")
+                ch.scrape(videos)
+                if ch.data:
+                    dst = getdir(CHANNELS_DIR / ch.handle)
+                    ch.dump(dst)
+                    current_videos += len(ch.videos)
+                    total_videos += len(ch.videos)
+                    total_channels += 1
+                    total_decks += len(ch.decks)
+                    for deck in ch.decks:
+                        session.update_regular(deck.decklist_id, deck.decklist)
+                        session.update_extended(deck.decklist_extended_id, deck.decklist_extended)
+            except Exception as err:
+                _log.exception(f"Scraping of channel {url!r} failed with: '{err}'. Skipping...")
+            if current_videos > 500:
+                current_videos = 0
+                _log.info(f"Throttling for 5 minutes before the next batch...")
+                throttle_with_countdown(5 * 60)
 
-    _log.info(
-        f"Scraped {total_decks} deck(s) from {total_videos} video(s) from {total_channels} "
-        f"channel(s)")
+        _log.info(
+            f"Scraped {total_decks} deck(s) from {total_videos} video(s) from {total_channels} "
+            f"channel(s)")
 
 
 def scrape_active(
@@ -428,44 +487,6 @@ def get_duplicates() -> list[str]:
         else:
             seen.add(url)
     return duplicates
-
-
-def process_channel_data() -> None:
-    regular_decklists, extended_decklists = {}, {}
-    channel_dirs = [getdir(d) for d in CHANNELS_DIR.iterdir()]
-    new_channels_dir = getdir(CHANNELS_DIR.with_name("channels2"))
-
-    for channel_dir in channel_dirs:
-        for file in channel_dir.iterdir():
-            ch = json.loads(file.read_text(encoding="utf-8"), object_hook=deserialize_dates)
-            for video in ch["videos"][::-1]:
-                for deck in video["decks"]:
-                    d = ArenaParser(deck["arena_decklist"].splitlines(), deck["metadata"]).parse()
-                    if not d:
-                        _log.warning(f"Failed to parse back deck: {deck} from: '{file}'")
-                        continue
-                    del deck["arena_decklist"]
-                    deck["metadata"] = d.metadata
-                    deck["decklist_id"] = d.decklist_id
-                    deck["decklist_extended_id"] = d.decklist_extended_id
-                    regular_decklists.setdefault(d.decklist_id, d.decklist)
-                    extended_decklists.setdefault(d.decklist_extended_id, d.decklist_extended)
-            ch_dir = new_channels_dir / channel_dir.name
-            ch_dir.mkdir(parents=True, exist_ok=True)
-            new_file = ch_dir / file.name
-            _log.info(f"Dumping '{new_file}'...")
-            new_file.write_text(json.dumps(
-                ch, indent=4, ensure_ascii=False, default=serialize_dates), encoding="utf-8")
-
-    regular_file = new_channels_dir / "regular_decklists.json"
-    _log.info(f"Dumping '{regular_file}'...")
-    regular_file.write_text(json.dumps(
-        regular_decklists, indent=4, ensure_ascii=False, default=serialize_dates), encoding="utf-8")
-    extended_file = new_channels_dir / "extended_decklists.json"
-    _log.info(f"Dumping '{extended_file}'...")
-    extended_file.write_text(json.dumps(
-        extended_decklists, indent=4, ensure_ascii=False, default=serialize_dates),
-        encoding="utf-8")
 
 
 class Video:
@@ -1073,7 +1094,9 @@ class Channel:
             return 1
 
     @property
-    def json(self) -> str:
+    def json(self) -> str | None:
+        if not self.data:
+            return None
         return json.dumps(asdict(self.data), indent=4, ensure_ascii=False, default=serialize_dates)
 
     def dump(self, dstdir: PathLike = "", name="") -> None:
