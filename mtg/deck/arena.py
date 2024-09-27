@@ -236,8 +236,12 @@ def get_arena_lines(*lines: str) -> Generator[str, None, None]:
                 yield "Companion"
         elif _is_playset_line(line):
             if last_yielded_line is None:
-                last_yielded_line = "Deck"
-                yield "Deck"
+                if i < len(lines) - 3 and any(_is_maindeck_line(l) for l in lines[i + 1:i + 4]):
+                    last_yielded_line = "Commander"
+                    yield "Commander"
+                else:
+                    last_yielded_line = "Deck"
+                    yield "Deck"
             last_yielded_line = line
             yield line
         elif _is_sideboard_line(line):

@@ -261,11 +261,12 @@ class ScrapingSession:
         self._regular_decklists = json.loads(REGULAR_DECKLISTS_FILE.read_text(
             encoding="utf-8")) if REGULAR_DECKLISTS_FILE.is_file() else {}
         _log.info(
-            f"Loaded {len(self._regular_decklists)} regular decklist(s) from the global repository")
+            f"Loaded {len(self._regular_decklists):,} regular decklist(s) from the global "
+            f"repository")
         self._extended_decklists = json.loads(EXTENDED_DECKLISTS_FILE.read_text(
             encoding="utf-8")) if EXTENDED_DECKLISTS_FILE.is_file() else {}
         _log.info(
-            f"Loaded {len(self._extended_decklists)} extended decklist(s) from the global "
+            f"Loaded {len(self._extended_decklists):,} extended decklist(s) from the global "
             f"repository")
         return self
 
