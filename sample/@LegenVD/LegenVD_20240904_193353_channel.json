@@ -84,19 +84,20 @@
             "decks": [
                 {
                     "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2024-09-04",
+                        "exports": 95,
                         "format": "standard",
-                        "url": "https://aetherhub.com/Deck/monogreen-stompy-bloomburrow",
-                        "source": "aetherhub.com",
                         "mode": "Bo1",
                         "name": "Monogreen Stompy Bloomburrow",
-                        "author": "LegenVD",
-                        "date": "2024-09-04",
-                        "views": 220,
-                        "exports": 95,
-                        "comments": 0,
-                        "archetype": "aggro"
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/monogreen-stompy-bloomburrow",
+                        "views": 220
                     },
-                    "arena_decklist": "Deck\n2 Tail Swipe (DMU) 182\n4 Hard-Hitting Question (MKM) 164\n2 Hunter's Talent (BLB) 179\n4 Innkeeper's Talent (BLB) 180\n4 Bloated Contaminator (ONE) 159\n2 Evolving Adaptive (ONE) 167\n4 Outcaster Trailblazer (OTJ) 173\n4 Keen-Eyed Curator (BLB) 181\n4 Pawpatch Recruit (BLB) 187\n4 Scrapshooter (BLB) 191\n4 Valley Mightcaller (BLB) 202\n18 Forest (BLB) 377\n4 Oakhollow Village (BLB) 258"
+                    "decklist_id": "09d68d72-0da4-982c-5616-2dfc3bd0f149",
+                    "decklist_extended_id": "36d980c2-d8cc-f215-7e4b-abfc7a558465"
                 }
             ]
         },
@@ -166,35 +167,37 @@
             "decks": [
                 {
                     "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2024-09-03",
+                        "exports": 144,
                         "format": "standardbrawl",
-                        "url": "https://aetherhub.com/Deck/grolnok-the-omnivore-brawl",
-                        "source": "aetherhub.com",
                         "mode": "Bo3",
                         "name": "Grolnok, the Omnivore Brawl",
-                        "author": "LegenVD",
-                        "date": "2024-09-03",
-                        "views": 294,
-                        "exports": 144,
-                        "comments": 0,
-                        "archetype": "combo"
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/grolnok-the-omnivore-brawl",
+                        "views": 294
                     },
-                    "arena_decklist": "Commander\n1 Grolnok, the Omnivore (VOW) 238\n\nDeck\n1 Grolnok, the Omnivore (VOW) 238\n1 Desecrated Tomb (M19) 230\n1 Utopia Sprawl (RVR) 159\n1 Mesmeric Orb (2XM) 272\n1 Urza's Incubator (MH3) 297\n1 Fraying Sanity (HOU) 35\n1 Arcane Signet (MB2) 254\n1 Wolfwillow Haven (THB) 205\n1 Reflections of Littjara (LCC) 168\n1 The Bears of Littjara (KHM) 205\n1 Croaking Counterpart (MID) 215\n1 Kindred Discovery (LCC) 159\n1 Case of the Locked Hothouse (MKM) 155\n1 Chalk Outline (MKM) 157\n1 Amphibian Downpour (MH3) 51\n1 Splash Portal (BLB) 74\n1 Patchwork Banner (BLB) 247\n1 Azusa, Lost but Seeking (CMM) 274\n1 Llanowar Elves (GNT) 46\n1 Birds of Paradise (RVR) 133\n1 Lotus Cobra (ZNR) 193\n1 Oracle of Mul Daya (OTC) 200\n1 Crocanura (RVR) 135\n1 Elvish Mystic (CMM) 284\n1 Wayward Swordtooth (LCC) 263\n1 Thassa's Oracle (MB2) 175\n1 Dryad of the Ilysian Grove (CMM) 891\n1 Universal Automaton (MH1) 235\n1 Guardian Gladewalker (KHM) 174\n1 Masked Vandal (KHM) 184\n1 Realmwalker (LCC) 250\n1 Tireless Provisioner (MOC) 313\n1 Burrog Befuddler (STX) 38\n1 Froghemoth (AFR) 184\n1 Willow Geist (MID) 207\n1 Papercraft Decoy (NEO) 253\n1 Halo Hopper (MOM) 260\n1 Delighted Halfling (LTR) 158\n1 Poison Dart Frog (LCI) 207\n1 Roaming Throne (LCI) 258\n1 Spring Splasher (OTJ) 69\n1 Doc Aurlock, Grizzled Genius (OTJ) 201\n1 Bellowing Crier (BLB) 42\n1 Dour Port-Mage (BLB) 47\n1 Long River Lurker (BLB) 57\n1 Skyskipper Duo (BLB) 71\n1 Splash Lasher (BLB) 73\n1 Waterspout Warden (BLB) 80\n1 Clifftop Lookout (BLB) 168\n1 Stickytongue Sentinel (BLB) 193\n1 Sunshower Druid (BLB) 195\n1 Three Tree Scribe (BLB) 199\n1 Treeguard Duo (BLB) 200\n1 Valley Mightcaller (BLB) 202\n1 Clement, the Worrywort (BLB) 209\n1 Dreamdew Entrancer (BLB) 211\n1 Lilysplash Mentor (BLB) 222\n1 Pond Prophet (BLB) 229\n1 Jace, Wielder of Mysteries (WAR) 54\n1 Jace, the Perfected Mind (ONE) 57\n9 Forest (BLB) 377\n9 Island (BLB) 371\n1 Wooded Foothills (MH3) 236\n1 Yavimaya Coast (OTC) 342\n1 Command Tower /// Command Tower (ACMM) 47\n1 Breeding Pool (RVR) 275\n1 Flooded Strand (MH3) 220\n1 Polluted Delta (MH3) 224\n1 Windswept Heath (MH3) 235\n1 Scalding Tarn (MH2) 254\n1 Misty Rainforest (MH2) 250\n1 Verdant Catacombs (MH2) 260\n1 Hinterland Harbor (OTC) 300\n1 Cavern of Souls (LCI) 269\n1 Fabled Passage (BLB) 252\n1 Prismatic Vista (MH1) 244\n1 Barkchannel Pathway /// Tidechannel Pathway (KHM) 251\n1 Dreamroot Cascade (VOW) 262\n1 Boseiju, Who Endures (NEO) 266\n1 Otawara, Soaring City (NEO) 271\n1 Hedge Maze (MKM) 262\n1 Lilypad Village (BLB) 255\n1 Oakhollow Village (BLB) 258\n1 Three Tree City (BLB) 260"
+                    "decklist_id": "3af297e2-de4a-7f31-2ec1-ff0e23552cba",
+                    "decklist_extended_id": "2c85f797-2555-e5f2-0862-a01d323b02b4"
                 },
                 {
                     "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2024-09-03",
+                        "exports": 1908,
                         "format": "standardbrawl",
-                        "url": "https://aetherhub.com/Deck/grolnok-yargle-event",
-                        "source": "aetherhub.com",
                         "mode": "Bo3",
                         "name": "Grolnok Yargle Event",
-                        "author": "LegenVD",
-                        "date": "2024-09-03",
-                        "views": 1877,
-                        "exports": 1908,
-                        "comments": 0,
-                        "archetype": "combo"
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/grolnok-yargle-event",
+                        "views": 1877
                     },
-                    "arena_decklist": "Commander\n1 Grolnok, the Omnivore (VOW) 238\n\nDeck\n1 Grolnok, the Omnivore (VOW) 238\n1 Desecrated Tomb (M19) 230\n1 Utopia Sprawl (RVR) 159\n1 Mesmeric Orb (2XM) 272\n1 Arcane Signet (MB2) 254\n1 Reflections of Littjara (LCC) 168\n1 The Bears of Littjara (KHM) 205\n1 Kindred Discovery (LCC) 159\n1 Case of the Locked Hothouse (MKM) 155\n1 Chalk Outline (MKM) 157\n1 Splash Portal (BLB) 74\n1 Patchwork Banner (BLB) 247\n1 Azusa, Lost but Seeking (CMM) 274\n1 Llanowar Elves (GNT) 46\n1 Birds of Paradise (RVR) 133\n1 Frogmite (MM2) 215\n1 Lotus Cobra (ZNR) 193\n1 Oracle of Mul Daya (OTC) 200\n1 Crocanura (RVR) 135\n1 Elvish Mystic (CMM) 284\n1 Wayward Swordtooth (LCC) 263\n1 Leapfrog (CLU) 89\n1 Steeple Creeper (CLU) 174\n1 Thassa's Oracle (MB2) 175\n1 Dryad of the Ilysian Grove (CMM) 891\n1 Universal Automaton (MH1) 235\n1 Mistwalker (KHM) 68\n1 Guardian Gladewalker (KHM) 174\n1 Masked Vandal (KHM) 184\n1 Realmwalker (LCC) 250\n1 Bloodline Pretender (MOC) 350\n1 Tireless Provisioner (MOC) 313\n1 Burrog Befuddler (STX) 38\n1 Froghemoth (AFR) 184\n1 Willow Geist (MID) 207\n1 Faceless Agent (J21) 1\n1 Papercraft Decoy (NEO) 253\n1 Halo Hopper (MOM) 260\n1 Delighted Halfling (LTR) 158\n1 Poison Dart Frog (LCI) 207\n1 Roaming Throne (LCI) 258\n1 Spring Splasher (OTJ) 69\n1 Doc Aurlock, Grizzled Genius (OTJ) 201\n1 Bellowing Crier (BLB) 42\n1 Long River Lurker (BLB) 57\n1 Skyskipper Duo (BLB) 71\n1 Splash Lasher (BLB) 73\n1 Waterspout Warden (BLB) 80\n1 Clifftop Lookout (BLB) 168\n1 Stickytongue Sentinel (BLB) 193\n1 Three Tree Scribe (BLB) 199\n1 Treeguard Duo (BLB) 200\n1 Valley Mightcaller (BLB) 202\n1 Clement, the Worrywort (BLB) 209\n1 Dreamdew Entrancer (BLB) 211\n1 Lilysplash Mentor (BLB) 222\n1 Barkform Harvester (BLB) 243\n1 Three Tree Mascot (BLB) 251\n1 Fountainport Charmer (YBLB) 17\n1 Jace, Wielder of Mysteries (WAR) 54\n9 Forest (BLB) 377\n9 Island (BLB) 371\n1 Wooded Foothills (MH3) 236\n1 Yavimaya Coast (OTC) 342\n1 Command Tower /// Command Tower (ACMM) 47\n1 Breeding Pool (RVR) 275\n1 Flooded Strand (MH3) 220\n1 Polluted Delta (MH3) 224\n1 Windswept Heath (MH3) 235\n1 Scalding Tarn (MH2) 254\n1 Misty Rainforest (MH2) 250\n1 Verdant Catacombs (MH2) 260\n1 Hinterland Harbor (OTC) 300\n1 Cavern of Souls (LCI) 269\n1 Fabled Passage (BLB) 252\n1 Prismatic Vista (MH1) 244\n1 Barkchannel Pathway /// Tidechannel Pathway (KHM) 251\n1 Dreamroot Cascade (VOW) 262\n1 Boseiju, Who Endures (NEO) 266\n1 Otawara, Soaring City (NEO) 271\n1 Hedge Maze (MKM) 262\n1 Lilypad Village (BLB) 255\n1 Oakhollow Village (BLB) 258\n1 Three Tree City (BLB) 260"
+                    "decklist_id": "9f3b74b8-c91d-b7d6-8b2e-26185f7d3bd0",
+                    "decklist_extended_id": "89bbca80-695f-50c1-3a0c-58d77baaac7e"
                 }
             ]
         }

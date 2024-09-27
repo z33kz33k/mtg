@@ -81,17 +81,18 @@
             "decks": [
                 {
                     "metadata": {
-                        "format": "standard",
-                        "url": "https://www.moxfield.com/decks/741OpkDFzEmhmgcYZbLnKA",
-                        "source": "www.moxfield.com",
-                        "name": "Bouncy Castle",
-                        "likes": 1,
-                        "views": 539,
-                        "comments": 0,
                         "author": "CovertGoBlue",
-                        "date": "2024-08-26"
+                        "comments": 0,
+                        "date": "2024-08-26",
+                        "format": "standard",
+                        "likes": 1,
+                        "name": "Bouncy Castle",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/741OpkDFzEmhmgcYZbLnKA",
+                        "views": 539
                     },
-                    "arena_decklist": "Deck\n20 Island (BLB) 371\n4 Impulse (DMR) 56\n4 Rona's Vortex (DMU) 63\n3 Flow of Knowledge (BRO) 49\n1 Chrome Host Seedshark (MOM) 51\n4 Ephara's Dispersal (MKC) 103\n1 Ojer Pakpatiq, Deepest Epoch /// Temple of Cyclical Time (LCI) 67\n4 Undercity Sewers (MKM) 270\n4 Unauthorized Exit (MKM) 74\n4 Into the Flood Maw (BLB) 52\n1 Wishing Well (BLB) 81\n4 Long River's Pull (BLB) 58\n1 Kitsa, Otterball Elite (BLB) 54\n1 Eluge, the Shoreless Sea (BLB) 49\n4 Stormchaser's Talent (BLB) 75"
+                    "decklist_id": "d84cdcac-46e3-db75-4983-23a76d2db450",
+                    "decklist_extended_id": "b7b2f2c9-6cf4-85cd-b43c-7185255ea302"
                 }
             ]
         },
@@ -152,17 +153,18 @@
             "decks": [
                 {
                     "metadata": {
-                        "format": "brawl",
-                        "url": "https://www.moxfield.com/decks/rUzzpdnoAE2TYP2h2GAWOw",
-                        "source": "www.moxfield.com",
-                        "name": "Liliana of the Dark Realms | Squirrel Edition Brawl",
-                        "likes": 0,
-                        "views": 518,
-                        "comments": 0,
                         "author": "CovertGoBlue",
-                        "date": "2024-08-28"
+                        "comments": 0,
+                        "date": "2024-08-28",
+                        "format": "brawl",
+                        "likes": 0,
+                        "name": "Liliana of the Dark Realms | Squirrel Edition Brawl",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/rUzzpdnoAE2TYP2h2GAWOw",
+                        "views": 518
                     },
-                    "arena_decklist": "Commander\n1 Liliana of the Dark Realms (M14) 102\n\nDeck\n1 Liliana of the Dark Realms (M14) 102\n1 Arcane Signet (MB2) 254\n1 Wishclaw Talisman (MB2) 51\n1 Witch's Cottage (ELD) 249\n1 Coldsteel Heart (2X2) 301\n1 Dark Ritual (MB2) 179\n1 Duress (ONE) 92\n1 Fatal Push (2XM) 93\n1 Field of Ruin (MOC) 400\n1 Go for the Throat (MOC) 250\n1 Innocent Blood (JMP) 244\n1 Inquisition of Kozilek (2X2) 80\n1 Liliana, Death's Majesty (MIC) 121\n1 Mind Stone (MKC) 232\n1 Reliquary Tower (MB2) 111\n1 The Eldest Reborn (CMM) 867\n1 Grim Tutor (M21) 103\n27 Snow-Covered Swamp (MB2) 118\n1 Thought Distortion (M20) 117\n1 Languish (JMP) 246\n1 Sign in Blood (CM2) 77\n1 Wayfarer's Bauble (LCC) 317\n1 Necropotence (IMA) 98\n1 Reanimate (MKC) 137\n1 Guardian Idol (JMP) 467\n1 Liliana, the Last Hope (2X2) 81\n1 Liliana of the Veil (DMU) 97\n1 Bontu's Last Reckoning (HOU) 60\n1 Heart of Kiran (AER) 153\n1 Perilous Vault (CMM) 968\n1 Skithiryx, the Blight Dragon (2XM) 107\n1 Liliana, Dreadhorde General (RVR) 80\n1 Jet Medallion (MH3) 292\n1 Command the Dreadhorde (WAR) 82\n1 Interplanar Beacon (CMM) 1004\n1 Karn, the Great Creator (MB2) 3\n1 Liliana's Triumph (WAR) 98\n1 Ugin, the Ineffable (CMM) 811\n1 Thoughtseize (2XM) 109\n1 Crux of Fate (C17) 107\n1 Extinction Event (IKO) 88\n1 Heartless Act (CMM) 166\n1 Cabal Stronghold (DOM) 238\n1 Mox Amber (DOM) 224\n1 Bloodchief's Thirst (ZNR) 94\n1 Feed the Swarm (OTC) 134\n1 Blood on the Snow (KHM) 79\n1 Professor Onyx (STX) 83\n1 Grief (MH2) 87\n1 Davriel, Soul Broker (J21) 15\n1 Infernal Grasp (MID) 107\n1 March of Wretched Sorrow (NEO) 111\n1 Undercity Plunder (YNEO) 15\n1 Black Market Connections (LCC) 181\n1 Gate of the Black Dragon (HBG) 77\n1 Mind Spike (HBG) 46\n1 Sheoldred, the Apocalypse (DMU) 107\n1 Cut Down (DMU) 89\n1 Karn's Sylex (DMU) 234\n1 Vraska, Betrayal's Sting (ONE) 115\n1 Sheoldred's Edict (ONE) 108\n1 Drown in Ichor (ONE) 91\n1 Troll of Khazad-dûm (LTR) 111\n1 Beseech the Mirror (WOE) 82\n1 The Irencrag (WOE) 248\n1 Deep-Cavern Bat (LCI) 102\n1 Bitter Triumph (LCI) 91\n1 Deadly Cover-Up (MKM) 83\n1 Insatiable Avarice (OTJ) 91\n1 Winter Moon (MH3) 213\n1 Grave Expectations (YOTJ) 9\n1 Necrodominance (MH3) 102\n1 Consuming Corruption (MH3) 84\n1 Solar Transformer (MH3) 211"
+                    "decklist_id": "7086670d-0d06-fbab-90af-3df1ef496026",
+                    "decklist_extended_id": "9443e8b2-2c40-af91-616d-36b4c5059467"
                 }
             ]
         }

@@ -84,19 +84,20 @@
             "decks": [
                 {
                     "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2024-08-30",
+                        "exports": 494,
                         "format": "standard",
-                        "url": "https://aetherhub.com/Deck/dinosaur-reanimator-combo",
-                        "source": "aetherhub.com",
                         "mode": "Bo1",
                         "name": "Dinosaur Reanimator Combo",
-                        "author": "LegenVD",
-                        "date": "2024-08-30",
-                        "views": 801,
-                        "exports": 494,
-                        "comments": 0,
-                        "archetype": "combo"
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/dinosaur-reanimator-combo",
+                        "views": 801
                     },
-                    "arena_decklist": "Deck\n4 Bitter Reunion (OTC) 156\n4 Brotherhood's End (BRO) 128\n2 Bitter Triumph (LCI) 91\n4 Saheeli's Lattice /// Mastercraft Raptor (LCI) 164\n2 Rakdos Joins Up (OTJ) 225\n4 Coiling Rebirth (BLB) 86\n2 Etali, Primal Conqueror /// Etali, Primal Sickness (MOM) 137\n4 Trumpeting Carnosaur (LCI) 171\n4 Ghalta, Stampede Tyrant (LCI) 185\n4 Palani's Hatcher (LCI) 237\n2 Vaultborn Tyrant (BIG) 20\n1 Forest (BLB) 377\n2 Swamp (BLB) 373\n2 Mountain (BLB) 375\n4 Sulfurous Springs (OTC) 323\n3 Cavern of Souls (LCI) 269\n3 Fabled Passage (BLB) 252\n4 Commercial District (MKM) 259\n4 Raucous Theater (MKM) 266\n1 Underground Mortuary (MKM) 271"
+                    "decklist_id": "2cd7e1cb-0571-a3af-80d9-d32a996edc86",
+                    "decklist_extended_id": "018a0ec5-b932-a818-923b-755a161bb51a"
                 }
             ]
         }

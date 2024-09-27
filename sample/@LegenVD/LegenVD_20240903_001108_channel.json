@@ -83,19 +83,20 @@
             "decks": [
                 {
                     "metadata": {
+                        "archetype": "control",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2024-09-02",
+                        "exports": 312,
                         "format": "standard",
-                        "url": "https://aetherhub.com/Deck/builders-talent-combo",
-                        "source": "aetherhub.com",
                         "mode": "Bo1",
                         "name": "Builder's Talent Combo",
-                        "author": "LegenVD",
-                        "date": "2024-09-02",
-                        "views": 485,
-                        "exports": 312,
-                        "comments": 0,
-                        "archetype": "control"
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/builders-talent-combo",
+                        "views": 485
                     },
-                    "arena_decklist": "Deck\n2 Lightning Helix (MKM) 218\n2 Abrade (LCI) 131\n3 Repair and Recharge (BRO) 24\n4 One with the Multiverse (BRO) 59\n2 Stern Lesson (BRO) 64\n2 Brotherhood's End (BRO) 128\n4 Portal to Phyrexia (BRO) 240\n2 Torch the Tower (WOE) 153\n2 Get Lost (LCI) 14\n4 Ill-Timed Explosion (MKM) 207\n4 Three Steps Ahead (OTJ) 75\n4 Builder's Talent (BLB) 5\n1 Zurgo and Ojutai (MOM) 258\n2 Plains (BLB) 369\n2 Island (BLB) 371\n2 Mountain (BLB) 375\n2 Battlefield Forge (OTC) 271\n2 Shivan Reef (OTC) 320\n2 Inspiring Vantage (OTJ) 269\n2 Spirebluff Canal (OTJ) 270\n4 Fabled Passage (BLB) 252\n2 Elegant Parlor (MKM) 260\n2 Meticulous Archive (MKM) 264\n2 Thundering Falls (MKM) 269"
+                    "decklist_id": "208dd0bf-329d-7b16-d0cb-9b431b750114",
+                    "decklist_extended_id": "a4fc2dfd-57ab-fce7-2586-3f3fbf7634f9"
                 }
             ]
         }

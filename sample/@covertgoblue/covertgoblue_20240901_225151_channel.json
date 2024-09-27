@@ -81,17 +81,18 @@
             "decks": [
                 {
                     "metadata": {
-                        "url": "https://www.moxfield.com/decks/EWscbgd22Eiqqho2BhFfgw",
-                        "source": "www.moxfield.com",
-                        "format": "standard",
-                        "name": "Mono White Control",
-                        "likes": 1,
-                        "views": 1050,
-                        "comments": 0,
                         "author": "CovertGoBlue",
-                        "date": "2024-08-30"
+                        "comments": 0,
+                        "date": "2024-08-30",
+                        "format": "standard",
+                        "likes": 1,
+                        "name": "Mono White Control",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/EWscbgd22Eiqqho2BhFfgw",
+                        "views": 1050
                     },
-                    "arena_decklist": "Deck\n13 Plains (BLB) 369\n2 Destroy Evil (DMU) 17\n3 Demolition Field (OTC) 283\n4 Lay Down Arms (BRO) 11\n4 Mirrex (ONE) 254\n4 Ossification (ONE) 26\n2 Archangel Elspeth (MOM) 6\n4 Elspeth's Smite (MOM) 13\n4 Get Lost (LCI) 14\n4 Clay-Fired Bricks /// Cosmium Kiln (LCI) 6\n4 Beza, the Bounding Spring (BLB) 2\n4 Season of the Burrow (BLB) 29\n4 Fountainport (BLB) 253\n4 Caretaker's Talent (BLB) 6"
+                    "decklist_id": "9e591342-c098-221c-ec40-8e7c49ee78f0",
+                    "decklist_extended_id": "de2a9058-2b77-ee03-07a1-961a47a86051"
                 }
             ]
         },
@@ -163,17 +164,18 @@
             "decks": [
                 {
                     "metadata": {
-                        "format": "standard",
-                        "url": "https://www.moxfield.com/decks/VY8IYbPSxE6nW5qHe1YVvg",
-                        "source": "www.moxfield.com",
-                        "name": "Abzan control",
-                        "likes": 1,
-                        "views": 1721,
-                        "comments": 0,
                         "author": "CovertGoBlue",
-                        "date": "2024-08-30"
+                        "comments": 0,
+                        "date": "2024-08-30",
+                        "format": "standard",
+                        "likes": 1,
+                        "name": "Abzan control",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/VY8IYbPSxE6nW5qHe1YVvg",
+                        "views": 1721
                     },
-                    "arena_decklist": "Deck\n1 Plains (BLB) 369\n1 Forest (BLB) 377\n1 Swamp (BLB) 373\n1 Blossoming Sands (BLB) 396\n1 Go for the Throat (MOC) 250\n1 Scoured Barrens (MOM) 272\n1 Brushland (BRO) 259\n3 Blooming Marsh (OTJ) 266\n3 Concealed Courtyard (OTJ) 268\n1 Caves of Koilos (OTC) 277\n3 Razorverge Thicket (ONE) 257\n1 Cut Down (DMU) 89\n3 Tear Asunder (DMU) 183\n1 Demolition Field (OTC) 283\n2 Mirrex (ONE) 254\n1 White Sun's Twilight (ONE) 38\n1 Nissa, Ascended Animist (ONE) 175\n1 Realmbreaker, the Invasion Tree (MOM) 263\n1 Sunfall (MOM) 40\n4 Restless Cottage (WOE) 258\n4 Virtue of Persistence /// Locthwain Scorn (WOE) 115\n4 Up the Beanstalk (WOE) 195\n1 Buried in the Garden (MKM) 191\n4 Deadly Cover-Up (MKM) 83\n1 Urgent Necropsy (MKM) 240\n3 Cease /// Desist (MKM) 246\n4 Outrageous Robbery (MKM) 97\n4 Ancient Cornucopia (BIG) 16\n3 Fountainport (BLB) 253"
+                    "decklist_id": "c97f8bad-7991-690f-35d8-859d5e1f49e9",
+                    "decklist_extended_id": "f2a19382-c835-6921-47d0-f2a2251229fe"
                 }
             ]
         }

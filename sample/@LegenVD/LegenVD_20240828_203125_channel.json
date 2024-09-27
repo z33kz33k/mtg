@@ -84,19 +84,20 @@
             "decks": [
                 {
                     "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2024-08-27",
+                        "exports": 166,
                         "format": "standard",
-                        "url": "https://aetherhub.com/Deck/tyvar-roots-osteomancer",
-                        "source": "aetherhub.com",
                         "mode": "Bo1",
                         "name": "Tyvar Roots Osteomancer",
-                        "author": "LegenVD",
-                        "date": "2024-08-27",
-                        "views": 305,
-                        "exports": 166,
-                        "comments": 0,
-                        "archetype": "combo"
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/tyvar-roots-osteomancer",
+                        "views": 305
                     },
-                    "arena_decklist": "Deck\n4 Gnawing Vermin (BRO) 101\n2 Haywire Mite (BRO) 199\n2 Ichor Drinker (MOM) 111\n4 Deep-Cavern Bat (LCI) 102\n4 Snarling Gorehound (MKM) 105\n4 Rubblebelt Maverick (MKM) 174\n4 Osteomancer Adept (BLB) 103\n4 Tyvar, Jubilant Brawler (ONE) 218\n4 Insidious Roots (MKM) 208\n4 Cache Grab (BLB) 167\n5 Forest (BLB) 377\n7 Swamp (BLB) 373\n4 Llanowar Wastes (OTC) 305\n4 Blooming Marsh (OTJ) 266\n2 Restless Cottage (WOE) 258\n2 Underground Mortuary (MKM) 271"
+                    "decklist_id": "bcfd6f4b-87aa-d663-4a10-603b65e655d7",
+                    "decklist_extended_id": "391610f9-8633-affd-85d5-e3281f8561bd"
                 }
             ]
         }

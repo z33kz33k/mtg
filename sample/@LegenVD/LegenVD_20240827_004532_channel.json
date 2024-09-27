@@ -85,19 +85,20 @@
             "decks": [
                 {
                     "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2024-08-26",
+                        "exports": 298,
                         "format": "standard",
-                        "url": "https://aetherhub.com/Deck/glarb-sultai-selfmill",
-                        "source": "aetherhub.com",
                         "mode": "Bo1",
                         "name": "Glarb Sultai Selfmill",
-                        "author": "LegenVD",
-                        "date": "2024-08-26",
-                        "views": 514,
-                        "exports": 298,
-                        "comments": 0,
-                        "archetype": "midrange"
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/glarb-sultai-selfmill",
+                        "views": 514
                     },
-                    "arena_decklist": "Deck\n4 Writhing Necromass (DMU) 115\n4 Urborg Lhurgoyf (DMU) 186\n4 Gnawing Vermin (BRO) 101\n4 Blanchwood Prowler (BRO) 172\n4 Cruel Somnophage /// Can't Wake Up (WOE) 222\n4 Souls of the Lost (LCI) 121\n4 Hollow Marauder (OTJ) 90\n4 Huskburster Swarm (BLB) 98\n3 Glarb, Calamity's Augur (BLB) 215\n2 Overwhelming Remorse (BRO) 110\n1 Forest (BLB) 377\n1 Island (BLB) 371\n1 Swamp (BLB) 373\n2 Botanical Sanctum (OTJ) 267\n2 Underground River (OTC) 338\n2 Llanowar Wastes (OTC) 305\n2 Yavimaya Coast (OTC) 342\n4 Darkslick Shores (OTC) 281\n4 Blooming Marsh (OTJ) 266\n1 Restless Reef (LCI) 282\n1 Undercity Sewers (MKM) 270\n2 Underground Mortuary (MKM) 271"
+                    "decklist_id": "7283f2af-ad27-d3c0-857c-33f49a16a11d",
+                    "decklist_extended_id": "e0bed55a-9d66-6713-b23e-9eea46e60526"
                 }
             ]
         }

@@ -83,17 +83,18 @@
             "decks": [
                 {
                     "metadata": {
-                        "format": "standard",
-                        "url": "https://www.moxfield.com/decks/c1PYENaTF0e73qzMs027Sw",
-                        "source": "www.moxfield.com",
-                        "name": "UW Control 3.0 | BLB Standard",
-                        "likes": 1,
-                        "views": 1422,
-                        "comments": 0,
                         "author": "CovertGoBlue",
-                        "date": "2024-08-23"
+                        "comments": 0,
+                        "date": "2024-08-23",
+                        "format": "standard",
+                        "likes": 1,
+                        "name": "UW Control 3.0 | BLB Standard",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/c1PYENaTF0e73qzMs027Sw",
+                        "views": 1422
                     },
-                    "arena_decklist": "Deck\n4 Island (BLB) 371\n4 Plains (BLB) 369\n4 Tranquil Cove (MOM) 275\n2 Adarkar Wastes (DMU) 243\n4 Seachrome Coast (ONE) 258\n4 Demolition Field (OTC) 283\n4 Jace, the Perfected Mind (ONE) 57\n4 Elspeth's Smite (MOM) 13\n4 Sunfall (MOM) 40\n3 Farsight Ritual (WOE) 49\n4 Restless Anchorage (LCI) 280\n3 Deduce (MKM) 52\n4 Not on My Watch (MKM) 28\n4 No More Lies (MKM) 221\n4 Three Steps Ahead (OTJ) 75\n4 Spellgyre (BLB) 72"
+                    "decklist_id": "74f03b78-d23f-494f-c464-638f89bc8d4e",
+                    "decklist_extended_id": "0dc30b1a-e340-cb46-05f1-42c44d31afbe"
                 }
             ]
         },
@@ -166,17 +167,18 @@
             "decks": [
                 {
                     "metadata": {
-                        "format": "standard",
-                        "url": "https://www.moxfield.com/decks/mk4kCfIowUaa5aneycmZRw",
-                        "source": "www.moxfield.com",
-                        "name": "UB Control | BLB 2.0",
-                        "likes": 1,
-                        "views": 1472,
-                        "comments": 0,
                         "author": "CovertGoBlue",
-                        "date": "2024-08-21"
+                        "comments": 0,
+                        "date": "2024-08-21",
+                        "format": "standard",
+                        "likes": 1,
+                        "name": "UB Control | BLB 2.0",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/mk4kCfIowUaa5aneycmZRw",
+                        "views": 1472
                     },
-                    "arena_decklist": "Deck\n2 Island (BLB) 371\n4 Swamp (BLB) 373\n1 Fabled Passage (BLB) 252\n4 Dismal Backwater (MOM) 269\n3 Duress (ONE) 92\n4 Go for the Throat (MOC) 250\n1 Underground River (OTC) 338\n4 Darkslick Shores (OTC) 281\n1 Blast Zone (CMM) 987\n4 Cut Down (DMU) 89\n1 Rona's Vortex (DMU) 63\n1 Silver Scrutiny (DMU) 65\n4 Demolition Field (OTC) 283\n2 Mirrex (ONE) 254\n1 Sheoldred's Edict (ONE) 108\n1 Farsight Ritual (WOE) 49\n1 Virtue of Persistence /// Locthwain Scorn (WOE) 115\n1 Horned Loch-Whale /// Lagoon Breach (WOE) 53\n3 Quick Study (WOE) 65\n1 Tishana's Tidebinder (LCI) 81\n4 Restless Reef (LCI) 282\n4 Deduce (MKM) 52\n1 Long Goodbye (MKM) 92\n4 Deadly Cover-Up (MKM) 83\n1 Intimidation Campaign (OTJ) 208\n1 Wishing Well (BLB) 81\n1 Spellgyre (BLB) 72"
+                    "decklist_id": "0d12c028-a97c-f788-cb71-0467045b598a",
+                    "decklist_extended_id": "cf4f7d98-57cd-a0c6-a8e9-88b9bb31c3dd"
                 }
             ]
         },
@@ -249,17 +251,18 @@
             "decks": [
                 {
                     "metadata": {
-                        "format": "standard",
-                        "url": "https://www.moxfield.com/decks/6jnrFoGXlk-3JiyxfRVHQA",
-                        "source": "www.moxfield.com",
-                        "name": "Lizards 2.0 | BLB Standard",
-                        "likes": 5,
-                        "views": 4144,
-                        "comments": 0,
                         "author": "CovertGoBlue",
-                        "date": "2024-08-20"
+                        "comments": 0,
+                        "date": "2024-08-20",
+                        "format": "standard",
+                        "likes": 5,
+                        "name": "Lizards 2.0 | BLB Standard",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/6jnrFoGXlk-3JiyxfRVHQA",
+                        "views": 4144
                     },
-                    "arena_decklist": "Deck\n2 Mountain (BLB) 375\n2 Swamp (BLB) 373\n2 Shock (MKM) 144\n4 Sulfurous Springs (OTC) 323\n4 Cavern of Souls (LCI) 269\n4 Blackcleave Cliffs (OTC) 272\n1 Virtue of Persistence /// Locthwain Scorn (WOE) 115\n1 Virtue of Courage /// Embereth Blaze (WOE) 157\n4 Restless Vents (LCI) 284\n4 Pyrotechnic Performer (MKM) 140\n2 Laughing Jasper Flint (OTJ) 215\n2 Rockface Village (BLB) 259\n4 Fireglass Mentor (BLB) 213\n4 Iridescent Vinelasher (BLB) 99\n4 Hired Claw (BLB) 140\n4 Scales of Shale (BLB) 110\n4 Thought-Stalker Warlock (BLB) 118\n4 Gev, Scaled Scorch (BLB) 214\n4 Flamecache Gecko (BLB) 135"
+                    "decklist_id": "d31e21f4-a4ba-0ad5-35b6-bcbca38657c1",
+                    "decklist_extended_id": "2ce5f21f-c6e8-c4bc-2be8-c1bd472e82f1"
                 }
             ]
         },
@@ -332,17 +335,18 @@
             "decks": [
                 {
                     "metadata": {
-                        "format": "standard",
-                        "url": "https://www.moxfield.com/decks/jYmYY7TOT0KVBdj-MS93aw",
-                        "source": "www.moxfield.com",
-                        "name": "UW artifacts | does it BO1?",
-                        "likes": 1,
-                        "views": 1155,
-                        "comments": 0,
                         "author": "CovertGoBlue",
-                        "date": "2024-08-19"
+                        "comments": 0,
+                        "date": "2024-08-19",
+                        "format": "standard",
+                        "likes": 1,
+                        "name": "UW artifacts | does it BO1?",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/jYmYY7TOT0KVBdj-MS93aw",
+                        "views": 1155
                     },
-                    "arena_decklist": "Deck\n4 Island (BLB) 371\n4 Plains (BLB) 369\n4 Adarkar Wastes (DMU) 243\n4 Seachrome Coast (ONE) 258\n4 Steel Seraph (BRO) 38\n2 Mirrex (ONE) 254\n4 Regal Bunnicorn (WOE) 25\n4 Spyglass Siren (LCI) 78\n2 Spring-Loaded Sawblades /// Bladewheel Chariot (LCI) 36\n4 Restless Anchorage (LCI) 280\n3 Subterranean Schooner (LCI) 80\n4 Zoetic Glyph (LCI) 86\n4 Warden of the Inner Sky (LCI) 43\n4 Novice Inspector (MKM) 29\n2 Case of the Filched Falcon (MKM) 44\n3 Case of the Gateway Express (MKM) 8\n4 Mockingbird (BLB) 61"
+                    "decklist_id": "5b1cbef7-657a-775b-b04d-498ea58f4ed1",
+                    "decklist_extended_id": "cba53d61-8e6f-e5a6-a28a-855e27c3ea80"
                 }
             ]
         },
@@ -532,17 +536,18 @@
             "decks": [
                 {
                     "metadata": {
-                        "format": "standard",
-                        "url": "https://www.moxfield.com/decks/PcbDv_9tvk2KLypWhkGF5w",
-                        "source": "www.moxfield.com",
-                        "name": "Mythic Mice",
-                        "likes": 2,
-                        "views": 1300,
-                        "comments": 1,
                         "author": "CovertGoBlue",
-                        "date": "2024-08-18"
+                        "comments": 1,
+                        "date": "2024-08-18",
+                        "format": "standard",
+                        "likes": 2,
+                        "name": "Mythic Mice",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/PcbDv_9tvk2KLypWhkGF5w",
+                        "views": 1300
                     },
-                    "arena_decklist": "Deck\n3 Mountain (BLB) 375\n4 Plains (BLB) 369\n4 Inspiring Vantage (OTJ) 269\n4 Battlefield Forge (OTC) 271\n2 Skrelv, Defector Mite (ONE) 33\n4 Monstrous Rage (WOE) 142\n4 Raging Battle Mouse (WOE) 143\n4 Cheeky House-Mouse /// Squeak By (WOE) 7\n1 Mabel, Heir to Cragflame (BLB) 224\n4 Might of the Meek (BLB) 144\n3 Rockface Village (BLB) 259\n2 Lupinflower Village (BLB) 256\n4 Flowerfoot Swordmaster (BLB) 14\n1 Mabel's Mettle (BLB) 21\n4 Heartfire Hero (BLB) 138\n4 Manifold Mouse (BLB) 143\n4 Emberheart Challenger (BLB) 133\n4 Rabid Gnaw (BLB) 147"
+                    "decklist_id": "f1fb9bfa-562d-725b-1429-cd6f2d561fbb",
+                    "decklist_extended_id": "72d350c3-21f4-a932-522c-3beb35a3c802"
                 }
             ]
         },
@@ -603,17 +608,18 @@
             "decks": [
                 {
                     "metadata": {
-                        "format": "brawl",
-                        "url": "https://www.moxfield.com/decks/Fk3d5pF0HUWcnYg4wc81-A",
-                        "source": "www.moxfield.com",
-                        "name": "Emry | BLB Brawl",
-                        "likes": 3,
-                        "views": 502,
-                        "comments": 0,
                         "author": "CovertGoBlue",
-                        "date": "2024-08-20"
+                        "comments": 0,
+                        "date": "2024-08-20",
+                        "format": "brawl",
+                        "likes": 3,
+                        "name": "Emry | BLB Brawl",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/Fk3d5pF0HUWcnYg4wc81-A",
+                        "views": 502
                     },
-                    "arena_decklist": "Commander\n1 Emry, Lurker of the Loch (NEC) 91\n\nDeck\n1 Emry, Lurker of the Loch (NEC) 91\n29 Island (BLB) 371\n1 Arcane Signet (MB2) 254\n1 Mystical Dispute (MB2) 31\n1 Stonecoil Serpent (CMM) 976\n1 Witch's Oven (ELD) 237\n1 Swan Song (C16) 98\n1 Aetherflux Reservoir (KLD) 192\n1 Aether Spellbomb (JMP) 456\n1 Chromatic Star (TSR) 263\n1 Counterspell (MB2) 158\n1 Darksteel Citadel (MB2) 107\n1 Memory Lapse (EMA) 60\n1 Metallic Rebuke (2XM) 59\n1 Mind Stone (MKC) 232\n1 Mishra's Bauble (MB2) 97\n1 Phyrexian Metamorph (MKC) 116\n1 Renegade Map (AER) 173\n1 Treasure Cruise (MB2) 37\n1 Whir of Invention (AER) 49\n1 Tale's End (M20) 77\n1 Astral Cornucopia (CM2) 172\n1 Buried Ruin (2XM) 312\n1 Mana Drain (2X2) 57\n1 Chromatic Sphere (JMP) 462\n1 Pact of Negation (MB2) 169\n1 Cavern of Souls (LCI) 269\n1 Scrabbling Claws (RNA) 238\n1 Wand of Vertebrae (GRN) 242\n1 Inventors' Fair (KLD) 247\n1 Hope of Ghirapur (AER) 154\n1 Paradox Engine (AER) 169\n1 Cyclonic Rift (RVR) 40\n1 Fabricate (HOP) 9\n1 Archmage's Charm (MH1) 40\n1 Springleaf Drum (2XM) 291\n1 Mesmeric Orb (2XM) 272\n1 Soul-Guide Lantern (WOE) 251\n1 Hangarback Walker (CMM) 951\n1 Wizard's Retort (JMP) 198\n1 Mystic Subdual (IKO) 57\n1 Mox Amber (DOM) 224\n1 Bind the Monster (KHM) 48\n1 Treasure Vault (AFR) 261\n1 Moonsilver Key (MID) 255\n1 Jack-o'-Lantern (MID) 254\n1 Wash Away (VOW) 87\n1 Key to the Archive (YMID) 59\n1 Moonsnare Prototype (NEO) 69\n1 Otawara, Soaring City (NEO) 271\n1 Disruption Protocol (NEO) 51\n1 Witness Protection (SNC) 66\n1 Relic of Legends (DMU) 236\n1 A-Ominous Parcel (SNC) A-241\n1 Staff of Compleation (ONE) 242\n1 Jace, the Perfected Mind (ONE) 57\n1 Surgical Skullbomb (ONE) 243\n1 Surgical Metamorph (YONE) 6\n1 Stern Scolding (LTR) 71\n1 The Enigma Jewel /// Locus of Enlightenment (LCI) 55\n1 Tishana's Tidebinder (LCI) 81\n1 Braided Net /// Braided Quipu (LCI) 47\n1 Waterlogged Hulk /// Watertight Gondola (LCI) 83\n1 A-The One Ring (LTR) A-246\n1 Eaten by Piranhas (LCI) 54\n1 A-Thran Spider (BRO) A-254\n1 Lavaspur Boots (OTJ) 243\n1 Runecarved Obelisk (YOTJ) 30\n1 Strix Serenade (MH3) 71\n1 Archway of Innovation (MH3) 214\n1 Utter Insignificance (MH3) 78\n1 Fountainport Bell (BLB) 245"
+                    "decklist_id": "c8291670-a91b-5c68-dd08-09e9e311f05c",
+                    "decklist_extended_id": "d413947d-0c1c-7961-4b2d-1c710f1a23db"
                 }
             ]
         },
@@ -685,17 +691,18 @@
             "decks": [
                 {
                     "metadata": {
-                        "format": "standard",
-                        "url": "https://www.moxfield.com/decks/e7pVFn7zXkSccvOCU3xslw",
-                        "source": "www.moxfield.com",
-                        "name": "Mono White Aggro",
-                        "likes": 0,
-                        "views": 2631,
-                        "comments": 0,
                         "author": "CovertGoBlue",
-                        "date": "2024-08-16"
+                        "comments": 0,
+                        "date": "2024-08-16",
+                        "format": "standard",
+                        "likes": 0,
+                        "name": "Mono White Aggro",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/e7pVFn7zXkSccvOCU3xslw",
+                        "views": 2631
                     },
-                    "arena_decklist": "Deck\n17 Plains (BLB) 369\n4 Resolute Reinforcements (DMU) 29\n4 Anointed Peacekeeper (DMU) 2\n4 Mishra's Foundry (BRO) 265\n1 Steel Seraph (BRO) 38\n1 Skrelv, Defector Mite (ONE) 33\n1 Mirrex (ONE) 254\n1 Ossification (ONE) 26\n4 Invasion of Gobakhan /// Lightshield Array (MOM) 22\n4 Virtue of Loyalty /// Ardenvale Fealty (WOE) 38\n1 Spellbook Vendor (WOE) 31\n4 Werefox Bodyguard (WOE) 39\n4 Regal Bunnicorn (WOE) 25\n2 Warden of the Inner Sky (LCI) 43\n4 Novice Inspector (MKM) 29\n4 Aven Interrupter (OTJ) 4"
+                    "decklist_id": "c3aee94b-b8f1-a5e3-9407-cdf3529e549d",
+                    "decklist_extended_id": "7401dd9e-5f80-cce7-ea73-a7c7d9d001e0"
                 }
             ]
         },
@@ -768,17 +775,18 @@
             "decks": [
                 {
                     "metadata": {
-                        "format": "standard",
-                        "url": "https://www.moxfield.com/decks/0Tfdu8_QJkKbswK_5tIWvA",
-                        "source": "www.moxfield.com",
-                        "name": "UW Tokens 2.0 | BLB Standard",
-                        "likes": 0,
-                        "views": 2446,
-                        "comments": 0,
                         "author": "CovertGoBlue",
-                        "date": "2024-08-16"
+                        "comments": 0,
+                        "date": "2024-08-16",
+                        "format": "standard",
+                        "likes": 0,
+                        "name": "UW Tokens 2.0 | BLB Standard",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/0Tfdu8_QJkKbswK_5tIWvA",
+                        "views": 2446
                     },
-                    "arena_decklist": "Deck\n4 Island (BLB) 371\n4 Plains (BLB) 369\n3 Adarkar Wastes (DMU) 243\n4 Seachrome Coast (ONE) 258\n1 Teferi, Temporal Pilgrim (BRO) 66\n2 Mirrex (ONE) 254\n2 Archangel Elspeth (MOM) 6\n4 Sunfall (MOM) 40\n2 Sunken Citadel (LCI) 285\n3 Get Lost (LCI) 14\n4 Restless Anchorage (LCI) 280\n4 Deduce (MKM) 52\n2 No Witnesses (MKM) 27\n3 Three Steps Ahead (OTJ) 75\n3 Beza, the Bounding Spring (BLB) 2\n1 Season of the Burrow (BLB) 29\n2 Into the Flood Maw (BLB) 52\n4 Builder's Talent (BLB) 5\n4 Fountainport (BLB) 253\n4 Caretaker's Talent (BLB) 6"
+                    "decklist_id": "8dbb6646-f057-8a3e-f36d-bd43f77669d3",
+                    "decklist_extended_id": "2a5bab38-67b9-fb3b-9726-c7c37304f07a"
                 }
             ]
         },
@@ -839,63 +847,67 @@
             "decks": [
                 {
                     "metadata": {
+                        "author": "WorstPossibleCommander",
+                        "comments": 0,
+                        "date": "2024-08-18",
+                        "description": "https://www.youtube.com/watch?v=VLIXkTvxlFg",
                         "format": "commander",
-                        "url": "https://www.moxfield.com/decks/zxzUqVNowUmxoHzVk1-zNg",
-                        "source": "www.moxfield.com",
-                        "name": "WPCS #118",
                         "likes": 0,
-                        "views": 210,
-                        "comments": 0,
-                        "author": "WorstPossibleCommander",
-                        "date": "2024-08-18",
-                        "description": "https://www.youtube.com/watch?v=VLIXkTvxlFg"
+                        "name": "WPCS #118",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/zxzUqVNowUmxoHzVk1-zNg",
+                        "views": 210
                     },
-                    "arena_decklist": "Commander\n1 Anowon, the Ruin Thief (ZNC) 1\n\nDeck\n1 Anowon, the Ruin Thief (ZNC) 1\n7 Island (BLB) 371\n4 Swamp (BLB) 373\n1 Arcane Signet (MB2) 254\n1 Brazen Borrower /// Petty Theft (ELD) 39\n1 Command Tower (MB2) 256\n1 Drown in the Loch (CLB) 842\n1 Swan Song (C16) 98\n1 Bojuka Bog (MB2) 105\n1 Counterspell (MB2) 158\n1 Demonic Tutor (CMM) 150\n1 Lightning Greaves (MB2) 225\n1 Mana Crypt (2XM) 270\n1 Reliquary Tower (MB2) 111\n1 Rhystic Study (JMP) 169\n1 Rogue's Passage (OTC) 313\n1 Slither Blade (OTC) 114\n1 Sol Ring (MB2) 233\n1 Thought Vessel (MB2) 100\n1 Ghostly Pilferer (OTC) 98\n1 Thieves' Guild Enforcer (M21) 125\n1 Bitterblossom (2X2) 69\n1 Fellwar Stone (OTC) 257\n1 Dimir Signet (CLU) 221\n1 Underground River (OTC) 338\n1 Path of Ancestry (OTC) 310\n1 Underground Sea (VMA) 323\n1 Sunken Hollow (OTC) 325\n1 Mana Drain (2X2) 57\n1 Reanimate (MKC) 137\n1 Force of Will (DMR) 50\n1 Watery Grave (RVR) 291\n1 Toxic Deluge (MH3) 277\n1 Morphic Pool (CLB) 357\n1 Vampiric Tutor (DMR) 108\n1 Cavern of Souls (LCI) 269\n1 Ancient Tomb (UMA) 236\n1 Urborg, Tomb of Yawgmoth (TSR) 287\n1 Cyclonic Rift (RVR) 40\n1 Sunken Ruins (2XM) 326\n1 Polluted Delta (MH3) 224\n1 Drowned Catacomb (OTC) 290\n1 Talisman of Dominance (MKC) 242\n1 Ashiok, Dream Render (WAR) 228\n1 Changeling Outcast (OTC) 128\n1 Deadly Rollick (CMM) 147\n1 Fierce Guardianship (CMM) 94\n1 Triton Shorestalker (OTC) 121\n1 Bident of Thassa (LCC) 146\n1 Mindcrank (CLB) 866\n1 Looter il-Kor (CMM) 102\n1 Oona's Blackguard (ZNC) 51\n1 Reconnaissance Mission (VOC) 111\n1 Cloak and Dagger (MOR) 141\n1 Frogtosser Banneret (ZNC) 43\n1 Knowledge Exploitation (MOR) 38\n1 Notorious Throng (ZNC) 33\n1 Stinkdrinker Bandit (ZNC) 55\n1 Notion Thief (ZNC) 96\n1 Invisible Stalker (ZNC) 27\n1 Bloodchief Ascension (CMM) 139\n1 Sygg, River Cutthroat (ZNC) 103\n1 Clearwater Pathway /// Murkwater Pathway (ZNR) 260\n1 Merfolk Windrobber (ZNR) 70\n1 Zareth San, the Trickster (ZNR) 242\n1 Nighthawk Scavenger (OTC) 144\n1 Feed the Swarm (OTC) 134\n1 Thieving Skydiver (OTC) 118\n1 Maddening Cacophony (ZNR) 67\n1 Glasspool Mimic /// Glasspool Shore (ZNR) 60\n1 Soaring Thought-Thief (ZNR) 236\n1 Opposition Agent (CMR) 141\n1 Varragoth, Bloodsky Sire (KHM) 115\n1 Dauthi Voidwalker (MH2) 81\n1 Krydle of Baldur's Gate (AFR) 226\n1 Rogue Class (AFR) 230\n1 Grim Hireling (CLB) 755\n1 Shipwreck Marsh (MID) 267\n1 Otawara, Soaring City (NEO) 271\n1 An Offer You Can't Refuse (SNC) 51\n1 Mercurial Spelldancer (ONE) 61\n1 Faerie Mastermind (MOM) 58\n1 Raise the Palisade (LTC) 23\n1 Roaming Throne (LCI) 258\n1 Undercity Sewers (MKM) 270\n1 Tinybones, the Pickpocket (OTJ) 109\n1 Double Down (OTJ) 44\n1 Flare of Denial (MH3) 62\n1 Sink into Stupor /// Soporific Springs (MH3) 241\n1 Emrakul's Messenger (MH3) 61\n1 Sneaky Snacker (MH3) 205"
+                    "decklist_id": "1a7ba54d-d1fd-9aa0-fd9b-14db010b700d",
+                    "decklist_extended_id": "6bfbdcc9-8799-ab3f-1a6d-7edeb818d513"
                 },
                 {
                     "metadata": {
-                        "format": "commander",
-                        "url": "https://www.moxfield.com/decks/xqabVMIrdkmK1QLy7vu2hg",
-                        "source": "www.moxfield.com",
-                        "name": "WPCS #118",
-                        "likes": 2,
-                        "views": 195,
+                        "author": "WorstPossibleCommander",
                         "comments": 1,
-                        "author": "WorstPossibleCommander",
                         "date": "2024-08-18",
-                        "description": "https://www.youtube.com/watch?v=VLIXkTvxlFg"
+                        "description": "https://www.youtube.com/watch?v=VLIXkTvxlFg",
+                        "format": "commander",
+                        "likes": 2,
+                        "name": "WPCS #118",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/xqabVMIrdkmK1QLy7vu2hg",
+                        "views": 195
                     },
-                    "arena_decklist": "Commander\n1 Yarok, the Desecrated (M20) 220\n\nDeck\n1 Yarok, the Desecrated (M20) 220\n3 Island (BLB) 371\n7 Forest (BLB) 377\n1 Swamp (BLB) 373\n1 Dryad of the Ilysian Grove (CMM) 891\n1 Thassa, Deep-Dwelling (THB) 71\n1 Uro, Titan of Nature's Wrath (MB2) 93\n1 Arcane Signet (MB2) 254\n1 Command Tower (MB2) 256\n1 Fabled Passage (BLB) 252\n1 Bojuka Bog (MB2) 105\n1 Baleful Strix (OTC) 215\n1 Beast Within (LCC) 233\n1 Coiling Oracle (RVR) 172\n1 Crop Rotation (DMR) 154\n1 Counterspell (MB2) 158\n1 Cultivate (LCC) 235\n1 Demonic Tutor (CMM) 150\n1 Eternal Witness (CMM) 286\n1 Farseek (RVR) 138\n1 Lightning Greaves (MB2) 225\n1 Mulldrifter (MKC) 111\n1 Nature's Lore (MKC) 178\n1 Ravenous Chupacabra (MKC) 136\n1 Reliquary Tower (MB2) 111\n1 Rhystic Study (JMP) 169\n1 Sol Ring (MB2) 233\n1 Solemn Simulacrum (MKC) 238\n1 Tatyova, Benthic Druid (LCC) 290\n1 Tireless Tracker (MKC) 190\n1 Zendikar's Roil (ZNC) 88\n1 Azusa, Lost but Seeking (CMM) 274\n1 Field of the Dead (M20) 247\n1 Risen Reef (M20) 217\n1 Golgari Rot Farm (CLU) 236\n1 Simic Growth Chamber (CLU) 247\n1 Bayou (VMA) 293\n1 Tropical Island (VMA) 321\n1 Underground Sea (VMA) 323\n1 Rampaging Baloths (C21) 203\n1 Wood Elves (MOC) 316\n1 Crucible of Worlds (2X2) 303\n1 Kodama's Reach (OTC) 196\n1 Breeding Pool (RVR) 275\n1 Watery Grave (RVR) 291\n1 Avenger of Zendikar (OTC) 187\n1 Peregrine Drake (DMR) 65\n1 Vampiric Tutor (DMR) 108\n1 Reclamation Sage (KHC) 72\n1 Urborg, Tomb of Yawgmoth (TSR) 287\n1 Guardian Project (RVR) 146\n1 Assassin's Trophy (MKM) 187\n1 Overgrown Tomb (RVR) 283\n1 Panharmonicon (2X2) 310\n1 Ramunap Excavator (OTC) 202\n1 Cyclonic Rift (RVR) 40\n1 Ghostly Flicker (CMM) 98\n1 Misty Rainforest (MH2) 250\n1 Verdant Catacombs (MH2) 260\n1 Retreat to Coralhelm (BFZ) 82\n1 Retreat to Hagra (C18) 116\n1 Polluted Delta (MH3) 224\n1 Lotus Cobra (ZNR) 193\n1 Gaea's Cradle (USG) 321\n1 Springbloom Druid (OTC) 208\n1 Exploration (DMR) 159\n1 Three Visits (OTC) 209\n1 Zagoth Triome (IKO) 259\n1 Oracle of Mul Daya (OTC) 200\n1 Scapeshift (M19) 201\n1 Ob Nixilis, the Fallen (IMA) 101\n1 Roil Elemental (ZEN) 62\n1 Rejuvenating Springs (CMM) 424\n1 Undergrowth Stadium (CMM) 435\n1 Nissa of Shadowed Boughs (ZNR) 231\n1 Scute Swarm (OTC) 205\n1 Ancient Greenwarden (OTC) 186\n1 Kodama of the East Tree (CMR) 239\n1 Aesi, Tyrant of Gyre Strait (CMR) 365\n1 Yavimaya, Cradle of Growth (MH2) 261\n1 Tireless Provisioner (MOC) 313\n1 Boseiju, Who Endures (NEO) 266\n1 Greensleeves, Maro-Sorcerer (DMC) 27\n1 Awaken the Woods (BRO) 170\n1 Conduit of Worlds (ONE) 163\n1 Nissa, Resurgent Animist (MAT) 22\n1 Entish Restoration (LTR) 163\n1 Virtue of Knowledge /// Vantress Visions (WOE) 76\n1 Hedge Maze (MKM) 262\n1 Underground Mortuary (MKM) 271\n1 Bristly Bill, Spine Sower (OTJ) 157\n1 Springheart Nantuko (MH3) 171"
+                    "decklist_id": "d0bc45a3-90ff-1b4e-6013-0743f7862fa3",
+                    "decklist_extended_id": "0aa48b3b-83ec-0e40-6837-c91887971928"
                 },
                 {
                     "metadata": {
+                        "author": "WorstPossibleCommander",
+                        "comments": 0,
+                        "date": "2024-08-18",
+                        "description": "https://www.youtube.com/watch?v=VLIXkTvxlFg",
                         "format": "commander",
+                        "likes": 1,
+                        "name": "WPCS #118",
+                        "source": "www.moxfield.com",
                         "url": "https://www.moxfield.com/decks/4Ff-h0Xz6UasxAz-h6UKzg",
-                        "source": "www.moxfield.com",
-                        "name": "WPCS #118",
-                        "likes": 1,
-                        "views": 227,
-                        "comments": 0,
-                        "author": "WorstPossibleCommander",
-                        "date": "2024-08-18",
-                        "description": "https://www.youtube.com/watch?v=VLIXkTvxlFg"
+                        "views": 227
                     },
-                    "arena_decklist": "Commander\n1 Omnath, Locus of Creation (ZNR) 232\n\nDeck\n1 Omnath, Locus of Creation (ZNR) 232\n1 Island (BLB) 371\n1 Mountain (BLB) 375\n4 Forest (BLB) 377\n1 Dryad of the Ilysian Grove (CMM) 891\n1 Arcane Signet (MB2) 254\n1 Command Tower (MB2) 256\n1 Fabled Passage (BLB) 252\n1 Beast Within (LCC) 233\n1 Courser of Kruphix (CMM) 888\n1 Crop Rotation (DMR) 154\n1 Cultivate (LCC) 235\n1 Farseek (RVR) 138\n1 Harrow (OTC) 194\n1 Mana Crypt (2XM) 270\n1 Nature's Lore (MKC) 178\n1 Path to Exile (MB2) 15\n1 Rhystic Study (JMP) 169\n1 Sakura-Tribe Elder (MB2) 72\n1 Sol Ring (MB2) 233\n1 Swords to Plowshares (MB2) 153\n1 Tatyova, Benthic Druid (LCC) 290\n1 Teferi's Protection (2X2) 32\n1 Tireless Tracker (MKC) 190\n1 Zendikar's Roil (ZNC) 88\n1 Azusa, Lost but Seeking (CMM) 274\n1 Heroic Intervention (CMM) 295\n1 Field of the Dead (M20) 247\n1 Omnath, Locus of the Roil (M20) 216\n1 Risen Reef (M20) 217\n1 Simic Growth Chamber (CLU) 247\n1 Plateau (VMA) 308\n1 Savannah (VMA) 311\n1 Taiga (VMA) 317\n1 Tundra (VMA) 322\n1 Tropical Island (VMA) 321\n1 Gruul Turf (CLU) 238\n1 Rampaging Baloths (C21) 203\n1 Flooded Strand (MH3) 220\n1 Crucible of Worlds (2X2) 303\n1 Kodama's Reach (OTC) 196\n1 Breeding Pool (RVR) 275\n1 Sacred Foundry (RVR) 285\n1 Stomping Ground (RVR) 289\n1 Avenger of Zendikar (OTC) 187\n1 Omnath, Locus of Rage (OTC) 236\n1 Splendid Reclamation (VOW) 221\n1 Growth Spiral (LCC) 270\n1 Hallowed Fountain (RVR) 280\n1 Steam Vents (RVR) 288\n1 Temple Garden (RVR) 290\n1 Ramunap Excavator (OTC) 202\n1 Arid Mesa (MH2) 244\n1 Cyclonic Rift (RVR) 40\n1 Misty Rainforest (MH2) 250\n1 Scalding Tarn (MH2) 254\n1 Retreat to Coralhelm (BFZ) 82\n1 Windswept Heath (MH3) 235\n1 Wooded Foothills (MH3) 236\n1 Lotus Cobra (ZNR) 193\n1 Volcanic Island (VMA) 324\n1 Exploration (DMR) 159\n1 Three Visits (OTC) 209\n1 Ketria Triome (IKO) 250\n1 Raugrin Triome (IKO) 251\n1 Oracle of Mul Daya (OTC) 200\n1 Scapeshift (M19) 201\n1 Mina and Denn, Wildborn (ZNC) 94\n1 Roil Elemental (ZEN) 62\n1 Ashaya, Soul of the Wild (ZNR) 179\n1 Valakut Exploration (ZNR) 175\n1 Moraug, Fury of Akoum (ZNR) 150\n1 Scute Swarm (OTC) 205\n1 Felidar Retreat (CMM) 821\n1 Ancient Greenwarden (OTC) 186\n1 Kodama of the East Tree (CMR) 239\n1 Aesi, Tyrant of Gyre Strait (CMR) 365\n1 Yavimaya, Cradle of Growth (MH2) 261\n1 Tireless Provisioner (MOC) 313\n1 Wrenn and Seven (MID) 208\n1 Augur of Autumn (MID) 168\n1 Cultivator Colossus (VOW) 195\n1 Boseiju, Who Endures (NEO) 266\n1 Jetmir's Garden (SNC) 250\n1 Spara's Headquarters (SNC) 257\n1 Greensleeves, Maro-Sorcerer (DMC) 27\n1 Awaken the Woods (BRO) 170\n1 Elesh Norn, Mother of Machines (ONE) 10\n1 Conduit of Worlds (ONE) 163\n1 Nissa, Resurgent Animist (MAT) 22\n1 Entish Restoration (LTR) 163\n1 Virtue of Knowledge /// Vantress Visions (WOE) 76\n1 Case of the Locked Hothouse (MKM) 155\n1 Worldsoul's Rage (MKM) 244\n1 Bristly Bill, Spine Sower (OTJ) 157\n1 Springheart Nantuko (MH3) 171\n1 Horizon of Progress (M3C) 78"
+                    "decklist_id": "438d5e47-4fb2-289c-415e-ca68116d3db9",
+                    "decklist_extended_id": "4d085ea3-1370-ccbd-7b83-95e8101fb6bf"
                 },
                 {
                     "metadata": {
-                        "format": "commander",
-                        "url": "https://www.moxfield.com/decks/j3n0xDQTREasZrHN_UrXuA",
-                        "source": "www.moxfield.com",
-                        "name": "WPCS #118",
-                        "likes": 1,
-                        "views": 235,
-                        "comments": 0,
                         "author": "WorstPossibleCommander",
+                        "comments": 0,
                         "date": "2024-08-18",
-                        "description": "https://www.youtube.com/watch?v=VLIXkTvxlFg"
+                        "description": "https://www.youtube.com/watch?v=VLIXkTvxlFg",
+                        "format": "commander",
+                        "likes": 1,
+                        "name": "WPCS #118",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/j3n0xDQTREasZrHN_UrXuA",
+                        "views": 235
                     },
-                    "arena_decklist": "Commander\n1 Omnath, Locus of All (MOM) 249\n\nDeck\n1 Omnath, Locus of All (MOM) 249\n1 Plains (BLB) 369\n1 Forest (BLB) 377\n1 Arcane Signet (MB2) 254\n1 Chulane, Teller of Tales (MKC) 202\n1 Command Tower (MB2) 256\n1 Faeburrow Elder (DMC) 149\n1 Animar, Soul of Elements (2X2) 171\n1 Birds of Paradise (RVR) 133\n1 Bloom Tender (2X2) 138\n1 Chromatic Lantern (OTC) 255\n1 Demonic Tutor (CMM) 150\n1 Elesh Norn, Grand Cenobite (IMA) 18\n1 Farseek (RVR) 138\n1 Lightning Greaves (MB2) 225\n1 Nature's Lore (MKC) 178\n1 Rhystic Study (JMP) 169\n1 Sol Ring (MB2) 233\n1 Swords to Plowshares (MB2) 153\n1 Teferi's Protection (2X2) 32\n1 Chromatic Orrery (M21) 228\n1 Heroic Intervention (CMM) 295\n1 Rienne, Angel of Rebirth (DMC) 166\n1 Atraxa, Praetors' Voice (2XM) 190\n1 Exotic Orchard (OTC) 293\n1 Bayou (VMA) 293\n1 Badlands (VMA) 291\n1 Plateau (VMA) 308\n1 Scrubland (VMA) 313\n1 Savannah (VMA) 311\n1 Taiga (VMA) 317\n1 Tundra (VMA) 322\n1 Tropical Island (VMA) 321\n1 Underground Sea (VMA) 323\n1 Bloodstained Mire (MH3) 216\n1 Flooded Strand (MH3) 220\n1 Sheoldred, Whispering One (JMP) 278\n1 Breeding Pool (RVR) 275\n1 Godless Shrine (RVR) 277\n1 Stomping Ground (RVR) 289\n1 Skyshroud Claim (CMM) 321\n1 Maelstrom Wanderer (CMM) 344\n1 Enlightened Tutor (DMR) 6\n1 Vampiric Tutor (DMR) 108\n1 Hallowed Fountain (RVR) 280\n1 Overgrown Tomb (RVR) 283\n1 Temple Garden (RVR) 290\n1 Arid Mesa (MH2) 244\n1 Cyclonic Rift (RVR) 40\n1 Marsh Flats (MH2) 248\n1 Misty Rainforest (MH2) 250\n1 Scalding Tarn (MH2) 254\n1 Verdant Catacombs (MH2) 260\n1 Polluted Delta (MH3) 224\n1 Windswept Heath (MH3) 235\n1 Wooded Foothills (MH3) 236\n1 Volcanic Island (VMA) 324\n1 Villainous Wealth (OTC) 249\n1 Jin-Gitaxias, Core Augur (IMA) 62\n1 Urabrask the Hidden (CLB) 811\n1 Vorinclex, Voice of Hunger (IMA) 189\n1 Three Visits (OTC) 209\n1 Eerie Ultimatum (IKO) 184\n1 Indatha Triome (IKO) 248\n1 Ketria Triome (IKO) 250\n1 Ruinous Ultimatum (IKO) 204\n1 Zagoth Triome (IKO) 259\n1 Surrak Dragonclaw (DMC) 169\n1 Muldrotha, the Gravetide (2X2) 258\n1 Omnath, Locus of Creation (ZNR) 232\n1 Vorinclex, Monstrous Raider (KHM) 199\n1 Esika, God of the Tree /// The Prismatic Bridge (KHM) 168\n1 Jin-Gitaxias, Progress Tyrant (NEO) 59\n1 Boseiju, Who Endures (NEO) 266\n1 Spara's Headquarters (SNC) 257\n1 Urabrask, Heretic Praetor (SNC) 129\n1 Void Rend (SNC) 230\n1 Sheoldred, the Apocalypse (DMU) 107\n1 Dihada, Binder of Wills (DMC) 1\n1 Jodah, the Unifier (DMU) 203\n1 Elesh Norn, Mother of Machines (ONE) 10\n1 Vraska, Betrayal's Sting (ONE) 115\n1 Atraxa, Grand Unifier (ONE) 196\n1 Jin-Gitaxias /// The Great Synthesis (MOM) 65\n1 Thalia and The Gitrog Monster (MOM) 255\n1 Brimaz, Blight of Oreskos (MOC) 2\n1 Realmbreaker, the Invasion Tree (MOM) 263\n1 Elesh Norn /// The Argent Etchings (MOM) 12\n1 Vorinclex /// The Grand Evolution (MOM) 213\n1 Phyrexian Censor (MOM) 31\n1 Urabrask /// The Great Work (MOM) 169\n1 Sheoldred /// The True Scriptures (MOM) 125\n1 Delighted Halfling (LTR) 158\n1 Aragorn, the Uniter (LTR) 192\n1 Flowering of the White Tree (LTR) 15\n1 Roaming Throne (LCI) 258\n1 Chimil, the Inner Sun (LCI) 249\n1 Leyline of the Guildpact (MKM) 217\n1 Kellan Joins Up (OTJ) 212\n1 Annie Joins Up (OTJ) 191"
+                    "decklist_id": "ee48677f-aaa9-966b-ecb9-3f3feb838c38",
+                    "decklist_extended_id": "bee4a21b-1efd-c76e-d164-a503505de6c5"
                 }
             ]
         },
@@ -956,17 +968,18 @@
             "decks": [
                 {
                     "metadata": {
-                        "format": "brawl",
-                        "url": "https://www.moxfield.com/decks/JzGP_AZmgEK0a8RUf3ooHw",
-                        "source": "www.moxfield.com",
-                        "name": "Jace the Mind Sculptor in Brawl 1.0",
-                        "likes": 5,
-                        "views": 771,
-                        "comments": 0,
                         "author": "CovertGoBlue",
-                        "date": "2024-08-18"
+                        "comments": 0,
+                        "date": "2024-08-18",
+                        "format": "brawl",
+                        "likes": 5,
+                        "name": "Jace the Mind Sculptor in Brawl 1.0",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/JzGP_AZmgEK0a8RUf3ooHw",
+                        "views": 771
                     },
-                    "arena_decklist": "Commander\n1 Jace, the Mind Sculptor (2XM) 56\n\nDeck\n1 Jace, the Mind Sculptor (2XM) 56\n20 Island (BLB) 371\n1 Thassa's Intervention (THB) 72\n1 Arcane Signet (MB2) 254\n1 Castle Vantress (CLB) 885\n1 Fabled Passage (BLB) 252\n1 Gadwick, the Wizened (ELD) 48\n1 Mystic Sanctuary (MB2) 110\n1 Opt (OTC) 104\n1 Ghost Quarter (MB2) 109\n1 Brainstorm (MB2) 155\n1 Commit /// Memory (LCC) 147\n1 Counterspell (MB2) 158\n1 Deep Freeze (DOM) 50\n1 Field of Ruin (MOC) 400\n1 Memory Lapse (EMA) 60\n1 Mishra's Bauble (MB2) 97\n1 Reliquary Tower (MB2) 111\n1 Repulse (CN2) 119\n1 Rhystic Study (JMP) 169\n1 Treasure Cruise (MB2) 37\n1 River's Rebuke (NCC) 231\n1 Mu Yanling, Sky Dancer (M20) 68\n1 Tale's End (M20) 77\n1 Mana Drain (2X2) 57\n1 Time Warp (TPR) 74\n1 Flooded Strand (MH3) 220\n1 Pact of Negation (MB2) 169\n1 Imprisoned in the Moon (MOC) 224\n1 Summary Dismissal (EMN) 75\n1 Snapcaster Mage (UMA) 71\n1 Mass Manipulation (RNA) 42\n1 Dig Through Time (OTC) 95\n1 Torrential Gearhulk (CMM) 128\n1 Nimble Obstructionist (C20) 121\n1 Supreme Will (CMR) 102\n1 Cyclonic Rift (RVR) 40\n1 Misty Rainforest (MH2) 250\n1 Scalding Tarn (MH2) 254\n1 Dust Bowl (MMQ) 316\n1 Polluted Delta (MH3) 224\n1 Narset, Parter of Veils (MB2) 32\n1 Commandeer (CMM) 80\n1 Karn's Bastion (LCC) 339\n1 Archmage's Charm (MH1) 40\n1 Prismatic Vista (MH1) 244\n1 Censor (AKH) 46\n1 Ichthyomorphosis (THB) 51\n1 Whirlwind Denial (THB) 81\n1 Shark Typhoon (OTC) 113\n1 Mystic Subdual (IKO) 57\n1 Search for Azcanta /// Azcanta, the Sunken Ruin (XLN) 74\n1 Confounding Conundrum (ZNR) 53\n1 Jwari Disruption /// Jwari Ruins (ZNR) 64\n1 Bind the Monster (KHM) 48\n1 Subtlety (MH2) 67\n1 Hall of Storm Giants (AFR) 257\n1 Consider (MB2) 25\n1 Memory Deluge (MID) 62\n1 Wash Away (VOW) 87\n1 Tamiyo's Compleation (NEO) 83\n1 Otawara, Soaring City (NEO) 271\n1 Invoke the Winds (NEO) 58\n1 Witness Protection (SNC) 66\n1 Gate to Seatower (HBG) 79\n1 Demolition Field (OTC) 283\n1 Blue Sun's Twilight (ONE) 43\n1 Stasis Field (MOM) 79\n1 Stern Scolding (LTR) 71\n1 Lórien Revealed (LTR) 60\n1 Confounding Riddle (LCI) 50\n1 Tishana's Tidebinder (LCI) 81\n1 Volatile Fault (LCI) 286\n1 Deduce (MKM) 52\n1 Three Steps Ahead (OTJ) 75\n1 Urza's Cave (MH3) 234\n1 Harbinger of the Seas (MH3) 63\n1 Sink into Stupor /// Soporific Springs (MH3) 241\n1 Vexing Bauble (MH3) 212\n1 Sugar Coat (BLB) 76\n1 Fountainport (BLB) 253"
+                    "decklist_id": "08e06667-a155-ce5f-ccf3-bba246ba0357",
+                    "decklist_extended_id": "125eecee-f411-b7cf-0ec9-587fa8b6da7f"
                 }
             ]
         },
@@ -1040,17 +1053,18 @@
             "decks": [
                 {
                     "metadata": {
-                        "format": "standard",
-                        "url": "https://www.moxfield.com/decks/q74d1FXwiUeIsINNjGX7dA",
-                        "source": "www.moxfield.com",
-                        "name": "BW MId-Bat 2.0 | BLB Standard",
-                        "likes": 2,
-                        "views": 2514,
-                        "comments": 0,
                         "author": "CovertGoBlue",
-                        "date": "2024-08-15"
+                        "comments": 0,
+                        "date": "2024-08-15",
+                        "format": "standard",
+                        "likes": 2,
+                        "name": "BW MId-Bat 2.0 | BLB Standard",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/q74d1FXwiUeIsINNjGX7dA",
+                        "views": 2514
                     },
-                    "arena_decklist": "Deck\n5 Plains (BLB) 369\n7 Swamp (BLB) 373\n4 Go for the Throat (MOC) 250\n3 Liliana of the Veil (DMU) 97\n4 Concealed Courtyard (OTJ) 268\n4 Caves of Koilos (OTC) 277\n1 Soul-Guide Lantern (WOE) 251\n3 Sheoldred, the Apocalypse (DMU) 107\n4 Cut Down (DMU) 89\n1 Gix's Command (BRO) 97\n4 Restless Fortress (WOE) 259\n4 Virtue of Loyalty /// Ardenvale Fealty (WOE) 38\n4 Deep-Cavern Bat (LCI) 102\n1 Aclazotz, Deepest Betrayal /// Temple of the Dead (LCI) 88\n4 Preacher of the Schism (LCI) 113\n4 Caustic Bronco (OTJ) 82\n3 Zoraline, Cosmos Caller (BLB) 242"
+                    "decklist_id": "204079b0-a772-f04f-2d8e-5b137af3bc47",
+                    "decklist_extended_id": "a4bce3f3-95b8-e066-dad5-a40ab219d1e3"
                 }
             ]
         },
@@ -1125,17 +1139,18 @@
             "decks": [
                 {
                     "metadata": {
-                        "format": "standard",
-                        "url": "https://www.moxfield.com/decks/5bUsCV0gE0qR7nGMRcFsKg",
-                        "source": "www.moxfield.com",
-                        "name": "UW Token Control | BLB Standard",
-                        "likes": 1,
-                        "views": 1885,
-                        "comments": 0,
                         "author": "CovertGoBlue",
-                        "date": "2024-08-13"
+                        "comments": 0,
+                        "date": "2024-08-13",
+                        "format": "standard",
+                        "likes": 1,
+                        "name": "UW Token Control | BLB Standard",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/5bUsCV0gE0qR7nGMRcFsKg",
+                        "views": 1885
                     },
-                    "arena_decklist": "Deck\n4 Island (BLB) 371\n5 Plains (BLB) 369\n3 Adarkar Wastes (DMU) 243\n3 Seachrome Coast (ONE) 258\n2 Demolition Field (OTC) 283\n2 Archangel Elspeth (MOM) 6\n4 Elspeth's Smite (MOM) 13\n4 Sunfall (MOM) 40\n2 Sunken Citadel (LCI) 285\n3 Get Lost (LCI) 14\n1 Tishana's Tidebinder (LCI) 81\n4 Restless Anchorage (LCI) 280\n4 Deduce (MKM) 52\n2 Meticulous Archive (MKM) 264\n4 No More Lies (MKM) 221\n3 Three Steps Ahead (OTJ) 75\n2 Beza, the Bounding Spring (BLB) 2\n2 Season of the Burrow (BLB) 29\n2 Fountainport (BLB) 253\n4 Caretaker's Talent (BLB) 6\n\nSideboard\n2 Negate (MOM) 68\n3 Temporary Lockdown (DMU) 36\n1 Loran of the Third Path (MKC) 71\n1 The Eternal Wanderer (ONE) 11\n1 Chrome Host Seedshark (MOM) 51\n3 Tishana's Tidebinder (LCI) 81\n2 Kutzil's Flanker (LCI) 20\n2 Beza, the Bounding Spring (BLB) 2"
+                    "decklist_id": "84c0fb67-fbb1-50e5-cf7b-e18f465ee0d9",
+                    "decklist_extended_id": "fdd39d3b-460b-a16b-b4f9-d5824a9e563b"
                 }
             ]
         },
@@ -1196,17 +1211,18 @@
             "decks": [
                 {
                     "metadata": {
-                        "format": "commander",
-                        "url": "https://www.moxfield.com/decks/tHqbbP_1rUGVEMzWOAbk-A",
-                        "source": "www.moxfield.com",
-                        "name": "Osgir Strixhaven Champs",
-                        "likes": 1,
-                        "views": 238,
-                        "comments": 0,
                         "author": "CovertGoBlue",
-                        "date": "2024-08-16"
+                        "comments": 0,
+                        "date": "2024-08-16",
+                        "format": "commander",
+                        "likes": 1,
+                        "name": "Osgir Strixhaven Champs",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/tHqbbP_1rUGVEMzWOAbk-A",
+                        "views": 238
                     },
-                    "arena_decklist": "Commander\n1 Osgir, the Reconstructor (C21) 8\n\nDeck\n1 Osgir, the Reconstructor (C21) 8\n5 Mountain (BLB) 375\n5 Plains (BLB) 369\n1 Arcane Signet (MB2) 254\n1 Command Tower (MB2) 256\n1 Ancient Den (C21) 276\n1 Burnished Hart (CMM) 373\n1 Coveted Jewel (MOC) 353\n1 Daretti, Scrap Savant (CMM) 213\n1 Darksteel Citadel (MB2) 107\n1 Faithless Looting (MB2) 57\n1 Great Furnace (C21) 292\n1 Lightning Greaves (MB2) 225\n1 Mind Stone (MKC) 232\n1 Mishra's Bauble (MB2) 97\n1 Path to Exile (MB2) 15\n1 Rogue's Passage (OTC) 313\n1 Sol Ring (MB2) 233\n1 Solemn Simulacrum (MKC) 238\n1 Swords to Plowshares (MB2) 153\n1 Teferi's Protection (2X2) 32\n1 Temple of the False God (OTC) 334\n1 Thran Dynamo (CMM) 415\n1 Temple of Triumph (OTC) 335\n1 Fellwar Stone (OTC) 257\n1 Meteor Golem (CMM) 399\n1 Blasphemous Act (LCC) 216\n1 Boros Signet (CLU) 220\n1 Commander's Sphere (LCC) 301\n1 Exotic Orchard (OTC) 293\n1 Ichor Wellspring (C21) 245\n1 Mycosynth Wellspring (C21) 252\n1 Wurmcoil Engine (2XM) 308\n1 Hedron Archive (CMM) 952\n1 Myriad Landscape (MKC) 276\n1 Sevinne's Reclamation (MH3) 267\n1 Sacred Foundry (RVR) 285\n1 Duplicant (CMM) 946\n1 Ancient Tomb (UMA) 236\n1 Sunhome, Fortress of the Legion (OTC) 324\n1 Combustible Gearhulk (C21) 163\n1 Inventors' Fair (KLD) 247\n1 Scrap Trawler (MOC) 373\n1 Arid Mesa (MH2) 244\n1 Battlefield Forge (OTC) 271\n1 Dispatch (NEC) 83\n1 Sculpting Steel (MOC) 374\n1 Goblin Engineer (MH1) 128\n1 Talisman of Conviction (MKC) 240\n1 Cleansing Nova (CMM) 817\n1 Anointed Procession (AKH) 2\n1 Austere Command (MKC) 56\n1 Slayers' Stronghold (MKC) 295\n1 Spectator Seating (CMM) 427\n1 Shatterskull Smashing /// Shatterskull, the Hammer Pass (ZNR) 161\n1 Jeska's Will (MKC) 156\n1 Alibou, Ancient Witness (C21) 7\n1 Losheel, Clockwork Scholar (CMM) 38\n1 Angel of the Ruins (MH3) 262\n1 Archaeomancer's Map (C21) 12\n1 Cursed Mirror (MH3) 279\n1 Bronze Guardian (C21) 13\n1 Digsite Engineer (C21) 15\n1 Rustvale Bridge (MH2) 253\n1 Esper Sentinel (MH2) 12\n1 Oswald Fiddlebender (AFR) 28\n1 Moonsilver Key (MID) 255\n1 Circuit Mender (NEO) 242\n1 Fable of the Mirror-Breaker /// Reflection of Kiki-Jiki (NEO) 141\n1 Eiganjo, Seat of the Empire (NEO) 268\n1 Farewell (MKC) 64\n1 Loran of the Third Path (MKC) 71\n1 Portal to Phyrexia (BRO) 240\n1 Cityscape Leveler (BRO) 233\n1 Threefold Thunderhulk (LCI) 265\n1 Matzalantli, the Great Door /// The Core (LCI) 256\n1 Brass's Tunnel-Grinder /// Tecutlan, the Searing Rift (LCI) 135\n1 Dowsing Device /// Geode Grotto (LCI) 146\n1 Thousand Moons Smithy /// Barracks of the Thousand (LCI) 39\n1 Saheeli's Lattice /// Mastercraft Raptor (LCI) 164\n1 Illustrious Wanderglyph (LCC) 9\n1 Crime Novelist (MKM) 121\n1 Elegant Parlor (MKM) 260\n1 Oltec Matterweaver (BIG) 3\n1 Fomori Vault (BIG) 29\n1 Witch Enchanter /// Witch-Blessed Meadow (MH3) 239\n1 Razorgrass Ambush /// Razorgrass Field (MH3) 238\n1 Monumental Henge (MH3) 222\n1 Vexing Bauble (MH3) 212\n1 Molten Gatekeeper (MH3) 128\n1 Arbaaz Mir (ACR) 46\n1 Dawn's Truce (BLB) 9"
+                    "decklist_id": "907813ee-34a0-25d1-cafe-a4baa8361e4c",
+                    "decklist_extended_id": "e5d26174-3f87-6560-9a98-c8b235e6514d"
                 }
             ]
         }

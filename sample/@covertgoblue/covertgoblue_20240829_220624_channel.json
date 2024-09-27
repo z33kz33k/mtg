@@ -81,17 +81,18 @@
             "decks": [
                 {
                     "metadata": {
-                        "format": "standard",
-                        "url": "https://www.moxfield.com/decks/10y0LCkm4EeZf2WmqmNkdw",
-                        "source": "www.moxfield.com",
-                        "name": "Mono Black anti-red",
-                        "likes": 1,
-                        "views": 1385,
-                        "comments": 0,
                         "author": "CovertGoBlue",
-                        "date": "2024-08-26"
+                        "comments": 0,
+                        "date": "2024-08-26",
+                        "format": "standard",
+                        "likes": 1,
+                        "name": "Mono Black anti-red",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/10y0LCkm4EeZf2WmqmNkdw",
+                        "views": 1385
                     },
-                    "arena_decklist": "Deck\n17 Swamp (BLB) 373\n4 Go for the Throat (MOC) 250\n1 Liliana of the Veil (DMU) 97\n3 Blast Zone (CMM) 987\n4 Sheoldred, the Apocalypse (DMU) 107\n4 Cut Down (DMU) 89\n2 Gix's Command (BRO) 97\n4 Virtue of Persistence /// Locthwain Scorn (WOE) 115\n4 Gumdrop Poisoner /// Tempt with Treats (WOE) 93\n4 Deep-Cavern Bat (LCI) 102\n1 Aclazotz, Deepest Betrayal /// Temple of the Dead (LCI) 88\n4 Preacher of the Schism (LCI) 113\n4 Fountainport (BLB) 253\n4 Savor (BLB) 109"
+                    "decklist_id": "2edf350a-6246-460d-d9ee-e53d7177c8b6",
+                    "decklist_extended_id": "867540b8-923f-edf2-fcd0-e4449613905f"
                 }
             ]
         },
@@ -152,17 +153,18 @@
             "decks": [
                 {
                     "metadata": {
-                        "format": "brawl",
-                        "url": "https://www.moxfield.com/decks/D6UL-M2-ukqJn5iLyEc4GA",
-                        "source": "www.moxfield.com",
-                        "name": "zada precon | brawl",
-                        "likes": 0,
-                        "views": 95,
-                        "comments": 0,
                         "author": "CovertGoBlue",
-                        "date": "2024-08-29"
+                        "comments": 0,
+                        "date": "2024-08-29",
+                        "format": "brawl",
+                        "likes": 0,
+                        "name": "zada precon | brawl",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/D6UL-M2-ukqJn5iLyEc4GA",
+                        "views": 95
                     },
-                    "arena_decklist": "Commander\n1 Zada, Hedron Grinder (CMM) 268\n\nDeck\n1 Zada, Hedron Grinder (CMM) 268\n38 Mountain (BLB) 375\n1 Arcane Signet /// Arcane Signet (ACMM) 44\n1 Barge In (ELD) 112\n1 Dwarven Mine (ELD) 243\n1 Beetleback Chief (JMP) 294\n1 Built to Smash (KLD) 108\n1 Coldsteel Heart (2X2) 301\n1 Dragon Fodder (CMM) 217\n1 Faithless Looting (MB2) 57\n1 Goblin Warchief (DOM) 130\n1 Krenko, Mob Boss (RVR) 114\n1 Krenko's Command (CLU) 139\n1 Mind Stone (MKC) 232\n1 Monastery Swiftspear (BRO) 144\n1 Renegade Tactics (CMR) 195\n1 Run Amok (KHM) 147\n1 Rush of Adrenaline (SOI) 177\n1 Samut's Sprint (WAR) 142\n1 Skirk Prospector (DMR) 137\n1 Temur Battle Rage (CMM) 264\n1 Young Pyromancer (OTC) 185\n1 Goblin Gang Leader (MB2) 144\n1 Unleash Fury (M21) 170\n1 Infuriate (THB) 141\n1 Reckless Charge (MH1) 144\n1 Storm Strike (RNA) 119\n1 Goblin Trashmaster (M19) 144\n1 Tin Street Cadet (ANB) 87\n1 Legion Warboss (RVR) 116\n1 Invigorated Rampage (AER) 86\n1 Krenko, Tin Street Kingpin (MOC) 287\n1 Fists of Flame (CMM) 223\n1 Hordeling Outburst (A25) 134\n1 Goblin Instigator (MOC) 282\n1 Forbidden Friendship (IKO) 119\n1 Heightened Reflexes (IKO) 123\n1 Titan's Strength (2X2) 128\n1 Rile (AFC) 136\n1 Birgi, God of Storytelling /// Harnfel, Horn of Bounty (KHM) 123\n1 Storm-Kiln Artist (OTC) 181\n1 Sudden Breakthrough (STX) 116\n1 Ornithopter of Paradise (CMM) 966\n1 Battle Cry Goblin (AFR) 132\n1 Kick in the Door (AFR) 153\n1 Lunar Frenzy (MID) 147\n1 Raze the Effigy (MID) 156\n1 Ancestral Anger (VOW) 142\n1 Antagonize (SNC) 100\n1 Squee, Dubious Monarch (DMU) 146\n1 Twinferno (DMU) 149\n1 Electrostatic Infantry (DMU) 122\n1 Furious Bellow (DMU) 126\n1 Gleeful Demolition (ONE) 134\n1 Blazing Crescendo (ONE) 123\n1 Ral's Reinforcements (MOM) 158\n1 Coming In Hot (MOM) 136\n1 Monstrous Rage (WOE) 142\n1 Flick a Coin (WOE) 128\n1 Witch's Mark (WOE) 158\n1 Dreadmaw's Ire (LCI) 147\n1 Ancestors' Aid (LCI) 132\n1 Felonious Rage (MKM) 125"
+                    "decklist_id": "5ea4cac3-a7fa-3456-c8a9-141f8cd81814",
+                    "decklist_extended_id": "197acea9-9343-b9b0-44eb-5a293301f86d"
                 }
             ]
         }

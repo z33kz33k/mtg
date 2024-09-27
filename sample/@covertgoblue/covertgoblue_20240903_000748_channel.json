@@ -81,17 +81,18 @@
             "decks": [
                 {
                     "metadata": {
-                        "format": "standard",
-                        "url": "https://www.moxfield.com/decks/I1U5X_RFZE-lWVzwJhyLAw",
-                        "source": "www.moxfield.com",
-                        "name": "UB Control 2.0 BLB",
-                        "likes": 0,
-                        "views": 1287,
-                        "comments": 0,
                         "author": "CovertGoBlue",
-                        "date": "2024-08-31"
+                        "comments": 0,
+                        "date": "2024-08-31",
+                        "format": "standard",
+                        "likes": 0,
+                        "name": "UB Control 2.0 BLB",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/I1U5X_RFZE-lWVzwJhyLAw",
+                        "views": 1287
                     },
-                    "arena_decklist": "Deck\n4 Island (BLB) 371\n4 Swamp (BLB) 373\n4 Dismal Backwater (MOM) 269\n4 Duress (ONE) 92\n4 Go for the Throat (MOC) 250\n3 Underground River (OTC) 338\n4 Darkslick Shores (OTC) 281\n4 Cut Down (DMU) 89\n4 Demolition Field (OTC) 283\n4 Virtue of Persistence /// Locthwain Scorn (WOE) 115\n4 Restless Reef (LCI) 282\n4 Deduce (MKM) 52\n4 Deadly Cover-Up (MKM) 83\n4 Outrageous Robbery (MKM) 97\n1 Intimidation Campaign (OTJ) 208\n4 Three Steps Ahead (OTJ) 75"
+                    "decklist_id": "26fd0c0c-4324-9834-f411-4388ac81bcbb",
+                    "decklist_extended_id": "5f2cc7c0-d766-e769-7f11-84bd514362a1"
                 }
             ]
         }
