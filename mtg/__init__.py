@@ -15,7 +15,7 @@ from typing import Any, Callable, TypeVar
 
 
 __appname__ = __name__
-__version__ = "0.4.2"
+__version__ = "0.5"
 __description__ = "Scrape data on MtG decks."
 __author__ = "z33k"
 __license__ = "MIT License"
