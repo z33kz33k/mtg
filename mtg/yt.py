@@ -18,14 +18,14 @@ from decimal import Decimal
 from functools import cached_property
 from http.client import RemoteDisconnected
 from operator import attrgetter, itemgetter
-from typing import Generator, Iterator, Type
 from types import TracebackType
+from typing import Generator, Iterator, Type
 
 import backoff
 import pytubefix
 import scrapetube
 from httpx import ReadTimeout
-from requests import HTTPError, Timeout, ConnectionError
+from requests import ConnectionError, HTTPError, Timeout
 from selenium.common.exceptions import TimeoutException
 from youtubesearchpython import Channel as YtspChannel
 
@@ -35,8 +35,9 @@ from mtg.deck.arena import ArenaParser, get_arena_lines, group_arena_lines
 from mtg.deck.scrapers import DeckScraper, SANITIZED_FORMATS
 from mtg.deck.scrapers.melee import ALT_DOMAIN as MELEE_ALT_DOMAIN
 from mtg.scryfall import all_formats, keywords
-from mtg.utils import deserialize_dates, extract_float, from_iterable, getrepr, multiply_by_symbol, \
-    sanitize_filename, serialize_dates, timed, Counter
+from mtg.utils import Counter, deserialize_dates, extract_float, find_longest_seqs, from_iterable, \
+    getrepr, \
+    multiply_by_symbol, sanitize_filename, serialize_dates, timed
 from mtg.utils.files import getdir
 from mtg.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
 from mtg.utils.scrape import ScrapingError, extract_source, extract_url, \
@@ -253,6 +254,8 @@ def update_gsheet() -> None:
 
 
 class ScrapingSession:
+    """Context manager to ensure proper updates of global decklist repositories during scraping.
+    """
     def __init__(self) -> None:
         self._regular_decklists, self._extended_decklists = {}, {}
         self._regular_count, self._extended_count = 0, 0
@@ -351,8 +354,8 @@ def scrape_channels(
 
 def scrape_active(
         videos=25, only_earlier_than_last_scraped=True, only_deck_fresh=True) -> None:
-    """Scrape these YouTube channels specified in private Google Sheet that are not dormant. Save
-    the scraped data as .json files.
+    """Scrape these YouTube channels specified in private Google Sheet that are not dormant or
+    abandoned. Save the scraped data as .json files.
     """
     urls = []
     for url in retrieve_urls():
@@ -477,7 +480,7 @@ def update_readme_with_deck_data() -> None:
 
 
 def get_duplicates() -> list[str]:
-    """Get list of duplicate YouTube channels.
+    """Get list of YouTube channels duplicated in the private Google Sheet.
     """
     urls = retrieve_urls()
     seen = set()
@@ -674,18 +677,16 @@ class Video:
         return sorted(self._sources)
 
     @property
-    def derived_format(self) -> str:
-        return self._derived_format
-
-    @property
     def decks(self) -> list[Deck]:
         return self._decks
 
     @property
     def metadata(self) -> Json:
         metadata = {}
-        if self.derived_format:
-            metadata["format"] = self.derived_format
+        if self._derived_format:
+            metadata["format"] = self._derived_format
+        if self._derived_name:
+            metadata["name"] = self._derived_name
         if self.author:
             metadata["author"] = self.author
         if self.publish_time:
@@ -721,6 +722,7 @@ class Video:
         self._get_pytube_data()
         self._format_soup = self._get_format_soup()
         self._derived_format = self._derive_format()
+        self._derived_name = self._derive_name()
         self._links, self._arena_lines = self._parse_lines()
         self._decks = self._collect()
 
@@ -795,8 +797,41 @@ class Video:
             if len(two_best) == 2 and all(fmt in ("brawl", "standard") for fmt in two_best):
                 return "standardbrawl"
             return two_best[0]
-        # if not, fall back to default
+        # if not, return None
         return None
+
+    def _derive_name(self) -> str | None:
+        if not self.keywords:
+            return None
+        # identify title parts that are also parts of keywords
+        unwanted = {"mtg", "#mtg"}
+        kw_soup = {w.lower().lstrip("#") for kw in self.keywords for w in kw.strip().split()
+                   if w.lower() not in unwanted}
+        indices = []
+        title_words = [w for w in self.title.strip().split()]
+        for i, word in enumerate([tw.lower() for tw in title_words]):
+            if word in kw_soup:
+                indices.append(i)
+        if len(indices) < 2:
+            return None
+        # look for the longest sequence of identified indices
+        seqs = find_longest_seqs(indices)
+        if len(seqs) > 1:
+            if len(seqs[0]) < 2:
+                return None
+            seq = from_iterable(
+                seqs, lambda s: " ".join(title_words[i] for i in s).lower() in kw_soup)
+            if not seq:
+                return None
+        else:
+            seq = seqs[0]
+        # check final conditions
+        if len(seq) < 2:
+            return None
+        if len(seq) == 2 and any(title_words[i].lower() in all_formats() for i in seq):
+            return None
+        return " ".join(title_words[i] for i in seq)
+
 
     def _parse_lines(self) -> tuple[list[str], list[str]]:
         links, other_lines = [], []
@@ -878,7 +913,6 @@ class Video:
             "publish_time": self.publish_time,
             "views": self.views,
             "sources": self.sources,
-            "derived_format": self.derived_format,
             "decks": [json.loads(d.json, object_hook=deserialize_dates) for d in self.decks],
         }
         return json.dumps(data, indent=4, ensure_ascii=False, default=serialize_dates)

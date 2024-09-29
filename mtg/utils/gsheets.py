@@ -13,7 +13,7 @@ import gspread
 import gspread.utils
 
 from mtg.utils import timed
-from mtg.utils.check_type import generic_iterable_type_checker, type_checker
+from mtg.utils.check_type import type_checker
 
 _log = logging.getLogger(__name__)
 

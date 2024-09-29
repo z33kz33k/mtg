@@ -8,12 +8,13 @@
 
 """
 import hashlib
+import itertools
 import logging
 import re
 from collections import Counter as PyCounter
 from datetime import datetime
 from functools import wraps
-from typing import Any, Callable, Iterable, Optional, Type
+from typing import Any, Callable, Iterable, Optional, Protocol, Sequence, Type
 from datetime import date, timedelta
 
 import dateutil.parser
@@ -456,3 +457,29 @@ def getid(text: str) -> str:
         id_.append(ch)
     return "".join(id_)
 
+
+class Comparable(Protocol):
+    """Protocol for annotating comparable types.
+    """
+    def __lt__(self, other) -> bool:
+        ...
+
+
+def is_increasing(seq: Sequence[Comparable]) -> bool:
+    if len(seq) < 2:
+        return False
+    return all(seq[i] > seq[i-1] for i, _ in enumerate(seq, start=1) if i < len(seq))
+
+
+def find_longest_seqs(seq: list[int]) -> list[list[int]]:
+    """Return a list of the longest increasing sequences in ``seq``.
+    """
+    if not is_increasing(seq):
+        raise ValueError("Sequence must be increasing.")
+    seqs = []
+    for _, g in itertools.groupby(enumerate(seq), lambda pair: pair[1] - pair[0]):
+        current_seq = [pair[1] for pair in g]
+        seqs.append(current_seq)
+
+    max_len = max(len(s) for s in seqs)
+    return [group for group in seqs if len(group) == max_len]

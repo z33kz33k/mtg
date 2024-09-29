@@ -103,15 +103,11 @@ class DeckScraper(DeckParser):
         fmt = fmt.strip().lower()
         fmt = SANITIZED_FORMATS.get(fmt, fmt)
         if fmt != self.fmt:
-
             if fmt in all_formats():
-                if self.fmt:
-                    _log.warning(
-                        f"Earlier specified format: {self.fmt!r} overwritten with a scraped "
-                        f"one: {fmt!r}")
                 self._metadata["format"] = fmt
             else:
                 _log.warning(f"Irregular format: {fmt!r}")
+                del self._metadata["format"]
                 self._metadata["irregular_format"] = fmt
 
     def dissect_js(
