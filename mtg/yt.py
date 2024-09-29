@@ -18,6 +18,7 @@ from decimal import Decimal
 from functools import cached_property
 from http.client import RemoteDisconnected
 from operator import attrgetter, itemgetter
+from pathlib import Path
 from types import TracebackType
 from typing import Generator, Iterator, Type
 
@@ -28,13 +29,14 @@ from httpx import ReadTimeout
 from requests import ConnectionError, HTTPError, Timeout
 from selenium.common.exceptions import TimeoutException
 from youtubesearchpython import Channel as YtspChannel
+from youtube_comment_downloader import YoutubeCommentDownloader, SORT_BY_POPULAR
 
 from mtg import FILENAME_TIMESTAMP_FORMAT, Json, OUTPUT_DIR, PathLike, README
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser, get_arena_lines, group_arena_lines
 from mtg.deck.scrapers import DeckScraper, SANITIZED_FORMATS
 from mtg.deck.scrapers.melee import ALT_DOMAIN as MELEE_ALT_DOMAIN
-from mtg.scryfall import all_formats, keywords
+from mtg.scryfall import all_formats, arena_cards
 from mtg.utils import Counter, deserialize_dates, extract_float, find_longest_seqs, from_iterable, \
     getrepr, \
     multiply_by_symbol, sanitize_filename, serialize_dates, timed
@@ -47,6 +49,7 @@ from mtg.utils.scrape import ScrapingError, extract_source, extract_url, \
 _log = logging.getLogger(__name__)
 
 
+GOOGLE_API_KEY = Path("scraping_api_key.txt").read_text(encoding="utf-8")
 CHANNELS_DIR = OUTPUT_DIR / "channels"
 REGULAR_DECKLISTS_FILE = CHANNELS_DIR / "regular_decklists.json"
 EXTENDED_DECKLISTS_FILE = CHANNELS_DIR / "extended_decklists.json"
@@ -717,14 +720,33 @@ class Video:
         self._unshortened_links: list[str] = []
         self._scrape()
 
+    @timed("comment lookup")
+    def _get_comment(self) -> str | None:
+        downloader = YoutubeCommentDownloader()
+        try:
+            comments = downloader.get_comments_from_url(self.url, sort_by=SORT_BY_POPULAR)
+        except RuntimeError:
+            return None
+        if not comments:
+            return None
+        try:
+            return next(comments)["text"]
+        except StopIteration:
+            return None
+
     @timed("gathering video data")
     def _scrape(self):
         self._get_pytube_data()
         self._format_soup = self._get_format_soup()
         self._derived_format = self._derive_format()
         self._derived_name = self._derive_name()
-        self._links, self._arena_lines = self._parse_lines()
-        self._decks = self._collect()
+        self._links, self._arena_lines = self._parse_lines(*self._desc_lines)
+        self._decks = self._collect(self._links, self._arena_lines)
+        if not self._decks:  # try with the most popular comment
+            comment = self._get_comment()
+            if comment:
+                links, arena_lines = self._parse_lines(comment)
+                self._decks = self._collect(links, arena_lines)
 
     def __repr__(self) -> str:
         return getrepr(
@@ -832,11 +854,11 @@ class Video:
             return None
         return " ".join(title_words[i] for i in seq)
 
-
-    def _parse_lines(self) -> tuple[list[str], list[str]]:
+    @classmethod
+    def _parse_lines(cls, *lines) -> tuple[list[str], list[str]]:
         links, other_lines = [], []
-        for line in self._desc_lines:
-            self._extract_formats(line)
+        for line in lines:
+            cls._extract_formats(line)
             url = extract_url(line)
             if url:
                 links.append(url)
@@ -874,25 +896,25 @@ class Video:
                 decks.append(deck)
         return decks
 
-    def _collect(self) -> list[Deck]:
+    def _collect(self, links: list[str], arena_lines: list[str]) -> list[Deck]:
         decks = set()
 
         # 1st stage: regular URLs
-        decks.update(self._process_urls(self.links))
+        decks.update(self._process_urls(links))
 
         # 2nd stage: shortened URLs
         if not decks:
-            shortened_urls = [link for link in self.links
+            shortened_urls = [link for link in links
                               if any(hook in link for hook in self.SHORTENER_HOOKS)]
             if shortened_urls:
                 unshortened_urls = [unshorten(url) for url in shortened_urls]
-                self._unshortened_urls = [url for url in unshortened_urls if url]
-                decks.update(self._process_urls(self._unshortened_urls))
+                self._unshortened_links = [url for url in unshortened_urls if url]
+                decks.update(self._process_urls(self._unshortened_links))
 
         # 3rd stage: Arena lines
-        if self._arena_lines:
+        if arena_lines:
             self._sources.add("arena.decklist")
-            for decklist in group_arena_lines(*self._arena_lines):
+            for decklist in group_arena_lines(*arena_lines):
                 if len(decklist) > 2:
                     if deck := ArenaParser(decklist, self.metadata).parse():
                         start = f"{deck.name!r} deck" if deck.name else "Deck"
@@ -931,6 +953,7 @@ class Video:
         dst = dstdir / f"{sanitize_filename(name)}.json"
         _log.info(f"Exporting video to: '{dst}'...")
         dst.write_text(self.json, encoding="utf-8")
+
 
 
 class Channel:
