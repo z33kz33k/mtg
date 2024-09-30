@@ -720,20 +720,6 @@ class Video:
         self._unshortened_links: list[str] = []
         self._scrape()
 
-    @timed("comment lookup")
-    def _get_comment(self) -> str | None:
-        downloader = YoutubeCommentDownloader()
-        try:
-            comments = downloader.get_comments_from_url(self.url, sort_by=SORT_BY_POPULAR)
-        except RuntimeError:
-            return None
-        if not comments:
-            return None
-        try:
-            return next(comments)["text"]
-        except StopIteration:
-            return None
-
     @timed("gathering video data")
     def _scrape(self):
         self._get_pytube_data()
@@ -745,7 +731,7 @@ class Video:
         if not self._decks:  # try with the most popular comment
             comment = self._get_comment()
             if comment:
-                links, arena_lines = self._parse_lines(comment)
+                links, arena_lines = self._parse_lines(*comment.splitlines())
                 self._decks = self._collect(links, arena_lines)
 
     def __repr__(self) -> str:
@@ -885,6 +871,20 @@ class Video:
             if data:
                 return ArenaParser(data.splitlines(), self.metadata).parse()
         return None
+
+    @timed("comment lookup")
+    def _get_comment(self) -> str | None:
+        downloader = YoutubeCommentDownloader()
+        try:
+            comments = downloader.get_comments_from_url(self.url, sort_by=SORT_BY_POPULAR)
+        except RuntimeError:
+            return None
+        if not comments:
+            return None
+        try:
+            return next(comments)["text"]
+        except StopIteration:
+            return None
 
     def _process_urls(self, urls: list[str]) -> list[Deck]:
         decks = []
