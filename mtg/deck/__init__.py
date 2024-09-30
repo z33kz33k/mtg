@@ -701,7 +701,7 @@ class Deck:
 
         Args:
             dstdir: optionally, the destination directory (if not provided CWD is used)
-            filename: optionally, a custom filename for the exported deck (if not provided a name based on this deck's data and metadata is constructed)
+            filename: optionally, a custom filename (if not provided a name based on this deck's data and metadata is constructed)
         """
         Exporter(self, filename).to_forge(dstdir)
 
@@ -710,7 +710,7 @@ class Deck:
 
         Args:
             dstdir: optionally, the destination directory (if not provided CWD is used)
-            filename: optionally, a custom filename for the exported deck (if not provided a name based on this deck's data and metadata is constructed)
+            filename: optionally, a custom filename (if not provided a name based on this deck's data and metadata is constructed)
         """
         Exporter(self, filename).to_arena(dstdir)
 

@@ -939,18 +939,18 @@ class Video:
         }
         return json.dumps(data, indent=4, ensure_ascii=False, default=serialize_dates)
 
-    def dump(self, dstdir: PathLike = "", name="") -> None:
+    def dump(self, dstdir: PathLike = "", filename="") -> None:
         """Dump to a .json file.
 
         Args:
             dstdir: optionally, the destination directory (if not provided CWD is used)
-            name: optionally, a custom name for the exported video (if not provided a default name is used)
+            filename: optionally, a custom filename (if not provided a default is used)
         """
         dstdir = dstdir or OUTPUT_DIR / "json"
         dstdir = getdir(dstdir)
         timestamp = self.publish_time.strftime(FILENAME_TIMESTAMP_FORMAT)
-        name = name or f"{self.author}_{timestamp}_video"
-        dst = dstdir / f"{sanitize_filename(name)}.json"
+        filename = filename or f"{self.author}_{timestamp}_video"
+        dst = dstdir / f"{sanitize_filename(filename)}.json"
         _log.info(f"Exporting video to: '{dst}'...")
         dst.write_text(self.json, encoding="utf-8")
 
@@ -1157,18 +1157,18 @@ class Channel:
             return None
         return json.dumps(asdict(self.data), indent=4, ensure_ascii=False, default=serialize_dates)
 
-    def dump(self, dstdir: PathLike = "", name="") -> None:
+    def dump(self, dstdir: PathLike = "", filename="") -> None:
         """Dump to a .json file.
 
         Args:
             dstdir: optionally, the destination directory (if not provided CWD is used)
-            name: optionally, a custom name for the exported video (if not provided a default name is used)
+            filename: optionally, a custom filename (if not provided a default is used)
         """
         dstdir = dstdir or OUTPUT_DIR / "json"
         dstdir = getdir(dstdir)
         timestamp = self.scrape_time.strftime(FILENAME_TIMESTAMP_FORMAT)
         handle = self.handle.removeprefix("@").removeprefix("c_")
-        name = name or f"{handle}_{timestamp}_channel"
-        dst = dstdir / f"{sanitize_filename(name)}.json"
+        filename = filename or f"{handle}_{timestamp}_channel"
+        dst = dstdir / f"{sanitize_filename(filename)}.json"
         _log.info(f"Exporting channel to: '{dst}'...")
         dst.write_text(self.json, encoding="utf-8")
