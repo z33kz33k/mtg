@@ -28,18 +28,17 @@ import scrapetube
 from httpx import ReadTimeout
 from requests import ConnectionError, HTTPError, Timeout
 from selenium.common.exceptions import TimeoutException
+from youtube_comment_downloader import SORT_BY_POPULAR, YoutubeCommentDownloader
 from youtubesearchpython import Channel as YtspChannel
-from youtube_comment_downloader import YoutubeCommentDownloader, SORT_BY_POPULAR
 
 from mtg import FILENAME_TIMESTAMP_FORMAT, Json, OUTPUT_DIR, PathLike, README
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser, get_arena_lines, group_arena_lines
 from mtg.deck.scrapers import DeckScraper, SANITIZED_FORMATS
 from mtg.deck.scrapers.melee import ALT_DOMAIN as MELEE_ALT_DOMAIN
-from mtg.scryfall import all_formats, arena_cards
+from mtg.scryfall import all_formats
 from mtg.utils import Counter, deserialize_dates, extract_float, find_longest_seqs, from_iterable, \
-    getrepr, \
-    multiply_by_symbol, sanitize_filename, serialize_dates, timed
+    getrepr, multiply_by_symbol, sanitize_filename, serialize_dates, timed
 from mtg.utils.files import getdir
 from mtg.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
 from mtg.utils.scrape import ScrapingError, extract_source, extract_url, \
@@ -49,7 +48,7 @@ from mtg.utils.scrape import ScrapingError, extract_source, extract_url, \
 _log = logging.getLogger(__name__)
 
 
-GOOGLE_API_KEY = Path("scraping_api_key.txt").read_text(encoding="utf-8")
+GOOGLE_API_KEY = Path("scraping_api_key.txt").read_text(encoding="utf-8")  # not used anywhere
 CHANNELS_DIR = OUTPUT_DIR / "channels"
 REGULAR_DECKLISTS_FILE = CHANNELS_DIR / "regular_decklists.json"
 EXTENDED_DECKLISTS_FILE = CHANNELS_DIR / "extended_decklists.json"
@@ -704,7 +703,7 @@ class Video:
         """
         self._process(video_id)
 
-    @throttled(2, 0.45)
+    @throttled(1.75, 0.25)
     def _process(self, video_id):
         self._id = video_id
         try:
@@ -812,7 +811,7 @@ class Video:
         if not self.keywords:
             return None
         # identify title parts that are also parts of keywords
-        unwanted = {"mtg", "#mtg"}
+        unwanted = {"mtg", "#mtg", "magic", "#magic"}
         kw_soup = {w.lower().lstrip("#") for kw in self.keywords for w in kw.strip().split()
                    if w.lower() not in unwanted}
         indices = []
@@ -886,7 +885,7 @@ class Video:
         except StopIteration:
             return None
 
-    def _process_urls(self, urls: list[str]) -> list[Deck]:
+    def _process_urls(self, *urls: str) -> list[Deck]:
         decks = []
         for url in urls:
             self._sources.add(extract_source(url))
@@ -900,7 +899,7 @@ class Video:
         decks = set()
 
         # 1st stage: regular URLs
-        decks.update(self._process_urls(links))
+        decks.update(self._process_urls(*links))
 
         # 2nd stage: shortened URLs
         if not decks:
@@ -909,7 +908,7 @@ class Video:
             if shortened_urls:
                 unshortened_urls = [unshorten(url) for url in shortened_urls]
                 self._unshortened_links = [url for url in unshortened_urls if url]
-                decks.update(self._process_urls(self._unshortened_links))
+                decks.update(self._process_urls(*self._unshortened_links))
 
         # 3rd stage: Arena lines
         if arena_lines:

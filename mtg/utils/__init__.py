@@ -122,7 +122,7 @@ def get_date_from_ago_text(ago_text: str) -> date | None:
 def get_date_from_month_text(month_text: str) -> date | None:
     """Parse 'month' text (e.g. 'June 27th') into a Date object.
 
-    Month text may or may not include a valid year, eg. 'June 27th 2021' or 'June 27th'. In case
+    Month text may or may not include a valid year, e.g. 'June 27th 2021' or 'June 27th'. In case
     it's missing a current year is assumed.
     """
     current_year = datetime.now().year
@@ -268,15 +268,15 @@ def deserialize_dates(dct: dict) -> dict:
     """
     for key, value in dct.items():
         if isinstance(value, str):
-            # Try to parse as datetime
+            # try to parse as datetime
             try:
                 dct[key] = datetime.strptime(value, READABLE_TIMESTAMP_FORMAT)
             except ValueError:
-                # If it fails, try to parse as date
+                # if it fails, try to parse as date
                 try:
                     dct[key] = date.fromisoformat(value)
                 except ValueError:
-                    pass  # Leave it as a string if both parsing attempts fail
+                    pass  # leave it as a string if both parsing attempts fail
     return dct
 
 

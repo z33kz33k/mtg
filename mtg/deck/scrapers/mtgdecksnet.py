@@ -28,7 +28,6 @@ class MtgDecksNetScraper(DeckScraper):
     """Scraper of MTGDecks.net decklist page.
     """
     _XPATH = "//textarea[@id='arena_deck']"
-    _CONSENT_XPATH = "//p[@class='fc-button-label']"
 
     _FORMATS = {
         "duel-commander": "duel",
@@ -45,10 +44,14 @@ class MtgDecksNetScraper(DeckScraper):
     def is_deck_url(url: str) -> bool:  # override
         return "mtgdecks.net/" in url and "-decklist-" in url
 
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        url = DeckScraper.sanitize_url(url)
+        return url.removesuffix("/visual")
+
     def _pre_parse(self) -> None:  # override
         try:
-            self._soup, _, _ = get_dynamic_soup_by_xpath(
-                self.url, self._XPATH, consent_xpath=self._CONSENT_XPATH)
+            self._soup, _, _ = get_dynamic_soup_by_xpath(self.url, self._XPATH)
         except TimeoutException:
             raise ScrapingError(f"Scraping failed due to Selenium timing out")
 

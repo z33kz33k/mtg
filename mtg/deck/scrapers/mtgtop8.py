@@ -31,7 +31,6 @@ class MtgTop8Scraper(DeckScraper):
     """Scraper of MTGTop8 decklist page.
     """
     _XPATH = "//div[@class='event_title']"
-    _CONSENT_XPATH = "//button[text()='OK']"
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -46,9 +45,7 @@ class MtgTop8Scraper(DeckScraper):
 
     def _pre_parse(self) -> None:  # override
         try:
-            self._soup, _, _ = get_dynamic_soup_by_xpath(
-                self.url, self._XPATH, consent_xpath=self._CONSENT_XPATH,
-                wait_for_consent_disappearance=False)
+            self._soup, _, _ = get_dynamic_soup_by_xpath(self.url, self._XPATH)
         except TimeoutException:
             raise ScrapingError(f"Scraping failed due to Selenium timing out")
 
