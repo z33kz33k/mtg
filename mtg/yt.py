@@ -37,7 +37,8 @@ from mtg.deck.arena import ArenaParser, get_arena_lines, group_arena_lines
 from mtg.deck.scrapers import DeckScraper, SANITIZED_FORMATS
 from mtg.deck.scrapers.melee import ALT_DOMAIN as MELEE_ALT_DOMAIN
 from mtg.scryfall import all_formats
-from mtg.utils import Counter, deserialize_dates, extract_float, find_longest_seqs, from_iterable, \
+from mtg.utils import Counter, breadcrumbs, deserialize_dates, extract_float, find_longest_seqs, \
+    from_iterable, \
     getrepr, multiply_by_symbol, sanitize_filename, serialize_dates, timed
 from mtg.utils.files import getdir
 from mtg.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
@@ -57,6 +58,15 @@ ABANDONED_THRESHOLD = 30 * 12  # days
 DECK_STALE_THRESHOLD = 50  # videos
 
 
+def channel_url_to_handle(url: str) -> str:
+    if "@" not in url and "/c/" not in url:
+        raise ValueError(f"Not a channel URL: {url!r}")
+    _, handle = url.rsplit("/", maxsplit=1)
+    if "/c/" in url:
+        handle = f"c_{handle}"
+    return handle
+
+
 @dataclass
 class ChannelData:
     url: str
@@ -67,6 +77,10 @@ class ChannelData:
     subscribers: int
     scrape_time: datetime
     videos: list[dict]
+
+    @property
+    def handle(self):
+        return channel_url_to_handle(self.url)
 
     @property
     def decks(self) -> list[dict]:
@@ -176,7 +190,7 @@ def channels_batch(start_row=2, batch_size: int | None = None) -> Iterator[str]:
 def load_channel(channel_url: str) -> ChannelData:
     """Load all earlier scraped data for a channel designated by the provided URL.
     """
-    channel_dir = getdir(CHANNELS_DIR / Channel.url2handle(channel_url.rstrip("/")))
+    channel_dir = getdir(CHANNELS_DIR / channel_url_to_handle(channel_url.rstrip("/")))
     _log.info(f"Loading channel data from: '{channel_dir}'...")
     files = [f for f in channel_dir.iterdir() if f.is_file() and f.suffix.lower() == ".json"]
     if not files:
@@ -308,6 +322,35 @@ def retrieve_decklist(id_: str) -> str | None:
     decklists.update(json.loads(EXTENDED_DECKLISTS_FILE.read_text(
             encoding="utf-8")) if EXTENDED_DECKLISTS_FILE.is_file() else {})
     return decklists.get(id_)
+
+
+def check_decklists() -> None:
+    regular_ids, extended_ids = {}, {}
+    for ch in load_channels():
+        for v in ch.videos:
+            for deck in v["decks"]:
+                path_regular = breadcrumbs(ch.handle, v["id"], deck["decklist_id"])
+                path_extended = breadcrumbs(ch.handle, v["id"], deck["decklist_extended_id"])
+                regular_ids[deck["decklist_id"]] = path_regular
+                extended_ids[deck["decklist_extended_id"]] = path_extended
+
+    regular_decklists = json.loads(REGULAR_DECKLISTS_FILE.read_text(
+            encoding="utf-8")) if REGULAR_DECKLISTS_FILE.is_file() else {}
+    extended_decklists = json.loads(EXTENDED_DECKLISTS_FILE.read_text(
+            encoding="utf-8")) if EXTENDED_DECKLISTS_FILE.is_file() else {}
+
+    orphaned_regulars = {r for r in regular_ids if r not in regular_decklists}
+    orphaned_extendeds = {e for e in extended_ids if e not in extended_decklists}
+
+    if orphaned_regulars:
+        _log.warning(
+            f"Orphaned regular decklists: {sorted({regular_ids[r] for r in orphaned_regulars})}")
+    if orphaned_extendeds:
+        _log.warning(
+            f"Orphaned extended decklists: {sorted({extended_ids[e] for e in orphaned_extendeds})}")
+
+    if not orphaned_regulars and not orphaned_regulars:
+        _log.info("No orphaned decklists found")
 
 
 @http_requests_counted("channels scraping")
@@ -964,7 +1007,7 @@ class Channel:
 
     @property
     def handle(self) -> str:
-        return self.url2handle(self.url)
+        return channel_url_to_handle(self.url)
 
     @property
     def id(self) -> str | None:
@@ -1101,15 +1144,6 @@ class Channel:
             ("decks", len(self.decks)),
             ("scrape_time", str(self.scrape_time)),
         )
-
-    @staticmethod
-    def url2handle(url: str) -> str:
-        if "@" not in url and "/c/" not in url:
-            raise ValueError(f"Not a channel URL: {url!r}")
-        _, handle = url.rsplit("/", maxsplit=1)
-        if "/c/" in url:
-            handle = f"c_{handle}"
-        return handle
 
     def _get_ytsp(self) -> YtspChannel:
         return YtspChannel(self.id)
