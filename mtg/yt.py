@@ -26,7 +26,7 @@ import backoff
 import pytubefix
 import scrapetube
 from httpx import ReadTimeout
-from requests import ConnectionError, HTTPError, Timeout
+from requests import ConnectionError, HTTPError, Timeout, ReadTimeout
 from selenium.common.exceptions import TimeoutException
 from youtube_comment_downloader import SORT_BY_POPULAR, YoutubeCommentDownloader
 from youtubesearchpython import Channel as YtspChannel
@@ -899,15 +899,15 @@ class Video:
             if any(site in link for site in self._THROTTLED):
                 try:
                     return scraper.scrape(throttled=True)
-                except ConnectionError:
-                    _log.warning("Scraping failed with connection error. Re-trying with backoff...")
+                except (ConnectionError, ReadTimeout) as e:
+                    _log.warning(f"Scraping failed with: {e}. Re-trying with backoff...")
                     return scraper.scrape_with_backoff(throttled=True)
             else:
                 try:
                     return scraper.scrape()
-                except ConnectionError:
-                    _log.warning("Scraping failed with connection error. Re-trying with backoff...")
-                    return scraper.scrape_with_backoff(throttled=True)
+                except (ConnectionError, ReadTimeout) as e:
+                    _log.warning(f"Scraping failed with: {e}. Re-trying with backoff...")
+                    return scraper.scrape_with_backoff()
         elif any(h in link for h in self.PASTEBIN_LIKE_HOOKS):
             data = timed_request(link)
             if data:

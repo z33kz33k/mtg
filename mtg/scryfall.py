@@ -36,6 +36,11 @@ CARDS_FILENAME = "scryfall_cards.json"
 SETS_FILENAME = "scryfall_sets.json"
 
 
+class ScryfallError(ValueError):
+    """Raised on invalid Scryfall data.
+    """
+
+
 def download_scryfall_bulk_data() -> None:
     """Download Scryfall 'Oracle Cards' bulk data JSON.
     """
@@ -71,7 +76,8 @@ def download_scryfall_set_data() -> None:
 
 MULTIFACE_SEPARATOR = "//"  # separates names of card's faces in multiface cards
 MULTIFACE_LAYOUTS = (
-    'adventure', 'art_series', 'double_faced_token', 'flip', 'modal_dfc', 'split', 'transform')
+    'adventure', 'art_series', 'double_faced_token', 'flip', 'modal_dfc', 'reversible_card',
+    'split', 'transform')
 
 # all cards that got Alchemy rebalance treatment have their rebalanced counterparts with names
 # prefixed by 'A-'
@@ -449,10 +455,10 @@ class Card:
 
     def __post_init__(self) -> None:
         if self.is_multiface and self.card_faces is None:
-            raise scrython.ScryfallError(
+            raise ScryfallError(
                 f"Card faces data missing for multiface card {self.name!r}")
         if self.is_multiface and self.layout not in MULTIFACE_LAYOUTS:
-            raise scrython.ScryfallError(
+            raise ScryfallError(
                 f"Invalid layout {self.layout!r} for multiface card {self.name!r}")
 
     @property
@@ -463,8 +469,10 @@ class Card:
         return [CardFace(item) for item in data]
 
     @property
-    def cmc(self) -> int:
-        return math.ceil(self.json["cmc"])
+    def cmc(self) -> int | None:
+        if cmc := self.json.get("cmc"):
+            return math.ceil(cmc)
+        return None
 
     @property
     def color_identity(self) -> Color:
