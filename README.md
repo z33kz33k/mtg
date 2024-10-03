@@ -64,7 +64,7 @@ descriptions).
       (either to click a consent button or bypass anti-bot measures)
     * All those mentioned above work even if they are behind shortener links and need unshortening first
     * Text decklists in links to pastebin-like services (like [Amazonian](https://www.youtube.com/@Amazonian) does) work too
-    * If nothing is found in the video's description, the first comment is checked
+    * If nothing is found in the video's description, then the author's comments are parsed
     * Deck's name and format are derived if not readily available
 * Assessing the meta:
     * Scraping Goldfish and MGTAZone for meta-decks (others in plans)

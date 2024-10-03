@@ -746,7 +746,7 @@ class Video:
         """
         self._process(video_id)
 
-    @throttled(1.25, 0.25)
+    @throttled(1, 0.25)
     def _process(self, video_id):
         self._id = video_id
         try:
@@ -771,9 +771,9 @@ class Video:
         self._links, self._arena_lines = self._parse_lines(*self._desc_lines)
         self._decks = self._collect(self._links, self._arena_lines)
         if not self._decks:  # try with the most popular comment
-            comment = self._get_comment()
-            if comment:
-                links, arena_lines = self._parse_lines(*comment.splitlines())
+            comment_lines = self._get_comment_lines()
+            if comment_lines:
+                links, arena_lines = self._parse_lines(*comment_lines)
                 self._decks = self._collect(links, arena_lines)
 
     def __repr__(self) -> str:
@@ -914,19 +914,17 @@ class Video:
                 return ArenaParser(data.splitlines(), self.metadata).parse()
         return None
 
-    @timed("comment lookup")
-    def _get_comment(self) -> str | None:
+    @timed("comments lookup")
+    def _get_comment_lines(self) -> list[str]:
         downloader = YoutubeCommentDownloader()
         try:
             comments = downloader.get_comments_from_url(self.url, sort_by=SORT_BY_POPULAR)
         except RuntimeError:
-            return None
+            return []
         if not comments:
-            return None
-        try:
-            return next(comments)["text"]
-        except StopIteration:
-            return None
+            return []
+        author_comments = [c for c in comments if c["channel"] == self.channel_id]
+        return [line for c in author_comments for line in c["text"].splitlines()]
 
     def _process_urls(self, *urls: str) -> list[Deck]:
         decks = []
