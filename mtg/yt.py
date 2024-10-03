@@ -746,7 +746,7 @@ class Video:
         """
         self._process(video_id)
 
-    @throttled(1.75, 0.25)
+    @throttled(1.25, 0.25)
     def _process(self, video_id):
         self._id = video_id
         try:

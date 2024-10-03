@@ -58,8 +58,8 @@ class UntappedProfileDeckScraper(DeckScraper):
         self._metadata["name"] = strong_tag.text.strip()
         author_tag = self._soup.select_one(
             'div[class*="ProfileHeader__DisplayName-sc-mu9foi-4 hrSMYV"]')
-        span_tag = author_tag.find("span")
-        self._metadata["author"] = span_tag.text.strip().removesuffix("'s Profile")
+        author_sub_tag = author_tag.find("span") or author_tag.find("h1")
+        self._metadata["author"] = author_sub_tag.text.strip().removesuffix("'s Profile")
 
     def _build_deck(self) -> Deck:
         return ArenaParser(self._clipboard.splitlines(), metadata=self._metadata).parse(
