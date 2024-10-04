@@ -1,0 +1,51 @@
+{
+    "url": "https://www.youtube.com/@MTGGoldfish",
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 324000,
+    "scrape_time": "2024-08-28 20:32:35",
+    "videos": [
+        {
+            "id": "2uBzr5F3eug",
+            "url": "https://www.youtube.com/watch?v=2uBzr5F3eug",
+            "author": "MTGGoldfish",
+            "title": "I Draw My Deck with a Turtle  Against the Odds",
+            "description": "Is Fecund Greenshell the missing piece for making a value-heavy, drudley Panharmonicon deck to Bloomburrow Standard? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/against-the-odds-a-turtle-bring-panharmonicon-to-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6560851#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/7ub5y\n◼ Purchase this deck (Magic Online): http://mtg.fish/9qx8z\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#mtgstandard \n\n0:00 Start\n3:20 Games",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2024-08-28 08:00:07",
+            "views": 7824,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "derived_format": "standard",
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2024-08-07",
+                        "format": "standard",
+                        "name": "Bant Turtle-amonicon",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6560851"
+                    },
+                    "decklist_id": "37c3d828-8f1d-f969-50e3-6cb725e4595d",
+                    "decklist_extended_id": "4371c48f-07e0-06d1-9c7c-c14b570fa47d"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,72 @@
+{
+    "url": "https://www.youtube.com/@MTGGoldfish",
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 324000,
+    "scrape_time": "2024-09-01 22:57:40",
+    "videos": [
+        {
+            "id": "RXkKDv0QXuA",
+            "url": "https://www.youtube.com/watch?v=RXkKDv0QXuA",
+            "author": "MTGGoldfish",
+            "title": "Duskmourn MTG Spoilers  Creepy Balloon Clown, Huge Demon, Ninjutsu Planeswalker, Rooms and More!",
+            "description": "Duskmourn spoilers are here and we have a ton of cards to talk about thanks to a preview stream from Pax West including legendary clowns, a Demonic demonic tutor and some of the creepiest art Magic: the Gathering has ever seen! Let's discuss!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\nMore spoilers: https://www.mtgpreviews.com\n\n0:00 Start\n0:56 Valgavoth, Terror Eater\n6:31 Kaito, Bane of Nightmares\n10:56 Dollmaker's Shop / Porcelain Gallery\n14:03 Overlord of the Mistmoors\n17:17 Hauntwoods Shrieker\n20:55 Tyvar, the Pummeler\n24:54 Zimone, All-Quetioning\n27:42 Winter, Misanthropic Guide\n32:04 Enduring Curiosity\n35:19 Enduring Innocence\n37:06 Split Up\n41:17 Demonic Counsel\n43:35 The Jolly Balloon Man\n47:26 Razorkin Needlehead\n50:27 Peer Past the Veil\n51:31 Valgavoth's Lair\n55:36 Commons and Uncommons\n1:00:17 Face Commanders\n1:00:30 Promos\n\n#MTG #magicthegathering #mtgspoilers #MTGDSK",
+            "keywords": [
+                "MTG",
+                "MTG Arena",
+                "MTGGoldfish",
+                "Magic: the Gathering"
+            ],
+            "publish_time": "2024-09-01 09:04:44",
+            "views": 13713,
+            "sources": [
+                "www.cardkingdom.com",
+                "www.mtgpreviews.com"
+            ],
+            "derived_format": "commander",
+            "decks": []
+        },
+        {
+            "id": "GeiVsTXhR6o",
+            "url": "https://www.youtube.com/watch?v=GeiVsTXhR6o",
+            "author": "MTGGoldfish",
+            "title": "Don't Feed This Snake!  Standard",
+            "description": "This Orzhov colored deck is looking to make foods and little critters to sacrifice to Rottenmouth Viper! \n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-don-t-feed-this-snake\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6595776#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/KNbWt\n◼ Purchase this deck (Magic Online): http://mtg.fish/pOW4F\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2024-08-31 08:00:04",
+            "views": 23291,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "derived_format": "standard",
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2024-08-26",
+                        "format": "standard",
+                        "name": "Snek",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6595776"
+                    },
+                    "decklist_id": "344a8355-91a3-d67c-cc0c-90136e8fc287",
+                    "decklist_extended_id": "afc768f3-e35d-64a9-9530-1b46f5656d8e"
+                }
+            ]
+        }
+    ]
+}

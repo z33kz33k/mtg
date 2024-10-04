@@ -1,0 +1,85 @@
+{
+    "url": "https://www.youtube.com/@MTGGoldfish",
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 328000,
+    "scrape_time": "2024-10-03 21:38:31",
+    "videos": [
+        {
+            "id": "lyvybThFgIs",
+            "url": "https://www.youtube.com/watch?v=lyvybThFgIs",
+            "author": "MTGGoldfish",
+            "title": "Render Inert and The Overlords!  Duskmourn Standard",
+            "description": "Render Inert wasn't meant for battles, it was meant for all the new Overlords. We've also got Valgavoth as a sweet reanimate target in this Ozhov deck!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-render-inert-and-the-overlords\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6657956#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/OGgfw\n◼ Purchase this deck (Magic Online): http://mtg.fish/9AxzC\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2024-10-03 08:00:11",
+            "views": 7300,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2024-09-27",
+                        "format": "standard",
+                        "name": "Valgavoth's Rendering",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6657956"
+                    },
+                    "decklist_id": "ebccbed6-a31f-1beb-b773-6d57073d5317",
+                    "decklist_extended_id": "087deac6-6b34-b53f-e65c-964ac045790e"
+                }
+            ]
+        },
+        {
+            "id": "suFooUuIypU",
+            "url": "https://www.youtube.com/watch?v=suFooUuIypU",
+            "author": "MTGGoldfish",
+            "title": "When Every Land You Mill is Ramp, Actually  Against the Odds",
+            "description": "What are the odds of comboing off with Hedge Shredder and Iridescent Vinelasher in Duskmourn Standard? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/against-the-odds-hedge-shredder-combo-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6655774#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/3JFho\n◼ Purchase this deck (Magic Online): http://mtg.fish/uiU8y\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#mtgstandard \n\n0:00 Start \n3:20 Games",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2024-10-02 08:00:09",
+            "views": 48642,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2024-09-25",
+                        "format": "standard",
+                        "name": "Hedge Shredder",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6655774"
+                    },
+                    "decklist_id": "1e8c5bc2-bf59-67ba-04b9-f8b301fbe979",
+                    "decklist_extended_id": "135c0002-2689-fa0e-826b-e5ccf61a206e"
+                }
+            ]
+        }
+    ]
+}
