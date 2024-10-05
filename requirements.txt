@@ -1,6 +1,9 @@
+backoff~=2.2.1
 beautifulsoup4~=4.12.3
+Brotli~=1.1.0
 contexttimer~=0.3.3
 gspread~=5.11.3
+httpx~=0.27.0
 lingua-language-detector~=2.0.2
 lxml~=5.2.1
 pyperclip~=1.9.0
@@ -14,3 +17,5 @@ tqdm~=4.66.4
 Unidecode~=1.3.8
 youtube-comment-downloader~=0.1.76
 youtube-search-python~=1.6.6
+urllib3~=2.2.1
+

@@ -14,12 +14,13 @@ import re
 import time
 from collections import namedtuple
 from functools import wraps
-from typing import Callable, Dict, Optional, Union
+from typing import Callable, Dict, Optional
 
 import brotli
 import pyperclip
 import requests
 from bs4 import BeautifulSoup
+from requests.adapters import HTTPAdapter
 from requests.exceptions import HTTPError
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
@@ -29,6 +30,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+from urllib3 import Retry
 
 from mtg import Json
 from mtg.utils import ParsingError, timed
@@ -177,17 +179,46 @@ def http_requests_counted(operation="") -> Callable:
 def unshorten(url: str) -> str | None:
     """Unshorten URL shortened by services like bit.ly, tinyurl.com etc.
 
-    Pilfered from: https://stackoverflow.com/a/28918160/4465708
+    courtesy of Phind AI
     """
+    # set up retry mechanism
+    retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[429, 500, 502, 503, 504])
+    adapter = HTTPAdapter(max_retries=retries)
+    session = requests.Session()
+    session.mount("https://", adapter)
+    session.mount("http://", adapter)
+
     try:
-        session = requests.Session()  # so connections are recycled
-        resp = session.head(url, allow_redirects=True)
-        return resp.url
+        # set a reasonable timeout
+        timeout = 10
+
+        # add a User-Agent header to mimic a real browser
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+
+        # perform GET request instead of HEAD
+        resp = session.get(url, allow_redirects=True, timeout=timeout, headers=headers)
+
+        # check if the final URL is different from the original
+        if resp.url != url:
+            return resp.url
+        else:
+            # if no redirect occurred, try to parse the HTML for potential JavaScript redirects
+            match = re.search(r'window\.location\.href\s*=\s*"([^"]+)"', resp.text)
+            if match:
+                return match.group(1)
+
+        return None
+
     except requests.exceptions.SSLError:
         _log.warning(f"Unshortening of {url!r} failed with SSL error")
         return None
     except requests.exceptions.TooManyRedirects:
         _log.warning(f"Unshortening of {url!r} failed due too many redirections")
+        return None
+    except requests.exceptions.RequestException as e:
+        _log.warning(f"Unshortening of {url!r} failed with : {str(e)}")
         return None
 
 
