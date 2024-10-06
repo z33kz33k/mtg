@@ -1164,9 +1164,12 @@ class DeckParser(ABC):
             cardmarket_id: int | None = None,
             mtgo_id: int | None = None,
             foreign=False) -> Card:
+        name = cls.sanitize_card_name(name)
         if set_and_collector_number:
             if card := find_by_collector_number(*set_and_collector_number):
-                return card
+                # don't assume set/collector number data is always correct in the input data
+                if card.name == name:
+                    return card
         if scryfall_id:
             if card := find_by_scryfall_id(scryfall_id):
                 return card
@@ -1182,7 +1185,6 @@ class DeckParser(ABC):
         if mtgo_id is not None:
             if card := find_by_mtgo_id(mtgo_id):
                 return card
-        name = cls.sanitize_card_name(name)
         if foreign:
             card = query_api_for_card(name, foreign=True)
         else:
