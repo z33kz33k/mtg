@@ -299,6 +299,8 @@ def group_arena_lines(*arena_lines: str) -> Generator[list[str], None, None]:
 class ArenaParser(DeckParser):
     """Parser of lines of text that denote a deck in Arena format.
     """
+    MAX_CARD_QUANTITY = 50
+
     def __init__(self, lines: list[str], metadata: Json | None = None) -> None:
         super().__init__(metadata)
         self._lines = lines
@@ -323,6 +325,19 @@ class ArenaParser(DeckParser):
         if not self._metadata.get("source"):
             self._metadata["source"] = "arena.decklist"
 
+    def _quantity_exceeded(self, playset: list[Card]) -> bool:
+        max_quantity, word = self.MAX_CARD_QUANTITY, "card"
+        if self._state is ParsingState.COMMANDER:
+            max_quantity, word = 1, "commander card"
+        elif self._state is ParsingState.COMPANION:
+            max_quantity, word = 1, "companion card"
+        if len(playset) > max_quantity:
+            _log.warning(
+                f"Quantity too high ({len(playset)}) for {word} {playset[0].name!r}. "
+                f"Skipping...")
+            return True
+        return False
+
     def _parse_deck(self) -> None:  # override
         for line in self._lines:
             if _is_maindeck_line(line):
@@ -339,17 +354,15 @@ class ArenaParser(DeckParser):
                 if self._state is ParsingState.IDLE:
                     self._shift_to_maindeck()
 
+                playset = PlaysetLine(line).to_playset()
+                if self._quantity_exceeded(playset):
+                    continue
+
                 if self._state is ParsingState.SIDEBOARD:
-                    self._sideboard.extend(PlaysetLine(line).to_playset())
+                    self._sideboard.extend(playset)
                 elif self._state is ParsingState.COMMANDER:
-                    if result := PlaysetLine(line).to_playset():
-                        self._set_commander(result[0])
-                    else:
-                        raise ParsingError(f"Invalid commander line: {line!r}")
+                    self._set_commander(playset[0])
                 elif self._state is ParsingState.COMPANION:
-                    if result := PlaysetLine(line).to_playset():
-                        self._companion = result[0]
-                    else:
-                        raise ParsingError(f"Invalid companion line: {line!r}")
+                    self._companion = playset[0]
                 elif self._state is ParsingState.MAINDECK:
-                    self._maindeck.extend(PlaysetLine(line).to_playset())
+                    self._maindeck.extend(playset)
