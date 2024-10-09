@@ -25,7 +25,8 @@ from typing import Generator, Iterator, Type
 import backoff
 import pytubefix
 import scrapetube
-from httpx import ReadTimeout
+import httpx
+import httpcore
 from requests import ConnectionError, HTTPError, Timeout, ReadTimeout
 from selenium.common.exceptions import TimeoutException
 from youtube_comment_downloader import SORT_BY_POPULAR, YoutubeCommentDownloader
@@ -746,7 +747,7 @@ class Video:
         """
         self._process(video_id)
 
-    @throttled(1, 0.25)
+    @throttled(1.25, 0.25)
     def _process(self, video_id):
         self._id = video_id
         try:
@@ -1100,7 +1101,7 @@ class Channel:
             raise ScrapingError(
                 "YTSP failed with TypeError. Are you sure the channel has at least two tabs "
                 "(one being 'Videos')?")
-        except ReadTimeout:
+        except (httpx.ReadTimeout, httpcore.ReadTimeout):
             _log.warning(f"YTSP timed out on {self.url!r}, re-trying with backoff...")
             self._ytsp_data = self._get_ytsp_with_backoff()
         self._description = self._ytsp_data.result.get("description") if self._id else None

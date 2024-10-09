@@ -102,6 +102,9 @@ class NewPageTcgPlayerScraper(DeckScraper):
     def _parse_metadata(self) -> None:  # override
         name_tag = self._soup.find(
             "h2", class_=lambda c: c and "martech-heading" in c and "martech-inter" in c)
+        if not name_tag:
+            name_tag = self._soup.find(
+                "h2", class_=lambda c: c and "deck-title" in c and "martech-inter" in c)
         self._metadata["name"] = name_tag.text.strip()
         fmt_tag = self._soup.find(
             "a", class_="martech-base-link", href=lambda h: h and "/format/" in h)

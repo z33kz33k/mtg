@@ -224,6 +224,7 @@ def is_arena_line(line: str) -> bool:
 def get_arena_lines(*lines: str) -> list[str]:
     arena_lines, regular_lines, inverted_lines = [], set(), set()
     for i, line in enumerate(lines):
+        end_line = arena_lines[-1] if arena_lines else None
         if _is_about_line(line) and i < len(lines) - 1:
             if _is_name_line(lines[i + 1]):
                 arena_lines.append("About")
@@ -231,13 +232,13 @@ def get_arena_lines(*lines: str) -> list[str]:
             if _is_about_line(lines[i - 1]):
                 arena_lines.append(line)
         elif _is_maindeck_line(line):
-            if arena_lines[-1] != "Deck":
+            if end_line != "Deck":
                 arena_lines.append("Deck")
         elif _is_commander_line(line):
-            if arena_lines[-1] != "Commander":
+            if end_line != "Commander":
                 arena_lines.append("Commander")
         elif _is_companion_line(line):
-            if arena_lines[-1] != "Companion":
+            if end_line != "Companion":
                 arena_lines.append("Companion")
         elif _is_playset_line(line):
             if not arena_lines:
@@ -251,7 +252,7 @@ def get_arena_lines(*lines: str) -> list[str]:
                 regular_lines.add(line)
             arena_lines.append(line)
         elif _is_sideboard_line(line):
-            if arena_lines[-1] != "Sideboard":
+            if end_line != "Sideboard":
                 arena_lines.append("Sideboard")
         elif (is_empty(line)
               and 1 < i < len(lines) - 1
