@@ -221,51 +221,56 @@ def is_arena_line(line: str) -> bool:
     return False
 
 
-def get_arena_lines(*lines: str) -> Generator[str, None, None]:
-    last_yielded_line = None
+def get_arena_lines(*lines: str) -> list[str]:
+    arena_lines, regular_lines, inverted_lines = [], set(), set()
     for i, line in enumerate(lines):
         if _is_about_line(line) and i < len(lines) - 1:
             if _is_name_line(lines[i + 1]):
-                last_yielded_line = "About"
-                yield "About"
+                arena_lines.append("About")
         elif _is_name_line(line) and i > 0:
             if _is_about_line(lines[i - 1]):
-                last_yielded_line = line
-                yield line
+                arena_lines.append(line)
         elif _is_maindeck_line(line):
-            if last_yielded_line != "Deck":
-                last_yielded_line = "Deck"
-                yield "Deck"
+            if arena_lines[-1] != "Deck":
+                arena_lines.append("Deck")
         elif _is_commander_line(line):
-            if last_yielded_line != "Commander":
-                last_yielded_line = "Commander"
-                yield "Commander"
+            if arena_lines[-1] != "Commander":
+                arena_lines.append("Commander")
         elif _is_companion_line(line):
-            if last_yielded_line != "Companion":
-                last_yielded_line = "Companion"
-                yield "Companion"
+            if arena_lines[-1] != "Companion":
+                arena_lines.append("Companion")
         elif _is_playset_line(line):
-            if last_yielded_line is None:
+            if not arena_lines:
                 if i < len(lines) - 3 and any(_is_maindeck_line(l) for l in lines[i + 1:i + 4]):
-                    last_yielded_line = "Commander"
-                    yield "Commander"
+                    arena_lines.append("Commander")
                 else:
-                    last_yielded_line = "Deck"
-                    yield "Deck"
-            last_yielded_line = line
-            yield line
+                    arena_lines.append("Deck")
+            if bool(PlaysetLine.INVERTED_PATTERN.match(line)):
+                inverted_lines.add(line)
+            else:
+                regular_lines.add(line)
+            arena_lines.append(line)
         elif _is_sideboard_line(line):
-            if last_yielded_line != "Sideboard":
-                last_yielded_line = "Sideboard"
-                yield "Sideboard"
+            if arena_lines[-1] != "Sideboard":
+                arena_lines.append("Sideboard")
         elif (is_empty(line)
               and 1 < i < len(lines) - 1
               and _is_playset_line(lines[i - 2])  # previous previous line
               and _is_playset_line(lines[i - 1])  # previous line
               and (_is_playset_line(lines[i + 1]) or _is_sideboard_line(lines[i + 1]))):  # next line
-            if not _is_sideboard_line(lines[i + 1]) and last_yielded_line != "Sideboard":
-                last_yielded_line = "Sideboard"
-                yield "Sideboard"
+            if not _is_sideboard_line(lines[i + 1]) and arena_lines[-1] != "Sideboard":
+                arena_lines.append("Sideboard")
+
+    # return either inverted or regular playset lines, but not both
+    if len(inverted_lines) > len(regular_lines):
+        arena_lines = [l for l in arena_lines if l not in regular_lines]
+    else:
+        arena_lines = [l for l in arena_lines if l not in inverted_lines]
+
+    # trim empty "Commander"
+    if len(arena_lines) >= 2 and arena_lines[:2] == ["Commander", "Deck"]:
+        return arena_lines[1:]
+    return arena_lines
 
 
 def group_arena_lines(*arena_lines: str) -> Generator[list[str], None, None]:
@@ -316,7 +321,7 @@ class ArenaParser(DeckParser):
                 self._lines.insert(0, "Commander")
 
     def _pre_parse(self) -> None:  # override
-        self._lines = [*get_arena_lines(*self._lines)]
+        self._lines = get_arena_lines(*self._lines)
         if not self._lines:
             raise ValueError("No Arena lines found")
 

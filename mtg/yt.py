@@ -892,7 +892,7 @@ class Video:
                 links.append(url)
             else:
                 other_lines.append(line)
-        return links, [*get_arena_lines(*other_lines)]
+        return links, get_arena_lines(*other_lines)
 
     def _process_deck(self, link: str) -> Deck | None:
         if scraper := DeckScraper.from_url(link, self.metadata):
