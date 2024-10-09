@@ -1,0 +1,85 @@
+{
+    "url": "https://www.youtube.com/@MTGGoldfish",
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 328000,
+    "scrape_time": "2024-10-06 23:49:26",
+    "videos": [
+        {
+            "id": "PrW1lqps1CM",
+            "url": "https://www.youtube.com/watch?v=PrW1lqps1CM",
+            "author": "MTGGoldfish",
+            "title": "Lazav's Oculus  Standard",
+            "description": "Lazav Wearer of Faces and Abhorrent Occulus make for sweet new graveyard based play patterns in this Esper Standard deck. \n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-lazav-s-oculus\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6663242#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/izFCT\n◼ Purchase this deck (Magic Online): http://mtg.fish/QDk1C\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2024-10-05 08:00:07",
+            "views": 19876,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2024-09-29",
+                        "format": "standard",
+                        "name": "Lazav's Oculus",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6663242"
+                    },
+                    "decklist_id": "33cc1841-68d3-38fb-9db9-edc22e297cf6",
+                    "decklist_extended_id": "9b7c30ef-7498-3106-e69b-429bfdea6e5d"
+                }
+            ]
+        },
+        {
+            "id": "hHeM5WmRp7k",
+            "url": "https://www.youtube.com/watch?v=hHeM5WmRp7k",
+            "author": "MTGGoldfish",
+            "title": "My Overlords Find Overlords Which Find More Overlords  Much Abrew",
+            "description": "How good are Duskmourn's new Overlords with Enigmatic Incarnation in Pioneer? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/much-abrew-enigmatic-overlords-pioneer\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6664542#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/Ker8i\n◼ Purchase this deck (Magic Online): http://mtg.fish/JWcO9\n\n#MTG\n#MagicTheGathering\n#MTGO\n#mtgpioneer \n\n0:00 Start\n4:01 Games",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2024-10-04 08:00:13",
+            "views": 49435,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "DB_Kannister",
+                        "date": "2024-09-30",
+                        "format": "pioneer",
+                        "name": "Enigmatic Overlords",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6664542"
+                    },
+                    "decklist_id": "58896124-95eb-850d-72db-e1bb60fc597a",
+                    "decklist_extended_id": "da612f1c-8081-7d85-6e2b-c18241b39c39"
+                }
+            ]
+        }
+    ]
+}

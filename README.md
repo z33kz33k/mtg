@@ -20,12 +20,13 @@ descriptions).
 
 * Scryfall data management via downloading bulk data with 
   [scrython](https://github.com/NandaScott/Scrython) and wrapping it in convenient abstractions
-* Scraping YT channels for videos with decklists in descriptions (using no less than three Python 
-  libraries: [scrapetube](https://github.com/dermasmid/scrapetube), 
-  [pytubefix](https://github.com/JuanBindez/pytubefix), and 
-  [youtubesearchpython](https://github.com/alexmercerind/youtube-search-python) to avoid bothering 
+* Scraping YT channels for videos with decklists in descriptions (or comments) - using no less than 
+  four Python libraries: [scrapetube](https://github.com/dermasmid/scrapetube), 
+  [pytubefix](https://github.com/JuanBindez/pytubefix),  
+  [youtubesearchpython](https://github.com/alexmercerind/youtube-search-python), and 
+  [youtube-comment-downloader](https://github.com/egbertbouman/youtube-comment-downloader) to avoid bothering 
   with Google APIs)
-* Scraping YT videos' descriptions for decks:    
+* Scraping YT videos' descriptions (or comments) for decks:    
     * Text decklists in Arena/MTGO format pasted into video descriptions are parsed into Deck objects
     * Links to decklist services are scraped into Deck objects. 25 services are supported so far:
         * [Aetherhub](https://aetherhub.com)
@@ -66,6 +67,8 @@ descriptions).
     * Text decklists in links to pastebin-like services (like [Amazonian](https://www.youtube.com/@Amazonian) does) work too
     * If nothing is found in the video's description, then the author's comments are parsed
     * Deck's name and format are derived if not readily available
+    * Foreign cards and other that cannot be found in the downloaded Scryfall bulk data are looked 
+      up with queries to the Scryfall API
 * Assessing the meta:
     * Scraping Goldfish and MGTAZone for meta-decks (others in plans)
     * Scraping a singular Untapped meta-deck decklist page
@@ -75,7 +78,7 @@ descriptions).
 * Importing back into a Deck from those formats
 * Export/import to other formats in plans
 * Dumping decks, YT videos and channels to .json
-* I compiled a list of **over 1k** YT channels that feature decks in their descriptions and successfully 
+* I compiled a list of **almost 1.1k** YT channels that feature decks in their descriptions and successfully 
   scraped them (at least 25 videos deep) so this data only waits to be creatively used now!
 
 ### How it looks in a Google Sheet
