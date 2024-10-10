@@ -77,6 +77,7 @@ init_log()
 # import scraper modules so they get registered for the factory method
 from mtg.deck.scrapers.aetherhub import DeckScraper
 from mtg.deck.scrapers.archidekt import DeckScraper
+from mtg.deck.scrapers.cardboardlive import DeckScraper
 from mtg.deck.scrapers.cardhoarder import DeckScraper
 from mtg.deck.scrapers.cardsrealm import DeckScraper
 from mtg.deck.scrapers.deckstats import DeckScraper

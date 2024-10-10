@@ -21,16 +21,18 @@ descriptions).
 * Scryfall data management via downloading bulk data with 
   [scrython](https://github.com/NandaScott/Scrython) and wrapping it in convenient abstractions
 * Scraping YT channels for videos with decklists in descriptions (or comments) - using no less than 
-  four Python libraries: [scrapetube](https://github.com/dermasmid/scrapetube), 
-  [pytubefix](https://github.com/JuanBindez/pytubefix),  
-  [youtubesearchpython](https://github.com/alexmercerind/youtube-search-python), and 
-  [youtube-comment-downloader](https://github.com/egbertbouman/youtube-comment-downloader) to avoid bothering 
-  with Google APIs)
+  four Python libraries: 
+    * [scrapetube](https://github.com/dermasmid/scrapetube),
+    * [pytubefix](https://github.com/JuanBindez/pytubefix),
+    * [youtubesearchpython](https://github.com/alexmercerind/youtube-search-python), 
+    * [youtube-comment-downloader](https://github.com/egbertbouman/youtube-comment-downloader) 
+  to avoid bothering with Google APIs
 * Scraping YT videos' descriptions (or comments) for decks:    
     * Text decklists in Arena/MTGO format pasted into video descriptions are parsed into Deck objects
-    * Links to decklist services are scraped into Deck objects. 25 services are supported so far:
+    * Links to decklist services are scraped into Deck objects. 26 services are supported so far:
         * [Aetherhub](https://aetherhub.com)
         * [Archidekt](https://archidekt.com)
+        * [CardBoard Live](https://cardboard.live)
         * [Cardhoarder](https://www.cardhoarder.com)
         * [Cardsrealm](https://mtg.cardsrealm.com/en-us/)
         * [Deckstats.net](https://deckstats.net)
@@ -59,8 +61,8 @@ descriptions).
     * Both Untapped decklist types featured in YT videos are supported: regular deck and profile deck
     * Both old and new TCGPlayer sites are supported
     * Both international and Japanese Hareruya sites are supported 
-    * Due to their dynamic nature, Untapped, TCGPlayer (new site), ManaStack, Flexslot and TopDecked 
-      are scraped using [Selenium](https://github.com/SeleniumHQ/Selenium). It's also used to scrape MTGTop8, MTGDecks.net and 
+    * Due to their dynamic nature, Untapped, TCGPlayer (new site), ManaStack, Flexslot, CardBoard Live 
+      and TopDecked are scraped using [Selenium](https://github.com/SeleniumHQ/Selenium). It's also used to scrape MTGTop8, MTGDecks.net and 
       Cardhoarder, even though those are very much static sites. Selenium is still helpful here 
       (either to click a consent button or bypass anti-bot measures)
     * All those mentioned above work even if they are behind shortener links and need unshortening first
@@ -87,14 +89,14 @@ descriptions).
 ### Scraped decks breakdown
 | No | Format | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | standard        | 6427 |    31.26 % |
-| 2  | commander       | 5599 |    27.23 % |
-| 3  | modern          | 1976 |     9.61 % |
+| 1  | standard        | 6428 |    31.23 % |
+| 2  | commander       | 5600 |    27.20 % |
+| 3  | modern          | 1976 |     9.60 % |
 | 4  | historic        |  806 |     3.92 % |
 | 5  | brawl           |  780 |     3.79 % |
-| 6  | pioneer         |  762 |     3.71 % |
-| 7  | timeless        |  726 |     3.53 % |
-| 8  | explorer        |  704 |     3.42 % |
+| 6  | pioneer         |  762 |     3.70 % |
+| 7  | timeless        |  738 |     3.58 % |
+| 8  | explorer        |  707 |     3.43 % |
 | 9  | legacy          |  687 |     3.34 % |
 | 10 | undefined       |  609 |     2.96 % |
 | 11 | pauper          |  578 |     2.81 % |
@@ -105,22 +107,22 @@ descriptions).
 | 16 | penny           |   97 |     0.47 % |
 | 17 | paupercommander |   58 |     0.28 % |
 | 18 | vintage         |   40 |     0.19 % |
-| 19 | irregular       |   18 |     0.09 % |
+| 19 | irregular       |   27 |     0.13 % |
 | 20 | gladiator       |   17 |     0.08 % |
 | 21 | oathbreaker     |   16 |     0.08 % |
 | 22 | oldschool       |   14 |     0.07 % |
 | 23 | future          |    7 |     0.03 % |
-|  | TOTAL           | 20560 | 100.00 %|
+|  | TOTAL           | 20586 | 100.00 %|
 
 | No | Source | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | moxfield.com           | 7056 |    34.32 % |
-| 2  | aetherhub.com          | 3665 |    17.83 % |
-| 3  | arena.decklist         | 3198 |    15.55 % |
-| 4  | mtggoldfish.com        | 2051 |     9.98 % |
-| 5  | archidekt.com          |  812 |     3.95 % |
-| 6  | streamdecker.com       |  585 |     2.85 % |
-| 7  | mtga.untapped.gg       |  573 |     2.79 % |
+| 1  | moxfield.com           | 7057 |    34.28 % |
+| 2  | aetherhub.com          | 3680 |    17.88 % |
+| 3  | arena.decklist         | 3198 |    15.53 % |
+| 4  | mtggoldfish.com        | 2051 |     9.96 % |
+| 5  | archidekt.com          |  812 |     3.94 % |
+| 6  | streamdecker.com       |  585 |     2.84 % |
+| 7  | mtga.untapped.gg       |  573 |     2.78 % |
 | 8  | tcgplayer.com          |  514 |     2.50 % |
 | 9  | tappedout.net          |  473 |     2.30 % |
 | 10 | melee.gg               |  290 |     1.41 % |
@@ -128,7 +130,7 @@ descriptions).
 | 12 | mtgdecks.net           |  212 |     1.03 % |
 | 13 | mtgazone.com           |  159 |     0.77 % |
 | 14 | scryfall.com           |  156 |     0.76 % |
-| 15 | hareruyamtg.com        |  143 |     0.70 % |
+| 15 | hareruyamtg.com        |  144 |     0.70 % |
 | 16 | flexslot.gg            |   92 |     0.45 % |
 | 17 | pennydreadfulmagic.com |   70 |     0.34 % |
 | 18 | mtgtop8.com            |   60 |     0.29 % |
@@ -138,6 +140,7 @@ descriptions).
 | 22 | manastack.com          |   38 |     0.18 % |
 | 23 | mtgarena.pro           |   23 |     0.11 % |
 | 24 | cardhoarder.com        |   20 |     0.10 % |
-| 25 | old.starcitygames.com  |    1 |     0.00 % |
-| 26 | mtgotraders.com        |    1 |     0.00 % |
-|  | TOTAL                  | 20560 | 100.00 %|
+| 25 | app.cardboard.live     |    9 |     0.04 % |
+| 26 | old.starcitygames.com  |    1 |     0.00 % |
+| 27 | mtgotraders.com        |    1 |     0.00 % |
+|  | TOTAL                  | 20586 | 100.00 %|
