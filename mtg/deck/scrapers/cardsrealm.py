@@ -14,7 +14,6 @@ import dateutil.parser
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper
 from mtg.utils.scrape import ScrapingError, getsoup
-from mtg.scryfall import Card
 
 _log = logging.getLogger(__name__)
 

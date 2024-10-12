@@ -29,12 +29,13 @@ descriptions).
   to avoid bothering with Google APIs
 * Scraping YT videos' descriptions (or comments) for decks:    
     * Text decklists in Arena/MTGO format pasted into video descriptions are parsed into Deck objects
-    * Links to decklist services are scraped into Deck objects. 26 services are supported so far:
+    * Links to decklist services are scraped into Deck objects. 27 services are supported so far:
         * [Aetherhub](https://aetherhub.com)
         * [Archidekt](https://archidekt.com)
         * [CardBoard Live](https://cardboard.live)
         * [Cardhoarder](https://www.cardhoarder.com)
         * [Cardsrealm](https://mtg.cardsrealm.com/en-us/)
+        * [Deckbox](https://deckbox.org)
         * [Deckstats.net](https://deckstats.net)
         * [Flexslot](https://flexslot.gg)
         * [Goldfish](https://www.mtggoldfish.com)

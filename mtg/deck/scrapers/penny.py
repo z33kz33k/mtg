@@ -22,7 +22,7 @@ _log = logging.getLogger(__name__)
 
 @DeckScraper.registered
 class PennyDreadfulMagicScraper(DeckScraper):
-    """Scraper of Scryfall decklist page.
+    """Scraper of PennyDreadfulMagic decklist page.
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)

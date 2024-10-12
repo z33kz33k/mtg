@@ -23,7 +23,7 @@ CLIPBOARD_XPATH = "//span[text()='Export to Arena']"
 
 
 @DeckScraper.registered
-class CardBoardLiveDeckScraper(DeckScraper):
+class CardBoardLiveScraper(DeckScraper):
     """Scraper of a CardBoard Live decklist page.
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:

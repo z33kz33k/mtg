@@ -1067,12 +1067,6 @@ def find_set_by_code(*set_codes: str, data: Iterable[SetData] | None = None) -> 
     return find_set(lambda s: s.set_code in {sc.lower() for sc in set_codes}, data)
 
 
-# MtG sets with all cards not being legal anywhere
-ILLEGAL = {
-    'dsc', 'dsk', 'f12', 'f17', 'f18', 'h17', 'hho', 'l16', 'l17', 'p03', 'ptg', 'q07', 'ugl',
-    'und', 'unh', 'ust'}
-
-
 @lru_cache
 def bulk_data(legal_only=True, non_token_only=True) -> set[Card]:
     """Return Scryfall JSON card data as set of Card objects.
