@@ -910,6 +910,8 @@ class Video:
                     _log.warning(f"Scraping failed with: {e}. Re-trying with backoff...")
                     return scraper.scrape_with_backoff()
         elif any(h in link for h in self.PASTEBIN_LIKE_HOOKS):
+            if "gist.github.com/" in link and not link.endswith("/raw"):
+                link = f"{link}/raw"
             data = timed_request(link)
             if data:
                 return ArenaParser(data.splitlines(), self.metadata).parse()

@@ -13,7 +13,7 @@ from bs4 import Tag
 
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper
-from mtg.scryfall import Card
+from mtg.scryfall import COMMANDER_FORMATS, Card
 from mtg.utils.scrape import ScrapingError, getsoup
 
 _log = logging.getLogger(__name__)
@@ -40,6 +40,8 @@ class DeckboxScraper(DeckScraper):
         self._metadata["author"] = page_header_tag.find("a").text.strip()
         self._metadata["name"] = page_header_tag.find("span").text.strip()
         info_tag = self._soup.find("div", class_="deck_info_widget")
+        if not info_tag:
+            raise ScrapingError("Info tag missing. Probably not a decklist page")
         likes_tag = info_tag.find("span", id="votes_count")
         self._metadata["likes"] = int(likes_tag.text)
         comments_tag = info_tag.find("a", string=lambda s: s and "Comments" in s)
@@ -66,10 +68,13 @@ class DeckboxScraper(DeckScraper):
 
         commander_tag = self._soup.find("div", id="commander_info")
         if commander_tag:
-            self._set_commander(self.find_card(commander_tag.find("a").text.strip()))
+            if commander_subtag := commander_tag.find("a"):
+                self._set_commander(self.find_card(commander_subtag.text.strip()))
 
         sideboard_table = self._soup.find("table", class_=lambda c: c and "sideboard" in c)
         if sideboard_table and not self._commander:  # parse sideboard only if there is no commander
             for row in sideboard_table.find_all("tr"):
                 self._sideboard += self._parse_row(row)
 
+        if not self._commander and len(self._sideboard) == 1 and self.fmt in COMMANDER_FORMATS:
+            self._set_commander(self._sideboard.pop())
