@@ -224,7 +224,6 @@ def is_arena_line(line: str) -> bool:
 def get_arena_lines(*lines: str) -> list[str]:
     arena_lines, regular_lines, inverted_lines = [], set(), set()
     for i, line in enumerate(lines):
-        end_line = arena_lines[-1] if arena_lines else None
         if _is_about_line(line) and i < len(lines) - 1:
             if _is_name_line(lines[i + 1]):
                 arena_lines.append("About")
@@ -331,6 +330,8 @@ class ArenaParser(DeckParser):
         if not self._metadata.get("source"):
             self._metadata["source"] = "arena.decklist"
 
+    # last safeguard against lines that mimicked Arena lines successfully enough
+    # not to be weeded out at this point
     def _quantity_exceeded(self, playset: list[Card]) -> bool:
         max_quantity, word = self.MAX_CARD_QUANTITY, "card"
         if self._state is ParsingState.COMMANDER:

@@ -57,6 +57,8 @@ EXTENDED_DECKLISTS_FILE = CHANNELS_DIR / "extended_decklists.json"
 DORMANT_THRESHOLD = 30 * 3  # days
 ABANDONED_THRESHOLD = 30 * 12  # days
 DECK_STALE_THRESHOLD = 50  # videos
+VERY_DECK_STALE_THRESHOLD = 100  # videos
+EXCESSIVELY_DECK_STALE_THRESHOLD = 150  # videos
 
 
 def channel_url_to_handle(url: str) -> str:
@@ -161,11 +163,19 @@ class ChannelData:
 
     @property
     def is_deck_stale(self) -> bool:
-        return self.deck_staleness > DECK_STALE_THRESHOLD
+        return VERY_DECK_STALE_THRESHOLD >= self.deck_staleness > DECK_STALE_THRESHOLD
+
+    @property
+    def is_very_deck_stale(self) -> bool:
+        return EXCESSIVELY_DECK_STALE_THRESHOLD >= self.deck_staleness > VERY_DECK_STALE_THRESHOLD
+
+    @property
+    def is_excessively_deck_stale(self) -> bool:
+        return self.deck_staleness > EXCESSIVELY_DECK_STALE_THRESHOLD
 
     @property
     def is_deck_fresh(self) -> bool:
-        return not self.is_deck_stale
+        return not (self.is_deck_stale or self.is_very_deck_stale or self.is_excessively_deck_stale)
 
 
 def retrieve_urls() -> list[str]:
@@ -478,6 +488,48 @@ def scrape_deck_stale(videos=25, only_earlier_than_last_scraped=True, only_activ
                 continue
             urls.append(url)
     text = "deck-stale and active" if only_active else "deck-stale"
+    _log.info(f"Scraping {len(urls)} {text} channel(s)...")
+    scrape_channels(
+        *urls, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
+
+
+def scrape_very_deck_stale(
+        videos=25, only_earlier_than_last_scraped=True, only_active=True) -> None:
+    """Scrape these YouTube channels specified in private Google Sheet that are considered
+    very deck-stale. Save the scraped data as .json files.
+    """
+    urls = []
+    for url in retrieve_urls():
+        try:
+            data = load_channel(url)
+        except FileNotFoundError:
+            data = None
+        if data and data.is_very_deck_stale:
+            if only_active and not data.is_active:
+                continue
+            urls.append(url)
+    text = "very deck-stale and active" if only_active else "very deck-stale"
+    _log.info(f"Scraping {len(urls)} {text} channel(s)...")
+    scrape_channels(
+        *urls, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
+
+
+def scrape_excessively_deck_stale(
+        videos=25, only_earlier_than_last_scraped=True, only_active=True) -> None:
+    """Scrape these YouTube channels specified in private Google Sheet that are considered
+    excessively deck-stale. Save the scraped data as .json files.
+    """
+    urls = []
+    for url in retrieve_urls():
+        try:
+            data = load_channel(url)
+        except FileNotFoundError:
+            data = None
+        if data and data.is_excessively_deck_stale:
+            if only_active and not data.is_active:
+                continue
+            urls.append(url)
+    text = "excessively deck-stale and active" if only_active else "excessively deck-stale"
     _log.info(f"Scraping {len(urls)} {text} channel(s)...")
     scrape_channels(
         *urls, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
