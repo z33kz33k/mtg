@@ -368,7 +368,7 @@ class Deck:
     def maindeck(self) -> list[Card]:
         return self._maindeck
 
-    @cached_property
+    @property
     def sideboard(self) -> list[Card]:
         return self._sideboard
 
@@ -582,6 +582,9 @@ class Deck:
             companion: Card | None = None, metadata: Json | None = None) -> None:
         commanders = [c for c in [commander, partner_commander] if c]
         maindeck, sideboard = [*maindeck], [*sideboard] if sideboard else []
+        if commanders and sideboard:
+            sideboard = []
+            _log.warning("Disregarding sideboard for a commander-enabled deck")
         if partner_commander:
             if not commander:
                 raise InvalidDeck("Partner commander without commander")
@@ -627,18 +630,27 @@ class Deck:
         self._sideboard = []
         if sideboard:
             if not self.companion:
-                comp = from_iterable(sideboard, lambda c: c.is_companion)
-                if comp:
+                if comp := from_iterable(sideboard, lambda c: c.is_companion):
                     self._companion = comp
-            self._sideboard_playsets = aggregate(*sideboard)
+            sideboard_playsets = aggregate(*sideboard)
             self._sideboard = [*itertools.chain(
-                *sorted(self._sideboard_playsets.values(), key=lambda l: l[0].name))]
+                *sorted(sideboard_playsets.values(), key=lambda l: l[0].name))]
+            if len(self.sideboard) > self.MAX_SIDEBOARD_SIZE:
+                self._cut_sideboard(sideboard)
             temp_playsets = aggregate(*self.cards)
             for playset in temp_playsets.values():
                 self._validate_playset(playset)
-            if len(self.sideboard) > self.MAX_SIDEBOARD_SIZE:
-                raise InvalidDeck(
-                    f"Invalid sideboard size: {len(self.sideboard)} > {self.MAX_SIDEBOARD_SIZE}")
+
+    def _cut_sideboard(self, input_sideboard: list[Card]) -> None:
+        _log.warning(
+            f"Oversized sideboard ({len(self.sideboard)}) cut down to regular size "
+            f"({self.MAX_SIDEBOARD_SIZE})")
+        sideboard = input_sideboard[:self.MAX_SIDEBOARD_SIZE]
+        if self.companion and self.companion not in sideboard:
+            sideboard[-1] = self.companion
+        sideboard_playsets = aggregate(*sideboard)
+        self._sideboard = [*itertools.chain(
+            *sorted(sideboard_playsets.values(), key=lambda l: l[0].name))]
 
     def _validate_playset(self, playset: list[Card]) -> None:
         card = playset[0]
