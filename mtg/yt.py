@@ -37,10 +37,10 @@ from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser, get_arena_lines, group_arena_lines
 from mtg.deck.scrapers import DeckScraper, SANITIZED_FORMATS
 from mtg.deck.scrapers.melee import ALT_DOMAIN as MELEE_ALT_DOMAIN
+from mtg.deck.scrapers.moxfield import MoxfieldBookmarkScraper
 from mtg.scryfall import all_formats
 from mtg.utils import Counter, breadcrumbs, deserialize_dates, extract_float, find_longest_seqs, \
-    from_iterable, \
-    getrepr, multiply_by_symbol, sanitize_filename, serialize_dates, timed
+    from_iterable, getrepr, multiply_by_symbol, sanitize_filename, serialize_dates, timed
 from mtg.utils.files import getdir
 from mtg.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
 from mtg.utils.scrape import ScrapingError, extract_source, extract_url, \
@@ -92,6 +92,11 @@ class ChannelData:
     @property
     def sources(self) -> list[str]:
         return sorted({s for v in self.videos for s in v["sources"]})
+
+    @property
+    def deck_urls(self) -> set[str]:
+        return {d["metadata"]["url"] for d in self.decks
+                if d.get("metadata") and d["metadata"].get("url")}
 
     @property
     def deck_sources(self) -> Counter:
@@ -791,12 +796,14 @@ class Video:
             metadata["date"] = self.publish_time.date()
         return metadata
 
-    def __init__(self, video_id: str) -> None:
+    def __init__(self, video_id: str, *already_scraped_deck_urls: str) -> None:
         """Initialize.
 
         Args:
             video_id: unique string identifying a YouTube video (the part after `v=` in the URL)
+            already_scraped_deck_url: URLs of decks that have already been scraped within a channel
         """
+        self._already_scraped_deck_urls = set(already_scraped_deck_urls)
         self._process(video_id)
 
     @throttled(1.25, 0.25)
@@ -992,10 +999,13 @@ class Video:
         return decks
 
     def _collect(self, links: list[str], arena_lines: list[str]) -> list[Deck]:
-        decks = set()
+        decks: set[Deck] = set()
 
         # 1st stage: regular URLs
-        decks.update(self._process_urls(*links))
+        for deck in self._process_urls(*links):
+            decks.add(deck)
+            if deck_url := deck.metadata.get("url"):
+                self._already_scraped_deck_urls.add(deck_url)
 
         # 2nd stage: shortened URLs
         if not decks:
@@ -1004,7 +1014,10 @@ class Video:
             if shortened_urls:
                 unshortened_urls = [unshorten(url) for url in shortened_urls]
                 self._unshortened_links = [url for url in unshortened_urls if url]
-                decks.update(self._process_urls(*self._unshortened_links))
+                for deck in self._process_urls(*self._unshortened_links):
+                    decks.add(deck)
+                    if deck_url := deck.metadata.get("url"):
+                        self._already_scraped_deck_urls.add(deck_url)
 
         # 3rd stage: Arena lines
         if arena_lines:
@@ -1015,6 +1028,15 @@ class Video:
                         start = f"{deck.name!r} deck" if deck.name else "Deck"
                         _log.info(f"{start} scraped successfully")
                         decks.add(deck)
+
+        # TODO: more than only Moxfield bookmarks
+        # 4th stage: deck groups
+        if bookmark := from_iterable(
+                [*links, *self._unshortened_links],
+                lambda l: MoxfieldBookmarkScraper.is_bookmark_url(l)):
+            decks.update(
+                MoxfieldBookmarkScraper(bookmark, self.metadata).scrape(
+                    *self._already_scraped_deck_urls))
 
         return sorted(decks)
 
@@ -1144,10 +1166,11 @@ class Channel:
         self._scrape_time = datetime.now()
         _log.info(f"Scraping channel: {self.url!r}, {len(video_ids)} video(s)...")
         self._videos = []
+        earlier_deck_urls = self.earlier_data.deck_urls if self.earlier_data else set()
         for i, vid in enumerate(video_ids, start=1):
             _log.info(
                 f"Scraping video {i}/{len(video_ids)}: 'https://www.youtube.com/watch?v={vid}'...")
-            self._videos.append(Video(vid))
+            self._videos.append(Video(vid, *earlier_deck_urls))
         self._id = self.videos[0].channel_id if self else None
         try:
             self._ytsp_data = self._get_ytsp() if self._id else None
