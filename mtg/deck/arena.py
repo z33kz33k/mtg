@@ -232,13 +232,13 @@ def get_arena_lines(*lines: str) -> list[str]:
             if _is_about_line(lines[i - 1]):
                 arena_lines.append(line)
         elif _is_maindeck_line(line):
-            if end_line != "Deck":
+            if "Deck" not in arena_lines:
                 arena_lines.append("Deck")
         elif _is_commander_line(line):
-            if end_line != "Commander":
+            if "Commander" not in arena_lines:
                 arena_lines.append("Commander")
         elif _is_companion_line(line):
-            if end_line != "Companion":
+            if "Companion" not in arena_lines:
                 arena_lines.append("Companion")
         elif _is_playset_line(line):
             if not arena_lines:
@@ -252,14 +252,14 @@ def get_arena_lines(*lines: str) -> list[str]:
                 regular_lines.add(line)
             arena_lines.append(line)
         elif _is_sideboard_line(line):
-            if end_line != "Sideboard":
+            if "Sideboard" not in arena_lines:
                 arena_lines.append("Sideboard")
         elif (is_empty(line)
               and 1 < i < len(lines) - 1
               and _is_playset_line(lines[i - 2])  # previous previous line
               and _is_playset_line(lines[i - 1])  # previous line
               and (_is_playset_line(lines[i + 1]) or _is_sideboard_line(lines[i + 1]))):  # next line
-            if not _is_sideboard_line(lines[i + 1]) and arena_lines[-1] != "Sideboard":
+            if not _is_sideboard_line(lines[i + 1]) and "Sideboard" not in arena_lines:
                 arena_lines.append("Sideboard")
 
     # return either inverted or regular playset lines, but not both
