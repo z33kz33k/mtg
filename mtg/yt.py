@@ -1128,8 +1128,10 @@ class Channel:
         self._ytsp_data, self._data = None, None
         try:
             self._earlier_data = load_channel(self.url)
+            self._already_scraped_deck_urls = {*self._earlier_data.deck_urls}
         except FileNotFoundError:
             self._earlier_data = None
+            self._already_scraped_deck_urls = set()
 
     def get_unscraped_ids(self, limit=10) -> list[str]:
         scraped_ids = [v["id"] for v in self.earlier_data.videos] if self.earlier_data else []
@@ -1163,11 +1165,12 @@ class Channel:
         self._scrape_time = datetime.now()
         _log.info(f"Scraping channel: {self.url!r}, {len(video_ids)} video(s)...")
         self._videos = []
-        earlier_deck_urls = self.earlier_data.deck_urls if self.earlier_data else set()
         for i, vid in enumerate(video_ids, start=1):
             _log.info(
                 f"Scraping video {i}/{len(video_ids)}: 'https://www.youtube.com/watch?v={vid}'...")
-            self._videos.append(Video(vid, *earlier_deck_urls))
+            video = Video(vid, *self._already_scraped_deck_urls)
+            self._videos.append(video)
+            self._already_scraped_deck_urls.update({d.url for d in video.decks if d.url})
         self._id = self.videos[0].channel_id if self else None
         try:
             self._ytsp_data = self._get_ytsp() if self._id else None

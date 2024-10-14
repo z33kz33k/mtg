@@ -560,6 +560,10 @@ class Deck:
         return self.metadata.get("format")
 
     @property
+    def url(self) -> str | None:
+        return self.metadata.get("url")
+
+    @property
     def is_meta_deck(self) -> bool:
         return any(k.startswith("meta") for k in self.metadata)
 
