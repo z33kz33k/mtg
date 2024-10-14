@@ -14,7 +14,7 @@ from typing import Callable, Optional, Type
 
 import backoff
 from bs4 import BeautifulSoup
-from requests import ConnectionError
+from requests import ConnectionError, ReadTimeout
 
 from mtg import Json
 from mtg.deck import Deck, DeckParser, InvalidDeck
@@ -177,7 +177,7 @@ class DeckScraper(DeckParser):
             return None
 
     @backoff.on_exception(  # TODO: see if more errors should be such handled
-        backoff.expo, (ConnectionError,), max_time=60)
+        backoff.expo, (ConnectionError, ReadTimeout), max_time=60)
     def scrape_with_backoff(
             self, throttled=False, suppress_parsing_errors=True, suppress_scraping_errors=True,
             suppress_invalid_deck=True) -> Deck | None:

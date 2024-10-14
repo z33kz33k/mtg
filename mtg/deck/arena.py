@@ -227,6 +227,8 @@ def get_arena_lines(*lines: str) -> list[str]:
         if _is_about_line(line) and i < len(lines) - 1:
             if _is_name_line(lines[i + 1]):
                 arena_lines.append("About")
+                if "Deck" in arena_lines:
+                    arena_lines.remove("Deck")
         elif _is_name_line(line) and i > 0:
             if _is_about_line(lines[i - 1]):
                 arena_lines.append(line)
@@ -236,9 +238,13 @@ def get_arena_lines(*lines: str) -> list[str]:
         elif _is_commander_line(line):
             if "Commander" not in arena_lines:
                 arena_lines.append("Commander")
+                if "Deck" in arena_lines:
+                    arena_lines.remove("Deck")
         elif _is_companion_line(line):
             if "Companion" not in arena_lines:
                 arena_lines.append("Companion")
+                if "Deck" in arena_lines:
+                    arena_lines.remove("Deck")
         elif _is_playset_line(line):
             if not arena_lines:
                 if i < len(lines) - 3 and any(_is_maindeck_line(l) for l in lines[i + 1:i + 4]):

@@ -10,6 +10,8 @@
 import logging
 from datetime import date
 
+from requests import ReadTimeout
+
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper
 from mtg.utils import get_date_from_ago_text
@@ -41,8 +43,11 @@ class StreamdeckerScraper(DeckScraper):
         return url
 
     def _pre_parse(self) -> None:  # override
-        self._json_data = timed_request(
-            self.API_URL_TEMPLATE.format(self._decklist_id), return_json=True)["data"]
+        try:
+            self._json_data = timed_request(
+                self.API_URL_TEMPLATE.format(self._decklist_id), return_json=True)["data"]
+        except ReadTimeout:
+            raise ScrapingError("Request timed out")
         if not self._json_data:
             raise ScrapingError("Data not available")
 
