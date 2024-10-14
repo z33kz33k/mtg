@@ -996,16 +996,16 @@ class Video:
                 start = f"{deck.name!r} deck" if deck.name else "Deck"
                 _log.info(f"{start} scraped successfully")
                 decks.append(deck)
+                if deck_url := deck.metadata.get("url"):
+                    self._already_scraped_deck_urls.add(deck_url)
+
         return decks
 
     def _collect(self, links: list[str], arena_lines: list[str]) -> list[Deck]:
         decks: set[Deck] = set()
 
         # 1st stage: regular URLs
-        for deck in self._process_urls(*links):
-            decks.add(deck)
-            if deck_url := deck.metadata.get("url"):
-                self._already_scraped_deck_urls.add(deck_url)
+        decks.update(self._process_urls(*links))
 
         # 2nd stage: shortened URLs
         if not decks:
@@ -1014,10 +1014,7 @@ class Video:
             if shortened_urls:
                 unshortened_urls = [unshorten(url) for url in shortened_urls]
                 self._unshortened_links = [url for url in unshortened_urls if url]
-                for deck in self._process_urls(*self._unshortened_links):
-                    decks.add(deck)
-                    if deck_url := deck.metadata.get("url"):
-                        self._already_scraped_deck_urls.add(deck_url)
+                decks.update(self._process_urls(*unshortened_urls))
 
         # 3rd stage: Arena lines
         if arena_lines:
