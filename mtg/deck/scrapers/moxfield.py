@@ -145,6 +145,9 @@ class MoxfieldBookmarkScraper:
         json_data = timed_request(
             self.API_URL_TEMPLATE.format(self._get_bookmark_id()), return_json=True,
             headers=HEADERS)
+        if not json_data:
+            _log.warning("Bookmark data not available")
+            return []
         deck_urls = [d["deck"]["publicUrl"] for d in json_data["decks"]["data"]]
         _log.info(
             f"Gathered {len(deck_urls)} deck URL(s) from a Moxfield bookmark at: {self._url!r}")
@@ -152,4 +155,5 @@ class MoxfieldBookmarkScraper:
             if url in already_scraped_deck_urls:
                 _log.info(f"Skipping already scraped deck URL: {url!r}")
                 deck_urls.remove(url)
-        return [MoxfieldScraper(url, self._metadata).scrape(throttled=True) for url in deck_urls]
+        decks = [MoxfieldScraper(url, self._metadata).scrape(throttled=True) for url in deck_urls]
+        return [d for d in decks if d]
