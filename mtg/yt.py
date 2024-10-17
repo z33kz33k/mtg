@@ -428,7 +428,7 @@ def scrape_active(
         if not data:
             urls.append(url)
         elif data.is_active:
-            if only_deck_fresh and data.is_deck_stale:
+            if only_deck_fresh and not data.is_deck_fresh:
                 continue
             urls.append(url)
     text = "active and deck-fresh" if only_deck_fresh else "active"
@@ -449,7 +449,7 @@ def scrape_dormant(
         except FileNotFoundError:
             data = None
         if data and data.is_dormant:
-            if only_deck_fresh and data.is_deck_stale:
+            if only_deck_fresh and not data.is_deck_fresh:
                 continue
             urls.append(url)
     text = "dormant and deck-fresh" if only_deck_fresh else "dormant"
@@ -470,7 +470,7 @@ def scrape_abandoned(
         except FileNotFoundError:
             data = None
         if data and data.is_abandoned:
-            if only_deck_fresh and data.is_deck_stale:
+            if only_deck_fresh and not data.is_deck_fresh:
                 continue
             urls.append(url)
     text = "abandoned and deck-fresh" if only_deck_fresh else "abandoned"

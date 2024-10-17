@@ -131,6 +131,8 @@ class UntappedMetaDeckScraper(DeckScraper):
 
     def _parse_metadata(self) -> None:  # override
         name_tag = self._soup.select_one("h1[class*='layouts__MetaPageHeaderTitle']")
+        if not name_tag:
+            name_tag = self._soup.select_one("span[class*='DeckViewHeader__ArchetypeName']")
         name = name_tag.text.strip().removesuffix(" Deck")
         self._metadata["name"] = name
         fmt_tag = self._soup.find("div", id="filter-format")

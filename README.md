@@ -95,59 +95,59 @@ descriptions).
 ### Scraped decks breakdown
 | No | Format | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | commander       | 6814 |    30.00 % |
-| 2  | standard        | 6769 |    29.80 % |
-| 3  | modern          | 2064 |     9.09 % |
-| 4  | historic        |  829 |     3.65 % |
-| 5  | brawl           |  824 |     3.63 % |
-| 6  | pioneer         |  790 |     3.48 % |
-| 7  | timeless        |  748 |     3.29 % |
-| 8  | explorer        |  730 |     3.21 % |
-| 9  | legacy          |  719 |     3.17 % |
-| 10 | undefined       |  649 |     2.86 % |
-| 11 | pauper          |  596 |     2.62 % |
-| 12 | premodern       |  230 |     1.01 % |
-| 13 | alchemy         |  225 |     0.99 % |
-| 14 | paupercommander |  213 |     0.94 % |
-| 15 | duel            |  127 |     0.56 % |
-| 16 | standardbrawl   |  102 |     0.45 % |
-| 17 | penny           |   99 |     0.44 % |
-| 18 | irregular       |   75 |     0.33 % |
-| 19 | vintage         |   45 |     0.20 % |
-| 20 | oathbreaker     |   31 |     0.14 % |
+| 1  | standard        | 6979 |    30.07 % |
+| 2  | commander       | 6890 |    29.69 % |
+| 3  | modern          | 2118 |     9.13 % |
+| 4  | brawl           |  838 |     3.61 % |
+| 5  | historic        |  835 |     3.60 % |
+| 6  | pioneer         |  806 |     3.47 % |
+| 7  | timeless        |  778 |     3.35 % |
+| 8  | explorer        |  757 |     3.26 % |
+| 9  | legacy          |  735 |     3.17 % |
+| 10 | undefined       |  665 |     2.87 % |
+| 11 | pauper          |  607 |     2.62 % |
+| 12 | alchemy         |  234 |     1.01 % |
+| 13 | premodern       |  233 |     1.00 % |
+| 14 | paupercommander |  213 |     0.92 % |
+| 15 | duel            |  129 |     0.56 % |
+| 16 | standardbrawl   |  103 |     0.44 % |
+| 17 | penny           |   99 |     0.43 % |
+| 18 | irregular       |   76 |     0.33 % |
+| 19 | vintage         |   45 |     0.19 % |
+| 20 | oathbreaker     |   31 |     0.13 % |
 | 21 | gladiator       |   17 |     0.07 % |
 | 22 | oldschool       |   14 |     0.06 % |
 | 23 | future          |    7 |     0.03 % |
-|  | TOTAL           | 22717 | 100.00 %|
+|  | TOTAL           | 23209 | 100.00 %|
 
 | No | Source | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | moxfield.com           | 8610 |    37.90 % |
-| 2  | aetherhub.com          | 3838 |    16.89 % |
-| 3  | arena.decklist         | 3398 |    14.96 % |
-| 4  | mtggoldfish.com        | 2097 |     9.23 % |
-| 5  | archidekt.com          |  827 |     3.64 % |
-| 6  | mtga.untapped.gg       |  615 |     2.71 % |
-| 7  | streamdecker.com       |  615 |     2.71 % |
-| 8  | tcgplayer.com          |  527 |     2.32 % |
-| 9  | tappedout.net          |  482 |     2.12 % |
-| 10 | melee.gg               |  294 |     1.29 % |
-| 11 | deckstats.net          |  227 |     1.00 % |
-| 12 | mtgdecks.net           |  217 |     0.96 % |
-| 13 | mtgazone.com           |  162 |     0.71 % |
-| 14 | scryfall.com           |  160 |     0.70 % |
-| 15 | hareruyamtg.com        |  151 |     0.66 % |
-| 16 | flexslot.gg            |   97 |     0.43 % |
+| 1  | moxfield.com           | 8770 |    37.79 % |
+| 2  | aetherhub.com          | 3938 |    16.97 % |
+| 3  | arena.decklist         | 3522 |    15.18 % |
+| 4  | mtggoldfish.com        | 2133 |     9.19 % |
+| 5  | archidekt.com          |  837 |     3.61 % |
+| 6  | mtga.untapped.gg       |  646 |     2.78 % |
+| 7  | streamdecker.com       |  626 |     2.70 % |
+| 8  | tcgplayer.com          |  534 |     2.30 % |
+| 9  | tappedout.net          |  483 |     2.08 % |
+| 10 | melee.gg               |  294 |     1.27 % |
+| 11 | deckstats.net          |  228 |     0.98 % |
+| 12 | mtgdecks.net           |  219 |     0.94 % |
+| 13 | mtgazone.com           |  163 |     0.70 % |
+| 14 | scryfall.com           |  160 |     0.69 % |
+| 15 | hareruyamtg.com        |  151 |     0.65 % |
+| 16 | flexslot.gg            |  100 |     0.43 % |
 | 17 | pennydreadfulmagic.com |   71 |     0.31 % |
-| 18 | mtgtop8.com            |   61 |     0.27 % |
-| 19 | topdecked.com          |   60 |     0.26 % |
+| 18 | mtgtop8.com            |   64 |     0.28 % |
+| 19 | topdecked.com          |   62 |     0.27 % |
 | 20 | manatraders.com        |   51 |     0.22 % |
 | 21 | mtg.cardsrealm.com     |   39 |     0.17 % |
-| 22 | manastack.com          |   38 |     0.17 % |
+| 22 | manastack.com          |   38 |     0.16 % |
 | 23 | deckbox.org            |   25 |     0.11 % |
 | 24 | mtgarena.pro           |   23 |     0.10 % |
 | 25 | cardhoarder.com        |   20 |     0.09 % |
 | 26 | app.cardboard.live     |    9 |     0.04 % |
 | 27 | old.starcitygames.com  |    2 |     0.01 % |
 | 28 | mtgotraders.com        |    1 |     0.00 % |
-|  | TOTAL                  | 22717 | 100.00 %|
+|  | TOTAL                  | 23209 | 100.00 %|
