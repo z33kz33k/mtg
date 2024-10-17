@@ -7,6 +7,7 @@
     @author: z33k
 
 """
+import contextlib
 import hashlib
 import itertools
 import logging
@@ -273,10 +274,9 @@ def deserialize_dates(dct: dict) -> dict:
                 dct[key] = datetime.strptime(value, READABLE_TIMESTAMP_FORMAT)
             except ValueError:
                 # if it fails, try to parse as date
-                try:
+                with contextlib.suppress(ValueError):
+                    # leave it as a string if both parsing attempts fail
                     dct[key] = date.fromisoformat(value)
-                except ValueError:
-                    pass  # leave it as a string if both parsing attempts fail
     return dct
 
 

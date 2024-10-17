@@ -7,6 +7,7 @@
     @author: z33k
 
 """
+import contextlib
 import logging
 from datetime import datetime
 
@@ -107,11 +108,9 @@ class MtgaZoneScraper(DeckScraper):
         self._maindeck = self._process_decklist(main_tag)
 
         if sideboard_tags := self._soup.select("div.decklist.sideboard"):
-            try:
+            with contextlib.suppress(IndexError):
                 sideboard_tag = sideboard_tags[1]
                 self._sideboard = self._process_decklist(sideboard_tag)
-            except IndexError:
-                pass
 
 
 def _parse_tiers(table: Tag) -> dict[str, int]:

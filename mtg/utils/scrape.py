@@ -7,6 +7,7 @@
     @author: z33k
 
 """
+import contextlib
 import json
 import logging
 import random
@@ -71,13 +72,11 @@ def timed_request(
 
     # handle brotli compression
     if response.headers.get("Content-Encoding") == "br":
-        try:
+        with contextlib.suppress(brotli.error):
             decompressed = brotli.decompress(response.content)
             if return_json:
                 return json.loads(decompressed)
             return decompressed
-        except brotli.error:
-            pass
 
     if return_json:
         return response.json() if response.text else {}

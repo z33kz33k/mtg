@@ -7,6 +7,7 @@
     @author: z33k
 
 """
+import contextlib
 import logging
 from datetime import datetime
 
@@ -64,10 +65,8 @@ class MtgTop8Scraper(DeckScraper):
             self._metadata["name"] = name.strip()
         fmt_tag = self._soup.find("div", class_="meta_arch")
         self._update_fmt(fmt_tag.text.strip().lower())
-        try:
+        with contextlib.suppress(IndexError):
             self._metadata["event"]["rank"] = EVENT_RANKS[len(fmt_tag.find_all("img")) - 1]
-        except IndexError:
-            pass
         players_date_text = self._soup.find('div', style='margin-bottom:5px;').text.strip()
         if "-" in players_date_text:
             players_text, date_text = players_date_text.split("-", maxsplit=1)

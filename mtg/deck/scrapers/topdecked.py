@@ -7,6 +7,7 @@
     @author: z33k
 
 """
+import contextlib
 import logging
 
 import dateutil.parser
@@ -63,15 +64,13 @@ class TopDeckedScraper(DeckScraper):
         self._metadata["name"] = _sanitize_element_text(name_el.text)
         fmt_el = driver.find_element(By.XPATH, self._FMT_XPATH)
         self._update_fmt(_sanitize_element_text(fmt_el.text))
-        try:
+        with contextlib.suppress(NoSuchElementException):  # meta-decks feature no date data
             date_el = driver.find_element(By.XPATH, self._DATE_XPATH)
             date_text = _sanitize_element_text(date_el.text)
             if "ago" in date_text:
                 self._metadata["date"] = get_date_from_ago_text(date_text)
             else:
                 self._metadata["date"] = dateutil.parser.parse(date_text)
-        except NoSuchElementException:  # meta-decks feature no date data
-            pass
 
     def _get_data(self) -> list[str]:
         with webdriver.Chrome() as driver:

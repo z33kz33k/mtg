@@ -7,6 +7,7 @@
     @author: z33k
 
 """
+import contextlib
 import itertools
 import json
 import logging
@@ -517,10 +518,8 @@ class Deck:
     @cached_property
     def archetype(self) -> Archetype:
         if arch := self.metadata.get("archetype"):
-            try:
-                return Archetype(arch.lower())
-            except ValueError:
-                pass
+            with contextlib.suppress(ValueError):
+                return Archetype(arch)
 
         if self.name:
             nameparts = [
