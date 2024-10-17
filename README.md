@@ -63,7 +63,7 @@ descriptions).
     * Both old and new TCGPlayer sites are supported
     * Both international and Japanese Hareruya sites are supported 
     * Due to their dynamic nature, Untapped, TCGPlayer (new site), ManaStack, Flexslot, CardBoard Live 
-      and TopDecked are scraped using [Selenium](https://github.com/SeleniumHQ/Selenium). It's also used to scrape MTGTop8, MTGDecks.net and 
+      and TopDecked are scraped using [Selenium](https://github.com/SeleniumHQ/Selenium). It's also used to scrape MTGDecks.net and 
       Cardhoarder, even though those are very much static sites. Selenium is still helpful here 
       (either to click a consent button or bypass anti-bot measures)
     * All those mentioned above work even if they are behind shortener links and need unshortening first
@@ -72,6 +72,11 @@ descriptions).
     * Deck's name and format are derived if not readily available
     * Foreign cards and other that cannot be found in the downloaded Scryfall bulk data are looked 
       up with queries to the Scryfall API
+    * Individual decklist URLs are extracted from container pages and further processed for decks. 
+      These include:
+        * Moxfield bookmarks
+        * MTGTop8 events
+        * others in plans
 * Assessing the meta:
     * Scraping Goldfish and MGTAZone for meta-decks (others in plans)
     * Scraping a singular Untapped meta-deck decklist page

@@ -11,13 +11,14 @@ import contextlib
 import logging
 from datetime import datetime
 
-from selenium.common.exceptions import TimeoutException
+from bs4 import BeautifulSoup
 
 from mtg import Json
+from mtg.deck import Deck
 from mtg.deck.scrapers import DeckScraper
 from mtg.utils import extract_int
-from mtg.utils.scrape import get_dynamic_soup_by_xpath
 from mtg.utils.scrape import ScrapingError
+from mtg.utils.scrape import getsoup
 
 _log = logging.getLogger(__name__)
 
@@ -25,14 +26,11 @@ _log = logging.getLogger(__name__)
 EVENT_RANKS = "minor", "regular", "major"  # indicated by number of stars (1, 2, 3)
 
 
-# TODO: scrape event as an object (basically a list of decks with event metadata taken from the
-#  first), scrape metagame
+# TODO: scrape metagame
 @DeckScraper.registered
 class MtgTop8Scraper(DeckScraper):
     """Scraper of MTGTop8 decklist page.
     """
-    _XPATH = "//div[@class='event_title']"
-
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
 
@@ -45,10 +43,9 @@ class MtgTop8Scraper(DeckScraper):
         return url
 
     def _pre_parse(self) -> None:  # override
-        try:
-            self._soup, _, _ = get_dynamic_soup_by_xpath(self.url, self._XPATH)
-        except TimeoutException:
-            raise ScrapingError(f"Scraping failed due to Selenium timing out")
+        self._soup = getsoup(self.url)
+        if not self._soup:
+            raise ScrapingError("Page not available")
 
     def _parse_metadata(self) -> None:  # override
         event_tag, name_tag = [tag for tag in self._soup.find_all("div", class_="event_title")
@@ -98,3 +95,44 @@ class MtgTop8Scraper(DeckScraper):
                     else:
                         quantity = extract_int(quantity)
                         cards += self.get_playset(card, quantity)
+
+
+class MtgTop8EventScraper:
+    """Scraper of MTGTop8 event page.
+    """
+    URL_TEMPLATE = "https://www.mtgtop8.com/event{}"
+
+    def __init__(self, url: str, metadata: Json | None = None) -> None:
+        if not self.is_event_url(url):
+            raise ValueError(f"Not a MTGTop8 event URL: {url!r}")
+        self._url, self._metadata = url, metadata
+        self._soup: BeautifulSoup | None = None
+
+    @staticmethod
+    def is_event_url(url: str) -> bool:
+        return "mtgtop8.com/event?e=" in url and "&d=" not in url
+
+    def _collect(self) -> list[str]:
+        a_tags = [tag for tag in self._soup.find_all(
+            "a", href=lambda h: h and "e=" in h and "&d="in h) if not tag.find("img")
+                  and tag.text not in ('Switch to Visual', '→')]
+        deck_urls = {}
+        for a_tag in a_tags:
+            deck_urls[a_tag.text] = a_tag.attrs["href"]
+        return [self.URL_TEMPLATE.format(url) for url in deck_urls.values()]
+
+    def scrape(self, *already_scraped_deck_urls: str) -> list[Deck]:
+        self._soup = getsoup(self._url)
+        if not self._soup:
+            _log.warning("Event data not available")
+            return []
+
+        deck_urls = self._collect()
+        _log.info(
+            f"Gathered {len(deck_urls)} deck URL(s) from a MTGTop8 event at: {self._url!r}")
+        for url in deck_urls:
+            if url in already_scraped_deck_urls:
+                _log.info(f"Skipping already scraped deck URL: {url!r}")
+                deck_urls.remove(url)
+        decks = [MtgTop8Scraper(url, self._metadata).scrape() for url in deck_urls]
+        return [d for d in decks if d]

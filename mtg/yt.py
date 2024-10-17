@@ -38,6 +38,7 @@ from mtg.deck.arena import ArenaParser, get_arena_lines, group_arena_lines
 from mtg.deck.scrapers import DeckScraper, SANITIZED_FORMATS
 from mtg.deck.scrapers.melee import ALT_DOMAIN as MELEE_ALT_DOMAIN
 from mtg.deck.scrapers.moxfield import MoxfieldBookmarkScraper
+from mtg.deck.scrapers.mtgtop8 import MtgTop8EventScraper
 from mtg.scryfall import all_formats
 from mtg.utils import Counter, breadcrumbs, deserialize_dates, extract_float, find_longest_seqs, \
     from_iterable, getrepr, multiply_by_symbol, sanitize_filename, serialize_dates, timed
@@ -1026,13 +1027,18 @@ class Video:
                         _log.info(f"{start} scraped successfully")
                         decks.add(deck)
 
-        # TODO: more than only Moxfield bookmarks
+        # TODO: more than only Moxfield bookmarks and MTGTop8 events
         # 4th stage: deck groups
-        if bookmark := from_iterable(
-                [*links, *self._unshortened_links],
-                lambda l: MoxfieldBookmarkScraper.is_bookmark_url(l)):
+        gathered_links = [*links, *self._unshortened_links]
+        for bookmark in [
+            url for url in gathered_links if MoxfieldBookmarkScraper.is_bookmark_url(url)]:
             decks.update(
                 MoxfieldBookmarkScraper(bookmark, self.metadata).scrape(
+                    *self._already_scraped_deck_urls))
+        for event in [
+            url for url in gathered_links if MtgTop8EventScraper.is_event_url(url)]:
+            decks.update(
+                MtgTop8EventScraper(event, self.metadata).scrape(
                     *self._already_scraped_deck_urls))
 
         return sorted(decks)
