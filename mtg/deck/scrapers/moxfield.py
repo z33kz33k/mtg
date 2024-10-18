@@ -123,8 +123,9 @@ class MoxfieldScraper(DeckScraper):
 class MoxfieldBookmarkScraper(DeckContainerScraper):
     """Scraper of Moxfield bookmark page.
     """
-    CONTAINER_NAME = "Moxfield bookmark"
+    CONTAINER_NAME = "Moxfield bookmark"  # override
     API_URL_TEMPLATE = "https://api2.moxfield.com/v1/bookmarks/{}"
+    _DECK_SCRAPER = MoxfieldScraper  # override
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -140,20 +141,11 @@ class MoxfieldBookmarkScraper(DeckContainerScraper):
             return id_
         return last
 
-    def _scrape(self, *already_scraped_deck_urls: str) -> list[Deck]:  # override
-        throttle(*DeckScraper.THROTTLING)
+    def _collect(self) -> list[str]:  # override
         json_data = timed_request(
             self.API_URL_TEMPLATE.format(self._get_bookmark_id()), return_json=True,
             headers=HEADERS)
         if not json_data:
             _log.warning("Bookmark data not available")
             return []
-        deck_urls = [d["deck"]["publicUrl"] for d in json_data["decks"]["data"]]
-        _log.info(
-            f"Gathered {len(deck_urls)} deck URL(s) from a Moxfield bookmark at: {self.url!r}")
-        for url in deck_urls:
-            if url in already_scraped_deck_urls:
-                _log.info(f"Skipping already scraped deck URL: {url!r}")
-                deck_urls.remove(url)
-        decks = [MoxfieldScraper(url, self._metadata).scrape(throttled=True) for url in deck_urls]
-        return [d for d in decks if d]
+        return [d["deck"]["publicUrl"] for d in json_data["decks"]["data"]]

@@ -11,9 +11,12 @@ import json
 import logging
 from datetime import datetime
 
+from bs4 import BeautifulSoup
+
 from mtg import Json
-from mtg.deck.scrapers import DeckScraper
-from mtg.utils.scrape import ScrapingError, getsoup
+from mtg.deck import Deck
+from mtg.deck.scrapers import DeckContainerScraper, DeckScraper
+from mtg.utils.scrape import ScrapingError, getsoup, throttle
 
 _log = logging.getLogger(__name__)
 
@@ -70,3 +73,35 @@ class ArchidektScraper(DeckScraper):
     def _parse_deck(self) -> None:  # override
         for v in self._deck_data["cardMap"].values():
             self._parse_card_json(v)
+
+
+@DeckContainerScraper.registered
+class ArchidektFolderScraper(DeckContainerScraper):
+    """Scraper of Archidekt folder page.
+    """
+    CONTAINER_NAME = "Archidekt folder"  # override
+    URL_TEMPLATE = "https://archidekt.com{}"
+    _DECK_SCRAPER = ArchidektScraper  #
+
+    def __init__(self, url: str, metadata: Json | None = None) -> None:
+        super().__init__(url, metadata)
+        self._soup: BeautifulSoup | None = None
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return "archidekt.com/folders/" in url
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return url.removeprefix("/")
+
+    def _collect(self) -> list[str]:
+        self._soup = getsoup(self.url)
+        if not self._soup:
+            _log.warning("Folder data not available")
+            return []
+
+        deck_urls = []
+        for a_tag in self._soup.select("a[class*='deck_link__']"):
+            deck_urls.append(a_tag.attrs["href"])
+        return [self.URL_TEMPLATE.format(url) for url in deck_urls]

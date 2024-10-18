@@ -226,6 +226,7 @@ class DeckScraper(DeckParser):
 class DeckContainerScraper:
     CONTAINER_NAME = None
     _REGISTRY: set[Type["DeckContainerScraper"]] = set()
+    _DECK_SCRAPER: Type[DeckScraper] | None = None
 
     @property
     def url(self) -> str:
@@ -234,6 +235,7 @@ class DeckContainerScraper:
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         self._validate_url(url)
         self._url, self._metadata = self.sanitize_url(url), metadata
+        self._deck_urls = []
 
     @classmethod
     def _validate_url(cls, url):
@@ -252,8 +254,27 @@ class DeckContainerScraper:
         return url.removesuffix("/")
 
     @abstractmethod
-    def _scrape(self, *already_scraped_deck_urls: str) -> list[Deck]:
+    def _collect(self) -> list[str]:
         raise NotImplementedError
+
+    def _process_decks(self, *already_scraped_deck_urls: str) -> list[Deck]:
+        _log.info(
+            f"Gathered {len(self._deck_urls)} deck URL(s) from a {self.CONTAINER_NAME} at:"
+            f" {self.url!r}")
+        decks = []
+        for i, url in enumerate(self._deck_urls, start=1):
+            if url in already_scraped_deck_urls:
+                _log.info(f"Skipping already scraped deck URL: {url!r}")
+                continue
+            else:
+                throttle(*DeckScraper.THROTTLING)
+                _log.info(f"Scraping deck {i}/{len(self._deck_urls)}...")
+                decks.append(self._DECK_SCRAPER(url, self._metadata).scrape())
+        return [d for d in decks if d]
+
+    def _scrape(self, *already_scraped_deck_urls: str) -> list[Deck]:
+        self._deck_urls = self._collect()
+        return self._process_decks(*already_scraped_deck_urls)
 
     @backoff.on_exception(
         backoff.expo, (ConnectionError, ReadTimeout), max_time=60)
