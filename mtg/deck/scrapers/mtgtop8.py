@@ -15,7 +15,7 @@ from bs4 import BeautifulSoup
 
 from mtg import Json
 from mtg.deck import Deck
-from mtg.deck.scrapers import DeckScraper
+from mtg.deck.scrapers import DeckContainerScraper, DeckScraper
 from mtg.utils import extract_int
 from mtg.utils.scrape import ScrapingError
 from mtg.utils.scrape import getsoup
@@ -40,7 +40,7 @@ class MtgTop8Scraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return url
+        return url.removeprefix("/")
 
     def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)
@@ -97,20 +97,24 @@ class MtgTop8Scraper(DeckScraper):
                         cards += self.get_playset(card, quantity)
 
 
-class MtgTop8EventScraper:
+@DeckContainerScraper.registered
+class MtgTop8EventScraper(DeckContainerScraper):
     """Scraper of MTGTop8 event page.
     """
+    CONTAINER_NAME = "MTGTop8 event"
     URL_TEMPLATE = "https://www.mtgtop8.com/event{}"
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
-        if not self.is_event_url(url):
-            raise ValueError(f"Not a MTGTop8 event URL: {url!r}")
-        self._url, self._metadata = url, metadata
+        super().__init__(url, metadata)
         self._soup: BeautifulSoup | None = None
 
     @staticmethod
-    def is_event_url(url: str) -> bool:
+    def is_container_url(url: str) -> bool:  # override
         return "mtgtop8.com/event?e=" in url and "&d=" not in url
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return url.removeprefix("/")
 
     def _collect(self) -> list[str]:
         a_tags = [tag for tag in self._soup.find_all(
@@ -121,15 +125,15 @@ class MtgTop8EventScraper:
             deck_urls[a_tag.text] = a_tag.attrs["href"]
         return [self.URL_TEMPLATE.format(url) for url in deck_urls.values()]
 
-    def scrape(self, *already_scraped_deck_urls: str) -> list[Deck]:
-        self._soup = getsoup(self._url)
+    def _scrape(self, *already_scraped_deck_urls: str) -> list[Deck]:
+        self._soup = getsoup(self.url)
         if not self._soup:
             _log.warning("Event data not available")
             return []
 
         deck_urls = self._collect()
         _log.info(
-            f"Gathered {len(deck_urls)} deck URL(s) from a MTGTop8 event at: {self._url!r}")
+            f"Gathered {len(deck_urls)} deck URL(s) from a MTGTop8 event at: {self.url!r}")
         for url in deck_urls:
             if url in already_scraped_deck_urls:
                 _log.info(f"Skipping already scraped deck URL: {url!r}")

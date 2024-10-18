@@ -12,7 +12,7 @@ from datetime import datetime
 
 from mtg import Json
 from mtg.deck import Deck
-from mtg.deck.scrapers import DeckScraper
+from mtg.deck.scrapers import DeckContainerScraper, DeckScraper
 from mtg.scryfall import Card
 from mtg.utils.scrape import ScrapingError, throttle, timed_request
 
@@ -119,28 +119,28 @@ class MoxfieldScraper(DeckScraper):
             self._companion = result[0]
 
 
-class MoxfieldBookmarkScraper:
+@DeckContainerScraper.registered
+class MoxfieldBookmarkScraper(DeckContainerScraper):
     """Scraper of Moxfield bookmark page.
     """
+    CONTAINER_NAME = "Moxfield bookmark"
     API_URL_TEMPLATE = "https://api2.moxfield.com/v1/bookmarks/{}"
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
-        if not self.is_bookmark_url(url):
-            raise ValueError(f"Not a Moxfield bookmark URL: {url!r}")
-        self._url, self._metadata = url, metadata
+        super().__init__(url, metadata)
 
     @staticmethod
-    def is_bookmark_url(url: str) -> bool:
+    def is_container_url(url: str) -> bool:  # override
         return "moxfield.com/bookmarks/" in url
 
     def _get_bookmark_id(self) -> str:
-        *_, last = self._url.split("/")
+        *_, last = self.url.split("/")
         if "-" in last:
             id_, *_ = last.split("-")
             return id_
         return last
 
-    def scrape(self, *already_scraped_deck_urls: str) -> list[Deck]:
+    def _scrape(self, *already_scraped_deck_urls: str) -> list[Deck]:  # override
         throttle(*DeckScraper.THROTTLING)
         json_data = timed_request(
             self.API_URL_TEMPLATE.format(self._get_bookmark_id()), return_json=True,
@@ -150,7 +150,7 @@ class MoxfieldBookmarkScraper:
             return []
         deck_urls = [d["deck"]["publicUrl"] for d in json_data["decks"]["data"]]
         _log.info(
-            f"Gathered {len(deck_urls)} deck URL(s) from a Moxfield bookmark at: {self._url!r}")
+            f"Gathered {len(deck_urls)} deck URL(s) from a Moxfield bookmark at: {self.url!r}")
         for url in deck_urls:
             if url in already_scraped_deck_urls:
                 _log.info(f"Skipping already scraped deck URL: {url!r}")

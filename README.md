@@ -21,12 +21,11 @@ descriptions).
 * Scryfall data management via downloading bulk data with 
   [scrython](https://github.com/NandaScott/Scrython) and wrapping it in convenient abstractions
 * Scraping YT channels for videos with decklists in descriptions (or comments) - using no less than 
-  four Python libraries: 
+  four Python libraries to avoid bothering with Google APIs: 
     * [scrapetube](https://github.com/dermasmid/scrapetube),
     * [pytubefix](https://github.com/JuanBindez/pytubefix),
     * [youtubesearchpython](https://github.com/alexmercerind/youtube-search-python), 
     * [youtube-comment-downloader](https://github.com/egbertbouman/youtube-comment-downloader) 
-  to avoid bothering with Google APIs
 * Scraping YT videos' descriptions (or comments) for decks:    
     * Text decklists in Arena/MTGO format pasted into video descriptions are parsed into Deck objects
     * Links to decklist services are scraped into Deck objects. 27 services are supported so far:

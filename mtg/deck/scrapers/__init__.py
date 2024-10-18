@@ -69,7 +69,7 @@ SANITIZED_FORMATS = {
 
 class DeckScraper(DeckParser):
     THROTTLING = Throttling(0.6, 0.15)
-    _REGISTRY = set()
+    _REGISTRY: set[Type["DeckScraper"]] = set()
 
     @property
     def url(self) -> str:
@@ -200,5 +200,68 @@ class DeckScraper(DeckParser):
     def from_url(cls, url: str, metadata: Json | None = None) -> Optional["DeckScraper"]:
         for scraper_type in cls._REGISTRY:
             if scraper_type.is_deck_url(url):
+                return scraper_type(url, metadata)
+        return None
+
+
+class DeckContainerScraper:
+    CONTAINER_NAME = None
+    _REGISTRY: set[Type["DeckContainerScraper"]] = set()
+
+    @property
+    def url(self) -> str:
+        return self._url
+
+    def __init__(self, url: str, metadata: Json | None = None) -> None:
+        self._validate_url(url)
+        self._url, self._metadata = self.sanitize_url(url), metadata
+
+    @classmethod
+    def _validate_url(cls, url):
+        if url and not cls.is_container_url(url):
+            raise ValueError(f"Not a {cls.CONTAINER_NAME} URL: {url!r}")
+
+    @staticmethod
+    @abstractmethod
+    def is_container_url(url: str) -> bool:
+        raise NotImplementedError
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:
+        if "?" in url:
+            url, rest = url.split("?", maxsplit=1)
+        return url.removesuffix("/")
+
+    @abstractmethod
+    def _scrape(self, *already_scraped_deck_urls: str) -> list[Deck]:
+        raise NotImplementedError
+
+    @backoff.on_exception(
+        backoff.expo, (ConnectionError, ReadTimeout), max_time=60)
+    def _scrape_with_backoff(self, *already_scraped_deck_urls: str) -> list[Deck]:
+        return self._scrape(*already_scraped_deck_urls)
+
+    def scrape(self, *already_scraped_deck_urls: str) -> list[Deck]:
+        try:
+            return self._scrape(*already_scraped_deck_urls)
+        except (ConnectionError, ReadTimeout) as e:
+            _log.warning(
+                f"Scraping {self.CONTAINER_NAME} failed with: {e}. Re-trying with backoff...")
+            return self._scrape_with_backoff(*already_scraped_deck_urls)
+
+    @classmethod
+    def registered(cls, scraper_type: Type["DeckContainerScraper"]) -> Type["DeckContainerScraper"]:
+        """Class decorator for registering subclasses of DeckContainerScraper.
+        """
+        if issubclass(scraper_type, DeckContainerScraper):
+            cls._REGISTRY.add(scraper_type)
+        else:
+            raise TypeError(f"Not a subclass of DeckContainerScraper: {scraper_type!r}")
+        return scraper_type
+
+    @classmethod
+    def from_url(cls, url: str, metadata: Json | None = None) -> Optional["DeckContainerScraper"]:
+        for scraper_type in cls._REGISTRY:
+            if scraper_type.is_container_url(url):
                 return scraper_type(url, metadata)
         return None
