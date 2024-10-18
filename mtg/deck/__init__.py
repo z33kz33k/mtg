@@ -533,8 +533,11 @@ class Deck:
             card_parts = {p for card in self.cards for p in card.name_parts}
             if any(p.title() in THEMES for p in nameparts):  # a themed deck is not a combo deck
                 pass
-            elif nameparts and any(p.lower() in card_parts for p in nameparts):
-                return Archetype.COMBO
+            elif identified := from_iterable(nameparts, lambda n: n.lower() in card_parts):
+                if self.commander and identified in self.commander.name_parts:
+                    pass  # don't flag commander part in name as combo
+                else:
+                    return Archetype.COMBO
         if self.avg_cmc < self.MIN_AGGRO_CMC:
             return Archetype.AGGRO
         else:

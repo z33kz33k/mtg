@@ -1,0 +1,102 @@
+{
+    "url": "https://www.youtube.com/@LegenVD",
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "duskmourn",
+        "edh",
+        "educational",
+        "explorer",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtgduskmourn",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 131000,
+    "scrape_time": "2024-10-15 00:27:17",
+    "videos": [
+        {
+            "id": "i9aaHJ1G7lM",
+            "url": "https://www.youtube.com/watch?v=i9aaHJ1G7lM",
+            "author": "LegenVD",
+            "title": "How to make Standard fun again.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a blue/red/green copy deck, featuring Season of Weaving, Doppelgang and Cursed Recording from Duskmourn in Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n06:29 - Match 1\n18:36 - Match 2\n21:05 - Match 3\n35:43 - Match 4\n38:15 - Match 5\n50:21 - Match 6\n\nDecklist:\nhttps://aetherhub.com/Deck/cursed-copy\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGDuskmourn #mtgdsk #mtg #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "blue",
+                "combo",
+                "combo deck",
+                "copy",
+                "copy deck",
+                "cursed recording",
+                "deck",
+                "decks",
+                "doppelgang",
+                "dsk",
+                "dsk standard",
+                "duskmourn",
+                "duskmourn deck",
+                "duskmourn standard",
+                "enchantment",
+                "gameplay",
+                "green",
+                "guide",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "new standard",
+                "red",
+                "standard",
+                "standard deck",
+                "temur",
+                "vinestalk"
+            ],
+            "publish_time": "2024-10-14 09:00:48",
+            "views": 14101,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "control",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2024-10-13",
+                        "exports": 347,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Cursed Copy",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/cursed-copy",
+                        "views": 442
+                    },
+                    "decklist_id": "5610867c-f6fd-87a8-70b1-3ec52414cae1",
+                    "decklist_extended_id": "7cdda946-58da-13c4-19e2-59d1badf99bb"
+                }
+            ]
+        }
+    ]
+}

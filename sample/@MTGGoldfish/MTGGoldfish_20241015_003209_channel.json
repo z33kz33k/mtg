@@ -1,0 +1,65 @@
+{
+    "url": "https://www.youtube.com/@MTGGoldfish",
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 329000,
+    "scrape_time": "2024-10-15 00:32:09",
+    "videos": [
+        {
+            "id": "y42zdnAFNIM",
+            "url": "https://www.youtube.com/watch?v=y42zdnAFNIM",
+            "author": "MTGGoldfish",
+            "title": "I Spent All My Wildcards on Nexus of Becoming, So...  Meme or Dream?",
+            "description": "Is Nexus of Becoming a Meme or Dream? Let's give this incredibly janky looking Platinum-Mythic Ranked Player deck a shot and find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/meme-or-dream-i-spent-all-my-wildcards-on-nexus-of-becoming-so\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6680992#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/7fCcv\n◼ Purchase this deck (Magic Online): http://mtg.fish/kgJpT\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#mtgstandard \n\n0:00 Start\n3:33 Games V1\n25:21 Updates\n27:50 Games V2",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2024-10-14 08:55:41",
+            "views": 20581,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2024-10-08",
+                        "format": "standard",
+                        "name": "I Spent All My Wildcards on Nexus of Becoming",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6680992"
+                    },
+                    "decklist_id": "38c68c43-dbf8-04e2-ec60-6ef9a85d3e89",
+                    "decklist_extended_id": "8e1e38fd-6d82-7b46-508d-401d608bbb15"
+                }
+            ]
+        },
+        {
+            "id": "cayV2DLu3Pc",
+            "url": "https://www.youtube.com/watch?v=cayV2DLu3Pc",
+            "author": "MTGGoldfish",
+            "title": "Magic the Gathering Pictionary",
+            "description": "We play Magic: the Gathering Pictionary! Each player draws a card from memory and their teammate has 60 seconds to guess!\n\n#mtg #magicthegathering #pictionary",
+            "keywords": [
+                "MTG",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2024-10-13 08:00:08",
+            "views": 28869,
+            "sources": [],
+            "decks": []
+        }
+    ]
+}
