@@ -957,19 +957,7 @@ class Video:
 
     def _process_deck(self, link: str) -> Deck | None:
         if scraper := DeckScraper.from_url(link, self.metadata):
-            if any(site in link for site in self._THROTTLED):
-                # TODO: move this to DeckScraper
-                try:
-                    return scraper.scrape(throttled=True)
-                except (ConnectionError, ReadTimeout) as e:
-                    _log.warning(f"Scraping failed with: {e}. Re-trying with backoff...")
-                    return scraper.scrape_with_backoff(throttled=True)
-            else:
-                try:
-                    return scraper.scrape()
-                except (ConnectionError, ReadTimeout) as e:
-                    _log.warning(f"Scraping failed with: {e}. Re-trying with backoff...")
-                    return scraper.scrape_with_backoff()
+            return scraper.scrape(throttled=any(site in link for site in self._THROTTLED))
         elif any(h in link for h in self.PASTEBIN_LIKE_HOOKS):
             if "gist.github.com/" in link and not link.endswith("/raw"):
                 link = f"{link}/raw"

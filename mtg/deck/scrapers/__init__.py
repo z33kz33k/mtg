@@ -146,7 +146,7 @@ class DeckScraper(DeckParser):
             self._maindeck, self._sideboard, self._commander, self._partner_commander,
             self._companion, self._metadata)
 
-    def scrape(
+    def _scrape(
             self, throttled=False, suppress_parsing_errors=True, suppress_scraping_errors=True,
             suppress_invalid_deck=True) -> Deck | None:
         if throttled:
@@ -178,13 +178,32 @@ class DeckScraper(DeckParser):
 
     @backoff.on_exception(  # TODO: see if more errors should be such handled
         backoff.expo, (ConnectionError, ReadTimeout), max_time=60)
-    def scrape_with_backoff(
+    def _scrape_with_backoff(
             self, throttled=False, suppress_parsing_errors=True, suppress_scraping_errors=True,
             suppress_invalid_deck=True) -> Deck | None:
         return self.scrape(
             throttled=throttled, suppress_parsing_errors=suppress_parsing_errors,
             suppress_scraping_errors=suppress_scraping_errors,
             suppress_invalid_deck=suppress_invalid_deck)
+
+    def scrape(
+            self, throttled=False, suppress_parsing_errors=True, suppress_scraping_errors=True,
+            suppress_invalid_deck=True) -> Deck | None:
+        try:
+            return self._scrape(
+                throttled=throttled,
+                suppress_parsing_errors=suppress_parsing_errors,
+                suppress_scraping_errors=suppress_scraping_errors,
+                suppress_invalid_deck=suppress_invalid_deck
+            )
+        except (ConnectionError, ReadTimeout) as e:
+            _log.warning(f"Scraping failed with: {e}. Re-trying with backoff...")
+            return self._scrape_with_backoff(
+                throttled=throttled,
+                suppress_parsing_errors=suppress_parsing_errors,
+                suppress_scraping_errors=suppress_scraping_errors,
+                suppress_invalid_deck=suppress_invalid_deck
+            )
 
     @classmethod
     def registered(cls, scraper_type: Type["DeckScraper"]) -> Type["DeckScraper"]:
