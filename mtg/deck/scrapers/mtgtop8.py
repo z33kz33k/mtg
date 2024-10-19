@@ -45,6 +45,8 @@ class MtgTop8Scraper(DeckScraper):
         self._soup = getsoup(self.url)
         if not self._soup:
             raise ScrapingError("Page not available")
+        if _ := self._soup.find("div", string="No event could be found."):
+            raise ScrapingError("No event could be found")
 
     def _parse_metadata(self) -> None:  # override
         event_tag, name_tag = [tag for tag in self._soup.find_all("div", class_="event_title")
