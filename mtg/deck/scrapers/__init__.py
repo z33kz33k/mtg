@@ -20,7 +20,7 @@ from mtg import Json
 from mtg.deck import Deck, DeckParser, InvalidDeck
 from mtg.utils.scrape import Throttling, extract_source, throttle
 from mtg.scryfall import all_formats
-from mtg.utils import ParsingError
+from mtg.utils import ParsingError, timed
 from mtg.utils.scrape import ScrapingError
 
 _log = logging.getLogger(__name__)
@@ -223,9 +223,9 @@ class DeckScraper(DeckParser):
         return None
 
 
-class DeckContainerScraper:
+class ContainerScraper:
     CONTAINER_NAME = None
-    _REGISTRY: set[Type["DeckContainerScraper"]] = set()
+    _REGISTRY: set[Type["ContainerScraper"]] = set()
     _DECK_SCRAPER: Type[DeckScraper] | None = None
 
     @property
@@ -281,6 +281,7 @@ class DeckContainerScraper:
     def _scrape_with_backoff(self, *already_scraped_deck_urls: str) -> list[Deck]:
         return self._scrape(*already_scraped_deck_urls)
 
+    @timed("container scraping", precision=2)
     def scrape(self, *already_scraped_deck_urls: str) -> list[Deck]:
         try:
             return self._scrape(*already_scraped_deck_urls)
@@ -290,17 +291,17 @@ class DeckContainerScraper:
             return self._scrape_with_backoff(*already_scraped_deck_urls)
 
     @classmethod
-    def registered(cls, scraper_type: Type["DeckContainerScraper"]) -> Type["DeckContainerScraper"]:
+    def registered(cls, scraper_type: Type["ContainerScraper"]) -> Type["ContainerScraper"]:
         """Class decorator for registering subclasses of DeckContainerScraper.
         """
-        if issubclass(scraper_type, DeckContainerScraper):
+        if issubclass(scraper_type, ContainerScraper):
             cls._REGISTRY.add(scraper_type)
         else:
             raise TypeError(f"Not a subclass of DeckContainerScraper: {scraper_type!r}")
         return scraper_type
 
     @classmethod
-    def from_url(cls, url: str, metadata: Json | None = None) -> Optional["DeckContainerScraper"]:
+    def from_url(cls, url: str, metadata: Json | None = None) -> Optional["ContainerScraper"]:
         for scraper_type in cls._REGISTRY:
             if scraper_type.is_container_url(url):
                 return scraper_type(url, metadata)

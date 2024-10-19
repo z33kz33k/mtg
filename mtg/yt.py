@@ -35,7 +35,7 @@ from youtubesearchpython import Channel as YtspChannel
 from mtg import FILENAME_TIMESTAMP_FORMAT, Json, OUTPUT_DIR, PathLike, README
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser, get_arena_lines, group_arena_lines
-from mtg.deck.scrapers import DeckContainerScraper, DeckScraper, SANITIZED_FORMATS
+from mtg.deck.scrapers import ContainerScraper, DeckScraper, SANITIZED_FORMATS
 from mtg.deck.scrapers.melee import ALT_DOMAIN as MELEE_ALT_DOMAIN
 from mtg.deck.scrapers.moxfield import MoxfieldBookmarkScraper
 from mtg.deck.scrapers.mtgtop8 import MtgTop8EventScraper
@@ -1019,7 +1019,7 @@ class Video:
         # TODO: more than only Moxfield bookmarks and MTGTop8 events
         # 4th stage: deck groups
         for link in [*links, *self._unshortened_links]:
-            if scraper := DeckContainerScraper.from_url(link, self.metadata):
+            if scraper := ContainerScraper.from_url(link, self.metadata):
                 decks.update(scraper.scrape(*self._already_scraped_deck_urls))
 
         return sorted(decks)

@@ -1,7 +1,7 @@
 """
 
     mtg.deck.scrapers.archidekt.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Archidekt decklists.
 
     @author: z33k
@@ -14,9 +14,8 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 
 from mtg import Json
-from mtg.deck import Deck
-from mtg.deck.scrapers import DeckContainerScraper, DeckScraper
-from mtg.utils.scrape import ScrapingError, getsoup, throttle
+from mtg.deck.scrapers import ContainerScraper, DeckScraper
+from mtg.utils.scrape import ScrapingError, getsoup
 
 _log = logging.getLogger(__name__)
 
@@ -75,8 +74,8 @@ class ArchidektScraper(DeckScraper):
             self._parse_card_json(v)
 
 
-@DeckContainerScraper.registered
-class ArchidektFolderScraper(DeckContainerScraper):
+@ContainerScraper.registered
+class ArchidektFolderScraper(ContainerScraper):
     """Scraper of Archidekt folder page.
     """
     CONTAINER_NAME = "Archidekt folder"  # override

@@ -1,7 +1,7 @@
 """
 
     mtg.deck.scrapers.moxfield.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Moxfield decklists.
 
     @author: z33k
@@ -11,10 +11,9 @@ import logging
 from datetime import datetime
 
 from mtg import Json
-from mtg.deck import Deck
-from mtg.deck.scrapers import DeckContainerScraper, DeckScraper
+from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.scryfall import Card
-from mtg.utils.scrape import ScrapingError, throttle, timed_request
+from mtg.utils.scrape import ScrapingError, timed_request
 
 _log = logging.getLogger(__name__)
 
@@ -119,8 +118,8 @@ class MoxfieldScraper(DeckScraper):
             self._companion = result[0]
 
 
-@DeckContainerScraper.registered
-class MoxfieldBookmarkScraper(DeckContainerScraper):
+@ContainerScraper.registered
+class MoxfieldBookmarkScraper(ContainerScraper):
     """Scraper of Moxfield bookmark page.
     """
     CONTAINER_NAME = "Moxfield bookmark"  # override

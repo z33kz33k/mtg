@@ -1,7 +1,7 @@
 """
 
     mtg.deck.scrapers.mtgtop8.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape MTGTop8 decklists.
 
     @author: z33k
@@ -14,8 +14,7 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 
 from mtg import Json
-from mtg.deck import Deck
-from mtg.deck.scrapers import DeckContainerScraper, DeckScraper
+from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.utils import extract_int
 from mtg.utils.scrape import ScrapingError
 from mtg.utils.scrape import getsoup
@@ -97,13 +96,13 @@ class MtgTop8Scraper(DeckScraper):
                         cards += self.get_playset(card, quantity)
 
 
-@DeckContainerScraper.registered
-class MtgTop8EventScraper(DeckContainerScraper):
+@ContainerScraper.registered
+class MtgTop8EventScraper(ContainerScraper):
     """Scraper of MTGTop8 event page.
     """
     CONTAINER_NAME = "MTGTop8 event"  # override
     URL_TEMPLATE = "https://www.mtgtop8.com/event{}"
-    _DECK_SCRAPER = MtgTop8Scraper  #
+    _DECK_SCRAPER = MtgTop8Scraper  # override
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
