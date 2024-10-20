@@ -23,11 +23,11 @@ from types import TracebackType
 from typing import Generator, Iterator, Type
 
 import backoff
+import httpcore
+import httpx
 import pytubefix
 import scrapetube
-import httpx
-import httpcore
-from requests import ConnectionError, HTTPError, Timeout, ReadTimeout
+from requests import HTTPError, ReadTimeout, Timeout
 from selenium.common.exceptions import TimeoutException
 from youtube_comment_downloader import SORT_BY_POPULAR, YoutubeCommentDownloader
 from youtubesearchpython import Channel as YtspChannel
@@ -37,8 +37,6 @@ from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser, get_arena_lines, group_arena_lines
 from mtg.deck.scrapers import ContainerScraper, DeckScraper, SANITIZED_FORMATS
 from mtg.deck.scrapers.melee import ALT_DOMAIN as MELEE_ALT_DOMAIN
-from mtg.deck.scrapers.moxfield import MoxfieldBookmarkScraper
-from mtg.deck.scrapers.mtgtop8 import MtgTop8EventScraper
 from mtg.scryfall import all_formats
 from mtg.utils import Counter, breadcrumbs, deserialize_dates, extract_float, find_longest_seqs, \
     from_iterable, getrepr, multiply_by_symbol, sanitize_filename, serialize_dates, timed
@@ -60,6 +58,7 @@ ABANDONED_THRESHOLD = 30 * 12  # days
 DECK_STALE_THRESHOLD = 50  # videos
 VERY_DECK_STALE_THRESHOLD = 100  # videos
 EXCESSIVELY_DECK_STALE_THRESHOLD = 150  # videos
+MAX_VIDEOS = 400
 
 
 def channel_url_to_handle(url: str) -> str:
@@ -404,7 +403,7 @@ def scrape_channels(
                         session.update_extended(deck.decklist_extended_id, deck.decklist_extended)
             except Exception as err:
                 _log.exception(f"Scraping of channel {url!r} failed with: '{err}'. Skipping...")
-            if current_videos > 500:
+            if current_videos > MAX_VIDEOS:
                 current_videos = 0
                 _log.info(f"Throttling for 5 minutes before the next batch...")
                 throttle_with_countdown(5 * 60)
@@ -983,8 +982,8 @@ class Video:
         for url in urls:
             self._sources.add(extract_source(url))
             if deck := self._process_deck(url):
-                start = f"{deck.name!r} deck" if deck.name else "Deck"
-                _log.info(f"{start} scraped successfully")
+                deck_name = f"{deck.name!r} deck" if deck.name else "Deck"
+                _log.info(f"{deck_name} scraped successfully")
                 decks.append(deck)
                 if deck_url := deck.metadata.get("url"):
                     self._already_scraped_deck_urls.add(deck_url)
@@ -1012,8 +1011,8 @@ class Video:
             for decklist in group_arena_lines(*arena_lines):
                 if len(decklist) > 2:
                     if deck := ArenaParser(decklist, self.metadata).parse():
-                        start = f"{deck.name!r} deck" if deck.name else "Deck"
-                        _log.info(f"{start} scraped successfully")
+                        deck_name = f"{deck.name!r} deck" if deck.name else "Deck"
+                        _log.info(f"{deck_name} scraped successfully")
                         decks.add(deck)
 
         # TODO: more than only Moxfield bookmarks and MTGTop8 events
