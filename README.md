@@ -75,6 +75,7 @@ descriptions).
       These include:
         * Moxfield bookmarks
         * MTGTop8 events
+        * Archidekt folders
         * others in plans
 * Assessing the meta:
     * Scraping Goldfish and MGTAZone for meta-decks (others in plans)

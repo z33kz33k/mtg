@@ -10,7 +10,7 @@
 import logging
 from datetime import datetime
 
-from mtg import Json
+from mtg import Json, SECRETS
 from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.scryfall import Card
 from mtg.utils.scrape import ScrapingError, timed_request
@@ -23,8 +23,7 @@ HEADERS = {
     "Accept-Encoding": "gzip, deflate, br, zstd",
     "Accept-Language": "en-US,en;q=0.9",
     "Authorization": "Bearer undefined",
-    "Cookie": "_ga=GA1.1.1202643745.1722108358; "
-              "ncmp.domain=moxfield.com; _ga_BW2XPQDNK2=GS1.1.1722108357.1.1.1722108385.0.0.0",
+    "Cookie": SECRETS["moxfield_cookie"],
     "Origin": "https://www.moxfield.com",
     "Priority": "u=1, i",
     "Referer": "https://www.moxfield.com/",

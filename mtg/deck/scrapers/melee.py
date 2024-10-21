@@ -12,7 +12,7 @@ import logging
 import dateutil.parser
 
 from mtg.deck import Deck
-from mtg import Json
+from mtg import Json, SECRETS
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckScraper
 from mtg.utils.scrape import ScrapingError, getsoup
@@ -28,10 +28,7 @@ _HEADERS = {
     "Accept-Language": "en-US,en;q=0.5",
     "Accept-Encoding": "gzip, deflate, br, zstd",
     "Connection": "keep-alive",
-    "Cookie": "_ga_0SLSY5ZVGM=GS1.1.1726273364.1.1.1726273386.0.0.0; "
-              "_ga=GA1.2.1386763100.1726273364; _gid=GA1.2.1786863949.1726273364; _gat_gtag_UA_"
-              "162951615_1=1; FunctionalCookie=false; AnalyticalCookie=false; CookieConsent="
-              "true; i18n.langtag=en",
+    "Cookie": SECRETS["melee_cookie"],
     "Upgrade-Insecure-Requests": "1",
     "Sec-Fetch-Dest": "document",
     "Sec-Fetch-Mode": "navigate",

@@ -6,6 +6,7 @@
 /output
 /var
 /archive
+*secrets.json
 *service_account.json
 *api_creds.json
 *api_key.txt

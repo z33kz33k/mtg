@@ -12,11 +12,11 @@ import logging
 import dateutil.parser
 from bs4 import NavigableString
 
-from mtg import Json
-from mtg.deck import ParsingState
-from mtg.deck.scrapers import DeckScraper
+from mtg import Json, SECRETS
+from mtg.deck import Deck, ParsingState
+from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.deck.scrapers.goldfish import GoldfishScraper
-from mtg.utils.scrape import ScrapingError, getsoup, timed_request
+from mtg.utils.scrape import ScrapingError, getsoup, throttle, timed_request
 
 _log = logging.getLogger(__name__)
 
@@ -173,3 +173,74 @@ class JapaneseHareruyaScraper(DeckScraper):
     def _parse_deck(self) -> None:  # override
         for card in self._json_data["cards"]:
             self._process_card(card)
+
+
+@ContainerScraper.registered
+class HareruyaEventScraper(ContainerScraper):
+    """Scraper of Hareruya event decks search page.
+    """
+    CONTAINER_NAME = "Hareruya event"  # override
+    _HEADERS = {
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,"
+                  "image/png,image/svg+xml,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Accept-Encoding": "gzip, deflate, br, zstd",
+        "Connection": "keep-alive",
+        "Cookie": SECRETS["hareruya_cookie"],
+        "DNT": "1",
+        "Host": "www.hareruyamtg.com",
+        "Priority": "u=0, i",
+        "Sec-Fetch-Dest": "document",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-Site": "cross-site",
+        "Sec-GPC": "1",
+        "TE": "trailers",
+        "Upgrade-Insecure-Requests": "1",
+        "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:131.0) Gecko/20100101 "
+                      "Firefox/131.0",
+    }
+
+    def __init__(self, url: str, metadata: Json | None = None) -> None:
+        super().__init__(url, metadata)
+        *_, self._event_id = self.url.split("/")
+        self._json_data: Json | None = None
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return all(t in url for t in {"hareruyamtg.com", "/deck", "/result?", "eventName="})
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return url.removeprefix("/")
+
+    def _collect(self) -> list[str]:  # override
+        self._soup = getsoup(self.url, headers=self._HEADERS)
+        if not self._soup:
+            _log.warning("Event data not available")
+            return []
+
+        return [a_tag.attrs["href"] for a_tag in self._soup.find_all(
+            "a", class_="deckSearch-searchResult__itemWrapper")]
+
+    def _process_decks(self, *already_scraped_deck_urls: str) -> list[Deck]:  # override
+        _log.info(
+            f"Gathered {len(self._deck_urls)} deck URL(s) from a {self.CONTAINER_NAME} at:"
+            f" {self.url!r}")
+        decks = []
+        for i, url in enumerate(self._deck_urls, start=1):
+            if url in already_scraped_deck_urls:
+                _log.info(f"Skipping already scraped deck URL: {url!r}")
+                continue
+            else:
+                throttle(*DeckScraper.THROTTLING)
+                _log.info(f"Scraping deck {i}/{len(self._deck_urls)}...")
+                deck = None
+                if InternationalHareruyaScraper.is_deck_url(url):
+                    deck = InternationalHareruyaScraper(url, dict(self._metadata)).scrape()
+                elif JapaneseHareruyaScraper.is_deck_url(url):
+                    deck = JapaneseHareruyaScraper(url, dict(self._metadata)).scrape()
+                if deck:
+                    deck_name = f"{deck.name!r} deck" if deck.name else "Deck"
+                    _log.info(f"{deck_name} scraped successfully")
+                    decks.append(deck)
+        return decks

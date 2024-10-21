@@ -7,6 +7,7 @@
     @author: z33k
 
 """
+import json
 import logging
 import os
 from logging.handlers import RotatingFileHandler
@@ -35,6 +36,7 @@ DATA_DIR = VAR_DIR / "data"
 OUTPUT_DIR = VAR_DIR / "output"
 LOG_DIR = VAR_DIR / "logs" if VAR_DIR.exists() else Path(os.getcwd())
 README = Path(os.getcwd()) / "README.md"
+SECRETS = json.loads(Path("secrets.json").read_text(encoding="utf-8"))
 
 
 _logging_initialized = False

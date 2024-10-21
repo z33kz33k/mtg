@@ -14,9 +14,9 @@ from datetime import datetime
 from bs4 import Tag
 
 from mtg import Json
-from mtg.deck import Deck, InvalidDeck, Mode
+from mtg.deck import Deck, Mode
 from mtg.deck.scrapers import DeckScraper
-from mtg.scryfall import Card, ARENA_FORMATS
+from mtg.scryfall import ARENA_FORMATS, Card
 from mtg.utils import extract_int, from_iterable, timed
 from mtg.utils.scrape import ScrapingError, getsoup
 
