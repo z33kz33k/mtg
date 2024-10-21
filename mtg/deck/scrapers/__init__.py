@@ -269,7 +269,7 @@ class ContainerScraper:
             else:
                 throttle(*DeckScraper.THROTTLING)
                 _log.info(f"Scraping deck {i}/{len(self._deck_urls)}...")
-                if deck := self._DECK_SCRAPER(url, self._metadata).scrape():
+                if deck := self._DECK_SCRAPER(url, dict(self._metadata)).scrape():
                     deck_name = f"{deck.name!r} deck" if deck.name else "Deck"
                     _log.info(f"{deck_name} scraped successfully")
                     decks.append(deck)
