@@ -221,26 +221,3 @@ class HareruyaEventScraper(ContainerScraper):
 
         return [a_tag.attrs["href"] for a_tag in self._soup.find_all(
             "a", class_="deckSearch-searchResult__itemWrapper")]
-
-    def _process_decks(self, *already_scraped_deck_urls: str) -> list[Deck]:  # override
-        _log.info(
-            f"Gathered {len(self._deck_urls)} deck URL(s) from a {self.CONTAINER_NAME} at:"
-            f" {self.url!r}")
-        decks = []
-        for i, url in enumerate(self._deck_urls, start=1):
-            if url in already_scraped_deck_urls:
-                _log.info(f"Skipping already scraped deck URL: {url!r}")
-                continue
-            else:
-                throttle(*DeckScraper.THROTTLING)
-                _log.info(f"Scraping deck {i}/{len(self._deck_urls)}...")
-                deck = None
-                if InternationalHareruyaScraper.is_deck_url(url):
-                    deck = InternationalHareruyaScraper(url, dict(self._metadata)).scrape()
-                elif JapaneseHareruyaScraper.is_deck_url(url):
-                    deck = JapaneseHareruyaScraper(url, dict(self._metadata)).scrape()
-                if deck:
-                    deck_name = f"{deck.name!r} deck" if deck.name else "Deck"
-                    _log.info(f"{deck_name} scraped successfully")
-                    decks.append(deck)
-        return decks

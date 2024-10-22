@@ -234,7 +234,7 @@ class ContainerScraper:
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         self._validate_url(url)
-        self._url, self._metadata = self.sanitize_url(url), metadata
+        self._url, self._metadata = self.sanitize_url(url), metadata or {}
         self._deck_urls = []
 
     @classmethod
@@ -269,7 +269,13 @@ class ContainerScraper:
             else:
                 throttle(*DeckScraper.THROTTLING)
                 _log.info(f"Scraping deck {i}/{len(self._deck_urls)}...")
-                if deck := self._DECK_SCRAPER(url, dict(self._metadata)).scrape():
+                deck = None
+                if self._DECK_SCRAPER:
+                    deck = self._DECK_SCRAPER(url, dict(self._metadata)).scrape()
+                else:
+                    if scraper := DeckScraper.from_url(url, dict(self._metadata)):
+                        deck = scraper.scrape()
+                if deck:
                     deck_name = f"{deck.name!r} deck" if deck.name else "Deck"
                     _log.info(f"{deck_name} scraped successfully")
                     decks.append(deck)
