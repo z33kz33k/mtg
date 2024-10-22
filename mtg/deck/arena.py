@@ -192,7 +192,7 @@ def _is_name_line(line: str) -> bool:
 def _is_maindeck_line(line: str) -> bool:
     return _is_section_line(
         line, "Main", "Maindeck", "Mainboard", "Deck", "Decklist", "Main Deck", "Main Board",
-        "Deck List")
+        "Deck List", "Mazo")
 
 
 def _is_commander_line(line: str) -> bool:

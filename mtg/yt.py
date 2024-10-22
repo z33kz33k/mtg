@@ -37,6 +37,7 @@ from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser, get_arena_lines, group_arena_lines
 from mtg.deck.scrapers import ContainerScraper, DeckScraper, SANITIZED_FORMATS
 from mtg.deck.scrapers.melee import ALT_DOMAIN as MELEE_ALT_DOMAIN
+from mtg.deck.scrapers.mtgarenapro import  ALT_DOMAIN as MTGARENAPRO_ALT_DOMAIN
 from mtg.scryfall import all_formats
 from mtg.utils import Counter, breadcrumbs, deserialize_dates, extract_float, find_longest_seqs, \
     from_iterable, getrepr, multiply_by_symbol, sanitize_filename, serialize_dates, timed
@@ -563,6 +564,8 @@ def get_aggregate_deck_data() -> tuple[Counter, Counter]:
             src = ".".join(parts)
         elif MELEE_ALT_DOMAIN in src:
             src = "melee.gg"
+        elif MTGARENAPRO_ALT_DOMAIN in src:
+            src = "mtgarena.pro"
         sources.append(src)
     source_counter = Counter(sources)
     return format_counter, source_counter
@@ -1003,7 +1006,7 @@ class Video:
             if shortened_urls:
                 unshortened_urls = [unshorten(url) for url in shortened_urls]
                 self._unshortened_links = [url for url in unshortened_urls if url]
-                decks.update(self._process_urls(*unshortened_urls))
+                decks.update(self._process_urls(*self.unshortened_links))
 
         # 3rd stage: Arena lines
         if arena_lines:

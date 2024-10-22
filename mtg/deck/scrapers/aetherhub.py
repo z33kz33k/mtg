@@ -53,7 +53,8 @@ class AetherhubScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "aetherhub.com/" in url and "/Deck/" in url and "/MyDecks/" not in url
+        return ("aetherhub.com/" in url and "/Deck/" in url and "/MyDecks/" not in url
+                and "/Builder" not in url)
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override

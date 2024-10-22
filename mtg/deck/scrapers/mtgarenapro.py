@@ -16,6 +16,7 @@ from mtg.utils.scrape import ScrapingError, getsoup
 from mtg.scryfall import Card
 
 _log = logging.getLogger(__name__)
+ALT_DOMAIN = "mtga.cc"
 
 
 @DeckScraper.registered
@@ -29,7 +30,11 @@ class MtgArenaProScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "mtgarena.pro/decks/" in url
+        return "mtgarena.pro/decks/" in url or f"{ALT_DOMAIN}/decks/" in url
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return url.replace(ALT_DOMAIN, "mtgarena.pro")
 
     def _get_json(self) -> Json:
         return self.dissect_js("var precachedDeck=", '"card_ids":', lambda s: s + '"card_ids":[]}')
