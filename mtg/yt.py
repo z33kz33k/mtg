@@ -1018,8 +1018,7 @@ class Video:
                         _log.info(f"{deck_name} scraped successfully")
                         decks.add(deck)
 
-        # TODO: more than only Moxfield bookmarks and MTGTop8 events
-        # 4th stage: deck groups
+        # 4th stage: deck containers
         for link in [*links, *self._unshortened_links]:
             if scraper := ContainerScraper.from_url(link, self.metadata):
                 decks.update(scraper.scrape(*self._already_scraped_deck_urls))

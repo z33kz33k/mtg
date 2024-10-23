@@ -39,7 +39,7 @@ class MtgTop8Scraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return url.removeprefix("/")
+        return url.removesuffix("/")
 
     def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)
@@ -108,7 +108,6 @@ class MtgTop8EventScraper(ContainerScraper):
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        self._soup: BeautifulSoup | None = None
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -116,7 +115,7 @@ class MtgTop8EventScraper(ContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return url.removeprefix("/")
+        return url.removesuffix("/")
 
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url)

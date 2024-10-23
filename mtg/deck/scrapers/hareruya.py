@@ -202,8 +202,6 @@ class HareruyaEventScraper(ContainerScraper):
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        *_, self._event_id = self.url.split("/")
-        self._json_data: Json | None = None
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -211,7 +209,7 @@ class HareruyaEventScraper(ContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return url.removeprefix("/")
+        return url.removesuffix("/")
 
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url, headers=self._HEADERS)

@@ -235,6 +235,7 @@ class ContainerScraper:
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         self._validate_url(url)
         self._url, self._metadata = self.sanitize_url(url), metadata or {}
+        self._soup: BeautifulSoup | None = None
         self._deck_urls = []
 
     @classmethod

@@ -84,15 +84,10 @@ class ArchidektFolderScraper(ContainerScraper):
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        self._soup: BeautifulSoup | None = None
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
         return "archidekt.com/folders/" in url
-
-    @staticmethod
-    def sanitize_url(url: str) -> str:  # override
-        return url.removeprefix("/")
 
     def _collect(self) -> list[str]:
         self._soup = getsoup(self.url)

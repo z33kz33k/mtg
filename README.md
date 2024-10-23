@@ -61,10 +61,7 @@ descriptions).
     * Both Untapped decklist types featured in YT videos are supported: regular deck and profile deck
     * Both old and new TCGPlayer sites are supported
     * Both international and Japanese Hareruya sites are supported 
-    * Due to their dynamic nature, Untapped, TCGPlayer (new site), ManaStack, Flexslot, CardBoard Live 
-      and TopDecked are scraped using [Selenium](https://github.com/SeleniumHQ/Selenium). It's also used to scrape MTGDecks.net and 
-      Cardhoarder, even though those are very much static sites. Selenium is still helpful here 
-      (either to click a consent button or bypass anti-bot measures)
+    * Sites that need it are scraped using [Selenium](https://github.com/SeleniumHQ/Selenium)
     * All those mentioned above work even if they are behind shortener links and need unshortening first
     * Text decklists in links to pastebin-like services (like [Amazonian](https://www.youtube.com/@Amazonian) does) work too
     * If nothing is found in the video's description, then the author's comments are parsed
@@ -77,6 +74,7 @@ descriptions).
         * MTGTop8 events
         * Archidekt folders
         * Hareruya events
+        * Aetherhub users
         * others in plans
 * Assessing the meta:
     * Scraping Goldfish and MGTAZone for meta-decks (others in plans)

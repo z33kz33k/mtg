@@ -10,11 +10,11 @@
 import logging
 from datetime import datetime
 
-from mtg import Json
+from mtg import Json, SECRETS
 from mtg.deck import Archetype, Mode, ParsingState
-from mtg.deck.scrapers import DeckScraper
+from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.utils import extract_float, extract_int, from_iterable
-from mtg.utils.scrape import getsoup, ScrapingError
+from mtg.utils.scrape import get_dynamic_soup_by_xpath, getsoup, ScrapingError
 
 _log = logging.getLogger(__name__)
 
@@ -153,3 +153,30 @@ class AetherhubScraper(DeckScraper):
                         self._set_commander(cards[0])
                     elif self._state is ParsingState.COMPANION:
                         self._companion = cards[0]
+
+
+@ContainerScraper.registered
+class AetherhubUserScraper(ContainerScraper):
+    """Scraper of Aetherhub user page.
+    """
+    CONTAINER_NAME = "Aetherhub user"  # override
+    URL_TEMPLATE = "https://aetherhub.com{}"
+    _DECK_SCRAPER = AetherhubScraper  # override
+    _XPATH = '//table[@id="metaHubTable"]'
+
+    def __init__(self, url: str, metadata: Json | None = None) -> None:
+        super().__init__(url, metadata)
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return "aetherhub.com/User/" in url and "/Decks/" in url
+
+    def _collect(self) -> list[str]:  # override
+        self._soup, _, _ = get_dynamic_soup_by_xpath(self.url, self._XPATH)
+        if not self._soup:
+            _log.warning("User data not available")
+            return []
+
+        tbody = self._soup.find("tbody")
+        return [self.URL_TEMPLATE.format(row.find("a")["href"])
+                for row in tbody.find_all("tr")]
