@@ -24,6 +24,7 @@ from typing import Callable, Iterable, Optional
 import scrython
 from tqdm import tqdm
 from unidecode import unidecode
+from aiohttp.client_exceptions import ContentTypeError
 
 from mtg import DATA_DIR, Json
 from mtg.mtgwiki import CLASSES, RACES
@@ -1280,20 +1281,20 @@ def query_api_for_card(card_name: str, foreign=False) -> Card | None:
     try:
         throttle(0.15)
         result = scrython.cards.Search(q=f"!{card_name}", include_multilingual=foreign).data()
-    except scrython.foundation.ScryfallError:
+    except (scrython.foundation.ScryfallError, ContentTypeError):
         result = None
     if not result:
         throttle(0.15)
         try:
             result = scrython.cards.Search(q=card_name, include_multilingual=foreign).data()
-        except scrython.foundation.ScryfallError:
+        except (scrython.foundation.ScryfallError, ContentTypeError):
             result = None
         if not result :
             throttle(0.15)
             try:
                 result = scrython.cards.Named(fuzzy=card_name)
                 return Card(result.scryfallJson)
-            except scrython.foundation.ScryfallError:
+            except (scrython.foundation.ScryfallError, ContentTypeError):
                 return None
     if len(result) > 1:
         result.sort(key=lambda card: date.fromisoformat(card["released_at"]), reverse=True)

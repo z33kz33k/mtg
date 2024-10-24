@@ -99,3 +99,33 @@ class ArchidektFolderScraper(ContainerScraper):
         for a_tag in self._soup.select("a[class*='deck_link__']"):
             deck_urls.append(a_tag.attrs["href"])
         return [self.URL_TEMPLATE.format(url) for url in deck_urls]
+
+
+@ContainerScraper.registered
+class ArchidektUserScraper(ContainerScraper):
+    """Scraper of Archidekt folder page.
+    """
+    CONTAINER_NAME = "Archidekt user"  # override
+    URL_TEMPLATE = "https://archidekt.com{}"
+    _DECK_SCRAPER = ArchidektScraper  #
+
+    def __init__(self, url: str, metadata: Json | None = None) -> None:
+        super().__init__(url, metadata)
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return ("archidekt.com/u/" in url or "archidekt.com/user/" in url
+                or ("archidekt.com/search/decks?" in url and "owner=" in url))
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return url.removesuffix("/")
+
+    def _collect(self) -> list[str]:
+        self._soup = getsoup(self.url)
+        if not self._soup:
+            _log.warning("Folder data not available")
+            return []
+
+        info_tags = self._soup.find_all("div", class_="deckLink_info__ww_n5")
+        return [self.URL_TEMPLATE.format(div.find("a")["href"]) for div in info_tags]
