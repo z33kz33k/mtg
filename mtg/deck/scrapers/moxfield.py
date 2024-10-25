@@ -147,3 +147,34 @@ class MoxfieldBookmarkScraper(ContainerScraper):
             _log.warning("Bookmark data not available")
             return []
         return [d["deck"]["publicUrl"] for d in json_data["decks"]["data"]]
+
+
+@ContainerScraper.registered
+class MoxfieldUserScraper(ContainerScraper):
+    """Scraper of Moxfield user page.
+    """
+    CONTAINER_NAME = "Moxfield user"  # override
+    API_URL_TEMPLATE = ("https://api2.moxfield.com/v2/decks/search?includePinned=true&showIllegal"
+                        "=true&authorUserNames={}&pageNumber=1&pageSize=100&sortType="
+                        "updated&sortDirection=descending&board=mainboard")
+    _DECK_SCRAPER = MoxfieldScraper  # override
+
+    def __init__(self, url: str, metadata: Json | None = None) -> None:
+        super().__init__(url, metadata)
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return "moxfield.com/users/" in url
+
+    def _get_user_name(self) -> str:
+        *_, last = self.url.split("/")
+        return last
+
+    def _collect(self) -> list[str]:  # override
+        json_data = timed_request(
+            self.API_URL_TEMPLATE.format(self._get_user_name()), return_json=True,
+            headers=HEADERS)
+        if not json_data:
+            _log.warning("User data not available")
+            return []
+        return [d["publicUrl"] for d in json_data["data"]]

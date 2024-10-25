@@ -72,7 +72,7 @@ descriptions).
       These include:
         * Moxfield bookmarks
         * MTGTop8 events
-        * Archidekt folders
+        * Archidekt folders and users
         * Hareruya events
         * Aetherhub users
         * others in plans

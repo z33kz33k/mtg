@@ -11,8 +11,6 @@ import json
 import logging
 from datetime import datetime
 
-from bs4 import BeautifulSoup
-
 from mtg import Json
 from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.utils.scrape import ScrapingError, getsoup
@@ -89,7 +87,7 @@ class ArchidektFolderScraper(ContainerScraper):
     def is_container_url(url: str) -> bool:  # override
         return "archidekt.com/folders/" in url
 
-    def _collect(self) -> list[str]:
+    def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url)
         if not self._soup:
             _log.warning("Folder data not available")
@@ -121,7 +119,7 @@ class ArchidektUserScraper(ContainerScraper):
     def sanitize_url(url: str) -> str:  # override
         return url.removesuffix("/")
 
-    def _collect(self) -> list[str]:
+    def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url)
         if not self._soup:
             _log.warning("Folder data not available")

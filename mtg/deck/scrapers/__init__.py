@@ -181,7 +181,7 @@ class DeckScraper(DeckParser):
     def _scrape_with_backoff(
             self, throttled=False, suppress_parsing_errors=True, suppress_scraping_errors=True,
             suppress_invalid_deck=True) -> Deck | None:
-        return self.scrape(
+        return self._scrape(
             throttled=throttled, suppress_parsing_errors=suppress_parsing_errors,
             suppress_scraping_errors=suppress_scraping_errors,
             suppress_invalid_deck=suppress_invalid_deck)
