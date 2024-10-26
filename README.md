@@ -70,7 +70,7 @@ descriptions).
       up with queries to the Scryfall API
     * Individual decklist URLs are extracted from container pages and further processed for decks. 
       These include:
-        * Moxfield bookmarks
+        * Moxfield bookmarks and users
         * MTGTop8 events
         * Archidekt folders and users
         * Hareruya events

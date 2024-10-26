@@ -21,6 +21,7 @@ import brotli
 import pyperclip
 import requests
 from bs4 import BeautifulSoup
+from requests import Response
 from requests.adapters import HTTPAdapter
 from requests.exceptions import HTTPError
 from selenium import webdriver
@@ -56,7 +57,7 @@ http_requests_count = 0
 def timed_request(
         url: str, postdata: Optional[Json] = None, return_json=False,
         **requests_kwargs) -> list[Json] | Json | str | None:
-    _log.info(f"Retrieving data from: '{url}'...")
+    _log.info(f"Requesting: '{url}'...")
     global http_requests_count
     if postdata:
         response = requests.post(url, json=postdata, **requests_kwargs)
@@ -85,6 +86,20 @@ def timed_request(
 
 @timed("request")
 @type_checker(str)
+def raw_request(
+        url: str, postdata: Optional[Json] = None,
+        **requests_kwargs) -> Response:
+    _log.info(f"Requesting: '{url}'...")
+    global http_requests_count
+    if postdata:
+        response = requests.post(url, json=postdata, **requests_kwargs)
+    else:
+        response = requests.get(url, timeout=REQUESTS_TIMEOUT, **requests_kwargs)
+    http_requests_count += 1
+    return response
+
+
+@type_checker(str)
 def getsoup(url: str, headers: Dict[str, str] | None = None) -> BeautifulSoup | None:
     """Return BeautifulSoup object based on ``url``.
 
@@ -95,17 +110,10 @@ def getsoup(url: str, headers: Dict[str, str] | None = None) -> BeautifulSoup | 
     Returns:
         a BeautifulSoup object or None on client-side errors
     """
-    _log.info(f"Requesting: {url!r}...")
-    global http_requests_count
-    response = requests.get(url, timeout=REQUESTS_TIMEOUT, headers=headers)
-    http_requests_count += 1
-    if str(response.status_code)[0] in ("4", "5"):
-        msg = f"Request failed with: '{response.status_code} {response.reason}'"
-        if response.status_code in (502, 503, 504):
-            raise HTTPError(msg)
-        _log.warning(msg)
+    markup = timed_request(url, headers=headers)
+    if not markup:
         return None
-    return BeautifulSoup(response.text, "lxml")
+    return BeautifulSoup(markup, "lxml")
 
 
 Throttling = namedtuple("Throttling", "delay offset")

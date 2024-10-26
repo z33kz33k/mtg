@@ -154,6 +154,7 @@ class MoxfieldUserScraper(ContainerScraper):
     """Scraper of Moxfield user page.
     """
     CONTAINER_NAME = "Moxfield user"  # override
+    # 100 page size is pretty arbitrary but tested to work
     API_URL_TEMPLATE = ("https://api2.moxfield.com/v2/decks/search?includePinned=true&showIllegal"
                         "=true&authorUserNames={}&pageNumber=1&pageSize=100&sortType="
                         "updated&sortDirection=descending&board=mainboard")
