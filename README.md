@@ -70,11 +70,12 @@ descriptions).
       up with queries to the Scryfall API
     * Individual decklist URLs are extracted from container pages and further processed for decks. 
       These include:
-        * Moxfield bookmarks and users
-        * MTGTop8 events
+        * Aetherhub users
         * Archidekt folders and users
         * Hareruya events
-        * Aetherhub users
+        * Moxfield bookmarks and users
+        * MTGTop8 events
+        * Streamdecker users
         * others in plans
 * Assessing the meta:
     * Scraping Goldfish and MGTAZone for meta-decks (others in plans)

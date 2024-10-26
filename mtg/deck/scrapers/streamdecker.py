@@ -13,7 +13,7 @@ from datetime import date
 from requests import ReadTimeout
 
 from mtg import Json
-from mtg.deck.scrapers import DeckScraper
+from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.utils import get_date_from_ago_text
 from mtg.utils.scrape import ScrapingError, timed_request
 
@@ -83,3 +83,32 @@ class StreamdeckerScraper(DeckScraper):
     def _parse_deck(self) -> None:
         for json_card in self._json_data["cardList"]:
             self._parse_json_card(json_card)
+
+
+@ContainerScraper.registered
+class StreamdeckerUserScraper(ContainerScraper):
+    """Scraper of Streamdecker user page.
+    """
+    CONTAINER_NAME = "Streamdecker user"  # override
+    API_URL_TEMPLATE = "https://www.streamdecker.com/api/userdecks/{}"
+    DECK_URL_TEMPLATE = "https://www.streamdecker.com/deck/{}"
+    _DECK_SCRAPER = StreamdeckerScraper  # override
+
+    def __init__(self, url: str, metadata: Json | None = None) -> None:
+        super().__init__(url, metadata)
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return "streamdecker.com/decks/" in url
+
+    def _get_user_name(self) -> str:
+        *_, last = self.url.split("/")
+        return last
+
+    def _collect(self) -> list[str]:  # override
+        json_data = timed_request(
+            self.API_URL_TEMPLATE.format(self._get_user_name()), return_json=True)
+        if not json_data:
+            _log.warning("User data not available")
+            return []
+        return [self.DECK_URL_TEMPLATE.format(d["deckLink"]) for d in json_data["data"]["decks"]]
