@@ -1,0 +1,100 @@
+{
+    "url": "https://www.youtube.com/@LegenVD",
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "duskmourn",
+        "edh",
+        "educational",
+        "explorer",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtgduskmourn",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 131000,
+    "scrape_time": "2024-10-21 00:15:40",
+    "videos": [
+        {
+            "id": "Go81xJuyHw8",
+            "url": "https://www.youtube.com/watch?v=Go81xJuyHw8",
+            "author": "LegenVD",
+            "title": "I didn't pay for any of these cards ...",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a blue/white/green or Bant Manifest Dread flicker combo deck, featuring Portal to Phyrexia, Growing Dread and Unnerving Grasp from Duskmourn in Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:28 - Match 1\n10:11 - Match 2\n13:38 - Match 3\n19:13 - Match 4\n34:11 - Match 5\n\nDecklist:\nhttps://aetherhub.com/Deck/manifest-mythics\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGDuskmourn #mtgdsk #mtg #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "atraxa",
+                "blink",
+                "bookworm",
+                "deck",
+                "decks",
+                "dsk",
+                "dsk standard",
+                "duskmourn",
+                "duskmourn deck",
+                "duskmourn standard",
+                "etali",
+                "face down",
+                "flicker",
+                "gameplay",
+                "guide",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "manifest",
+                "manifest dread",
+                "monored",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "new standard",
+                "standard",
+                "standard deck",
+                "valgavoth"
+            ],
+            "publish_time": "2024-10-18 09:00:25",
+            "views": 35303,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2024-10-18",
+                        "exports": 2346,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Manifest Mythics",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/manifest-mythics",
+                        "views": 1589
+                    },
+                    "decklist_id": "c99293a9-e28c-1e67-1ac1-7606e6c9a238",
+                    "decklist_extended_id": "2de1fa2f-3495-90b5-befd-f59f9bb20cc2"
+                }
+            ]
+        }
+    ]
+}
