@@ -227,6 +227,7 @@ class ContainerScraper:
     CONTAINER_NAME = None
     _REGISTRY: set[Type["ContainerScraper"]] = set()
     _DECK_SCRAPER: Type[DeckScraper] | None = None
+    _already_failed_urls = {}
 
     @property
     def url(self) -> str:
@@ -265,8 +266,10 @@ class ContainerScraper:
         decks = []
         for i, url in enumerate(self._deck_urls, start=1):
             if url in already_scraped_deck_urls:
-                _log.info(f"Skipping already scraped deck URL: {url!r}")
+                _log.info(f"Skipping already scraped deck URL: {url!r}...")
                 continue
+            elif url in type(self)._already_failed_urls.get(self.url, set()):
+                _log.info(f"Skipping already failed deck URL: {url!r}...")
             else:
                 throttle(*DeckScraper.THROTTLING)
                 _log.info(f"Scraping deck {i}/{len(self._deck_urls)}...")
@@ -280,6 +283,11 @@ class ContainerScraper:
                     deck_name = f"{deck.name!r} deck" if deck.name else "Deck"
                     _log.info(f"{deck_name} scraped successfully")
                     decks.append(deck)
+                else:
+                    already_failed = type(self)._already_failed_urls.setdefault(
+                        self.url, set())
+                    already_failed.add(url)
+
         return decks
 
     def _scrape(self, *already_scraped_deck_urls: str) -> list[Deck]:
