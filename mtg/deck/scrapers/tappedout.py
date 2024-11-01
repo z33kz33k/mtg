@@ -1,7 +1,7 @@
 """
 
     mtg.deck.scrapers.tappedout.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape TappedOut decklists.
 
     @author: z33k
@@ -16,9 +16,9 @@ from requests import Response
 from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import DeckScraper
+from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.utils import extract_int, get_date_from_ago_text
-from mtg.utils.scrape import ScrapingError, Throttling, getsoup, raw_request
+from mtg.utils.scrape import ScrapingError, raw_request, timed_request
 
 _log = logging.getLogger(__name__)
 
@@ -42,8 +42,6 @@ def _backoff_handler(details: dict) -> None:
 class TappedoutScraper(DeckScraper):
     """Scraper of TappedOut decklist page.
     """
-    THROTTLING = Throttling(1.2, 0.15)
-
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
         self._arena_decklist = []
@@ -94,3 +92,41 @@ class TappedoutScraper(DeckScraper):
         _, name_line, _, _, *lines = lines
         self._arena_decklist = [*lines]
         self._metadata["name"] = name_line.removeprefix("Name ")
+
+
+@ContainerScraper.registered
+class TappedoutUserScraper(ContainerScraper):
+    """Scraper of Tappedout user page.
+    """
+    CONTAINER_NAME = "Tappedout user"  # override
+    API_URL_TEMPLATE = "https://tappedout.net/api/users/{}/deck-list/?p={}&o=-date_updated"
+    DECK_URL_TEMPLATE = "https://tappedout.net{}"
+    _DECK_SCRAPER = TappedoutScraper  # override
+
+    def __init__(self, url: str, metadata: Json | None = None) -> None:
+        super().__init__(url, metadata)
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return "tappedout.net/users/" in url and "/deck-folders" not in url
+
+    def _get_user_name(self) -> str:
+        url = self.url.removeprefix("https://").removeprefix("http://")
+        first, second, user, *_ = url.split("/")
+        return user
+
+    def _collect(self) -> list[str]:  # override
+        username = self._get_user_name()
+        collected, total, page = [], 1, 1
+        while len(collected) < total:
+            json_data = timed_request(
+                self.API_URL_TEMPLATE.format(username, page), return_json=True)
+            if not json_data or not json_data["results"]:
+                if not collected:
+                    _log.warning("User data not available")
+                break
+            total = json_data["total_decks"]
+            collected += [
+                self.DECK_URL_TEMPLATE.format(result["url"]) for result in json_data["results"]]
+            page += 1
+        return collected
