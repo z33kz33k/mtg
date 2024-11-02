@@ -18,7 +18,8 @@ from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.utils import extract_int, get_date_from_ago_text
-from mtg.utils.scrape import ScrapingError, raw_request, timed_request
+from mtg.utils.scrape import ScrapingError, dissect_js, getsoup, raw_request, throttle, \
+    timed_request
 
 _log = logging.getLogger(__name__)
 
@@ -119,6 +120,8 @@ class TappedoutUserScraper(ContainerScraper):
         username = self._get_user_name()
         collected, total, page = [], 1, 1
         while len(collected) < total:
+            if page != 1:
+                throttle(*DeckScraper.THROTTLING)
             json_data = timed_request(
                 self.API_URL_TEMPLATE.format(username, page), return_json=True)
             if not json_data or not json_data["results"]:
@@ -130,3 +133,38 @@ class TappedoutUserScraper(ContainerScraper):
                 self.DECK_URL_TEMPLATE.format(result["url"]) for result in json_data["results"]]
             page += 1
         return collected
+
+
+@ContainerScraper.registered
+class TappedoutFolderScraper(ContainerScraper):
+    """Scraper of Tappedout folder page.
+    """
+    CONTAINER_NAME = "Tappedout folder"  # override
+    API_URL_TEMPLATE = "https://tappedout.net/api/folder/{}/detail/"
+    DECK_URL_TEMPLATE = "https://tappedout.net{}"
+    _DECK_SCRAPER = TappedoutScraper  # override
+
+    def __init__(self, url: str, metadata: Json | None = None) -> None:
+        super().__init__(url, metadata)
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return "tappedout.net/mtg-deck-folders/" in url
+
+    def _get_folder_id(self) -> int:
+        soup = getsoup(self.url)
+        start_hook, end_hook = "window.django = ", ";"
+        script_tag = soup.find("script", string=lambda s: s and start_hook in s and end_hook in s)
+        text = script_tag.text
+        *_, first = text.split(start_hook)
+        second, *_ = first.split(end_hook)
+        *_, third = second.split("folderId: ")
+        return extract_int(third)
+
+    def _collect(self) -> list[str]:  # override
+        json_data = timed_request(
+            self.API_URL_TEMPLATE.format(self._get_folder_id()), return_json=True)
+        if not json_data:
+            _log.warning("User data not available")
+            return []
+        return [self.DECK_URL_TEMPLATE.format(d["url"]) for d in json_data["folder"]["decks"]]

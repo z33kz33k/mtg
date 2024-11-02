@@ -13,7 +13,7 @@ import dateutil.parser
 
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper
-from mtg.utils.scrape import ScrapingError, getsoup
+from mtg.utils.scrape import ScrapingError, dissect_js, getsoup
 
 _log = logging.getLogger(__name__)
 
@@ -34,7 +34,8 @@ class CardsrealmScraper(DeckScraper):
         def process(text: str) -> str:
             obj, _ = text.rsplit("]", maxsplit=1)
             return obj + "]"
-        return self.dissect_js("var deck_cards = ", 'var torneio_type =', end_processor=process)
+        return dissect_js(
+            self._soup, "var deck_cards = ", 'var torneio_type =', end_processor=process)
 
     def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)

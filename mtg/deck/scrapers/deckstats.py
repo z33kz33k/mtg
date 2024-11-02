@@ -13,7 +13,7 @@ from datetime import datetime
 
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper
-from mtg.utils.scrape import ScrapingError, getsoup
+from mtg.utils.scrape import ScrapingError, dissect_js, getsoup
 from mtg.scryfall import Card
 
 _log = logging.getLogger(__name__)
@@ -54,8 +54,8 @@ class DeckstatsScraper(DeckScraper):
         return len(right_part.split("/")) > 3
 
     def _get_json(self) -> Json:
-        return self.dissect_js(
-            "init_deck_data(", "deck_display();", lambda s: s.removesuffix(", false);"))
+        return dissect_js(
+            self._soup, "init_deck_data(", "deck_display();", lambda s: s.removesuffix(", false);"))
 
     def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)

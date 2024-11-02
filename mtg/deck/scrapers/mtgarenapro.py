@@ -12,7 +12,7 @@ from datetime import datetime
 
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper
-from mtg.utils.scrape import ScrapingError, getsoup
+from mtg.utils.scrape import ScrapingError, dissect_js, getsoup
 from mtg.scryfall import Card
 
 _log = logging.getLogger(__name__)
@@ -37,7 +37,8 @@ class MtgArenaProScraper(DeckScraper):
         return url.replace(ALT_DOMAIN, "mtgarena.pro")
 
     def _get_json(self) -> Json:
-        return self.dissect_js("var precachedDeck=", '"card_ids":', lambda s: s + '"card_ids":[]}')
+        return dissect_js(
+        self._soup, "var precachedDeck=", '"card_ids":', lambda s: s + '"card_ids":[]}')
 
     def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)
