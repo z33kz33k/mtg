@@ -87,9 +87,6 @@ class StreamdeckerUserScraper(ContainerScraper):
     DECK_URL_TEMPLATE = "https://www.streamdecker.com/deck/{}"
     _DECK_SCRAPER = StreamdeckerScraper  # override
 
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
         return "streamdecker.com/decks/" in url

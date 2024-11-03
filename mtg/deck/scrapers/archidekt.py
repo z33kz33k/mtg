@@ -80,9 +80,6 @@ class ArchidektFolderScraper(ContainerScraper):
     URL_TEMPLATE = "https://archidekt.com{}"
     _DECK_SCRAPER = ArchidektScraper  #
 
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
         return "archidekt.com/folders/" in url
@@ -106,9 +103,6 @@ class ArchidektUserScraper(ContainerScraper):
     CONTAINER_NAME = "Archidekt user"  # override
     URL_TEMPLATE = "https://archidekt.com{}"
     _DECK_SCRAPER = ArchidektScraper  #
-
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override

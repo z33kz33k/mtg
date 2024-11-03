@@ -7,10 +7,9 @@
     @author: z33k
 
 """
-import json
 import logging
 from abc import abstractmethod
-from typing import Callable, Optional, Type
+from typing import Optional, Type
 
 import backoff
 from bs4 import BeautifulSoup
@@ -18,10 +17,10 @@ from requests import ConnectionError, ReadTimeout
 
 from mtg import Json
 from mtg.deck import Deck, DeckParser, InvalidDeck
-from mtg.utils.scrape import Throttling, extract_source, throttle
 from mtg.scryfall import all_formats
 from mtg.utils import ParsingError, timed
 from mtg.utils.scrape import ScrapingError
+from mtg.utils.scrape import Throttling, extract_source, throttle
 
 _log = logging.getLogger(__name__)
 

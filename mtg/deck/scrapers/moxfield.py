@@ -123,9 +123,6 @@ class MoxfieldBookmarkScraper(ContainerScraper):
     API_URL_TEMPLATE = "https://api2.moxfield.com/v1/bookmarks/{}"
     _DECK_SCRAPER = MoxfieldScraper  # override
 
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
         return "moxfield.com/bookmarks/" in url
@@ -157,9 +154,6 @@ class MoxfieldUserScraper(ContainerScraper):
                         "=true&authorUserNames={}&pageNumber=1&pageSize=100&sortType="
                         "updated&sortDirection=descending&board=mainboard")
     _DECK_SCRAPER = MoxfieldScraper  # override
-
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override

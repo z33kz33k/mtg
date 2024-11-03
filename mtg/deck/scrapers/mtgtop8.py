@@ -30,9 +30,6 @@ EVENT_RANKS = "minor", "regular", "major"  # indicated by number of stars (1, 2,
 class MtgTop8Scraper(DeckScraper):
     """Scraper of MTGTop8 decklist page.
     """
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "mtgtop8.com/event?e=" in url and "&d=" in url
@@ -105,9 +102,6 @@ class MtgTop8EventScraper(ContainerScraper):
     CONTAINER_NAME = "MTGTop8 event"  # override
     URL_TEMPLATE = "https://www.mtgtop8.com/event{}"
     _DECK_SCRAPER = MtgTop8Scraper  # override
-
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override

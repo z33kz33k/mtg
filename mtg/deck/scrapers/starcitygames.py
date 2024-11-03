@@ -22,9 +22,6 @@ _log = logging.getLogger(__name__)
 class StarCityGamesScraper(DeckScraper):
     """Scraper of StarCityGames decklist page.
     """
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "old.starcitygames.com/decks/" in url

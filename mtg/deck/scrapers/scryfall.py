@@ -25,9 +25,6 @@ _log = logging.getLogger(__name__)
 class ScryfallScraper(DeckScraper):
     """Scraper of Scryfall decklist page.
     """
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "scryfall.com/@" in url and "/decks/" in url

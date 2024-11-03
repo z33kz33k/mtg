@@ -25,9 +25,6 @@ _log = logging.getLogger(__name__)
 class InternationalHareruyaScraper(DeckScraper):
     """Scraper of international Hareruya decklist page.
     """
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return ("hareruyamtg.com" in url and "/deck/" in url
@@ -199,9 +196,6 @@ class HareruyaEventScraper(ContainerScraper):
         "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:131.0) Gecko/20100101 "
                       "Firefox/131.0",
     }
-
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override

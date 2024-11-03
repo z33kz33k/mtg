@@ -44,10 +44,6 @@ class GoldfishScraper(DeckScraper):
         "standard brawl": "standardbrawl",
     }
 
-    def __init__(
-            self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return (("www.mtggoldfish.com/deck/" in url or "www.mtggoldfish.com/archetype/" in url)

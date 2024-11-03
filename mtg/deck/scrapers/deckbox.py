@@ -23,9 +23,6 @@ _log = logging.getLogger(__name__)
 class DeckboxScraper(DeckScraper):
     """Scraper of Deckbox decklist page.
     """
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "deckbox.org/sets/" in url

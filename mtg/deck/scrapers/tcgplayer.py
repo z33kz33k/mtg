@@ -27,9 +27,6 @@ _log = logging.getLogger(__name__)
 class OldPageTcgPlayerScraper(DeckScraper):
     """Scraper of TCG Player old-style decklist page.
     """
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "decks.tcgplayer.com/" in url and "/search" not in url
@@ -85,9 +82,6 @@ class NewPageTcgPlayerScraper(DeckScraper):
     """Scraper of TCG Player new-style decklist page.
     """
     _XPATH = "//span[contains(@class, 'list__item--wrapper')]"
-
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override

@@ -48,9 +48,6 @@ class AetherhubScraper(DeckScraper):
         "Oathbreaker": ("oathbreaker", Mode.BO3),
     }
 
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return ("aetherhub.com/" in url and "/deck/" in url and "/mydecks/" not in url
@@ -164,9 +161,6 @@ class AetherhubUserScraper(ContainerScraper):
     _DECK_SCRAPER = AetherhubScraper  # override
     _XPATH = '//table[@id="metaHubTable"]'
     _CONSENT_XPATH = '//button[@class="ncmp__btn" and contains(text(), "Accept")]'
-
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
