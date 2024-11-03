@@ -239,8 +239,11 @@ def extract_url(text: str, https=True) -> str | None:
     if not match:
         return None
     url = match.group("url").rstrip("])}/")
-    prefix = "https://" if https else "http://"
-    return url.removeprefix(prefix) if url.startswith(prefix * 2) else url
+    if url.count("https://") > 1:
+        return "https://" + [part for part in url.split("https://") if part][0]
+    elif url.count("http://") > 1:
+        return "http://" + [part for part in url.split("http://") if part][0]
+    return url
 
 
 def extract_source(url: str) -> str:

@@ -291,7 +291,7 @@ class ContainerScraper:
         return decks
 
     def _scrape(self, *already_scraped_deck_urls: str) -> list[Deck]:
-        self._deck_urls = self._collect()
+        self._deck_urls = [url.removesuffix("/") for url in self._collect()]
         return self._process_decks(*already_scraped_deck_urls)
 
     @backoff.on_exception(
