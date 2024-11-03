@@ -10,11 +10,11 @@
 import logging
 from datetime import datetime
 
-from mtg import Json, SECRETS
+from mtg import Json
 from mtg.deck import Archetype, Mode, ParsingState
 from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.utils import extract_float, extract_int, from_iterable
-from mtg.utils.scrape import get_dynamic_soup_by_xpath, getsoup, ScrapingError
+from mtg.utils.scrape import ScrapingError, get_dynamic_soup_by_xpath, getsoup
 
 _log = logging.getLogger(__name__)
 
@@ -53,16 +53,16 @@ class AetherhubScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return ("aetherhub.com/" in url and "/Deck/" in url and "/MyDecks/" not in url
-                and "/Builder" not in url)
+        return ("aetherhub.com/" in url and "/deck/" in url and "/mydecks/" not in url
+                and "/builder" not in url)
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
         url = DeckScraper.sanitize_url(url)
-        if url.endswith("/Gallery"):
-            url = url.removesuffix("/Gallery")
-        elif url.endswith("/Gallery/"):
-            url = url.removesuffix("/Gallery/")
+        if url.endswith("/gallery"):
+            url = url.removesuffix("/gallery")
+        elif url.endswith("/gallery/"):
+            url = url.removesuffix("/gallery/")
         return url
 
     def _pre_parse(self) -> None:  # override
@@ -169,7 +169,7 @@ class AetherhubUserScraper(ContainerScraper):
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
-        return "aetherhub.com/User/" in url and "/Decks/" in url
+        return "aetherhub.com/user/" in url
 
     def _collect(self) -> list[str]:  # override
         self._soup, _, _ = get_dynamic_soup_by_xpath(self.url, self._XPATH)

@@ -76,6 +76,7 @@ class DeckScraper(DeckParser):
         return self._url
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
+        url = url.lower().removesuffix("/")
         self._validate_url(url)
         super().__init__(metadata)
         self._url = self.sanitize_url(url)
@@ -97,7 +98,7 @@ class DeckScraper(DeckParser):
     def sanitize_url(url: str) -> str:
         if "?" in url:
             url, rest = url.split("?", maxsplit=1)
-        return url.removesuffix("/")
+        return url
 
     def _update_fmt(self, fmt: str) -> None:
         fmt = fmt.strip().lower()
@@ -110,17 +111,6 @@ class DeckScraper(DeckParser):
                 if self._metadata.get("format"):
                     del self._metadata["format"]
                 self._metadata["irregular_format"] = fmt
-
-    def dissect_js(
-            self, start_hook: str, end_hook: str,
-            end_processor: Callable[[str], str] | None = None) -> Json:
-        text = self._soup.find(
-            "script", string=lambda s: s and start_hook in s and end_hook in s).text
-        *_, first = text.split(start_hook)
-        second, *_ = first.split(end_hook)
-        if end_processor:
-            second = end_processor(second)
-        return json.loads(second)
 
     @abstractmethod
     def _pre_parse(self) -> None:
@@ -234,6 +224,7 @@ class ContainerScraper:
         return self._url
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
+        url = url.lower().removesuffix("/")
         self._validate_url(url)
         self._url, self._metadata = self.sanitize_url(url), metadata or {}
         self._soup: BeautifulSoup | None = None
@@ -253,7 +244,7 @@ class ContainerScraper:
     def sanitize_url(url: str) -> str:
         if "?" in url:
             url, rest = url.split("?", maxsplit=1)
-        return url.removesuffix("/")
+        return url
 
     @abstractmethod
     def _collect(self) -> list[str]:

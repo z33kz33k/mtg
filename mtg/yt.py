@@ -1187,6 +1187,7 @@ class Channel:
             scrape_time=self.scrape_time,
             videos=[json.loads(v.json, object_hook=deserialize_dates) for v in self.videos],
         )
+        _log.info(f"Scraped {len(self.decks)} deck(s) in total for {self.handle!r}")
 
     @staticmethod
     def video_ids(url: str, limit=10) -> Generator[str, None, None]:

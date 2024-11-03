@@ -30,6 +30,7 @@ _log = logging.getLogger(__name__)
 class MtgaZoneScraper(DeckScraper):
     """Scraper of MTG Arena Zone decklist page.
 
+    TODO: refactor this, make user decks scraping into a separate ContainerScraper
     This scraper can be used both to scrape individual MTGAZone deck pages and to scrape
     decklist blocks that are aggregated on thematic (e.g. meta, post-rotation, guide) sites. In
     the latter case a deck block Tag object should be provided - a URL is not needed so an empty

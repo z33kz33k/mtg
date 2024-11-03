@@ -209,7 +209,7 @@ class HareruyaEventScraper(ContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return url.removesuffix("/")
+        return url
 
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url, headers=self._HEADERS)

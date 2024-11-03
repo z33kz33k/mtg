@@ -35,13 +35,6 @@ class StreamdeckerScraper(DeckScraper):
     def is_deck_url(url: str) -> bool:  # override
         return "www.streamdecker.com/deck/" in url
 
-    @staticmethod
-    def sanitize_url(url: str) -> str:  # override
-        url = DeckScraper.sanitize_url(url)
-        if url.endswith("/"):
-            return url.removesuffix("/")
-        return url
-
     def _pre_parse(self) -> None:  # override
         try:
             self._json_data = timed_request(
