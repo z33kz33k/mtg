@@ -216,7 +216,8 @@ class ContainerScraper:
     CONTAINER_NAME = None
     _REGISTRY: set[Type["ContainerScraper"]] = set()
     _DECK_SCRAPER: Type[DeckScraper] | None = None
-    _already_failed_urls = {}
+    # mapping of container URLs to failed deck URLs
+    _already_failed_deck_urls: dict[str, set[str]] = {}
 
     @property
     def url(self) -> str:
@@ -250,38 +251,40 @@ class ContainerScraper:
         raise NotImplementedError
 
     def _process_decks(self, *already_scraped_deck_urls: str) -> list[Deck]:
+        already_scraped_deck_urls = {
+            url.removesuffix("/").lower() for url in already_scraped_deck_urls}
         _log.info(
             f"Gathered {len(self._deck_urls)} deck URL(s) from a {self.CONTAINER_NAME} at:"
             f" {self.url!r}")
         decks = []
-        for i, url in enumerate(self._deck_urls, start=1):
-            if url in already_scraped_deck_urls:
-                _log.info(f"Skipping already scraped deck URL: {url!r}...")
+        for i, deck_url in enumerate(self._deck_urls, start=1):
+            if deck_url in already_scraped_deck_urls:
+                _log.info(f"Skipping already scraped deck URL: {deck_url!r}...")
                 continue
-            elif url in type(self)._already_failed_urls.get(self.url, set()):
-                _log.info(f"Skipping already failed deck URL: {url!r}...")
+            elif deck_url in type(self)._already_failed_deck_urls.get(self.url, set()):
+                _log.info(f"Skipping already failed deck URL: {deck_url!r}...")
             else:
                 throttle(*DeckScraper.THROTTLING)
                 _log.info(f"Scraping deck {i}/{len(self._deck_urls)}...")
                 deck = None
                 if self._DECK_SCRAPER:
-                    deck = self._DECK_SCRAPER(url, dict(self._metadata)).scrape()
+                    deck = self._DECK_SCRAPER(deck_url, dict(self._metadata)).scrape()
                 else:
-                    if scraper := DeckScraper.from_url(url, dict(self._metadata)):
+                    if scraper := DeckScraper.from_url(deck_url, dict(self._metadata)):
                         deck = scraper.scrape()
                 if deck:
                     deck_name = f"{deck.name!r} deck" if deck.name else "Deck"
                     _log.info(f"{deck_name} scraped successfully")
                     decks.append(deck)
                 else:
-                    already_failed = type(self)._already_failed_urls.setdefault(
+                    already_failed = type(self)._already_failed_deck_urls.setdefault(
                         self.url, set())
-                    already_failed.add(url)
+                    already_failed.add(deck_url)
 
         return decks
 
     def _scrape(self, *already_scraped_deck_urls: str) -> list[Deck]:
-        self._deck_urls = [url.removesuffix("/") for url in self._collect()]
+        self._deck_urls = [url.removesuffix("/").lower() for url in self._collect()]
         return self._process_decks(*already_scraped_deck_urls)
 
     @backoff.on_exception(

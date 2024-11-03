@@ -164,38 +164,34 @@ class TappedoutFolderScraper(ContainerScraper):
         return [self.DECK_URL_TEMPLATE.format(d["url"]) for d in json_data["folder"]["decks"]]
 
 
-# @ContainerScraper.registered
-# class TappedoutUserScraper(TappedoutUserScraper):
-#     """Scraper of Tappedout user folders page.
-#     """
-#     CONTAINER_NAME = "Tappedout user folders"  # override
-#     API_URL_TEMPLATE = "https://tappedout.net/api/folder/{}/list/?page_num=1"
-#
-#     @staticmethod
-#     def is_container_url(url: str) -> bool:  # override
-#         return "tappedout.net/users/" in url and "/deck-folders" not in url
-#
-#     def _get_user_name(self) -> str:
-#         url = self.url.removeprefix("https://").removeprefix("http://")
-#         first, second, user, *_ = url.split("/")
-#         return user
-#
-#     def _collect(self) -> list[str]:  # override
-#         username = self._get_user_name()
-#         collected, total, page = [], 1, 1
-#         while len(collected) < total:
-#             if page != 1:
-#                 throttle(*DeckScraper.THROTTLING)
-#             json_data = timed_request(
-#                 self.API_URL_TEMPLATE.format(username, page), return_json=True)
-#             if not json_data or not json_data["results"]:
-#                 if not collected:
-#                     _log.warning("User data not available")
-#                 break
-#             total = json_data["total_decks"]
-#             collected += [
-#                 self.DECK_URL_TEMPLATE.format(result["url"]) for result in json_data["results"]]
-#             page += 1
-#         return collected
-#
+@ContainerScraper.registered
+class TappedoutUserFolderScraper(TappedoutUserScraper):
+    """Scraper of Tappedout user folders page.
+    """
+    CONTAINER_NAME = "Tappedout user folders"  # override
+    API_URL_TEMPLATE = "https://tappedout.net/api/folder/{}/list/?page_num={}"
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return "tappedout.net/users/" in url and "/deck-folders" in url
+
+    def _collect(self) -> list[str]:  # override
+        username = self._get_user_name()
+        collected, has_next, page = [], True, 1
+        while has_next:
+            if page != 1:
+                throttle(*DeckScraper.THROTTLING)
+            json_data = timed_request(
+                self.API_URL_TEMPLATE.format(username, page), return_json=True)
+            if not json_data or not json_data["results"]:
+                if not collected:
+                    _log.warning("User data not available")
+                break
+            has_next = json_data["hasNext"]
+            collected += [
+                self.DECK_URL_TEMPLATE.format(
+                    d["url"]) for folder in json_data["results"] for d in folder["decks"]]
+            page += 1
+        return sorted(set(collected))
+
 
