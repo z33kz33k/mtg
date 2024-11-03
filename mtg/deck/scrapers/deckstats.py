@@ -46,7 +46,7 @@ class DeckstatsScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        if not "deckstats.net/decks/" in url:
+        if not "deckstats.net/decks/" in url.lower():
             return False
         url = DeckScraper.sanitize_url(url)
         _, right_part = url.split("deckstats.net/decks/")

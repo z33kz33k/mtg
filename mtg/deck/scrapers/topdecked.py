@@ -57,7 +57,7 @@ class TopDeckedScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "www.topdecked.com/decks/" in url
+        return "www.topdecked.com/decks/" in url.lower()
 
     def _process_metadata_with_selenium(self, driver: webdriver.Chrome) -> None:
         name_el = driver.find_element(By.XPATH, self._NAME_XPATH)
@@ -144,7 +144,7 @@ class TopDeckedMetadeckScraper(TopDeckedScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "www.topdecked.com/metagame/" in url and "/decks/" in url
+        return "www.topdecked.com/metagame/" in url.lower() and "/decks/" in url.lower()
 
     def _process_metadata_with_selenium(self, driver: webdriver.Chrome) -> None:  # override
         super()._process_metadata_with_selenium(driver)

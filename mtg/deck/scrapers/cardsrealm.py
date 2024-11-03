@@ -28,7 +28,7 @@ class CardsrealmScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "mtg.cardsrealm.com/" in url and "/decks/" in url
+        return "mtg.cardsrealm.com/" in url.lower() and "/decks/" in url.lower()
 
     def _get_json(self) -> Json:
         def process(text: str) -> str:

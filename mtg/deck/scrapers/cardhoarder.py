@@ -34,7 +34,7 @@ class CardhoarderScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "www.cardhoarder.com/d/" in url
+        return "www.cardhoarder.com/d/" in url.lower()
 
     def _get_deck_data(self) -> Json:
         deck_tag = self._soup.find("div", id="deck-viewer")

@@ -29,7 +29,7 @@ class OldPageTcgPlayerScraper(DeckScraper):
     """
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "decks.tcgplayer.com/" in url and "/search" not in url
+        return "decks.tcgplayer.com/" in url.lower() and "/search" not in url.lower()
 
     def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)
@@ -85,7 +85,7 @@ class NewPageTcgPlayerScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "infinite.tcgplayer.com/magic-the-gathering/deck/" in url
+        return "infinite.tcgplayer.com/magic-the-gathering/deck/" in url.lower()
 
     def _pre_parse(self) -> None:  # override
         try:

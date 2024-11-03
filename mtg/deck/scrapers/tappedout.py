@@ -49,7 +49,7 @@ class TappedoutScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "tappedout.net/mtg-decks/" in url
+        return "tappedout.net/mtg-decks/" in url.lower()
 
     @backoff.on_predicate(
         backoff.runtime,
@@ -106,7 +106,7 @@ class TappedoutUserScraper(ContainerScraper):
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
-        return "tappedout.net/users/" in url and "/deck-folders" not in url
+        return "tappedout.net/users/" in url.lower() and "/deck-folders" not in url.lower()
 
     def _get_user_name(self) -> str:
         url = self.url.removeprefix("https://").removeprefix("http://")
@@ -143,7 +143,7 @@ class TappedoutFolderScraper(ContainerScraper):
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
-        return "tappedout.net/mtg-deck-folders/" in url
+        return "tappedout.net/mtg-deck-folders/" in url.lower()
 
     def _get_folder_id(self) -> int:
         soup = getsoup(self.url)
@@ -173,7 +173,7 @@ class TappedoutUserFolderScraper(TappedoutUserScraper):
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
-        return "tappedout.net/users/" in url and "/deck-folders" in url
+        return "tappedout.net/users/" in url.lower() and "/deck-folders" in url.lower()
 
     def _collect(self) -> list[str]:  # override
         username = self._get_user_name()

@@ -50,16 +50,17 @@ class AetherhubScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
+        url = url.lower()
         return ("aetherhub.com/" in url and "/deck/" in url and "/mydecks/" not in url
                 and "/builder" not in url)
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
         url = DeckScraper.sanitize_url(url)
-        if url.endswith("/gallery"):
-            url = url.removesuffix("/gallery")
-        elif url.endswith("/gallery/"):
-            url = url.removesuffix("/gallery/")
+        if url.endswith("/Gallery"):
+            url = url.removesuffix("/Gallery")
+        elif url.endswith("/Gallery/"):
+            url = url.removesuffix("/Gallery/")
         return url
 
     def _pre_parse(self) -> None:  # override
@@ -164,13 +165,13 @@ class AetherhubUserScraper(ContainerScraper):
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
-        return "aetherhub.com/user/" in url
+        return "aetherhub.com/user/" in url.lower()
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        if "/decks" not in url:
+        if "/decks" not in url.lower():
             return f"{url}/decks"
-        if not url.endswith("/decks"):
+        if not url.lower().endswith("/decks"):
             url, _ = url.rsplit("/", maxsplit=1)
         return url
 

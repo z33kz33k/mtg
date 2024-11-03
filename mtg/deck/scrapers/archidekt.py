@@ -28,7 +28,7 @@ class ArchidektScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "archidekt.com/decks/" in url
+        return "archidekt.com/decks/" in url.lower()
 
     def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)
@@ -82,7 +82,7 @@ class ArchidektFolderScraper(ContainerScraper):
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
-        return "archidekt.com/folders/" in url
+        return "archidekt.com/folders/" in url.lower()
 
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url)
@@ -106,6 +106,7 @@ class ArchidektUserScraper(ContainerScraper):
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
+        url = url.lower()
         return ("archidekt.com/u/" in url or "archidekt.com/user/" in url
                 or ("archidekt.com/search/decks?" in url and "owner=" in url))
 

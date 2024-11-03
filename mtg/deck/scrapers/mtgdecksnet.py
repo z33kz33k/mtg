@@ -42,7 +42,7 @@ class MtgDecksNetScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "mtgdecks.net/" in url and "-decklist-" in url
+        return "mtgdecks.net/" in url.lower() and "-decklist-" in url.lower()
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override

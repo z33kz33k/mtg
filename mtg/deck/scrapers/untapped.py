@@ -39,7 +39,7 @@ class UntappedProfileDeckScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "mtga.untapped.gg/profile/" in url and "/deck/" in url
+        return "mtga.untapped.gg/profile/" in url.lower() and "/deck/" in url.lower()
 
     def _pre_parse(self) -> None:  # override
         try:
@@ -79,7 +79,7 @@ class UntappedRegularDeckScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "mtga.untapped.gg/decks/" in url
+        return "mtga.untapped.gg/decks/" in url.lower()
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
@@ -119,7 +119,7 @@ class UntappedMetaDeckScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "mtga.untapped.gg/meta/decks/" in url
+        return "mtga.untapped.gg/meta/decks/" in url.lower()
 
     def _pre_parse(self) -> None:  # override
         try:

@@ -42,7 +42,7 @@ class MtgaZoneScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "mtgazone.com/user-decks/" in url or "mtgazone.com/deck/" in url
+        return "mtgazone.com/user-decks/" in url.lower() or "mtgazone.com/deck/" in url.lower()
 
     def _pre_parse(self) -> None:  # override
         self._soup = self._deck_tag or getsoup(self.url)

@@ -28,9 +28,9 @@ class ManatradersScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        if "manatraders.com/webshop/personal/" in url:
+        if "manatraders.com/webshop/personal/" in url.lower():
             return True
-        if "manatraders.com/webshop/deck/" in url:
+        if "manatraders.com/webshop/deck/" in url.lower():
             return True
         return False
 

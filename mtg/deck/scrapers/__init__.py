@@ -75,7 +75,7 @@ class DeckScraper(DeckParser):
         return self._url
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
-        url = url.lower().removesuffix("/")
+        url = url.removesuffix("/")
         self._validate_url(url)
         super().__init__(metadata)
         self._url = self.sanitize_url(url)
@@ -224,7 +224,7 @@ class ContainerScraper:
         return self._url
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
-        url = url.lower().removesuffix("/")
+        url = url.removesuffix("/")
         self._validate_url(url)
         self._url, self._metadata = self.sanitize_url(url), metadata or {}
         self._soup: BeautifulSoup | None = None
@@ -253,15 +253,14 @@ class ContainerScraper:
     def _process_decks(self, *already_scraped_deck_urls: str) -> list[Deck]:
         already_scraped_deck_urls = {
             url.removesuffix("/").lower() for url in already_scraped_deck_urls}
-        _log.info(
-            f"Gathered {len(self._deck_urls)} deck URL(s) from a {self.CONTAINER_NAME} at:"
-            f" {self.url!r}")
         decks = []
         for i, deck_url in enumerate(self._deck_urls, start=1):
-            if deck_url in already_scraped_deck_urls:
+            already_failed_deck_urls = {
+                url.removesuffix("/").lower() for url in
+                type(self)._already_failed_deck_urls.get(self.url, set())}
+            if deck_url.lower() in already_scraped_deck_urls:
                 _log.info(f"Skipping already scraped deck URL: {deck_url!r}...")
-                continue
-            elif deck_url in type(self)._already_failed_deck_urls.get(self.url, set()):
+            elif deck_url.lower() in already_failed_deck_urls:
                 _log.info(f"Skipping already failed deck URL: {deck_url!r}...")
             else:
                 throttle(*DeckScraper.THROTTLING)
@@ -277,14 +276,15 @@ class ContainerScraper:
                     _log.info(f"{deck_name} scraped successfully")
                     decks.append(deck)
                 else:
-                    already_failed = type(self)._already_failed_deck_urls.setdefault(
-                        self.url, set())
-                    already_failed.add(deck_url)
+                    already_failed_deck_urls.add(deck_url)
 
         return decks
 
     def _scrape(self, *already_scraped_deck_urls: str) -> list[Deck]:
-        self._deck_urls = [url.removesuffix("/").lower() for url in self._collect()]
+        self._deck_urls = [url.removesuffix("/") for url in self._collect()]
+        _log.info(
+            f"Gathered {len(self._deck_urls)} deck URL(s) from a {self.CONTAINER_NAME} at:"
+            f" {self.url!r}")
         return self._process_decks(*already_scraped_deck_urls)
 
     @backoff.on_exception(

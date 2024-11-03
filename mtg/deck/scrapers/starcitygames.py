@@ -10,10 +10,9 @@
 import logging
 
 from mtg.deck import ParsingState
-from mtg import Json
 from mtg.deck.scrapers import DeckScraper
-from mtg.utils.scrape import ScrapingError, getsoup
 from mtg.utils import from_iterable, sanitize_whitespace
+from mtg.utils.scrape import ScrapingError, getsoup
 
 _log = logging.getLogger(__name__)
 
@@ -24,7 +23,7 @@ class StarCityGamesScraper(DeckScraper):
     """
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "old.starcitygames.com/decks/" in url
+        return "old.starcitygames.com/decks/" in url.lower()
 
     def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)

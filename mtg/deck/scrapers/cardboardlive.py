@@ -32,7 +32,7 @@ class CardBoardLiveScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "app.cardboard.live/shared-deck/" in url
+        return "app.cardboard.live/shared-deck/" in url.lower()
 
     def _pre_parse(self) -> None:  # override
         try:

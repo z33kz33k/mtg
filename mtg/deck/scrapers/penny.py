@@ -26,7 +26,7 @@ class PennyDreadfulMagicScraper(DeckScraper):
     """
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "pennydreadfulmagic.com/decks/" in url
+        return "pennydreadfulmagic.com/decks/" in url.lower()
 
     def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)

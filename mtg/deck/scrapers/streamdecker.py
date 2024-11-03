@@ -33,7 +33,7 @@ class StreamdeckerScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "www.streamdecker.com/deck/" in url
+        return "www.streamdecker.com/deck/" in url.lower()
 
     def _pre_parse(self) -> None:  # override
         try:
@@ -89,7 +89,7 @@ class StreamdeckerUserScraper(ContainerScraper):
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
-        return "streamdecker.com/decks/" in url
+        return "streamdecker.com/decks/" in url.lower()
 
     def _get_user_name(self) -> str:
         *_, last = self.url.split("/")

@@ -49,7 +49,7 @@ class MeleeGgScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "melee.gg/decklist/" in url or f"{ALT_DOMAIN}/decklist/" in url
+        return "melee.gg/decklist/" in url.lower() or f"{ALT_DOMAIN}/decklist/" in url.lower()
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override

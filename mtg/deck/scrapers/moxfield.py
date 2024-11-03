@@ -52,6 +52,7 @@ class MoxfieldScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
+        url = url.lower()
         return "moxfield.com/decks/" in url and "/personal" not in url and "/history" not in url
 
     def _pre_parse(self) -> None:  # override
@@ -125,7 +126,7 @@ class MoxfieldBookmarkScraper(ContainerScraper):
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
-        return "moxfield.com/bookmarks/" in url
+        return "moxfield.com/bookmarks/" in url.lower()
 
     def _get_bookmark_id(self) -> str:
         *_, last = self.url.split("/")
@@ -157,7 +158,7 @@ class MoxfieldUserScraper(ContainerScraper):
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
-        return "moxfield.com/users/" in url
+        return "moxfield.com/users/" in url.lower()
 
     def _get_user_name(self) -> str:
         *_, last = self.url.split("/")

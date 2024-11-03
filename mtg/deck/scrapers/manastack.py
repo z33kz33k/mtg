@@ -28,7 +28,7 @@ class ManaStackScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "manastack.com/deck/" in url
+        return "manastack.com/deck/" in url.lower()
 
     def _pre_parse(self) -> None:  # override
         try:

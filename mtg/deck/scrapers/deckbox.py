@@ -25,7 +25,7 @@ class DeckboxScraper(DeckScraper):
     """
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "deckbox.org/sets/" in url
+        return "deckbox.org/sets/" in url.lower()
 
     def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)

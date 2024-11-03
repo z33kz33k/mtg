@@ -36,7 +36,7 @@ class FlexslotScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "flexslot.gg/decks/" in url
+        return "flexslot.gg/decks/" in url.lower()
 
     def _pre_parse(self) -> None:  # override
         try:

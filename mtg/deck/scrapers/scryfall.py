@@ -27,7 +27,7 @@ class ScryfallScraper(DeckScraper):
     """
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "scryfall.com/@" in url and "/decks/" in url
+        return "scryfall.com/@" in url.lower() and "/decks/" in url.lower()
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override

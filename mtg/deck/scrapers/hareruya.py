@@ -27,6 +27,7 @@ class InternationalHareruyaScraper(DeckScraper):
     """
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
+        url = url.lower()
         return ("hareruyamtg.com" in url and "/deck/" in url
                 and not "deck.hareruyamtg.com/deck/" in url)
 
@@ -115,6 +116,7 @@ class JapaneseHareruyaScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
+        url = url.lower()
         return ("hareruyamtg.com/decks/list/" in url or "hareruyamtg.com/decks/" in url
                 or "deck.hareruyamtg.com/deck/" in url) and "/user/" not in url
 
@@ -199,6 +201,7 @@ class HareruyaEventScraper(ContainerScraper):
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
+        url = url.lower()
         return all(t in url for t in {"hareruyamtg.com", "/deck", "/result?", "eventName="})
 
     @staticmethod

@@ -30,7 +30,7 @@ class MtgArenaProScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "mtgarena.pro/decks/" in url or f"{ALT_DOMAIN}/decks/" in url
+        return "mtgarena.pro/decks/" in url.lower() or f"{ALT_DOMAIN}/decks/" in url.lower()
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
