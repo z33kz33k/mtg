@@ -276,7 +276,7 @@ class ContainerScraper:
                     _log.info(f"{deck_name} scraped successfully")
                     decks.append(deck)
                 else:
-                    already_failed_deck_urls.add(deck_url)
+                    type(self)._already_failed_deck_urls.get(self.url, set()).add(deck_url)
 
         return decks
 

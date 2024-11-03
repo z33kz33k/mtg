@@ -12,13 +12,13 @@ from datetime import datetime
 
 import dateutil.parser
 from bs4 import Tag
-from selenium.common.exceptions import TimeoutException
+from httpcore import ReadTimeout
 
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper
 from mtg.scryfall import Card
 from mtg.utils import extract_int
-from mtg.utils.scrape import ScrapingError, get_dynamic_soup_by_xpath, getsoup
+from mtg.utils.scrape import ScrapingError, getsoup, timed_request
 
 _log = logging.getLogger(__name__)
 
@@ -73,15 +73,17 @@ class OldPageTcgPlayerScraper(DeckScraper):
                 self._maindeck = self._process_deck_tag(deck_tag)
 
 
-# TODO: there's actually a request to API for JSON I forgot to check:
-#  https://infinite-api.tcgplayer.com/deck/magic/{DECK_ID}
-#  /?source=infinite-content&subDecks=true&cards=true&stats=true - so this could probably be scraped
-#  bypassing the soup (and Selenium)
 @DeckScraper.registered
 class NewPageTcgPlayerScraper(DeckScraper):
     """Scraper of TCG Player new-style decklist page.
     """
-    _XPATH = "//span[contains(@class, 'list__item--wrapper')]"
+    API_URL_TEMPLATE = ("https://infinite-api.tcgplayer.com/deck/magic/{}/?source=infinite-"
+                        "content&subDecks=true&cards=true&stats=true")
+
+    def __init__(self, url: str, metadata: Json | None = None) -> None:
+        super().__init__(url, metadata)
+        *_, self._decklist_id = self.url.split("/")
+        self._json_data: Json | None = None
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -89,53 +91,56 @@ class NewPageTcgPlayerScraper(DeckScraper):
 
     def _pre_parse(self) -> None:  # override
         try:
-            self._soup, _, _ = get_dynamic_soup_by_xpath(self.url, self._XPATH)
-        except TimeoutException:
-            raise ScrapingError(f"Scraping failed due to Selenium timing out")
+            self._json_data = timed_request(
+                self.API_URL_TEMPLATE.format(self._decklist_id), return_json=True)["result"]
+        except ReadTimeout:
+            raise ScrapingError("Request timed out")
+        if not self._json_data or self._json_data == {"result": {}}:
+            raise ScrapingError("Data not available")
 
     def _parse_metadata(self) -> None:  # override
-        name_tag = self._soup.find(
-            "h2", class_=lambda c: c and "martech-heading" in c and "martech-inter" in c)
-        if not name_tag:
-            name_tag = self._soup.find(
-                "h2", class_=lambda c: c and "deck-title" in c and "martech-inter" in c)
-        self._metadata["name"] = name_tag.text.strip()
-        fmt_tag = self._soup.find(
-            "a", class_="martech-base-link", href=lambda h: h and "/format/" in h)
-        if fmt_tag:
-            self._update_fmt(fmt_tag.text.strip().lower())
-        author_tag = self._soup.find(
-            "a", class_="martech-base-link", href=lambda h: h and "/player/" in h)
-        self._metadata["author"] = author_tag.text.strip()
-        date_tag = self._soup.find("p", class_="event-name martech-text-sm")
-        if date_tag:
-            date_text = date_tag.text.strip()
-            if "-" in date_text:
-                *event_texts, date_text = date_text.split("-")
-                self._metadata["event"] = "".join(event_texts).strip()
-            self._metadata["date"] = dateutil.parser.parse(date_text.strip()).date()
+        self._metadata["name"] = self._json_data["deck"]["name"]
+        self._update_fmt(self._json_data["deck"]["format"])
+        self._metadata["author"] = self._json_data["deck"]["playerName"]
+        self._metadata["date"] = dateutil.parser.parse(self._json_data["deck"]["created"]).date()
+        if event_name := self._json_data["deck"].get("eventName"):
+            self._metadata["event"] = {}
+            self._metadata["event"]["name"] = event_name
+            if event_date := self._json_data["deck"].get("eventDate"):
+                self._metadata["event"]["date"] = dateutil.parser.parse(event_date).date()
+            if event_level := self._json_data["deck"].get("eventLevel"):
+                self._metadata["event"]["level"] = event_level
+            self._metadata["event"]["draws"] = self._json_data["deck"]["eventDraws"]
+            self._metadata["event"]["losses"] = self._json_data["deck"]["eventLosses"]
+            self._metadata["event"]["wins"] = self._json_data["deck"]["eventWins"]
+            self._metadata["event"]["placement_max"] = self._json_data["deck"]["eventPlacementMax"]
+            self._metadata["event"]["placement_min"] = self._json_data["deck"]["eventPlacementMin"]
+            if event_players := self._json_data["deck"].get("eventPlayers"):
+                self._metadata["event"]["players"] = event_players
+            if event_rank := self._json_data["deck"].get("eventRank"):
+                self._metadata["event"]["rank"] = event_rank
 
-    @classmethod
-    def _to_playset(cls, card_tag: Tag) -> list[Card]:
-        quantity = extract_int(card_tag.find("span", class_="list__item-quanity").text)
-        name = card_tag.find("span", class_="list__item--wrapper").text.strip().removeprefix(
-            str(quantity))
-        return cls.get_playset(cls.find_card(name), quantity)
+    def _get_cardmap(self) -> dict[int, Card]:
+        cardmap = {}
+        for card_id, data in self._json_data["cards"].items():
+            name, tcgplayer_id, oracle_id = data["name"], data["tcgPlayerID"], data["oracleID"]
+            card = self.find_card(name, tcgplayer_id=tcgplayer_id, oracle_id=oracle_id)
+            cardmap[int(card_id)] = card
+        return cardmap
 
     def _parse_deck(self) -> None:  # override
-        commander_tag = self._soup.find("div", class_="commandzone")
-        if commander_tag:
-            card_tags = commander_tag.find_all("li", class_="list__item")
-            for card_tag in card_tags:
-                self._set_commander(self._to_playset(card_tag)[0])
+        cardmap = self._get_cardmap()
+        sub_decks = self._json_data["deck"]["subDecks"]
+        if command_zone := sub_decks.get("commandzone"):
+            for item in command_zone:
+                card_id, quantity = item["cardID"], item["quantity"]
+                self._set_commander(self.get_playset(cardmap[card_id], quantity)[0])
 
-        main_tag = self._soup.find("div", class_="maindeck")
-        card_tags = main_tag.find_all("li", class_="list__item")
-        for card_tag in card_tags:
-            self._maindeck += self._to_playset(card_tag)
+        for item in sub_decks["maindeck"]:
+            card_id, quantity = item["cardID"], item["quantity"]
+            self._maindeck += self.get_playset(cardmap[card_id], quantity)
 
-        side_tag = self._soup.find("div", class_="sideboard")
-        if side_tag:
-            card_tags = side_tag.find_all("li", class_="list__item")
-            for card_tag in card_tags:
-                self._sideboard += self._to_playset(card_tag)
+        if sideboard := sub_decks.get("sideboard"):
+            for item in sideboard:
+                card_id, quantity = item["cardID"], item["quantity"]
+                self._sideboard += self.get_playset(cardmap[card_id], quantity)
