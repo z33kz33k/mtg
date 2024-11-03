@@ -348,7 +348,7 @@ MTG_LANGS = {
 }
 
 
-def detect_lang(text: str) -> Language:
+def detect_mtg_lang(text: str) -> Language:
     """Detect language of ``text`` checking against those that Magic: The Gathering cards have
     been printed in.
 
@@ -363,6 +363,8 @@ def detect_lang(text: str) -> Language:
     """
     detector = LanguageDetectorBuilder.from_languages(*MTG_LANGS).build()
     detected_lang = detector.detect_language_of(text)
+    if not detected_lang:
+        raise ValueError("No language detected")
     if detected_lang in MTG_LANGS:
         return detected_lang
     raise ValueError(
@@ -371,7 +373,7 @@ def detect_lang(text: str) -> Language:
 
 def is_foreign(text: str) -> bool:
     try:
-        lang = detect_lang(text)
+        lang = detect_mtg_lang(text)
     except ValueError:
         return False
     if lang.iso_code_639_1.name.lower() == "en":

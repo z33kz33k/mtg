@@ -163,6 +163,7 @@ class AetherhubUserScraper(ContainerScraper):
     URL_TEMPLATE = "https://aetherhub.com{}"
     _DECK_SCRAPER = AetherhubScraper  # override
     _XPATH = '//table[@id="metaHubTable"]'
+    _CONSENT_XPATH = '//button[@class="ncmp__btn" and contains(text(), "Accept")]'
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -171,8 +172,18 @@ class AetherhubUserScraper(ContainerScraper):
     def is_container_url(url: str) -> bool:  # override
         return "aetherhub.com/user/" in url
 
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        if "/decks" not in url:
+            return f"{url}/decks"
+        if not url.endswith("/decks"):
+            url, _ = url.rsplit("/", maxsplit=1)
+        return url
+
     def _collect(self) -> list[str]:  # override
-        self._soup, _, _ = get_dynamic_soup_by_xpath(self.url, self._XPATH)
+        self._soup, _, _ = get_dynamic_soup_by_xpath(
+            self.url, self._XPATH, consent_xpath=self._CONSENT_XPATH,
+            wait_for_consent_disappearance=False)
         if not self._soup:
             _log.warning("User data not available")
             return []
