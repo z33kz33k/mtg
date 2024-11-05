@@ -76,7 +76,7 @@ descriptions).
         * Moxfield bookmarks and users
         * MTGTop8 events
         * Streamdecker users
-        * TappedOut users and folders
+        * TappedOut users, folders, and user folders
         * others in plans
 * Assessing the meta:
     * Scraping Goldfish and MGTAZone for meta-decks (others in plans)

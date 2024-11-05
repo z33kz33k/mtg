@@ -10,7 +10,8 @@
 import logging
 from datetime import datetime
 
-from mtg import Json
+from selenium.common.exceptions import TimeoutException
+
 from mtg.deck import Archetype, Mode, ParsingState
 from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.utils import extract_float, extract_int, from_iterable
@@ -176,10 +177,14 @@ class AetherhubUserScraper(ContainerScraper):
         return url
 
     def _collect(self) -> list[str]:  # override
-        self._soup, _, _ = get_dynamic_soup_by_xpath(
-            self.url, self._XPATH, consent_xpath=self._CONSENT_XPATH,
-            wait_for_consent_disappearance=False)
-        if not self._soup:
+        try:
+            self._soup, _, _ = get_dynamic_soup_by_xpath(
+                self.url, self._XPATH, consent_xpath=self._CONSENT_XPATH,
+                wait_for_consent_disappearance=False)
+            if not self._soup:
+                _log.warning("User data not available")
+                return []
+        except TimeoutException:
             _log.warning("User data not available")
             return []
 

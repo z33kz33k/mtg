@@ -13,6 +13,7 @@
 /mtg/data/**
 run.py
 tests.py
+fetch*.py
 
 # PyCharm project
 .idea

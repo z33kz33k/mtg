@@ -48,10 +48,12 @@ class DeckstatsScraper(DeckScraper):
     def is_deck_url(url: str) -> bool:  # override
         if not "deckstats.net/decks/" in url.lower():
             return False
-        url = DeckScraper.sanitize_url(url)
-        _, right_part = url.split("deckstats.net/decks/")
-        right_part = "deckstats.net/decks/" + right_part
-        return len(right_part.split("/")) > 3
+        url = url.removeprefix("https://").removeprefix("http://")
+        if url.count("/") == 3:
+            domain, _, user_id, deck_id = url.split("/")
+            if all(ch.isdigit() for ch in user_id) and "-" in deck_id:
+                return True
+        return False
 
     def _get_json(self) -> Json:
         return dissect_js(

@@ -18,7 +18,7 @@ from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.utils import extract_int, get_date_from_ago_text
-from mtg.utils.scrape import ScrapingError, dissect_js, getsoup, raw_request, throttle, \
+from mtg.utils.scrape import ScrapingError, getsoup, raw_request, throttle, \
     timed_request
 
 _log = logging.getLogger(__name__)
