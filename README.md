@@ -28,7 +28,7 @@ descriptions).
     * [youtube-comment-downloader](https://github.com/egbertbouman/youtube-comment-downloader) 
 * Scraping YT videos' descriptions (or comments) for decks:    
     * Text decklists in Arena/MTGO format pasted into video descriptions are parsed into Deck objects
-    * Links to decklist services are scraped into Deck objects. 27 services are supported so far:
+    * Links to decklist services are scraped into Deck objects. 28 services are supported so far:
         * [Aetherhub](https://aetherhub.com)
         * [Archidekt](https://archidekt.com)
         * [CardBoard Live](https://cardboard.live)
@@ -39,6 +39,7 @@ descriptions).
         * [Flexslot](https://flexslot.gg)
         * [Goldfish](https://www.mtggoldfish.com)
         * [Hareruya](https://www.hareruyamtg.com/en/)
+        * [MagicVille](https://magic-ville.com/fr/index.php)
         * [Manatraders](https://www.manatraders.com)
         * [ManaStack](https://manastack.com/home)
         * [Melee.gg](https://melee.gg)
@@ -87,7 +88,7 @@ descriptions).
 * Importing back into a Deck from those formats
 * Export/import to other formats in plans
 * Dumping decks, YT videos and channels to .json
-* I compiled a list of **over 1.2k** YT channels that feature decks in their descriptions and successfully 
+* I compiled a list of **almost 1.3k** YT channels that feature decks in their descriptions and successfully 
   scraped them (at least 25 videos deep) so this data only waits to be creatively used now!
 
 ### How it looks in a Google Sheet

@@ -106,15 +106,44 @@ def get_date_from_ago_text(ago_text: str) -> date | None:
     """
     if not ago_text:
         return None
+    dt = date.today()
+    if "yesterday" in ago_text:
+        return dt - timedelta(days=1)
     ago_text = ago_text.removesuffix(" ago")
     amount, time = ago_text.split()
     amount = 1 if amount == "a" else int(amount)
-    dt = date.today()
     if time in ("days", "day"):
         return dt - timedelta(days=amount)
     elif time in ("months", "month"):
         return dt - relativedelta(months=amount)
     elif time in ("years", "year"):
+        return date(dt.year - amount, dt.month, dt.day)
+    return None
+
+
+@type_checker(str)
+def get_date_from_french_ago_text(ago_text: str) -> date | None:
+    """Parse French 'ago' text (e.g. '3 jours par') into a Date object.
+
+    This aligns with MagicVille decklist pages.
+    """
+    if not ago_text:
+        return None
+    dt = date.today()
+    if "hier" in ago_text:
+        return dt - timedelta(days=1)
+    if ":" in ago_text:
+        return dt
+    ago_text = ago_text.removesuffix(" par")
+    amount, time = ago_text.split()
+    amount = 1 if amount == "a" else int(amount)
+    if time in ("jour", "jours"):
+        return dt - timedelta(days=amount)
+    elif time in ("semaine", "semaines", "sem."):
+        return dt - relativedelta(weeks=amount)
+    elif time == "mois":
+        return dt - relativedelta(months=amount)
+    elif time in ("années", "année"):
         return date(dt.year - amount, dt.month, dt.day)
     return None
 

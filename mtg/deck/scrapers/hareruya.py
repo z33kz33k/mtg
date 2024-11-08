@@ -1,7 +1,7 @@
 """
 
     mtg.deck.scrapers.hareruya.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Hareruya decklists.
 
     @author: z33k
