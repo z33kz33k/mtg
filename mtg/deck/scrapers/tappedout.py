@@ -67,6 +67,8 @@ class TappedoutScraper(DeckScraper):
         if response.status_code == 429:
             raise ScrapingError(f"Page still not available after {_MAX_TRIES} backoff tries")
         self._soup = BeautifulSoup(response.text, "lxml")
+        if "Page not found (404)" in self._soup.text:
+            raise ScrapingError("Page not found (404)")
 
     def _parse_metadata(self) -> None:  # override
         fmt_tag = self._soup.select_one("a.btn.btn-success.btn-xs")

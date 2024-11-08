@@ -720,7 +720,12 @@ class Video:
         "www.pastebin.pt/",
     }
     _THROTTLED = (
-        "aetherhub.com", "mtggoldfish.com", "moxfield.com", "tappedout.net", "hareruyamtg.com")
+        "aetherhub.com",
+        "hareruyamtg.com"
+        "moxfield.com",
+        "mtggoldfish.com",
+        "tappedout.net",
+    )
 
     @property
     def id(self) -> str:

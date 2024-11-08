@@ -87,6 +87,7 @@ from mtg.deck.scrapers.deckstats import DeckScraper
 from mtg.deck.scrapers.flexslot import DeckScraper
 from mtg.deck.scrapers.goldfish import DeckScraper
 from mtg.deck.scrapers.hareruya import DeckScraper
+from mtg.deck.scrapers.magicville import DeckScraper
 from mtg.deck.scrapers.manastack import DeckScraper
 from mtg.deck.scrapers.manatraders import DeckScraper
 from mtg.deck.scrapers.melee import DeckScraper

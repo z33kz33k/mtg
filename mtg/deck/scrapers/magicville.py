@@ -32,25 +32,33 @@ class MagicVilleScraper(DeckScraper):
 
     def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)
-        if not self._soup:
+        if not self._soup or self._soup.text == "Ce deck n'existe pas.":
             raise ScrapingError("Page not available")
 
     def _parse_metadata(self) -> None:  # override
-        fmt_tag = self._soup.find("div", class_="lil_menu", string=lambda s: s and s == "Appr.")
+        fmt_tag = self._soup.find("div", class_="lil_menu", string=lambda s: s and "Appr" in s)
         fmt_text = fmt_tag.find("a")["href"]
         _, fmt_text = fmt_text.split("&f=", maxsplit=1)
-        fmt_text, _ = fmt_text.split("&file=", maxsplit=1)
+        if "&file=" in fmt_text:
+            fmt_text, _ = fmt_text.split("&file=", maxsplit=1)
         self._update_fmt(fmt_text)
-        self._metadata["name"] = self._soup.find("div", class_="title16").text.strip()
-        author_tag = self._soup.find("a", href=lambda h: h and "/register/perso?user=" in h)
-        _, author = author_tag["href"].split("/register/perso?user=", maxsplit=1)
-        self._metadata["author"] = author
-        date_tag = self._soup.find("div", class_="W10")
-        date_text = date_tag.text.strip().removeprefix("modifié ").removeprefix("il y a ")
-        _, suffix = date_text.rsplit("par ", maxsplit=1)
-        date_text = date_text.removesuffix(suffix).strip()
-        if date := get_date_from_french_ago_text(date_text):
-            self._metadata["date"] = date
+        name_tag = self._soup.find("div", class_="title16")
+        self._metadata["name"] = name_tag.text.strip()
+        if author_tag := self._soup.find("a", href=lambda h: h and "/register/perso?user=" in h):
+            _, author = author_tag["href"].split("/register/perso?user=", maxsplit=1)
+            self._metadata["author"] = author
+        elif author_tag := name_tag.find("span", class_="G14"):
+            author = author_tag.text.strip()
+            self._metadata["author"] = author
+        if event_div := self._soup.find("div", class_="W12"):
+            if evnet_a := event_div.find("a", href=lambda h: h and "decklists?event" in h):
+                self._metadata["event"] = evnet_a.text.strip()
+        if date_tag := self._soup.find("div", class_="W10"):
+            date_text = date_tag.text.strip().removeprefix("modifié ").removeprefix("il y a ")
+            _, suffix = date_text.rsplit("par ", maxsplit=1)
+            date_text = date_text.removesuffix(suffix).strip()
+            if date := get_date_from_french_ago_text(date_text):
+                self._metadata["date"] = date
 
     def _parse_deck(self) -> None:  # override
         main_tag = self._soup.find("div", id="aff_graphique")
