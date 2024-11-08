@@ -2,7 +2,7 @@
 
     mtg.deck.scrapers.deckstats.py
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Scrape Deckstats.net decklists.
+    Scrape Deckstats decklists.
 
     @author: z33k
 
@@ -12,8 +12,8 @@ import logging
 from datetime import datetime
 
 from mtg import Json
-from mtg.deck.scrapers import DeckScraper
-from mtg.utils.scrape import ScrapingError, dissect_js, getsoup
+from mtg.deck.scrapers import ContainerScraper, DeckScraper
+from mtg.utils.scrape import ScrapingError, dissect_js, getsoup, throttle, timed_request
 from mtg.scryfall import Card
 
 _log = logging.getLogger(__name__)
@@ -38,7 +38,7 @@ _FORMATS = {
 
 @DeckScraper.registered
 class DeckstatsScraper(DeckScraper):
-    """Scraper of Deckstats.net decklist page.
+    """Scraper of Deckstats decklist page.
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -99,3 +99,51 @@ class DeckstatsScraper(DeckScraper):
         if sideboard := self._json_data.get("sideboard"):
             for card_json in sideboard:
                 self._sideboard.extend(self._parse_card_json(card_json))
+
+
+@ContainerScraper.registered
+class DeckstatsUserScraper(ContainerScraper):
+    """Scraper of Deckstats user page.
+    """
+    CONTAINER_NAME = "Deckstats user"  # override
+    API_URL_TEMPLATE = ("https://deckstats.net/api.php?action=user_folder_get&result_type="
+                        "folder%3Bdecks%3Bparent_tree%3Bsubfolders&owner_id={}&folder_id=0&"
+                        "decks_page={}")
+    _DECK_SCRAPER = DeckstatsScraper  # override
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        url = url.removeprefix("https://").removeprefix("http://")
+        if url.count("/") != 2:
+            return False
+        domain, _, user_id = url.split("/")
+        if all(ch.isdigit() for ch in user_id):
+            return True
+        return False
+
+    def _get_user_id(self) -> str:
+        url = self.url.removeprefix("https://").removeprefix("http://")
+        *_, user_id = url.split("/")
+        return user_id
+
+    def _collect(self) -> list[str]:  # override
+        user_id = self._get_user_id()
+        collected, total, page = [], 1, 1
+        last_seen = None
+        while len(collected) < total:
+            if page != 1:
+                throttle(*DeckScraper.THROTTLING)
+            json_data = timed_request(
+                self.API_URL_TEMPLATE.format(user_id, page), return_json=True)
+            if collected and last_seen == json_data:
+                break
+            if not json_data:
+                if not collected:
+                    _log.warning("User data not available")
+                break
+            total = json_data["folder"]["decks_total"]
+            collected += [f'https:{d["url_neutral"]}' for d in json_data["folder"]["decks"]]
+            page += 1
+            last_seen = json_data
+        return collected
+

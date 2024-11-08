@@ -35,7 +35,7 @@ descriptions).
         * [Cardhoarder](https://www.cardhoarder.com)
         * [Cardsrealm](https://mtg.cardsrealm.com/en-us/)
         * [Deckbox](https://deckbox.org)
-        * [Deckstats.net](https://deckstats.net)
+        * [Deckstats](https://deckstats.net)
         * [Flexslot](https://flexslot.gg)
         * [Goldfish](https://www.mtggoldfish.com)
         * [Hareruya](https://www.hareruyamtg.com/en/)
@@ -73,6 +73,7 @@ descriptions).
       These include:
         * Aetherhub users
         * Archidekt folders and users
+        * Deckstats users
         * Hareruya events
         * Moxfield bookmarks and users
         * MTGTop8 events
