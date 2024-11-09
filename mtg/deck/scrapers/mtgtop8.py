@@ -34,10 +34,6 @@ class MtgTop8Scraper(DeckScraper):
     def is_deck_url(url: str) -> bool:  # override
         return "mtgtop8.com/event?e=" in url.lower() and "&d=" in url.lower()
 
-    @staticmethod
-    def sanitize_url(url: str) -> str:  # override
-        return url
-
     def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)
         if not self._soup:
@@ -106,10 +102,6 @@ class MtgTop8EventScraper(ContainerScraper):
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
         return "mtgtop8.com/event?e=" in url.lower() and "&d=" not in url.lower()
-
-    @staticmethod
-    def sanitize_url(url: str) -> str:  # override
-        return url
 
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url)

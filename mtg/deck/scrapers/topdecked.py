@@ -22,7 +22,7 @@ from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser, PlaysetLine
 from mtg.deck.scrapers import DeckScraper
-from mtg.utils.scrape import SELENIUM_TIMEOUT, click_for_clipboard
+from mtg.utils.scrape import SELENIUM_TIMEOUT, click_for_clipboard, strip_url_params
 from mtg.utils import get_date_from_ago_text, extract_float
 from mtg.scryfall import COMMANDER_FORMATS
 from mtg.utils.scrape import ScrapingError
@@ -58,6 +58,10 @@ class TopDeckedScraper(DeckScraper):
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "www.topdecked.com/decks/" in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url)
 
     def _process_metadata_with_selenium(self, driver: webdriver.Chrome) -> None:
         name_el = driver.find_element(By.XPATH, self._NAME_XPATH)

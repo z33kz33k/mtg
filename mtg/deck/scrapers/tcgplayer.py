@@ -18,7 +18,7 @@ from mtg import Json
 from mtg.deck.scrapers import DeckScraper
 from mtg.scryfall import Card
 from mtg.utils import extract_int
-from mtg.utils.scrape import ScrapingError, getsoup, timed_request
+from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params, timed_request
 
 _log = logging.getLogger(__name__)
 
@@ -30,6 +30,10 @@ class OldPageTcgPlayerScraper(DeckScraper):
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "decks.tcgplayer.com/" in url.lower() and "/search" not in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url)
 
     def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)
@@ -88,6 +92,10 @@ class NewPageTcgPlayerScraper(DeckScraper):
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "infinite.tcgplayer.com/magic-the-gathering/deck/" in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url)
 
     def _pre_parse(self) -> None:  # override
         try:

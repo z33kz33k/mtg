@@ -15,7 +15,7 @@ from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckScraper
-from mtg.utils.scrape import get_dynamic_soup_by_xpath
+from mtg.utils.scrape import get_dynamic_soup_by_xpath, strip_url_params
 from mtg.utils.scrape import ScrapingError
 
 _log = logging.getLogger(__name__)
@@ -33,6 +33,10 @@ class CardBoardLiveScraper(DeckScraper):
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "app.cardboard.live/shared-deck/" in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url)
 
     def _pre_parse(self) -> None:  # override
         try:

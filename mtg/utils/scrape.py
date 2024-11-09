@@ -272,6 +272,21 @@ def dissect_js(
     return json.loads(second)
 
 
+def strip_url_params(url: str) -> str:
+    """Strip URL parameters from ``url``.
+
+    https://www.youtube.com/watch?v=93gF1q7ey84 ==> https://www.youtube.com
+    https://deckstats.net/?lng=en ==> https://deckstats.net
+    """
+    if "?" in url:
+        url, _ = url.split("?", maxsplit=1)
+        if "/" in url:
+            first, _ = url.rsplit("/", maxsplit=1)
+            if first not in ("https://", "http://"):
+                url = first
+    return url.removesuffix("/")
+
+
 # SELENIUM
 
 

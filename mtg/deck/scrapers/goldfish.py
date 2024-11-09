@@ -10,7 +10,6 @@
 import logging
 from datetime import datetime
 
-from mtg import Json
 from mtg.deck import Deck, Mode, ParsingState
 from mtg.deck.scrapers import DeckScraper
 from mtg.scryfall import all_formats

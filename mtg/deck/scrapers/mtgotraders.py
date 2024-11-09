@@ -33,10 +33,6 @@ class MtgoTradersScraper(DeckScraper):
     def is_deck_url(url: str) -> bool:  # override
         return "www.mtgotraders.com/deck/" in url.lower() and "?deck=" in url.lower()
 
-    @staticmethod
-    def sanitize_url(url: str) -> str:  # override
-        return url
-
     def _pre_parse(self) -> None:  # override
         self._json_data = timed_request(
             self.REQUEST_URL_TEMPLATE.format(self._decklist_id), return_json=True)

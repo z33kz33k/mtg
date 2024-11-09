@@ -15,7 +15,7 @@ from requests import ReadTimeout
 from mtg import Json
 from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.utils import get_date_from_ago_text
-from mtg.utils.scrape import ScrapingError, timed_request
+from mtg.utils.scrape import ScrapingError, strip_url_params, timed_request
 
 _log = logging.getLogger(__name__)
 
@@ -34,6 +34,10 @@ class StreamdeckerScraper(DeckScraper):
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "www.streamdecker.com/deck/" in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url)
 
     def _pre_parse(self) -> None:  # override
         try:
@@ -90,6 +94,10 @@ class StreamdeckerUserScraper(ContainerScraper):
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
         return "streamdecker.com/decks/" in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url)
 
     def _get_user_name(self) -> str:
         *_, last = self.url.split("/")

@@ -12,11 +12,10 @@ from datetime import date
 
 from bs4 import Tag
 
-from mtg import Json
 from mtg.deck.scrapers import DeckScraper
 from mtg.scryfall import Card
 from mtg.utils import extract_int, sanitize_whitespace
-from mtg.utils.scrape import ScrapingError, getsoup
+from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
 
 _log = logging.getLogger(__name__)
 
@@ -31,7 +30,7 @@ class ScryfallScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        url = DeckScraper.sanitize_url(url)
+        url = strip_url_params(url)
         return f"{url}?as=list&with=usd"
 
     def _pre_parse(self) -> None:  # override

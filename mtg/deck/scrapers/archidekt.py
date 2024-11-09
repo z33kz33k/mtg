@@ -11,9 +11,11 @@ import json
 import logging
 from datetime import datetime
 
+from numpy.core.defchararray import strip
+
 from mtg import Json
 from mtg.deck.scrapers import ContainerScraper, DeckScraper
-from mtg.utils.scrape import ScrapingError, getsoup
+from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
 
 _log = logging.getLogger(__name__)
 
@@ -29,6 +31,10 @@ class ArchidektScraper(DeckScraper):
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "archidekt.com/decks/" in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url)
 
     def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)
@@ -83,6 +89,10 @@ class ArchidektFolderScraper(ContainerScraper):
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
         return "archidekt.com/folders/" in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url)
 
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url)

@@ -18,7 +18,7 @@ from mtg.deck import Deck, Mode
 from mtg.deck.scrapers import DeckScraper
 from mtg.scryfall import ARENA_FORMATS, Card
 from mtg.utils import extract_int, from_iterable, timed
-from mtg.utils.scrape import ScrapingError, getsoup
+from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
 
 _log = logging.getLogger(__name__)
 
@@ -43,6 +43,10 @@ class MtgaZoneScraper(DeckScraper):
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "mtgazone.com/user-decks/" in url.lower() or "mtgazone.com/deck/" in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url)
 
     def _pre_parse(self) -> None:  # override
         self._soup = self._deck_tag or getsoup(self.url)

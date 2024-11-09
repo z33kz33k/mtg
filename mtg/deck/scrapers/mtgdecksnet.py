@@ -16,7 +16,7 @@ from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckScraper
-from mtg.utils.scrape import get_dynamic_soup_by_xpath
+from mtg.utils.scrape import get_dynamic_soup_by_xpath, strip_url_params
 from mtg.utils.scrape import ScrapingError
 
 _log = logging.getLogger(__name__)
@@ -46,7 +46,7 @@ class MtgDecksNetScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        url = DeckScraper.sanitize_url(url)
+        url = strip_url_params(url)
         return url.removesuffix("/visual")
 
     def _pre_parse(self) -> None:  # override

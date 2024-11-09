@@ -11,11 +11,10 @@ import logging
 
 from bs4 import Tag
 
-from mtg import Json
 from mtg.deck.scrapers import DeckScraper
 from mtg.scryfall import Card
-from mtg.utils.scrape import ScrapingError, getsoup
 from mtg.utils import from_iterable, get_date_from_ago_text, get_date_from_month_text
+from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
 
 _log = logging.getLogger(__name__)
 
@@ -27,6 +26,10 @@ class PennyDreadfulMagicScraper(DeckScraper):
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "pennydreadfulmagic.com/decks/" in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url)
 
     def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)

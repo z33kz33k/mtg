@@ -19,7 +19,7 @@ from mtg import Json
 from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.scryfall import Card
 from mtg.utils.scrape import ScrapingError, Throttling, dissect_js, raw_request, throttle, \
-    timed_request
+    timed_request, strip_url_params
 
 _log = logging.getLogger(__name__)
 
@@ -68,13 +68,17 @@ class DeckstatsScraper(DeckScraper):
     def is_deck_url(url: str) -> bool:  # override
         if "deckstats.net/decks/" not in url.lower():
             return False
-        url = DeckScraper.sanitize_url(url)
+        url = strip_url_params(url)
         url = url.removeprefix("https://").removeprefix("http://")
         if url.count("/") == 3:
             domain, _, user_id, deck_id = url.split("/")
             if all(ch.isdigit() for ch in user_id) and "-" in deck_id:
                 return True
         return False
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url)
 
     @backoff.on_predicate(
         backoff.runtime,
@@ -150,16 +154,20 @@ class DeckstatsUserScraper(ContainerScraper):
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
-        url = url.removeprefix("https://").removeprefix("http://")
         if "deckstats.net/decks/" not in url.lower():
             return False
-        url = ContainerScraper.sanitize_url(url)
+        url = strip_url_params(url)
+        url = url.removeprefix("https://").removeprefix("http://")
         if url.count("/") != 2:
             return False
         domain, _, user_id = url.split("/")
         if all(ch.isdigit() for ch in user_id):
             return True
         return False
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url)
 
     def _get_user_id(self) -> str:
         url = self.url.removeprefix("https://").removeprefix("http://")

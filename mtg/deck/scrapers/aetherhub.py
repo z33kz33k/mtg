@@ -15,7 +15,7 @@ from selenium.common.exceptions import TimeoutException
 from mtg.deck import Archetype, Mode, ParsingState
 from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.utils import extract_float, extract_int, from_iterable
-from mtg.utils.scrape import ScrapingError, get_dynamic_soup_by_xpath, getsoup
+from mtg.utils.scrape import ScrapingError, get_dynamic_soup_by_xpath, getsoup, strip_url_params
 
 _log = logging.getLogger(__name__)
 
@@ -57,7 +57,7 @@ class AetherhubScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        url = DeckScraper.sanitize_url(url)
+        url = strip_url_params(url)
         if url.endswith("/Gallery"):
             url = url.removesuffix("/Gallery")
         elif url.endswith("/Gallery/"):
@@ -170,10 +170,9 @@ class AetherhubUserScraper(ContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        if "/decks" not in url.lower():
-            return f"{url}/decks"
+        url = strip_url_params(url)
         if not url.lower().endswith("/decks"):
-            url, _ = url.rsplit("/", maxsplit=1)
+            return f"{url}/decks"
         return url
 
     def _collect(self) -> list[str]:  # override

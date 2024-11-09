@@ -13,10 +13,10 @@ import dateutil.parser
 from bs4 import NavigableString
 
 from mtg import Json, SECRETS
-from mtg.deck import Deck, ParsingState
+from mtg.deck import ParsingState
 from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.deck.scrapers.goldfish import GoldfishScraper
-from mtg.utils.scrape import ScrapingError, getsoup, throttle, timed_request
+from mtg.utils.scrape import ScrapingError, getsoup, timed_request
 
 _log = logging.getLogger(__name__)
 
@@ -32,7 +32,7 @@ class InternationalHareruyaScraper(DeckScraper):
                 and not "deck.hareruyamtg.com/deck/" in url)
 
     @staticmethod
-    def sanitize_url(url: str) -> str:
+    def sanitize_url(url: str) -> str:  # override
         return url.replace("/ja/","/en/")
 
     def _pre_parse(self) -> None:  # override
@@ -203,10 +203,6 @@ class HareruyaEventScraper(ContainerScraper):
     def is_container_url(url: str) -> bool:  # override
         url = url.lower()
         return all(t in url for t in {"hareruyamtg.com", "/deck", "/result?", "eventName="})
-
-    @staticmethod
-    def sanitize_url(url: str) -> str:  # override
-        return url
 
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url, headers=self._HEADERS)

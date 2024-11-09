@@ -14,7 +14,7 @@ from selenium.common.exceptions import TimeoutException
 
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper
-from mtg.utils.scrape import ScrapingError, get_dynamic_soup_by_xpath
+from mtg.utils.scrape import ScrapingError, get_dynamic_soup_by_xpath, strip_url_params
 
 _log = logging.getLogger(__name__)
 
@@ -35,6 +35,10 @@ class CardhoarderScraper(DeckScraper):
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "www.cardhoarder.com/d/" in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url)
 
     def _get_deck_data(self) -> Json:
         deck_tag = self._soup.find("div", id="deck-viewer")

@@ -13,7 +13,7 @@ import logging
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper
 from mtg.deck.scrapers.streamdecker import StreamdeckerScraper
-from mtg.utils.scrape import ScrapingError, getsoup
+from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
 
 _log = logging.getLogger(__name__)
 
@@ -33,6 +33,10 @@ class ManatradersScraper(DeckScraper):
         if "manatraders.com/webshop/deck/" in url.lower():
             return True
         return False
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url)
 
     def _get_json_data(self) -> Json:
         json_data = self._soup.find(

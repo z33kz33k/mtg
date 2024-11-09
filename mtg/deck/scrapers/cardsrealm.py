@@ -13,7 +13,7 @@ import dateutil.parser
 
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper
-from mtg.utils.scrape import ScrapingError, dissect_js, getsoup
+from mtg.utils.scrape import ScrapingError, dissect_js, getsoup, strip_url_params
 
 _log = logging.getLogger(__name__)
 
@@ -29,6 +29,10 @@ class CardsrealmScraper(DeckScraper):
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "mtg.cardsrealm.com/" in url.lower() and "/decks/" in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url)
 
     def _get_json(self) -> Json:
         def process(text: str) -> str:

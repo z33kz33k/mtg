@@ -95,8 +95,6 @@ class DeckScraper(DeckParser):
 
     @staticmethod
     def sanitize_url(url: str) -> str:
-        if "?" in url:
-            url, rest = url.split("?", maxsplit=1)
         return url.removesuffix("/")
 
     def _update_fmt(self, fmt: str) -> None:
@@ -242,8 +240,6 @@ class ContainerScraper:
 
     @staticmethod
     def sanitize_url(url: str) -> str:
-        if "?" in url:
-            url, rest = url.split("?", maxsplit=1)
         return url.removesuffix("/")
 
     @abstractmethod

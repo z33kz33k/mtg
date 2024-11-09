@@ -24,7 +24,7 @@ class MagicVilleScraper(DeckScraper):
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         url = url.lower()
-        return "magic-ville.com/" in url and "decks/showdeck" in url
+        return "magic-ville.com/" in url and "decks/showdeck?" in url
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override

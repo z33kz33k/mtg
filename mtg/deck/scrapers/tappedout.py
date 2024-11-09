@@ -18,7 +18,7 @@ from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.utils import extract_int, get_date_from_ago_text
-from mtg.utils.scrape import ScrapingError, getsoup, raw_request, throttle, \
+from mtg.utils.scrape import ScrapingError, getsoup, raw_request, strip_url_params, throttle, \
     timed_request
 
 _log = logging.getLogger(__name__)
@@ -50,6 +50,10 @@ class TappedoutScraper(DeckScraper):
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "tappedout.net/mtg-decks/" in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url)
 
     @backoff.on_predicate(
         backoff.runtime,
@@ -110,6 +114,10 @@ class TappedoutUserScraper(ContainerScraper):
     def is_container_url(url: str) -> bool:  # override
         return "tappedout.net/users/" in url.lower() and "/deck-folders" not in url.lower()
 
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url)
+
     def _get_user_name(self) -> str:
         url = self.url.removeprefix("https://").removeprefix("http://")
         first, second, user, *_ = url.split("/")
@@ -146,6 +154,10 @@ class TappedoutFolderScraper(ContainerScraper):
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
         return "tappedout.net/mtg-deck-folders/" in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url)
 
     def _get_folder_id(self) -> int:
         soup = getsoup(self.url)
