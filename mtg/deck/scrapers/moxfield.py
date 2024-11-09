@@ -68,7 +68,7 @@ class MoxfieldScraper(DeckScraper):
             return url.removesuffix("/primer")
         elif url.endswith("/primer/"):
             return url.removesuffix("/primer/")
-        return url
+        return url.rstrip(".,")
 
     def _parse_metadata(self) -> None:  # override
         fmt = self._json_data["format"].lower()

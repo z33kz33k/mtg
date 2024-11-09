@@ -721,6 +721,7 @@ class Video:
     }
     _THROTTLED = (
         "aetherhub.com",
+        "deckstats.net",
         "hareruyamtg.com"
         "moxfield.com",
         "mtggoldfish.com",

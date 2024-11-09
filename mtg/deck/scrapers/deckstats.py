@@ -11,10 +11,15 @@ import itertools
 import logging
 from datetime import datetime
 
+import backoff
+from bs4 import BeautifulSoup
+from requests import Response
+
 from mtg import Json
 from mtg.deck.scrapers import ContainerScraper, DeckScraper
-from mtg.utils.scrape import ScrapingError, dissect_js, getsoup, throttle, timed_request
 from mtg.scryfall import Card
+from mtg.utils.scrape import ScrapingError, Throttling, dissect_js, raw_request, throttle, \
+    timed_request
 
 _log = logging.getLogger(__name__)
 
@@ -36,6 +41,21 @@ _FORMATS = {
 }
 
 
+_MAX_TRIES = 3
+
+
+def _backoff_predicate(response: Response) -> bool:
+    if response.status_code == 429:
+        msg = f"Request to TappedOut failed with: {response.status_code} {response.reason}"
+        _log.warning(f"{msg}. Re-trying with backoff...")
+        return True
+    return False
+
+
+def _backoff_handler(details: dict) -> None:
+    _log.info("Backing off {wait:0.1f} seconds after {tries} tries...".format(**details))
+
+
 @DeckScraper.registered
 class DeckstatsScraper(DeckScraper):
     """Scraper of Deckstats decklist page.
@@ -46,8 +66,9 @@ class DeckstatsScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        if not "deckstats.net/decks/" in url.lower():
+        if "deckstats.net/decks/" not in url.lower():
             return False
+        url = DeckScraper.sanitize_url(url)
         url = url.removeprefix("https://").removeprefix("http://")
         if url.count("/") == 3:
             domain, _, user_id, deck_id = url.split("/")
@@ -55,14 +76,26 @@ class DeckstatsScraper(DeckScraper):
                 return True
         return False
 
+    @backoff.on_predicate(
+        backoff.runtime,
+        predicate=_backoff_predicate,
+        value=lambda r: int(r.headers.get("Retry-After") or 60),
+        jitter=None,
+        max_tries=_MAX_TRIES,
+        on_backoff=_backoff_handler,
+    )
+    def _get_response(self) -> Response | None:
+        return raw_request(self.url)
+
     def _get_json(self) -> Json:
         return dissect_js(
             self._soup, "init_deck_data(", "deck_display();", lambda s: s.removesuffix(", false);"))
 
     def _pre_parse(self) -> None:  # override
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            raise ScrapingError("Page not available")
+        response = self._get_response()
+        if response.status_code == 429:
+            raise ScrapingError(f"Page still not available after {_MAX_TRIES} backoff tries")
+        self._soup = BeautifulSoup(response.text, "lxml")
         self._json_data = self._get_json()
 
     def _parse_metadata(self) -> None:  # override
@@ -70,9 +103,10 @@ class DeckstatsScraper(DeckScraper):
         self._metadata["author"] = author_text.removeprefix("in  ").removesuffix("'s Decks")
         self._metadata["name"] = self._json_data["name"]
         self._metadata["views"] = self._json_data["views"]
-        fmt = _FORMATS.get(self._json_data["format_id"])
-        if fmt:
-            self._update_fmt(fmt)
+        if self._json_data.get("format_id"):
+            fmt = _FORMATS.get(self._json_data["format_id"])
+            if fmt:
+                self._update_fmt(fmt)
         self._metadata["date"] = datetime.utcfromtimestamp(self._json_data["updated"]).date()
         if tags := self._json_data.get("tags"):
             self._metadata["tags"] = tags
@@ -82,6 +116,8 @@ class DeckstatsScraper(DeckScraper):
     def _parse_card_json(self, card_json: Json) -> list[Card]:
         name = card_json["name"]
         quantity = card_json["amount"]
+        if not card_json.get("data"):
+            raise ScrapingError(f"No card data available for playset '{quantity} {name}'")
         if tcgplayer_id := card_json["data"].get("price_tcgplayer_id"):
             tcgplayer_id = int(tcgplayer_id)
         if mtgo_id := card_json["data"].get("price_cardhoarder_id"):
@@ -105,6 +141,7 @@ class DeckstatsScraper(DeckScraper):
 class DeckstatsUserScraper(ContainerScraper):
     """Scraper of Deckstats user page.
     """
+    THROTTLING = Throttling(0.8, 0.15)
     CONTAINER_NAME = "Deckstats user"  # override
     API_URL_TEMPLATE = ("https://deckstats.net/api.php?action=user_folder_get&result_type="
                         "folder%3Bdecks%3Bparent_tree%3Bsubfolders&owner_id={}&folder_id=0&"
@@ -114,6 +151,9 @@ class DeckstatsUserScraper(ContainerScraper):
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
         url = url.removeprefix("https://").removeprefix("http://")
+        if "deckstats.net/decks/" not in url.lower():
+            return False
+        url = ContainerScraper.sanitize_url(url)
         if url.count("/") != 2:
             return False
         domain, _, user_id = url.split("/")
@@ -132,7 +172,7 @@ class DeckstatsUserScraper(ContainerScraper):
         last_seen = None
         while len(collected) < total:
             if page != 1:
-                throttle(*DeckScraper.THROTTLING)
+                throttle(*self.THROTTLING)
             json_data = timed_request(
                 self.API_URL_TEMPLATE.format(user_id, page), return_json=True)
             if collected and last_seen == json_data:
