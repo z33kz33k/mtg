@@ -10,10 +10,10 @@
 import logging
 from datetime import datetime
 
-from mtg.deck import Deck, Mode, ParsingState
-from mtg.deck.scrapers import DeckScraper
+from mtg.deck import Deck, Mode, ParsingState, THEMES
+from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.scryfall import all_formats
-from mtg.utils import extract_int, timed
+from mtg.utils import extract_int, from_iterable, timed
 from mtg.utils.scrape import ScrapingError, getsoup, http_requests_counted, throttled_soup
 
 _log = logging.getLogger(__name__)
@@ -87,6 +87,12 @@ class GoldfishScraper(DeckScraper):
             elif line.startswith("Deck Date:"):
                 self._metadata["date"] = datetime.strptime(
                     line.removeprefix("Deck Date:").strip(), "%b %d, %Y").date()
+            elif line.startswith("Archetype:"):
+                arch = line.removeprefix("Archetype:").strip()
+                self._metadata["goldfish_archetype"] = arch
+                if theme := from_iterable(THEMES, lambda t: t in arch):
+                    self._metadata["theme"] = theme
+
         if source_idx is not None:
             self._metadata["original_source"] = lines[source_idx].strip()
 
@@ -149,3 +155,33 @@ def scrape_meta(fmt="standard") -> list[Deck]:
         deck.update_metadata(meta=meta)
         deck.update_metadata(mode=Mode.BO3.value)
     return decks
+
+
+@ContainerScraper.registered
+class GoldfishTournamentScraper(ContainerScraper):
+    """Scraper of MTGGoldfish tournament page.
+    """
+    CONTAINER_NAME = "Goldfish tournament"  # override
+    DECK_URL_TEMPLATE = "https://www.mtggoldfish.com{}"
+    _DECK_SCRAPER = GoldfishScraper  # override
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return "mtggoldfish.com/tournament/" in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        if "#" in url:
+            url, _ = url.rsplit("#", maxsplit=1)
+            return url
+        return url
+
+    def _collect(self) -> list[str]:  # override
+        self._soup = getsoup(self.url, headers=GoldfishScraper.HEADERS)
+        if not self._soup:
+            _log.warning("Tournament data not available")
+            return []
+
+        table_tag = self._soup.find("table", class_="table-tournament")
+        deck_tags = table_tag.find_all("a", href=lambda h: h and "/deck/" in h)
+        return [self.DECK_URL_TEMPLATE.format(deck_tag.attrs["href"]) for deck_tag in deck_tags]

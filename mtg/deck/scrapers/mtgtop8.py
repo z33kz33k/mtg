@@ -96,7 +96,7 @@ class MtgTop8EventScraper(ContainerScraper):
     """Scraper of MTGTop8 event page.
     """
     CONTAINER_NAME = "MTGTop8 event"  # override
-    URL_TEMPLATE = "https://www.mtgtop8.com/event{}"
+    DECK_URL_TEMPLATE = "https://www.mtgtop8.com/event{}"
     _DECK_SCRAPER = MtgTop8Scraper  # override
 
     @staticmethod
@@ -115,4 +115,4 @@ class MtgTop8EventScraper(ContainerScraper):
         deck_urls = {}
         for a_tag in a_tags:
             deck_urls[a_tag.text] = a_tag.attrs["href"]
-        return [self.URL_TEMPLATE.format(url) for url in deck_urls.values()]
+        return [self.DECK_URL_TEMPLATE.format(url) for url in deck_urls.values()]

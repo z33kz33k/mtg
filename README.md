@@ -66,7 +66,7 @@ descriptions).
     * All those mentioned above work even if they are behind shortener links and need unshortening first
     * Text decklists in links to pastebin-like services (like [Amazonian](https://www.youtube.com/@Amazonian) does) work too
     * If nothing is found in the video's description, then the author's comments are parsed
-    * Deck's name and format are derived if not readily available
+    * Deck's name and format are derived (from a video's title, description and keywords) if not readily available
     * Foreign cards and other that cannot be found in the downloaded Scryfall bulk data are looked 
       up with queries to the Scryfall API
     * Individual decklist URLs are extracted from container pages and further processed for decks. 
@@ -75,6 +75,7 @@ descriptions).
         * Archidekt folders and users
         * Deckstats users
         * Hareruya events
+        * Goldfish tournaments
         * Moxfield bookmarks and users
         * MTGTop8 events
         * Streamdecker users
@@ -89,7 +90,7 @@ descriptions).
 * Importing back into a Deck from those formats
 * Export/import to other formats in plans
 * Dumping decks, YT videos and channels to .json
-* I compiled a list of **almost 1.3k** YT channels that feature decks in their descriptions and successfully 
+* I compiled a list of **over 1.3k** YT channels that feature decks in their descriptions and successfully 
   scraped them (at least 25 videos deep) so this data only waits to be creatively used now!
 
 ### How it looks in a Google Sheet
