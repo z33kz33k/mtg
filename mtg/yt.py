@@ -969,9 +969,9 @@ class Video:
         elif any(h in link for h in self.PASTEBIN_LIKE_HOOKS):
             if "gist.github.com/" in link and not link.endswith("/raw"):
                 link = f"{link}/raw"
-            data = timed_request(link)
-            if data:
-                return ArenaParser(data.splitlines(), self.metadata).parse()
+            response = timed_request(link)
+            if response:
+                return ArenaParser(response.text.splitlines(), self.metadata).parse()
         return None
 
     @timed("comments lookup")

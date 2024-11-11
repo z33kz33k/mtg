@@ -13,7 +13,7 @@ from datetime import datetime
 from mtg import Json, SECRETS
 from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.scryfall import Card
-from mtg.utils.scrape import ScrapingError, strip_url_params, timed_request
+from mtg.utils.scrape import ScrapingError, request_json, strip_url_params
 
 _log = logging.getLogger(__name__)
 
@@ -56,8 +56,8 @@ class MoxfieldScraper(DeckScraper):
         return "moxfield.com/decks/" in url and "/personal" not in url and "/history" not in url
 
     def _pre_parse(self) -> None:  # override
-        self._json_data = timed_request(
-            self.API_URL_TEMPLATE.format(self._decklist_id), return_json=True, headers=HEADERS)
+        self._json_data = request_json(
+            self.API_URL_TEMPLATE.format(self._decklist_id), headers=HEADERS)
         if not self._json_data:
             raise ScrapingError("Data not available")
 
@@ -136,9 +136,8 @@ class MoxfieldBookmarkScraper(ContainerScraper):
         return last
 
     def _collect(self) -> list[str]:  # override
-        json_data = timed_request(
-            self.API_URL_TEMPLATE.format(self._get_bookmark_id()), return_json=True,
-            headers=HEADERS)
+        json_data = request_json(
+            self.API_URL_TEMPLATE.format(self._get_bookmark_id()), headers=HEADERS)
         if not json_data:
             _log.warning("Bookmark data not available")
             return []
@@ -165,9 +164,8 @@ class MoxfieldUserScraper(ContainerScraper):
         return last
 
     def _collect(self) -> list[str]:  # override
-        json_data = timed_request(
-            self.API_URL_TEMPLATE.format(self._get_user_name()), return_json=True,
-            headers=HEADERS)
+        json_data = request_json(
+            self.API_URL_TEMPLATE.format(self._get_user_name()), headers=HEADERS)
         if not json_data:
             _log.warning("User data not available")
             return []

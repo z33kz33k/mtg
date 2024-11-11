@@ -2,7 +2,7 @@
 
     mtg.deck.scrapers.magicville.py
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Scrape MagicVille decklists.
+    Scrape Magic-Ville decklists.
 
     @author: z33k
 
@@ -19,7 +19,7 @@ _log = logging.getLogger(__name__)
 
 @DeckScraper.registered
 class MagicVilleScraper(DeckScraper):
-    """Scraper of MagicVille decklist page.
+    """Scraper of Magic-Ville decklist page.
     """
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override

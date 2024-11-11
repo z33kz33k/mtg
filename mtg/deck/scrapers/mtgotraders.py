@@ -12,8 +12,8 @@ from datetime import datetime
 
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper
-from mtg.utils.scrape import ScrapingError, timed_request
 from mtg.scryfall import Card
+from mtg.utils.scrape import ScrapingError, request_json
 
 _log = logging.getLogger(__name__)
 
@@ -34,8 +34,7 @@ class MtgoTradersScraper(DeckScraper):
         return "www.mtgotraders.com/deck/" in url.lower() and "?deck=" in url.lower()
 
     def _pre_parse(self) -> None:  # override
-        self._json_data = timed_request(
-            self.REQUEST_URL_TEMPLATE.format(self._decklist_id), return_json=True)
+        self._json_data = request_json(self.REQUEST_URL_TEMPLATE.format(self._decklist_id))
         if not self._json_data:
             raise ScrapingError("Data not available")
 

@@ -18,8 +18,8 @@ from requests import Response
 from mtg import Json
 from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.scryfall import Card
-from mtg.utils.scrape import ScrapingError, Throttling, dissect_js, raw_request, throttle, \
-    timed_request, strip_url_params
+from mtg.utils.scrape import ScrapingError, Throttling, dissect_js, request_json, strip_url_params, \
+    throttle, timed_request
 
 _log = logging.getLogger(__name__)
 
@@ -89,7 +89,7 @@ class DeckstatsScraper(DeckScraper):
         on_backoff=_backoff_handler,
     )
     def _get_response(self) -> Response | None:
-        return raw_request(self.url)
+        return timed_request(self.url, handle_http_errors=False)
 
     def _get_json(self) -> Json:
         return dissect_js(
@@ -181,8 +181,7 @@ class DeckstatsUserScraper(ContainerScraper):
         while len(collected) < total:
             if page != 1:
                 throttle(*self.THROTTLING)
-            json_data = timed_request(
-                self.API_URL_TEMPLATE.format(user_id, page), return_json=True)
+            json_data = request_json(self.API_URL_TEMPLATE.format(user_id, page))
             if collected and last_seen == json_data:
                 break
             if not json_data:

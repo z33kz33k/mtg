@@ -3,6 +3,7 @@ beautifulsoup4~=4.12.3
 Brotli~=1.1.0
 contexttimer~=0.3.3
 gspread~=5.11.3
+httpcore~=1.0.5
 httpx~=0.27.0
 lingua-language-detector~=2.0.2
 lxml~=5.2.1

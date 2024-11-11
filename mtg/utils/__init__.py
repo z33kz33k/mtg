@@ -125,7 +125,7 @@ def get_date_from_ago_text(ago_text: str) -> date | None:
 def get_date_from_french_ago_text(ago_text: str) -> date | None:
     """Parse French 'ago' text (e.g. '3 jours par') into a Date object.
 
-    This aligns with MagicVille decklist pages.
+    This aligns with Magic-Ville decklist pages.
     """
     if not ago_text:
         return None
