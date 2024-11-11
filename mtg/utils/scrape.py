@@ -270,15 +270,19 @@ def dissect_js(
     return json.loads(second)
 
 
-def strip_url_params(url: str) -> str:
+def strip_url_params(url: str, with_endpoint=True) -> str:
     """Strip URL parameters from ``url``.
 
     https://www.youtube.com/watch?v=93gF1q7ey84 ==> https://www.youtube.com
     https://deckstats.net/?lng=en ==> https://deckstats.net
+
+    Args:
+        url: URL to be stripped
+        with_endpoint: whether to strip any endpoint coming before parameters (any part between "?" and the last "/", e.g.: "watch" in YT URLs)
     """
     if "?" in url:
         url, _ = url.split("?", maxsplit=1)
-        if "/" in url:
+        if with_endpoint and "/" in url:
             first, _ = url.rsplit("/", maxsplit=1)
             if first not in ("https://", "http://"):
                 url = first

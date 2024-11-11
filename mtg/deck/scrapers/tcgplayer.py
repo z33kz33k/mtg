@@ -33,7 +33,7 @@ class OldPageTcgPlayerScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url)
+        return strip_url_params(url, with_endpoint=False)
 
     def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)

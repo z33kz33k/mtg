@@ -1,0 +1,163 @@
+{
+    "url": "https://www.youtube.com/@LegenVD",
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "duskmourn",
+        "edh",
+        "educational",
+        "explorer",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtgduskmourn",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 131000,
+    "scrape_time": "2024-11-03 01:16:38",
+    "videos": [
+        {
+            "id": "1y0G5U-e0Kk",
+            "url": "https://www.youtube.com/watch?v=1y0G5U-e0Kk",
+            "author": "LegenVD",
+            "title": "Mastering Control in Standard.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a blue/white control deck, featuring Jace, the Perfected Mind, Three Steps Ahead and Spellgyre in Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n05:00 - Match 1\n11:30 - Match 2\n18:38 - Match 3\n33:24 - Match 4\n39:21 - Match 5\n\nDecklist:\nhttps://aetherhub.com/Deck/blue-white-jace-control\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGDuskmourn #mtgdsk #mtg #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "azorius",
+                "blue",
+                "control deck",
+                "counterspell",
+                "deck",
+                "decks",
+                "dsk",
+                "dsk standard",
+                "duskmourn",
+                "duskmourn deck",
+                "duskmourn standard",
+                "fun police",
+                "gameplay",
+                "guide",
+                "jace",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mill",
+                "mill deck",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "new standard",
+                "otter",
+                "standard",
+                "standard deck",
+                "white"
+            ],
+            "publish_time": "2024-11-01 09:00:01",
+            "views": 26386,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "control",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2024-11-01",
+                        "exports": 629,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Blue White Jace Control",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/blue-white-jace-control",
+                        "views": 696
+                    },
+                    "decklist_id": "987f535a-d9e8-7033-ea10-1ba0ad8edbc1",
+                    "decklist_extended_id": "2b0f3c8c-9981-32bb-c539-d4b2b62a4338"
+                }
+            ]
+        },
+        {
+            "id": "dRhmCqmFm1M",
+            "url": "https://www.youtube.com/watch?v=dRhmCqmFm1M",
+            "author": "LegenVD",
+            "title": "Greasefang has a new best friend.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a white/blue/black or Esper Greasefang deck, featuring Abhorrent Oculus from Duskmourn in Explorer. \n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n03:41 - Match 1\n07:37 - Match 2\n10:56 - Match 3\n15:15 - Match 4\n21:52 - Match 5\n27:06 - Match 6\n30:25 - Match 7\n33:57 - Match 8\n36:45 - Match 9\n\nDecklist:\nhttps://aetherhub.com/Deck/esper-oculus-greasefang\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGDuskmourn #mtgdsk #mtg #magicthegathering",
+            "keywords": [
+                "abhorrent",
+                "black",
+                "blue",
+                "combo",
+                "deck",
+                "decks",
+                "esper",
+                "esper greasefang",
+                "explorer",
+                "gameplay",
+                "guide",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "oculus",
+                "parhelion",
+                "pilot",
+                "pioneer",
+                "pioneer deck",
+                "rat",
+                "reanimator",
+                "vehicle",
+                "vehicles",
+                "white"
+            ],
+            "publish_time": "2024-10-31 09:00:54",
+            "views": 24313,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2024-10-31",
+                        "exports": 215,
+                        "format": "explorer",
+                        "mode": "Bo1",
+                        "name": "Esper Oculus Greasefang",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/esper-oculus-greasefang",
+                        "views": 445
+                    },
+                    "decklist_id": "bd3efce9-0cde-d141-8cb6-38f09581448f",
+                    "decklist_extended_id": "ad479e20-d981-63ff-f111-b5075a26492e"
+                }
+            ]
+        }
+    ]
+}
