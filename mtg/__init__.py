@@ -102,6 +102,7 @@ from mtg.deck.scrapers.scryfall import DeckScraper
 from mtg.deck.scrapers.starcitygames import DeckScraper
 from mtg.deck.scrapers.streamdecker import DeckScraper
 from mtg.deck.scrapers.tappedout import DeckScraper
+from mtg.deck.scrapers.tcdecks import DeckScraper
 from mtg.deck.scrapers.tcgplayer import DeckScraper
 from mtg.deck.scrapers.topdecked import DeckScraper
 from mtg.deck.scrapers.untapped import DeckScraper

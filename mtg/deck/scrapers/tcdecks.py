@@ -13,7 +13,7 @@ from datetime import datetime
 from bs4 import NavigableString, Tag
 
 from mtg import Json
-from mtg.deck.scrapers import DeckScraper
+from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.scryfall import Card
 from mtg.utils import extract_int
 from mtg.utils.scrape import ScrapingError
@@ -38,8 +38,6 @@ class TCDecksScraper(DeckScraper):
         self._soup = getsoup(self.url)
         if not self._soup:
             raise ScrapingError("Page not available")
-        if _ := self._soup.find("div", string="No event could be found."):
-            raise ScrapingError("No event could be found")
 
     def _parse_metadata(self) -> None:  # override
         title_tag = self._soup.select_one('div article fieldset legend')
@@ -85,28 +83,24 @@ class TCDecksScraper(DeckScraper):
                 self._maindeck += self._parse_td(td_tag)
 
 
-# @ContainerScraper.registered
-# class TCDecksEventScraper(ContainerScraper):
-#     """Scraper of TC Decks event page.
-#     """
-#     CONTAINER_NAME = "TC Decks event"  # override
-#     DECK_URL_TEMPLATE = "https://www.mtgtop8.com/event{}"
-#     _DECK_SCRAPER = TCDecksScraper  # override
-#
-#     @staticmethod
-#     def is_container_url(url: str) -> bool:  # override
-#         return "mtgtop8.com/event?e=" in url.lower() and "&d=" not in url.lower()
-#
-#     def _collect(self) -> list[str]:  # override
-#         self._soup = getsoup(self.url)
-#         if not self._soup:
-#             _log.warning("Event data not available")
-#             return []
-#
-#         a_tags = [tag for tag in self._soup.find_all(
-#             "a", href=lambda h: h and "e=" in h and "&d="in h) if not tag.find("img")
-#                   and tag.text not in ('Switch to Visual', '→')]
-#         deck_urls = {}
-#         for a_tag in a_tags:
-#             deck_urls[a_tag.text] = a_tag.attrs["href"]
-#         return [self.DECK_URL_TEMPLATE.format(url) for url in deck_urls.values()]
+@ContainerScraper.registered
+class TCDecksEventScraper(ContainerScraper):
+    """Scraper of TC Decks event page.
+    """
+    CONTAINER_NAME = "TCDecks event"  # override
+    DECK_URL_TEMPLATE = "https://www.tcdecks.net/{}"
+    _DECK_SCRAPER = TCDecksScraper  # override
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return "tcdecks.net/deck.php?id=" in url.lower() and "&iddeck=" not in url.lower()
+
+    def _collect(self) -> list[str]:  # override
+        self._soup = getsoup(self.url)
+        if not self._soup:
+            _log.warning("Event data not available")
+            return []
+
+        table_tag = self._soup.find("table", class_="tourney_list")
+        a_tags = table_tag.find_all("a", href=lambda h: h and "deck.php?id=" in h)
+        return sorted(set(self.DECK_URL_TEMPLATE.format(a_tag.attrs["href"]) for a_tag in a_tags))
