@@ -47,7 +47,6 @@ class TCDecksScraper(DeckScraper):
         fmt = fmt.removeprefix("Format: ").lower()
         players = players.removeprefix("Number of Players: ")
         date = date.removeprefix("Date: ")
-        fmt = "oldschool" if fmt == "vintage old school" else fmt
         self._update_fmt(fmt)
         self._metadata["event"]["players"] = extract_int(players)
         self._metadata["event"]["date"] = datetime.strptime(date, '%d/%m/%Y').date()

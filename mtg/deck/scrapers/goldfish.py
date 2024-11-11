@@ -14,7 +14,8 @@ from mtg.deck import Deck, Mode, ParsingState
 from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.scryfall import all_formats
 from mtg.utils import extract_int, timed
-from mtg.utils.scrape import ScrapingError, getsoup, http_requests_counted, throttled_soup
+from mtg.utils.scrape import ScrapingError, getsoup, http_requests_counted, strip_url_params, \
+    throttled_soup
 
 _log = logging.getLogger(__name__)
 
@@ -51,10 +52,9 @@ class GoldfishScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
+        url = strip_url_params(url)
         if "/visual/" in url:
             url = url.replace("/visual/", "/")
-        if "popout?id=" in url:
-            url = url.replace("popout?id=", "")
         if "#" in url:
             url, _ = url.rsplit("#", maxsplit=1)
             return url

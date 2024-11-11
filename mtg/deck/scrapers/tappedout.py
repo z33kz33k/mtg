@@ -130,7 +130,7 @@ class TappedoutUserScraper(ContainerScraper):
             if page != 1:
                 throttle(*DeckScraper.THROTTLING)
             json_data = request_json(self.API_URL_TEMPLATE.format(username, page))
-            if not json_data or not json_data["results"]:
+            if not json_data or not json_data.get("results") or not json_data.get("total_decks"):
                 if not collected:
                     _log.warning("User data not available")
                 break
@@ -170,7 +170,7 @@ class TappedoutFolderScraper(ContainerScraper):
 
     def _collect(self) -> list[str]:  # override
         json_data = request_json(self.API_URL_TEMPLATE.format(self._get_folder_id()))
-        if not json_data:
+        if not json_data or not json_data.get("folder") or not json_data["folder"].get("decks"):
             _log.warning("User data not available")
             return []
         return [self.DECK_URL_TEMPLATE.format(d["url"]) for d in json_data["folder"]["decks"]]
@@ -194,11 +194,11 @@ class TappedoutUserFolderScraper(TappedoutUserScraper):
             if page != 1:
                 throttle(*DeckScraper.THROTTLING)
             json_data = request_json(self.API_URL_TEMPLATE.format(username, page))
-            if not json_data or not json_data["results"]:
+            if not json_data or not json_data.get("results"):
                 if not collected:
                     _log.warning("User data not available")
                 break
-            has_next = json_data["hasNext"]
+            has_next = json_data.get("hasNext", False)
             collected += [
                 self.DECK_URL_TEMPLATE.format(
                     d["url"]) for folder in json_data["results"] for d in folder["decks"]]

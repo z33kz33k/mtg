@@ -184,7 +184,7 @@ class DeckstatsUserScraper(ContainerScraper):
             json_data = request_json(self.API_URL_TEMPLATE.format(user_id, page))
             if collected and last_seen == json_data:
                 break
-            if not json_data:
+            if not json_data or not json_data.get("folder") or not json_data["folder"].get("decks"):
                 if not collected:
                     _log.warning("User data not available")
                 break

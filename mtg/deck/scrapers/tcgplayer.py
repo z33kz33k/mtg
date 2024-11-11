@@ -102,7 +102,8 @@ class NewPageTcgPlayerScraper(DeckScraper):
             json_data = request_json(self.API_URL_TEMPLATE.format(self._decklist_id))
         except ReadTimeout:
             raise ScrapingError("Request timed out")
-        if not json_data or not json_data["result"] or json_data["result"] == {"result": {}}:
+        if not json_data or not json_data.get(
+                "result") or json_data["result"].get("deck") == {"deck": {}}:
             raise ScrapingError("Data not available")
         self._json_data = json_data["result"]
 

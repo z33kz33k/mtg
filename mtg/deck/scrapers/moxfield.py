@@ -138,7 +138,7 @@ class MoxfieldBookmarkScraper(ContainerScraper):
     def _collect(self) -> list[str]:  # override
         json_data = request_json(
             self.API_URL_TEMPLATE.format(self._get_bookmark_id()), headers=HEADERS)
-        if not json_data:
+        if not json_data or not json_data.get("decks") or not json_data["decks"].get("data"):
             _log.warning("Bookmark data not available")
             return []
         return [d["deck"]["publicUrl"] for d in json_data["decks"]["data"]]
@@ -166,7 +166,7 @@ class MoxfieldUserScraper(ContainerScraper):
     def _collect(self) -> list[str]:  # override
         json_data = request_json(
             self.API_URL_TEMPLATE.format(self._get_user_name()), headers=HEADERS)
-        if not json_data:
+        if not json_data or not json_data.get("data"):
             _log.warning("User data not available")
             return []
         return [d["publicUrl"] for d in json_data["data"]]

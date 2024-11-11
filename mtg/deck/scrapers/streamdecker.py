@@ -44,9 +44,9 @@ class StreamdeckerScraper(DeckScraper):
             json_data = request_json(self.API_URL_TEMPLATE.format(self._decklist_id))
         except ReadTimeout:
             raise ScrapingError("Request timed out")
-        if not json_data or not json_data["deck"] or json_data["deck"] == {"deck": {}}:
+        if not json_data or not json_data.get("data") or json_data["data"] == {"deck": {}}:
             raise ScrapingError("Data not available")
-        self._json_data = json_data["deck"]
+        self._json_data = json_data["data"]
 
     def _parse_date(self) -> date | None:
         date_text = self._json_data["updatedAt"]
@@ -105,7 +105,7 @@ class StreamdeckerUserScraper(ContainerScraper):
 
     def _collect(self) -> list[str]:  # override
         json_data = request_json(self.API_URL_TEMPLATE.format(self._get_user_name()))
-        if not json_data:
+        if not json_data or not json_data.get("data") or not json_data["data"].get("decks"):
             _log.warning("User data not available")
             return []
         return [self.DECK_URL_TEMPLATE.format(d["deckLink"]) for d in json_data["data"]["decks"]]
