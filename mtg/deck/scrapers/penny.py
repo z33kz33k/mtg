@@ -11,7 +11,6 @@ import logging
 
 from bs4 import Tag
 
-from mtg.deck import THEMES
 from mtg.deck.scrapers import DeckScraper
 from mtg.scryfall import Card
 from mtg.utils import from_iterable, get_date_from_ago_text, get_date_from_month_text
@@ -42,10 +41,7 @@ class PennyDreadfulMagicScraper(DeckScraper):
         self._metadata["name"] = self._soup.find("h1", class_="deck-name").text.strip()
         info_tag = self._soup.find("div", class_="title")
         if archetype_tag := info_tag.find("a", href=lambda h: h and "/archetypes/" in h):
-            arch = archetype_tag.text.strip()
-            self._metadata["penny_archetype"] = arch
-            if theme := from_iterable(THEMES, lambda t: t in arch):
-                self._metadata["theme"] = theme
+            self._update_custom_theme("penny", archetype_tag.text.strip())
         author_tag = info_tag.find("a", href=lambda h: h and "/people/id/" in h)
         self._metadata["author"] = author_tag.text.strip()
         if date_tag := from_iterable(

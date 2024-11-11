@@ -21,6 +21,7 @@ import brotli
 import pyperclip
 import requests
 from bs4 import BeautifulSoup
+from bs4.dammit import EncodingDetector
 from requests import Response
 from requests.adapters import HTTPAdapter
 from requests.exceptions import HTTPError
@@ -52,43 +53,21 @@ class ScrapingError(ParsingError):
 http_requests_count = 0
 
 
-@timed("request")
-@type_checker(str)
-def timed_request(
-        url: str, postdata: Optional[Json] = None, return_json=False,
-        **requests_kwargs) -> list[Json] | Json | str | None:
-    _log.info(f"Requesting: '{url}'...")
-    global http_requests_count
-    if postdata:
-        response = requests.post(url, json=postdata, **requests_kwargs)
-    else:
-        response = requests.get(url, timeout=REQUESTS_TIMEOUT, **requests_kwargs)
-    http_requests_count += 1
-    if str(response.status_code)[0] in ("4", "5"):
-        msg = f"Request failed with: '{response.status_code} {response.reason}'"
-        if response.status_code in (502, 503, 504):
-            raise HTTPError(msg)
-        _log.warning(msg)
-        return None
-
-    # handle brotli compression
+def handle_brotli(response: Response, return_json: bool = False) -> str | Json | list[Json]:
     if response.headers.get("Content-Encoding") == "br":
         with contextlib.suppress(brotli.error):
             decompressed = brotli.decompress(response.content)
             if return_json:
                 return json.loads(decompressed)
             return decompressed
-
-    if return_json:
-        return response.json() if response.text else {}
     return response.text
 
 
 @timed("request")
 @type_checker(str)
-def raw_request(
-        url: str, postdata: Optional[Json] = None,
-        **requests_kwargs) -> Response:
+def timed_request(
+        url: str, postdata: Optional[Json] = None, handle_http_errors=True,
+        **requests_kwargs) -> Response | None:
     _log.info(f"Requesting: '{url}'...")
     global http_requests_count
     if postdata:
@@ -96,7 +75,22 @@ def raw_request(
     else:
         response = requests.get(url, timeout=REQUESTS_TIMEOUT, **requests_kwargs)
     http_requests_count += 1
+    if handle_http_errors:
+        if str(response.status_code)[0] in ("4", "5"):
+            msg = f"Request failed with: '{response.status_code} {response.reason}'"
+            if response.status_code in (502, 503, 504):
+                raise HTTPError(msg)
+            _log.warning(msg)
+            return None
+
     return response
+
+
+def request_json(url: str, **requests_kwargs) -> Json | list[Json]:
+    response = timed_request(url, **requests_kwargs)
+    if not response:
+        return {}
+    return response.json() if response.text else {}
 
 
 @type_checker(str)
@@ -110,10 +104,14 @@ def getsoup(url: str, headers: Dict[str, str] | None = None) -> BeautifulSoup | 
     Returns:
         a BeautifulSoup object or None on client-side errors
     """
-    markup = timed_request(url, headers=headers)
-    if not markup:
+    response = timed_request(url, headers=headers)
+    if not response or not response.text:
         return None
-    return BeautifulSoup(markup, "lxml")
+    http_encoding = response.encoding if 'charset' in response.headers.get(
+        'content-type', '').lower() else None
+    html_encoding = EncodingDetector.find_declared_encoding(response.content, is_html=True)
+    encoding = html_encoding or http_encoding
+    return BeautifulSoup(response.content, "lxml", from_encoding=encoding)
 
 
 Throttling = namedtuple("Throttling", "delay offset")

@@ -13,11 +13,10 @@ import dateutil.parser
 from bs4 import NavigableString
 
 from mtg import Json, SECRETS
-from mtg.deck import ParsingState, THEMES
+from mtg.deck import ParsingState
 from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.deck.scrapers.goldfish import GoldfishScraper
-from mtg.utils import from_iterable
-from mtg.utils.scrape import ScrapingError, getsoup, timed_request
+from mtg.utils.scrape import ScrapingError, getsoup, request_json
 
 _log = logging.getLogger(__name__)
 
@@ -128,8 +127,8 @@ class JapaneseHareruyaScraper(DeckScraper):
         return url
 
     def _pre_parse(self) -> None:  # override
-        self._json_data = timed_request(
-            self.API_URL_TEMPLATE.format(self._decklist_id, self._display_token), return_json=True)
+        self._json_data = request_json(
+            self.API_URL_TEMPLATE.format(self._decklist_id, self._display_token))
         if not self._json_data:
             raise ScrapingError("Data not available")
 
@@ -139,9 +138,7 @@ class JapaneseHareruyaScraper(DeckScraper):
         self._metadata["name"] = self._json_data["deck_name"]
         self._metadata["author"] = self._json_data["nickname"]
         if arch := self._json_data.get("archetype_name_en"):
-            self._metadata["hareruya_archetype"] = arch
-            if theme := from_iterable(THEMES, lambda t: t in arch):
-                self._metadata["theme"] = theme
+            self._update_custom_theme("hareruya", arch)
         self._metadata["deck_type"] = self._json_data["deck_type"]
         if event_name := self._json_data.get("event_name_en"):
             self._metadata.setdefault("event", {})

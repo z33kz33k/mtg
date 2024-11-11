@@ -18,8 +18,8 @@ from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.utils import extract_int, get_date_from_ago_text
-from mtg.utils.scrape import ScrapingError, getsoup, raw_request, strip_url_params, throttle, \
-    timed_request
+from mtg.utils.scrape import ScrapingError, getsoup, request_json, strip_url_params, \
+    throttle, timed_request
 
 _log = logging.getLogger(__name__)
 
@@ -64,7 +64,7 @@ class TappedoutScraper(DeckScraper):
         on_backoff=_backoff_handler,
     )
     def _get_response(self) -> Response | None:
-        return raw_request(self.url)
+        return timed_request(self.url, handle_http_errors=False)
 
     def _pre_parse(self) -> None:  # override
         response = self._get_response()
@@ -129,8 +129,7 @@ class TappedoutUserScraper(ContainerScraper):
         while len(collected) < total:
             if page != 1:
                 throttle(*DeckScraper.THROTTLING)
-            json_data = timed_request(
-                self.API_URL_TEMPLATE.format(username, page), return_json=True)
+            json_data = request_json(self.API_URL_TEMPLATE.format(username, page))
             if not json_data or not json_data["results"]:
                 if not collected:
                     _log.warning("User data not available")
@@ -170,8 +169,7 @@ class TappedoutFolderScraper(ContainerScraper):
         return extract_int(third)
 
     def _collect(self) -> list[str]:  # override
-        json_data = timed_request(
-            self.API_URL_TEMPLATE.format(self._get_folder_id()), return_json=True)
+        json_data = request_json(self.API_URL_TEMPLATE.format(self._get_folder_id()))
         if not json_data:
             _log.warning("User data not available")
             return []
@@ -195,8 +193,7 @@ class TappedoutUserFolderScraper(TappedoutUserScraper):
         while has_next:
             if page != 1:
                 throttle(*DeckScraper.THROTTLING)
-            json_data = timed_request(
-                self.API_URL_TEMPLATE.format(username, page), return_json=True)
+            json_data = request_json(self.API_URL_TEMPLATE.format(username, page))
             if not json_data or not json_data["results"]:
                 if not collected:
                     _log.warning("User data not available")

@@ -10,10 +10,10 @@
 import logging
 from datetime import datetime
 
-from mtg.deck import Deck, Mode, ParsingState, THEMES
+from mtg.deck import Deck, Mode, ParsingState
 from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.scryfall import all_formats
-from mtg.utils import extract_int, from_iterable, timed
+from mtg.utils import extract_int, timed
 from mtg.utils.scrape import ScrapingError, getsoup, http_requests_counted, throttled_soup
 
 _log = logging.getLogger(__name__)
@@ -88,10 +88,7 @@ class GoldfishScraper(DeckScraper):
                 self._metadata["date"] = datetime.strptime(
                     line.removeprefix("Deck Date:").strip(), "%b %d, %Y").date()
             elif line.startswith("Archetype:"):
-                arch = line.removeprefix("Archetype:").strip()
-                self._metadata["goldfish_archetype"] = arch
-                if theme := from_iterable(THEMES, lambda t: t in arch):
-                    self._metadata["theme"] = theme
+                self._update_custom_theme("goldfish", line.removeprefix("Archetype:").strip())
 
         if source_idx is not None:
             self._metadata["original_source"] = lines[source_idx].strip()

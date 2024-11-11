@@ -16,9 +16,9 @@ from bs4 import BeautifulSoup
 from requests import ConnectionError, ReadTimeout
 
 from mtg import Json
-from mtg.deck import Deck, DeckParser, InvalidDeck
+from mtg.deck import Deck, DeckParser, InvalidDeck, THEMES
 from mtg.scryfall import all_formats
-from mtg.utils import ParsingError, timed
+from mtg.utils import ParsingError, from_iterable, timed
 from mtg.utils.scrape import ScrapingError
 from mtg.utils.scrape import Throttling, extract_source, throttle
 
@@ -108,6 +108,11 @@ class DeckScraper(DeckParser):
                 if self._metadata.get("format"):
                     del self._metadata["format"]
                 self._metadata["irregular_format"] = fmt
+
+    def _update_custom_theme(self, prefix: str, custom_theme: str) -> None:
+        self._metadata[f"{prefix}_theme"] = custom_theme
+        if theme := from_iterable(THEMES, lambda t: t in custom_theme):
+            self._metadata["theme"] = theme
 
     @abstractmethod
     def _pre_parse(self) -> None:

@@ -18,7 +18,7 @@ from mtg import Json
 from mtg.deck.scrapers import DeckScraper
 from mtg.scryfall import Card
 from mtg.utils import extract_int
-from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params, timed_request
+from mtg.utils.scrape import ScrapingError, getsoup, request_json, strip_url_params
 
 _log = logging.getLogger(__name__)
 
@@ -99,12 +99,12 @@ class NewPageTcgPlayerScraper(DeckScraper):
 
     def _pre_parse(self) -> None:  # override
         try:
-            self._json_data = timed_request(
-                self.API_URL_TEMPLATE.format(self._decklist_id), return_json=True)["result"]
+            json_data = request_json(self.API_URL_TEMPLATE.format(self._decklist_id))
         except ReadTimeout:
             raise ScrapingError("Request timed out")
-        if not self._json_data or self._json_data == {"result": {}}:
+        if not json_data or not json_data["result"] or json_data["result"] == {"result": {}}:
             raise ScrapingError("Data not available")
+        self._json_data = json_data["result"]
 
     def _parse_metadata(self) -> None:  # override
         self._metadata["name"] = self._json_data["deck"]["name"]
