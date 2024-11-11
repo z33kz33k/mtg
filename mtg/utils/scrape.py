@@ -278,7 +278,7 @@ def strip_url_params(url: str, with_endpoint=True) -> str:
 
     Args:
         url: URL to be stripped
-        with_endpoint: whether to strip any endpoint coming before parameters (any part between "?" and the last "/", e.g.: "watch" in YT URLs)
+        with_endpoint: whether to strip any endpoint coming before parameters (part between "?" and the last "/", e.g.: "watch" in YT URLs)
     """
     if "?" in url:
         url, _ = url.split("?", maxsplit=1)

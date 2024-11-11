@@ -42,7 +42,10 @@ class TCDecksScraper(DeckScraper):
     def _parse_metadata(self) -> None:  # override
         title_tag = self._soup.select_one('div article fieldset legend')
         self._metadata["event"] = {}
-        self._metadata["event"]["name"] = title_tag.find("h3").text.strip()
+        name = title_tag.find("h3").text.strip()
+        if not name:
+            raise ScrapingError("No deck data available")
+        self._metadata["event"]["name"] = name
         fmt, players, date = title_tag.find("h5").text.strip().split(" | ")
         fmt = fmt.removeprefix("Format: ").lower()
         players = players.removeprefix("Number of Players: ")

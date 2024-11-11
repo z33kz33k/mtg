@@ -58,11 +58,11 @@ class AetherhubScraper(DeckScraper):
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
         url = strip_url_params(url)
-        if url.endswith("/Gallery"):
-            url = url.removesuffix("/Gallery")
-        elif url.endswith("/Gallery/"):
-            url = url.removesuffix("/Gallery/")
-        return url
+        if "/gallery/" in url.lower():
+            url = url.replace("/Gallery/", "/Public/").replace("/gallery/", "/public/")
+        elif url.lower().endswith("/gallery"):
+            url = url.removesuffix("/Gallery").removesuffix("/gallery")
+        return url.removesuffix("/")
 
     def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)
