@@ -182,3 +182,27 @@ class GoldfishTournamentScraper(ContainerScraper):
         table_tag = self._soup.find("table", class_="table-tournament")
         deck_tags = table_tag.find_all("a", href=lambda h: h and "/deck/" in h)
         return [self.DECK_URL_TEMPLATE.format(deck_tag.attrs["href"]) for deck_tag in deck_tags]
+
+
+@ContainerScraper.registered
+class GoldfishUserScraper(ContainerScraper):
+    """Scraper of MTGGoldfish user search page.
+    """
+    CONTAINER_NAME = "Goldfish user"  # override
+    DECK_URL_TEMPLATE = "https://www.mtggoldfish.com{}"
+    _DECK_SCRAPER = GoldfishScraper  # override
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return ("mtggoldfish.com/deck_searches/create?" in url.lower() and
+                "&deck_search%5Bplayer%5D=") in url
+
+    def _collect(self) -> list[str]:  # override
+        self._soup = getsoup(self.url, headers=GoldfishScraper.HEADERS)
+        if not self._soup:
+            _log.warning("User search data not available")
+            return []
+
+        table_tag = self._soup.find("table", class_=lambda c: c and "table-striped" in c)
+        deck_tags = table_tag.find_all("a", href=lambda h: h and "/deck/" in h)
+        return [self.DECK_URL_TEMPLATE.format(deck_tag.attrs["href"]) for deck_tag in deck_tags]

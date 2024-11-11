@@ -76,11 +76,12 @@ descriptions).
         * Archidekt folders and users
         * Deckstats users
         * Hareruya events
-        * Goldfish tournaments
+        * Goldfish tournaments and users
         * Moxfield bookmarks and users
         * MTGTop8 events
         * Streamdecker users
         * TappedOut users, folders, and user folders
+        * TCDecks events
         * others in plans
 * Assessing the meta:
     * Scraping Goldfish and MGTAZone for meta-decks (others in plans)
