@@ -41,7 +41,7 @@ from mtg.utils.check_type import type_checker
 
 _log = logging.getLogger(__name__)
 REQUESTS_TIMEOUT = 15.0  # seconds
-SELENIUM_TIMEOUT = 10.0  # seconds
+SELENIUM_TIMEOUT = 20.0  # seconds
 DEFAULT_THROTTLING = 1.0  # seconds
 
 
@@ -294,7 +294,12 @@ def strip_url_params(url: str, with_endpoint=True) -> str:
 
 @timed("getting dynamic soup")
 def get_dynamic_soup_by_xpath(
-        url: str, xpath: str, *halt_xpaths, click=False, consent_xpath="", clipboard_xpath="",
+        url: str,
+        xpath: str,
+        *halt_xpaths,
+        click=False,
+        consent_xpath="",
+        clipboard_xpath="",
         wait_for_consent_disappearance=True,
         timeout=SELENIUM_TIMEOUT) -> tuple[BeautifulSoup, BeautifulSoup | None, str | None]:
     """Return BeautifulSoup object(s) from dynamically rendered page source at ``url`` using
@@ -488,8 +493,7 @@ def _wait_for_elements(
         return None
 
     return WebDriverWait(driver, timeout).until(
-        # EC.presence_of_element_located((By.XPATH, xpath)))
-        EC.element_to_be_clickable((By.XPATH, xpath)))
+        EC.presence_of_element_located((By.XPATH, xpath)))
 
 
 def scroll_down(driver: WebDriver, element: WebElement | None = None, pixel_offset: int = 0) -> None:

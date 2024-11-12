@@ -255,29 +255,30 @@ class ContainerScraper:
     def _collect(self) -> list[str]:
         raise NotImplementedError
 
-    # TODO: account for sanitanization of deck URLs (this breaks Untapped already scraped deck URLs)
     def _process_decks(self, *already_scraped_deck_urls: str) -> list[Deck]:
         already_scraped_deck_urls = {
             url.removesuffix("/").lower() for url in already_scraped_deck_urls}
         decks = []
         for i, deck_url in enumerate(self._deck_urls, start=1):
+            scraper = self._DECK_SCRAPER(
+                deck_url, dict(self._metadata)) if self._DECK_SCRAPER else DeckScraper.from_url(
+                deck_url, dict(self._metadata))
+            if not scraper:
+                raise ScrapingError(f"Failed to find scraper suitable for deck URL: {deck_url!r}")
             already_failed_deck_urls = {
                 url.removesuffix("/").lower() for url in
                 type(self)._already_failed_deck_urls.get(self.url, set())}
-            if deck_url.lower() in already_scraped_deck_urls:
-                _log.info(f"Skipping already scraped deck URL: {deck_url!r}...")
-            elif deck_url.lower() in already_failed_deck_urls:
-                _log.info(f"Skipping already failed deck URL: {deck_url!r}...")
+            sanitized_deck_url = scraper.sanitize_url(deck_url)
+            if sanitized_deck_url.lower() in already_scraped_deck_urls:
+                _log.info(f"Skipping already scraped deck URL: {sanitized_deck_url!r}...")
+            elif sanitized_deck_url.lower() in already_failed_deck_urls:
+                _log.info(f"Skipping already failed deck URL: {sanitized_deck_url!r}...")
             else:
                 throttle(*self.THROTTLING)
                 _log.info(f"Scraping deck {i}/{len(self._deck_urls)}...")
                 deck = None
                 try:
-                    if self._DECK_SCRAPER:
-                        deck = self._DECK_SCRAPER(deck_url, dict(self._metadata)).scrape()
-                    else:
-                        if scraper := DeckScraper.from_url(deck_url, dict(self._metadata)):
-                            deck = scraper.scrape()
+                    deck = scraper.scrape()
                 except ElementClickInterceptedException:
                     _log.warning("Unable to click on a deck link with Selenium. Skipping...")
                     continue
@@ -286,7 +287,8 @@ class ContainerScraper:
                     _log.info(f"{deck_name} scraped successfully")
                     decks.append(deck)
                 else:
-                    type(self)._already_failed_deck_urls.setdefault(self.url, set()).add(deck_url)
+                    type(self)._already_failed_deck_urls.setdefault(self.url, set()).add(
+                        sanitized_deck_url)
 
         return decks
 

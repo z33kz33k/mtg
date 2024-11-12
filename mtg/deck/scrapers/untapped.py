@@ -17,8 +17,8 @@ from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.utils import extract_float, extract_int
-from mtg.utils.scrape import Throttling, get_dynamic_soup_by_xpath, strip_url_params
 from mtg.utils.scrape import ScrapingError
+from mtg.utils.scrape import get_dynamic_soup_by_xpath, strip_url_params
 
 _log = logging.getLogger(__name__)
 CONSENT_XPATH = '//button[contains(@class, "fc-button fc-cta-consent") and @aria-label="Consent"]'
