@@ -255,6 +255,7 @@ class ContainerScraper:
     def _collect(self) -> list[str]:
         raise NotImplementedError
 
+    # TODO: account for sanitanization of deck URLs (this breaks Untapped already scraped deck URLs)
     def _process_decks(self, *already_scraped_deck_urls: str) -> list[Deck]:
         already_scraped_deck_urls = {
             url.removesuffix("/").lower() for url in already_scraped_deck_urls}

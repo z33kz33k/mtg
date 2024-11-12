@@ -195,7 +195,7 @@ class GoldfishUserScraper(ContainerScraper):
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
         return ("mtggoldfish.com/deck_searches/create?" in url.lower() and
-                "&deck_search%5Bplayer%5D=") in url
+                "&deck_search%5Bplayer%5D=" in url)
 
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url, headers=GoldfishScraper.HEADERS)
