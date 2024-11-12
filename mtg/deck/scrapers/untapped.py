@@ -15,9 +15,9 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import DeckScraper
+from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.utils import extract_float, extract_int
-from mtg.utils.scrape import get_dynamic_soup_by_xpath, strip_url_params
+from mtg.utils.scrape import Throttling, get_dynamic_soup_by_xpath, strip_url_params
 from mtg.utils.scrape import ScrapingError
 
 _log = logging.getLogger(__name__)
@@ -165,3 +165,36 @@ class UntappedMetaDeckScraper(DeckScraper):
 
     def _parse_deck(self) -> None:  # override
         pass
+
+
+@ContainerScraper.registered
+class UntappedUserScraper(ContainerScraper):
+    """Scraper of Untapped.gg user profile page.
+    """
+    CONTAINER_NAME = "Untapped user"  # override
+    URL_TEMPLATE = "https://mtga.untapped.gg{}"
+    _DECK_SCRAPER = UntappedProfileDeckScraper  # override
+    _XPATH = "//a[contains(@href, '/profile/') and contains(@class, 'deckbox')]"
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return "mtga.untapped.gg/profile/" in url.lower() and "/deck/" not in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url, with_endpoint=False)
+
+    def _collect(self) -> list[str]:  # override
+        try:
+            self._soup, _, _ = get_dynamic_soup_by_xpath(
+                self.url, self._XPATH, consent_xpath=CONSENT_XPATH)
+            if not self._soup:
+                _log.warning("User data not available")
+                return []
+        except TimeoutException:
+            _log.warning("User data not available")
+            return []
+
+        a_tags = self._soup.find_all("a", href=lambda h: h and "/profile/" in h)
+        a_tags = [a_tag for a_tag in a_tags if "deckbox" in a_tag.attrs["class"]]
+        return [self.URL_TEMPLATE.format(a_tag["href"]) for a_tag in a_tags]

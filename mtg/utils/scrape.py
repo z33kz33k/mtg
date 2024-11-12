@@ -337,6 +337,7 @@ def get_dynamic_soup_by_xpath(
             if not element:
                 raise NoSuchElementException(f"Element specified by {xpath!r} is not present")
             _log.info(f"Page has been loaded and element specified by {xpath!r} is present")
+
             page_source, soup2 = driver.page_source, None
             if click:
                 element.click()
@@ -487,7 +488,8 @@ def _wait_for_elements(
         return None
 
     return WebDriverWait(driver, timeout).until(
-        EC.presence_of_element_located((By.XPATH, xpath)))
+        # EC.presence_of_element_located((By.XPATH, xpath)))
+        EC.element_to_be_clickable((By.XPATH, xpath)))
 
 
 def scroll_down(driver: WebDriver, element: WebElement | None = None, pixel_offset: int = 0) -> None:

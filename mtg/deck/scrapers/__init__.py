@@ -14,6 +14,7 @@ from typing import Optional, Type
 import backoff
 from bs4 import BeautifulSoup
 from requests import ConnectionError, ReadTimeout
+from selenium.common.exceptions import ElementClickInterceptedException
 
 from mtg import Json
 from mtg.deck import Deck, DeckParser, InvalidDeck, THEMES
@@ -219,6 +220,7 @@ class DeckScraper(DeckParser):
 
 class ContainerScraper:
     CONTAINER_NAME = None
+    THROTTLING = DeckScraper.THROTTLING
     _REGISTRY: set[Type["ContainerScraper"]] = set()
     _DECK_SCRAPER: Type[DeckScraper] | None = None
     # mapping of container URLs to failed deck URLs
@@ -266,14 +268,18 @@ class ContainerScraper:
             elif deck_url.lower() in already_failed_deck_urls:
                 _log.info(f"Skipping already failed deck URL: {deck_url!r}...")
             else:
-                throttle(*DeckScraper.THROTTLING)
+                throttle(*self.THROTTLING)
                 _log.info(f"Scraping deck {i}/{len(self._deck_urls)}...")
                 deck = None
-                if self._DECK_SCRAPER:
-                    deck = self._DECK_SCRAPER(deck_url, dict(self._metadata)).scrape()
-                else:
-                    if scraper := DeckScraper.from_url(deck_url, dict(self._metadata)):
-                        deck = scraper.scrape()
+                try:
+                    if self._DECK_SCRAPER:
+                        deck = self._DECK_SCRAPER(deck_url, dict(self._metadata)).scrape()
+                    else:
+                        if scraper := DeckScraper.from_url(deck_url, dict(self._metadata)):
+                            deck = scraper.scrape()
+                except ElementClickInterceptedException:
+                    _log.warning("Unable to click on a deck link with Selenium. Skipping...")
+                    continue
                 if deck:
                     deck_name = f"{deck.name!r} deck" if deck.name else "Deck"
                     _log.info(f"{deck_name} scraped successfully")

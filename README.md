@@ -82,6 +82,7 @@ descriptions).
         * Streamdecker users
         * TappedOut users, folders, and user folders
         * TCDecks events
+        * Untapped users
         * others in plans
 * Assessing the meta:
     * Scraping Goldfish and MGTAZone for meta-decks (others in plans)
