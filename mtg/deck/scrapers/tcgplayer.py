@@ -15,7 +15,7 @@ from bs4 import Tag
 from httpcore import ReadTimeout
 
 from mtg import Json
-from mtg.deck.scrapers import DeckScraper
+from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.scryfall import Card
 from mtg.utils import extract_int
 from mtg.utils.scrape import ScrapingError, getsoup, request_json, strip_url_params
@@ -75,6 +75,30 @@ class OldPageTcgPlayerScraper(DeckScraper):
                 self._sideboard = self._process_deck_tag(deck_tag)
             else:
                 self._maindeck = self._process_deck_tag(deck_tag)
+
+
+@ContainerScraper.registered
+class OldPageTcgPlayerUserScraper(ContainerScraper):
+    """Scraper of TCG Player old-style user search page.
+    """
+    CONTAINER_NAME = "TCGPlayer (old-site) user"  # override
+    DECK_URL_TEMPLATE = "https://decks.tcgplayer.com{}"
+    _DECK_SCRAPER = OldPageTcgPlayerScraper  # override
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return ("https://decks.tcgplayer.com/magic/deck/search?" in url.lower()
+                and"player=" in url)
+
+    def _collect(self) -> list[str]:  # override
+        self._soup = getsoup(self.url)
+        if not self._soup:
+            _log.warning("User search data not available")
+            return []
+
+        deck_tags = self._soup.find_all(
+            "a", href=lambda h: h and "/magic/" in h and "/magic/deck" not in h)
+        return [self.DECK_URL_TEMPLATE.format(deck_tag.attrs["href"]) for deck_tag in deck_tags]
 
 
 @DeckScraper.registered

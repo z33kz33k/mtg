@@ -82,6 +82,7 @@ descriptions).
         * Streamdecker users
         * TappedOut users, folders, and user folders
         * TCDecks events
+        * TCGPlayer (old-site) users
         * Untapped users
         * others in plans
 * Assessing the meta:
