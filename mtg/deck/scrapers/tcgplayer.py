@@ -24,8 +24,8 @@ _log = logging.getLogger(__name__)
 
 
 @DeckScraper.registered
-class OldPageTcgPlayerScraper(DeckScraper):
-    """Scraper of TCG Player old-style decklist page.
+class OldSiteTcgPlayerScraper(DeckScraper):
+    """Scraper of TCG Player old-site decklist page.
     """
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -78,12 +78,12 @@ class OldPageTcgPlayerScraper(DeckScraper):
 
 
 @ContainerScraper.registered
-class OldPageTcgPlayerUserScraper(ContainerScraper):
-    """Scraper of TCG Player old-style user search page.
+class OldSiteTcgPlayerUserScraper(ContainerScraper):
+    """Scraper of TCG Player old-site user search page.
     """
     CONTAINER_NAME = "TCGPlayer (old-site) user"  # override
     DECK_URL_TEMPLATE = "https://decks.tcgplayer.com{}"
-    _DECK_SCRAPER = OldPageTcgPlayerScraper  # override
+    _DECK_SCRAPER = OldSiteTcgPlayerScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -102,8 +102,8 @@ class OldPageTcgPlayerUserScraper(ContainerScraper):
 
 
 @DeckScraper.registered
-class NewPageTcgPlayerScraper(DeckScraper):
-    """Scraper of TCG Player new-style decklist page.
+class NewSiteTcgPlayerScraper(DeckScraper):
+    """Scraper of TCG Player new-site decklist page.
     """
     API_URL_TEMPLATE = ("https://infinite-api.tcgplayer.com/deck/magic/{}/?source=infinite-"
                         "content&subDecks=true&cards=true&stats=true")
@@ -177,3 +177,32 @@ class NewPageTcgPlayerScraper(DeckScraper):
             for item in sideboard:
                 card_id, quantity = item["cardID"], item["quantity"]
                 self._sideboard += self.get_playset(cardmap[card_id], quantity)
+
+
+@ContainerScraper.registered
+class NewSiteTcgPlayerUserScraper(ContainerScraper):
+    """Scraper of TCG Player old-site user search page.
+    """
+    CONTAINER_NAME = "TCGPlayer (new-site) user"  # override
+    # 100 rows is pretty arbitrary but tested to work
+    API_URL_TEMPLATE = ("https://infinite-api.tcgplayer.com/content/decks/magic?source=infinite"
+                        "-content&rows=100&format=&playerName"
+                        "={}&latest=true&sort=created&order=desc")
+    DECK_URL_TEMPLATE = "https://infinite.tcgplayer.com{}"
+    _DECK_SCRAPER = NewSiteTcgPlayerScraper  # override
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return "infinite.tcgplayer.com/magic-the-gathering/decks/player/" in url.lower()
+
+    def _get_user_name(self) -> str:
+        *_, last = self.url.split("/")
+        return last
+
+    def _collect(self) -> list[str]:  # override
+        json_data = request_json(
+            self.API_URL_TEMPLATE.format(self._get_user_name()))
+        if not json_data or not json_data.get("result"):
+            _log.warning("User data not available")
+            return []
+        return [self.DECK_URL_TEMPLATE.format( d["canonicalURL"]) for d in json_data["result"]]

@@ -159,6 +159,10 @@ class MoxfieldUserScraper(ContainerScraper):
     def is_container_url(url: str) -> bool:  # override
         return "moxfield.com/users/" in url.lower()
 
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url)
+
     def _get_user_name(self) -> str:
         *_, last = self.url.split("/")
         return last
