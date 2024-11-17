@@ -16,7 +16,7 @@ from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckScraper
-from mtg.utils.scrape import get_dynamic_soup_by_xpath, strip_url_params
+from mtg.utils.scrape import get_dynamic_soup, strip_url_params
 from mtg.utils.scrape import ScrapingError
 
 _log = logging.getLogger(__name__)
@@ -51,7 +51,7 @@ class MtgDecksNetScraper(DeckScraper):
 
     def _pre_parse(self) -> None:  # override
         try:
-            self._soup, _, _ = get_dynamic_soup_by_xpath(self.url, self._XPATH)
+            self._soup, _, _ = get_dynamic_soup(self.url, self._XPATH)
         except TimeoutException:
             raise ScrapingError(f"Scraping failed due to Selenium timing out")
 

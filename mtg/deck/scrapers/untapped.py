@@ -18,7 +18,7 @@ from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.utils import extract_float, extract_int
 from mtg.utils.scrape import ScrapingError
-from mtg.utils.scrape import get_dynamic_soup_by_xpath, strip_url_params
+from mtg.utils.scrape import get_dynamic_soup, strip_url_params
 
 _log = logging.getLogger(__name__)
 CONSENT_XPATH = '//button[contains(@class, "fc-button fc-cta-consent") and @aria-label="Consent"]'
@@ -47,7 +47,7 @@ class UntappedProfileDeckScraper(DeckScraper):
 
     def _pre_parse(self) -> None:  # override
         try:
-            self._soup, _, self._clipboard = get_dynamic_soup_by_xpath(
+            self._soup, _, self._clipboard = get_dynamic_soup(
                 self.url, CLIPBOARD_XPATH, self._NO_GAMES_XPATH, self._PRIVATE_XPATH,
                 consent_xpath=CONSENT_XPATH,
                 clipboard_xpath=CLIPBOARD_XPATH)
@@ -92,7 +92,7 @@ class UntappedRegularDeckScraper(DeckScraper):
 
     def _pre_parse(self) -> None:  # override
         try:
-            self._soup, _, self._clipboard = get_dynamic_soup_by_xpath(
+            self._soup, _, self._clipboard = get_dynamic_soup(
                 self.url, CLIPBOARD_XPATH, consent_xpath=CONSENT_XPATH,
                 clipboard_xpath=CLIPBOARD_XPATH)
         except TimeoutException:
@@ -131,7 +131,7 @@ class UntappedMetaDeckScraper(DeckScraper):
 
     def _pre_parse(self) -> None:  # override
         try:
-            self._soup, _, self._clipboard = get_dynamic_soup_by_xpath(
+            self._soup, _, self._clipboard = get_dynamic_soup(
                 self.url, CLIPBOARD_XPATH, consent_xpath=CONSENT_XPATH,
                 clipboard_xpath=CLIPBOARD_XPATH)
         except TimeoutException:
@@ -188,7 +188,7 @@ class UntappedUserScraper(ContainerScraper):
 
     def _collect(self) -> list[str]:  # override
         try:
-            self._soup, _, _ = get_dynamic_soup_by_xpath(
+            self._soup, _, _ = get_dynamic_soup(
                 self.url, self._XPATH, consent_xpath=CONSENT_XPATH)
             if not self._soup:
                 _log.warning("User data not available")

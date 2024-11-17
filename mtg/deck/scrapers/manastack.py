@@ -15,7 +15,7 @@ from mtg.deck import ParsingState
 from mtg.deck.scrapers import DeckScraper
 from mtg.utils import get_date_from_ago_text
 from mtg.utils.scrape import ScrapingError, strip_url_params
-from mtg.utils.scrape import get_dynamic_soup_by_xpath
+from mtg.utils.scrape import get_dynamic_soup
 
 _log = logging.getLogger(__name__)
 
@@ -36,7 +36,7 @@ class ManaStackScraper(DeckScraper):
 
     def _pre_parse(self) -> None:  # override
         try:
-            self._soup, _, _ = get_dynamic_soup_by_xpath(self.url, self._XPATH)
+            self._soup, _, _ = get_dynamic_soup(self.url, self._XPATH)
         except TimeoutException:
             raise ScrapingError(f"Scraping failed due to Selenium timing out")
 

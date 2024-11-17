@@ -15,7 +15,7 @@ from selenium.common.exceptions import TimeoutException
 from mtg.deck import Archetype, Mode, ParsingState
 from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.utils import extract_float, extract_int, from_iterable
-from mtg.utils.scrape import ScrapingError, get_dynamic_soup_by_xpath, getsoup, strip_url_params
+from mtg.utils.scrape import ScrapingError, get_dynamic_soup, getsoup, strip_url_params
 
 _log = logging.getLogger(__name__)
 
@@ -177,7 +177,7 @@ class AetherhubUserScraper(ContainerScraper):
 
     def _collect(self) -> list[str]:  # override
         try:
-            self._soup, _, _ = get_dynamic_soup_by_xpath(
+            self._soup, _, _ = get_dynamic_soup(
                 self.url, self._XPATH, consent_xpath=self._CONSENT_XPATH,
                 wait_for_consent_disappearance=False)
             if not self._soup:

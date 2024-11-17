@@ -293,7 +293,7 @@ def strip_url_params(url: str, with_endpoint=True) -> str:
 
 
 @timed("getting dynamic soup")
-def get_dynamic_soup_by_xpath(
+def get_dynamic_soup(
         url: str,
         xpath: str,
         *halt_xpaths,
@@ -364,7 +364,7 @@ def get_dynamic_soup_by_xpath(
 def throttled_dynamic_soup_by_xpath(
         url: str, xpath: str, click=False, consent_xpath="", clipboard_xpath="",
         timeout=SELENIUM_TIMEOUT) -> tuple[BeautifulSoup, BeautifulSoup | None, str | None]:
-    return get_dynamic_soup_by_xpath(url, xpath, click, consent_xpath, clipboard_xpath, timeout)
+    return get_dynamic_soup(url, xpath, click, consent_xpath, clipboard_xpath, timeout)
 
 
 def _accept_consent(driver: WebDriver, xpath: str, timeout=SELENIUM_TIMEOUT) -> None:

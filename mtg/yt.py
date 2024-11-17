@@ -44,7 +44,7 @@ from mtg.utils import Counter, breadcrumbs, deserialize_dates, extract_float, fi
 from mtg.utils.files import getdir
 from mtg.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
 from mtg.utils.scrape import ScrapingError, extract_source, extract_url, \
-    get_dynamic_soup_by_xpath, http_requests_counted, throttle_with_countdown, throttled, \
+    get_dynamic_soup, http_requests_counted, throttle_with_countdown, throttled, \
     timed_request, unshorten
 
 _log = logging.getLogger(__name__)
@@ -1244,7 +1244,7 @@ class Channel:
         consent_xpath = "//button[@aria-label='Accept all']"
         xpath = "//span[contains(., 'subscribers')]"
         try:
-            soup, _, _ = get_dynamic_soup_by_xpath(self.url, xpath, consent_xpath=consent_xpath)
+            soup, _, _ = get_dynamic_soup(self.url, xpath, consent_xpath=consent_xpath)
             text = soup.find("span", string=lambda t: t and "subscribers" in t).text.removesuffix(
                 " subscribers")
             number = extract_float(text)

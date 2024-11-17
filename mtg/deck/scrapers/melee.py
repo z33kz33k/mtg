@@ -10,12 +10,13 @@
 import logging
 
 import dateutil.parser
+from selenium.common import TimeoutException
 
 from mtg.deck import Deck
 from mtg import Json, SECRETS
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import DeckScraper
-from mtg.utils.scrape import ScrapingError, getsoup
+from mtg.deck.scrapers import ContainerScraper, DeckScraper
+from mtg.utils.scrape import ScrapingError, get_dynamic_soup, getsoup
 
 _log = logging.getLogger(__name__)
 
@@ -66,8 +67,8 @@ class MeleeGgScraper(DeckScraper):
             self._metadata["author"] = author_tag.text.strip().removeprefix("by ")
         if event_tag := self._soup.select_one("div.decklist-card-info-tournament"):
             self._metadata["event"] = event_tag.text.strip()
-        info_tags = [tag for tag in self._soup.select("div.decklist-card-info")
-                     if not "Deck" in tag.text]
+        info_tags = [
+            tag for tag in self._soup.select("div.decklist-card-info") if not "Deck" in tag.text]
         for tag in info_tags:
             if "/" in tag.text and any(ch.isdigit() for ch in tag.text):
                 self._metadata["date"] = dateutil.parser.parse(tag.text.strip())
@@ -81,3 +82,35 @@ class MeleeGgScraper(DeckScraper):
     def _parse_deck(self) -> None:  # override
         self._arena_decklist = self._soup.select_one(
             "textarea.decklist-builder-paste-field").text.strip().splitlines()
+
+
+@ContainerScraper.registered
+class MeleeGgTournamentScraper(ContainerScraper):
+    """Scraper of Melee.gg tournament page.
+    """
+    CONTAINER_NAME = "Melee.gg tournament"  # override
+    DECK_URL_TEMPLATE = "https://melee.gg{}"
+    _DECK_SCRAPER = MeleeGgScraper  # override
+    _XPATH = '//a[@data-type="decklist"]'
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return "https://melee.gg/tournament/" in url.lower()
+
+    def _collect(self) -> list[str]:  # override
+        try:
+            self._soup, _, _ = get_dynamic_soup(self.url, self._XPATH)
+            if not self._soup:
+                _log.warning("User data not available")
+                return []
+        except TimeoutException:
+            _log.warning("User data not available")
+            return []
+
+        game_tag = self._soup.find("p", id="tournament-headline-game")
+        if not game_tag.text.strip() == "Game: Magic: The Gathering":
+            _log.warning("Not a MtG tournament")
+            return []
+
+        deck_tags = self._soup.find_all("a", href=lambda h: h and "/Decklist/View/" in h)
+        return [self.DECK_URL_TEMPLATE.format(deck_tag.attrs["href"]) for deck_tag in deck_tags]
