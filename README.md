@@ -83,6 +83,7 @@ descriptions).
         * TappedOut users, folders, and user folders
         * TCDecks events
         * TCGPlayer (old-site) users
+        * TCGPlayer (new-site) users (both profile and search pages) and events
         * Untapped users
         * others in plans
 * Assessing the meta:

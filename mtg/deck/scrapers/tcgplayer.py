@@ -195,6 +195,10 @@ class NewSiteTcgPlayerUserScraper(ContainerScraper):
     def is_container_url(url: str) -> bool:  # override
         return "infinite.tcgplayer.com/magic-the-gathering/decks/player/" in url.lower()
 
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url)
+
     def _get_user_name(self) -> str:
         *_, last = self.url.split("/")
         return last
@@ -217,8 +221,44 @@ class NewSiteTcgPlayerUserSearchScraper(NewSiteTcgPlayerUserScraper):
         return ("infinite.tcgplayer.com/magic-the-gathering/decks/advanced-search" in url.lower()
                 and "author=" in url.lower())
 
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return url.removesuffix("/")
+
     def _get_user_name(self) -> str:  # override
         *_, user = self.url.split("author=")
         if "&" in user:
             user, *_ = user.split("&")
         return user
+
+
+@ContainerScraper.registered
+class NewSiteTcgPlayerEventScraper(ContainerScraper):
+    """Scraper of TCG Player new-site event page.
+    """
+    CONTAINER_NAME = "TCGPlayer (new-site) event"  # override
+    # 200 rows is pretty arbitrary but tested to work (even though usually events have fewer rows)
+    API_URL_TEMPLATE = ("https://infinite-api.tcgplayer.com/content/decks/magic?source="
+                        "infinite-content&rows=200&eventNames={}")
+    DECK_URL_TEMPLATE = "https://infinite.tcgplayer.com{}"
+    _DECK_SCRAPER = NewSiteTcgPlayerScraper  # override
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return "infinite.tcgplayer.com/magic-the-gathering/events/event/" in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url)
+
+    def _get_event_name(self) -> str:
+        *_, last = self.url.split("/")
+        return last
+
+    def _collect(self) -> list[str]:  # override
+        json_data = request_json(
+            self.API_URL_TEMPLATE.format(self._get_event_name()))
+        if not json_data or not json_data.get("result"):
+            _log.warning("User data not available")
+            return []
+        return [self.DECK_URL_TEMPLATE.format( d["canonicalURL"]) for d in json_data["result"]]
