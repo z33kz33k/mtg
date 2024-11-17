@@ -8,6 +8,7 @@
 
 """
 import logging
+from datetime import datetime
 
 import backoff
 from bs4 import BeautifulSoup
@@ -86,7 +87,11 @@ class TappedoutScraper(DeckScraper):
                 continue
             name_col, value_col = cols
             if name_col.text.strip() == "Last updated":
-                self._metadata["date"] = get_date_from_ago_text(value_col.text.strip())
+                date_text = value_col.text.strip()
+                if date_text == "a few seconds":
+                    self._metadata["date"] = datetime.today()
+                else:
+                    self._metadata["date"] = get_date_from_ago_text(value_col.text.strip())
             elif name_col.text.strip() == "Views":
                 if views := value_col.text.strip():
                     self._metadata["views"] = extract_int(views)
