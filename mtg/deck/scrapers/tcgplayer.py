@@ -87,7 +87,7 @@ class OldSiteTcgPlayerUserScraper(ContainerScraper):
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
-        return ("https://decks.tcgplayer.com/magic/deck/search?" in url.lower()
+        return ("decks.tcgplayer.com/magic/deck/search?" in url.lower()
                 and"player=" in url)
 
     def _collect(self) -> list[str]:  # override

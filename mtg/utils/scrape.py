@@ -17,6 +17,7 @@ from collections import namedtuple
 from functools import wraps
 from typing import Callable, Dict, Optional
 
+import backoff
 import brotli
 import pyperclip
 import requests
@@ -26,7 +27,8 @@ from requests import Response
 from requests.adapters import HTTPAdapter
 from requests.exceptions import HTTPError
 from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.common.exceptions import ElementClickInterceptedException, NoSuchElementException, \
+    TimeoutException
 from selenium.webdriver import ActionChains, Keys
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
@@ -293,6 +295,7 @@ def strip_url_params(url: str, with_endpoint=True) -> str:
 
 
 @timed("getting dynamic soup")
+@backoff.on_exception(backoff.expo, ElementClickInterceptedException, max_time=300)
 def get_dynamic_soup(
         url: str,
         xpath: str,

@@ -95,16 +95,16 @@ class MeleeGgTournamentScraper(ContainerScraper):
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
-        return "https://melee.gg/tournament/" in url.lower()
+        return "melee.gg/tournament/" in url.lower()
 
     def _collect(self) -> list[str]:  # override
         try:
             self._soup, _, _ = get_dynamic_soup(self.url, self._XPATH)
             if not self._soup:
-                _log.warning("User data not available")
+                _log.warning("Tournament data not available")
                 return []
         except TimeoutException:
-            _log.warning("User data not available")
+            _log.warning("Tournament data not available")
             return []
 
         game_tag = self._soup.find("p", id="tournament-headline-game")
