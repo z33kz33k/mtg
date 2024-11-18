@@ -49,8 +49,7 @@ class UntappedProfileDeckScraper(DeckScraper):
         try:
             self._soup, _, self._clipboard = get_dynamic_soup(
                 self.url, CLIPBOARD_XPATH, self._NO_GAMES_XPATH, self._PRIVATE_XPATH,
-                consent_xpath=CONSENT_XPATH,
-                clipboard_xpath=CLIPBOARD_XPATH)
+                consent_xpath=CONSENT_XPATH, clipboard_xpath=CLIPBOARD_XPATH)
         except NoSuchElementException:
             raise ScrapingError("Scraping failed due to absence of the looked for element")
         except TimeoutException:

@@ -15,8 +15,8 @@ from selenium.common.exceptions import TimeoutException
 from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import DeckScraper
-from mtg.utils.scrape import get_dynamic_soup, strip_url_params
+from mtg.deck.scrapers import ContainerScraper, DeckScraper
+from mtg.utils.scrape import get_dynamic_soup, getsoup, strip_url_params
 from mtg.utils.scrape import ScrapingError
 
 _log = logging.getLogger(__name__)
@@ -78,3 +78,31 @@ class MtgDecksNetScraper(DeckScraper):
     def _parse_deck(self) -> None:  # override
         deck_tag = self._soup.find("textarea", id="arena_deck")
         self._arena_decklist = deck_tag.text.strip().splitlines()
+
+
+@ContainerScraper.registered
+class MtgDecksNetTournamentScraper(ContainerScraper):
+    """Scraper of MTGDecks.net tournament page.
+    """
+    CONTAINER_NAME = "MTGDecks.net tournament"  # override
+    DECK_URL_TEMPLATE = "https://mtgdecks.net{}"
+    _DECK_SCRAPER = MtgDecksNetScraper  # override
+    _XPATH = '//a[contains(@href, "-decklist-")]'
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return "mtgdecks.net/" in url.lower() and "-tournament-" in url.lower()
+
+    def _collect(self) -> list[str]:  # override
+        try:
+            self._soup, _, _ = get_dynamic_soup(self.url, self._XPATH)
+            if not self._soup:
+                _log.warning("Tournament data not available")
+                return []
+        except TimeoutException:
+            _log.warning("Tournament data not available")
+            return []
+
+        deck_tags = [
+            tag for tag in self._soup.find_all("a", href=lambda h: h and "-decklist-" in h)]
+        return [self.DECK_URL_TEMPLATE.format(deck_tag.attrs["href"]) for deck_tag in deck_tags]
