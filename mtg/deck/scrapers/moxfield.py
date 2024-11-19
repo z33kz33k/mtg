@@ -63,7 +63,7 @@ class MoxfieldScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        url = strip_url_params(url)
+        url = strip_url_params(url, with_endpoint=False)
         if url.endswith("/primer"):
             return url.removesuffix("/primer")
         elif url.endswith("/primer/"):
@@ -161,7 +161,7 @@ class MoxfieldUserScraper(ContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url)
+        return strip_url_params(url, with_endpoint=False)
 
     def _get_user_name(self) -> str:
         *_, last = self.url.split("/")
