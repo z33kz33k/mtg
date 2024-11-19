@@ -28,7 +28,7 @@ descriptions).
     * [youtube-comment-downloader](https://github.com/egbertbouman/youtube-comment-downloader) 
 * Scraping YT videos' descriptions (or comments) for decks:    
     * Text decklists in Arena/MTGO format pasted into video descriptions are parsed into Deck objects
-    * Links to decklist services are scraped into Deck objects. 29 services are supported so far:
+    * Links to decklist services are scraped into Deck objects. 30 services are supported so far:
         * [Aetherhub](https://aetherhub.com)
         * [Archidekt](https://archidekt.com)
         * [CardBoard Live](https://cardboard.live)
@@ -40,8 +40,9 @@ descriptions).
         * [Goldfish](https://www.mtggoldfish.com)
         * [Hareruya](https://www.hareruyamtg.com/en/)
         * [MagicVille](https://magic-ville.com/fr/index.php)
-        * [Manatraders](https://www.manatraders.com)
+        * [ManaBox](https://manabox.app)
         * [ManaStack](https://manastack.com/home)
+        * [Manatraders](https://www.manatraders.com)
         * [Melee.gg](https://melee.gg)
         * [Moxfield](https://www.moxfield.com)
         * [MTGArena.Pro](https://mtgarena.pro)
