@@ -43,6 +43,7 @@ SANITIZED_FORMATS = {
     "commanderprecons": "commander",
     "duel commander": "duel",
     "duelcommander": "duel",
+    "duelcommanderrussian": "duel",
     "edh": "commander",
     "european highlander": "commander",
     "europeanhighlander": "commander",
