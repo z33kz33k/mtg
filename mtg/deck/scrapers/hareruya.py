@@ -179,7 +179,7 @@ class HareruyaEventScraper(ContainerScraper):
     """Scraper of Hareruya event decks search page.
     """
     CONTAINER_NAME = "Hareruya event"  # override
-    _HEADERS = {
+    HEADERS = {
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,"
                   "image/png,image/svg+xml,*/*;q=0.8",
         "Accept-Language": "en-US,en;q=0.5",
@@ -205,9 +205,30 @@ class HareruyaEventScraper(ContainerScraper):
         return all(t in url for t in {"hareruyamtg.com", "/deck", "/result?", "eventName="})
 
     def _collect(self) -> list[str]:  # override
-        self._soup = getsoup(self.url, headers=self._HEADERS)
+        self._soup = getsoup(self.url, headers=self.HEADERS)
         if not self._soup:
             _log.warning("Event data not available")
+            return []
+
+        return [a_tag.attrs["href"] for a_tag in self._soup.find_all(
+            "a", class_="deckSearch-searchResult__itemWrapper")]
+
+
+@ContainerScraper.registered
+class HareruyaPlayerScraper(ContainerScraper):
+    """Scraper of Hareruya player decks search page.
+    """
+    CONTAINER_NAME = "Hareruya player"  # override
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        url = url.lower()
+        return all(t in url for t in {"hareruyamtg.com", "/deck", "/result?", "player="})
+
+    def _collect(self) -> list[str]:  # override
+        self._soup = getsoup(self.url, headers=HareruyaEventScraper.HEADERS)
+        if not self._soup:
+            _log.warning("Player data not available")
             return []
 
         return [a_tag.attrs["href"] for a_tag in self._soup.find_all(

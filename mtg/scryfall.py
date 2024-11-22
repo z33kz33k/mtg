@@ -455,10 +455,10 @@ class Card:
             ("type_line", self.type_line))
 
     def __post_init__(self) -> None:
-        if self.is_multiface and self.card_faces is None:
+        if self.is_multifaced and self.card_faces is None:
             raise ScryfallError(
                 f"Card faces data missing for multiface card {self.name!r}")
-        if self.is_multiface and self.layout not in MULTIFACE_LAYOUTS:
+        if self.is_multifaced and self.layout not in MULTIFACE_LAYOUTS:
             raise ScryfallError(
                 f"Invalid layout {self.layout!r} for multiface card {self.name!r}")
 
@@ -485,7 +485,7 @@ class Card:
     def colors(self) -> list[str]:
         if result := self.json.get("colors"):
             return result
-        if self.is_multiface:
+        if self.is_multifaced:
             clrs = {c for f in self.card_faces for c in f.colors}
             return sorted(clrs)
         return []
@@ -581,17 +581,17 @@ class Card:
 
     @property
     def name_parts(self) -> set[str]:
-        if not self.is_multiface:
+        if not self.is_multifaced:
             return {*self.name.split()}
         return {part for face in self.card_faces for part in face.name_parts}
 
     @property
     def first_face_name(self) -> str:
-        return self.card_faces[0].name if self.is_multiface else self.name
+        return self.card_faces[0].name if self.is_multifaced else self.name
 
     @property
     def second_face_name(self) -> str:
-        return self.card_faces[1].name if self.is_multiface else self.name
+        return self.card_faces[1].name if self.is_multifaced else self.name
 
     @property
     def power(self) -> int | None:
@@ -682,7 +682,7 @@ class Card:
         return self.json["type_line"]
 
     @property
-    def is_multiface(self) -> bool:
+    def is_multifaced(self) -> bool:
         return MULTIFACE_SEPARATOR in self.name
 
     def is_legal_in(self, fmt: str) -> bool:
@@ -761,19 +761,19 @@ class Card:
 
     @lru_cache
     def parse_types(self) -> TypeLine | None:
-        if self.is_multiface:
+        if self.is_multifaced:
             return None
         return TypeLine(self.type_line)
 
     @property
     def supertypes(self) -> list[str]:
-        if self.is_multiface:
+        if self.is_multifaced:
             return sorted({t for face in self.card_faces for t in face.supertypes})
         return self.parse_types().supertypes
 
     @property
     def regular_types(self) -> list[str]:
-        if self.is_multiface:
+        if self.is_multifaced:
             return sorted({t for face in self.card_faces for t in face.regular_types})
         return self.parse_types().regular_types
 
@@ -815,31 +815,31 @@ class Card:
 
     @property
     def subtypes(self) -> list[str]:
-        if self.is_multiface:
+        if self.is_multifaced:
             return sorted({t for face in self.card_faces for t in face.subtypes})
         return self.parse_types().subtypes
 
     @property
     def races(self) -> list[str]:
-        if self.is_multiface:
+        if self.is_multifaced:
             return sorted({t for face in self.card_faces for t in face.races})
         return self.parse_types().races
 
     @property
     def classes(self) -> list[str]:
-        if self.is_multiface:
+        if self.is_multifaced:
             return sorted({t for face in self.card_faces for t in face.classes})
         return self.parse_types().classes
 
     @property
     def is_permanent(self) -> bool:
-        if self.is_multiface:
+        if self.is_multifaced:
             return all(face.parse_types().is_permanent for face in self.card_faces)
         return self.parse_types().is_permanent
 
     @property
     def is_nonpermanent(self) -> bool:
-        if self.is_multiface:
+        if self.is_multifaced:
             return all(face.parse_types().is_nonpermanent for face in self.card_faces)
         return self.parse_types().is_nonpermanent
 
@@ -876,9 +876,9 @@ class Card:
         """
         if not self.is_alchemy_rebalance:
             return None
-        if not self.is_multiface:
+        if not self.is_multifaced:
             return find_by_name(self.name[2:])
-        # is multiface
+        # is multifaced
         first_part_name, *_ = self.name.split(MULTIFACE_SEPARATOR)
         original_name = first_part_name[2:]
         original = from_iterable(
@@ -908,7 +908,7 @@ class Card:
     @cached_property
     def lord_sentences(self) -> list[LordSentence]:
         sentences = []
-        if self.is_multiface:
+        if self.is_multifaced:
             for face in self.card_faces:
                 sentences += face.lord_sentences
             return sentences
@@ -1259,7 +1259,7 @@ def _build_maps() -> None:
     _log.info("Mapping the cards for fast lookups...")
     for card in bulk_data():
         _NAME_MAP[unidecode(card.name).casefold()] = card
-        if card.is_multiface:
+        if card.is_multifaced:
             _NAME_MAP[unidecode(card.first_face_name).casefold()] = card
             _NAME_MAP[unidecode(card.second_face_name).casefold()] = card
         _SCRYFALL_ID_MAP[card.id] = card

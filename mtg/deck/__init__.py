@@ -1025,7 +1025,7 @@ Name={}
         card = playset[0]
         card_name = card.name.replace(
             SCRYFALL_MULTIFACE_SEPARATOR,
-            ARENA_MULTIFACE_SEPARATOR) if card.is_multiface else card.name
+            ARENA_MULTIFACE_SEPARATOR) if card.is_multifaced else card.name
         line = f"{len(playset)} {card_name}"
         if extended:
             line += f" ({card.set.upper()}) {card.collector_number}"
