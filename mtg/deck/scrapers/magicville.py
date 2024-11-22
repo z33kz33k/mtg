@@ -2,7 +2,7 @@
 
     mtg.deck.scrapers.magicville.py
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Scrape Magic-Ville decklists.
+    Scrape MagicVille decklists.
 
     @author: z33k
 
@@ -10,7 +10,7 @@
 import logging
 
 from mtg.deck import ParsingState
-from mtg.deck.scrapers import DeckScraper
+from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.utils import get_date_from_french_ago_text
 from mtg.utils.scrape import ScrapingError, getsoup
 
@@ -19,7 +19,7 @@ _log = logging.getLogger(__name__)
 
 @DeckScraper.registered
 class MagicVilleScraper(DeckScraper):
-    """Scraper of Magic-Ville decklist page.
+    """Scraper of MagicVille decklist page.
     """
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -42,17 +42,33 @@ class MagicVilleScraper(DeckScraper):
         if "&file=" in fmt_text:
             fmt_text, _ = fmt_text.split("&file=", maxsplit=1)
         self._update_fmt(fmt_text)
-        name_tag = self._soup.find("div", class_="title16")
-        self._metadata["name"] = name_tag.text.strip()
+        # name
+        name, name_tag = None, None
+        name_tags = [
+            tag for tag in self._soup.find_all("div", class_="title16")
+            if tag.text.strip() != fmt_text]
+        if name_tags:
+            name_tag = name_tags[0]
+            name = name_tag.text.strip()
+            if name.startswith("#"):
+                rank, name = name.split(maxsplit=1)
+                self._metadata.setdefault("event", {})["rank"] = rank.lstrip("#")
+        # author
+        author = ""
         if author_tag := self._soup.find("a", href=lambda h: h and "/register/perso?user=" in h):
             _, author = author_tag["href"].split("/register/perso?user=", maxsplit=1)
+        elif name_tag:
+            if author_tag := name_tag.find("span", class_="G14"):
+                author = author_tag.text.strip()
+        if author:
             self._metadata["author"] = author
-        elif author_tag := name_tag.find("span", class_="G14"):
-            author = author_tag.text.strip()
-            self._metadata["author"] = author
+        if name:
+            self._metadata["name"] = name.removesuffix(f" {author}")
+        # event
         if event_div := self._soup.find("div", class_="W12"):
             if evnet_a := event_div.find("a", href=lambda h: h and "decklists?event" in h):
-                self._metadata["event"] = evnet_a.text.strip()
+                self._metadata.setdefault("event", {})["name"] = evnet_a.text.strip()
+        # date
         if date_tag := self._soup.find("div", class_="W10"):
             date_text = date_tag.text.strip().removeprefix("modifié ").removeprefix("il y a ")
             _, suffix = date_text.rsplit("par ", maxsplit=1)
@@ -86,3 +102,26 @@ class MagicVilleScraper(DeckScraper):
                     self._sideboard += playset
                 else:
                     self._maindeck += playset
+
+
+@ContainerScraper.registered
+class MagicVilleEventScraper(ContainerScraper):
+    """Scraper of MagicVille event page.
+    """
+    CONTAINER_NAME = "MagicVille event"  # override
+    DECK_URL_TEMPLATE = "https://www.magic-ville.com/fr/decks/{}"
+    _DECK_SCRAPER = MagicVilleScraper  # override
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return all(t in url.lower() for t in ("magic-ville.com/", "decks/decklists?", "event="))
+
+    def _collect(self) -> list[str]:  # override
+        self._soup = getsoup(self.url)
+        if not self._soup:
+            _log.warning("Event data not available")
+            return []
+
+        deck_tags = self._soup.find_all("a", href=lambda h: h and "showdeck?ref=" in h)
+        return [self.DECK_URL_TEMPLATE.format(deck_tag.attrs["href"]) for deck_tag in deck_tags]
+
