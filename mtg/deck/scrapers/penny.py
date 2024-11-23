@@ -11,10 +11,10 @@ import logging
 
 from bs4 import Tag
 
-from mtg.deck.scrapers import DeckScraper
+from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.scryfall import Card
 from mtg.utils import from_iterable, get_date_from_ago_text, get_date_from_month_text
-from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
+from mtg.utils.scrape import ScrapingError, getsoup, request_json, strip_url_params
 
 _log = logging.getLogger(__name__)
 
@@ -78,3 +78,34 @@ class PennyDreadfulMagicScraper(DeckScraper):
                         self._sideboard += cards
                     else:
                         self._maindeck += cards
+
+
+@ContainerScraper.registered
+class PennyDreadfulMagicCompetitionScraper(ContainerScraper):
+    """Scraper of PennyDreadfulMagic competition page.
+    """
+    CONTAINER_NAME = "PennyDreadfulMagic competition"  # override
+    API_URL_TEMPLATE = ("https://pennydreadfulmagic.com/api/decks/?achievementKey=&archetypeId=&"
+                        "cardName=&competitionId={}&competitionFlagId=&deckType=&page=0&page"
+                        "Size=200&personId=&q=&seasonId=")
+    DECK_URL_TEMPLATE = "https://pennydreadfulmagic.com{}"
+    _DECK_SCRAPER = PennyDreadfulMagicScraper  # override
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return "pennydreadfulmagic.com/competitions/" in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url)
+
+    def _get_competition_id(self) -> str:
+        *_, last = self.url.split("/")
+        return last
+
+    def _collect(self) -> list[str]:  # override
+        json_data = request_json(self.API_URL_TEMPLATE.format(self._get_competition_id()))
+        if not json_data or not json_data.get("objects"):
+            _log.warning("Competition data not available")
+            return []
+        return [self.DECK_URL_TEMPLATE.format(d["url"]) for d in json_data["objects"]]

@@ -112,7 +112,7 @@ class ArchidektUserScraper(ContainerScraper):
     """
     CONTAINER_NAME = "Archidekt user"  # override
     URL_TEMPLATE = "https://archidekt.com{}"
-    _DECK_SCRAPER = ArchidektScraper  #
+    _DECK_SCRAPER = ArchidektScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
