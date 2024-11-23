@@ -24,7 +24,7 @@ class MagicVilleScraper(DeckScraper):
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         url = url.lower()
-        return "magic-ville.com/" in url and "decks/showdeck?" in url
+        return "magic-ville.com/" in url and "decks/showdeck" in url
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
@@ -124,4 +124,28 @@ class MagicVilleEventScraper(ContainerScraper):
 
         deck_tags = self._soup.find_all("a", href=lambda h: h and "showdeck?ref=" in h)
         return [self.DECK_URL_TEMPLATE.format(deck_tag.attrs["href"]) for deck_tag in deck_tags]
+
+
+@ContainerScraper.registered
+class MagicVilleUserScraper(ContainerScraper):
+    """Scraper of MagicVille user page.
+    """
+    CONTAINER_NAME = "MagicVille user"  # override
+    DECK_URL_TEMPLATE = "https://www.magic-ville.com/fr/{}"
+    _DECK_SCRAPER = MagicVilleScraper  # override
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return all(t in url.lower() for t in ("magic-ville.com/", "register/perso?", "user="))
+
+    def _collect(self) -> list[str]:  # override
+        self._soup = getsoup(self.url)
+        if not self._soup:
+            _log.warning("User data not available")
+            return []
+
+        deck_tags = self._soup.find_all("a", href=lambda h: h and "/decks/showdeck.php?ref=" in h)
+        return [
+            self.DECK_URL_TEMPLATE.format(deck_tag.attrs["href"].removeprefix("../"))
+            for deck_tag in deck_tags]
 
