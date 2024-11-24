@@ -54,8 +54,9 @@ GOOGLE_API_KEY = Path("scraping_api_key.txt").read_text(encoding="utf-8")  # not
 CHANNELS_DIR = OUTPUT_DIR / "channels"
 REGULAR_DECKLISTS_FILE = CHANNELS_DIR / "regular_decklists.json"
 EXTENDED_DECKLISTS_FILE = CHANNELS_DIR / "extended_decklists.json"
-DORMANT_THRESHOLD = 30 * 3  # days
-ABANDONED_THRESHOLD = 30 * 12  # days
+DORMANT_THRESHOLD = 30 * 3  # days (ca 3 months)
+ABANDONED_THRESHOLD = 30 * 12  # days (ca. 1 yr)
+DEAD_THRESHOLD = 2500  # days (ca. 7 yrs) - only used in gsheet to trim dead from abandoned
 DECK_STALE_THRESHOLD = 50  # videos
 VERY_DECK_STALE_THRESHOLD = 100  # videos
 EXCESSIVELY_DECK_STALE_THRESHOLD = 150  # videos
