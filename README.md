@@ -84,7 +84,7 @@ descriptions).
         * Moxfield bookmarks and users
         * MTGDecks.net tournaments
         * MTGTop8 events
-        * PennyDreadfulMagic competitions
+        * PennyDreadfulMagic competitions and users
         * Streamdecker users
         * TappedOut users, folders, and user folders
         * TCDecks events

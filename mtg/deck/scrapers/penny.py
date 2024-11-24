@@ -109,3 +109,65 @@ class PennyDreadfulMagicCompetitionScraper(ContainerScraper):
             _log.warning("Competition data not available")
             return []
         return [self.DECK_URL_TEMPLATE.format(d["url"]) for d in json_data["objects"]]
+
+
+@ContainerScraper.registered
+class PennyDreadfulMagicUserScraper(ContainerScraper):
+    """Scraper of PennyDreadfulMagic user page.
+    """
+    CONTAINER_NAME = "PennyDreadfulMagic user"  # override
+    API_URL_TEMPLATE = ("https://pennydreadfulmagic.com/api/decks/?achievementKey=&archetypeId="
+                        "&cardName=&competitionId=&competitionFlagId=&deckType=all&page=0&page"
+                        "Size=200&personId={}&q=&seasonId={}")
+    DECK_URL_TEMPLATE = "https://pennydreadfulmagic.com{}"
+    _DECK_SCRAPER = PennyDreadfulMagicScraper  # override
+
+    @property
+    def _ids_in_url(self) -> bool:
+        return "/seasons/" in self.url.lower() and "/id/" in self.url.lower()
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return "pennydreadfulmagic.com" in url.lower() and "/people/" in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url)
+
+    @staticmethod
+    def _parse_url_for_ids(url: str) -> tuple[str, str]:
+        url = url.removesuffix("/")
+        _, last = url.split("seasons/", maxsplit=1)
+        season_id, user_id = last.split("/people/id/", maxsplit=1)
+        return season_id, user_id
+
+    def _find_ids(self) -> tuple[str, str] | None:
+        soup = getsoup(self.url)
+        if not soup:
+            return None
+        season_ids, user_ids = set(), set()
+        for a_tag in soup.find_all(
+                "a", href=lambda h: h and "/seasons/" in h and "/people/id/" in h):
+            season_id, user_id = self._parse_url_for_ids(a_tag.attrs["href"])
+            season_ids.add(int(season_id))
+            user_ids.add(int(user_id))
+        if not season_ids or not user_ids:
+            return None
+        return str(max(season_ids)), str(max(user_ids))
+
+    def _get_ids(self) -> tuple[str, str] | None:
+        if self._ids_in_url:
+            return self._parse_url_for_ids(self.url)
+        return self._find_ids()
+
+    def _collect(self) -> list[str]:  # override
+        if ids := self._get_ids():
+            season_id, user_id = ids
+        else:
+            _log.warning("User data not available")
+            return []
+        json_data = request_json(self.API_URL_TEMPLATE.format(user_id, season_id))
+        if not json_data or not json_data.get("objects"):
+            _log.warning("User data not available")
+            return []
+        return [self.DECK_URL_TEMPLATE.format(d["url"]) for d in json_data["objects"]]
