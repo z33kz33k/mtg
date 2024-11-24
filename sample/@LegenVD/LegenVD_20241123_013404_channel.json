@@ -1,0 +1,100 @@
+{
+    "url": "https://www.youtube.com/@LegenVD",
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 132000,
+    "scrape_time": "2024-11-23 01:34:04",
+    "videos": [
+        {
+            "id": "nES2ALch7vQ",
+            "url": "https://www.youtube.com/watch?v=nES2ALch7vQ",
+            "author": "LegenVD",
+            "title": "This deck breaks Leyline of Hope.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a monowhite lifegain aggro deck, featuring Leyline of Hope, Ajani's Pridemate and Linden, the Steadfast Queen from Foundations in Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n03:42 - Match 1\n09:25 - Match 2\n11:31 - Match 3\n13:37 - Match 4\n17:08 - Match 5\n18:28 - Match 6\n22:48 - Match 7\n24:40 - Match 8\n26:35 - Match 9\n29:12 - Match 10\n35:35 - Match 11\n\nDecklist:\nhttps://aetherhub.com/Deck/foundations-monowhite-lifegain\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtgfoundations #mtgfdn #mtg #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "aggro",
+                "ajani",
+                "deck",
+                "decks",
+                "fdn",
+                "fnd",
+                "foundations",
+                "foundations standard",
+                "gameplay",
+                "guide",
+                "legend",
+                "leyline of hope",
+                "life",
+                "lifegain",
+                "lifegain deck",
+                "lvd",
+                "magic the gathering",
+                "monowhite lifegain",
+                "mtg",
+                "mtg arena",
+                "mtg foundations",
+                "mtga",
+                "new standard",
+                "pridemate",
+                "standard",
+                "standard deck",
+                "standard lifegain",
+                "white"
+            ],
+            "publish_time": "2024-11-22 09:00:52",
+            "views": 15586,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2024-11-22",
+                        "exports": 501,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Foundations Monowhite Lifegain",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/foundations-monowhite-lifegain",
+                        "views": 639
+                    },
+                    "decklist_id": "72414cef-3739-b634-b71f-cdbbca19b65e",
+                    "decklist_extended_id": "b7723363-49e6-aef7-0ec5-4f2e66533137"
+                }
+            ]
+        }
+    ]
+}

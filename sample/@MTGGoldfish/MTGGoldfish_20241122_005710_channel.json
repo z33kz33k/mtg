@@ -1,0 +1,50 @@
+{
+    "url": "https://www.youtube.com/@MTGGoldfish",
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 332000,
+    "scrape_time": "2024-11-22 00:57:10",
+    "videos": [
+        {
+            "id": "d0TWoEhfzGY",
+            "url": "https://www.youtube.com/watch?v=d0TWoEhfzGY",
+            "author": "MTGGoldfish",
+            "title": "Azorius Flashing Angels  Foundations Standard",
+            "description": "Errant & Giada loves all the reprinted Angels and cards with Flash we can play with! Let's take to the skies!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-azorius-flashing-angels\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6754803#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/Gboxp\n◼ Purchase this deck (Magic Online): http://mtg.fish/PmDIC\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2024-11-21 08:00:06",
+            "views": 9324,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2024-11-14",
+                        "format": "standard",
+                        "name": "UW FLiers",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6754803"
+                    },
+                    "decklist_id": "6314aedc-d071-88da-79c2-40895a1fb37b",
+                    "decklist_extended_id": "51d9af60-e01c-89d6-0797-cd2c262c4926"
+                }
+            ]
+        }
+    ]
+}

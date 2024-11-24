@@ -1,0 +1,49 @@
+{
+    "url": "https://www.youtube.com/@MTGGoldfish",
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 331000,
+    "scrape_time": "2024-11-19 01:54:53",
+    "videos": [
+        {
+            "id": "n2gbrXi5ANg",
+            "url": "https://www.youtube.com/watch?v=n2gbrXi5ANg",
+            "author": "MTGGoldfish",
+            "title": "I Scorch Standard with $100 Budget Boros Burn",
+            "description": "Thanks to Foundations, we can now build a deck that looks a lot like old-school Modern Burn, but in Standard and all on a $100 budget!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/budget-magic-2015-modern-burn-but-on-a-100-budget-in-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6755363#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/l5MLr\n◼ Purchase this deck (Magic Online): http://mtg.fish/edquh\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#mtgstandard \n\n0:00 Start\n3:48 Games",
+            "keywords": [
+                "MTG",
+                "MTG Arena",
+                "MTGGoldfish",
+                "Magic: the Gathering"
+            ],
+            "publish_time": "2024-11-18 08:00:08",
+            "views": 22372,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2024-11-14",
+                        "format": "standard",
+                        "name": "Boros Burn",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6755363"
+                    },
+                    "decklist_id": "0967f03a-09b8-ba25-d7e7-2dcdc54b76ee",
+                    "decklist_extended_id": "d3bd1b12-3750-9831-8177-1dc68f202fbd"
+                }
+            ]
+        }
+    ]
+}

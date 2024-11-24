@@ -1,0 +1,50 @@
+{
+    "url": "https://www.youtube.com/@MTGGoldfish",
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 332000,
+    "scrape_time": "2024-11-23 01:40:26",
+    "videos": [
+        {
+            "id": "C0_Hmd5Iszg",
+            "url": "https://www.youtube.com/watch?v=C0_Hmd5Iszg",
+            "author": "MTGGoldfish",
+            "title": "Mono-Black, but One Turn Kills Only  Much Abrew",
+            "description": "There are seemingly an infinite number of mono-black one turn kill combos in Foundations Standard. What if we put them all together in the same deck?\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/much-abrew-mono-black-but-one-turn-kills-only-foundation-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6757248#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/YP1qc\n◼ Purchase this deck (Magic Online): http://mtg.fish/s6wpS\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2024-11-22 08:00:07",
+            "views": 16697,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2024-11-15",
+                        "format": "standard",
+                        "name": "OTK's Only",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6757248"
+                    },
+                    "decklist_id": "85a13ff0-3b2b-9250-5c46-fe61ba2fada9",
+                    "decklist_extended_id": "8355edec-9e58-c987-e003-3f2df2bcbd81"
+                }
+            ]
+        }
+    ]
+}

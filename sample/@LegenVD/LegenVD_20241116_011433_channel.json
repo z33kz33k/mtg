@@ -1,0 +1,99 @@
+{
+    "url": "https://www.youtube.com/@LegenVD",
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 132000,
+    "scrape_time": "2024-11-16 01:14:33",
+    "videos": [
+        {
+            "id": "BWSnPl7-_cA",
+            "url": "https://www.youtube.com/watch?v=BWSnPl7-_cA",
+            "author": "LegenVD",
+            "title": "Detective Jace is on the Case.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with an Omniscience combo deck, featuring Atraxa, Grand Unifier, Reenact the Crime and Invasion of Tolvada in Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:03 - Match 1\n12:46 - Match 2\n17:33 - Match 3\n23:24 - Match 4\n25:04 - Match 5\n33:10 - Match 6\n\nDecklist:\nhttps://aetherhub.com/Deck/omniscience-combo-foundations\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtgfoundations #mtgfdn #mtg #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "atraxa",
+                "best deck",
+                "combo",
+                "combo deck",
+                "deck",
+                "decks",
+                "fdn",
+                "fnd",
+                "foundations",
+                "foundations standard",
+                "free",
+                "gameplay",
+                "guide",
+                "jace",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mill",
+                "mtg",
+                "mtg arena",
+                "mtg foundations",
+                "mtga",
+                "mythic",
+                "new standard",
+                "omniscience",
+                "standard",
+                "standard deck"
+            ],
+            "publish_time": "2024-11-15 09:16:48",
+            "views": 11153,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2024-11-15",
+                        "exports": 188,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Omniscience Combo Foundations",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/omniscience-combo-foundations",
+                        "views": 317
+                    },
+                    "decklist_id": "2f89b175-f477-beb8-ccfa-c75cd1e64ceb",
+                    "decklist_extended_id": "c3dcb3b2-04c7-f5ca-70f1-d48e191b6e82"
+                }
+            ]
+        }
+    ]
+}
