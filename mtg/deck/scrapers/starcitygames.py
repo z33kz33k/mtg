@@ -21,6 +21,8 @@ _log = logging.getLogger(__name__)
 class StarCityGamesScraper(DeckScraper):
     """Scraper of StarCityGames decklist page.
     """
+    # TODO: this will also catch tournament pages, e.g.:
+    #  https://old.starcitygames.com/decks/SCG_CON_Standard_10K/2024-11-16_standard_Columbus_OH_0/1/
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "old.starcitygames.com/decks/" in url.lower()
