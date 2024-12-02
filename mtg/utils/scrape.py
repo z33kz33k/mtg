@@ -363,6 +363,17 @@ def get_dynamic_soup(
             raise
 
 
+@timed("getting JSON with Selenium")
+def get_selenium_json(url: str) -> Json:
+    """Get JSON data at ``url`` using Selenium WebDriver.
+    """
+    with webdriver.Chrome() as driver:
+        _log.info(f"Webdriving using Chrome to: '{url}'...")
+        driver.get(url)
+        soup = BeautifulSoup(driver.page_source, "lxml")
+        return json.loads(soup.text)
+
+
 @throttled(DEFAULT_THROTTLING)
 def throttled_dynamic_soup_by_xpath(
         url: str, xpath: str, click=False, consent_xpath="", clipboard_xpath="",

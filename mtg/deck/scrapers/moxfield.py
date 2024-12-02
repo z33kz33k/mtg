@@ -10,33 +10,12 @@
 import logging
 from datetime import datetime
 
-from mtg import Json, SECRETS
+from mtg import Json
 from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.scryfall import Card
-from mtg.utils.scrape import ScrapingError, request_json, strip_url_params
+from mtg.utils.scrape import ScrapingError, get_selenium_json, strip_url_params
 
 _log = logging.getLogger(__name__)
-
-
-HEADERS = {
-    "Accept": "application/json, text/plain, */*",
-    "Accept-Encoding": "gzip, deflate, br, zstd",
-    "Accept-Language": "en-US,en;q=0.9",
-    "Authorization": "Bearer undefined",
-    "Cookie": SECRETS["moxfield_cookie"],
-    "Origin": "https://www.moxfield.com",
-    "Priority": "u=1, i",
-    "Referer": "https://www.moxfield.com/",
-    "Sec-Ch-Ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
-    "Sec-Ch-Ua-Mobile": "?0",
-    "Sec-Ch-Ua-Platform": "\"Linux\"",
-    "Sec-Fetch-Dest": "empty",
-    "Sec-Fetch-Mode": "cors",
-    "Sec-Fetch-Site": "same-site",
-    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
-                  "Chrome/126.0.0.0 Safari/537.36",
-    "X-Moxfield-Version": "2024.07.26.5",
-}
 
 
 @DeckScraper.registered
@@ -56,8 +35,7 @@ class MoxfieldScraper(DeckScraper):
         return "moxfield.com/decks/" in url and "/personal" not in url and "/history" not in url
 
     def _pre_parse(self) -> None:  # override
-        self._json_data = request_json(
-            self.API_URL_TEMPLATE.format(self._decklist_id), headers=HEADERS)
+        self._json_data = get_selenium_json(self.API_URL_TEMPLATE.format(self._decklist_id))
         if not self._json_data:
             raise ScrapingError("Data not available")
 
@@ -136,8 +114,8 @@ class MoxfieldBookmarkScraper(ContainerScraper):
         return last
 
     def _collect(self) -> list[str]:  # override
-        json_data = request_json(
-            self.API_URL_TEMPLATE.format(self._get_bookmark_id()), headers=HEADERS)
+        json_data = get_selenium_json(
+            self.API_URL_TEMPLATE.format(self._get_bookmark_id()))
         if not json_data or not json_data.get("decks") or not json_data["decks"].get("data"):
             _log.warning("Bookmark data not available")
             return []
@@ -168,8 +146,7 @@ class MoxfieldUserScraper(ContainerScraper):
         return last
 
     def _collect(self) -> list[str]:  # override
-        json_data = request_json(
-            self.API_URL_TEMPLATE.format(self._get_user_name()), headers=HEADERS)
+        json_data = get_selenium_json(self.API_URL_TEMPLATE.format(self._get_user_name()))
         if not json_data or not json_data.get("data"):
             _log.warning("User data not available")
             return []
