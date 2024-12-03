@@ -36,7 +36,7 @@ class MoxfieldScraper(DeckScraper):
 
     def _pre_parse(self) -> None:  # override
         self._json_data = get_selenium_json(self.API_URL_TEMPLATE.format(self._decklist_id))
-        if not self._json_data:
+        if not self._json_data or not self._json_data.get("boards"):
             raise ScrapingError("Data not available")
 
     @staticmethod

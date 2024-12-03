@@ -66,7 +66,7 @@ class AetherhubScraper(DeckScraper):
 
     def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)
-        if not self._soup:
+        if not self._soup or "404 Page Not Found" in self._soup.text:
             raise ScrapingError("Page not available")
 
     def _parse_metadata(self) -> None:  # override
