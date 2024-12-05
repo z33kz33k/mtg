@@ -188,10 +188,10 @@ class UntappedProfileScraper(ContainerScraper):
             self._soup, _, _ = get_dynamic_soup(
                 self.url, self._XPATH, consent_xpath=CONSENT_XPATH)
             if not self._soup:
-                _log.warning("User data not available")
+                _log.warning("Profile data not available")
                 return []
         except TimeoutException:
-            _log.warning("User data not available")
+            _log.warning("Profile data not available")
             return []
 
         a_tags = self._soup.find_all("a", href=lambda h: h and "/profile/" in h)

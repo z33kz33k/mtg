@@ -93,7 +93,7 @@ class OldSiteTcgPlayerPlayerScraper(ContainerScraper):
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url)
         if not self._soup:
-            _log.warning("User search data not available")
+            _log.warning("Player search data not available")
             return []
 
         deck_tags = self._soup.find_all(
@@ -207,7 +207,7 @@ class NewSiteTcgPlayerPlayerScraper(ContainerScraper):
         json_data = request_json(
             self.API_URL_TEMPLATE.format(self._get_player_name()))
         if not json_data or not json_data.get("result"):
-            _log.warning("User data not available")
+            _log.warning("Player data not available")
             return []
         return [self.DECK_URL_TEMPLATE.format( d["canonicalURL"]) for d in json_data["result"]]
 
@@ -261,6 +261,6 @@ class NewSiteTcgPlayerEventScraper(ContainerScraper):
         json_data = request_json(
             self.API_URL_TEMPLATE.format(self._get_event_name()))
         if not json_data or not json_data.get("result"):
-            _log.warning("User data not available")
+            _log.warning("Event data not available")
             return []
         return [self.DECK_URL_TEMPLATE.format( d["canonicalURL"]) for d in json_data["result"]]

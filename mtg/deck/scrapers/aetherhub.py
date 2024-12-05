@@ -178,7 +178,7 @@ class AetherhubUserScraper(ContainerScraper):
     URL_TEMPLATE = "https://aetherhub.com{}"
     _DECK_SCRAPER = AetherhubScraper  # override
     _XPATH = '//table[@id="metaHubTable"]'
-    _CONSENT_XPATH = '//button[@class="ncmp__btn" and contains(text(), "Accept")]'
+    CONSENT_XPATH = '//button[@class="ncmp__btn" and contains(text(), "Accept")]'
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -194,7 +194,7 @@ class AetherhubUserScraper(ContainerScraper):
     def _collect(self) -> list[str]:  # override
         try:
             self._soup, _, _ = get_dynamic_soup(
-                self.url, self._XPATH, consent_xpath=self._CONSENT_XPATH,
+                self.url, self._XPATH, consent_xpath=self.CONSENT_XPATH,
                 wait_for_consent_disappearance=False)
             if not self._soup:
                 _log.warning("User data not available")
@@ -206,3 +206,41 @@ class AetherhubUserScraper(ContainerScraper):
         tbody = self._soup.find("tbody")
         return [self.URL_TEMPLATE.format(row.find("a")["href"])
                 for row in tbody.find_all("tr")]
+
+
+@ContainerScraper.registered
+class AetherhubEventScraper(ContainerScraper):
+    """Scraper of Aetherhub event page.
+    """
+    CONTAINER_NAME = "Aetherhub event"  # override
+    URL_TEMPLATE = "https://aetherhub.com{}"
+    _DECK_SCRAPER = AetherhubScraper  # override
+    _XPATH = '//tr[@class="deckdata"]'
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return "aetherhub.com/events/" in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url)
+
+    def _collect(self) -> list[str]:  # override
+        try:
+            self._soup, _, _ = get_dynamic_soup(
+                self.url, self._XPATH, consent_xpath=AetherhubUserScraper.CONSENT_XPATH,
+                wait_for_consent_disappearance=False)
+            if not self._soup:
+                _log.warning("Event data not available")
+                return []
+        except TimeoutException:
+            _log.warning("Event data not available")
+            return []
+
+        rows = self._soup.find_all("tr", class_="deckdata")
+        deck_tags = []
+        for row in rows:
+            _, deck_tag, *_ = row.find_all("td")
+            deck_tags.append(deck_tag.find("a", href=lambda h: h and "/deck/" in h.lower()))
+        deck_tags = [d for d in deck_tags if d is not None]
+        return [self.URL_TEMPLATE.format(deck_tag["href"]) for deck_tag in deck_tags]

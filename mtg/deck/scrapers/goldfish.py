@@ -200,7 +200,7 @@ class GoldfishPlayerScraper(ContainerScraper):
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url, headers=GoldfishScraper.HEADERS)
         if not self._soup:
-            _log.warning("User search data not available")
+            _log.warning("Player search data not available")
             return []
 
         table_tag = self._soup.find("table", class_=lambda c: c and "table-striped" in c)
