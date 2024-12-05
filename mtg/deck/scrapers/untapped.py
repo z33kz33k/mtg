@@ -167,10 +167,10 @@ class UntappedMetaDeckScraper(DeckScraper):
 
 
 @ContainerScraper.registered
-class UntappedUserScraper(ContainerScraper):
+class UntappedProfileScraper(ContainerScraper):
     """Scraper of Untapped.gg user profile page.
     """
-    CONTAINER_NAME = "Untapped user"  # override
+    CONTAINER_NAME = "Untapped profile"  # override
     URL_TEMPLATE = "https://mtga.untapped.gg{}"
     _DECK_SCRAPER = UntappedProfileDeckScraper  # override
     _XPATH = "//a[contains(@href, '/profile/') and contains(@class, 'deckbox')]"

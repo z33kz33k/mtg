@@ -28,7 +28,7 @@ class FlexslotScraper(DeckScraper):
     """Scraper of Flexslot.gg decklist page.
     """
     _XPATH = "//h3[@class='text-center']"
-    _CLIPBOARD_XPATH = "//button[text()='Copy to Clipboard']"
+    _CLIPBOARD_XPATH = "//button[contains(text(), 'Copy to Clipboard')]"
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -40,7 +40,7 @@ class FlexslotScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url)
+        return strip_url_params(url).removesuffix("/view")
 
     def _pre_parse(self) -> None:  # override
         try:

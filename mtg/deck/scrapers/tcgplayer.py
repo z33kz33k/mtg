@@ -78,10 +78,10 @@ class OldSiteTcgPlayerScraper(DeckScraper):
 
 
 @ContainerScraper.registered
-class OldSiteTcgPlayerUserScraper(ContainerScraper):
-    """Scraper of TCG Player old-site user search page.
+class OldSiteTcgPlayerPlayerScraper(ContainerScraper):
+    """Scraper of TCG Player old-site player search page.
     """
-    CONTAINER_NAME = "TCGPlayer (old-site) user"  # override
+    CONTAINER_NAME = "TCGPlayer (old-site) player"  # override
     DECK_URL_TEMPLATE = "https://decks.tcgplayer.com{}"
     _DECK_SCRAPER = OldSiteTcgPlayerScraper  # override
 
@@ -180,10 +180,10 @@ class NewSiteTcgPlayerScraper(DeckScraper):
 
 
 @ContainerScraper.registered
-class NewSiteTcgPlayerUserScraper(ContainerScraper):
-    """Scraper of TCG Player new-site user page.
+class NewSiteTcgPlayerPlayerScraper(ContainerScraper):
+    """Scraper of TCG Player new-site player page.
     """
-    CONTAINER_NAME = "TCGPlayer (new-site) user"  # override
+    CONTAINER_NAME = "TCGPlayer (new-site) player"  # override
     # 100 rows is pretty arbitrary but tested to work
     API_URL_TEMPLATE = ("https://infinite-api.tcgplayer.com/content/decks/magic?source=infinite"
                         "-content&rows=100&format=&playerName"
@@ -199,13 +199,13 @@ class NewSiteTcgPlayerUserScraper(ContainerScraper):
     def sanitize_url(url: str) -> str:  # override
         return strip_url_params(url)
 
-    def _get_user_name(self) -> str:
+    def _get_player_name(self) -> str:
         *_, last = self.url.split("/")
         return last
 
     def _collect(self) -> list[str]:  # override
         json_data = request_json(
-            self.API_URL_TEMPLATE.format(self._get_user_name()))
+            self.API_URL_TEMPLATE.format(self._get_player_name()))
         if not json_data or not json_data.get("result"):
             _log.warning("User data not available")
             return []
@@ -213,9 +213,11 @@ class NewSiteTcgPlayerUserScraper(ContainerScraper):
 
 
 @ContainerScraper.registered
-class NewSiteTcgPlayerUserSearchScraper(NewSiteTcgPlayerUserScraper):
-    """Scraper of TCG Player new-site user search page.
+class NewSiteTcgPlayerAuthorScraper(NewSiteTcgPlayerPlayerScraper):
+    """Scraper of TCG Player new-site author search page.
     """
+    CONTAINER_NAME = "TCGPlayer (new-site) author"  # override
+
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
         return ("infinite.tcgplayer.com/magic-the-gathering/decks/advanced-search" in url.lower()
@@ -225,11 +227,11 @@ class NewSiteTcgPlayerUserSearchScraper(NewSiteTcgPlayerUserScraper):
     def sanitize_url(url: str) -> str:  # override
         return url.removesuffix("/")
 
-    def _get_user_name(self) -> str:  # override
-        *_, user = self.url.split("author=")
-        if "&" in user:
-            user, *_ = user.split("&")
-        return user
+    def _get_player_name(self) -> str:  # override
+        *_, author = self.url.split("author=")
+        if "&" in author:
+            author, *_ = author.split("&")
+        return author
 
 
 @ContainerScraper.registered

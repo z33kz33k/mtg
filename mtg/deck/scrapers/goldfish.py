@@ -185,10 +185,10 @@ class GoldfishTournamentScraper(ContainerScraper):
 
 
 @ContainerScraper.registered
-class GoldfishUserScraper(ContainerScraper):
-    """Scraper of MTGGoldfish user search page.
+class GoldfishPlayerScraper(ContainerScraper):
+    """Scraper of MTGGoldfish player search page.
     """
-    CONTAINER_NAME = "Goldfish user"  # override
+    CONTAINER_NAME = "Goldfish player"  # override
     DECK_URL_TEMPLATE = "https://www.mtggoldfish.com{}"
     _DECK_SCRAPER = GoldfishScraper  # override
 

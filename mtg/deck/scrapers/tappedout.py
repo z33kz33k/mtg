@@ -185,7 +185,7 @@ class TappedoutFolderScraper(ContainerScraper):
 class TappedoutUserFolderScraper(TappedoutUserScraper):
     """Scraper of Tappedout user folders page.
     """
-    CONTAINER_NAME = "Tappedout user folders"  # override
+    CONTAINER_NAME = "Tappedout user folder"  # override
     API_URL_TEMPLATE = "https://tappedout.net/api/folder/{}/list/?page_num={}"
 
     @staticmethod

@@ -15,7 +15,7 @@ from mtg import Json
 from mtg.deck import ARENA_MULTIFACE_SEPARATOR, CardNotFound, DeckParser, ParsingState
 from mtg.scryfall import Card, MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, \
     query_api_for_card
-from mtg.utils import ParsingError, extract_int, getrepr
+from mtg.utils import extract_int, getrepr
 from mtg.utils import is_foreign
 
 _log = logging.getLogger(__name__)
@@ -90,7 +90,7 @@ class PlaysetLine:
     # matches '4 Commit /// Memory (AKR) 54'
     EXTENDED_PATTERN = re.compile(
         "^\\d{1,3}x?\\s" + _ALL_UPPERCASE +
-        "[\\w\\s'\"&/,.!:_-]+\\s\\([A-Za-z\\d]{3,6}\\)\\s[A-Za-z\\d]{1,6}")
+        "[\\w\\s'\"&/,.!:_-]+\\s+\\([A-Za-z\\d]{3,6}\\)\\s+[A-Za-z\\d]{1,6}")
 
     @property
     def is_extended(self) -> bool:

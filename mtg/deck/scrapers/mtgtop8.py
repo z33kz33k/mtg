@@ -11,9 +11,6 @@ import contextlib
 import logging
 from datetime import datetime
 
-from bs4 import BeautifulSoup
-
-from mtg import Json
 from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.utils import extract_int
 from mtg.utils.scrape import ScrapingError
@@ -33,6 +30,11 @@ class MtgTop8Scraper(DeckScraper):
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "mtgtop8.com/event?e=" in url.lower() and "&d=" in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return url.removesuffix("/").replace("&switch=visual", "").replace(
+            "&switch=text", "") + "&switch=text"
 
     def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)
@@ -102,6 +104,10 @@ class MtgTop8EventScraper(ContainerScraper):
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
         return "mtgtop8.com/event?e=" in url.lower() and "&d=" not in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return MtgTop8Scraper.sanitize_url(url)
 
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url)
