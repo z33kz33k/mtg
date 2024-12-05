@@ -10,6 +10,7 @@
 import logging
 from datetime import datetime
 
+import dateutil.parser
 from selenium.common.exceptions import TimeoutException
 
 from mtg.deck import Archetype, Mode, ParsingState
@@ -20,7 +21,7 @@ from mtg.utils.scrape import ScrapingError, get_dynamic_soup, getsoup, strip_url
 _log = logging.getLogger(__name__)
 
 
-# TODO: meta-decks
+# TODO: scrape the meta
 @DeckScraper.registered
 class AetherhubScraper(DeckScraper):
     """Scraper of Aetherhub decklist page.
@@ -101,20 +102,35 @@ class AetherhubScraper(DeckScraper):
             if archetype in {a.value for a in Archetype}:
                 self._metadata["archetype"] = archetype
 
-        # meta (only in meta-decklists)
-        if meta_tag := self._soup.find("h5", class_="text-center"):
-            try:
-                text = meta_tag.text.strip()
-                share_part, change_part = text.split("of meta")
-                self._metadata["meta"] = {}
-                self._metadata["meta"]["share"] = extract_float(share_part)
-                self._metadata["meta"]["share_change"] = extract_float(change_part)
+        # meta (only in meta decklists)
+        if meta_tag := self._soup.find("h4", class_="text-center"):
+            _, text = meta_tag.text.strip().split(" - ")
+            count_text, share_text = text.strip().split(", ")
+            self._metadata["meta"] = {}
+            self._metadata["meta"]["count"] = extract_int(count_text)
+            self._metadata["meta"]["share"] = extract_float(share_text)
 
-                count_tag = self._soup.select("h4.text-center.pt-2")[0]
-                count_text, _ = count_tag.text.strip().split("decks,")
-                self._metadata["meta"]["count"] = extract_int(count_text)
-            except (IndexError, ValueError):
-                _log.warning(f"No metagame data available for {self.url!r}")
+        # event (only in event decklists)
+        if event_tag := self._soup.find("h5", class_="text-center"):
+            text = event_tag.text.strip()
+            if "\nby " in text and "/" in text:
+                self._metadata["event"] = {}
+                rank, *rest = event_tag.text.strip().split(maxsplit=1)
+                if any(rank.endswith(t) for t in ("st", "nd", "rd", "th")):
+                    self._metadata["event"]["rank"] = rank
+                    rest = " ".join(rest)
+                else:
+                    rest = rank + " " + " ".join(rest)
+                *rest, author = rest.rsplit("\nby ", maxsplit=1)
+                self._metadata["event"]["player"] = self._metadata["author"] = author
+                rest = " ".join(rest)
+                *rest, date = rest.rsplit(maxsplit=1)
+                if "/" in date:
+                    self._metadata["event"]["date"] = dateutil.parser.parse(date).date()
+                else:
+                    rest = date + " " + " ".join(rest)
+                rest = " ".join(rest)
+                self._metadata["event"]["name"] = rest
 
     def _parse_deck(self) -> None:  # override
         deck_tags = self._soup.find_all("div", class_="row")

@@ -1007,13 +1007,12 @@ class Video:
         decks.update(self._process_urls(*links))
 
         # 2nd stage: shortened URLs
-        if not decks:
-            shortened_urls = [link for link in links
-                              if any(hook in link for hook in self.SHORTENER_HOOKS)]
-            if shortened_urls:
-                unshortened_urls = [unshorten(url) for url in shortened_urls]
-                self._unshortened_links = [url for url in unshortened_urls if url]
-                decks.update(self._process_urls(*self.unshortened_links))
+        shortened_urls = [link for link in links
+                          if any(hook in link for hook in self.SHORTENER_HOOKS)]
+        if shortened_urls:
+            unshortened_urls = [unshorten(url) for url in shortened_urls]
+            self._unshortened_links = [url for url in unshortened_urls if url]
+            decks.update(self._process_urls(*self.unshortened_links))
 
         # 3rd stage: Arena lines
         if arena_lines:
