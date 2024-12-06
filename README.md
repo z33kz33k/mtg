@@ -73,11 +73,11 @@ descriptions).
       up with queries to the Scryfall API
     * Individual decklist URLs are extracted from container pages and further processed for decks. 
       These include:
-        * Aetherhub users
+        * Aetherhub users and events
         * Archidekt folders and users
         * Deckstats users
         * Flexslot users
-        * Goldfish tournaments and users
+        * Goldfish tournaments and players
         * Hareruya events and players
         * MagicVille events and users
         * Melee.gg tournaments
@@ -88,9 +88,9 @@ descriptions).
         * Streamdecker users
         * TappedOut users, folders, and user folders
         * TCDecks events
-        * TCGPlayer (old-site) users
-        * TCGPlayer (new-site) users (both profile and search pages) and events
-        * Untapped users
+        * TCGPlayer (old-site) players
+        * TCGPlayer (new-site) players (profile page), authors (search page) and events
+        * Untapped profiles
         * others in plans
 * Assessing the meta:
     * Scraping Goldfish and MGTAZone for meta-decks (others in plans)

@@ -1070,6 +1070,9 @@ class Video:
 class Channel:
     """YouTube channel showcasing MtG decks.
     """
+    _CONSENT_XPATH = "//button[@aria-label='Accept all']"
+    _XPATH = "//span[contains(., 'subscribers')]"
+
     @property
     def url(self) -> str:
         return self._url.rstrip("/")
@@ -1171,21 +1174,21 @@ class Channel:
         self._id = self.videos[0].channel_id if self else None
         try:
             self._ytsp_data = self._get_ytsp() if self._id else None
+            self._description = self._ytsp_data.result.get("description") if self._id else None
+            self._title = self._ytsp_data.result.get("title") if self._id else None
+            self._tags = self._ytsp_data.result.get("tags") if self._id else None
+            self._subscribers = self._parse_subscribers() if self._id else None
         except TypeError:
-            raise ScrapingError(
-                "YTSP failed with TypeError. Are you sure the channel has at least two tabs "
-                "(one being 'Videos')?")
-        except (httpx.ReadTimeout, httpcore.ReadTimeout):
-            _log.warning(f"YTSP timed out on {self.url!r}, re-trying with backoff...")
-            self._ytsp_data = self._get_ytsp_with_backoff()
-        self._description = self._ytsp_data.result.get("description") if self._id else None
-        self._title = self._ytsp_data.result.get("title") if self._id else None
-        self._tags = self._ytsp_data.result.get("tags") if self._id else None
-        self._subscribers = self._parse_subscribers() if self._id else None
+            _log.warning(
+                "YTSP failed with TypeError. The channel is probably missing some tab and its "
+                "description and tags will be set to 'None'.")
+            self._description, self._title, self._tags, self._subscribers = None, None, None, None
         if not self._subscribers:
             self._subscribers = self.videos[0].channel_subscribers
             if self._subscribers is None:
                 self._subscribers = self._scrape_subscribers_with_selenium()
+        if not self._title:
+            self._title = self._scrape_title_with_selenium()
         self._data = ChannelData(
             url=self.url,
             id=self.id,
@@ -1219,13 +1222,11 @@ class Channel:
             ("scrape_time", str(self.scrape_time)),
         )
 
+    @backoff.on_exception(
+        backoff.expo, (Timeout, HTTPError, RemoteDisconnected, ReadTimeout, httpx.ReadTimeout,
+                       httpcore.ReadTimeout), max_time=300)
     def _get_ytsp(self) -> YtspChannel:
         return YtspChannel(self.id)
-
-    @backoff.on_exception(
-        backoff.expo, (Timeout, HTTPError, RemoteDisconnected, ReadTimeout), max_time=300)
-    def _get_ytsp_with_backoff(self) -> YtspChannel:
-        return self._get_ytsp()
 
     def _parse_subscribers(self) -> int | None:
         if not self._id:
@@ -1244,10 +1245,8 @@ class Channel:
         return int(subscribers)
 
     def _scrape_subscribers_with_selenium(self) -> int:
-        consent_xpath = "//button[@aria-label='Accept all']"
-        xpath = "//span[contains(., 'subscribers')]"
         try:
-            soup, _, _ = get_dynamic_soup(self.url, xpath, consent_xpath=consent_xpath)
+            soup, _, _ = get_dynamic_soup(self.url, self._XPATH, consent_xpath=self._CONSENT_XPATH)
             text = soup.find("span", string=lambda t: t and "subscribers" in t).text.removesuffix(
                 " subscribers")
             number = extract_float(text)
@@ -1257,6 +1256,19 @@ class Channel:
         # looking for subscribers is futile if there's only one (or none) :)
         except TimeoutException:
             return 1
+
+    def _scrape_title_with_selenium(self) -> str | None:
+        try:
+            soup, _, _ = get_dynamic_soup(
+                self.url, self._XPATH.replace("subscribers", "subscriber"),
+                consent_xpath=self._CONSENT_XPATH)
+            text_tag = soup.find(
+                "span", class_=lambda c: c and "yt-core-attributed-string" in c,
+                dir="auto", role="text")
+            return text_tag.text.strip() if text_tag is not None else None
+        except TimeoutException:
+            _log.warning(f"Failed to scrape channel's title with Selenium")
+            return None
 
     @property
     def json(self) -> str | None:
