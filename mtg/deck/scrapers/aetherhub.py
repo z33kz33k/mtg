@@ -136,6 +136,10 @@ class AetherhubScraper(DeckScraper):
         deck_tags = self._soup.find_all("div", class_="row")
         deck_tag = from_iterable(
             deck_tags, lambda t: t.text.strip().startswith(("Main", "Commander", "Companion")))
+
+        if deck_tag is None:
+            raise ScrapingError("Deck tag not found")
+
         for tag in deck_tag.descendants:
             if tag.name == "h5":
                 if "Side" in tag.text:

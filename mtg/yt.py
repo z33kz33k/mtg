@@ -972,7 +972,10 @@ class Video:
                 link = f"{link}/raw"
             response = timed_request(link)
             if response:
-                return ArenaParser(response.text.splitlines(), self.metadata).parse()
+                try:
+                    return ArenaParser(response.text.splitlines(), self.metadata).parse()
+                except ValueError as ve:
+                    _log.warning(f"Failed to parse Arena decklist from: {link!r}: {ve}")
         return None
 
     @timed("comments lookup")
