@@ -470,18 +470,18 @@ class Deck:
         return sum(c.price for c in self.cards if c.price)
 
     @property
-    def avg_price(self) -> float:
+    def avg_price(self) -> float | None:
         cards = [card for card in self.cards if card.price]
-        return self.total_price / len(cards)
+        return self.total_price / len(cards) if cards else None
 
     @property
     def total_price_tix(self) -> float:
         return sum(c.price_tix for c in self.cards if c.price_tix)
 
     @property
-    def avg_price_tix(self) -> float:
+    def avg_price_tix(self) -> float | None:
         cards = [card for card in self.cards if card.price_tix]
-        return self.total_price_tix / len(cards)
+        return self.total_price_tix / len(cards) if cards else None
 
     @property
     def sets(self) -> list[str]:
@@ -678,8 +678,11 @@ class Deck:
             ("color", self.color.name),
             ("mode", f"{Mode.BO3.value if self.is_bo3 else Mode.BO1.value}"),
             ("avg_cmc", f"{self.avg_cmc:.2f}"),
-            ("avg_rarity_weight", f"{self.avg_rarity_weight:.1f}"),
-            ("avg_price", f"${self.avg_price:.2f}"),
+            ("avg_rarity_weight", f"{self.avg_rarity_weight:.1f}")
+        ]
+        if self.avg_price:
+            reprs += [("avg_price", f"${self.avg_price:.2f}")]
+        reprs += [
             ("artifacts", len(self.artifacts)),
             ("battles", len(self.battles)),
             ("creatures", len(self.creatures)),

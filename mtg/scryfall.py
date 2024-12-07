@@ -1277,7 +1277,6 @@ def query_api_for_card(card_name: str, foreign=False) -> Card | None:
     """Query Scryfall API for a card designated by provided name.
     """
     _log.info(f"Querying Scryfall for {card_name!r}...")
-    card_name = unidecode(card_name)
     try:
         throttle(0.15)
         result = scrython.cards.Search(q=f"!{card_name}", include_multilingual=foreign).data()
@@ -1293,12 +1292,20 @@ def query_api_for_card(card_name: str, foreign=False) -> Card | None:
             throttle(0.15)
             try:
                 result = scrython.cards.Named(fuzzy=card_name)
-                return Card(result.scryfallJson)
+                return Card(dict(result.scryfallJson))
             except (scrython.foundation.ScryfallError, ContentTypeError):
-                return None
+                result = None
+            if not result:
+                throttle(0.15)
+                try:
+                    result = scrython.cards.Named(fuzzy=unidecode(card_name))
+                    return Card(dict(result.scryfallJson))
+                except (scrython.foundation.ScryfallError, ContentTypeError):
+                    return None
+
     if len(result) > 1:
         result.sort(key=lambda card: date.fromisoformat(card["released_at"]), reverse=True)
-    return Card(result[0])
+    return Card(dict(result[0]))
 
 
 def find_by_name(card_name: str) -> Card | None:
