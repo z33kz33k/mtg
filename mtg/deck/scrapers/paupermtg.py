@@ -72,7 +72,7 @@ class PauperMtgScraper(DeckScraper):
         for li_tag in li_tags:
             qty, name = li_tag.find("p").text.strip().split(maxsplit=1)
             quantity = int(qty)
-            card = cls.find_card(name, foreign=True)
+            card = cls.find_card(name.strip(), foreign=True)
             cards += cls.get_playset(card, quantity)
         return cards
 

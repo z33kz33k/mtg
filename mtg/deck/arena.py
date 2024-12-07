@@ -83,11 +83,11 @@ class PlaysetLine:
     Example:
         '4 Commit /// Memory (AKR) 54'
     """
-    # matches '4 Commit /// Memory'
+    # matches '4 Commit /// Memory' or '4x Commit /// Memory'
     PATTERN = re.compile("^\\d{1,3}x?\\s" + _ALL_UPPERCASE + "[\\w\\s'\"&/,.!:_-]+")
-    # matches '4 Commit /// Memory'
+    # matches 'Commit /// Memory 4' or 'Commit /// Memory x4'
     INVERTED_PATTERN = re.compile("^" + _ALL_UPPERCASE + "[\\w\\s'\"&/,.!:_-]+\\sx?\\d{1,3}$")
-    # matches '4 Commit /// Memory (AKR) 54'
+    # matches '4 Commit /// Memory (AKR) 54' or '4x Commit /// Memory (AKR) 54'
     EXTENDED_PATTERN = re.compile(
         "^\\d{1,3}x?\\s" + _ALL_UPPERCASE +
         "[\\w\\s'\"&/,.!:_-]+\\s+\\([A-Za-z\\d]{3,6}\\)\\s+[A-Za-z\\d]{1,6}")
@@ -118,12 +118,22 @@ class PlaysetLine:
 
     def __init__(self, line: str) -> None:
         line = ArenaParser.sanitize_card_name(line)
-        self._is_extended = self.EXTENDED_PATTERN.match(line) is not None
-        self._is_inverted = self.INVERTED_PATTERN.match(line) is not None
-        if self._is_inverted:
-            rest, quantity = line.rsplit(maxsplit=1)
+        regular_match = self.PATTERN.match(line)
+        extended_match = self.EXTENDED_PATTERN.match(line)
+        inverted_match = self.INVERTED_PATTERN.match(line)
+        self._is_extended = extended_match is not None
+        self._is_inverted = inverted_match is not None
+        if self.is_extended:
+            matched_text = extended_match.group(0)
+        elif self.is_inverted:
+            matched_text = inverted_match.group(0)
         else:
-            quantity, rest = line.split(maxsplit=1)
+            matched_text = regular_match.group(0)
+
+        if self._is_inverted:
+            rest, quantity = matched_text.rsplit(maxsplit=1)
+        else:
+            quantity, rest = matched_text.split(maxsplit=1)
         self._quantity = extract_int(quantity)
         if self.is_extended:
             self._name, rest = rest.split("(")
