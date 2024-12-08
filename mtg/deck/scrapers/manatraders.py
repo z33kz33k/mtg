@@ -12,7 +12,6 @@ import logging
 
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper
-from mtg.deck.scrapers.streamdecker import StreamdeckerScraper
 from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
 
 _log = logging.getLogger(__name__)
@@ -58,7 +57,7 @@ class ManatradersScraper(DeckScraper):
 
     def _parse_card_json(self, card_json: Json) -> None:
         name = card_json["name"]
-        card = self.find_card(StreamdeckerScraper.sanitize_card_name(name))
+        card = self.find_card(name)
         if quantity := card_json.get("quantity"):
             self._maindeck += self.get_playset(card, quantity)
         if sideboard_qty := card_json.get("sideboardQuantity"):

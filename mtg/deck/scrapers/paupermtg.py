@@ -34,7 +34,7 @@ class PauperMtgScraper(DeckScraper):
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
         self._main_tag, self._tags = None, {}
-        self._is_edh = "edhdeck" in self.url
+        self._is_edh = "/edhdeck/" in self.url
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override

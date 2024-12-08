@@ -85,7 +85,7 @@ class MtgTop8Scraper(DeckScraper):
                         commander_on = False
                 if "deck_line" in sub_tag.attrs["class"]:
                     quantity, name = sub_tag.text.split(maxsplit=1)
-                    card = self.find_card(self.sanitize_card_name(name.strip()))
+                    card = self.find_card(name.strip())
                     if commander_on:
                         self._set_commander(card)
                     else:
