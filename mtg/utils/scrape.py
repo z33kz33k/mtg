@@ -13,9 +13,10 @@ import logging
 import random
 import re
 import time
+import urllib.parse
 from collections import namedtuple
 from functools import wraps
-from typing import Callable, Dict, Optional
+from typing import Callable
 
 import backoff
 import brotli
@@ -68,14 +69,15 @@ def handle_brotli(response: Response, return_json: bool = False) -> str | Json |
 @timed("request")
 @type_checker(str)
 def timed_request(
-        url: str, postdata: Optional[Json] = None, handle_http_errors=True,
+        url: str, postdata: Json | None = None, handle_http_errors=True,
+        request_timeout=REQUESTS_TIMEOUT,
         **requests_kwargs) -> Response | None:
     _log.info(f"Requesting: '{url}'...")
     global http_requests_count
     if postdata:
         response = requests.post(url, json=postdata, **requests_kwargs)
     else:
-        response = requests.get(url, timeout=REQUESTS_TIMEOUT, **requests_kwargs)
+        response = requests.get(url, timeout=request_timeout, **requests_kwargs)
     http_requests_count += 1
     if handle_http_errors:
         if str(response.status_code)[0] in ("4", "5"):
@@ -96,17 +98,22 @@ def request_json(url: str, **requests_kwargs) -> Json | list[Json]:
 
 
 @type_checker(str)
-def getsoup(url: str, headers: Dict[str, str] | None = None) -> BeautifulSoup | None:
+def getsoup(
+        url: str, headers: dict[str, str] | None = None,
+        params: dict[str, str] | None = None,
+        request_timeout=REQUESTS_TIMEOUT) -> BeautifulSoup | None:
     """Return BeautifulSoup object based on ``url``.
 
     Args:
         url: URL string
         headers: a dictionary of headers to add to the request
+        params: requests' query parameters
+        request_timeout: request timeout in seconds
 
     Returns:
         a BeautifulSoup object or None on client-side errors
     """
-    response = timed_request(url, headers=headers)
+    response = timed_request(url, headers=headers, params=params, request_timeout=request_timeout)
     if not response or not response.text:
         return None
     http_encoding = response.encoding if 'charset' in response.headers.get(
@@ -154,7 +161,7 @@ def throttled(delay: float, offset=0.0) -> Callable:
 
 
 @throttled(DEFAULT_THROTTLING)
-def throttled_soup(url: str, headers: Dict[str, str] | None = None) -> BeautifulSoup | None:
+def throttled_soup(url: str, headers: dict[str, str] | None = None) -> BeautifulSoup | None:
     return getsoup(url, headers=headers)
 
 
@@ -289,6 +296,15 @@ def strip_url_params(url: str, with_endpoint=True) -> str:
             if first not in ("https://", "http://"):
                 url = first
     return url.removesuffix("/")
+
+
+def url_decode(encoded: str) -> str:
+    """Decode URL-encoded string.
+
+    Example:
+        ""Virtue+of+Loyalty+%2F%2F+Ardenvale+Fealty"" ==> "Virtue of Loyalty // Ardenvale Fealty"
+    """
+    return urllib.parse.unquote(encoded.replace('+', ' '))
 
 
 # SELENIUM

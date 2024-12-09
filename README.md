@@ -28,7 +28,7 @@ descriptions).
     * [youtube-comment-downloader](https://github.com/egbertbouman/youtube-comment-downloader) 
 * Scraping YT videos' descriptions (or comments) for decks:    
     * Text decklists in Arena/MTGO format pasted into video descriptions are parsed into Deck objects
-    * Links to decklist services are scraped into Deck objects. 31 services are supported so far:
+    * Links to decklist services are scraped into Deck objects. 32 services are supported so far:
         * [Aetherhub](https://aetherhub.com)
         * [Archidekt](https://archidekt.com)
         * [CardBoard Live](https://cardboard.live)
@@ -39,6 +39,7 @@ descriptions).
         * [Flexslot](https://flexslot.gg)
         * [Goldfish](https://www.mtggoldfish.com)
         * [Hareruya](https://www.hareruyamtg.com/en/)
+        * [LigaMagic](https://www.ligamagic.com.br/?view=home) _(with caveats)_
         * [MagicVille](https://magic-ville.com/fr/index.php)
         * [ManaBox](https://manabox.app)
         * [ManaStack](https://manastack.com/home)
@@ -66,6 +67,8 @@ descriptions).
     * Both old and new TCGPlayer sites are supported
     * Both international and native Hareruya sites are supported 
     * Sites that need it are scraped using [Selenium](https://github.com/SeleniumHQ/Selenium)
+    * LigaMagic is the only sore spot that demands from me investing in scraping APIs to bypass 
+      their CloudFlare protection and be fully supported (anyway, the logic to scrape them is already in place)
     * All those mentioned above work even if they are behind shortener links and need unshortening first
     * Text decklists in links to pastebin-like services (like [Amazonian](https://www.youtube.com/@Amazonian) does) work too
     * If nothing is found in the video's description, then the author's comments are parsed

@@ -1,7 +1,7 @@
 """
 
     mtg.deck.scrapers.manatraders.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Manatraders decklists.
 
     @author: z33k
