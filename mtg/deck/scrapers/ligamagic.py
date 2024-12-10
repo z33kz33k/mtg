@@ -13,11 +13,11 @@ import logging
 from collections import defaultdict
 
 import dateutil.parser
-from bs4 import Tag
+from bs4 import BeautifulSoup, Tag
 
 from mtg import Json
 from mtg import SECRETS
-from mtg.deck.scrapers import DeckScraper
+from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.scryfall import Card
 from mtg.utils import extract_int
 from mtg.utils.scrape import ScrapingError, getsoup, url_decode
@@ -25,35 +25,41 @@ from mtg.utils.scrape import ScrapingError, getsoup, url_decode
 _log = logging.getLogger(__name__)
 _API_KEY = SECRETS["zenrows"]["api_key"]
 _API_URL = "https://api.zenrows.com/v1/"
+REQUEST_TIMEOUT = 300
 
 
-@DeckScraper.registered
+def _get_soup_with_zenrows(url: str, css_selector: str) -> BeautifulSoup | None:
+    params = {
+        'url': url,
+        'apikey': _API_KEY,
+        'js_render': 'true',
+        'wait_for': css_selector,
+        'premium_proxy': 'true',
+        'proxy_country': 'br',
+    }
+    return getsoup(_API_URL, params=params, request_timeout=REQUEST_TIMEOUT)
+
+
+# TODO: uncomment when ready
+# @DeckScraper.registered
 class LigaMagicScraper(DeckScraper):
     """Scraper of LigaMagic decklist page.
     """
-    REQUEST_TIMEOUT = 300
+    _CSS_SELECTOR = "div#deck-view"
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
         self._tags = defaultdict(list)
-        self._params = {
-            'url': self.url,
-            'apikey': _API_KEY,
-            'js_render': 'true',
-            'wait_for': 'div#deck-view',
-            'premium_proxy': 'true',
-            'proxy_country': 'br',
-        }
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return all(t in url.lower() for t in ("ligamagic.com.br", "/deck", "&id="))
 
     def _pre_parse(self) -> None:  # override
-        self._soup = getsoup(_API_URL, params=self._params, request_timeout=self.REQUEST_TIMEOUT)
+        self._soup = _get_soup_with_zenrows(self.url, self._CSS_SELECTOR)
         if not self._soup:
             raise ScrapingError("Page not available")
-        main_tag = self._soup.find("div", id="deck-view")
+        main_tag = self._soup.select_one(self._CSS_SELECTOR)
         state = "maindeck"
         stoppers = "Branco", "Azul", "Preto", "Vermelho", "Verde", "Multi Colorida"  # color names
         potential_stoppers = "Artefato", "Terrenos"
@@ -70,7 +76,8 @@ class LigaMagicScraper(DeckScraper):
 
     def _parse_metadata(self) -> None:  # override
         header_tag = self._soup.find("div", id="deck-header")
-        self._metadata["name"] = header_tag.find("div", class_="title").find("span").text.strip()
+        self._metadata["name"] = header_tag.find(
+            "div", class_="title").find("span", class_=lambda c: not c).text.strip()
         fmt_text = header_tag.find("div", class_="format").text.strip()
         if " - " in fmt_text:
             fmt_text, theme_text = fmt_text.split(" - ", maxsplit=1)
@@ -107,3 +114,28 @@ class LigaMagicScraper(DeckScraper):
                 self._sideboard += self._parse_tag_list(self._tags[state])
             else:
                 self._maindeck += self._parse_tag_list(self._tags[state])
+
+
+# TODO: uncomment when ready
+# @ContainerScraper.registered
+class LigaMagicEventScraper(ContainerScraper):
+    """Scraper of LigaMagic event page.
+    """
+    CONTAINER_NAME = "LigaMagic event"  # override
+    DECK_URL_TEMPLATE = "https://www.ligamagic.com.br{}"
+    _DECK_SCRAPER = LigaMagicScraper  # override
+    _CSS_SELECTOR = "div.evnt-dks"
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return all(t in url.lower() for t in ("ligamagic.com.br", "/evento", "&id="))
+
+    def _collect(self) -> list[str]:  # override
+        self._soup = _get_soup_with_zenrows(self.url, self._CSS_SELECTOR)
+        if not self._soup:
+            _log.warning("Event data not available")
+            return []
+
+        deck_tags = [tag.find("a") for tag in self._soup.find_all("div", class_="deckname")]
+        return [
+            self.DECK_URL_TEMPLATE.format(tag.attrs["href"].removeprefix(".")) for tag in deck_tags]

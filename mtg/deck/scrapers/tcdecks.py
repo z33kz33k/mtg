@@ -24,7 +24,7 @@ _log = logging.getLogger(__name__)
 
 @DeckScraper.registered
 class TCDecksScraper(DeckScraper):
-    """Scraper of TC Decks decklist page.
+    """Scraper of TCDecks decklist page.
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -87,7 +87,7 @@ class TCDecksScraper(DeckScraper):
 
 @ContainerScraper.registered
 class TCDecksEventScraper(ContainerScraper):
-    """Scraper of TC Decks event page.
+    """Scraper of TCDecks event page.
     """
     CONTAINER_NAME = "TCDecks event"  # override
     DECK_URL_TEMPLATE = "https://www.tcdecks.net/{}"
