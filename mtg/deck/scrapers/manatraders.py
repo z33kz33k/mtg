@@ -35,7 +35,7 @@ class ManatradersScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url)
+        return strip_url_params(url, with_endpoint=False)
 
     def _get_json_data(self) -> Json:
         json_data = self._soup.find(
