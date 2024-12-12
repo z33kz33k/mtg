@@ -85,6 +85,7 @@ descriptions).
         * Hareruya events and players
         * LigaMagic events
         * MagicVille events and users
+        * Manatraders users
         * Melee.gg tournaments
         * Moxfield bookmarks and users
         * MTGDecks.net tournaments
@@ -106,7 +107,7 @@ descriptions).
 * Importing back into a Deck from those formats
 * Export/import to other formats in plans
 * Dumping decks, YT videos and channels to .json
-* I compiled a list of **almost 1.5k** YT channels that feature decks in their descriptions and successfully 
+* I compiled a list of **over 1.5k** YT channels that feature decks in their descriptions and successfully 
   scraped them (at least 25 videos deep) so this data only waits to be creatively used now!
 
 ### How it looks in a Google Sheet
@@ -115,63 +116,63 @@ descriptions).
 ### Scraped decks breakdown
 | No | Format | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | commander       | 14109 |    30.73 % |
-| 2  | standard        | 11980 |    26.10 % |
-| 3  | modern          |  3437 |     7.49 % |
-| 4  | pioneer         |  2965 |     6.46 % |
-| 5  | pauper          |  1960 |     4.27 % |
-| 6  | legacy          |  1949 |     4.25 % |
-| 7  | historic        |  1360 |     2.96 % |
-| 8  | brawl           |  1274 |     2.78 % |
-| 9  | explorer        |  1161 |     2.53 % |
-| 10 | undefined       |  1104 |     2.40 % |
-| 11 | timeless        |  1085 |     2.36 % |
-| 12 | duel            |   997 |     2.17 % |
-| 13 | premodern       |   464 |     1.01 % |
-| 14 | paupercommander |   417 |     0.91 % |
-| 15 | vintage         |   369 |     0.80 % |
-| 16 | irregular       |   360 |     0.78 % |
-| 17 | alchemy         |   332 |     0.72 % |
-| 18 | penny           |   278 |     0.61 % |
-| 19 | standardbrawl   |   167 |     0.36 % |
+| 1  | commander       | 14726 |    31.40 % |
+| 2  | standard        | 12120 |    25.84 % |
+| 3  | modern          |  3481 |     7.42 % |
+| 4  | pioneer         |  2978 |     6.35 % |
+| 5  | pauper          |  1996 |     4.26 % |
+| 6  | legacy          |  1957 |     4.17 % |
+| 7  | historic        |  1378 |     2.94 % |
+| 8  | brawl           |  1293 |     2.76 % |
+| 9  | explorer        |  1171 |     2.50 % |
+| 10 | undefined       |  1109 |     2.36 % |
+| 11 | timeless        |  1103 |     2.35 % |
+| 12 | duel            |   999 |     2.13 % |
+| 13 | premodern       |   498 |     1.06 % |
+| 14 | paupercommander |   418 |     0.89 % |
+| 15 | vintage         |   381 |     0.81 % |
+| 16 | irregular       |   364 |     0.78 % |
+| 17 | alchemy         |   339 |     0.72 % |
+| 18 | penny           |   278 |     0.59 % |
+| 19 | standardbrawl   |   168 |     0.36 % |
 | 20 | oathbreaker     |    69 |     0.15 % |
 | 21 | gladiator       |    39 |     0.08 % |
 | 22 | oldschool       |    16 |     0.03 % |
 | 23 | future          |    14 |     0.03 % |
-|  | TOTAL           | 45906 | 100.00 %|
+|  | TOTAL           | 46895 | 100.00 %|
 
 | No | Source | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | moxfield.com           | 17722 |    38.60 % |
-| 2  | arena.decklist         |  6118 |    13.33 % |
-| 3  | aetherhub.com          |  5717 |    12.45 % |
-| 4  | mtggoldfish.com        |  5228 |    11.39 % |
-| 5  | archidekt.com          |  1919 |     4.18 % |
-| 6  | tappedout.net          |  1278 |     2.78 % |
-| 7  | mtga.untapped.gg       |  1183 |     2.58 % |
-| 8  | melee.gg               |   978 |     2.13 % |
-| 9  | mtgtop8.com            |   943 |     2.05 % |
-| 10 | streamdecker.com       |   919 |     2.00 % |
-| 11 | tcgplayer.com          |   854 |     1.86 % |
-| 12 | mtgdecks.net           |   837 |     1.82 % |
-| 13 | deckstats.net          |   501 |     1.09 % |
-| 14 | pennydreadfulmagic.com |   249 |     0.54 % |
-| 15 | hareruyamtg.com        |   242 |     0.53 % |
-| 16 | scryfall.com           |   187 |     0.41 % |
-| 17 | mtgazone.com           |   186 |     0.41 % |
+| 1  | moxfield.com           | 18217 |    38.85 % |
+| 2  | arena.decklist         |  6210 |    13.24 % |
+| 3  | aetherhub.com          |  5788 |    12.34 % |
+| 4  | mtggoldfish.com        |  5247 |    11.19 % |
+| 5  | archidekt.com          |  2182 |     4.65 % |
+| 6  | tappedout.net          |  1279 |     2.73 % |
+| 7  | mtga.untapped.gg       |  1211 |     2.58 % |
+| 8  | melee.gg               |   978 |     2.09 % |
+| 9  | mtgtop8.com            |   949 |     2.02 % |
+| 10 | streamdecker.com       |   920 |     1.96 % |
+| 11 | tcgplayer.com          |   859 |     1.83 % |
+| 12 | mtgdecks.net           |   837 |     1.78 % |
+| 13 | deckstats.net          |   501 |     1.07 % |
+| 14 | pennydreadfulmagic.com |   249 |     0.53 % |
+| 15 | hareruyamtg.com        |   245 |     0.52 % |
+| 16 | mtgazone.com           |   187 |     0.40 % |
+| 17 | scryfall.com           |   187 |     0.40 % |
 | 18 | magic-ville.com        |   176 |     0.38 % |
-| 19 | flexslot.gg            |   164 |     0.36 % |
-| 20 | topdecked.com          |   114 |     0.25 % |
-| 21 | manabox.app            |   100 |     0.22 % |
-| 22 | tcdecks.net            |    54 |     0.12 % |
-| 23 | manatraders.com        |    53 |     0.12 % |
+| 19 | flexslot.gg            |   165 |     0.35 % |
+| 20 | topdecked.com          |   116 |     0.25 % |
+| 21 | manabox.app            |   100 |     0.21 % |
+| 22 | manatraders.com        |    54 |     0.12 % |
+| 23 | tcdecks.net            |    54 |     0.12 % |
 | 24 | mtg.cardsrealm.com     |    43 |     0.09 % |
 | 25 | manastack.com          |    38 |     0.08 % |
 | 26 | deckbox.org            |    27 |     0.06 % |
 | 27 | mtgarena.pro           |    23 |     0.05 % |
-| 28 | paupermtg.com          |    21 |     0.05 % |
+| 28 | paupermtg.com          |    21 |     0.04 % |
 | 29 | cardhoarder.com        |    20 |     0.04 % |
 | 30 | app.cardboard.live     |     9 |     0.02 % |
 | 31 | old.starcitygames.com  |     2 |     0.00 % |
 | 32 | mtgotraders.com        |     1 |     0.00 % |
-|  | TOTAL                  | 45906 | 100.00 %|
+|  | TOTAL                  | 46895 | 100.00 %|

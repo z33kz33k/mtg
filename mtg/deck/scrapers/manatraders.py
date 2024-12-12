@@ -11,7 +11,7 @@ import json
 import logging
 
 from mtg import Json
-from mtg.deck.scrapers import DeckScraper
+from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
 
 _log = logging.getLogger(__name__)
@@ -67,3 +67,29 @@ class ManatradersScraper(DeckScraper):
         for card_data in self._json_data["cards"].values():
             self._parse_card_json(card_data)
         self._derive_commander_from_sideboard()
+
+
+@ContainerScraper.registered
+class ManatradersUserScraper(ContainerScraper):
+    """Scraper of Manatraders user search page.
+    """
+    CONTAINER_NAME = "Manatraders user"  # override
+    DECK_URL_TEMPLATE = "https://www.manatraders.com{}"
+    _DECK_SCRAPER = ManatradersScraper  # override
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return all(t in url.lower() for t in ("manatraders.com/decks?", "search_name"))
+
+    def _collect(self) -> list[str]:  # override
+        self._soup = getsoup(self.url)
+        if not self._soup:
+            _log.warning("User data not available")
+            return []
+
+        deck_tags = [
+            tag for tag in self._soup.find_all("a", href=lambda h: h and "/webshop/deck/" in h)]
+        urls = {tag.attrs["href"] for tag in deck_tags}
+        return [
+            strip_url_params(self.DECK_URL_TEMPLATE.format(url), with_endpoint=False)
+            for url in sorted(urls)]
