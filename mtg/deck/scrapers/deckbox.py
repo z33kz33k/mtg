@@ -11,7 +11,7 @@ import logging
 
 from bs4 import Tag
 
-from mtg.deck.scrapers import DeckScraper
+from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.scryfall import COMMANDER_FORMATS, Card
 from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
 
@@ -63,6 +63,10 @@ class DeckboxScraper(DeckScraper):
 
     def _parse_deck(self) -> None:  # override
         maindeck_table = self._soup.find("table", class_=lambda c: c and "main" in c)
+        if not maindeck_table:
+            raise ScrapingError(
+                "Maindeck table tag missing. Probably not a Constructed decklist page")
+
         for row in maindeck_table.find_all("tr"):
             self._maindeck += self._parse_row(row)
 
@@ -78,3 +82,31 @@ class DeckboxScraper(DeckScraper):
 
         if not self._commander and len(self._sideboard) == 1 and self.fmt in COMMANDER_FORMATS:
             self._set_commander(self._sideboard.pop())
+
+
+@ContainerScraper.registered
+class DeckboxUserScraper(ContainerScraper):
+    """Scraper of Deckbox user search page.
+    """
+    CONTAINER_NAME = "Deckbox user"  # override
+    DECK_URL_TEMPLATE = "https://deckbox.org{}"
+    _DECK_SCRAPER = DeckboxScraper  # override
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return "deckbox.org/users/" in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url)
+
+    def _collect(self) -> list[str]:  # override
+        self._soup = getsoup(self.url)
+        if not self._soup:
+            _log.warning("User data not available")
+            return []
+
+        deck_tags = [
+            tag for tag in self._soup.find_all("a", href=lambda h: h and "/sets/" in h)]
+        urls = {tag.attrs["href"] for tag in deck_tags}
+        return [self.DECK_URL_TEMPLATE.format(url) for url in sorted(urls)]

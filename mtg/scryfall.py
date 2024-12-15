@@ -24,7 +24,8 @@ from typing import Callable, Iterable, Optional
 import scrython
 from tqdm import tqdm
 from unidecode import unidecode
-from aiohttp.client_exceptions import ContentTypeError
+from aiohttp.client_exceptions import ContentTypeError, ServerTimeoutError
+from asyncio.exceptions import TimeoutError
 
 from mtg import DATA_DIR, Json
 from mtg.mtgwiki import CLASSES, RACES
@@ -35,6 +36,7 @@ from mtg.utils.scrape import throttle
 _log = logging.getLogger(__name__)
 CARDS_FILENAME = "scryfall_cards.json"
 SETS_FILENAME = "scryfall_sets.json"
+API_QUERY_THROTTLE = 0.2
 
 
 class ScryfallError(ValueError):
@@ -1278,30 +1280,34 @@ def query_api_for_card(card_name: str, foreign=False) -> Card | None:
     """
     _log.info(f"Querying Scryfall for {card_name!r}...")
     try:
-        throttle(0.15)
-        result = scrython.cards.Search(q=f"!{card_name}", include_multilingual=foreign).data()
-    except (scrython.foundation.ScryfallError, ContentTypeError):
-        result = None
-    if not result:
-        throttle(0.15)
         try:
-            result = scrython.cards.Search(q=card_name, include_multilingual=foreign).data()
+            throttle(API_QUERY_THROTTLE)
+            result = scrython.cards.Search(q=f"!{card_name}", include_multilingual=foreign).data()
         except (scrython.foundation.ScryfallError, ContentTypeError):
             result = None
-        if not result :
-            throttle(0.15)
+        if not result:
+            throttle(API_QUERY_THROTTLE)
             try:
-                result = scrython.cards.Named(fuzzy=card_name)
-                return Card(dict(result.scryfallJson))
+                result = scrython.cards.Search(q=card_name, include_multilingual=foreign).data()
             except (scrython.foundation.ScryfallError, ContentTypeError):
                 result = None
-            if not result:
-                throttle(0.15)
+            if not result :
+                throttle(API_QUERY_THROTTLE)
                 try:
-                    result = scrython.cards.Named(fuzzy=unidecode(card_name))
+                    result = scrython.cards.Named(fuzzy=card_name)
                     return Card(dict(result.scryfallJson))
                 except (scrython.foundation.ScryfallError, ContentTypeError):
-                    return None
+                    result = None
+                if not result:
+                    throttle(API_QUERY_THROTTLE)
+                    try:
+                        result = scrython.cards.Named(fuzzy=unidecode(card_name))
+                        return Card(dict(result.scryfallJson))
+                    except (scrython.foundation.ScryfallError, ContentTypeError):
+                        return None
+    except (ServerTimeoutError, TimeoutError):
+        _log.warning("Scryfall API timed out")
+        return None
 
     if len(result) > 1:
         result.sort(key=lambda card: date.fromisoformat(card["released_at"]), reverse=True)
