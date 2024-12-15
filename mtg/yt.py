@@ -44,7 +44,7 @@ from mtg.utils import Counter, breadcrumbs, deserialize_dates, extract_float, fi
 from mtg.utils.files import getdir
 from mtg.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
 from mtg.utils.scrape import ScrapingError, extract_source, extract_url, \
-    get_dynamic_soup, http_requests_counted, throttle_with_countdown, throttled, \
+    get_dynamic_soup, getsoup, http_requests_counted, throttle_with_countdown, throttled, \
     timed_request, unshorten
 
 _log = logging.getLogger(__name__)
@@ -1204,6 +1204,7 @@ class Channel:
             scrape_time=self.scrape_time,
             videos=[json.loads(v.json, object_hook=deserialize_dates) for v in self.videos],
         )
+        text = self.get_url_and_title(self.id, self.title)
         _log.info(f"Scraped {len(self.decks)} deck(s) in total for {text}")
 
     def __repr__(self) -> str:
@@ -1284,3 +1285,11 @@ class Channel:
         dst = dstdir / f"{sanitize_filename(filename)}.json"
         _log.info(f"Exporting channel to: '{dst}'...")
         dst.write_text(self.json, encoding="utf-8")
+
+
+def get_channel_id(url: str) -> str:
+    soup = getsoup(url)
+    prefix = Channel.URL_TEMPLATE[:-2]
+    tag = soup.find("link", rel="canonical")
+    return tag.attrs["href"].removeprefix(prefix)
+
