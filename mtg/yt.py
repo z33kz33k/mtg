@@ -63,29 +63,15 @@ EXCESSIVELY_DECK_STALE_THRESHOLD = 150  # videos
 MAX_VIDEOS = 400
 
 
-def channel_url_to_handle(url: str) -> str:
-    if "@" not in url and "/c/" not in url:
-        raise ValueError(f"Not a channel URL: {url!r}")
-    _, handle = url.rsplit("/", maxsplit=1)
-    if "/c/" in url:
-        handle = f"c_{handle}"
-    return handle
-
-
 @dataclass
 class ChannelData:
-    url: str
-    id: str | None
+    id: str
     title: str | None
     description: str | None
     tags: list[str] | None
     subscribers: int
     scrape_time: datetime
     videos: list[dict]
-
-    @property
-    def handle(self):
-        return channel_url_to_handle(self.url)
 
     @property
     def decks(self) -> list[dict]:
@@ -185,8 +171,8 @@ class ChannelData:
         return not (self.is_deck_stale or self.is_very_deck_stale or self.is_excessively_deck_stale)
 
 
-def retrieve_urls() -> list[str]:
-    """Retrieve channel URLs from a private Google Sheet spreadsheet.
+def retrieve_ids() -> list[str]:
+    """Retrieve channel IDs from a private Google Sheet spreadsheet.
 
     Mind that this operation takes about 4 seconds to complete.
     """
@@ -202,13 +188,13 @@ def channels_batch(start_row=2, batch_size: int | None = None) -> Iterator[str]:
     _log.info(f"Batch updating{txt} channels...")
     start_idx = start_row - 2
     end_idx = None if batch_size is None else start_row - 2 + batch_size
-    return itertools.islice(retrieve_urls(), start_idx, end_idx)
+    return itertools.islice(retrieve_ids(), start_idx, end_idx)
 
 
-def load_channel(channel_url: str) -> ChannelData:
-    """Load all earlier scraped data for a channel designated by the provided URL.
+def load_channel(channel_id: str) -> ChannelData:
+    """Load all earlier scraped data for a channel designated by the provided ID.
     """
-    channel_dir = getdir(CHANNELS_DIR / channel_url_to_handle(channel_url.rstrip("/")))
+    channel_dir = getdir(CHANNELS_DIR / channel_id)
     _log.info(f"Loading channel data from: '{channel_dir}'...")
     files = [f for f in channel_dir.iterdir() if f.is_file() and f.suffix.lower() == ".json"]
     if not files:
@@ -216,6 +202,9 @@ def load_channel(channel_url: str) -> ChannelData:
     channels = []
     for file in files:
         channel = json.loads(file.read_text(encoding="utf-8"), object_hook=deserialize_dates)
+        # deal with legacy data that contains "url"
+        if "url" in channel:
+            del channel["url"]
         channels.append(ChannelData(**channel))
     channels.sort(key=attrgetter("scrape_time"), reverse=True)
 
@@ -228,7 +217,6 @@ def load_channel(channel_url: str) -> ChannelData:
     videos.sort(key=itemgetter("publish_time"), reverse=True)
 
     return ChannelData(
-        url=channels[0].url,
         id=channels[0].id,
         title=channels[0].title,
         description=channels[0].description,
@@ -242,23 +230,24 @@ def load_channel(channel_url: str) -> ChannelData:
 def load_channels() -> Generator[ChannelData, None, None]:
     """Load channel data for all channels recorded in a private Google Sheet.
     """
-    for url in retrieve_urls():
-        yield load_channel(url)
+    for id_ in retrieve_ids():
+        yield load_channel(id_)
 
 
 def update_gsheet() -> None:
     """Update "channels" Google Sheets worksheet.
     """
     data = []
-    for url in retrieve_urls():
+    for id_ in retrieve_ids():
         try:
-            ch = load_channel(url)
+            ch = load_channel(id_)
             formats = sorted(ch.deck_formats.items(), key=itemgetter(1), reverse=True)
             formats = [pair[0] for pair in formats]
             deck_sources = sorted(ch.deck_sources.items(), key=itemgetter(1), reverse=True)
             deck_sources = [pair[0] for pair in deck_sources]
             data.append([
-                url,
+                ch.title,
+                Channel.URL_TEMPLATE.format(ch.id),
                 ch.scrape_time.date().strftime("%Y-%m-%d"),
                 ch.staleness if ch.staleness is not None else "N/A",
                 ch.posting_interval if ch.posting_interval is not None else "N/A",
@@ -274,17 +263,17 @@ def update_gsheet() -> None:
                 ", ".join(ch.sources),
             ])
         except FileNotFoundError:
-            _log.warning(f"Channel data for {url!r} not found. Skipping...")
+            _log.warning(f"Channel data for ID {id_!r} not found. Skipping...")
             data.append(
                 ["NOT AVAILABLE", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A",
-                 "N/A"])
+                 "N/A", "N/A", "N/A", "N/A", "N/A"])
         except AttributeError as err:
-            _log.warning(f"Corrupted Channel data for {url!r}: {err}. Skipping...")
+            _log.warning(f"Corrupted Channel data for ID {id_!r}: {err}. Skipping...")
             data.append(
                 ["NOT AVAILABLE", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A",
-                 "N/A"])
+                 "N/A", "N/A", "N/A", "N/A", "N/A"])
 
-    extend_gsheet_rows_with_cols("mtga_yt", "channels", data, start_row=2, start_col=3)
+    extend_gsheet_rows_with_cols("mtga_yt", "channels", data, start_row=2, start_col=2)
 
 
 class ScrapingSession:
@@ -323,23 +312,23 @@ class ScrapingSession:
             f"Total of {self._extended_count} unique extended decklist(s) added to the global "
             f"repository")
 
-    def update_regular(self, id_: str, decklist: str) -> None:
-        if id_ not in self._regular_decklists:
-            self._regular_decklists[id_] = decklist
+    def update_regular(self, decklist_id: str, decklist: str) -> None:
+        if decklist_id not in self._regular_decklists:
+            self._regular_decklists[decklist_id] = decklist
             self._regular_count += 1
 
-    def update_extended(self, id_: str, decklist: str) -> None:
-        if id_ not in self._extended_decklists:
-            self._extended_decklists[id_] = decklist
+    def update_extended(self, decklist_id: str, decklist: str) -> None:
+        if decklist_id not in self._extended_decklists:
+            self._extended_decklists[decklist_id] = decklist
             self._extended_count += 1
 
 
-def retrieve_decklist(id_: str) -> str | None:
+def retrieve_decklist(decklist_id: str) -> str | None:
     decklists = json.loads(REGULAR_DECKLISTS_FILE.read_text(
             encoding="utf-8")) if REGULAR_DECKLISTS_FILE.is_file() else {}
     decklists.update(json.loads(EXTENDED_DECKLISTS_FILE.read_text(
             encoding="utf-8")) if EXTENDED_DECKLISTS_FILE.is_file() else {})
-    return decklists.get(id_)
+    return decklists.get(decklist_id)
 
 
 def check_decklists() -> None:
@@ -347,8 +336,8 @@ def check_decklists() -> None:
     for ch in load_channels():
         for v in ch.videos:
             for deck in v["decks"]:
-                path_regular = breadcrumbs(ch.handle, v["id"], deck["decklist_id"])
-                path_extended = breadcrumbs(ch.handle, v["id"], deck["decklist_extended_id"])
+                path_regular = breadcrumbs(ch.id, v["id"], deck["decklist_id"])
+                path_extended = breadcrumbs(ch.id, v["id"], deck["decklist_extended_id"])
                 regular_ids[deck["decklist_id"]] = path_regular
                 extended_ids[deck["decklist_extended_id"]] = path_extended
 
@@ -374,27 +363,28 @@ def check_decklists() -> None:
 @http_requests_counted("channels scraping")
 @timed("channels scraping", precision=1)
 def scrape_channels(
-        *urls: str,
+        *ids: str,
         videos=25,
         only_earlier_than_last_scraped=True) -> None:
     """Scrape YouTube channels specified in private Google Sheet. Save the scraped data as .json
     files.
 
     Args:
-        urls: URLs of channels to scrape
+        ids: IDs of channels to scrape
         videos: number of videos to scrape per channel
         only_earlier_than_last_scraped: if True, only scrape videos earlier than the last one scraped
     """
     with ScrapingSession() as session:
         current_videos, total_videos = 0, 0
         total_channels, total_decks = 0, 0
-        for i, url in enumerate(urls, start=1):
+        for i, id_ in enumerate(ids, start=1):
             try:
-                ch = Channel(url, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
-                _log.info(f"Scraping channel {i}/{len(urls)}: {ch.handle!r}...")
+                ch = Channel(id_, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
+                text = Channel.get_url_and_title(ch.id, ch.title)
+                _log.info(f"Scraping channel {i}/{len(ids)}: {text}...")
                 ch.scrape(videos)
                 if ch.data:
-                    dst = getdir(CHANNELS_DIR / ch.handle)
+                    dst = getdir(CHANNELS_DIR / id_)
                     ch.dump(dst)
                     current_videos += len(ch.videos)
                     total_videos += len(ch.videos)
@@ -404,7 +394,7 @@ def scrape_channels(
                         session.update_regular(deck.decklist_id, deck.decklist)
                         session.update_extended(deck.decklist_extended_id, deck.decklist_extended)
             except Exception as err:
-                _log.exception(f"Scraping of channel {url!r} failed with: '{err}'. Skipping...")
+                _log.exception(f"Scraping of channel {id_!r} failed with: '{err}'. Skipping...")
             if current_videos > MAX_VIDEOS:
                 current_videos = 0
                 _log.info(f"Throttling for 5 minutes before the next batch...")
@@ -420,22 +410,22 @@ def scrape_active(
     """Scrape these YouTube channels specified in private Google Sheet that are not dormant or
     abandoned. Save the scraped data as .json files.
     """
-    urls = []
-    for url in retrieve_urls():
+    ids = []
+    for id_ in retrieve_ids():
         try:
-            data = load_channel(url)
+            data = load_channel(id_)
         except FileNotFoundError:
             data = None
         if not data:
-            urls.append(url)
+            ids.append(id_)
         elif data.is_active:
             if only_deck_fresh and not data.is_deck_fresh:
                 continue
-            urls.append(url)
+            ids.append(id_)
     text = "active and deck-fresh" if only_deck_fresh else "active"
-    _log.info(f"Scraping {len(urls)} {text} channel(s)...")
+    _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
-        *urls, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
+        *ids, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
 
 
 def scrape_dormant(
@@ -443,20 +433,20 @@ def scrape_dormant(
     """Scrape these YouTube channels specified in private Google Sheet that are dormant. Save
     the scraped data as .json files.
     """
-    urls = []
-    for url in retrieve_urls():
+    ids = []
+    for id_ in retrieve_ids():
         try:
-            data = load_channel(url)
+            data = load_channel(id_)
         except FileNotFoundError:
             data = None
         if data and data.is_dormant:
             if only_deck_fresh and not data.is_deck_fresh:
                 continue
-            urls.append(url)
+            ids.append(id_)
     text = "dormant and deck-fresh" if only_deck_fresh else "dormant"
-    _log.info(f"Scraping {len(urls)} {text} channel(s)...")
+    _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
-        *urls, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
+        *ids, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
 
 
 def scrape_abandoned(
@@ -464,40 +454,40 @@ def scrape_abandoned(
     """Scrape these YouTube channels specified in private Google Sheet that are abandoned. Save
     the scraped data as .json files.
     """
-    urls = []
-    for url in retrieve_urls():
+    ids = []
+    for id_ in retrieve_ids():
         try:
-            data = load_channel(url)
+            data = load_channel(id_)
         except FileNotFoundError:
             data = None
         if data and data.is_abandoned:
             if only_deck_fresh and not data.is_deck_fresh:
                 continue
-            urls.append(url)
+            ids.append(id_)
     text = "abandoned and deck-fresh" if only_deck_fresh else "abandoned"
-    _log.info(f"Scraping {len(urls)} {text} channel(s)...")
+    _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
-        *urls, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
+        *ids, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
 
 
 def scrape_deck_stale(videos=25, only_earlier_than_last_scraped=True, only_active=True) -> None:
     """Scrape these YouTube channels specified in private Google Sheet that are considered
     deck-stale. Save the scraped data as .json files.
     """
-    urls = []
-    for url in retrieve_urls():
+    ids = []
+    for id_ in retrieve_ids():
         try:
-            data = load_channel(url)
+            data = load_channel(id_)
         except FileNotFoundError:
             data = None
         if data and data.is_deck_stale:
             if only_active and not data.is_active:
                 continue
-            urls.append(url)
+            ids.append(id_)
     text = "deck-stale and active" if only_active else "deck-stale"
-    _log.info(f"Scraping {len(urls)} {text} channel(s)...")
+    _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
-        *urls, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
+        *ids, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
 
 
 def scrape_very_deck_stale(
@@ -505,20 +495,20 @@ def scrape_very_deck_stale(
     """Scrape these YouTube channels specified in private Google Sheet that are considered
     very deck-stale. Save the scraped data as .json files.
     """
-    urls = []
-    for url in retrieve_urls():
+    ids = []
+    for id_ in retrieve_ids():
         try:
-            data = load_channel(url)
+            data = load_channel(id_)
         except FileNotFoundError:
             data = None
         if data and data.is_very_deck_stale:
             if only_active and not data.is_active:
                 continue
-            urls.append(url)
+            ids.append(id_)
     text = "very deck-stale and active" if only_active else "very deck-stale"
-    _log.info(f"Scraping {len(urls)} {text} channel(s)...")
+    _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
-        *urls, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
+        *ids, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
 
 
 def scrape_excessively_deck_stale(
@@ -526,20 +516,20 @@ def scrape_excessively_deck_stale(
     """Scrape these YouTube channels specified in private Google Sheet that are considered
     excessively deck-stale. Save the scraped data as .json files.
     """
-    urls = []
-    for url in retrieve_urls():
+    ids = []
+    for id_ in retrieve_ids():
         try:
-            data = load_channel(url)
+            data = load_channel(id_)
         except FileNotFoundError:
             data = None
         if data and data.is_excessively_deck_stale:
             if only_active and not data.is_active:
                 continue
-            urls.append(url)
+            ids.append(id_)
     text = "excessively deck-stale and active" if only_active else "excessively deck-stale"
-    _log.info(f"Scraping {len(urls)} {text} channel(s)...")
+    _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
-        *urls, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
+        *ids, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
 
 
 def get_aggregate_deck_data() -> tuple[Counter, Counter]:
@@ -589,14 +579,14 @@ def update_readme_with_deck_data() -> None:
 def get_duplicates() -> list[str]:
     """Get list of YouTube channels duplicated in the private Google Sheet.
     """
-    urls = retrieve_urls()
+    ids = retrieve_ids()
     seen = set()
     duplicates = []
-    for url in urls:
-        if url in seen:
-            duplicates.append(url)
+    for id_ in ids:
+        if id_ in seen:
+            duplicates.append(id_)
         else:
-            seen.add(url)
+            seen.add(id_)
     return duplicates
 
 
@@ -1070,20 +1060,17 @@ class Video:
 class Channel:
     """YouTube channel showcasing MtG decks.
     """
+    URL_TEMPLATE = "https://www.youtube.com/channel/{}"
     _CONSENT_XPATH = "//button[@aria-label='Accept all']"
     _XPATH = "//span[contains(., 'subscribers')]"
 
     @property
-    def url(self) -> str:
-        return self._url.rstrip("/")
-
-    @property
-    def handle(self) -> str:
-        return channel_url_to_handle(self.url)
-
-    @property
-    def id(self) -> str | None:
+    def id(self) -> str:
         return self._id
+
+    @property
+    def url(self) -> str:
+        return self.URL_TEMPLATE.format(self.id)
 
     @property
     def title(self) -> str | None:
@@ -1121,19 +1108,20 @@ class Channel:
     def earlier_data(self) -> ChannelData | None:
         return self._earlier_data
 
-    def __init__(self, url: str, only_earlier_than_last_scraped=True) -> None:
-        self._url, self._only_earlier_than_last = url, only_earlier_than_last_scraped
-        self._id, self._title, self._description, self._tags = None, None, None, None
+    def __init__(self, channel_id: str, only_earlier_than_last_scraped=True) -> None:
+        self._id, self._only_earlier_than_last = channel_id, only_earlier_than_last_scraped
+        self._title, self._description, self._tags = None, None, None
         self._subscribers, self._scrape_time, self._videos = None, None, []
         self._ytsp_data, self._data = None, None
         try:
-            self._earlier_data = load_channel(self.url)
+            self._earlier_data = load_channel(self.id)
+            self._title = self._earlier_data.title
             self._already_scraped_deck_urls = {*self._earlier_data.deck_urls}
         except FileNotFoundError:
             self._earlier_data = None
             self._already_scraped_deck_urls = set()
 
-    def get_unscraped_ids(self, limit=10) -> list[str]:
+    def get_unscraped_video_ids(self, limit=10) -> list[str]:
         scraped_ids = [v["id"] for v in self.earlier_data.videos] if self.earlier_data else []
         if not scraped_ids:
             last_scraped_id = None
@@ -1142,7 +1130,7 @@ class Channel:
 
         video_ids, scraped_ids = [], set(scraped_ids)
         count = 0
-        for vid in self.video_ids(self.url, limit=limit):
+        for vid in self.video_ids(limit=limit):
             count += 1
             if vid == last_scraped_id:
                 break
@@ -1156,14 +1144,32 @@ class Channel:
 
         return video_ids
 
+    def video_ids(self, limit=10) -> Generator[str, None, None]:
+        try:
+            for ch_data in scrapetube.get_channel(channel_id=self.id, limit=limit):
+                yield ch_data["videoId"]
+        except OSError:
+            raise ValueError(f"Invalid channel ID: {self.id!r}")
+        except json.decoder.JSONDecodeError:
+            raise ScrapingError(
+                "scrapetube failed with JSON error. This channel probably doesn't exist "
+                "anymore")
+
+    @classmethod
+    def get_url_and_title(cls, channel_id: str, title: str) -> str:
+        url = cls.URL_TEMPLATE.format(channel_id)
+        return f"{url!r} ({title})" if title else f"{url!r}"
+
     @timed("channel scraping", precision=2)
     def scrape(self, limit=10) -> None:
-        video_ids = self.get_unscraped_ids(limit)
+        video_ids = self.get_unscraped_video_ids(limit)
+        text = self.get_url_and_title(self.id, self.title)
         if not video_ids:
-            _log.info(f"Channel data for {self.handle!r} already up to date")
+            _log.info(f"Channel data for {text} already up to date")
             return
+
         self._scrape_time = datetime.now()
-        _log.info(f"Scraping channel: {self.url!r}, {len(video_ids)} video(s)...")
+        _log.info(f"Scraping channel: {text}, {len(video_ids)} video(s)...")
         self._videos = []
         for i, vid in enumerate(video_ids, start=1):
             _log.info(
@@ -1171,7 +1177,6 @@ class Channel:
             video = Video(vid, *self._already_scraped_deck_urls)
             self._videos.append(video)
             self._already_scraped_deck_urls.update({d.url for d in video.decks if d.url})
-        self._id = self.videos[0].channel_id if self else None
         try:
             self._ytsp_data = self._get_ytsp() if self._id else None
             self._description = self._ytsp_data.result.get("description") if self._id else None
@@ -1182,15 +1187,15 @@ class Channel:
             _log.warning(
                 "YTSP failed with TypeError. The channel is probably missing some tab and its "
                 "description and tags will be set to 'None'.")
-            self._description, self._title, self._tags, self._subscribers = None, None, None, None
+
         if not self._subscribers:
             self._subscribers = self.videos[0].channel_subscribers
             if self._subscribers is None:
                 self._subscribers = self._scrape_subscribers_with_selenium()
         if not self._title:
             self._title = self._scrape_title_with_selenium()
+
         self._data = ChannelData(
-            url=self.url,
             id=self.id,
             title=self.title,
             description=self.description,
@@ -1199,24 +1204,13 @@ class Channel:
             scrape_time=self.scrape_time,
             videos=[json.loads(v.json, object_hook=deserialize_dates) for v in self.videos],
         )
-        _log.info(f"Scraped {len(self.decks)} deck(s) in total for {self.handle!r}")
-
-    @staticmethod
-    def video_ids(url: str, limit=10) -> Generator[str, None, None]:
-        try:
-            for ch_data in scrapetube.get_channel(channel_url=url, limit=limit):
-                yield ch_data["videoId"]
-        except OSError:
-            raise ValueError(f"Invalid URL: {url!r}")
-        except json.decoder.JSONDecodeError:
-            raise ScrapingError(
-                "scrapetube failed with JSON error. This channel probably doesn't exist "
-                "anymore")
+        _log.info(f"Scraped {len(self.decks)} deck(s) in total for {text}")
 
     def __repr__(self) -> str:
         return getrepr(
             self.__class__,
-            ("handle", self.handle),
+            ("id", self.id),
+            ("title", self.title),
             ("videos", len(self.videos)),
             ("decks", len(self.decks)),
             ("scrape_time", str(self.scrape_time)),
@@ -1286,8 +1280,7 @@ class Channel:
         dstdir = dstdir or OUTPUT_DIR / "json"
         dstdir = getdir(dstdir)
         timestamp = self.scrape_time.strftime(FILENAME_TIMESTAMP_FORMAT)
-        handle = self.handle.removeprefix("@").removeprefix("c_")
-        filename = filename or f"{handle}_{timestamp}_channel"
+        filename = filename or f"{self.id}___{timestamp}_channel"
         dst = dstdir / f"{sanitize_filename(filename)}.json"
         _log.info(f"Exporting channel to: '{dst}'...")
         dst.write_text(self.json, encoding="utf-8")
