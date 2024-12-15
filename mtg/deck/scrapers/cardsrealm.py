@@ -32,7 +32,13 @@ class CardsrealmScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url)
+        url = strip_url_params(url, with_endpoint=False)
+        # attempt to replace any language code other than 'en-us' with 'en-us'
+        _, first = url.split("mtg.cardsrealm.com/", maxsplit=1)
+        if first.startswith("decks/"):  # no lang code in url (implicitly means 'en-us')
+            return url
+        lang, _ = first.split("/decks/", maxsplit=1)
+        return url.replace(f"/{lang}/", "/en-us/")
 
     def _get_json(self) -> Json:
         def process(text: str) -> str:
