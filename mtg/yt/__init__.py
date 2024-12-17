@@ -11,6 +11,7 @@ import itertools
 import json
 import logging
 import re
+import urllib.error
 from collections import defaultdict
 from dataclasses import asdict
 from datetime import datetime
@@ -498,7 +499,9 @@ class Video:
         return data
 
     @backoff.on_exception(
-        backoff.expo, (Timeout, HTTPError, RemoteDisconnected, ScrapingError), max_time=300)
+        backoff.expo,
+        (Timeout, HTTPError, RemoteDisconnected, ScrapingError, urllib.error.HTTPError),
+        max_time=300)
     def _get_pytube_with_backoff(self) -> pytubefix.YouTube:
         return self._get_pytube()
 
@@ -872,7 +875,7 @@ class Channel:
             videos=[json.loads(v.json, object_hook=deserialize_dates) for v in self.videos],
         )
         text = self.get_url_and_title(self.id, self.title)
-        _log.info(f"Scraped {len(self.decks)} deck(s) in total for {text}")
+        _log.info(f"Scraped *** {len(self.decks)} deck(s) *** in total for {text}")
 
     def __repr__(self) -> str:
         return getrepr(

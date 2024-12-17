@@ -423,6 +423,8 @@ def _parse_channel_data_filename(filename: str) -> tuple[str, datetime]:
 
 
 def prune_channel_data(*range_: datetime | str) -> None:
+    """Remove channel data within the specified time range.
+    """
     if len(range_) == 1:
         start, end = range_[0], datetime.now()
     elif len(range_) == 2:

@@ -299,8 +299,8 @@ class ContainerScraper:
     @backoff.on_exception(
         backoff.expo, (ConnectionError, ReadTimeout), max_time=60)
     def scrape(
-            self, already_scraped_deck_urls: Iterable[str],
-            already_failed_deck_urls: Iterable[str]) -> tuple[list[Deck], set[str]]:
+            self, already_scraped_deck_urls: Iterable[str] = (),
+            already_failed_deck_urls: Iterable[str] = ()) -> tuple[list[Deck], set[str]]:
         self._deck_urls = [url.removesuffix("/") for url in self._collect()]
         _log.info(
             f"Gathered {len(self._deck_urls)} deck URL(s) from a {self.CONTAINER_NAME} at:"
