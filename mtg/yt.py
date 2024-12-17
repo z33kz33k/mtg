@@ -20,7 +20,7 @@ from http.client import RemoteDisconnected
 from operator import attrgetter, itemgetter
 from pathlib import Path
 from types import TracebackType
-from typing import Generator, Iterator, Type
+from typing import Generator, Iterable, Iterator, Type
 
 import backoff
 import httpcore
@@ -54,6 +54,7 @@ GOOGLE_API_KEY = Path("scraping_api_key.txt").read_text(encoding="utf-8")  # not
 CHANNELS_DIR = OUTPUT_DIR / "channels"
 REGULAR_DECKLISTS_FILE = CHANNELS_DIR / "regular_decklists.json"
 EXTENDED_DECKLISTS_FILE = CHANNELS_DIR / "extended_decklists.json"
+FAILED_URLS_FILE = CHANNELS_DIR / "failed_urls.json"
 DORMANT_THRESHOLD = 30 * 3  # days (ca 3 months)
 ABANDONED_THRESHOLD = 30 * 12  # days (ca. 1 yr)
 DEAD_THRESHOLD = 2500  # days (ca. 7 yrs) - only used in gsheet to trim dead from abandoned
@@ -281,7 +282,8 @@ class ScrapingSession:
     """
     def __init__(self) -> None:
         self._regular_decklists, self._extended_decklists = {}, {}
-        self._regular_count, self._extended_count = 0, 0
+        self._failed_urls = {}
+        self._regular_count, self._extended_count, self._failed_count = 0, 0, 0
 
     def __enter__(self) -> "ScrapingSession":
         self._regular_decklists = json.loads(REGULAR_DECKLISTS_FILE.read_text(
@@ -294,6 +296,11 @@ class ScrapingSession:
         _log.info(
             f"Loaded {len(self._extended_decklists):,} extended decklist(s) from the global "
             f"repository")
+        self._failed_urls = {k: set(v) for k, v in json.loads(FAILED_URLS_FILE.read_text(
+                encoding="utf-8")).items()} if FAILED_URLS_FILE.is_file() else {}
+        _log.info(
+            f"Loaded {len({url for v in self._failed_urls.values() for url in v}):,} decklist "
+            f"URL(s) that previously failed from the global repository")
         return self
 
     def __exit__(
@@ -305,12 +312,18 @@ class ScrapingSession:
         _log.info(f"Dumping '{EXTENDED_DECKLISTS_FILE}'...")
         EXTENDED_DECKLISTS_FILE.write_text(
             json.dumps(self._extended_decklists, indent=4, ensure_ascii=False),encoding="utf-8")
+        FAILED_URLS_FILE.write_text(
+            json.dumps({k: sorted(v) for k, v in self._failed_urls.items()}, indent=4,
+                       ensure_ascii=False), encoding="utf-8")
         _log.info(
             f"Total of {self._regular_count} unique regular decklist(s) added to the global "
             f"repository")
         _log.info(
             f"Total of {self._extended_count} unique extended decklist(s) added to the global "
             f"repository")
+        _log.info(
+            f"Total of {self._failed_count} newly failed decklist URLs added to the global "
+            f"repository to be avoided in the future")
 
     def update_regular(self, decklist_id: str, decklist: str) -> None:
         if decklist_id not in self._regular_decklists:
@@ -321,6 +334,17 @@ class ScrapingSession:
         if decklist_id not in self._extended_decklists:
             self._extended_decklists[decklist_id] = decklist
             self._extended_count += 1
+
+    def update_failed(self, channel_id: str, *urls: str) -> None:
+        urls = {url.lower().removesuffix("/") for url in urls}
+        failed_urls = self._failed_urls.setdefault(channel_id, set())
+        for url in urls:
+            if url not in failed_urls:
+                failed_urls.add(url)
+                self._failed_count += 1
+
+    def get_failed(self, channel_id: str) -> list[str]:
+        return sorted(self._failed_urls.get(channel_id, set()))
 
 
 def retrieve_decklist(decklist_id: str) -> str | None:
@@ -379,10 +403,13 @@ def scrape_channels(
         total_channels, total_decks = 0, 0
         for i, id_ in enumerate(ids, start=1):
             try:
-                ch = Channel(id_, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
+                ch = Channel(
+                    id_, *session.get_failed(id_),
+                    only_earlier_than_last_scraped=only_earlier_than_last_scraped)
                 text = Channel.get_url_and_title(ch.id, ch.title)
                 _log.info(f"Scraping channel {i}/{len(ids)}: {text}...")
                 ch.scrape(videos)
+                session.update_failed(ch.id, *ch.already_failed_deck_urls)
                 if ch.data:
                     dst = getdir(CHANNELS_DIR / id_)
                     ch.dump(dst)
@@ -796,14 +823,23 @@ class Video:
             metadata["date"] = self.publish_time.date()
         return metadata
 
-    def __init__(self, video_id: str, *already_scraped_deck_urls: str) -> None:
+    @property
+    def failed_deck_urls(self) -> set[str]:
+        return self._failed_deck_urls
+
+    def __init__(
+            self, video_id: str, already_scraped_deck_urls: Iterable[str] = (),
+            already_failed_deck_urls: Iterable[str] = ()) -> None:
         """Initialize.
 
         Args:
             video_id: unique string identifying a YouTube video (the part after `v=` in the URL)
-            already_scraped_deck_url: URLs of decks that have already been scraped within a channel
+            already_scraped_deck_urls: URLs of decks that have already been scraped within a channel
+            already_failed_deck_urls: URLs of decks that have already failed to be scraped
         """
         self._already_scraped_deck_urls = set(already_scraped_deck_urls)
+        self._already_failed_deck_urls = set(already_failed_deck_urls)
+        self._failed_deck_urls = set()
         self._process(video_id)
 
     @throttled(1.25, 0.25)
@@ -956,7 +992,11 @@ class Video:
 
     def _process_deck(self, link: str) -> Deck | None:
         if scraper := DeckScraper.from_url(link, self.metadata):
-            return scraper.scrape(throttled=any(site in link for site in self._THROTTLED))
+            if deck := scraper.scrape(throttled=any(site in link for site in self._THROTTLED)):
+                return deck
+            self._already_failed_deck_urls.add(link.lower().removesuffix("/"))
+            self._failed_deck_urls.add(link.lower().removesuffix("/"))
+
         elif any(h in link for h in self.PASTEBIN_LIKE_HOOKS):
             if "gist.github.com/" in link and not link.endswith("/raw"):
                 link = f"{link}/raw"
@@ -983,13 +1023,19 @@ class Video:
     def _process_urls(self, *urls: str) -> list[Deck]:
         decks = []
         for url in urls:
+            if url.lower().removesuffix("/") in self._already_scraped_deck_urls:
+                _log.info(f"Skipping already scraped deck URL: {url!r}...")
+                continue
+            if url.lower().removesuffix("/") in self._already_failed_deck_urls:
+                _log.info(f"Skipping already failed deck URL: {url!r}...")
+                continue
             self._sources.add(extract_source(url))
             if deck := self._process_deck(url):
                 deck_name = f"{deck.name!r} deck" if deck.name else "Deck"
                 _log.info(f"{deck_name} scraped successfully")
                 decks.append(deck)
                 if deck_url := deck.metadata.get("url"):
-                    self._already_scraped_deck_urls.add(deck_url)
+                    self._already_scraped_deck_urls.add(deck_url.lower().removesuffix("/"))
 
         return decks
 
@@ -1020,7 +1066,10 @@ class Video:
         # 4th stage: deck containers
         for link in [*links, *self._unshortened_links]:
             if scraper := ContainerScraper.from_url(link, self.metadata):
-                decks.update(scraper.scrape(*self._already_scraped_deck_urls))
+                container_decks, failed_urls = scraper.scrape(
+                    self._already_scraped_deck_urls, self._already_failed_deck_urls)
+                decks.update(container_decks)
+                self._failed_deck_urls.update(failed_urls)
 
         return sorted(decks)
 
@@ -1108,8 +1157,15 @@ class Channel:
     def earlier_data(self) -> ChannelData | None:
         return self._earlier_data
 
-    def __init__(self, channel_id: str, only_earlier_than_last_scraped=True) -> None:
-        self._id, self._only_earlier_than_last = channel_id, only_earlier_than_last_scraped
+    @property
+    def already_failed_deck_urls(self) -> set[str]:
+        return self._already_failed_deck_urls
+
+    def __init__(
+            self, channel_id: str, *already_failed_deck_urls: str,
+            only_earlier_than_last_scraped=True) -> None:
+        self._id, self._already_failed_deck_urls = channel_id, set(already_failed_deck_urls)
+        self._only_earlier_than_last = only_earlier_than_last_scraped
         self._title, self._description, self._tags = None, None, None
         self._subscribers, self._scrape_time, self._videos = None, None, []
         self._ytsp_data, self._data = None, None
@@ -1174,9 +1230,10 @@ class Channel:
         for i, vid in enumerate(video_ids, start=1):
             _log.info(
                 f"Scraping video {i}/{len(video_ids)}: 'https://www.youtube.com/watch?v={vid}'...")
-            video = Video(vid, *self._already_scraped_deck_urls)
+            video = Video(vid, self._already_scraped_deck_urls, self.already_failed_deck_urls)
             self._videos.append(video)
             self._already_scraped_deck_urls.update({d.url for d in video.decks if d.url})
+            self._already_failed_deck_urls.update(video.failed_deck_urls)
         try:
             self._ytsp_data = self._get_ytsp() if self._id else None
             self._description = self._ytsp_data.result.get("description") if self._id else None

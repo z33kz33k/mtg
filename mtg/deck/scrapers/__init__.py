@@ -9,7 +9,7 @@
 """
 import logging
 from abc import abstractmethod
-from typing import Optional, Type
+from typing import Iterable, Optional, Type
 
 import backoff
 from bs4 import BeautifulSoup
@@ -225,8 +225,6 @@ class ContainerScraper:
     THROTTLING = DeckScraper.THROTTLING
     _REGISTRY: set[Type["ContainerScraper"]] = set()
     _DECK_SCRAPER: Type[DeckScraper] | None = None
-    # mapping of container URLs to failed deck URLs
-    _already_failed_deck_urls: dict[str, set[str]] = {}
 
     @property
     def url(self) -> str:
@@ -257,19 +255,19 @@ class ContainerScraper:
     def _collect(self) -> list[str]:
         raise NotImplementedError
 
-    def _process_decks(self, *already_scraped_deck_urls: str) -> list[Deck]:
-        already_scraped_deck_urls = {
-            url.removesuffix("/").lower() for url in already_scraped_deck_urls}
+    def _process_decks(
+            self, already_scraped_deck_urls: Iterable[str],
+            already_failed_deck_urls: Iterable[str]) -> tuple[list[Deck], set[str]]:
         decks = []
+        already_scraped_deck_urls = set(already_scraped_deck_urls)
+        already_failed_deck_urls = set(already_failed_deck_urls)
+        failed_deck_urls = set()
         for i, deck_url in enumerate(self._deck_urls, start=1):
             scraper = self._DECK_SCRAPER(
                 deck_url, dict(self._metadata)) if self._DECK_SCRAPER else DeckScraper.from_url(
                 deck_url, dict(self._metadata))
             if not scraper:
                 raise ScrapingError(f"Failed to find scraper suitable for deck URL: {deck_url!r}")
-            already_failed_deck_urls = {
-                url.removesuffix("/").lower() for url in
-                type(self)._already_failed_deck_urls.get(self.url, set())}
             sanitized_deck_url = scraper.sanitize_url(deck_url)
             if sanitized_deck_url.lower() in already_scraped_deck_urls:
                 _log.info(f"Skipping already scraped deck URL: {sanitized_deck_url!r}...")
@@ -283,37 +281,30 @@ class ContainerScraper:
                     deck = scraper.scrape()
                 except ElementClickInterceptedException:
                     _log.warning("Unable to click on a deck link with Selenium. Skipping...")
+                    already_failed_deck_urls.add(sanitized_deck_url.lower())
+                    failed_deck_urls.add(sanitized_deck_url.lower())
                     continue
                 if deck:
                     deck_name = f"{deck.name!r} deck" if deck.name else "Deck"
                     _log.info(f"{deck_name} scraped successfully")
                     decks.append(deck)
                 else:
-                    type(self)._already_failed_deck_urls.setdefault(self.url, set()).add(
-                        sanitized_deck_url)
+                    already_failed_deck_urls.add(sanitized_deck_url.lower())
+                    failed_deck_urls.add(sanitized_deck_url.lower())
 
-        return decks
+        return decks, failed_deck_urls
 
-    def _scrape(self, *already_scraped_deck_urls: str) -> list[Deck]:
+    @timed("container scraping", precision=2)
+    @backoff.on_exception(
+        backoff.expo, (ConnectionError, ReadTimeout), max_time=60)
+    def scrape(
+            self, already_scraped_deck_urls: Iterable[str],
+            already_failed_deck_urls: Iterable[str]) -> tuple[list[Deck], set[str]]:
         self._deck_urls = [url.removesuffix("/") for url in self._collect()]
         _log.info(
             f"Gathered {len(self._deck_urls)} deck URL(s) from a {self.CONTAINER_NAME} at:"
             f" {self.url!r}")
-        return self._process_decks(*already_scraped_deck_urls)
-
-    @backoff.on_exception(
-        backoff.expo, (ConnectionError, ReadTimeout), max_time=60)
-    def _scrape_with_backoff(self, *already_scraped_deck_urls: str) -> list[Deck]:
-        return self._scrape(*already_scraped_deck_urls)
-
-    @timed("container scraping", precision=2)
-    def scrape(self, *already_scraped_deck_urls: str) -> list[Deck]:
-        try:
-            return self._scrape(*already_scraped_deck_urls)
-        except (ConnectionError, ReadTimeout) as e:
-            _log.warning(
-                f"Scraping {self.CONTAINER_NAME} failed with: {e}. Re-trying with backoff...")
-            return self._scrape_with_backoff(*already_scraped_deck_urls)
+        return self._process_decks(already_scraped_deck_urls, already_failed_deck_urls)
 
     @classmethod
     def registered(cls, scraper_type: Type["ContainerScraper"]) -> Type["ContainerScraper"]:
