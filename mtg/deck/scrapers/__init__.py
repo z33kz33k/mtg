@@ -259,7 +259,8 @@ class ContainerScraper:
             self, already_scraped_deck_urls: Iterable[str],
             already_failed_deck_urls: Iterable[str]) -> tuple[list[Deck], set[str]]:
         decks = []
-        already_scraped_deck_urls = set(already_scraped_deck_urls)
+        already_scraped_deck_urls = {
+            url.removesuffix("/").lower() for url in already_scraped_deck_urls}
         already_failed_deck_urls = set(already_failed_deck_urls)
         failed_deck_urls = set()
         for i, deck_url in enumerate(self._deck_urls, start=1):

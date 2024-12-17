@@ -9,8 +9,7 @@
 """
 from mtg.scryfall import download_scryfall_bulk_data, download_scryfall_set_data
 from mtg.mtgwiki import download_creature_type_page
-from mtg.yt import update_readme_with_deck_data
-
+from mtg.yt.data import update_readme_with_deck_data
 
 if __name__ == '__main__':
     download_creature_type_page()
