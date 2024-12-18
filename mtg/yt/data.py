@@ -13,13 +13,14 @@ import logging
 from operator import attrgetter, itemgetter
 from dataclasses import dataclass
 from datetime import date, datetime
+from pathlib import Path
 from types import TracebackType
 from typing import Generator, Iterator, Type
 
 from mtg import OUTPUT_DIR, READABLE_TIMESTAMP_FORMAT, README, FILENAME_TIMESTAMP_FORMAT
 from mtg.deck.scrapers.melee import ALT_DOMAIN as MELEE_ALT_DOMAIN
 from mtg.deck.scrapers.mtgarenapro import ALT_DOMAIN as MTGARENAPRO_ALT_DOMAIN
-from mtg.utils import Counter, breadcrumbs, deserialize_dates
+from mtg.utils import Counter, breadcrumbs, deserialize_dates, serialize_dates
 from mtg.utils.files import getdir
 from mtg.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
 
@@ -327,13 +328,27 @@ def retrieve_decklist(decklist_id: str) -> str | None:
     return decklists.get(decklist_id)
 
 
-def check_decklists() -> None:
+@dataclass(frozen=True)
+class DecklistPath:
+    channel_id: str
+    video_id: str
+    decklist_id: str
+
+    def __str__(self) -> str:
+        return breadcrumbs(self.channel_id, self.video_id, self.decklist_id)
+
+    @staticmethod
+    def from_path(path: str) -> "DecklistPath":
+        return DecklistPath(*path.lstrip("/").split("/", 3))
+
+
+def check_decklists() -> dict[str, list[str]]:
     regular_ids, extended_ids = {}, {}
     for ch in load_channels():
         for v in ch.videos:
             for deck in v["decks"]:
-                path_regular = breadcrumbs(ch.id, v["id"], deck["decklist_id"])
-                path_extended = breadcrumbs(ch.id, v["id"], deck["decklist_extended_id"])
+                path_regular = DecklistPath(ch.id, v["id"], deck["decklist_id"])
+                path_extended = DecklistPath(ch.id, v["id"], deck["decklist_extended_id"])
                 regular_ids[deck["decklist_id"]] = path_regular
                 extended_ids[deck["decklist_extended_id"]] = path_extended
 
@@ -342,18 +357,13 @@ def check_decklists() -> None:
     extended_decklists = json.loads(EXTENDED_DECKLISTS_FILE.read_text(
             encoding="utf-8")) if EXTENDED_DECKLISTS_FILE.is_file() else {}
 
-    orphaned_regulars = {r for r in regular_ids if r not in regular_decklists}
-    orphaned_extendeds = {e for e in extended_ids if e not in extended_decklists}
+    regular_orphans = {r for r in regular_ids if r not in regular_decklists}
+    extended_orphans = {e for e in extended_ids if e not in extended_decklists}
 
-    if orphaned_regulars:
-        _log.warning(
-            f"Orphaned regular decklists: {sorted({regular_ids[r] for r in orphaned_regulars})}")
-    if orphaned_extendeds:
-        _log.warning(
-            f"Orphaned extended decklists: {sorted({extended_ids[e] for e in orphaned_extendeds})}")
-
-    if not orphaned_regulars and not orphaned_regulars:
-        _log.info("No orphaned decklists found")
+    return {
+        "regular_orphans": sorted({str(regular_ids[r]) for r in regular_orphans}),
+        "extended_orphans": sorted({str(extended_ids[e]) for e in extended_orphans}),
+    }
 
 
 def get_aggregate_deck_data() -> tuple[Counter, Counter]:
@@ -422,8 +432,8 @@ def _parse_channel_data_filename(filename: str) -> tuple[str, datetime]:
         timestamp.removesuffix("_channel.json"), FILENAME_TIMESTAMP_FORMAT)
 
 
-def prune_channel_data(*range_: datetime | str) -> None:
-    """Remove channel data within the specified time range.
+def remove_channel_data(*range_: datetime | str) -> None:
+    """Remove all channel data files within the specified time range.
     """
     if len(range_) == 1:
         start, end = range_[0], datetime.now()
@@ -433,13 +443,40 @@ def prune_channel_data(*range_: datetime | str) -> None:
         raise ValueError(f"Invalid range: {range_}")
 
     if isinstance(start, str):
+        start_str = start
         start = datetime.strptime(start, READABLE_TIMESTAMP_FORMAT)
+    else:
+        start_str = start.strftime(READABLE_TIMESTAMP_FORMAT)
     if isinstance(end, str):
+        end_str = end
         end = datetime.strptime(end, READABLE_TIMESTAMP_FORMAT)
+    else:
+        end_str = end.strftime(READABLE_TIMESTAMP_FORMAT)
 
+    _log.info(f"Removing channel data between {start_str} and {end_str}...")
     for channel_dir in [d for d in CHANNELS_DIR.iterdir() if d.is_dir()]:
         for file in [f for f in channel_dir.iterdir() if f.is_file()]:
             channel_id, timestamp = _parse_channel_data_filename(file.name)
             if start <= timestamp <= end:
-                _log.info(f"Pruning channel data: '{file}'...")
+                _log.info(f"Removing file: '{file}'...")
                 file.unlink()
+
+
+def prune_channel_data_file(file: Path, *video_ids: str) -> None:
+    """Prune specified videos from channel data at 'file'.
+    """
+    _log.info(f"Pruning {len(video_ids)} video(s) from '{file}'...")
+    data = json.loads(file.read_text(encoding="utf-8"), object_hook=deserialize_dates)
+    indices = []
+    for i, video in enumerate([*data["videos"]]):
+        if video["id"] in video_ids:
+            _log.info(f"Removing video data {i + 1}/{len(data['videos'])} ({video['title']!r})...")
+            del data["videos"][i]
+            indices.append(i)
+    if indices:
+        _log.info(f"Dumping pruned channel data at: '{file}'...")
+        file.write_text(
+            json.dumps(data, indent=2, ensure_ascii=False, default=serialize_dates),
+            encoding="utf-8")
+    else:
+        _log.info(f"Nothing to prune in '{file}'...")

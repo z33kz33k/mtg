@@ -117,16 +117,16 @@ descriptions).
 ### Scraped decks breakdown
 | No | Format | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | commander       | 15206 |    31.21 % |
-| 2  | standard        | 12784 |    26.24 % |
-| 3  | modern          |  3629 |     7.45 % |
-| 4  | pioneer         |  3023 |     6.20 % |
-| 5  | legacy          |  2072 |     4.25 % |
-| 6  | pauper          |  2049 |     4.21 % |
-| 7  | historic        |  1405 |     2.88 % |
-| 8  | brawl           |  1348 |     2.77 % |
+| 1  | commander       | 15206 |    31.18 % |
+| 2  | standard        | 12809 |    26.27 % |
+| 3  | modern          |  3630 |     7.44 % |
+| 4  | pioneer         |  3024 |     6.20 % |
+| 5  | legacy          |  2081 |     4.27 % |
+| 6  | pauper          |  2049 |     4.20 % |
+| 7  | historic        |  1406 |     2.88 % |
+| 8  | brawl           |  1349 |     2.77 % |
 | 9  | explorer        |  1253 |     2.57 % |
-| 10 | undefined       |  1138 |     2.34 % |
+| 10 | undefined       |  1138 |     2.33 % |
 | 11 | timeless        |  1136 |     2.33 % |
 | 12 | duel            |  1011 |     2.07 % |
 | 13 | premodern       |   514 |     1.05 % |
@@ -140,14 +140,14 @@ descriptions).
 | 21 | gladiator       |    44 |     0.09 % |
 | 22 | oldschool       |    16 |     0.03 % |
 | 23 | future          |    14 |     0.03 % |
-|  | TOTAL           | 48726 | 100.00 %|
+|  | TOTAL           | 48764 | 100.00 %|
 
 | No | Source | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | moxfield.com           | 18823 |    38.63 % |
-| 2  | arena.decklist         |  6546 |    13.43 % |
-| 3  | aetherhub.com          |  6131 |    12.58 % |
-| 4  | mtggoldfish.com        |  5338 |    10.96 % |
+| 1  | moxfield.com           | 18836 |    38.63 % |
+| 2  | arena.decklist         |  6546 |    13.42 % |
+| 3  | aetherhub.com          |  6156 |    12.62 % |
+| 4  | mtggoldfish.com        |  5338 |    10.95 % |
 | 5  | archidekt.com          |  2369 |     4.86 % |
 | 6  | tappedout.net          |  1282 |     2.63 % |
 | 7  | mtga.untapped.gg       |  1273 |     2.61 % |
@@ -176,4 +176,4 @@ descriptions).
 | 30 | app.cardboard.live     |     9 |     0.02 % |
 | 31 | old.starcitygames.com  |     2 |     0.00 % |
 | 32 | mtgotraders.com        |     1 |     0.00 % |
-|  | TOTAL                  | 48726 | 100.00 %|
+|  | TOTAL                  | 48764 | 100.00 %|

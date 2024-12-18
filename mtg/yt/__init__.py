@@ -53,6 +53,37 @@ DEAD_THRESHOLD = 2500  # days (ca. 7 yrs) - only used in gsheet to trim dead fro
 MAX_VIDEOS = 400
 
 
+@http_requests_counted("channel videos scraping")
+@timed("channel videos scraping", precision=1)
+def scrape_channel_videos(channel_id: str, *video_ids: str) -> None:
+    """Scrape specified videos of a YouTube channel. Save the scraped data as .json files.
+
+    Args:
+        channel_id: ID of a channel to scrape
+        *video_ids: IDs of videos to scrape
+    """
+    with ScrapingSession() as session:
+        total_videos, total_decks = 0, 0
+        try:
+            ch = Channel(channel_id, *session.get_failed(channel_id))
+            text = Channel.get_url_and_title(ch.id, ch.title)
+            _log.info(f"Scraping channel {text}...")
+            ch.scrape_videos(*video_ids)
+            session.update_failed(ch.id, *ch.already_failed_deck_urls)
+            if ch.data:
+                dst = getdir(CHANNELS_DIR / channel_id)
+                ch.dump(dst)
+                total_videos += len(ch.videos)
+                total_decks += len(ch.decks)
+                for deck in ch.decks:
+                    session.update_regular(deck.decklist_id, deck.decklist)
+                    session.update_extended(deck.decklist_extended_id, deck.decklist_extended)
+        except Exception as err:
+            _log.exception(f"Scraping of channel {channel_id!r} failed with: '{err}'")
+
+        _log.info(f"Scraped {total_decks} deck(s) from {total_videos} video(s)")
+
+
 @http_requests_counted("channels scraping")
 @timed("channels scraping", precision=1)
 def scrape_channels(
@@ -829,15 +860,9 @@ class Channel:
         url = CHANNEL_URL_TEMPLATE.format(channel_id)
         return f"{url!r} ({title})" if title else f"{url!r}"
 
-    @timed("channel scraping", precision=2)
-    def scrape(self, limit=10) -> None:
-        video_ids = self.get_unscraped_video_ids(limit)
-        text = self.get_url_and_title(self.id, self.title)
-        if not video_ids:
-            _log.info(f"Channel data for {text} already up to date")
-            return
-
+    def _scrape_videos(self, *video_ids: str) -> None:
         self._scrape_time = datetime.now()
+        text = self.get_url_and_title(self.id, self.title)
         _log.info(f"Scraping channel: {text}, {len(video_ids)} video(s)...")
         self._videos = []
         for i, vid in enumerate(video_ids, start=1):
@@ -857,14 +882,12 @@ class Channel:
             _log.warning(
                 "YTSP failed with TypeError. The channel is probably missing some tab and its "
                 "description and tags will be set to 'None'.")
-
         if not self._subscribers:
             self._subscribers = self.videos[0].channel_subscribers
             if self._subscribers is None:
                 self._subscribers = self._scrape_subscribers_with_selenium()
         if not self._title:
             self._title = self._scrape_title_with_selenium()
-
         self._data = ChannelData(
             id=self.id,
             title=self.title,
@@ -876,6 +899,19 @@ class Channel:
         )
         text = self.get_url_and_title(self.id, self.title)
         _log.info(f"Scraped *** {len(self.decks)} deck(s) *** in total for {text}")
+
+    @timed("channel scraping", precision=2)
+    def scrape_videos(self, *video_ids: str) -> None:
+        self._scrape_videos(*video_ids)
+
+    @timed("channel scraping", precision=2)
+    def scrape(self, limit=10) -> None:
+        video_ids = self.get_unscraped_video_ids(limit)
+        text = self.get_url_and_title(self.id, self.title)
+        if not video_ids:
+            _log.info(f"Channel data for {text} already up to date")
+            return
+        self._scrape_videos(*video_ids)
 
     def __repr__(self) -> str:
         return getrepr(
