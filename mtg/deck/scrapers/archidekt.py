@@ -11,8 +11,6 @@ import json
 import logging
 from datetime import datetime
 
-from numpy.core.defchararray import strip
-
 from mtg import Json
 from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params

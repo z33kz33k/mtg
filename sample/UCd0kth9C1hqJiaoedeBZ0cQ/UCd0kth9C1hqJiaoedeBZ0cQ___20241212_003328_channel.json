@@ -1,0 +1,100 @@
+{
+    "url": "https://www.youtube.com/@LegenVD",
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 133000,
+    "scrape_time": "2024-12-12 00:33:28",
+    "videos": [
+        {
+            "id": "Yu2dYTBP-Ro",
+            "url": "https://www.youtube.com/watch?v=Yu2dYTBP-Ro",
+            "author": "LegenVD",
+            "title": "I ultimate Liliana over 10 times in this video.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a black/green Doubling Season + Liliana deck in Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n03:30 - Match 1\n19:33 - Match 2\n27:05 - Match 3\n35:64 - Match 4\n38:24 - Match 5\n40:46 - Match 6\n43:04 - Match 7\n\nDecklist:\nhttps://aetherhub.com/Deck/doubling-lilianas\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtgfoundations #mtgfdn #mtg #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "black",
+                "combo",
+                "deck",
+                "decks",
+                "doubling season",
+                "fdn",
+                "fnd",
+                "foundations",
+                "foundations standard",
+                "gameplay",
+                "golgari",
+                "green",
+                "guide",
+                "legend",
+                "liliana",
+                "lvd",
+                "magic the gathering",
+                "midrange",
+                "mtg",
+                "mtg arena",
+                "mtg foundations",
+                "mtga",
+                "new standard",
+                "planeswalker",
+                "ramp",
+                "standard",
+                "standard deck",
+                "ultimate"
+            ],
+            "publish_time": "2024-12-11 09:00:41",
+            "views": 14099,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2024-12-11",
+                        "exports": 287,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Doubling Lilianas",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/doubling-lilianas",
+                        "views": 372
+                    },
+                    "decklist_id": "c5a68cd2-4292-def6-2455-65f0eeab1995",
+                    "decklist_extended_id": "42219371-6486-5269-6ac6-c369143ec671"
+                }
+            ]
+        }
+    ]
+}

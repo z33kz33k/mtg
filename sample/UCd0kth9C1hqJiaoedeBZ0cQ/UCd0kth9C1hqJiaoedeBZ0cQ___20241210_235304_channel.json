@@ -1,0 +1,100 @@
+{
+    "url": "https://www.youtube.com/@LegenVD",
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 133000,
+    "scrape_time": "2024-12-10 23:53:04",
+    "videos": [
+        {
+            "id": "EbTJj1DhIfE",
+            "url": "https://www.youtube.com/watch?v=EbTJj1DhIfE",
+            "author": "LegenVD",
+            "title": "The best elf card is a wolf.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a Naya Elf deck in Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n03:47 - Match 1\n09:07 - Match 2\n13:02 - Match 3\n17:05 - Match 4\n21:20 - Match 5\n25:22 - Match 6\n29:55 - Match 7\n31:00 - Match 8\n33:21 - Match 9\n35:35 - Match 10\n36:44 - Match 11\n\nDecklist:\nhttps://aetherhub.com/Deck/voja-naya-elves\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtgfoundations #mtgfdn #mtg #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "deck",
+                "decks",
+                "elf deck",
+                "fdn",
+                "fnd",
+                "foundations",
+                "foundations elves",
+                "foundations standard",
+                "gameplay",
+                "green",
+                "guide",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtg foundations",
+                "mtga",
+                "naya elves",
+                "new standard",
+                "red",
+                "standard",
+                "standard deck",
+                "standard elf deck",
+                "standard elves",
+                "voja",
+                "white",
+                "wolf"
+            ],
+            "publish_time": "2024-12-10 09:00:11",
+            "views": 10964,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2024-12-10",
+                        "exports": 142,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Voja Naya Elves",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/voja-naya-elves",
+                        "views": 268
+                    },
+                    "decklist_id": "f66efb83-3e0f-4e6c-9c79-c1bf7f8b6748",
+                    "decklist_extended_id": "7dac4ad6-b8ec-0191-3403-74ea89d62e35"
+                }
+            ]
+        }
+    ]
+}

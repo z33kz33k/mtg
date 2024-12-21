@@ -1,0 +1,100 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 133000,
+    "scrape_time": "2024-12-19 23:59:27",
+    "videos": [
+        {
+            "id": "CpfbAjb-Vn8",
+            "url": "https://www.youtube.com/watch?v=CpfbAjb-Vn8",
+            "author": "LegenVD",
+            "title": "Axing my opponents difficult questions.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a Leyline Axe deck in Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n02:19 - Match 1\n06:55 - Match 2\n10:36 - Match 3\n13:38 - Match 4\n17:10 - Match 5\n20:35 - Match 6\n28:33 - Match 7\n30:57 - Match 8\n\nDecklist:\nhttps://aetherhub.com/Deck/azorius-leyline-axe\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtgfoundations #mtgfdn #mtg #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "artifacts",
+                "blue",
+                "bunnicorn",
+                "deck",
+                "decks",
+                "fdn",
+                "fnd",
+                "foundations",
+                "foundations standard",
+                "gameplay",
+                "glyph",
+                "guide",
+                "legend",
+                "leyline axe",
+                "leyline axe deck",
+                "leyline deck",
+                "lvd",
+                "magic the gathering",
+                "mockingbird",
+                "mtg",
+                "mtg arena",
+                "mtg foundations",
+                "mtga",
+                "new standard",
+                "standard",
+                "standard deck",
+                "steel seraph",
+                "warden",
+                "white"
+            ],
+            "publish_time": "2024-12-19 09:00:11",
+            "views": 10737,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2024-12-19",
+                        "exports": 120,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Azorius Leyline Axe",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/azorius-leyline-axe",
+                        "views": 263
+                    },
+                    "decklist_id": "dbbf2254-c8ca-afab-3a14-e6346e56fc0a",
+                    "decklist_extended_id": "daeb1a53-c0a1-3e68-f9ab-2e736be50194"
+                }
+            ]
+        }
+    ]
+}

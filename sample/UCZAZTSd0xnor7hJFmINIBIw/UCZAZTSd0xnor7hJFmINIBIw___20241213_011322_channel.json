@@ -1,0 +1,50 @@
+{
+    "url": "https://www.youtube.com/@MTGGoldfish",
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 333000,
+    "scrape_time": "2024-12-13 01:13:22",
+    "videos": [
+        {
+            "id": "Dgn7JueE2zY",
+            "url": "https://www.youtube.com/watch?v=Dgn7JueE2zY",
+            "author": "MTGGoldfish",
+            "title": "Chain Veil Superfriends",
+            "description": "Back when Pioneer first came out, there was a Fires of Invention superfriends deck. Its time to revisit it with Chain Veil, Jace, Architect of Thought, and Gideon, Ally of Zendikar on Arena now!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-chain-veil-superfriends\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6793289#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/2qd8c\n◼ Purchase this deck (Magic Online): http://mtg.fish/oHSlg\n\n#MTG\n#MagicTheGathering\n#MTGO\n#MTGExplorer",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2024-12-12 08:00:04",
+            "views": 13689,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2024-12-06",
+                        "format": "explorer",
+                        "name": "Fires of Superfriends",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6793289"
+                    },
+                    "decklist_id": "18f46b5a-da23-8975-2a5d-49d0c065814d",
+                    "decklist_extended_id": "eaf2da62-f551-717c-5c24-901bf35bd566"
+                }
+            ]
+        }
+    ]
+}

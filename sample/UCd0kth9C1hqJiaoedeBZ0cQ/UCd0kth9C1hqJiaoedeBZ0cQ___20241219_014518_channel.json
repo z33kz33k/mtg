@@ -1,0 +1,99 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 133000,
+    "scrape_time": "2024-12-19 01:45:18",
+    "videos": [
+        {
+            "id": "SJLnd4HOkgo",
+            "url": "https://www.youtube.com/watch?v=SJLnd4HOkgo",
+            "author": "LegenVD",
+            "title": "Doing the Wave in Standard.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a Genesis Wave ramp deck in Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:15 - Match 1\n13:03 - Match 2\n22:52 - Match 3\n31:34 - Match 4\n36:47 - Match 5\n43:32 - Match 6\n50:26 - Match 7\n\nDecklist:\nhttps://aetherhub.com/Deck/genesis-wave-ramp\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtgfoundations #mtgfdn #mtg #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "blue",
+                "deck",
+                "decks",
+                "elves",
+                "fdn",
+                "fnd",
+                "foundations",
+                "foundations standard",
+                "gameplay",
+                "genesis wave",
+                "green",
+                "greenshell",
+                "guide",
+                "landfall",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtg foundations",
+                "mtga",
+                "new standard",
+                "ramp deck",
+                "simic",
+                "simic ramp",
+                "standard",
+                "standard deck",
+                "turtle"
+            ],
+            "publish_time": "2024-12-18 09:00:34",
+            "views": 15863,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2024-12-18",
+                        "exports": 394,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Genesis Wave Ramp",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/genesis-wave-ramp",
+                        "views": 438
+                    },
+                    "decklist_id": "8ea04d42-a076-d47f-f5a9-cb27443eba0c",
+                    "decklist_extended_id": "cc3aa18d-82dc-6994-0d8c-f0ddb8782821"
+                }
+            ]
+        }
+    ]
+}

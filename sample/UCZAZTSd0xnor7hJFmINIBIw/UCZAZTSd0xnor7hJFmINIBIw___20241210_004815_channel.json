@@ -1,0 +1,85 @@
+{
+    "url": "https://www.youtube.com/@MTGGoldfish",
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 333000,
+    "scrape_time": "2024-12-10 00:48:15",
+    "videos": [
+        {
+            "id": "RtUWuKRL-kM",
+            "url": "https://www.youtube.com/watch?v=RtUWuKRL-kM",
+            "author": "MTGGoldfish",
+            "title": "I Build-a-Bogle  $90 Budget Magic",
+            "description": "We don't get cheap hexproof creature in Standard anymore, but we can build one with the help of Toadstool Admirer by stacking up as many instances of ward on it as possible, all for just $90!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/budget-magic-build-a-bogle-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6788385#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/10Rxi\n◼ Purchase this deck (Magic Online): http://mtg.fish/9gP2i\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard\n\n\n0:00 Start\n4:46 Games",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2024-12-09 08:00:05",
+            "views": 19192,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2024-12-02",
+                        "format": "standard",
+                        "name": "Build-a-Bogle",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6788385"
+                    },
+                    "decklist_id": "d4500f6d-8ec1-ea44-eb87-58818c28e94e",
+                    "decklist_extended_id": "eeef9cec-c63a-fdff-ae0a-c218e69eb0ae"
+                }
+            ]
+        },
+        {
+            "id": "cTNAEmJb6xg",
+            "url": "https://www.youtube.com/watch?v=cTNAEmJb6xg",
+            "author": "MTGGoldfish",
+            "title": "Lifegain & Combo Enjoyers Rejoice",
+            "description": "Are you an Ajani's pridemate or life gain enjoyer? What about a Combo enjoyer? Well, gaining life is the combo in this Standard video !!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-lifegain-combo-enjoyers-rejoice\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6771674#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/d3fsw\n◼ Purchase this deck (Magic Online): http://mtg.fish/IRstF\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2024-12-09 04:21:35",
+            "views": 12447,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2024-11-23",
+                        "format": "standard",
+                        "name": "Raising Hell",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6771674"
+                    },
+                    "decklist_id": "d2aae0e4-7e1c-146a-c524-9481a45371f9",
+                    "decklist_extended_id": "fee7093d-af9d-3873-432a-defe66ae818a"
+                }
+            ]
+        }
+    ]
+}

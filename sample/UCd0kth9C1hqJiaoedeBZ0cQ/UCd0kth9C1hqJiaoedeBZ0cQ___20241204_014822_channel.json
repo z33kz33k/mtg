@@ -1,0 +1,103 @@
+{
+    "url": "https://www.youtube.com/@LegenVD",
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 132000,
+    "scrape_time": "2024-12-04 01:48:22",
+    "videos": [
+        {
+            "id": "UpXlfAIChyE",
+            "url": "https://www.youtube.com/watch?v=UpXlfAIChyE",
+            "author": "LegenVD",
+            "title": "My pet cemetery does broken things.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a graveyard combo deck, featuring Starscape Cleric, Hinterland Sanctifier and Raise the Past from Foundations in Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n03:47 - Match 1\n08:40 - Match 2\n13:21 - Match 3\n20:42 - Match 4\n25:12 - Match 5\n30:04 - Match 6\n34:40 - Match 7\n37:47 - Match 8\n\nDecklist:\nhttps://aetherhub.com/Deck/raise-the-pests\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtgfoundations #mtgfdn #mtg #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "bat",
+                "cleric",
+                "combo",
+                "combo deck",
+                "deck",
+                "decks",
+                "fdn",
+                "fnd",
+                "foundations",
+                "foundations standard",
+                "gameplay",
+                "graveyard",
+                "guide",
+                "legend",
+                "lifegain",
+                "lvd",
+                "magic the gathering",
+                "mill",
+                "mtg",
+                "mtg arena",
+                "mtg foundations",
+                "mtga",
+                "new standard",
+                "otk",
+                "rabbit",
+                "raise the past",
+                "raise the pests",
+                "sanctifier",
+                "standard",
+                "standard deck",
+                "starscape"
+            ],
+            "publish_time": "2024-12-03 09:00:33",
+            "views": 13157,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2024-12-03",
+                        "exports": 292,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Raise the Pests",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/raise-the-pests",
+                        "views": 445
+                    },
+                    "decklist_id": "aa12269e-0ecd-26bd-0964-b278d41a51f4",
+                    "decklist_extended_id": "7583e702-1821-c2d0-ba58-2cf1b17cb8bf"
+                }
+            ]
+        }
+    ]
+}

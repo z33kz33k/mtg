@@ -424,7 +424,7 @@ def get_duplicates() -> list[str]:
     return duplicates
 
 
-def _parse_channel_data_filename(filename: str) -> tuple[str, datetime]:
+def parse_channel_data_filename(filename: str) -> tuple[str, datetime]:
     if not filename.endswith("_channel.json") or "___" not in filename:
         raise ValueError(f"Not a channel data filename: {filename!r}")
     channel_id, timestamp = filename.split("___", maxsplit=1)
@@ -456,7 +456,7 @@ def remove_channel_data(*range_: datetime | str) -> None:
     _log.info(f"Removing channel data between {start_str} and {end_str}...")
     for channel_dir in [d for d in CHANNELS_DIR.iterdir() if d.is_dir()]:
         for file in [f for f in channel_dir.iterdir() if f.is_file()]:
-            channel_id, timestamp = _parse_channel_data_filename(file.name)
+            channel_id, timestamp = parse_channel_data_filename(file.name)
             if start <= timestamp <= end:
                 _log.info(f"Removing file: '{file}'...")
                 file.unlink()

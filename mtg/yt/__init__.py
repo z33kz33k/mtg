@@ -594,11 +594,12 @@ class Video:
         if not self.keywords:
             return None
         # identify title parts that are also parts of keywords
-        unwanted = {"mtg", "#mtg", "magic", "#magic"}
+        kw_unwanted = {"mtg", "#mtg", "magic", "#magic"}
         kw_soup = {w.lower().lstrip("#") for kw in self.keywords for w in kw.strip().split()
-                   if w.lower() not in unwanted}
+                   if w.lower() not in kw_unwanted}
         indices = []
-        title_words = [w for w in self.title.strip().split()]
+        title_unwanted = {"gameplay"}
+        title_words = [w for w in self.title.strip().split() if w.lower() not in title_unwanted]
         for i, word in enumerate([tw.lower() for tw in title_words]):
             if word in kw_soup:
                 indices.append(i)

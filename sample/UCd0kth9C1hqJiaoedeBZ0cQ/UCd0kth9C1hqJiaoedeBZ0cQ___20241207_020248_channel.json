@@ -1,0 +1,99 @@
+{
+    "url": "https://www.youtube.com/@LegenVD",
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 132000,
+    "scrape_time": "2024-12-07 02:02:48",
+    "videos": [
+        {
+            "id": "Qex-mflbjwA",
+            "url": "https://www.youtube.com/watch?v=Qex-mflbjwA",
+            "author": "LegenVD",
+            "title": "Niv-Mizzet and Bring to Light reunited.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a five color Niv-Mizzet Bring to Light deck in Explorer. \n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:42 - Match 1\n12:52 - Match 2\n20:51 - Match 3\n24:42 - Match 4\n30:20 - Match 5\n35:13 - Match 6\n44:14 - Match 7\n\nDecklist:\nhttps://aetherhub.com/Deck/niv-mizzet-bring-to-light\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtg #magicthegathering",
+            "keywords": [
+                "black",
+                "blue",
+                "bring to light",
+                "caryatid",
+                "converge",
+                "deck",
+                "decks",
+                "domain",
+                "enigmatic pioneer",
+                "explorer",
+                "five color",
+                "gameplay",
+                "green",
+                "guide",
+                "legend",
+                "leyline",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "niv mizzet",
+                "niv to light",
+                "pioneer",
+                "pioneer deck",
+                "pioneer masters",
+                "reborn",
+                "white"
+            ],
+            "publish_time": "2024-12-06 09:00:33",
+            "views": 11386,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2024-12-06",
+                        "exports": 28,
+                        "format": "explorer",
+                        "mode": "Bo1",
+                        "name": "Niv Mizzet Bring to Light",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/niv-mizzet-bring-to-light",
+                        "views": 119
+                    },
+                    "decklist_id": "53565bb1-91ff-9aba-6812-d4fadb47eea5",
+                    "decklist_extended_id": "b5e9ced2-3e0c-da50-643b-a2ce14ec5c68"
+                }
+            ]
+        }
+    ]
+}

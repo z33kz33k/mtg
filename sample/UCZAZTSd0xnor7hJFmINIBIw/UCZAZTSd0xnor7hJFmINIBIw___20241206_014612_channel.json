@@ -1,0 +1,50 @@
+{
+    "url": "https://www.youtube.com/@MTGGoldfish",
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 333000,
+    "scrape_time": "2024-12-06 01:46:12",
+    "videos": [
+        {
+            "id": "sxa3Oc9IAvg",
+            "url": "https://www.youtube.com/watch?v=sxa3Oc9IAvg",
+            "author": "MTGGoldfish",
+            "title": "Winter Loves Punishing Draws",
+            "description": "Owling Mine was an old archetype but it's back in standard and with way more efficient draw punishers thanks to Scrawling Trawler and Winter! If you're also a Nekusar commander player, you'll love this!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-winter-loves-punishing-draws\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6771458#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/ltg1H\n◼ Purchase this deck (Magic Online): http://mtg.fish/vdOYK\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2024-12-05 08:00:04",
+            "views": 11256,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2024-11-23",
+                        "format": "standard",
+                        "name": "Owling Mine 2k24",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6771458"
+                    },
+                    "decklist_id": "9f179cde-c863-1ba5-28ab-bc886425174c",
+                    "decklist_extended_id": "a108d5a5-85bc-c589-862a-8f4135dc60e8"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,49 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 334000,
+    "scrape_time": "2024-12-20 00:02:10",
+    "videos": [
+        {
+            "id": "btDFPYXgH7A",
+            "url": "https://www.youtube.com/watch?v=btDFPYXgH7A",
+            "author": "MTGGoldfish",
+            "title": "Death Digletts Needed Zetalpa",
+            "description": "The Urborg Scavengers (aka Death Digletts) might've given Zetalpa it's first chance of being semi playable! It's a keyword soup playstyle reminiscent of Soulflayer.\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkigndom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-death-digletts-needed-zetalpa\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6789337#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/qLlyB\n◼ Purchase this deck (Magic Online): http://mtg.fish/uLFCq\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2024-12-19 08:00:07",
+            "views": 7665,
+            "sources": [
+                "mtg.fish",
+                "www.cardkigndom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2024-12-02",
+                        "format": "standard",
+                        "name": "Death Digletts",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6789337"
+                    },
+                    "decklist_id": "8457b034-2ded-2f95-2dc0-a63e98dd3cd9",
+                    "decklist_extended_id": "3ce6c9e3-b98a-9dfa-10da-3df978355b67"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,84 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 333000,
+    "scrape_time": "2024-12-17 22:00:12",
+    "videos": [
+        {
+            "id": "b1hLIf8DZOI",
+            "url": "https://www.youtube.com/watch?v=b1hLIf8DZOI",
+            "author": "MTGGoldfish",
+            "title": "Leyline Axe is a Balanced Embercleave",
+            "description": "Embercleave was absurdly busted so Leyline Axe is a more balanced version! Is Embercleave's little brother good enough to bring Boros equipments into Standard?.... probably not...but it is fun.\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-leyline-axe-is-a-balanced-embercleave\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6789264#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/92jtV\n◼ Purchase this deck (Magic Online): http://mtg.fish/ePD5y\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2024-12-17 08:00:08",
+            "views": 10124,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2024-12-02",
+                        "format": "standard",
+                        "name": "Leyline Equip",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6789264"
+                    },
+                    "decklist_id": "d8b0c68d-cc0b-5196-cb61-ffdf765584e5",
+                    "decklist_extended_id": "3e0e2884-12b0-5abb-e8fc-10f36df83a3e"
+                }
+            ]
+        },
+        {
+            "id": "EbXhjRkSRDI",
+            "url": "https://www.youtube.com/watch?v=EbXhjRkSRDI",
+            "author": "MTGGoldfish",
+            "title": "Can We Kill on Turn Two with a Four Rare Budget?  $40 Budget Magic",
+            "description": "Pioneer Masters is finally on Magic Arena. Looking to check out the format? Well here's a deck that costs just four rares and can pick up a ton of wins: Mono-Red Leyline!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/budget-magic-four-rare-40-mono-red-leyline-pioneer\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6802187#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/BqSv2\n◼ Purchase this deck (Magic Online): http://mtg.fish/VySne\n\n#MTG\n#MagicTheGathering\n#MTGO\n#MTGPioneer\n\n0:00 Start\n4:03 Games",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2024-12-16 08:00:09",
+            "views": 30061,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2024-12-11",
+                        "format": "pioneer",
+                        "name": "Mono-Red Leyline",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6802187"
+                    },
+                    "decklist_id": "ffad038b-c28d-42db-bd23-b45cccada22a",
+                    "decklist_extended_id": "dfd556e0-49d5-07dd-d57e-3b4a5192c562"
+                }
+            ]
+        }
+    ]
+}
