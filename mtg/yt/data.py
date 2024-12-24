@@ -13,15 +13,14 @@ import logging
 from operator import attrgetter, itemgetter
 from dataclasses import dataclass
 from datetime import date, datetime
-from pathlib import Path
 from types import TracebackType
 from typing import Generator, Iterator, Type
 
-from mtg import OUTPUT_DIR, READABLE_TIMESTAMP_FORMAT, README, FILENAME_TIMESTAMP_FORMAT
+from mtg import OUTPUT_DIR, READABLE_TIMESTAMP_FORMAT, README, FILENAME_TIMESTAMP_FORMAT, PathLike
 from mtg.deck.scrapers.melee import ALT_DOMAIN as MELEE_ALT_DOMAIN
 from mtg.deck.scrapers.mtgarenapro import ALT_DOMAIN as MTGARENAPRO_ALT_DOMAIN
 from mtg.utils import Counter, breadcrumbs, deserialize_dates, serialize_dates
-from mtg.utils.files import getdir
+from mtg.utils.files import getdir, getfile
 from mtg.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
 
 _log = logging.getLogger(__name__)
@@ -343,6 +342,14 @@ class DecklistPath:
 
 
 def check_decklists() -> dict[str, list[str]]:
+    """Check the scraped channels data for any decklists missing in the global decklist
+    repositories.
+
+    Returns:
+        A dictionary of string paths pointing to the orphaned decklists (both in regular and
+        extended form) in the channel data.
+
+    """
     regular_ids, extended_ids = {}, {}
     for ch in load_channels():
         for v in ch.videos:
@@ -468,17 +475,21 @@ def remove_channel_data(*range_: datetime | str) -> None:
                 file.unlink()
 
 
-def prune_channel_data_file(file: Path, *video_ids: str) -> None:
+def prune_channel_data_file(file: PathLike, *video_ids: str) -> None:
     """Prune specified videos from channel data at 'file'.
     """
+    file = getfile(file)
     _log.info(f"Pruning {len(video_ids)} video(s) from '{file}'...")
     data = json.loads(file.read_text(encoding="utf-8"), object_hook=deserialize_dates)
-    indices = []
-    for i, video in enumerate([*data["videos"]]):
+    videos = data["videos"]
+    data["videos"], indices = [], []
+    for i, video in enumerate(videos):
         if video["id"] in video_ids:
-            _log.info(f"Removing video data {i + 1}/{len(data['videos'])} ({video['title']!r})...")
-            del data["videos"][i]
+            _log.info(f"Removing video data {i + 1}/{len(videos)} ({video['title']!r})...")
             indices.append(i)
+        else:
+            data["videos"].append(video)
+
     if indices:
         _log.info(f"Dumping pruned channel data at: '{file}'...")
         file.write_text(
@@ -486,3 +497,20 @@ def prune_channel_data_file(file: Path, *video_ids: str) -> None:
             encoding="utf-8")
     else:
         _log.info(f"Nothing to prune in '{file}'...")
+
+
+def find_channel_files(channel_id: str, *video_ids: str) -> list[str]:
+    """Find channel data files containing specified videos.
+    """
+    video_ids = set(video_ids)
+    channel_dir = getdir(CHANNELS_DIR / channel_id)
+    _log.info(f"Loading channel data from: '{channel_dir}'...")
+    files = [f for f in channel_dir.iterdir() if f.is_file() and f.suffix.lower() == ".json"]
+    if not files:
+        raise FileNotFoundError(f"No channel files found at: '{channel_dir}'")
+    filtered = []
+    for file in files:
+        data = json.loads(file.read_text(encoding="utf-8"), object_hook=deserialize_dates)
+        if any(video["id"] in video_ids for video in data["videos"]):
+            filtered.append(file.as_posix())
+    return filtered

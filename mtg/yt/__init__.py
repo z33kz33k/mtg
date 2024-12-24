@@ -43,7 +43,8 @@ from mtg.utils.scrape import ScrapingError, extract_source, extract_url, \
     get_dynamic_soup, getsoup, http_requests_counted, throttle_with_countdown, throttled, \
     timed_request, unshorten
 from mtg.yt.data import CHANNELS_DIR, CHANNEL_URL_TEMPLATE, ChannelData, ScrapingSession, \
-    load_channel, load_channels, retrieve_ids, DecklistPath
+    check_decklists, find_channel_files, load_channel, load_channels, prune_channel_data_file, \
+    retrieve_ids, DecklistPath
 
 _log = logging.getLogger(__name__)
 
@@ -60,13 +61,25 @@ def get_channel_id(url: str) -> str:
     return tag.attrs["href"].removeprefix(prefix)
 
 
-def rescrape(*decklist_paths: str) -> None:
-    pass
+def rescrape_missing_decklists() -> None:
+    decklist_paths = {p for lst in check_decklists().values() for p in lst}
+    channels = defaultdict(set)
+    for path in [DecklistPath.from_path(p) for p in decklist_paths]:
+        channels[path.channel_id].add(path.video_id)
+
+    for i, (channel_id, video_ids) in enumerate(channels.items(), start=1):
+        _log.info(f"Re-scraping {i}/{len(channels)} channel for missing decklists data...")
+        files = find_channel_files(channel_id, *video_ids)
+        if scrape_channel_videos(channel_id, *video_ids):
+            for f in files:
+                prune_channel_data_file(f, *video_ids)
+    else:
+        _log.info("No videos found that needed re-scraping")
 
 
 @http_requests_counted("channel videos scraping")
 @timed("channel videos scraping", precision=1)
-def scrape_channel_videos(channel_id: str, *video_ids: str) -> None:
+def scrape_channel_videos(channel_id: str, *video_ids: str) -> bool:
     """Scrape specified videos of a YouTube channel. Save the scraped data as .json files.
 
     Args:
@@ -76,9 +89,10 @@ def scrape_channel_videos(channel_id: str, *video_ids: str) -> None:
     with ScrapingSession() as session:
         total_videos, total_decks = 0, 0
         try:
-            ch = Channel(channel_id, *session.get_failed(channel_id))
+            ch = Channel(
+                channel_id, *session.get_failed(channel_id), skip_earlier_scraped_deck_urls=False)
             text = Channel.get_url_and_title(ch.id, ch.title)
-            _log.info(f"Scraping channel {text}...")
+            _log.info(f"Scraping {len(video_ids)} video(s) from channel {text}...")
             ch.scrape_videos(*video_ids)
             session.update_failed(ch.id, *ch.already_failed_deck_urls)
             if ch.data:
@@ -91,8 +105,10 @@ def scrape_channel_videos(channel_id: str, *video_ids: str) -> None:
                     session.update_extended(deck.decklist_extended_id, deck.decklist_extended)
         except Exception as err:
             _log.exception(f"Scraping of channel {channel_id!r} failed with: '{err}'")
+            return False
 
         _log.info(f"Scraped {total_decks} deck(s) from {total_videos} video(s)")
+    return True
 
 
 @http_requests_counted("channels scraping")
@@ -818,7 +834,7 @@ class Channel:
 
     def __init__(
             self, channel_id: str, *already_failed_deck_urls: str,
-            only_earlier_than_last_scraped=True) -> None:
+            only_earlier_than_last_scraped=True, skip_earlier_scraped_deck_urls=True) -> None:
         self._id, self._already_failed_deck_urls = channel_id, set(already_failed_deck_urls)
         self._only_earlier_than_last = only_earlier_than_last_scraped
         self._title, self._description, self._tags = None, None, None
@@ -827,7 +843,8 @@ class Channel:
         try:
             self._earlier_data = load_channel(self.id)
             self._title = self._earlier_data.title
-            self._already_scraped_deck_urls = {*self._earlier_data.deck_urls}
+            self._already_scraped_deck_urls = {
+                *self._earlier_data.deck_urls} if skip_earlier_scraped_deck_urls else set()
         except FileNotFoundError:
             self._earlier_data = None
             self._already_scraped_deck_urls = set()
