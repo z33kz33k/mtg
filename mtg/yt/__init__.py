@@ -43,7 +43,7 @@ from mtg.utils.scrape import ScrapingError, extract_source, extract_url, \
     get_dynamic_soup, getsoup, http_requests_counted, throttle_with_countdown, throttled, \
     timed_request, unshorten
 from mtg.yt.data import CHANNELS_DIR, CHANNEL_URL_TEMPLATE, ChannelData, ScrapingSession, \
-    load_channel, load_channels, retrieve_ids
+    load_channel, load_channels, retrieve_ids, DecklistPath
 
 _log = logging.getLogger(__name__)
 
@@ -51,6 +51,17 @@ _log = logging.getLogger(__name__)
 GOOGLE_API_KEY = Path("scraping_api_key.txt").read_text(encoding="utf-8")  # not used anywhere
 DEAD_THRESHOLD = 2500  # days (ca. 7 yrs) - only used in gsheet to trim dead from abandoned
 MAX_VIDEOS = 400
+
+
+def get_channel_id(url: str) -> str:
+    soup = getsoup(url)
+    prefix = CHANNEL_URL_TEMPLATE[:-2]
+    tag = soup.find("link", rel="canonical")
+    return tag.attrs["href"].removeprefix(prefix)
+
+
+def rescrape(*decklist_paths: str) -> None:
+    pass
 
 
 @http_requests_counted("channel videos scraping")
@@ -751,7 +762,6 @@ class Video:
         dst.write_text(self.json, encoding="utf-8")
 
 
-
 class Channel:
     """YouTube channel showcasing MtG decks.
     """
@@ -993,10 +1003,4 @@ class Channel:
         _log.info(f"Exporting channel to: '{dst}'...")
         dst.write_text(self.json, encoding="utf-8")
 
-
-def get_channel_id(url: str) -> str:
-    soup = getsoup(url)
-    prefix = CHANNEL_URL_TEMPLATE[:-2]
-    tag = soup.find("link", rel="canonical")
-    return tag.attrs["href"].removeprefix(prefix)
 

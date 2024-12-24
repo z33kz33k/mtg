@@ -434,6 +434,12 @@ def parse_channel_data_filename(filename: str) -> tuple[str, datetime]:
 
 def remove_channel_data(*range_: datetime | str) -> None:
     """Remove all channel data files within the specified time range.
+
+    Range can be expressed as datime, or equivalent string(s) (in "%Y-%m-%d %H:%M:%S" format).
+    An omitted end time defaults to now.
+
+    Args:
+        range_: start (and, optionally, end) of the time range
     """
     if len(range_) == 1:
         start, end = range_[0], datetime.now()

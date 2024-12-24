@@ -13,7 +13,7 @@ from typing import Iterable, Optional, Type
 
 import backoff
 from bs4 import BeautifulSoup
-from requests import ConnectionError, ReadTimeout
+from requests import ConnectionError, ReadTimeout, HTTPError
 from selenium.common.exceptions import ElementClickInterceptedException
 
 from mtg import Json
@@ -143,7 +143,9 @@ class DeckScraper(DeckParser):
             self._maindeck, self._sideboard, self._commander, self._partner_commander,
             self._companion, self._metadata)
 
-    def _scrape(
+    @backoff.on_exception(
+        backoff.expo, (ConnectionError, HTTPError, ReadTimeout), max_time=60)
+    def scrape(
             self, throttled=False, suppress_parsing_errors=True, suppress_scraping_errors=True,
             suppress_invalid_deck=True) -> Deck | None:
         if throttled:
@@ -172,35 +174,6 @@ class DeckScraper(DeckParser):
                 raise err
             _log.warning(f"Scraping failed with: {err}")
             return None
-
-    @backoff.on_exception(  # TODO: see if more errors should be such handled
-        backoff.expo, (ConnectionError, ReadTimeout), max_time=60)
-    def _scrape_with_backoff(
-            self, throttled=False, suppress_parsing_errors=True, suppress_scraping_errors=True,
-            suppress_invalid_deck=True) -> Deck | None:
-        return self._scrape(
-            throttled=throttled, suppress_parsing_errors=suppress_parsing_errors,
-            suppress_scraping_errors=suppress_scraping_errors,
-            suppress_invalid_deck=suppress_invalid_deck)
-
-    def scrape(
-            self, throttled=False, suppress_parsing_errors=True, suppress_scraping_errors=True,
-            suppress_invalid_deck=True) -> Deck | None:
-        try:
-            return self._scrape(
-                throttled=throttled,
-                suppress_parsing_errors=suppress_parsing_errors,
-                suppress_scraping_errors=suppress_scraping_errors,
-                suppress_invalid_deck=suppress_invalid_deck
-            )
-        except (ConnectionError, ReadTimeout) as e:
-            _log.warning(f"Scraping failed with: {e}. Re-trying with backoff...")
-            return self._scrape_with_backoff(
-                throttled=throttled,
-                suppress_parsing_errors=suppress_parsing_errors,
-                suppress_scraping_errors=suppress_scraping_errors,
-                suppress_invalid_deck=suppress_invalid_deck
-            )
 
     @classmethod
     def registered(cls, scraper_type: Type["DeckScraper"]) -> Type["DeckScraper"]:
@@ -297,7 +270,7 @@ class ContainerScraper:
 
     @timed("container scraping", precision=2)
     @backoff.on_exception(
-        backoff.expo, (ConnectionError, ReadTimeout), max_time=60)
+        backoff.expo, (ConnectionError, HTTPError, ReadTimeout), max_time=60)
     def scrape(
             self, already_scraped_deck_urls: Iterable[str] = (),
             already_failed_deck_urls: Iterable[str] = ()) -> tuple[list[Deck], set[str]]:
