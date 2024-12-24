@@ -1,0 +1,49 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 334000,
+    "scrape_time": "2024-12-23 02:09:41",
+    "videos": [
+        {
+            "id": "rzz775JbgzM",
+            "url": "https://www.youtube.com/watch?v=rzz775JbgzM",
+            "author": "MTGGoldfish",
+            "title": "I Take Their Turn, Every Turn  Brewer's Kitchen",
+            "description": "Brewer's Kitchen makes their opponents watch while he plays their decks for them\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/i-take-their-turn-every-turn-brewer-s-kitchen\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6807527#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/pPkmu\n◼ Purchase this deck (Magic Online): http://mtg.fish/ZJFVd\n\n#MTG\n#MagicTheGathering\n#MTGO\n#MTGTimeless",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2024-12-22 08:00:02",
+            "views": 28152,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "Brewer's Kitchen",
+                        "date": "2024-12-15",
+                        "format": "timeless",
+                        "name": "Hypnosis.dek",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6807527"
+                    },
+                    "decklist_id": "5251e507-8196-c8b5-3c8a-b3c66f3c757e",
+                    "decklist_extended_id": "0e87f90b-e41a-bfcb-552d-d010e4f0881a"
+                }
+            ]
+        }
+    ]
+}

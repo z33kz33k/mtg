@@ -1,0 +1,1873 @@
+{
+    "id": "UC-UZjHl2kZ-6XKBLgbFgGAQ",
+    "title": "CovertGoBlue",
+    "description": "The One in Best-of-One\n\n",
+    "tags": [
+        "covertgo",
+        "magic the gathering",
+        "mtg",
+        "mtg arena",
+        "mtga"
+    ],
+    "subscribers": 233000,
+    "scrape_time": "2024-12-25 00:08:49",
+    "videos": [
+        {
+            "id": "2vjT9N-SlrM",
+            "url": "https://www.youtube.com/watch?v=2vjT9N-SlrM",
+            "author": "CovertGoBlue",
+            "title": "Arena can't handle this puppy",
+            "description": "Phelia, Exuberant Shepherd blink deck tech for Magic: The Gathering Arena Brawl format.\nDecklist - https://www.moxfield.com/decks/8sevticki0OXcrwa2_d9KQ\nJoin the Discord - https://discord.gg/MXt3DEP\nCheck out Ultimate Guard -  https://tinyurl.com/UGCGB\n\nSponsors\n\nCoolStuffInc.com Promo Code CGB5 - https://www.coolstuffinc.com/cgb\nUltimate Guard - https://tinyurl.com/UGCGB\nDripShop.live - https://join.dripshop.live/CovertGoBlue\nMoxfield - https://www.moxfield.com/users/CovertGoBlue\n\nDiscord - https://discord.gg/MXt3DEP\nInstagram - https://www.instagram.com/covertgoblue/\n\nCredits\n\nWritten and performed by Daniel Wagner, aka CovertGoBlue\nEdited by @libmae_\nLogo design by HolyMTG - HolyMTG@gmail.com Twitter @HolyMTG\n© CovertGoBlue Entertainment, LLC\n\n#cgb #mtgarena #mtgbrawl",
+            "keywords": [
+                "Best Deck",
+                "Best MTG Deck",
+                "CGB",
+                "CGB Deck",
+                "CGB Magic the Gathering",
+                "Covert Go",
+                "Covert Go Blue",
+                "Covert Go MTG",
+                "CovertGoBlue",
+                "Deck",
+                "Gameplay",
+                "MTG Cards",
+                "MTG Deck",
+                "Mythic",
+                "New Cards",
+                "New Deck",
+                "blb mtg arena",
+                "covertgo",
+                "covertgo mtg",
+                "deck",
+                "decks",
+                "dsk cards",
+                "dsk mtg",
+                "duskmourn",
+                "duskmourn standard",
+                "fdn cards",
+                "fdn mtg",
+                "foundations",
+                "gameplay",
+                "guide",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtg arena new set",
+                "mtg foundations",
+                "mtga",
+                "new cards",
+                "rakdos",
+                "rakdos sacrifice",
+                "red black deck",
+                "sacrifice deck"
+            ],
+            "publish_time": "2024-12-01 21:00:03",
+            "views": 28625,
+            "sources": [
+                "discord.gg",
+                "join.dripshop.live",
+                "tinyurl.com",
+                "ultimateguard.com",
+                "www.coolstuffinc.com",
+                "www.instagram.com",
+                "www.moxfield.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-09-29",
+                        "format": "standard",
+                        "likes": 4,
+                        "name": "Boros Auras",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/MxBilBH01UKVPfKEYbHJPw",
+                        "views": 5969
+                    },
+                    "decklist_id": "2062176d-4373-3942-4f37-2343e8ac971d",
+                    "decklist_extended_id": "dd8ddf27-fb1a-64fe-82ee-9eecfb4a412f"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-09-24",
+                        "format": "standard",
+                        "likes": 10,
+                        "name": "original obvious 5 head deck",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/RSMBUe5NBEu8-U6LZj1Mbw",
+                        "views": 8002
+                    },
+                    "decklist_id": "a4498051-a38a-f403-dfef-d2b3b64f1c15",
+                    "decklist_extended_id": "649bcfb5-3fc0-6904-d2ff-8d511aebad34"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-11-19",
+                        "format": "standard",
+                        "likes": 3,
+                        "name": "Burn | Foundations Standard",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/xcUqMEife0WrC-ZyTBob5g",
+                        "views": 3472
+                    },
+                    "decklist_id": "58e27c60-ae5c-7d83-2f32-4cc2f83e2675",
+                    "decklist_extended_id": "a983986a-190e-6d07-a963-0a0d4b3836b0"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-11-05",
+                        "irregular_format": "none",
+                        "likes": 1,
+                        "name": "rg prowess",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/-BTuv1UzJ0uoF-QHkGUdsg",
+                        "views": 1429
+                    },
+                    "decklist_id": "2061e3f8-e93d-a950-5b61-4f5a888abb06",
+                    "decklist_extended_id": "0ebb67dd-31f4-498d-aec4-a6d2cf849c6d"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-11-29",
+                        "format": "standard",
+                        "likes": 2,
+                        "name": "rakdos sacrifice | Foundations Standard",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/SW7K6ErL90SscJYtEFRYOQ",
+                        "views": 3712
+                    },
+                    "decklist_id": "37355372-3b00-fde0-0a10-f40792b88f7a",
+                    "decklist_extended_id": "c23c1cca-2a0a-b1c2-fb44-db4118d4055a"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-09-30",
+                        "format": "standard",
+                        "likes": 1,
+                        "name": "RG leyline",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/Vr_FSyQj8Eug7CiRs2EATQ",
+                        "views": 3684
+                    },
+                    "decklist_id": "cc57b99a-be68-1607-b76d-fc816c5ba6de",
+                    "decklist_extended_id": "c0b845fa-96bd-fc06-c139-dd6078dbb1f8"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-31",
+                        "irregular_format": "none",
+                        "likes": 2,
+                        "name": "Honest Mono Red | Standard",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/zhCBth2WREaMMYxP_VbSlQ",
+                        "views": 2598
+                    },
+                    "decklist_id": "caf71ff7-ab00-5f89-8ad8-a2c63a353e7c",
+                    "decklist_extended_id": "e97c2469-d05b-74a2-1444-ec230cac4c37"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-09-07",
+                        "format": "brawl",
+                        "likes": 1,
+                        "name": "Adeliz, the Cinder Wind MTG Arena Brawl Precon Deck (unedited)",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/DrWIXqZAp0WP-4dO4mSZ4Q",
+                        "views": 559
+                    },
+                    "decklist_id": "70ee6988-653a-a446-2407-5072c624e24a",
+                    "decklist_extended_id": "612f4eb5-7b86-30cd-cf8a-93e4f3f20739"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-11-05",
+                        "irregular_format": "none",
+                        "likes": 2,
+                        "name": "jeskai convoke",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/hTlKcwciTESGJLAbUU2fug",
+                        "views": 851
+                    },
+                    "decklist_id": "b14fd4c2-eeec-0add-1698-bf0c3fcfdbb9",
+                    "decklist_extended_id": "8cefd95a-60f7-d1be-4435-8908fd11ca19"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-16",
+                        "format": "standard",
+                        "likes": 6,
+                        "name": "Dimir Kaito Curiousity",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/Tezv9gsXvkK6lsi6eDqgsQ",
+                        "views": 3541
+                    },
+                    "decklist_id": "5b4b5a41-6185-3dec-36c6-68a428c539e2",
+                    "decklist_extended_id": "8025be23-47af-8908-df4d-0b31c2136c63"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-12-02",
+                        "format": "standard",
+                        "likes": 1,
+                        "name": "Mono White Blink | Foundations Standard",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/SQOaiu7Dy0m19l8oZbZMzA",
+                        "views": 1132
+                    },
+                    "decklist_id": "eb17ce0e-d441-aacb-923b-9e60aee1458e",
+                    "decklist_extended_id": "62cb4dcd-bfe6-6ff4-a00b-1430ec2304ae"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-07",
+                        "format": "standard",
+                        "likes": 4,
+                        "name": "MTGA eyeball pile",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/zNPMqVCk-0en926fo9JPhA",
+                        "views": 1829
+                    },
+                    "decklist_id": "308b99db-f82d-8a42-28e9-5409af974bd1",
+                    "decklist_extended_id": "a099733f-b8ce-15a5-b39b-c8e8e1df040d"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-09-03",
+                        "format": "standard",
+                        "likes": 4,
+                        "name": "BW Pixie",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/T5QVJSN9EUOGHuRDwZMHrQ",
+                        "views": 4735
+                    },
+                    "decklist_id": "5d375cb8-3da5-986f-4baf-34641a1dc24d",
+                    "decklist_extended_id": "45c9240f-5506-dd02-2f3d-f6dcc1fb4bc5"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-09-09",
+                        "format": "standard",
+                        "likes": 3,
+                        "name": "dimir midrange",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/Hoa0ukZwr0WekJk7dapNBQ",
+                        "views": 4083
+                    },
+                    "decklist_id": "db984ad2-768d-b8c7-24bf-5e56ef1d58c0",
+                    "decklist_extended_id": "b5f24590-817a-4ab0-1d2e-a62167ecacc8"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-21",
+                        "format": "standard",
+                        "likes": 1,
+                        "name": "dimir poison",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/OjbT2Rh5kkSmbTSr-eCRDA",
+                        "views": 3866
+                    },
+                    "decklist_id": "052e285a-e8e8-1d95-881a-07ef47e5c1dd",
+                    "decklist_extended_id": "b95e905e-2fd1-cee2-b24e-f005d03ea205"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-12-08",
+                        "format": "brawl",
+                        "likes": 1,
+                        "name": "Yawgmoth Brawl FDN update",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/cAxeAtJOGESxQTC_cJKOGQ",
+                        "views": 649
+                    },
+                    "decklist_id": "15cc5377-1bcc-8c0c-de60-c521d5c74e2f",
+                    "decklist_extended_id": "e524a13f-70ab-49d6-ff91-6d48909b70e4"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-12-09",
+                        "format": "standard",
+                        "likes": 1,
+                        "name": "Top 8 challenge GW Aggro",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/8NRFHV2QPki8sQ1YiVoG4A",
+                        "views": 1674
+                    },
+                    "decklist_id": "e7a13795-3734-f95b-be18-a12dae1916ef",
+                    "decklist_extended_id": "5501cb43-4d7e-b1ff-ad0a-110b97bb40b3"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-11-05",
+                        "irregular_format": "none",
+                        "likes": 3,
+                        "name": "temur prowess",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/XEfs8s20HkS-XdF0fO23Mw",
+                        "views": 2528
+                    },
+                    "decklist_id": "43bc318d-cc6f-cba5-c9ee-36cc5d8fccce",
+                    "decklist_extended_id": "c6ff7a6b-d08f-857a-42b9-cf6fff15a465"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-09-10",
+                        "format": "standard",
+                        "likes": 2,
+                        "name": "Mono Blue BLB",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/eXkChdwAL0aJH49OGCXxlw",
+                        "views": 4686
+                    },
+                    "decklist_id": "e47cd544-542a-84b8-537d-5522942e3064",
+                    "decklist_extended_id": "3686f089-9138-a792-fe0f-315158192b54"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-09-05",
+                        "format": "standard",
+                        "likes": 2,
+                        "name": "golgari lands",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/B9FMftldGUSRhCUL_q2MCg",
+                        "views": 2994
+                    },
+                    "decklist_id": "448ba273-42a1-743e-86ab-a9f90d32dc5b",
+                    "decklist_extended_id": "bc15d7bb-2afc-a9cf-bd4f-960916a05352"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-09-10",
+                        "format": "standard",
+                        "likes": 0,
+                        "name": "Jund Mill",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/SftM1eTN3kSx0aUJ-J6E5w",
+                        "views": 1449
+                    },
+                    "decklist_id": "3a6fbcdb-c5ae-3b99-b3a4-dc613c7a5683",
+                    "decklist_extended_id": "882bff68-09db-bad2-30d6-201adac8542a"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-09-06",
+                        "format": "brawl",
+                        "likes": 3,
+                        "name": "zada upgraded",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/uAALhH1wpkORzMWZimVxVQ",
+                        "views": 1022
+                    },
+                    "decklist_id": "68343324-1144-7622-5144-625c10a4b48f",
+                    "decklist_extended_id": "86c0f1c5-4b31-7cf8-aaa7-b298844e6865"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-30",
+                        "format": "standard",
+                        "likes": 3,
+                        "name": "Kai Budde Dimir Tempo Standard Worlds",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/6QdIuU3VjEOAxDMIEH97HQ",
+                        "views": 3223
+                    },
+                    "decklist_id": "0604324e-3161-6436-cfbc-a1a39a931c81",
+                    "decklist_extended_id": "20ed6c2e-2f96-c524-f583-0bf1bc954218"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-09-18",
+                        "format": "standard",
+                        "likes": 1,
+                        "name": "Ninjas of Duskmourn",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/zE5V6sNWlkiVhVIYOzHPeQ",
+                        "views": 3817
+                    },
+                    "decklist_id": "674ff95c-2eb6-c64f-3bd8-f2d18552dcf0",
+                    "decklist_extended_id": "cc5e520d-e46d-5c36-e402-d3dbc7fa8543"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-12-08",
+                        "format": "standard",
+                        "likes": 1,
+                        "name": "Kaito Bane of Nightmares Tempo FDN Standard",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/kTZT7evxRkW7AHe1JdLIFA",
+                        "views": 2041
+                    },
+                    "decklist_id": "c95da7cd-4ac2-1450-9970-3ea42381bdd1",
+                    "decklist_extended_id": "cfb0b230-154c-993c-f290-c25598f01b41"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-13",
+                        "format": "brawl",
+                        "likes": 4,
+                        "name": "Jolly Balloon Man Brawl",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/dtBFDOaya0ecqkQqeIQtlg",
+                        "views": 2058
+                    },
+                    "decklist_id": "429a38c2-7690-15f1-c798-a8ee2e47da46",
+                    "decklist_extended_id": "a5f85a21-5b3c-192f-13ce-b1372fbfd82d"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-12-23",
+                        "format": "standard",
+                        "likes": 2,
+                        "name": "Tricky Kaito",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/_LMnx7PScUiVh-w9mLo-UQ",
+                        "views": 570
+                    },
+                    "decklist_id": "7a5fed8e-cd77-452f-310e-1b1ab85a70d8",
+                    "decklist_extended_id": "c669a32e-7aec-c8db-506a-73a532ccdc41"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 1,
+                        "date": "2024-11-26",
+                        "format": "standard",
+                        "likes": 7,
+                        "name": "Elf Ball | Foundations Standard",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/cnIXguNsGUmIctxf-dvj3g",
+                        "views": 2677
+                    },
+                    "decklist_id": "e7e56978-704a-66bb-b3cb-71ee0bbcc17b",
+                    "decklist_extended_id": "e0272537-cc52-c06a-033f-e262688d211c"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-09-06",
+                        "format": "standard",
+                        "likes": 4,
+                        "name": "Jeskai Talent",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/_4bYbn24T0CIZFtgytwuPw",
+                        "views": 3701
+                    },
+                    "decklist_id": "8ceaf1c9-bf02-7228-7977-dfc618caf18d",
+                    "decklist_extended_id": "33cf011a-7aec-2422-3414-f03ebeddfc1c"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-12-24",
+                        "format": "brawl",
+                        "likes": 0,
+                        "name": "Krenko Brawl",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/Z9ZWEOUSNkGWa1CI_q5O2A",
+                        "views": 30
+                    },
+                    "decklist_id": "fc0135aa-9563-4200-bbce-b94c551300ee",
+                    "decklist_extended_id": "34412a7e-0063-5540-3c8b-beafd81d22fc"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-06",
+                        "format": "standard",
+                        "likes": 2,
+                        "name": "UW Enchantments",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/yyrqA4mvREKon0Z52vg1qw",
+                        "views": 2254
+                    },
+                    "decklist_id": "336e238c-fa71-bfcc-36b8-e1dec0883b1c",
+                    "decklist_extended_id": "898b6942-629b-bc44-b353-d6604cf210ce"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-17",
+                        "format": "alchemy",
+                        "likes": 2,
+                        "name": "Alchemy Bats and Fear of Ridicule",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/pMcxKjaZSk-NGdcchGTsIw",
+                        "views": 1224
+                    },
+                    "decklist_id": "5b6acc96-c1a8-4c69-32d1-bbfbbcdc7446",
+                    "decklist_extended_id": "e5bb58e5-8172-cb28-c32d-77b5dd878eeb"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-12-09",
+                        "format": "brawl",
+                        "likes": 2,
+                        "name": "Raffine Brawl | FDN update",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/s6cGi30v3UKxQLudmEN_Mw",
+                        "views": 433
+                    },
+                    "decklist_id": "d14b3d7a-debf-fff0-126f-6f14bcb424ee",
+                    "decklist_extended_id": "820820b9-bef7-6eef-e7d1-28b0ed1daafe"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-11-29",
+                        "format": "brawl",
+                        "likes": 1,
+                        "name": "Phelia Brawl",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/ESLdL7a3lEilK5zk9Ag-kg",
+                        "views": 206
+                    },
+                    "decklist_id": "6104516d-b659-eb9f-7db1-2a7a927238d9",
+                    "decklist_extended_id": "7e40cda1-5808-2338-ac93-26af1497421c"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-12-23",
+                        "format": "brawl",
+                        "likes": 2,
+                        "name": "Ashiok, Nightmare Weaver in Brawl",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/JBUpILxAJkqUYg5hMtntDA",
+                        "views": 561
+                    },
+                    "decklist_id": "eaa1e9e4-43d0-cc4d-ba48-5af44544bdd7",
+                    "decklist_extended_id": "c1653e61-4c9f-c04b-2d41-cd8f3dc5f0df"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-11-13",
+                        "format": "standard",
+                        "likes": 18,
+                        "name": "Mono White Cats | Foundations Standard",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/joDDNS6YDkqQXXjUDOE_Sg",
+                        "views": 6836
+                    },
+                    "decklist_id": "3de2d052-bb92-14ff-fa76-20250606a7c9",
+                    "decklist_extended_id": "01373ac5-f959-a0ce-5ec2-09ef74bf0ce3"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-08-30",
+                        "format": "standard",
+                        "likes": 3,
+                        "name": "Mono White Control",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/EWscbgd22Eiqqho2BhFfgw",
+                        "views": 4174
+                    },
+                    "decklist_id": "9e591342-c098-221c-ec40-8e7c49ee78f0",
+                    "decklist_extended_id": "888f969e-7841-dec1-5004-8aaf6dc4aed9"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-12-01",
+                        "format": "standard",
+                        "likes": 1,
+                        "name": "\"No Life\" Mono White Token Control | Foundations Standard",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/EnF3jy0eVkCUkn-NaGlwmQ",
+                        "views": 3354
+                    },
+                    "decklist_id": "5917dd33-73e0-1554-c827-4696484b24f7",
+                    "decklist_extended_id": "c6973682-69d6-bf0a-ad06-5e9f4b2c607d"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-11-18",
+                        "format": "standard",
+                        "likes": 0,
+                        "name": "Mirror Pact | Foundations Standard",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/QTyyzzk2pUeRoDhyZIVuhw",
+                        "views": 2495
+                    },
+                    "decklist_id": "1c060c46-eb2c-e19b-fd6b-887ce12205cb",
+                    "decklist_extended_id": "6ed8039b-3a8f-fd21-5c44-cebdc665c440"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-11-16",
+                        "format": "brawl",
+                        "likes": 2,
+                        "name": "Nashi, Illusion Gadgeteer | Foundations Brawl",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/bIV_FwDzrE6hQNMtrX24tA",
+                        "views": 1451
+                    },
+                    "decklist_id": "0b5442dc-cffe-7c27-7975-59414371144c",
+                    "decklist_extended_id": "b266f37d-45de-823e-563b-498769bb258b"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-08-31",
+                        "format": "standard",
+                        "likes": 4,
+                        "name": "BO1 Golgari not greedy edition",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/6sfA1pl8JkyBCNG-thxHJA",
+                        "views": 5118
+                    },
+                    "decklist_id": "0ab1e00b-0f97-2709-3b02-440c2908c9f2",
+                    "decklist_extended_id": "ce40802f-0043-a4db-2f72-3c9bf7d2f3c7"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-08-31",
+                        "format": "standard",
+                        "likes": 1,
+                        "name": "UB Control 2.0 BLB",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/I1U5X_RFZE-lWVzwJhyLAw",
+                        "views": 4504
+                    },
+                    "decklist_id": "26fd0c0c-4324-9834-f411-4388ac81bcbb",
+                    "decklist_extended_id": "7b19bbd3-b847-5ede-7bab-2464b5fd1d02"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-22",
+                        "format": "standard",
+                        "likes": 2,
+                        "name": "sol ring in standard",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/j3m15Zoni0Sf9Z0X-f5bIw",
+                        "views": 1852
+                    },
+                    "decklist_id": "e42b8142-c2c8-d7c3-0f3e-1b804d558e50",
+                    "decklist_extended_id": "06ed12ac-bea6-7318-3afe-1b76d5013d7b"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-16",
+                        "format": "standard",
+                        "likes": 3,
+                        "name": "RW High Noon tokens",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/-5JgPFGPKUObPCzObKPhdw",
+                        "views": 4656
+                    },
+                    "decklist_id": "e7a157a4-7ed5-e72d-42f2-8a2f04b6975c",
+                    "decklist_extended_id": "e38f6a97-2753-aaf2-8102-3bc594bafd1a"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-09-20",
+                        "format": "commander",
+                        "likes": 2,
+                        "name": "My Bumbleflower",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/BXTsLPE-MUqWEn2GC_D6EQ",
+                        "views": 903
+                    },
+                    "decklist_id": "9ac3f899-9408-1058-0d86-9bd97f9ace69",
+                    "decklist_extended_id": "bf3d9563-e127-34a1-4797-204bd0038d19"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-12-01",
+                        "format": "brawl",
+                        "likes": 1,
+                        "name": "Phelia Brawl YT video version FDN",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/8sevticki0OXcrwa2_d9KQ",
+                        "views": 752
+                    },
+                    "decklist_id": "5d3cef5b-8799-c998-581b-643bc4202945",
+                    "decklist_extended_id": "a33af4c5-845d-bbf8-b03b-85eb70893d95"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-12-12",
+                        "format": "standard",
+                        "likes": 1,
+                        "name": "Standard GW Token Cage aggro",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/k9PXvtkwzU-ixwf69ozuPQ",
+                        "views": 1524
+                    },
+                    "decklist_id": "7ffd0daa-30f3-2a7f-99b1-6ad10f433589",
+                    "decklist_extended_id": "2fa079fd-9abf-aac3-fd8d-da2699e1d371"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 2,
+                        "date": "2024-09-24",
+                        "format": "standard",
+                        "likes": 13,
+                        "name": "Slasher Black",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/bpZVmpVDxUOLgAzzmscxOA",
+                        "views": 5188
+                    },
+                    "decklist_id": "93e80eeb-c0e6-5098-d204-132c84d1d0fd",
+                    "decklist_extended_id": "f6cc1af7-86fb-86ba-9571-a81670ce6058"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-09-05",
+                        "format": "standard",
+                        "likes": 4,
+                        "name": "UW Whale Noises",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/vPQ7D0yLsEWizN4VKwlcAw",
+                        "views": 8807
+                    },
+                    "decklist_id": "fcd8cc15-c2ec-144b-705f-c9b1d621dc2d",
+                    "decklist_extended_id": "2e82c127-c707-8b31-d194-5099daaa0212"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-09-03",
+                        "format": "standard",
+                        "likes": 2,
+                        "name": "White Rabbits",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/krNpExFWRkG5EKjWTGA0Mg",
+                        "views": 1530
+                    },
+                    "decklist_id": "9592b0e2-2f12-8241-69e4-a001090f6855",
+                    "decklist_extended_id": "7c881e81-9338-5bcd-25a4-52444b3a6500"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-16",
+                        "format": "standard",
+                        "likes": 2,
+                        "name": "fake UWu control",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/JMO9L8KZ4UW95nse3czK6g",
+                        "views": 2594
+                    },
+                    "decklist_id": "e560b475-2e57-d5f3-d57f-3f023337574d",
+                    "decklist_extended_id": "975e1ecc-ddeb-cab8-320b-9bf748474865"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-11-21",
+                        "format": "standard",
+                        "likes": 4,
+                        "name": "Kiora Dimir Combo | Foundations Standard",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/m5BR0mOlrUWn6vFCIRIlJQ",
+                        "views": 4196
+                    },
+                    "decklist_id": "114aaf5a-a4fe-0ae0-c05d-035f8481e91d",
+                    "decklist_extended_id": "bb0d4ad3-a58c-c036-ce5b-4911221bf65d"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-29",
+                        "format": "standard",
+                        "likes": 4,
+                        "name": "golgari demonds",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/wUCPsPiNS06pgksZHj9ZIw",
+                        "views": 3916
+                    },
+                    "decklist_id": "fc7c58ea-2cdb-d54e-9152-188cdea28fde",
+                    "decklist_extended_id": "98bf8201-3dca-f4f3-b70a-20e3f9d98b82"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-08",
+                        "format": "standard",
+                        "likes": 1,
+                        "name": "UW control",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/mlNR0g8IMEmzhX4paaOHuw",
+                        "views": 4155
+                    },
+                    "decklist_id": "529e4ca0-af37-a6ed-33eb-9024a5711240",
+                    "decklist_extended_id": "9de9e1b7-b9db-ed45-0ce1-e34c612df728"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-11-28",
+                        "format": "standard",
+                        "likes": 4,
+                        "name": "Demonic Pact Mythic | Foundations Standard",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/zwckeGSUhkqTnTIX20Y7Yw",
+                        "views": 2948
+                    },
+                    "decklist_id": "78dd83a0-7d17-e7f8-66ec-b86c4da8c055",
+                    "decklist_extended_id": "1994d5d4-750f-0c54-372f-5ac392c6e86a"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-12-06",
+                        "format": "brawl",
+                        "likes": 2,
+                        "name": "Big Bolas Brawl | FDN standard",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/bO5uFKTM7kSW22TYMUXuhw",
+                        "views": 1132
+                    },
+                    "decklist_id": "add00a65-4004-592c-38f6-3873a36a5379",
+                    "decklist_extended_id": "245cd50a-8683-e762-9981-d250ae49d4ab"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-06",
+                        "format": "standard",
+                        "likes": 7,
+                        "name": "Sultai Reanimator",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/6sVhq8zY40iT96ib9SkEWg",
+                        "views": 6247
+                    },
+                    "decklist_id": "a0985535-96f0-a9f6-747e-1252f43a88b3",
+                    "decklist_extended_id": "599c2013-1b7a-9b11-d798-61decef8bf5d"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-29",
+                        "format": "standard",
+                        "likes": 5,
+                        "name": "UB Demons",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/P5JeOrjCQ0SYU489dX86Ag",
+                        "views": 4491
+                    },
+                    "decklist_id": "b5c7f4a6-1f0d-4a17-6533-b28e5ac7992c",
+                    "decklist_extended_id": "2807a1d2-8a57-8ae6-bbcc-0d839f36f707"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-22",
+                        "format": "standard",
+                        "likes": 3,
+                        "name": "golgari midrange",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/-PZyATFXsEquOUaXLeV2DQ",
+                        "views": 3371
+                    },
+                    "decklist_id": "2c4dc391-63d9-1510-8626-57c5523509ea",
+                    "decklist_extended_id": "90cc37a5-f7ae-8789-0b9a-c6886dc34eaa"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 1,
+                        "date": "2024-12-16",
+                        "format": "brawl",
+                        "likes": 4,
+                        "name": "Tasigur NeoGriz Combo | Brawl",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/g8ZfIi2cQUefYj23ugxuSg",
+                        "views": 1278
+                    },
+                    "decklist_id": "3c3955a4-1073-4458-7fb2-7b03a2d24fa7",
+                    "decklist_extended_id": "146810b1-04e4-d8e3-e4af-24e0d1fcb300"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-21",
+                        "format": "standard",
+                        "likes": 5,
+                        "name": "rakdos demons",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/zSQwQ4zGrEK6QyuQXokPhQ",
+                        "views": 4388
+                    },
+                    "decklist_id": "c8a2abcc-32bc-77da-5609-c75c8a9f9218",
+                    "decklist_extended_id": "f0a7582d-3b7d-849f-cfde-e9b33cd60523"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-29",
+                        "format": "standard",
+                        "likes": 3,
+                        "name": "post leyline ban",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/dQEtqTwj3ESWeYkJnqGmWw",
+                        "views": 5328
+                    },
+                    "decklist_id": "2d2a74ae-84a9-b643-91c0-74e576985be2",
+                    "decklist_extended_id": "be80cf51-61bb-5032-b850-048eb400f80d"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-12-04",
+                        "format": "standard",
+                        "likes": 3,
+                        "name": "Grave dump| FDN Standard",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/5wjuJFxMLEi8z7waQpfBbQ",
+                        "views": 1835
+                    },
+                    "decklist_id": "0665e7ef-4ec8-cd5f-6c2d-0692e8e34514",
+                    "decklist_extended_id": "3270cf98-8b22-9239-cac1-325f6f2dd508"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-11-26",
+                        "format": "standard",
+                        "likes": 2,
+                        "name": "Dimir Cauldron | Foundations Standard",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/hsJQY4i3f0-DrFZb7ldVUA",
+                        "views": 2204
+                    },
+                    "decklist_id": "2334a3be-b311-7fba-f44c-8d1fa9c73714",
+                    "decklist_extended_id": "918d6baa-0b68-3885-b022-27c73f412ade"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-09-23",
+                        "format": "commander",
+                        "likes": 2,
+                        "name": "karazikar secret lair shill",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/Edt7kt8vR024s-JNsAjNOQ",
+                        "views": 372
+                    },
+                    "decklist_id": "69afadce-067c-d8ff-9163-684fde221110",
+                    "decklist_extended_id": "47540bd6-550e-8fc7-7d75-5e7bd9f8f75b"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-21",
+                        "format": "standard",
+                        "likes": 2,
+                        "name": "uw artifacts",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/yagM8biDxkir_By-uxK4IA",
+                        "views": 2864
+                    },
+                    "decklist_id": "a6f0b295-35c6-9ad5-4834-58860eeef83b",
+                    "decklist_extended_id": "69dc349d-8e28-948a-09fd-ae3518560e4f"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-11-05",
+                        "irregular_format": "none",
+                        "likes": 3,
+                        "name": "GB Ramp Control",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/d44kPE2gOE67I2wnYY7LGA",
+                        "views": 3075
+                    },
+                    "decklist_id": "45e2d46a-8029-c0ac-47a0-6d49c35ffc76",
+                    "decklist_extended_id": "21f89efd-9d31-5102-375e-4d2c932e3b8e"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-11-27",
+                        "format": "standard",
+                        "likes": 1,
+                        "name": "Mono Black (Friday) Demons | Standard Foundations",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/sZ4S4Ems9ka5UAcGVVivfA",
+                        "views": 3788
+                    },
+                    "decklist_id": "1007ea28-15b2-b2a8-077b-8fcd6ee1e9b9",
+                    "decklist_extended_id": "193d7509-6d22-0c7d-f096-e7ce86034370"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-12-05",
+                        "format": "pioneer",
+                        "likes": 1,
+                        "name": "Niv to Light | Pioneer Masters release edition",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/M4wv91oba0uNdAcJ4RlCxw",
+                        "views": 612
+                    },
+                    "decklist_id": "d36ff616-8a52-07d3-9e9c-788b65e8a860",
+                    "decklist_extended_id": "37bdbd15-2ccb-b4f3-4a5e-3ca38d37965f"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-11-22",
+                        "format": "brawl",
+                        "likes": 1,
+                        "name": "Omnath M21 ULTIMATE LANDFALL | Brawl",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/NhFjTUnVn0yy83CWQAOvKw",
+                        "views": 2492
+                    },
+                    "decklist_id": "4f43549d-0973-789c-bfbe-c628cf6dded3",
+                    "decklist_extended_id": "d995641b-aa07-552e-3868-15a076fed5ee"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-11-20",
+                        "format": "standard",
+                        "likes": 1,
+                        "name": "Cat Pact Mono Black Edition | Standard Foundations",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/_p01zBvSOEqb-wwzhdNtiw",
+                        "views": 1003
+                    },
+                    "decklist_id": "b8e7ebb9-5477-98aa-e5dd-02d785a429c1",
+                    "decklist_extended_id": "3a0ce8bd-4f8c-ecde-0bbd-884605273f6a"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-01",
+                        "format": "standard",
+                        "likes": 8,
+                        "name": "Slasher Black 2.0",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/-tYVNZrz5keRkv800ID4EA",
+                        "views": 7598
+                    },
+                    "decklist_id": "bcc2f1a3-1d6a-362c-bc83-798351fe566b",
+                    "decklist_extended_id": "709b5743-8f6e-ecb3-ccbc-1850efa2df51"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-11-05",
+                        "irregular_format": "none",
+                        "likes": 2,
+                        "name": "Orzhov Demons",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/R1Chl77KXUWAC-fUuNxW_A",
+                        "views": 1378
+                    },
+                    "decklist_id": "eed8d076-426a-4b3b-25c6-51448beaf15b",
+                    "decklist_extended_id": "975ff164-680b-a4c2-ea0b-542484b4509e"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-12-09",
+                        "format": "brawl",
+                        "likes": 1,
+                        "name": "Nissa Who Shakes the World | Brawl | FDN update",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/U4ROKMhqFUmX-dipeBJY5w",
+                        "views": 252
+                    },
+                    "decklist_id": "73502d92-03b4-26ce-d11e-f5f95f91c679",
+                    "decklist_extended_id": "04f77b20-5fe6-357d-7e42-2dcc72ee9a6b"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-12-12",
+                        "format": "brawl",
+                        "likes": 1,
+                        "name": "Baby Jace Brawl",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/neaAdqLYOEqSwiednU7VuQ",
+                        "views": 1467
+                    },
+                    "decklist_id": "51da50b8-c2f3-b3eb-7bfa-6d187a9bca38",
+                    "decklist_extended_id": "a3447a7d-0023-34c4-441e-bb5e8bb7297d"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-09-08",
+                        "format": "commander",
+                        "likes": 6,
+                        "name": "Wilhelt, the Rotcleaver Innistrad Champs",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/j1ILH31ZDUi-oens2hqh3g",
+                        "views": 1517
+                    },
+                    "decklist_id": "4e8fd038-5820-ab40-40f7-3e69c8fab46a",
+                    "decklist_extended_id": "fa87739c-138d-4930-e4dc-16caec37269a"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-13",
+                        "format": "commander",
+                        "likes": 4,
+                        "name": "The Master of Keys",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/ccUqVNyf7EiBTTgf2BzALA",
+                        "views": 463
+                    },
+                    "decklist_id": "f42c00c6-e9ca-5489-ad7e-3b69549e5b67",
+                    "decklist_extended_id": "94e2601a-a02e-1589-acf5-6a1cd47dbef6"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 2,
+                        "date": "2024-10-16",
+                        "format": "standard",
+                        "likes": 13,
+                        "name": "temur overlords",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/72CxR0nAqkeZulxIF6Fs5g",
+                        "views": 17993
+                    },
+                    "decklist_id": "f39aa03e-c796-5bc3-4911-0728b6d6d8fc",
+                    "decklist_extended_id": "e00ef185-f691-a256-21d0-fc33ad049651"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-01",
+                        "format": "standard",
+                        "likes": 3,
+                        "name": "Eerie Enchantments",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/XI4vJ1Teb0eIba604SmB7w",
+                        "views": 2168
+                    },
+                    "decklist_id": "61f6b835-4873-532f-4f38-35d49aaa28ce",
+                    "decklist_extended_id": "4a4854fd-803a-04e3-182a-49f11852b1bf"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 1,
+                        "date": "2024-10-04",
+                        "format": "standard",
+                        "likes": 3,
+                        "name": "Mono White control",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/vZtAM9h5WkuVPK8MDwptfQ",
+                        "views": 5081
+                    },
+                    "decklist_id": "9244678a-be06-3cc7-82d4-1611a2d4acc1",
+                    "decklist_extended_id": "55b060d2-736e-4a40-8681-1d460392b4e9"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-09-23",
+                        "format": "commander",
+                        "likes": 3,
+                        "name": "Astarion secret lair shill",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/3ell73ZYGkmkqK2wmq7QDA",
+                        "views": 632
+                    },
+                    "decklist_id": "7d660de6-b12a-e6ce-dff3-baa23ea313a4",
+                    "decklist_extended_id": "7c1b3b89-2a5a-12f8-80b4-f2030c23adce"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-11-14",
+                        "format": "standard",
+                        "likes": 5,
+                        "name": "Cat Pact | Foundations Standard",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/C2p5iKS9LkCAwKLsxPE7Tg",
+                        "views": 4712
+                    },
+                    "decklist_id": "3516222d-0bcc-2ed3-001c-ce248952087c",
+                    "decklist_extended_id": "285211f4-6980-95be-d99f-b850d301225f"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-09-18",
+                        "format": "standard",
+                        "likes": 5,
+                        "name": "Mindskinner Mill",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/AXa7LBq1AUOBsv4mHyMpzQ",
+                        "views": 3586
+                    },
+                    "decklist_id": "3d9d5cbc-34af-8f13-91de-f2735bf09e04",
+                    "decklist_extended_id": "f68b6c15-4e03-732c-3695-971fa97bbaeb"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-12-02",
+                        "format": "brawl",
+                        "likes": 1,
+                        "name": "Jodah the Unifier LEGENDS GO BRRRR Brawl | FDN latest set",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/AbJmcD5q006bSA1TcxKI4A",
+                        "views": 1064
+                    },
+                    "decklist_id": "ec4a9684-99b1-5555-6352-2889228d7006",
+                    "decklist_extended_id": "c3b3e217-8231-2f0d-e864-69a45feb3bd3"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-09-10",
+                        "format": "standard",
+                        "likes": 3,
+                        "name": "Temur Ramp | BO1 mtga",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/EqPuR7nCpUGYt34eA36wjw",
+                        "views": 1336
+                    },
+                    "decklist_id": "b1c092b8-2ad0-d944-d201-eb79ac25f47b",
+                    "decklist_extended_id": "9fa367b9-afe3-38aa-c5be-4463a8ca8ba1"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-12-06",
+                        "format": "brawl",
+                        "likes": 0,
+                        "name": "Roxanne Brawl | FDN update",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/RlYPXBTgMkmPfhyY78dJCQ",
+                        "views": 734
+                    },
+                    "decklist_id": "28271317-3278-40d8-7889-4d563618e4a3",
+                    "decklist_extended_id": "56a41f30-1526-86b5-06ad-4d3d1df3c76d"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-12-17",
+                        "format": "standard",
+                        "likes": 1,
+                        "name": "Regal Beans | GW Ramp Token Value Cat Bunny deck",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/-YxxiExQLk-D_Q2csvT_qw",
+                        "views": 944
+                    },
+                    "decklist_id": "85efcc80-4ef2-1797-b8f6-c2425a1df85b",
+                    "decklist_extended_id": "344ce410-9d05-1470-90df-9e97c8970827"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-09-23",
+                        "format": "commander",
+                        "likes": 2,
+                        "name": "xanathar secret lair shill",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/c0wjLG_5TkuyoiBcfyWAVA",
+                        "views": 646
+                    },
+                    "decklist_id": "16d62711-99b3-d151-a8aa-8b35692eed1c",
+                    "decklist_extended_id": "ecfe2cbb-ec64-200d-0aa4-f6ebffc75b5c"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-09-18",
+                        "format": "standard",
+                        "likes": 2,
+                        "name": "Chainsaw Tokens",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/xOSNG5G-i0eugCttiCNzpQ",
+                        "views": 1995
+                    },
+                    "decklist_id": "c3609e9f-cfb5-768d-ed62-09e88d3dbbec",
+                    "decklist_extended_id": "625e620b-9c00-0415-f16d-9e3061e8fe75"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-09-23",
+                        "format": "commander",
+                        "likes": 2,
+                        "name": "Karlach Fury of Avernus secret lair edh",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/WgpQRr-SgEq4xuUycWIw7g",
+                        "views": 595
+                    },
+                    "decklist_id": "ca1c64d5-958f-6f7b-b88e-897fee005990",
+                    "decklist_extended_id": "47246e3a-4a1c-3f2e-7e75-7df3891b14b1"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-30",
+                        "format": "standard",
+                        "likes": 1,
+                        "name": "Kona Rescue Beastie going off in Standard",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/Fu4da3UAek-XHrTQGTUytQ",
+                        "views": 1585
+                    },
+                    "decklist_id": "3745a15a-35b6-5ab0-de4e-fc809db9e09d",
+                    "decklist_extended_id": "d320e16d-1d3d-c56e-991a-ac15daceb13b"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-07",
+                        "format": "standard",
+                        "likes": 2,
+                        "name": "UB Reanimator",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/wB8Yv_R0O06Nrz9ep2ZMCg",
+                        "views": 3378
+                    },
+                    "decklist_id": "821139eb-5e18-6f54-7fd9-d26022050638",
+                    "decklist_extended_id": "2d166dfe-d97d-37a5-00e5-e2e15c6ff09e"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-11-13",
+                        "format": "standard",
+                        "likes": 14,
+                        "name": "Green Machine Standard",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/ieWHhwEcZEORGDTtOaejhQ",
+                        "views": 8919
+                    },
+                    "decklist_id": "7945fc7d-351a-56b0-f47c-7782bf469276",
+                    "decklist_extended_id": "b3ff5391-c778-f1fb-8171-6da19f3810b2"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-08",
+                        "format": "commander",
+                        "likes": 3,
+                        "name": "niko shard machine",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/drg4y2z24UixxKt6pY3-8A",
+                        "views": 760
+                    },
+                    "decklist_id": "6ab13bf2-70ed-bda1-2dcd-81f010c38afa",
+                    "decklist_extended_id": "41da8978-5d3b-3c53-884c-826affc6fff9"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-09-26",
+                        "format": "standard",
+                        "likes": 8,
+                        "name": "BW Reanimator",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/eD_XQjQf0UeFQpsSjntO1g",
+                        "views": 8371
+                    },
+                    "decklist_id": "bf0a2c31-855e-110d-f2d6-c14564fef0a7",
+                    "decklist_extended_id": "ee4173cd-10a9-14d1-2922-7509bc093684"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-11-14",
+                        "format": "standard",
+                        "likes": 2,
+                        "name": "Gruul Dinos | Foundations Standard",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/ERQzX-9dDU6Byr-pnMN_pw",
+                        "views": 5336
+                    },
+                    "decklist_id": "712c223b-a9e9-a4e1-1cc1-60d808cd834e",
+                    "decklist_extended_id": "ae3d1bb3-bc79-4ca9-65a5-0da7ad80a3aa"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-14",
+                        "format": "standard",
+                        "likes": 2,
+                        "name": "4c Reanimator",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/tfNdPFXOKU2pFA820gvgpA",
+                        "views": 1792
+                    },
+                    "decklist_id": "ed2a1c20-4080-5c4b-3e76-76b6bff93f90",
+                    "decklist_extended_id": "8ef3ccdc-7d4a-ad9f-0fa1-08feb688864a"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-09-18",
+                        "format": "standard",
+                        "likes": 7,
+                        "name": "Valgavoth reanimator",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/C5n_Jb4r00qGWACZ1cgDng",
+                        "views": 3997
+                    },
+                    "decklist_id": "87df6657-a118-7628-e09d-df2fecc045bc",
+                    "decklist_extended_id": "26bd1502-dde5-d009-e5d9-37bb2e90079e"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-15",
+                        "format": "commander",
+                        "likes": 5,
+                        "name": "marina vendrell rooms edh",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/7GPMBSj1TEmrDZFGsuHuJg",
+                        "views": 539
+                    },
+                    "decklist_id": "df36955c-faaa-f572-51e9-57a1567d956b",
+                    "decklist_extended_id": "8b40948e-0e50-1547-13d8-333aa8eed48b"
+                }
+            ]
+        },
+        {
+            "id": "2dEqRLTXwd8",
+            "url": "https://www.youtube.com/watch?v=2dEqRLTXwd8",
+            "author": "CovertGoBlue",
+            "title": "Game of the Year!  CGB vs Voxy vs Rarran vs Crim - WPCS #130",
+            "description": "Format - Commander / EDH\nNewest set - Duskmourn\n\nCommanders -\nMs. Bumbleflower\nPantlaza, Sun-Favored\nTariel, Reckoner of Souls\nThe Mindskinner\n\nDecklists:\nCGB: https://www.moxfield.com/decks/zJZgVnXLGkOtXxO-Ovam3Q\nVoxy: https://www.moxfield.com/decks/H4EjXZoMkEeHwmZ6mKmSlA\nRarran: https://www.moxfield.com/decks/jvU8KcoVnk6wDAHiDu20pA\nCrim: https://www.moxfield.com/decks/V8-POZj2YEuzYXFva-y-6g\n\nChapters\nIntro: 00:00\nGameplay: 06:00\nOutro: 01:30:47\n\nPromo Code WORST for 5% off at CoolStuffInc.com\nhttps://www.coolstuffinc.com/\n\nUltimate Guard - https://tinyurl.com/UGCGB\n\nDiscord - https://discord.gg/MXt3DEP\n\nTwitter:\nCGB: @covertgoblue\nVoxy:  @VoxyTwitch\nRarran: @RarranHS\nCrim: @Theasianavenger\n\nTitle Music by Sam Plotkin - www.samplotkinmusic.com\nAdditional music by Rattlesnake\nLogo design by HolyMTG - HolyMTG@gmail.com Twitter @HolyMTG\nWorst Possible Commander Show Logo design by Brent Kruscke\n\nA commander show focused on bringing great in-person paper gameplay. This show features a consistent cast, including Covertgoblue. \n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\nPortions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#cgb #mtgcommander #mtg",
+            "keywords": [
+                "Best Deck",
+                "Best MTG Deck",
+                "CGB",
+                "CGB Deck",
+                "CGB Magic the Gathering",
+                "Covert Go",
+                "Covert Go Blue",
+                "Covert Go MTG",
+                "CovertGoBlue",
+                "Deck",
+                "Gameplay",
+                "MTG Cards",
+                "MTG Deck",
+                "Mythic",
+                "New Cards",
+                "New Deck",
+                "blb mtg arena",
+                "covertgo",
+                "covertgo mtg",
+                "deck",
+                "decks",
+                "dsk",
+                "dsk cards",
+                "dsk early access",
+                "dsk mtg",
+                "duskmourn",
+                "duskmourn early access",
+                "duskmourn standard",
+                "early access",
+                "gameplay",
+                "guide",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtg arena new set",
+                "mtga",
+                "new cards"
+            ],
+            "publish_time": "2024-11-10 09:00:03",
+            "views": 250428,
+            "sources": [
+                "discord.gg",
+                "tinyurl.com",
+                "ultimateguard.com",
+                "www.coolstuffinc.com",
+                "www.moxfield.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "WorstPossibleCommander",
+                        "comments": 0,
+                        "date": "2024-11-10",
+                        "description": "https://youtu.be/2dEqRLTXwd8",
+                        "format": "commander",
+                        "likes": 2,
+                        "name": "WPCS #130",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/zJZgVnXLGkOtXxO-Ovam3Q",
+                        "views": 1802
+                    },
+                    "decklist_id": "a9f7cba6-9059-fabb-ed5f-19422c3c9dd4",
+                    "decklist_extended_id": "51d8b50b-7bf2-da28-7dfa-7ed35c1e9049"
+                },
+                {
+                    "metadata": {
+                        "author": "WorstPossibleCommander",
+                        "comments": 0,
+                        "date": "2024-11-10",
+                        "description": "https://youtu.be/2dEqRLTXwd8",
+                        "format": "commander",
+                        "likes": 22,
+                        "name": "WPCS #130",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/V8-POZj2YEuzYXFva-y-6g",
+                        "views": 4538
+                    },
+                    "decklist_id": "63f82dfe-e79e-4087-7b97-a1f6d2aba65d",
+                    "decklist_extended_id": "0231f95d-a5b8-f986-d687-a7a8c433fdf2"
+                },
+                {
+                    "metadata": {
+                        "author": "WorstPossibleCommander",
+                        "comments": 0,
+                        "date": "2024-11-10",
+                        "description": "https://youtu.be/2dEqRLTXwd8",
+                        "format": "commander",
+                        "likes": 0,
+                        "name": "WPCS #130",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/jvU8KcoVnk6wDAHiDu20pA",
+                        "views": 1896
+                    },
+                    "decklist_id": "0f69dcea-79f5-d6d8-549a-53b757ed76c2",
+                    "decklist_extended_id": "0149e4e1-c7f3-cd10-5683-a6ec234bf36f"
+                },
+                {
+                    "metadata": {
+                        "author": "WorstPossibleCommander",
+                        "comments": 0,
+                        "date": "2024-11-10",
+                        "description": "https://youtu.be/2dEqRLTXwd8",
+                        "format": "commander",
+                        "likes": 4,
+                        "name": "WPCS #130",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/H4EjXZoMkEeHwmZ6mKmSlA",
+                        "views": 1761
+                    },
+                    "decklist_id": "5e1ef563-451d-e99a-aef3-35953000a6aa",
+                    "decklist_extended_id": "f3feb018-740c-5e8b-94ee-3f98d2519a3b"
+                }
+            ]
+        },
+        {
+            "id": "If5Aa9LotuM",
+            "url": "https://www.youtube.com/watch?v=If5Aa9LotuM",
+            "author": "CovertGoBlue",
+            "title": "SHAKE the FOUNDATIONS  The Worst Possible Commander Show #131  Magic the Gathering EDH Gameplay",
+            "description": "Get Foundations Today! - https://mtg.social/WorstCommanderShow\n\nCommanders -\nKykar, Zephyr Awakener\nNiv-Mizzet, Visionary\nElenda, Saint of Dusk\nZimone, Paradox Sculptor\n\nDecklists:\nCGB: https://www.moxfield.com/decks/_43cou75oUCr7ZeszwbhmA\nBlake: https://www.moxfield.com/decks/sV37fMo11kCKZQCUM2wU8g\nBen: https://www.moxfield.com/decks/5UinclItq0OsVoTXZOq0Dg\nShea: https://www.moxfield.com/decks/_aR8ZpZ9RE2MKMf8mfTGUg\n\nChapters\nPromo: 00:00\nIntro: 01:33\nGameplay: 09:11\nOutro: 50:07\n\nPromo Code WORST for 5% off at CoolStuffInc.com\nhttps://www.coolstuffinc.com/\n\nUltimate Guard - https://tinyurl.com/UGCGB\n\nDiscord - https://discord.gg/MXt3DEP\n\nTwitter:\nCGB: @covertgoblue\nBlake: @blake_mtg\nBen: @GreedLordMTG\nShea: @TheWorstShea\n\nTitle Music by Sam Plotkin - www.samplotkinmusic.com\nAdditional music by Rattlesnake\nLogo design by HolyMTG - HolyMTG@gmail.com Twitter @HolyMTG\nWorst Possible Commander Show Logo design by Brent Kruscke\n\nA commander show focused on bringing great in-person paper gameplay. This show features a consistent cast, including Covertgoblue. \n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\nPortions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#cgb #mtgpartner #mtgfoundations",
+            "keywords": [
+                "Best Deck",
+                "Best MTG Deck",
+                "CGB",
+                "CGB Deck",
+                "CGB Magic the Gathering",
+                "Covert Go",
+                "Covert Go Blue",
+                "Covert Go MTG",
+                "CovertGoBlue",
+                "Deck",
+                "Gameplay",
+                "MTG Cards",
+                "MTG Deck",
+                "Mythic",
+                "New Cards",
+                "New Deck",
+                "blb mtg arena",
+                "covertgo",
+                "covertgo mtg",
+                "deck",
+                "decks",
+                "dsk",
+                "dsk cards",
+                "dsk mtg",
+                "duskmourn",
+                "duskmourn standard",
+                "fdn cards",
+                "fdn mtg",
+                "foundations",
+                "gameplay",
+                "guide",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtg arena new set",
+                "mtg foundations",
+                "mtga",
+                "new cards"
+            ],
+            "publish_time": "2024-11-17 09:00:14",
+            "views": 65173,
+            "sources": [
+                "discord.gg",
+                "mtg.social",
+                "tinyurl.com",
+                "ultimateguard.com",
+                "www.coolstuffinc.com",
+                "www.moxfield.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "WorstPossibleCommander",
+                        "comments": 0,
+                        "date": "2024-11-17",
+                        "description": "https://youtu.be/If5Aa9LotuM?si=m15VO7mr_dFSqOf7",
+                        "format": "commander",
+                        "likes": 2,
+                        "name": "WPCS #131",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/5UinclItq0OsVoTXZOq0Dg",
+                        "views": 673
+                    },
+                    "decklist_id": "a786cc72-336a-cc7f-b3ff-509ee5a938e0",
+                    "decklist_extended_id": "fe2d2eba-9316-4be6-da78-4ecb526fd787"
+                },
+                {
+                    "metadata": {
+                        "author": "WorstPossibleCommander",
+                        "comments": 0,
+                        "date": "2024-11-17",
+                        "description": "https://youtu.be/If5Aa9LotuM?si=m15VO7mr_dFSqOf7",
+                        "format": "commander",
+                        "likes": 12,
+                        "name": "WPCS #131",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/_aR8ZpZ9RE2MKMf8mfTGUg",
+                        "views": 1384
+                    },
+                    "decklist_id": "9eb42a14-9971-7188-ed5f-ef742a439392",
+                    "decklist_extended_id": "80483a8c-90ef-330e-5d20-25759c09e003"
+                },
+                {
+                    "metadata": {
+                        "author": "WorstPossibleCommander",
+                        "comments": 0,
+                        "date": "2024-11-17",
+                        "description": "https://youtu.be/If5Aa9LotuM?si=m15VO7mr_dFSqOf7",
+                        "format": "commander",
+                        "likes": 2,
+                        "name": "WPCS #131",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/_43cou75oUCr7ZeszwbhmA",
+                        "views": 914
+                    },
+                    "decklist_id": "cbf50149-a9dc-0d15-a8b9-7ca1458a2cae",
+                    "decklist_extended_id": "a551ff57-4ffc-e3d4-f2cc-6dab6d375af1"
+                },
+                {
+                    "metadata": {
+                        "author": "WorstPossibleCommander",
+                        "comments": 0,
+                        "date": "2024-11-17",
+                        "description": "https://youtu.be/If5Aa9LotuM?si=m15VO7mr_dFSqOf7",
+                        "format": "commander",
+                        "likes": 8,
+                        "name": "WPCS #131",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/sV37fMo11kCKZQCUM2wU8g",
+                        "views": 1535
+                    },
+                    "decklist_id": "44481f62-c98c-a52e-25e5-dc064a5288eb",
+                    "decklist_extended_id": "1125b590-d16c-24a0-3e07-c4b1c4244c21"
+                }
+            ]
+        },
+        {
+            "id": "au5EAZkp7f8",
+            "url": "https://www.youtube.com/watch?v=au5EAZkp7f8",
+            "author": "CovertGoBlue",
+            "title": "THE GREATEST BATTLE OF ALL TIME",
+            "description": "Check out @Legenvd for daily MTG Arena videos and see what happens if we play these same decks in a different bracket.  His video - https://youtu.be/CtzIIIvU2NA?si=iF8_ZOE8NjoYyNLZ\n\nSponsors\n\nCoolStuffInc.com Promo Code CGB5 - https://www.coolstuffinc.com/cgb\nUltimate Guard - https://tinyurl.com/UGCGB\nDripShop.live - https://join.dripshop.live/CovertGoBlue\nMoxfield - https://www.moxfield.com/users/CovertGoBlue\n\nDiscord - https://discord.gg/MXt3DEP\nInstagram - https://www.instagram.com/covertgoblue/\n\nCredits\n\nWritten and performed by Daniel Wagner, aka CovertGoBlue\nEdited by @libmae_\nLogo design by HolyMTG - HolyMTG@gmail.com Twitter @HolyMTG\n© CovertGoBlue Entertainment, LLC\n\n#cgb #mtgarena #mtgstandard #brawl",
+            "keywords": [
+                "Best Deck",
+                "Best MTG Deck",
+                "CGB",
+                "CGB Deck",
+                "CGB Magic the Gathering",
+                "Covert Go",
+                "Covert Go Blue",
+                "Covert Go MTG",
+                "CovertGoBlue",
+                "Deck",
+                "Gameplay",
+                "MTG Cards",
+                "MTG Deck",
+                "Mythic",
+                "New Cards",
+                "New Deck",
+                "best brawl",
+                "best brawl deck",
+                "blb mtg arena",
+                "brawl",
+                "brawl foundations",
+                "covertgo",
+                "covertgo mtg",
+                "deck",
+                "decks",
+                "dsk",
+                "dsk cards",
+                "duskmourn",
+                "duskmourn brawl",
+                "fdn cards",
+                "fdn mtg",
+                "foundations",
+                "gameplay",
+                "guide",
+                "legenvd",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtg arena new set",
+                "mtga",
+                "mythic brawl",
+                "new cards"
+            ],
+            "publish_time": "2024-12-02 09:00:06",
+            "views": 26199,
+            "sources": [
+                "discord.gg",
+                "join.dripshop.live",
+                "tinyurl.com",
+                "ultimateguard.com",
+                "www.coolstuffinc.com",
+                "www.instagram.com",
+                "www.moxfield.com",
+                "youtu.be"
+            ],
+            "decks": []
+        }
+    ]
+}

@@ -1,0 +1,102 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 133000,
+    "scrape_time": "2024-12-21 02:12:19",
+    "videos": [
+        {
+            "id": "G4TSvdshbeM",
+            "url": "https://www.youtube.com/watch?v=G4TSvdshbeM",
+            "author": "LegenVD",
+            "title": "Playing every new Oath enchantment.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a four color superfriends planeswalker deck, featuring Atraxa, Praetors' Voice as commander in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n0:00:00 - Intro \n0:01:39 - Deck Tech\n0:09:50 - vs Mythweaver Poq\n0:15:10 - vs Voja, Jaws of the Conclave\n0:22:32 - vs Harbin, Vanguard Aviator\n0:31:14 - vs Nicol Bolas, God-Pharaoh\n0:34:34 - vs Radagast the Brown\n0:46:32 - vs Merry, Eqauire of Rohan\n0:54:38 - vs Slimefoot and Squee\n0:59:53 - vs Sorin, Imperious Bloodlord\n\nDecklist: \nhttps://aetherhub.com/Deck/atraxa-oath-superfriends-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\n\"Egmont Overture\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtg  #mtgarena #magicthegathering",
+            "keywords": [
+                "atraxa",
+                "atraxa commander",
+                "atraxa deck",
+                "atraxa edh",
+                "black",
+                "blue",
+                "brawl deck",
+                "commander",
+                "deck",
+                "decks",
+                "doubling season",
+                "edh",
+                "gameplay",
+                "green",
+                "guide",
+                "historic brawl",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "oath",
+                "oaths",
+                "planeswalker deck",
+                "planewalker",
+                "praetors voice",
+                "proliferate",
+                "superfriends",
+                "teferi",
+                "ultimate",
+                "white"
+            ],
+            "publish_time": "2024-12-20 09:00:22",
+            "views": 17616,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2024-12-20",
+                        "exports": 239,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Atraxa Oath Superfriends Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/atraxa-oath-superfriends-brawl",
+                        "views": 312
+                    },
+                    "decklist_id": "ca09fdec-ca17-c0ee-a0ba-f79b44e4552d",
+                    "decklist_extended_id": "389d94a8-0ba8-6c44-be9f-b7a03caaaf3c"
+                }
+            ]
+        }
+    ]
+}

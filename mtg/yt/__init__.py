@@ -62,6 +62,9 @@ def get_channel_id(url: str) -> str:
 
 
 def rescrape_missing_decklists() -> None:
+    """Re-scrape those YT videos that contain decklists that are missing from global decklists
+    repositories.
+    """
     decklist_paths = {p for lst in check_decklists().values() for p in lst}
     channels = defaultdict(set)
     for path in [DecklistPath.from_path(p) for p in decklist_paths]:

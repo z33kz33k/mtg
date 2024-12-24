@@ -1,0 +1,100 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 133000,
+    "scrape_time": "2024-12-24 02:07:05",
+    "videos": [
+        {
+            "id": "1PBjsJtgfCQ",
+            "url": "https://www.youtube.com/watch?v=1PBjsJtgfCQ",
+            "author": "LegenVD",
+            "title": "Crafting the best creature in Standard ... again.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a Grim Captain deck in Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:23 - Match 1\n12:31 - Match 2\n18:14 - Match 3\n22:39 - Match 4\n29:30 - Match 5\n32:56 - Match 6\n41:42 - Match 7\n48:01 - Match 8\n\nDecklist:\nhttps://aetherhub.com/Deck/foundations-grim-captain\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtgfoundations #mtgfdn #mtg #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "blue",
+                "deck",
+                "decks",
+                "dinosaur",
+                "fdn",
+                "fnd",
+                "foundations",
+                "foundations standard",
+                "gameplay",
+                "ghalta",
+                "grim captain",
+                "guide",
+                "kiora",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "merfolk",
+                "mill",
+                "mtg",
+                "mtg arena",
+                "mtg foundations",
+                "mtga",
+                "new standard",
+                "pirate",
+                "red",
+                "skeleton",
+                "standard",
+                "standard deck",
+                "vampire"
+            ],
+            "publish_time": "2024-12-23 09:00:04",
+            "views": 14055,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2024-12-23",
+                        "exports": 196,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Foundations Grim Captain",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/foundations-grim-captain",
+                        "views": 365
+                    },
+                    "decklist_id": "7465ee6c-dab4-fd2a-42b0-f6ce722e6e59",
+                    "decklist_extended_id": "0e4ef257-c68d-bc45-c60a-848e24640676"
+                }
+            ]
+        }
+    ]
+}

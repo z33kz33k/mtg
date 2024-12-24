@@ -1,0 +1,49 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 334000,
+    "scrape_time": "2024-12-24 02:11:07",
+    "videos": [
+        {
+            "id": "j3ACsXFj6-4",
+            "url": "https://www.youtube.com/watch?v=j3ACsXFj6-4",
+            "author": "MTGGoldfish",
+            "title": "Fynn is So Toxic  $90 Budget Magic",
+            "description": "Fynn, the Fangbearer is back in Standard. Last time, it had literally zero support. Does the toxic mechanic mean Fynn might be good this time around? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/budget-magic-85-fynn-is-so-toxic-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6792840#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/Zp3vD\n◼ Purchase this deck (Magic Online): http://mtg.fish/n9g4N\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2024-12-23 08:00:08",
+            "views": 23191,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2024-12-05",
+                        "format": "standard",
+                        "name": "FynnFect",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6792840"
+                    },
+                    "decklist_id": "7c160f6c-f13a-eb78-b1af-683bbdf1fdd7",
+                    "decklist_extended_id": "509d96bc-cc34-d5b3-31ec-d750e52841ba"
+                }
+            ]
+        }
+    ]
+}
