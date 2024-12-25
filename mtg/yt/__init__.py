@@ -43,7 +43,7 @@ from mtg.utils.scrape import ScrapingError, extract_source, extract_url, \
     get_dynamic_soup, getsoup, http_requests_counted, throttle_with_countdown, throttled, \
     timed_request, unshorten
 from mtg.yt.data import CHANNELS_DIR, CHANNEL_URL_TEMPLATE, ChannelData, ScrapingSession, \
-    check_decklists, find_channel_files, load_channel, load_channels, prune_channel_data_file, \
+    find_orphans, find_channel_files, load_channel, load_channels, prune_channel_data_file, \
     retrieve_ids, DecklistPath
 
 _log = logging.getLogger(__name__)
@@ -65,7 +65,7 @@ def rescrape_missing_decklists() -> None:
     """Re-scrape those YT videos that contain decklists that are missing from global decklists
     repositories.
     """
-    decklist_paths = {p for lst in check_decklists().values() for p in lst}
+    decklist_paths = {p for lst in find_orphans().values() for p in lst}
     channels = defaultdict(set)
     for path in [DecklistPath.from_path(p) for p in decklist_paths]:
         channels[path.channel_id].add(path.video_id)
@@ -1036,6 +1036,9 @@ class Channel:
             dstdir: optionally, the destination directory (if not provided CWD is used)
             filename: optionally, a custom filename (if not provided a default is used)
         """
+        if not self.json:
+            _log.info("Nothing to dump")
+            return
         dstdir = dstdir or OUTPUT_DIR / "json"
         dstdir = getdir(dstdir)
         timestamp = self.scrape_time.strftime(FILENAME_TIMESTAMP_FORMAT)
@@ -1043,5 +1046,3 @@ class Channel:
         dst = dstdir / f"{sanitize_filename(filename)}.json"
         _log.info(f"Exporting channel to: '{dst}'...")
         dst.write_text(self.json, encoding="utf-8")
-
-

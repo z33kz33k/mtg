@@ -11,7 +11,7 @@ import itertools
 import json
 import logging
 from operator import attrgetter, itemgetter
-from dataclasses import dataclass
+from dataclasses import astuple, dataclass
 from datetime import date, datetime
 from types import TracebackType
 from typing import Generator, Iterator, Type
@@ -255,6 +255,32 @@ def update_gsheet() -> None:
     extend_gsheet_rows_with_cols("mtga_yt", "channels", data, start_row=2, start_col=2)
 
 
+def load_decklists() -> dict[str, dict[str, str]]:
+    regular_decklists = json.loads(REGULAR_DECKLISTS_FILE.read_text(
+        encoding="utf-8")) if REGULAR_DECKLISTS_FILE.is_file() else {}
+    _log.info(
+        f"Loaded {len(regular_decklists):,} regular decklist(s) from the global "
+        f"repository")
+    extended_decklists = json.loads(EXTENDED_DECKLISTS_FILE.read_text(
+        encoding="utf-8")) if EXTENDED_DECKLISTS_FILE.is_file() else {}
+    _log.info(
+        f"Loaded {len(extended_decklists):,} extended decklist(s) from the global "
+        f"repository")
+    return {
+        "regular": regular_decklists,
+        "extended": extended_decklists,
+    }
+
+
+def dump_decklists(regular_decklists: dict[str, str], extended_decklists: dict[str, str]) -> None:
+    _log.info(f"Dumping {len(regular_decklists):,} decklist(s) to '{REGULAR_DECKLISTS_FILE}'...")
+    REGULAR_DECKLISTS_FILE.write_text(
+        json.dumps(regular_decklists, indent=4, ensure_ascii=False), encoding="utf-8")
+    _log.info(f"Dumping {len(extended_decklists):,} decklist(s) '{EXTENDED_DECKLISTS_FILE}'...")
+    EXTENDED_DECKLISTS_FILE.write_text(
+        json.dumps(extended_decklists, indent=4, ensure_ascii=False),encoding="utf-8")
+
+
 class ScrapingSession:
     """Context manager to ensure proper updates of global decklist repositories during scraping.
     """
@@ -264,16 +290,9 @@ class ScrapingSession:
         self._regular_count, self._extended_count, self._failed_count = 0, 0, 0
 
     def __enter__(self) -> "ScrapingSession":
-        self._regular_decklists = json.loads(REGULAR_DECKLISTS_FILE.read_text(
-            encoding="utf-8")) if REGULAR_DECKLISTS_FILE.is_file() else {}
-        _log.info(
-            f"Loaded {len(self._regular_decklists):,} regular decklist(s) from the global "
-            f"repository")
-        self._extended_decklists = json.loads(EXTENDED_DECKLISTS_FILE.read_text(
-            encoding="utf-8")) if EXTENDED_DECKLISTS_FILE.is_file() else {}
-        _log.info(
-            f"Loaded {len(self._extended_decklists):,} extended decklist(s) from the global "
-            f"repository")
+        decklists = load_decklists()
+        self._regular_decklists = decklists["regular"]
+        self._extended_decklists = decklists["extended"]
         self._failed_urls = {k: set(v) for k, v in json.loads(FAILED_URLS_FILE.read_text(
                 encoding="utf-8")).items()} if FAILED_URLS_FILE.is_file() else {}
         _log.info(
@@ -284,23 +303,18 @@ class ScrapingSession:
     def __exit__(
             self, exc_type: Type[BaseException] | None, exc_val: BaseException | None,
             exc_tb: TracebackType | None) -> None:
-        _log.info(f"Dumping '{REGULAR_DECKLISTS_FILE}'...")
-        REGULAR_DECKLISTS_FILE.write_text(
-            json.dumps(self._regular_decklists, indent=4, ensure_ascii=False), encoding="utf-8")
-        _log.info(f"Dumping '{EXTENDED_DECKLISTS_FILE}'...")
-        EXTENDED_DECKLISTS_FILE.write_text(
-            json.dumps(self._extended_decklists, indent=4, ensure_ascii=False),encoding="utf-8")
+        dump_decklists(self._regular_decklists, self._extended_decklists)
         FAILED_URLS_FILE.write_text(
             json.dumps({k: sorted(v) for k, v in self._failed_urls.items()}, indent=4,
                        ensure_ascii=False), encoding="utf-8")
         _log.info(
-            f"Total of {self._regular_count} unique regular decklist(s) added to the global "
+            f"Total of {self._regular_count:,} unique regular decklist(s) added to the global "
             f"repository")
         _log.info(
-            f"Total of {self._extended_count} unique extended decklist(s) added to the global "
+            f"Total of {self._extended_count:,} unique extended decklist(s) added to the global "
             f"repository")
         _log.info(
-            f"Total of {self._failed_count} newly failed decklist URLs added to the global "
+            f"Total of {self._failed_count:,} newly failed decklist URLs added to the global "
             f"repository to be avoided in the future")
 
     def update_regular(self, decklist_id: str, decklist: str) -> None:
@@ -326,30 +340,30 @@ class ScrapingSession:
 
 
 def retrieve_decklist(decklist_id: str) -> str | None:
-    decklists = json.loads(REGULAR_DECKLISTS_FILE.read_text(
-            encoding="utf-8")) if REGULAR_DECKLISTS_FILE.is_file() else {}
-    decklists.update(json.loads(EXTENDED_DECKLISTS_FILE.read_text(
-            encoding="utf-8")) if EXTENDED_DECKLISTS_FILE.is_file() else {})
+    decklists = {k: v for _, d in load_decklists().items() for k, v in d.items()}
     return decklists.get(decklist_id)
 
 
 @dataclass(frozen=True)
 class DecklistPath:
+    """Structural path to a channel/video/decklist in the channel data.
+    """
     channel_id: str
-    video_id: str
-    decklist_id: str
+    video_id: str | None = None
+    decklist_id: str | None = None
 
     def __str__(self) -> str:
-        return breadcrumbs(self.channel_id, self.video_id, self.decklist_id)
+        return breadcrumbs(*[crumb for crumb in astuple(self) if crumb])
 
     @staticmethod
     def from_path(path: str) -> "DecklistPath":
-        return DecklistPath(*path.lstrip("/").split("/", 3))
+        parts = path.strip("/").split("/", maxsplit=2)
+        return DecklistPath(*parts)
 
 
-def check_decklists() -> dict[str, list[str]]:
+def find_orphans() -> dict[str, list[str]]:
     """Check the scraped channels data for any decklists missing in the global decklist
-    repositories.
+    repositories and return their structural paths.
 
     Returns:
         A dictionary of string paths pointing to the orphaned decklists (both in regular and
@@ -365,13 +379,13 @@ def check_decklists() -> dict[str, list[str]]:
                 regular_ids[deck["decklist_id"]] = path_regular
                 extended_ids[deck["decklist_extended_id"]] = path_extended
 
-    regular_decklists = json.loads(REGULAR_DECKLISTS_FILE.read_text(
-            encoding="utf-8")) if REGULAR_DECKLISTS_FILE.is_file() else {}
-    extended_decklists = json.loads(EXTENDED_DECKLISTS_FILE.read_text(
-            encoding="utf-8")) if EXTENDED_DECKLISTS_FILE.is_file() else {}
+    decklists = load_decklists()
+    regular_orphans = {r for r in regular_ids if r not in decklists["regular"]}
+    extended_orphans = {e for e in extended_ids if e not in decklists["extended"]}
 
-    regular_orphans = {r for r in regular_ids if r not in regular_decklists}
-    extended_orphans = {e for e in extended_ids if e not in extended_decklists}
+    _log.info(
+        f"Found {len(regular_orphans):,} orphaned regular decklist(s) and {len(extended_orphans):,}"
+        f" orphaned extended decklist(s)")
 
     return {
         "regular_orphans": sorted({str(regular_ids[r]) for r in regular_orphans}),
@@ -502,7 +516,7 @@ def prune_channel_data_file(file: PathLike, *video_ids: str) -> None:
             json.dumps(data, indent=2, ensure_ascii=False, default=serialize_dates),
             encoding="utf-8")
     else:
-        _log.info(f"Nothing to prune in '{file}'...")
+        _log.info(f"Nothing to prune in '{file}'")
 
 
 def find_channel_files(channel_id: str, *video_ids: str) -> list[str]:
@@ -520,3 +534,35 @@ def find_channel_files(channel_id: str, *video_ids: str) -> list[str]:
         if any(video["id"] in video_ids for video in data["videos"]):
             filtered.append(file.as_posix())
     return filtered
+
+
+def find_dangling_decklists() -> dict[str, str]:
+    """Find those decklists in the global decklist repositories that have no counterpart in the
+    scraped data.
+    """
+    decklists = load_decklists()
+    dangling, scraped_regular, scraped_extended = {}, set(), set()
+    decks = [d for ch in load_channels() for d in ch.decks]
+    for d in decks:
+        scraped_regular.add(d["decklist_id"])
+        scraped_extended.add(d["decklist_extended_id"])
+    for decklist_id in decklists["regular"]:
+        if decklist_id not in scraped_regular:
+            dangling[decklist_id] = decklists["regular"][decklist_id]
+    for decklist_id in decklists["extended"]:
+        if decklist_id not in scraped_extended:
+            dangling[decklist_id] = decklists["extended"][decklist_id]
+    _log.info(f"Found {len(dangling):,} dangling decklist(s)")
+    return dangling
+
+
+def prune_dangling_decklists() -> None:
+    """Prune global decklist repositories of those decklists that have no counterpart in the
+    scraped data.
+    """
+    dangling = find_dangling_decklists()
+    decklists = {
+        lbl: {k: v for k, v in decklists.items() if k not in dangling}
+        for lbl, decklists in load_decklists().items()}
+    dump_decklists(decklists["regular"], decklists["extended"])
+    _log.info(f"Pruning done")
