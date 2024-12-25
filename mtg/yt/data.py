@@ -29,6 +29,7 @@ CHANNELS_DIR = OUTPUT_DIR / "channels"
 REGULAR_DECKLISTS_FILE = CHANNELS_DIR / "regular_decklists.json"
 EXTENDED_DECKLISTS_FILE = CHANNELS_DIR / "extended_decklists.json"
 FAILED_URLS_FILE = CHANNELS_DIR / "failed_urls.json"
+ACTIVE_THRESHOLD = 14  # days (2 weeks)
 DORMANT_THRESHOLD = 30 * 3  # days (ca 3 months)
 ABANDONED_THRESHOLD = 30 * 12  # days (ca. 1 yr)
 DECK_STALE_THRESHOLD = 50  # videos
@@ -115,17 +116,22 @@ class ChannelData:
         return len(self.decks) / len(self.videos)
 
     @property
+    def is_abandoned(self) -> bool:
+        return self.staleness is not None and self.staleness > ABANDONED_THRESHOLD
+
+    @property
     def is_dormant(self) -> bool:
         return (self.staleness is not None
                 and ABANDONED_THRESHOLD >= self.staleness > DORMANT_THRESHOLD)
 
     @property
-    def is_abandoned(self) -> bool:
-        return self.staleness is not None and self.staleness > ABANDONED_THRESHOLD
+    def is_active(self) -> bool:
+        return (self.staleness is not None
+                and DORMANT_THRESHOLD >= self.staleness > ACTIVE_THRESHOLD)
 
     @property
-    def is_active(self) -> bool:
-        return not self.is_dormant and not self.is_abandoned
+    def is_fresh(self) -> bool:
+        return not self.is_abandoned and not self.is_dormant and not self.is_active
 
     @property
     def is_deck_stale(self) -> bool:

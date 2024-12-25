@@ -162,10 +162,10 @@ def scrape_channels(
             f"channel(s)")
 
 
-def scrape_active(
+def scrape_fresh(
         videos=25, only_earlier_than_last_scraped=True, only_deck_fresh=True) -> None:
-    """Scrape these YouTube channels specified in private Google Sheet that are not dormant or
-    abandoned. Save the scraped data as .json files.
+    """Scrape these YouTube channels specified in private Google Sheet that are not active,
+    dormant nor abandoned. Save the scraped data as .json files.
     """
     ids = []
     for id_ in retrieve_ids():
@@ -175,7 +175,28 @@ def scrape_active(
             data = None
         if not data:
             ids.append(id_)
-        elif data.is_active:
+        elif data.is_fresh:
+            if only_deck_fresh and not data.is_deck_fresh:
+                continue
+            ids.append(id_)
+    text = "fresh and deck-fresh" if only_deck_fresh else "fresh"
+    _log.info(f"Scraping {len(ids)} {text} channel(s)...")
+    scrape_channels(
+        *ids, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
+
+
+def scrape_active(
+        videos=25, only_earlier_than_last_scraped=True, only_deck_fresh=True) -> None:
+    """Scrape these YouTube channels specified in private Google Sheet that are active. Save
+    the scraped data as .json files.
+    """
+    ids = []
+    for id_ in retrieve_ids():
+        try:
+            data = load_channel(id_)
+        except FileNotFoundError:
+            data = None
+        if data and data.is_active:
             if only_deck_fresh and not data.is_deck_fresh:
                 continue
             ids.append(id_)
