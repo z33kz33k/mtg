@@ -86,7 +86,7 @@ class DeckboxScraper(DeckScraper):
 
 @ContainerScraper.registered
 class DeckboxUserScraper(ContainerScraper):
-    """Scraper of Deckbox user search page.
+    """Scraper of Deckbox user page.
     """
     CONTAINER_NAME = "Deckbox user"  # override
     DECK_URL_TEMPLATE = "https://deckbox.org{}"
@@ -110,3 +110,32 @@ class DeckboxUserScraper(ContainerScraper):
             tag for tag in self._soup.find_all("a", href=lambda h: h and "/sets/" in h)]
         urls = {tag.attrs["href"] for tag in deck_tags}
         return [self.DECK_URL_TEMPLATE.format(url) for url in sorted(urls)]
+
+
+@ContainerScraper.registered
+class DeckboxEventScraper(ContainerScraper):
+    """Scraper of Deckbox community event page.
+    """
+    CONTAINER_NAME = "Deckbox event"  # override
+    DECK_URL_TEMPLATE = "https://deckbox.org{}"
+    _DECK_SCRAPER = DeckboxScraper  # override
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return "deckbox.org/communities/" in url.lower() and "/events/" in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url)
+
+    def _collect(self) -> list[str]:  # override
+        self._soup = getsoup(self.url)
+        if not self._soup:
+            _log.warning("Event data not available")
+            return []
+
+        table_tag = self._soup.find("table", class_="simple_table")
+        deck_tags = [
+            tag for tag in table_tag.find_all("a", href=lambda h: h and "/sets/" in h)]
+        urls = [tag.attrs["href"] for tag in deck_tags]
+        return [self.DECK_URL_TEMPLATE.format(url) for url in urls]

@@ -79,7 +79,7 @@ descriptions).
       These include:
         * Aetherhub users and events
         * Archidekt folders and users
-        * Deckbox users
+        * Deckbox users and events
         * Deckstats users
         * Flexslot users
         * Goldfish tournaments and players
