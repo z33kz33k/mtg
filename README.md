@@ -79,6 +79,7 @@ descriptions).
       These include:
         * Aetherhub users and events
         * Archidekt folders and users
+        * Cardsrealm users
         * Deckbox users and events
         * Deckstats users
         * Flexslot users

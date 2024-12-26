@@ -12,10 +12,22 @@ import logging
 import dateutil.parser
 
 from mtg import Json
-from mtg.deck.scrapers import DeckScraper
+from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.utils.scrape import ScrapingError, dissect_js, getsoup, strip_url_params
 
 _log = logging.getLogger(__name__)
+
+
+def to_eng_url(url: str, lang_code_delimiter: str) -> str:
+    if len(lang_code_delimiter) < 3 or any(
+            ch != "/" for ch in (lang_code_delimiter[0], lang_code_delimiter[-1])):
+        raise ValueError(f"Invalid language code delimiter: {lang_code_delimiter!r}")
+    # attempt to replace any language code other than 'en-us' with 'en-us'
+    _, first = url.split("mtg.cardsrealm.com/", maxsplit=1)
+    if first.startswith(lang_code_delimiter[1:]):  # no lang code in url (implicitly means 'en-us')
+        return url
+    lang, _ = first.split(lang_code_delimiter, maxsplit=1)
+    return url.replace(f"/{lang}/", "/en-us/")
 
 
 @DeckScraper.registered
@@ -28,17 +40,12 @@ class CardsrealmScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "mtg.cardsrealm.com/" in url.lower() and "/decks/" in url.lower()
+        return "cardsrealm.com/" in url.lower() and "/decks/" in url.lower()
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
         url = strip_url_params(url, with_endpoint=False)
-        # attempt to replace any language code other than 'en-us' with 'en-us'
-        _, first = url.split("mtg.cardsrealm.com/", maxsplit=1)
-        if first.startswith("decks/"):  # no lang code in url (implicitly means 'en-us')
-            return url
-        lang, _ = first.split("/decks/", maxsplit=1)
-        return url.replace(f"/{lang}/", "/en-us/")
+        return to_eng_url(url, "/decks/")
 
     def _get_json(self) -> Json:
         def process(text: str) -> str:
@@ -74,3 +81,33 @@ class CardsrealmScraper(DeckScraper):
         for card_data in self._json_data:
             self._parse_card_json(card_data)
         self._derive_commander_from_sideboard()
+
+
+@ContainerScraper.registered
+class CardsrealmUserScraper(ContainerScraper):
+    """Scraper of Cardsrealm user profile page.
+    """
+    CONTAINER_NAME = "Cardsrealm user"  # override
+    DECK_URL_TEMPLATE = "https://mtg.cardsrealm.com{}"
+    _DECK_SCRAPER = CardsrealmScraper  # override
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return all(t in url.lower() for t in ("cardsrealm.com/", "/profile/", "/decks"))
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        url = strip_url_params(url, with_endpoint=False)
+        return to_eng_url(url, "/profile/")
+
+    def _collect(self) -> list[str]:  # override
+        self._soup = getsoup(self.url)
+        if not self._soup:
+            _log.warning("User data not available")
+            return []
+
+        deck_divs = [
+            div for div in self._soup.find_all("div", class_=lambda c: c and "deck_div_all" in c)]
+        deck_tags = [d.find("a", href=lambda h: h and "/decks/" in h) for d in deck_divs]
+        urls = [tag.attrs["href"] for tag in deck_tags]
+        return [self.DECK_URL_TEMPLATE.format(url) for url in urls]

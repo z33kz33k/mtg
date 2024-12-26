@@ -276,7 +276,7 @@ def dump_decklists(regular_decklists: dict[str, str], extended_decklists: dict[s
     _log.info(f"Dumping {len(regular_decklists):,} decklist(s) to '{REGULAR_DECKLISTS_FILE}'...")
     REGULAR_DECKLISTS_FILE.write_text(
         json.dumps(regular_decklists, indent=4, ensure_ascii=False), encoding="utf-8")
-    _log.info(f"Dumping {len(extended_decklists):,} decklist(s) '{EXTENDED_DECKLISTS_FILE}'...")
+    _log.info(f"Dumping {len(extended_decklists):,} decklist(s) to '{EXTENDED_DECKLISTS_FILE}'...")
     EXTENDED_DECKLISTS_FILE.write_text(
         json.dumps(extended_decklists, indent=4, ensure_ascii=False),encoding="utf-8")
 
