@@ -84,10 +84,10 @@ class CardsrealmScraper(DeckScraper):
 
 
 @ContainerScraper.registered
-class CardsrealmUserScraper(ContainerScraper):
+class CardsrealmProfileScraper(ContainerScraper):
     """Scraper of Cardsrealm user profile page.
     """
-    CONTAINER_NAME = "Cardsrealm user"  # override
+    CONTAINER_NAME = "Cardsrealm profile"  # override
     DECK_URL_TEMPLATE = "https://mtg.cardsrealm.com{}"
     _DECK_SCRAPER = CardsrealmScraper  # override
 
@@ -103,7 +103,8 @@ class CardsrealmUserScraper(ContainerScraper):
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url)
         if not self._soup:
-            _log.warning("User data not available")
+            _, name = self.CONTAINER_NAME.split()
+            _log.warning(f"{name.title()} data not available")
             return []
 
         deck_divs = [
@@ -111,3 +112,19 @@ class CardsrealmUserScraper(ContainerScraper):
         deck_tags = [d.find("a", href=lambda h: h and "/decks/" in h) for d in deck_divs]
         urls = [tag.attrs["href"] for tag in deck_tags]
         return [self.DECK_URL_TEMPLATE.format(url) for url in urls]
+
+
+@ContainerScraper.registered
+class CardsrealmFolderScraper(CardsrealmProfileScraper):
+    """Scraper of Cardsrealm decks folder page.
+    """
+    CONTAINER_NAME = "Cardsrealm folder"  # override
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return all(t in url.lower() for t in ("cardsrealm.com/", "/decks/folder/"))
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        url = strip_url_params(url, with_endpoint=False)
+        return to_eng_url(url, "/decks/")
