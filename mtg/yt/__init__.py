@@ -31,7 +31,7 @@ from selenium.common.exceptions import TimeoutException
 from youtube_comment_downloader import SORT_BY_POPULAR, YoutubeCommentDownloader
 from youtubesearchpython import Channel as YtspChannel
 
-from mtg import FILENAME_TIMESTAMP_FORMAT, Json, OUTPUT_DIR, PathLike
+from mtg import FILENAME_TIMESTAMP_FORMAT, Json, OUTPUT_DIR, PathLike, SECRETS
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser, get_arena_lines, group_arena_lines
 from mtg.deck.scrapers import ContainerScraper, DeckScraper, SANITIZED_FORMATS
@@ -42,14 +42,14 @@ from mtg.utils.files import getdir
 from mtg.utils.scrape import ScrapingError, extract_source, extract_url, \
     get_dynamic_soup, getsoup, http_requests_counted, throttle_with_countdown, throttled, \
     timed_request, unshorten
-from mtg.yt.data import CHANNELS_DIR, CHANNEL_URL_TEMPLATE, ChannelData, ScrapingSession, \
-    find_orphans, find_channel_files, load_channel, load_channels, prune_channel_data_file, \
-    retrieve_ids, DecklistPath
+from mtg.yt.data import CHANNELS_DIR, CHANNEL_URL_TEMPLATE, ChannelData, DecklistPath, \
+    ScrapingSession, find_channel_files, find_orphans, load_channel, load_channels, \
+    prune_channel_data_file, retrieve_ids
 
 _log = logging.getLogger(__name__)
 
 
-GOOGLE_API_KEY = Path("scraping_api_key.txt").read_text(encoding="utf-8")  # not used anywhere
+GOOGLE_API_KEY = SECRETS["google"]["api_key"]  # not used anywhere
 DEAD_THRESHOLD = 2500  # days (ca. 7 yrs) - only used in gsheet to trim dead from abandoned
 MAX_VIDEOS = 400
 
