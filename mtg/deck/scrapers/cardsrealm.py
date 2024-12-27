@@ -8,12 +8,22 @@
 
 """
 import logging
+import time
 
+import backoff
 import dateutil.parser
+from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.common import ElementClickInterceptedException, TimeoutException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 from mtg import Json
 from mtg.deck.scrapers import ContainerScraper, DeckScraper
-from mtg.utils.scrape import ScrapingError, dissect_js, getsoup, strip_url_params
+from mtg.utils.scrape import SELENIUM_TIMEOUT, ScrapingError, accept_consent, dissect_js, getsoup, \
+    scroll_down_with_arrows, strip_url_params
+from mtg.utils import timed
 
 _log = logging.getLogger(__name__)
 
@@ -130,7 +140,6 @@ class CardsrealmFolderScraper(CardsrealmProfileScraper):
         return to_eng_url(url, "/decks/")
 
 
-
 # e.g.: https://mtg.cardsrealm.com/en-us/meta-decks/pauper/tournaments/1k27j-pauper-royale-220
 def _is_meta_tournament_url(url: str) -> bool:
     return all(t in url.lower() for t in ("cardsrealm.com/", "/meta-decks/", "/tournaments/"))
@@ -142,38 +151,27 @@ def _is_regular_tournament_url(url: str) -> bool:
             and "/meta-decks/" not in url.lower())
 
 
-def _regular_to_meta(regular_url: str) -> str:
-    start, end = regular_url.rstrip("/").split("/tournament/", maxsplit=1)
-    _, fmt, *rest = end.split("-")
-    if rest and rest[0] == "commander":  # pauper-commander case
-        fmt += "-commander"
-    return start + "/meta-decks/" + fmt + "/tournaments/" + end
-
-
 @ContainerScraper.registered
-class CardsrealmTournamentScraper(ContainerScraper):
-    """Scraper of Cardsrealm tournaments pages (both regular and meta-deck ones).
+class CardsrealmMetaTournamentScraper(ContainerScraper):
+    """Scraper of Cardsrealm meta-deck tournaments page.
     """
-    CONTAINER_NAME = "Cardsrealm tournament"  # override
+    CONTAINER_NAME = "Cardsrealm meta-deck tournament"  # override
     DECK_URL_TEMPLATE = "https://mtg.cardsrealm.com{}"
     _DECK_SCRAPER = CardsrealmScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
-        return _is_regular_tournament_url(url) or _is_meta_tournament_url(url)
+        return _is_meta_tournament_url(url)
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
         url = strip_url_params(url, with_endpoint=False)
-        if _is_regular_tournament_url(url):
-            url = _regular_to_meta(url)
         return to_eng_url(url, "/meta-decks/")
 
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url)
         if not self._soup:
-            _, name = self.CONTAINER_NAME.split()
-            _log.warning(f"{name.title()} data not available")
+            _log.warning(f"Tournament data not available")
             return []
 
         deck_tags = [
@@ -184,6 +182,66 @@ class CardsrealmTournamentScraper(ContainerScraper):
                           and t.parent.name == "span")]
         urls = {tag.attrs["href"] for tag in deck_tags}
         return [self.DECK_URL_TEMPLATE.format(url) for url in sorted(urls)]
+
+
+@ContainerScraper.registered
+class CardsrealmRegularTournamentScraper(ContainerScraper):
+    """Scraper of Cardsrealm regular tournaments page.
+    """
+    CONTAINER_NAME = "Cardsrealm regular tournament"  # override
+    _DECK_SCRAPER = CardsrealmScraper  # override
+    _CONSENT_XPATH = '//button[@id="ez-accept-all"]'
+    _XPATH = "//button[text()='show deck']"
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return _is_regular_tournament_url(url)
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        url = strip_url_params(url, with_endpoint=False)
+        return to_eng_url(url, "/tournament/")
+
+    @timed("getting dynamic soup")
+    def _get_dynamic_soup(self) -> BeautifulSoup:
+        with webdriver.Chrome() as driver:
+            try:
+                _log.info(f"Webdriving using Chrome to: '{self.url}'...")
+                driver.get(self.url)
+
+                accept_consent(driver, self._CONSENT_XPATH)
+
+                buttons = WebDriverWait(driver, SELENIUM_TIMEOUT).until(
+                    EC.presence_of_all_elements_located((By.XPATH, self._XPATH)))
+                _log.info(
+                    f"Page has been loaded and elements specified by {self._XPATH!r} are present")
+
+                for btn in buttons:
+                    btn.click()
+
+                time.sleep(0.5)
+                return BeautifulSoup(driver.page_source, "lxml")
+
+            except ElementClickInterceptedException:
+                _log.error(
+                    f"Selenium click intercepted by a pop-up. Not all decklists gathered")
+                return BeautifulSoup(driver.page_source, "lxml")
+
+            except TimeoutException:
+                _log.error(f"Selenium timed out")
+                return BeautifulSoup(driver.page_source, "lxml")
+
+
+    def _collect(self) -> list[str]:  # override
+        self._soup = self._get_dynamic_soup()
+        if not self._soup:
+            _log.warning(f"Tournament data not available")
+            return []
+
+        deck_divs = [
+            div for div in self._soup.find_all("div", class_=lambda c: c and "mainDeck" in c)]
+        deck_tags = [d.find("a", href=lambda h: h and "/decks/" in h) for d in deck_divs]
+        return [tag.attrs["href"] for tag in deck_tags]
 
 
 @ContainerScraper.registered

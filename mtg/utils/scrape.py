@@ -353,9 +353,9 @@ def get_dynamic_soup(
 
             if consent_xpath:
                 if wait_for_consent_disappearance:
-                    _accept_consent(driver, consent_xpath)
+                    accept_consent(driver, consent_xpath)
                 else:
-                    _accept_consent_without_wait(driver, consent_xpath)
+                    accept_consent_without_wait(driver, consent_xpath)
 
             element = _wait_for_elements(driver, xpath, *halt_xpaths, timeout=timeout)
             if not element:
@@ -397,7 +397,7 @@ def throttled_dynamic_soup_by_xpath(
     return get_dynamic_soup(url, xpath, click, consent_xpath, clipboard_xpath, timeout)
 
 
-def _accept_consent(driver: WebDriver, xpath: str, timeout=SELENIUM_TIMEOUT) -> None:
+def accept_consent(driver: WebDriver, xpath: str, timeout=SELENIUM_TIMEOUT) -> None:
     """Accept consent by clicking element located by ``xpath`` with the passed Chrome
     webdriver.
 
@@ -431,7 +431,7 @@ def _accept_consent(driver: WebDriver, xpath: str, timeout=SELENIUM_TIMEOUT) -> 
         raise
 
 
-def _accept_consent_without_wait(
+def accept_consent_without_wait(
         driver: WebDriver, xpath: str, timeout=SELENIUM_TIMEOUT) -> None:
     """Accept consent by clicking element located by ``xpath`` with the passed Chrome
     webdriver. Don't wait for the consent window to disappear.
