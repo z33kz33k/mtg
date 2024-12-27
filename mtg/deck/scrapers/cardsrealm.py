@@ -128,3 +128,59 @@ class CardsrealmFolderScraper(CardsrealmProfileScraper):
     def sanitize_url(url: str) -> str:  # override
         url = strip_url_params(url, with_endpoint=False)
         return to_eng_url(url, "/decks/")
+
+
+
+# e.g.: https://mtg.cardsrealm.com/en-us/meta-decks/pauper/tournaments/1k27j-pauper-royale-220
+def _is_meta_tournament_url(url: str) -> bool:
+    return all(t in url.lower() for t in ("cardsrealm.com/", "/meta-decks/", "/tournaments/"))
+
+
+# e.g.: https://mtg.cardsrealm.com/en-us/tournament/1k27j-pauper-royale-220
+def _is_regular_tournament_url(url: str) -> bool:
+    return (all(t in url.lower() for t in ("cardsrealm.com/", "/tournament/"))
+            and "/meta-decks/" not in url.lower())
+
+
+def _regular_to_meta(regular_url: str) -> str:
+    start, end = regular_url.rstrip("/").split("/tournament/", maxsplit=1)
+    _, fmt, *rest = end.split("-")
+    if rest and rest[0] == "commander":  # pauper-commander case
+        fmt += "-commander"
+    return start + "/meta-decks/" + fmt + "/tournaments/" + end
+
+
+@ContainerScraper.registered
+class CardsrealmTournamentScraper(ContainerScraper):
+    """Scraper of Cardsrealm tournaments pages (both regular and meta-deck ones).
+    """
+    CONTAINER_NAME = "Cardsrealm tournament"  # override
+    DECK_URL_TEMPLATE = "https://mtg.cardsrealm.com{}"
+    _DECK_SCRAPER = CardsrealmScraper  # override
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return _is_regular_tournament_url(url) or _is_meta_tournament_url(url)
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        url = strip_url_params(url, with_endpoint=False)
+        if _is_regular_tournament_url(url):
+            url = _regular_to_meta(url)
+        return to_eng_url(url, "/meta-decks/")
+
+    def _collect(self) -> list[str]:  # override
+        self._soup = getsoup(self.url)
+        if not self._soup:
+            _, name = self.CONTAINER_NAME.split()
+            _log.warning(f"{name.title()} data not available")
+            return []
+
+        deck_tags = [
+            tag for tag in
+            self._soup.find_all(
+                lambda t: t.name == "a"
+                          and t.text.strip() == "Decklist"
+                          and t.parent.name == "span")]
+        urls = {tag.attrs["href"] for tag in deck_tags}
+        return [self.DECK_URL_TEMPLATE.format(url) for url in sorted(urls)]

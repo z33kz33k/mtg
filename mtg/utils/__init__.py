@@ -111,7 +111,7 @@ def get_date_from_ago_text(ago_text: str) -> date | None:
         return dt - timedelta(days=1)
     ago_text = ago_text.removesuffix(" ago")
     amount, time = ago_text.split()
-    amount = 1 if amount == "a" else int(amount)
+    amount = 1 if amount in ("a", "an") else int(amount)
     if time in ("days", "day"):
         return dt - timedelta(days=amount)
     elif time in ("months", "month"):
