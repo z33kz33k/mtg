@@ -184,3 +184,34 @@ class CardsrealmTournamentScraper(ContainerScraper):
                           and t.parent.name == "span")]
         urls = {tag.attrs["href"] for tag in deck_tags}
         return [self.DECK_URL_TEMPLATE.format(url) for url in sorted(urls)]
+
+
+@ContainerScraper.registered
+class CardsrealmArticleScraper(ContainerScraper):
+    """Scraper of Cardsrealm decks article page.
+    """
+    CONTAINER_NAME = "Cardsrealm article"  # override
+    DECK_URL_TEMPLATE = "https://mtg.cardsrealm.com{}"
+    _DECK_SCRAPER = CardsrealmScraper  # override
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return all(t in url.lower() for t in ("cardsrealm.com/", "/articles/"))
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        url = strip_url_params(url, with_endpoint=False)
+        return to_eng_url(url, "/articles/")
+
+    def _collect(self) -> list[str]:  # override
+        self._soup = getsoup(self.url)
+        if not self._soup:
+            _, name = self.CONTAINER_NAME.split()
+            _log.warning(f"{name.title()} data not available")
+            return []
+
+        deck_divs = [
+            div for div in self._soup.find_all("div", class_=lambda c: c and "mainDeck" in c)]
+        deck_tags = [d.find("a", href=lambda h: h and "/decks/" in h) for d in deck_divs]
+        urls = [tag.attrs["href"] for tag in deck_tags]
+        return [self.DECK_URL_TEMPLATE.format(url) for url in urls]
