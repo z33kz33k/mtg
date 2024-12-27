@@ -54,11 +54,14 @@ DEAD_THRESHOLD = 2500  # days (ca. 7 yrs) - only used in gsheet to trim dead fro
 MAX_VIDEOS = 400
 
 
-def get_channel_id(url: str) -> str:
-    soup = getsoup(url)
-    prefix = CHANNEL_URL_TEMPLATE[:-2]
-    tag = soup.find("link", rel="canonical")
-    return tag.attrs["href"].removeprefix(prefix)
+def get_channel_ids(*urls: str) -> list[str]:
+    ids = []
+    for url in urls:
+        soup = getsoup(url)
+        prefix = CHANNEL_URL_TEMPLATE[:-2]
+        tag = soup.find("link", rel="canonical")
+        ids.append(tag.attrs["href"].removeprefix(prefix))
+    return ids
 
 
 def rescrape_missing_decklists() -> None:

@@ -19,6 +19,12 @@ _log = logging.getLogger(__name__)
 ALT_DOMAIN = "mtga.cc"
 
 
+def get_source(src: str) -> str | None:
+    if ALT_DOMAIN in src:
+        return "mtgarena.pro"
+    return None
+
+
 @DeckScraper.registered
 class MtgArenaProScraper(DeckScraper):
     """Scraper of MTGArena.Pro decklist page.

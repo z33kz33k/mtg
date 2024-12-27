@@ -10,7 +10,6 @@
 import logging
 import time
 
-import backoff
 import dateutil.parser
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -22,10 +21,17 @@ from selenium.webdriver.support.ui import WebDriverWait
 from mtg import Json
 from mtg.deck.scrapers import ContainerScraper, DeckScraper
 from mtg.utils.scrape import SELENIUM_TIMEOUT, ScrapingError, accept_consent, dissect_js, getsoup, \
-    scroll_down_with_arrows, strip_url_params
+    strip_url_params
 from mtg.utils import timed
 
 _log = logging.getLogger(__name__)
+BASIC_DOMAIN = "cardsrealm.com"
+
+
+def get_source(src: str) -> str | None:
+    if BASIC_DOMAIN in src and "mtg." not in src:
+        return f"mtg.{BASIC_DOMAIN}"
+    return None
 
 
 def to_eng_url(url: str, lang_code_delimiter: str) -> str:
@@ -33,7 +39,7 @@ def to_eng_url(url: str, lang_code_delimiter: str) -> str:
             ch != "/" for ch in (lang_code_delimiter[0], lang_code_delimiter[-1])):
         raise ValueError(f"Invalid language code delimiter: {lang_code_delimiter!r}")
     # attempt to replace any language code other than 'en-us' with 'en-us'
-    _, first = url.split("mtg.cardsrealm.com/", maxsplit=1)
+    _, first = url.split(f"{BASIC_DOMAIN}/", maxsplit=1)
     if first.startswith(lang_code_delimiter[1:]):  # no lang code in url (implicitly means 'en-us')
         return url
     lang, _ = first.split(lang_code_delimiter, maxsplit=1)
@@ -50,7 +56,7 @@ class CardsrealmScraper(DeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "cardsrealm.com/" in url.lower() and "/decks/" in url.lower()
+        return f"{BASIC_DOMAIN}/" in url.lower() and "/decks/" in url.lower()
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
@@ -82,9 +88,10 @@ class CardsrealmScraper(DeckScraper):
         name = card_json["name_of_card"]
         quantity = card_json["deck_quantity"]
         card = self.find_card(name)
-        if card_json["deck_sideboard"]:
+        # filter out tokens and maybe-boards
+        if card_json["deck_sideboard"] == 1:
             self._sideboard += self.get_playset(card, quantity)
-        else:
+        elif card_json["deck_sideboard"] == 0:
             self._maindeck += self.get_playset(card, quantity)
 
     def _parse_deck(self) -> None:  # override
@@ -103,7 +110,7 @@ class CardsrealmProfileScraper(ContainerScraper):
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
-        return all(t in url.lower() for t in ("cardsrealm.com/", "/profile/", "/decks"))
+        return all(t in url.lower() for t in (f"{BASIC_DOMAIN}/", "/profile/", "/decks"))
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
@@ -132,7 +139,7 @@ class CardsrealmFolderScraper(CardsrealmProfileScraper):
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
-        return all(t in url.lower() for t in ("cardsrealm.com/", "/decks/folder/"))
+        return all(t in url.lower() for t in (f"{BASIC_DOMAIN}/", "/decks/folder/"))
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
@@ -142,12 +149,12 @@ class CardsrealmFolderScraper(CardsrealmProfileScraper):
 
 # e.g.: https://mtg.cardsrealm.com/en-us/meta-decks/pauper/tournaments/1k27j-pauper-royale-220
 def _is_meta_tournament_url(url: str) -> bool:
-    return all(t in url.lower() for t in ("cardsrealm.com/", "/meta-decks/", "/tournaments/"))
+    return all(t in url.lower() for t in (f"{BASIC_DOMAIN}/", "/meta-decks/", "/tournaments/"))
 
 
 # e.g.: https://mtg.cardsrealm.com/en-us/tournament/1k27j-pauper-royale-220
 def _is_regular_tournament_url(url: str) -> bool:
-    return (all(t in url.lower() for t in ("cardsrealm.com/", "/tournament/"))
+    return (all(t in url.lower() for t in (f"{BASIC_DOMAIN}/", "/tournament/"))
             and "/meta-decks/" not in url.lower())
 
 
@@ -241,7 +248,7 @@ class CardsrealmRegularTournamentScraper(ContainerScraper):
         deck_divs = [
             div for div in self._soup.find_all("div", class_=lambda c: c and "mainDeck" in c)]
         deck_tags = [d.find("a", href=lambda h: h and "/decks/" in h) for d in deck_divs]
-        return [tag.attrs["href"] for tag in deck_tags]
+        return [tag.attrs["href"] for tag in deck_tags if tag is not None]
 
 
 @ContainerScraper.registered
@@ -254,7 +261,7 @@ class CardsrealmArticleScraper(ContainerScraper):
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
-        return all(t in url.lower() for t in ("cardsrealm.com/", "/articles/"))
+        return all(t in url.lower() for t in (f"{BASIC_DOMAIN}/", "/articles/"))
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override

@@ -23,6 +23,14 @@ from mtg.utils.scrape import ScrapingError, getsoup, request_json, strip_url_par
 _log = logging.getLogger(__name__)
 
 
+def get_source(src: str) -> str | None:
+    if "tcgplayer" in src:
+        if "." in src:
+            _, *parts = src.split(".")
+            return ".".join(parts)
+    return None
+
+
 @DeckScraper.registered
 class OldSiteTcgPlayerScraper(DeckScraper):
     """Scraper of TCG Player old-site decklist page.

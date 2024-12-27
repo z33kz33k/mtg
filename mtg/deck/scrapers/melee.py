@@ -39,6 +39,12 @@ _HEADERS = {
 ALT_DOMAIN = "mtgmelee.com"
 
 
+def get_source(src: str) -> str | None:
+    if ALT_DOMAIN in src:
+        return "melee.gg"
+    return None
+
+
 @DeckScraper.registered
 class MeleeGgScraper(DeckScraper):
     """Scraper of Melee.gg decklist page.

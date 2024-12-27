@@ -17,8 +17,10 @@ from types import TracebackType
 from typing import Generator, Iterator, Type
 
 from mtg import OUTPUT_DIR, READABLE_TIMESTAMP_FORMAT, README, FILENAME_TIMESTAMP_FORMAT, PathLike
-from mtg.deck.scrapers.melee import ALT_DOMAIN as MELEE_ALT_DOMAIN
-from mtg.deck.scrapers.mtgarenapro import ALT_DOMAIN as MTGARENAPRO_ALT_DOMAIN
+from mtg.deck.scrapers.cardsrealm import get_source as cardsrealm_get_source
+from mtg.deck.scrapers.melee import get_source as melee_get_source
+from mtg.deck.scrapers.mtgarenapro import get_source as mtgarenapro_get_source
+from mtg.deck.scrapers.tcgplayer import get_source as tcgplayer_get_source
 from mtg.utils import Counter, breadcrumbs, deserialize_dates, serialize_dates
 from mtg.utils.files import getdir, getfile
 from mtg.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
@@ -411,13 +413,14 @@ def get_aggregate_deck_data() -> tuple[Counter, Counter]:
     for d in decks:
         src = d["metadata"]["source"]
         src = src.removeprefix("www.") if src.startswith("www.") else src
-        if "tcgplayer" in src:
-            _, *parts = src.split(".")
-            src = ".".join(parts)
-        elif MELEE_ALT_DOMAIN in src:
-            src = "melee.gg"
-        elif MTGARENAPRO_ALT_DOMAIN in src:
-            src = "mtgarena.pro"
+        if new_src := cardsrealm_get_source(src):
+            src = new_src
+        elif new_src := melee_get_source(src):
+            src = new_src
+        elif new_src := mtgarenapro_get_source(src):
+            src = new_src
+        elif new_src := tcgplayer_get_source(src):
+            src = new_src
         sources.append(src)
     source_counter = Counter(sources)
     return format_counter, source_counter
