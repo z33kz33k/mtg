@@ -158,13 +158,13 @@ class DeckScraper(DeckParser):
             if not suppress_scraping_errors:
                 _log.error(f"Scraping failed with: {se}")
                 raise se
-            _log.warning(f"Scraping failed with: {se}")
+            _log.error(f"Scraping failed with: {se}")
             return None
         except ParsingError as pe:
             if not suppress_parsing_errors:
                 _log.error(f"Scraping failed with: {pe}")
                 raise pe
-            _log.warning(f"Scraping failed with: {pe}")
+            _log.error(f"Scraping failed with: {pe}")
             return None
         try:
             return self._build_deck()
@@ -172,7 +172,7 @@ class DeckScraper(DeckParser):
             if not suppress_invalid_deck:
                 _log.error(f"Scraping failed with: {err}")
                 raise err
-            _log.warning(f"Scraping failed with: {err}")
+            _log.error(f"Scraping failed with: {err}")
             return None
 
     @classmethod

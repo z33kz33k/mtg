@@ -240,7 +240,8 @@ def scrape_abandoned(
         *ids, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
 
 
-def scrape_deck_stale(videos=25, only_earlier_than_last_scraped=True, only_active=True) -> None:
+def scrape_deck_stale(
+        videos=25, only_earlier_than_last_scraped=True, only_fresh_or_active=True) -> None:
     """Scrape these YouTube channels specified in private Google Sheet that are considered
     deck-stale. Save the scraped data as .json files.
     """
@@ -251,17 +252,17 @@ def scrape_deck_stale(videos=25, only_earlier_than_last_scraped=True, only_activ
         except FileNotFoundError:
             data = None
         if data and data.is_deck_stale:
-            if only_active and not data.is_active:
+            if only_fresh_or_active and not (data.is_fresh or data.is_active):
                 continue
             ids.append(id_)
-    text = "deck-stale and active" if only_active else "deck-stale"
+    text = "deck-stale and fresh/active" if only_fresh_or_active else "deck-stale"
     _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
         *ids, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
 
 
 def scrape_very_deck_stale(
-        videos=25, only_earlier_than_last_scraped=True, only_active=True) -> None:
+        videos=25, only_earlier_than_last_scraped=True, only_fresh_or_active=True) -> None:
     """Scrape these YouTube channels specified in private Google Sheet that are considered
     very deck-stale. Save the scraped data as .json files.
     """
@@ -272,17 +273,17 @@ def scrape_very_deck_stale(
         except FileNotFoundError:
             data = None
         if data and data.is_very_deck_stale:
-            if only_active and not data.is_active:
+            if only_fresh_or_active and not (data.is_fresh or data.is_active):
                 continue
             ids.append(id_)
-    text = "very deck-stale and active" if only_active else "very deck-stale"
+    text = "very deck-stale and fresh/active" if only_fresh_or_active else "very deck-stale"
     _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
         *ids, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
 
 
 def scrape_excessively_deck_stale(
-        videos=25, only_earlier_than_last_scraped=True, only_active=True) -> None:
+        videos=25, only_earlier_than_last_scraped=True, only_fresh_or_active=True) -> None:
     """Scrape these YouTube channels specified in private Google Sheet that are considered
     excessively deck-stale. Save the scraped data as .json files.
     """
@@ -293,10 +294,11 @@ def scrape_excessively_deck_stale(
         except FileNotFoundError:
             data = None
         if data and data.is_excessively_deck_stale:
-            if only_active and not data.is_active:
+            if only_fresh_or_active and not (data.is_fresh or data.is_active):
                 continue
             ids.append(id_)
-    text = "excessively deck-stale and active" if only_active else "excessively deck-stale"
+    text = "excessively deck-stale and fresh/active" if only_fresh_or_active else (
+        "excessively deck-stale")
     _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
         *ids, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
@@ -940,6 +942,10 @@ class Channel:
             videos=[json.loads(v.json, object_hook=deserialize_dates) for v in self.videos],
         )
         text = self.get_url_and_title(self.id, self.title)
+        sources = {d.metadata.get("source") for v in self.videos for d in v.decks}
+        sources = sorted(s for s in sources if s)
+        if sources:
+            text += f" [{', '.join(sources)}]"
         _log.info(f"Scraped *** {len(self.decks)} deck(s) *** in total for {text}")
 
     @timed("channel scraping", precision=2)

@@ -230,12 +230,12 @@ class CardsrealmRegularTournamentScraper(ContainerScraper):
                 return BeautifulSoup(driver.page_source, "lxml")
 
             except ElementClickInterceptedException:
-                _log.error(
+                _log.warning(
                     f"Selenium click intercepted by a pop-up. Not all decklists gathered")
                 return BeautifulSoup(driver.page_source, "lxml")
 
             except TimeoutException:
-                _log.error(f"Selenium timed out")
+                _log.warning(f"Selenium timed out during tournament scraping")
                 return BeautifulSoup(driver.page_source, "lxml")
 
 
