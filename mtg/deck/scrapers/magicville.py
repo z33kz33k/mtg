@@ -10,15 +10,15 @@
 import logging
 
 from mtg.deck import ParsingState
-from mtg.deck.scrapers import ContainerScraper, DeckScraper
+from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
 from mtg.utils import get_date_from_french_ago_text
 from mtg.utils.scrape import ScrapingError, getsoup
 
 _log = logging.getLogger(__name__)
 
 
-@DeckScraper.registered
-class MagicVilleScraper(DeckScraper):
+@UrlDeckScraper.registered
+class MagicVilleScraper(UrlDeckScraper):
     """Scraper of MagicVille decklist page.
     """
     @staticmethod

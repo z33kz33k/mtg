@@ -33,7 +33,7 @@ from youtubesearchpython import Channel as YtspChannel
 from mtg import FILENAME_TIMESTAMP_FORMAT, Json, OUTPUT_DIR, PathLike, SECRETS
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser, get_arena_lines, group_arena_lines
-from mtg.deck.scrapers import ContainerScraper, DeckScraper, SANITIZED_FORMATS
+from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper, SANITIZED_FORMATS
 from mtg.scryfall import all_formats
 from mtg.utils import Counter, deserialize_dates, extract_float, find_longest_seqs, \
     from_iterable, getrepr, multiply_by_symbol, sanitize_filename, serialize_dates, timed
@@ -679,7 +679,7 @@ class Video:
         return links, get_arena_lines(*other_lines)
 
     def _process_deck(self, link: str) -> Deck | None:
-        if scraper := DeckScraper.from_url(link, self.metadata):
+        if scraper := UrlDeckScraper.from_url(link, self.metadata):
             if deck := scraper.scrape(throttled=any(site in link for site in self._THROTTLED)):
                 return deck
             self._already_failed_deck_urls.add(link.lower().removesuffix("/"))

@@ -11,7 +11,7 @@ import logging
 
 from bs4 import Tag
 
-from mtg.deck.scrapers import ContainerScraper, DeckScraper
+from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
 from mtg.scryfall import Card
 from mtg.utils import from_iterable, get_date_from_ago_text, get_date_from_month_text
 from mtg.utils.scrape import ScrapingError, getsoup, request_json, strip_url_params
@@ -19,8 +19,8 @@ from mtg.utils.scrape import ScrapingError, getsoup, request_json, strip_url_par
 _log = logging.getLogger(__name__)
 
 
-@DeckScraper.registered
-class PennyDreadfulMagicScraper(DeckScraper):
+@UrlDeckScraper.registered
+class PennyDreadfulMagicScraper(UrlDeckScraper):
     """Scraper of PennyDreadfulMagic decklist page.
     """
     @staticmethod

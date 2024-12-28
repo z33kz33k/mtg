@@ -17,7 +17,7 @@ from requests import Response
 from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import ContainerScraper, DeckScraper
+from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
 from mtg.utils import extract_int, get_date_from_ago_text
 from mtg.utils.scrape import ScrapingError, getsoup, request_json, strip_url_params, \
     throttle, timed_request
@@ -40,8 +40,8 @@ def _backoff_handler(details: dict) -> None:
     _log.info("Backing off {wait:0.1f} seconds after {tries} tries...".format(**details))
 
 
-@DeckScraper.registered
-class TappedoutScraper(DeckScraper):
+@UrlDeckScraper.registered
+class TappedoutScraper(UrlDeckScraper):
     """Scraper of TappedOut decklist page.
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
@@ -133,7 +133,7 @@ class TappedoutUserScraper(ContainerScraper):
         collected, total, page = [], 1, 1
         while len(collected) < total:
             if page != 1:
-                throttle(*DeckScraper.THROTTLING)
+                throttle(*UrlDeckScraper.THROTTLING)
             json_data = request_json(self.API_URL_TEMPLATE.format(username, page))
             if not json_data or not json_data.get("results") or not json_data.get("total_decks"):
                 if not collected:
@@ -197,7 +197,7 @@ class TappedoutUserFolderScraper(TappedoutUserScraper):
         collected, has_next, page = [], True, 1
         while has_next:
             if page != 1:
-                throttle(*DeckScraper.THROTTLING)
+                throttle(*UrlDeckScraper.THROTTLING)
             json_data = request_json(self.API_URL_TEMPLATE.format(username, page))
             if not json_data or not json_data.get("results"):
                 if not collected:

@@ -11,15 +11,15 @@ import logging
 
 from bs4 import Tag
 
-from mtg.deck.scrapers import ContainerScraper, DeckScraper
+from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
 from mtg.scryfall import COMMANDER_FORMATS, Card
 from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
 
 _log = logging.getLogger(__name__)
 
 
-@DeckScraper.registered
-class DeckboxScraper(DeckScraper):
+@UrlDeckScraper.registered
+class DeckboxScraper(UrlDeckScraper):
     """Scraper of Deckbox decklist page.
     """
     @staticmethod

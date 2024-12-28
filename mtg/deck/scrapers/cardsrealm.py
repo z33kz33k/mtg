@@ -19,7 +19,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from mtg import Json
-from mtg.deck.scrapers import ContainerScraper, DeckScraper
+from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
 from mtg.utils.scrape import SELENIUM_TIMEOUT, ScrapingError, accept_consent, dissect_js, getsoup, \
     strip_url_params
 from mtg.utils import timed
@@ -46,8 +46,8 @@ def to_eng_url(url: str, lang_code_delimiter: str) -> str:
     return url.replace(f"/{lang}/", "/en-us/")
 
 
-@DeckScraper.registered
-class CardsrealmScraper(DeckScraper):
+@UrlDeckScraper.registered
+class CardsrealmScraper(UrlDeckScraper):
     """Scraper of Cardsrealm decklist page.
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:

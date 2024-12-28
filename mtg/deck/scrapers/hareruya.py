@@ -14,15 +14,15 @@ from bs4 import NavigableString
 
 from mtg import Json, SECRETS
 from mtg.deck import ParsingState
-from mtg.deck.scrapers import ContainerScraper, DeckScraper
+from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
 from mtg.deck.scrapers.goldfish import GoldfishScraper
 from mtg.utils.scrape import ScrapingError, getsoup, request_json
 
 _log = logging.getLogger(__name__)
 
 
-@DeckScraper.registered
-class InternationalHareruyaScraper(DeckScraper):
+@UrlDeckScraper.registered
+class InternationalHareruyaScraper(UrlDeckScraper):
     """Scraper of international Hareruya decklist page.
     """
     @staticmethod
@@ -98,8 +98,8 @@ class InternationalHareruyaScraper(DeckScraper):
                     self._set_commander(cards[0])
 
 
-@DeckScraper.registered
-class JapaneseHareruyaScraper(DeckScraper):
+@UrlDeckScraper.registered
+class JapaneseHareruyaScraper(UrlDeckScraper):
     """Scraper of Japanese Hareruya decklist page.
     """
     API_URL_TEMPLATE = "https://api.deck.hareruyamtg.com/api/deck/{}?display_token={}"

@@ -20,12 +20,14 @@ from operator import attrgetter
 from typing import Any, Iterable, Iterator
 
 from mtg import Json, OUTPUT_DIR, PathLike
-from mtg.scryfall import (COMMANDER_FORMATS, Card, Color,
-                          MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, aggregate,
-                          find_by_cardmarket_id, find_by_collector_number,
-                          find_by_mtgo_id, find_by_name, find_by_oracle_id,
-                          find_by_scryfall_id, find_by_tcgplayer_id, find_sets,
-                          query_api_for_card)
+from mtg.deck.scrapers import SANITIZED_FORMATS
+from mtg.scryfall import (
+    COMMANDER_FORMATS, Card, Color,
+    MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, aggregate,
+    all_formats, find_by_cardmarket_id, find_by_collector_number,
+    find_by_mtgo_id, find_by_name, find_by_oracle_id,
+    find_by_scryfall_id, find_by_tcgplayer_id, find_sets,
+    query_api_for_card)
 from mtg.utils import ParsingError, extract_int, from_iterable, getid, getrepr, serialize_dates
 from mtg.utils.files import getdir, getfile
 
@@ -1252,12 +1254,32 @@ class DeckParser(ABC):
             _log.warning(f"Parsing failed with: {pe}")
             return None
         try:
-            return Deck(
-                self._maindeck, self._sideboard, self._commander, self._partner_commander,
-                self._companion, self._metadata)
+            return self._build_deck()
         except InvalidDeck as err:
             if not suppress_invalid_deck:
                 _log.error(f"Parsing failed with: {err}")
                 raise err
             _log.warning(f"Parsing failed with: {err}")
             return None
+
+    def _update_fmt(self, fmt: str) -> None:
+        fmt = fmt.strip().lower()
+        fmt = SANITIZED_FORMATS.get(fmt, fmt)
+        if fmt != self.fmt:
+            if fmt in all_formats():
+                self._metadata["format"] = fmt
+            else:
+                _log.warning(f"Irregular format: {fmt!r}")
+                if self._metadata.get("format"):
+                    del self._metadata["format"]
+                self._metadata["irregular_format"] = fmt
+
+    def _update_custom_theme(self, prefix: str, custom_theme: str) -> None:
+        self._metadata[f"{prefix}_theme"] = custom_theme
+        if theme := from_iterable(THEMES, lambda t: t in custom_theme):
+            self._metadata["theme"] = theme
+
+    def _build_deck(self) -> Deck:
+        return Deck(
+            self._maindeck, self._sideboard, self._commander, self._partner_commander,
+            self._companion, self._metadata)

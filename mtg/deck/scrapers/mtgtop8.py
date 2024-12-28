@@ -11,7 +11,7 @@ import contextlib
 import logging
 from datetime import datetime
 
-from mtg.deck.scrapers import ContainerScraper, DeckScraper
+from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
 from mtg.utils import extract_int
 from mtg.utils.scrape import ScrapingError
 from mtg.utils.scrape import getsoup
@@ -23,8 +23,8 @@ EVENT_RANKS = "minor", "regular", "major"  # indicated by number of stars (1, 2,
 
 
 # TODO: scrape metagame
-@DeckScraper.registered
-class MtgTop8Scraper(DeckScraper):
+@UrlDeckScraper.registered
+class MtgTop8Scraper(UrlDeckScraper):
     """Scraper of MTGTop8 decklist page.
     """
     @staticmethod

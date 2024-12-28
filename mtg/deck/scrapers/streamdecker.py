@@ -13,15 +13,15 @@ from datetime import date
 from requests import ReadTimeout
 
 from mtg import Json
-from mtg.deck.scrapers import ContainerScraper, DeckScraper
+from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
 from mtg.utils import get_date_from_ago_text
 from mtg.utils.scrape import ScrapingError, request_json, strip_url_params
 
 _log = logging.getLogger(__name__)
 
 
-@DeckScraper.registered
-class StreamdeckerScraper(DeckScraper):
+@UrlDeckScraper.registered
+class StreamdeckerScraper(UrlDeckScraper):
     """Scraper of Streamdecker deck page.
     """
     API_URL_TEMPLATE = "https://www.streamdecker.com/api/deck/{}"

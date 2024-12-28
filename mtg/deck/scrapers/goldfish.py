@@ -11,7 +11,7 @@ import logging
 from datetime import datetime
 
 from mtg.deck import Deck, Mode, ParsingState
-from mtg.deck.scrapers import ContainerScraper, DeckScraper
+from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
 from mtg.scryfall import all_formats
 from mtg.utils import extract_int, timed
 from mtg.utils.scrape import ScrapingError, getsoup, http_requests_counted, strip_url_params, \
@@ -27,8 +27,8 @@ _log = logging.getLogger(__name__)
 # yet another alternative approach would be to scrape:
 # https://www.mtggoldfish.com/deck/arena_download/{DECK_ID} but this entails another request and
 # parsing a DECK_ID from the first URL
-@DeckScraper.registered
-class GoldfishScraper(DeckScraper):
+@UrlDeckScraper.registered
+class GoldfishScraper(UrlDeckScraper):
     """Scraper of MtGGoldfish decklist page.
     """
     HEADERS = {

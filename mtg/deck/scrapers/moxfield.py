@@ -11,15 +11,15 @@ import logging
 from datetime import datetime
 
 from mtg import Json
-from mtg.deck.scrapers import ContainerScraper, DeckScraper
+from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
 from mtg.scryfall import Card
 from mtg.utils.scrape import ScrapingError, get_selenium_json, strip_url_params
 
 _log = logging.getLogger(__name__)
 
 
-@DeckScraper.registered
-class MoxfieldScraper(DeckScraper):
+@UrlDeckScraper.registered
+class MoxfieldScraper(UrlDeckScraper):
     """Scraper of Moxfield decklist page.
     """
     API_URL_TEMPLATE = "https://api2.moxfield.com/v3/decks/all/{}"

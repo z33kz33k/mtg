@@ -14,7 +14,7 @@ import dateutil.parser
 from selenium.common.exceptions import TimeoutException
 
 from mtg.deck import Archetype, Mode, ParsingState
-from mtg.deck.scrapers import ContainerScraper, DeckScraper
+from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
 from mtg.utils import extract_float, extract_int, from_iterable
 from mtg.utils.scrape import ScrapingError, get_dynamic_soup, getsoup, strip_url_params
 
@@ -22,8 +22,8 @@ _log = logging.getLogger(__name__)
 
 
 # TODO: scrape the meta
-@DeckScraper.registered
-class AetherhubScraper(DeckScraper):
+@UrlDeckScraper.registered
+class AetherhubScraper(UrlDeckScraper):
     """Scraper of Aetherhub decklist page.
 
     Note:

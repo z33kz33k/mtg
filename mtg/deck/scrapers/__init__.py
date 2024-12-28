@@ -17,9 +17,8 @@ from requests import ConnectionError, ReadTimeout, HTTPError
 from selenium.common.exceptions import ElementClickInterceptedException
 
 from mtg import Json
-from mtg.deck import Deck, DeckParser, InvalidDeck, THEMES
-from mtg.scryfall import all_formats
-from mtg.utils import ParsingError, from_iterable, timed
+from mtg.deck import Deck, DeckParser, InvalidDeck
+from mtg.utils import ParsingError, timed
 from mtg.utils.scrape import ScrapingError
 from mtg.utils.scrape import Throttling, extract_source, throttle
 
@@ -71,9 +70,9 @@ SANITIZED_FORMATS = {
 }
 
 
-class DeckScraper(DeckParser):
+class UrlDeckScraper(DeckParser):
     THROTTLING = Throttling(0.6, 0.15)
-    _REGISTRY: set[Type["DeckScraper"]] = set()
+    _REGISTRY: set[Type["UrlDeckScraper"]] = set()
 
     @property
     def url(self) -> str:
@@ -102,23 +101,6 @@ class DeckScraper(DeckParser):
     def sanitize_url(url: str) -> str:
         return url.removesuffix("/")
 
-    def _update_fmt(self, fmt: str) -> None:
-        fmt = fmt.strip().lower()
-        fmt = SANITIZED_FORMATS.get(fmt, fmt)
-        if fmt != self.fmt:
-            if fmt in all_formats():
-                self._metadata["format"] = fmt
-            else:
-                _log.warning(f"Irregular format: {fmt!r}")
-                if self._metadata.get("format"):
-                    del self._metadata["format"]
-                self._metadata["irregular_format"] = fmt
-
-    def _update_custom_theme(self, prefix: str, custom_theme: str) -> None:
-        self._metadata[f"{prefix}_theme"] = custom_theme
-        if theme := from_iterable(THEMES, lambda t: t in custom_theme):
-            self._metadata["theme"] = theme
-
     @abstractmethod
     def _pre_parse(self) -> None:
         raise NotImplementedError
@@ -137,11 +119,6 @@ class DeckScraper(DeckParser):
             suppress_scraping_errors=suppress_parsing_errors,
             suppress_invalid_deck=suppress_invalid_deck
         )
-
-    def _build_deck(self) -> Deck:
-        return Deck(
-            self._maindeck, self._sideboard, self._commander, self._partner_commander,
-            self._companion, self._metadata)
 
     @backoff.on_exception(
         backoff.expo, (ConnectionError, HTTPError, ReadTimeout), max_time=60)
@@ -176,17 +153,17 @@ class DeckScraper(DeckParser):
             return None
 
     @classmethod
-    def registered(cls, scraper_type: Type["DeckScraper"]) -> Type["DeckScraper"]:
+    def registered(cls, scraper_type: Type["UrlDeckScraper"]) -> Type["UrlDeckScraper"]:
         """Class decorator for registering subclasses of DeckScraper.
         """
-        if issubclass(scraper_type, DeckScraper):
+        if issubclass(scraper_type, UrlDeckScraper):
             cls._REGISTRY.add(scraper_type)
         else:
             raise TypeError(f"Not a subclass of DeckScraper: {scraper_type!r}")
         return scraper_type
 
     @classmethod
-    def from_url(cls, url: str, metadata: Json | None = None) -> Optional["DeckScraper"]:
+    def from_url(cls, url: str, metadata: Json | None = None) -> Optional["UrlDeckScraper"]:
         for scraper_type in cls._REGISTRY:
             if scraper_type.is_deck_url(url):
                 return scraper_type(url, metadata)
@@ -195,9 +172,9 @@ class DeckScraper(DeckParser):
 
 class ContainerScraper:
     CONTAINER_NAME = None
-    THROTTLING = DeckScraper.THROTTLING
+    THROTTLING = UrlDeckScraper.THROTTLING
     _REGISTRY: set[Type["ContainerScraper"]] = set()
-    _DECK_SCRAPER: Type[DeckScraper] | None = None
+    _DECK_SCRAPER: Type[UrlDeckScraper] | None = None
 
     @property
     def url(self) -> str:
@@ -238,7 +215,7 @@ class ContainerScraper:
         failed_deck_urls = set()
         for i, deck_url in enumerate(self._deck_urls, start=1):
             scraper = self._DECK_SCRAPER(
-                deck_url, dict(self._metadata)) if self._DECK_SCRAPER else DeckScraper.from_url(
+                deck_url, dict(self._metadata)) if self._DECK_SCRAPER else UrlDeckScraper.from_url(
                 deck_url, dict(self._metadata))
             if not scraper:
                 raise ScrapingError(f"Failed to find scraper suitable for deck URL: {deck_url!r}")
