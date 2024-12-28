@@ -85,7 +85,7 @@ descriptions).
         * Flexslot users
         * Goldfish tournaments and players
         * Hareruya events and players
-        * LigaMagic events
+        * LigaMagic events _(with caveats)_
         * MagicVille events and users
         * Manatraders users
         * Melee.gg tournaments
@@ -93,6 +93,7 @@ descriptions).
         * MTGDecks.net tournaments
         * MTGTop8 events
         * PennyDreadfulMagic competitions and users
+        * StarCityGames events
         * Streamdecker users
         * TappedOut users, folders, and user folders
         * TCDecks events

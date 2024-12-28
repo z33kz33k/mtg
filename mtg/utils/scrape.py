@@ -298,6 +298,19 @@ def strip_url_params(url: str, with_endpoint=True) -> str:
     return url.removesuffix("/")
 
 
+def extract_url_endpoint(url: str) -> str:
+    """Extract endpoint from ``url`` (part between "?" (if present) and the last "/", e.g.: "watch"
+    in YT URLs).
+    """
+    url = url.removesuffix("/")
+    if "?" in url:
+        url, _ = url.split("?", maxsplit=1)
+    if "/" in url:
+        _, endpoint = url.rsplit("/", maxsplit=1)
+        return endpoint
+    return ""
+
+
 def url_decode(encoded: str) -> str:
     """Decode URL-encoded string.
 
