@@ -14,7 +14,9 @@ from operator import attrgetter, itemgetter
 from dataclasses import astuple, dataclass
 from datetime import date, datetime
 from types import TracebackType
-from typing import Generator, Iterator, Type
+from typing import Generator, Iterator, Literal, Type
+
+import scrapetube
 
 from mtg import OUTPUT_DIR, READABLE_TIMESTAMP_FORMAT, README, FILENAME_TIMESTAMP_FORMAT, PathLike
 from mtg.deck.scrapers.cardsrealm import get_source as cardsrealm_get_source
@@ -24,8 +26,10 @@ from mtg.deck.scrapers.tcgplayer import get_source as tcgplayer_get_source
 from mtg.utils import Counter, breadcrumbs, deserialize_dates, serialize_dates
 from mtg.utils.files import getdir, getfile
 from mtg.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
+from mtg.utils.scrape import getsoup
 
 _log = logging.getLogger(__name__)
+VIDEO_URL_TEMPLATE = "https://www.youtube.com/watch?v={}"
 CHANNEL_URL_TEMPLATE = "https://www.youtube.com/channel/{}"
 CHANNELS_DIR = OUTPUT_DIR / "channels"
 REGULAR_DECKLISTS_FILE = CHANNELS_DIR / "regular_decklists.json"
@@ -569,3 +573,65 @@ def prune_dangling_decklists() -> None:
         for lbl, decklists in load_decklists().items()}
     dump_decklists(decklists["regular"], decklists["extended"])
     _log.info(f"Pruning done")
+
+
+# TODO: results are underwhelming to say the least :/
+def discover_new_channels(
+        query: str, limit=10,
+        sort_by: Literal["relevance", "upload_date", "view_count", "rating"] = "upload_date"
+    ) -> list[str]:
+    """Discover channels that aren't yet included in the private Google Sheet.
+
+    Args:
+        query: YouTube search query (e.g. 'mtg' or 'mtg foo')
+        limit: maximum number of videos for 'scrapetube' to return
+        sort_by: sort order for 'scrapetube' results (see: https://scrapetube.readthedocs.io/en/latest/#scrapetube.get_search)
+
+    Returns:
+        list of channel IDs
+    """
+    retrieved_ids, chids = set(retrieve_ids()), set()
+    for video_data in scrapetube.get_search(query, limit=limit, sort_by=sort_by):
+        chid = None
+        video_url = VIDEO_URL_TEMPLATE.format(video_data['videoId'])
+        try:
+            chid = video_data["channelThumbnailSupportedRenderers"][
+                "channelThumbnailWithLinkRenderer"]["navigationEndpoint"]["browseEndpoint"][
+                "browseId"]
+        except (KeyError, IndexError):
+            try:
+                chid = video_data["longBylineText"]["runs"][0]["navigationEndpoint"][
+                    "browseEndpoint"]["browseId"]
+            except (KeyError, IndexError):
+                try:
+                    chid = video_data["ownerText"]["runs"][0]["navigationEndpoint"][
+                        "browseEndpoint"]["browseId"]
+                except (KeyError, IndexError):
+                    try:
+                        video_data["shortBylineText"]["runs"][0]["navigationEndpoint"][
+                    "browseEndpoint"]["browseId"]
+                    except (KeyError, IndexError):
+                        _log.warning(f"Failed to retrieve channel ID for video: {video_url!r}")
+                        continue
+
+        if chid and chid not in retrieved_ids:
+            _log.info(
+                f"Found new channel: {chid!r} (video: {video_url!r})")
+            chids.add(chid)
+
+    return sorted(chids)
+
+
+def get_channel_ids(*urls: str, only_new=True) -> list[str]:
+    ids = []
+    for url in urls:
+        soup = getsoup(url)
+        prefix = CHANNEL_URL_TEMPLATE[:-2]
+        tag = soup.find("link", rel="canonical")
+        ids.append(tag.attrs["href"].removeprefix(prefix))
+
+    if only_new:
+        retrieved_ids = set(retrieve_ids())
+        return [i for i in ids if i not in retrieved_ids]
+
+    return ids

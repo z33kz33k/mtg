@@ -18,7 +18,6 @@ from datetime import datetime
 from decimal import Decimal
 from functools import cached_property
 from http.client import RemoteDisconnected
-from pathlib import Path
 from typing import Generator, Iterable
 
 import backoff
@@ -40,11 +39,11 @@ from mtg.utils import Counter, deserialize_dates, extract_float, find_longest_se
     from_iterable, getrepr, multiply_by_symbol, sanitize_filename, serialize_dates, timed
 from mtg.utils.files import getdir
 from mtg.utils.scrape import ScrapingError, extract_source, extract_url, \
-    get_dynamic_soup, getsoup, http_requests_counted, throttle_with_countdown, throttled, \
+    get_dynamic_soup, http_requests_counted, throttle_with_countdown, throttled, \
     timed_request, unshorten
 from mtg.yt.data import CHANNELS_DIR, CHANNEL_URL_TEMPLATE, ChannelData, DecklistPath, \
-    ScrapingSession, find_channel_files, find_orphans, load_channel, load_channels, \
-    prune_channel_data_file, retrieve_ids
+    ScrapingSession, VIDEO_URL_TEMPLATE, find_channel_files, find_orphans, load_channel, \
+    load_channels, prune_channel_data_file, retrieve_ids
 
 _log = logging.getLogger(__name__)
 
@@ -52,16 +51,6 @@ _log = logging.getLogger(__name__)
 GOOGLE_API_KEY = SECRETS["google"]["api_key"]  # not used anywhere
 DEAD_THRESHOLD = 2500  # days (ca. 7 yrs) - only used in gsheet to trim dead from abandoned
 MAX_VIDEOS = 400
-
-
-def get_channel_ids(*urls: str) -> list[str]:
-    ids = []
-    for url in urls:
-        soup = getsoup(url)
-        prefix = CHANNEL_URL_TEMPLATE[:-2]
-        tag = soup.find("link", rel="canonical")
-        ids.append(tag.attrs["href"].removeprefix(prefix))
-    return ids
 
 
 def rescrape_missing_decklists() -> None:
@@ -316,8 +305,6 @@ def scrape_excessively_deck_stale(
 class Video:
     """YouTube video showcasing a MtG deck with its most important metadata.
     """
-    URL_TEMPLATE = "https://www.youtube.com/watch?v={}"
-
     SHORTENER_HOOKS = {
         "73.nu/",
         "bit.ly/",
@@ -448,7 +435,7 @@ class Video:
 
     @property
     def url(self) -> str:
-        return self.URL_TEMPLATE.format(self.id)
+        return VIDEO_URL_TEMPLATE.format(self.id)
 
     @property
     def author(self) -> str:
