@@ -31,9 +31,9 @@ from youtube_comment_downloader import SORT_BY_POPULAR, YoutubeCommentDownloader
 from youtubesearchpython import Channel as YtspChannel
 
 from mtg import FILENAME_TIMESTAMP_FORMAT, Json, OUTPUT_DIR, PathLike, SECRETS
-from mtg.deck import Deck
+from mtg.deck import Deck, SANITIZED_FORMATS
 from mtg.deck.arena import ArenaParser, get_arena_lines, group_arena_lines
-from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper, SANITIZED_FORMATS
+from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
 from mtg.scryfall import all_formats
 from mtg.utils import Counter, deserialize_dates, extract_float, find_longest_seqs, \
     from_iterable, getrepr, multiply_by_symbol, sanitize_filename, serialize_dates, timed

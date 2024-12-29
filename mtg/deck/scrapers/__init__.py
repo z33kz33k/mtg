@@ -12,7 +12,7 @@ from abc import abstractmethod
 from typing import Iterable, Optional, Type
 
 import backoff
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 from requests import ConnectionError, ReadTimeout, HTTPError
 from selenium.common.exceptions import ElementClickInterceptedException
 
@@ -25,81 +25,8 @@ from mtg.utils.scrape import Throttling, extract_source, throttle
 _log = logging.getLogger(__name__)
 
 
-SANITIZED_FORMATS = {
-    "1v1 commander": "commander",
-    "archon": "commander",
-    "artisan historic": "historic",
-    "artisanhistoric": "historic",
-    "australian highlander": "commander",
-    "australianhighlander": "commander",
-    "canadian highlander": "commander",
-    "canadianhighlander": "commander",
-    "cedh": "commander",
-    "centurion": "commander",
-    "commander 1v1": "commander",
-    "commander / edh": "commander",
-    "commander/edh": "commander",
-    "commanderprecon": "commander",
-    "commanderprecons": "commander",
-    "duel commander": "duel",
-    "duelcommander": "duel",
-    "duelcommanderrussian": "duel",
-    "edh": "commander",
-    "european highlander": "commander",
-    "europeanhighlander": "commander",
-    "future standard": "future",
-    "highlander australian": "commander",
-    "highlander canadian": "commander",
-    "highlander european": "commander",
-    "highlander": "commander",
-    "highlanderaustralian": "commander",
-    "highlandercanadian": "commander",
-    "highlandereuropean": "commander",
-    "historic brawl": "brawl",
-    "historic pauper": "historic",
-    "historic-pauper": "historic",
-    "historicbrawl": "brawl",
-    "historicpauper": "historic",
-    "no banned list modern": "modern",
-    "old school": "oldschool",
-    "oldschool 93/94": "oldschool",
-    "past standard": "standard",
-    "pauper edh": "paupercommander",
-    "pauperedh": "paupercommander",
-    "vintage old school": "oldschool",
-}
-
-
-class UrlDeckScraper(DeckParser):
+class DeckScraper(DeckParser):
     THROTTLING = Throttling(0.6, 0.15)
-    _REGISTRY: set[Type["UrlDeckScraper"]] = set()
-
-    @property
-    def url(self) -> str:
-        return self._url
-
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        url = url.removesuffix("/")
-        self._validate_url(url)
-        super().__init__(metadata)
-        self._url = self.sanitize_url(url)
-        self._soup: BeautifulSoup | None = None
-        self._metadata["url"] = self.url
-        self._metadata["source"] = extract_source(self.url)
-
-    @classmethod
-    def _validate_url(cls, url):
-        if url and not cls.is_deck_url(url):
-            raise ValueError(f"Not a deck URL: {url!r}")
-
-    @staticmethod
-    @abstractmethod
-    def is_deck_url(url: str) -> bool:
-        raise NotImplementedError
-
-    @staticmethod
-    def sanitize_url(url: str) -> str:
-        return url.removesuffix("/")
 
     @abstractmethod
     def _pre_parse(self) -> None:
@@ -152,6 +79,49 @@ class UrlDeckScraper(DeckParser):
             _log.error(f"Scraping failed with: {err}")
             return None
 
+
+class UrlDeckScraper(DeckScraper):
+    _REGISTRY: set[Type["UrlDeckScraper"]] = set()
+
+    @property
+    def url(self) -> str:
+        return self._url
+
+    def __init__(self, url: str, metadata: Json | None = None) -> None:
+        url = url.removesuffix("/")
+        self._validate_url(url)
+        super().__init__(metadata)
+        self._url = self.sanitize_url(url)
+        self._soup: BeautifulSoup | None = None
+        self._metadata["url"] = self.url
+        self._metadata["source"] = extract_source(self.url)
+
+    @classmethod
+    def _validate_url(cls, url):
+        if url and not cls.is_deck_url(url):
+            raise ValueError(f"Not a deck URL: {url!r}")
+
+    @staticmethod
+    @abstractmethod
+    def is_deck_url(url: str) -> bool:
+        raise NotImplementedError
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:
+        return url.removesuffix("/")
+
+    @abstractmethod
+    def _pre_parse(self) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def _parse_metadata(self) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def _parse_deck(self) -> None:
+        raise NotImplementedError
+
     @classmethod
     def registered(cls, scraper_type: Type["UrlDeckScraper"]) -> Type["UrlDeckScraper"]:
         """Class decorator for registering subclasses of DeckScraper.
@@ -168,6 +138,23 @@ class UrlDeckScraper(DeckParser):
             if scraper_type.is_deck_url(url):
                 return scraper_type(url, metadata)
         return None
+
+
+class TagDeckScraper(DeckScraper):
+    def __init__(self, metadata: Json | None = None, deck_tag: Tag | None = None) -> None:
+        super().__init__(metadata)
+        self._deck_tag = deck_tag
+
+    def _pre_parse(self) -> None:  # override
+        pass
+
+    @abstractmethod
+    def _parse_metadata(self) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def _parse_deck(self) -> None:
+        raise NotImplementedError
 
 
 class ContainerScraper:

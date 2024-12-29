@@ -20,7 +20,6 @@ from operator import attrgetter
 from typing import Any, Iterable, Iterator
 
 from mtg import Json, OUTPUT_DIR, PathLike
-from mtg.deck.scrapers import SANITIZED_FORMATS
 from mtg.scryfall import (
     COMMANDER_FORMATS, Card, Color,
     MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, aggregate,
@@ -1118,6 +1117,50 @@ class ParsingState(Enum):
 class CardNotFound(ParsingError):
     """Raised on card not being found.
     """
+
+SANITIZED_FORMATS = {
+    "1v1 commander": "commander",
+    "archon": "commander",
+    "artisan historic": "historic",
+    "artisanhistoric": "historic",
+    "australian highlander": "commander",
+    "australianhighlander": "commander",
+    "canadian highlander": "commander",
+    "canadianhighlander": "commander",
+    "cedh": "commander",
+    "centurion": "commander",
+    "commander 1v1": "commander",
+    "commander / edh": "commander",
+    "commander/edh": "commander",
+    "commanderprecon": "commander",
+    "commanderprecons": "commander",
+    "duel commander": "duel",
+    "duelcommander": "duel",
+    "duelcommanderrussian": "duel",
+    "edh": "commander",
+    "european highlander": "commander",
+    "europeanhighlander": "commander",
+    "future standard": "future",
+    "highlander australian": "commander",
+    "highlander canadian": "commander",
+    "highlander european": "commander",
+    "highlander": "commander",
+    "highlanderaustralian": "commander",
+    "highlandercanadian": "commander",
+    "highlandereuropean": "commander",
+    "historic brawl": "brawl",
+    "historic pauper": "historic",
+    "historic-pauper": "historic",
+    "historicbrawl": "brawl",
+    "historicpauper": "historic",
+    "no banned list modern": "modern",
+    "old school": "oldschool",
+    "oldschool 93/94": "oldschool",
+    "past standard": "standard",
+    "pauper edh": "paupercommander",
+    "pauperedh": "paupercommander",
+    "vintage old school": "oldschool",
+}
 
 
 class DeckParser(ABC):

@@ -14,36 +14,14 @@ from bs4 import Tag
 
 from mtg import Json
 from mtg.deck import ParsingState
-from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
+from mtg.deck.scrapers import ContainerScraper, TagDeckScraper, UrlDeckScraper
 from mtg.utils import extract_int, from_iterable, sanitize_whitespace
 from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
 
 _log = logging.getLogger(__name__)
 
 
-@UrlDeckScraper.registered
-class StarCityGamesScraper(UrlDeckScraper):
-    """Scraper of StarCityGames decklist page.
-    """
-    @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
-        if "old.starcitygames.com/decks/" not in url.lower():
-            return False
-        url = url.removesuffix("/")
-        _, end = url.split("/decks/", maxsplit=1)
-        if all(ch.isdigit() for ch in end):
-            return True
-        return False
-
-    @staticmethod
-    def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url, with_endpoint=False)
-
-    def _pre_parse(self) -> None:  # override
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            raise ScrapingError("Page not available")
-
+class StarCityGamesTagDeckScraper(TagDeckScraper):
     @staticmethod
     def _parse_event_line(line: str) -> Json | str:
         if " at " in line and " on " in line:
@@ -65,10 +43,10 @@ class StarCityGamesScraper(UrlDeckScraper):
         self._update_fmt(header_tag.find("div", class_="deck_format").text.strip().lower())
 
     def _parse_metadata(self) -> None:  # override
-        self._parse_header_tag(self._soup.find("div", class_="deck_header"))
+        self._parse_header_tag(self._deck_tag.find("div", class_="deck_header"))
 
-    def _parse_deck_tag(self, deck_tag: Tag) -> None:
-        for tag in deck_tag.descendants:
+    def _parse_decklist_tag(self, decklist_tag: Tag) -> None:
+        for tag in decklist_tag.descendants:
             if tag.name == "h3":
                 if "Sideboard" in tag.text:
                     self._shift_to_sideboard()
@@ -96,8 +74,39 @@ class StarCityGamesScraper(UrlDeckScraper):
                 self._set_commander(commander)
 
     def _parse_deck(self) -> None:  # override
-        deck_tag = self._soup.find("div", class_="deck_card_wrapper")
-        self._parse_deck_tag(deck_tag)
+        decklist_tag = self._deck_tag.find("div", class_="deck_card_wrapper")
+        self._parse_decklist_tag(decklist_tag)
+
+
+@UrlDeckScraper.registered
+class StarCityGamesUrlScraper(UrlDeckScraper, StarCityGamesTagDeckScraper):
+    """Scraper of StarCityGames decklist page.
+    """
+    @staticmethod
+    def is_deck_url(url: str) -> bool:  # override
+        if "old.starcitygames.com/decks/" not in url.lower():
+            return False
+        url = url.removesuffix("/")
+        _, end = url.split("/decks/", maxsplit=1)
+        if all(ch.isdigit() for ch in end):
+            return True
+        return False
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url, with_endpoint=False)
+
+    def _pre_parse(self) -> None:  # override
+        self._soup = getsoup(self.url)
+        if not self._soup:
+            raise ScrapingError("Page not available")
+
+    def _parse_metadata(self) -> None:  # override
+        self._parse_header_tag(self._soup.find("div", class_="deck_header"))
+
+    def _parse_deck(self) -> None:  # override
+        decklist_tag = self._soup.find("div", class_="deck_card_wrapper")
+        self._parse_decklist_tag(decklist_tag)
 
 
 @ContainerScraper.registered
@@ -105,7 +114,7 @@ class StarCityGamesEventScraper(ContainerScraper):
     """Scraper of StarCityGames event page.
     """
     CONTAINER_NAME = "StarCityGames event"  # override
-    _DECK_SCRAPER = StarCityGamesScraper  # override
+    _DECK_SCRAPER = StarCityGamesUrlScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -131,5 +140,5 @@ class StarCityGamesEventScraper(ContainerScraper):
         section_tag = self._soup.select_one("section#content")
         deck_tags = [
             a_tag for a_tag in section_tag.find_all(
-                "a", href=lambda h: h and StarCityGamesScraper.is_deck_url(h))]
+                "a", href=lambda h: h and StarCityGamesUrlScraper.is_deck_url(h))]
         return [tag.attrs["href"] for tag in deck_tags if tag is not None]
