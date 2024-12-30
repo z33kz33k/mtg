@@ -76,7 +76,7 @@ class PauperMtgScraper(UrlDeckScraper):
             cards += cls.get_playset(card, quantity)
         return cards
 
-    def _parse_deck(self) -> None:  # override
+    def _parse_decklist(self) -> None:  # override
         if self._is_edh:
             commander, *maindeck = self._parse_container(self._tags["maindeck"])
             self._set_commander(commander)

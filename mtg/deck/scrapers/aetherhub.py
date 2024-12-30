@@ -132,7 +132,7 @@ class AetherhubScraper(UrlDeckScraper):
                 rest = " ".join(rest)
                 self._metadata["event"]["name"] = rest
 
-    def _parse_deck(self) -> None:  # override
+    def _parse_decklist(self) -> None:  # override
         deck_tags = self._soup.find_all("div", class_="row")
         deck_tag = from_iterable(
             deck_tags, lambda t: t.text.strip().startswith(("Main", "Commander", "Companion")))

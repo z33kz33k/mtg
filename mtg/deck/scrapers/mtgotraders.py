@@ -56,7 +56,7 @@ class MtgoTradersScraper(UrlDeckScraper):
         quantity = json_card["qty"]
         return self.get_playset(self.find_card(name), quantity)
 
-    def _parse_deck(self) -> None:
+    def _parse_decklist(self) -> None:
         for json_card in self._json_data["main"]:
             self._maindeck += self._parse_json_card(json_card)
         if sideboard := self._json_data.get("sideboard"):

@@ -61,7 +61,7 @@ class PennyDreadfulMagicScraper(UrlDeckScraper):
         quantity = int(qty_text)
         return cls.get_playset(cls.find_card(name), quantity)
 
-    def _parse_deck(self) -> None:  # override
+    def _parse_decklist(self) -> None:  # override
         for section_tag in self._soup.find_all("section"):
             if section_tag.find("section"):  # skip higher-order sections
                 continue

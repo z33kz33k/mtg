@@ -77,7 +77,7 @@ class MeleeGgScraper(UrlDeckScraper):
             tag for tag in self._soup.select("div.decklist-card-info") if not "Deck" in tag.text]
         for tag in info_tags:
             if "/" in tag.text and any(ch.isdigit() for ch in tag.text):
-                self._metadata["date"] = dateutil.parser.parse(tag.text.strip())
+                self._metadata["date"] = dateutil.parser.parse(tag.text.strip()).date()
             else:
                 self._update_fmt(tag.text.strip())
 
@@ -85,7 +85,7 @@ class MeleeGgScraper(UrlDeckScraper):
         return ArenaParser(self._arena_decklist, metadata=self._metadata).parse(
             suppress_invalid_deck=False)
 
-    def _parse_deck(self) -> None:  # override
+    def _parse_decklist(self) -> None:  # override
         self._arena_decklist = self._soup.select_one(
             "textarea.decklist-builder-paste-field").text.strip().splitlines()
 

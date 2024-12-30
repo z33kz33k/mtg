@@ -77,7 +77,7 @@ class TCDecksScraper(UrlDeckScraper):
                 qty, name = None, None
         return cards
 
-    def _parse_deck(self) -> None:  # override
+    def _parse_decklist(self) -> None:  # override
         for td_tag in self._deck_tag.find_all("td", valign="top"):
             if td_tag.attrs.get("id") == "sideboard":
                 self._sideboard += self._parse_td(td_tag)

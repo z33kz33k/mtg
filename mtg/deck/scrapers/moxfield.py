@@ -76,7 +76,7 @@ class MoxfieldScraper(UrlDeckScraper):
         name = json_card["card"]["name"]
         return cls.get_playset(cls.find_card(name, scryfall_id=scryfall_id), quantity)
 
-    def _parse_deck(self) -> None:  # override
+    def _parse_decklist(self) -> None:  # override
         for card in self._json_data["boards"]["mainboard"]["cards"].values():
             self._maindeck.extend(self._to_playset(card))
         for card in self._json_data["boards"]["sideboard"]["cards"].values():

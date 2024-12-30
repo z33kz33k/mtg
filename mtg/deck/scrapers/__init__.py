@@ -39,7 +39,7 @@ class DeckScraper(DeckParser):
         raise NotImplementedError
 
     @abstractmethod
-    def _parse_deck(self) -> None:
+    def _parse_decklist(self) -> None:
         raise NotImplementedError
 
     def parse(
@@ -59,7 +59,7 @@ class DeckScraper(DeckParser):
         try:
             self._pre_parse()
             self._parse_metadata()
-            self._parse_deck()
+            self._parse_decklist()
         except ScrapingError as se:
             if not suppress_scraping_errors:
                 _log.error(f"Scraping failed with: {se}")
@@ -126,7 +126,7 @@ class UrlDeckScraper(DeckScraper):
         raise NotImplementedError
 
     @abstractmethod
-    def _parse_deck(self) -> None:
+    def _parse_decklist(self) -> None:
         raise NotImplementedError
 
     @classmethod
@@ -165,7 +165,7 @@ class TagDeckScraper(DeckScraper):
         raise NotImplementedError
 
     @abstractmethod
-    def _parse_deck(self) -> None:
+    def _parse_decklist(self) -> None:
         raise NotImplementedError
 
 

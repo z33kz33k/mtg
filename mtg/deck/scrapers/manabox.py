@@ -55,7 +55,7 @@ class ManaBoxScraper(UrlDeckScraper):
             cards += cls.get_playset(cls.find_card(name), qty)
         return cards
 
-    def _parse_deck(self) -> None:  # override
+    def _parse_decklist(self) -> None:  # override
         for container_div in self._soup.find_all("div", class_="mb-3"):
             header_tag = container_div.find(
                 "div", class_=["flex", "whitespace-nowrap", "overflow-hidden", "text-ellipsis"])

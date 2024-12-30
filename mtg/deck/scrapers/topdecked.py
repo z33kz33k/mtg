@@ -74,7 +74,7 @@ class TopDeckedScraper(UrlDeckScraper):
             if "ago" in date_text:
                 self._metadata["date"] = get_date_from_ago_text(date_text)
             else:
-                self._metadata["date"] = dateutil.parser.parse(date_text)
+                self._metadata["date"] = dateutil.parser.parse(date_text).date()
 
     def _get_data(self) -> list[str]:
         with webdriver.Chrome() as driver:
@@ -132,7 +132,7 @@ class TopDeckedScraper(UrlDeckScraper):
     def _build_deck(self) -> Deck:  # override
         return ArenaParser(self._arena_decklist, self._metadata).parse(suppress_invalid_deck=False)
 
-    def _parse_deck(self) -> None:  # override
+    def _parse_decklist(self) -> None:  # override
         if self.fmt and self.fmt in COMMANDER_FORMATS:
             self._handle_commander()
 

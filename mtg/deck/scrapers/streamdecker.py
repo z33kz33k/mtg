@@ -77,7 +77,7 @@ class StreamdeckerScraper(UrlDeckScraper):
         if json_card.get("companion"):
             self._companion = card
 
-    def _parse_deck(self) -> None:
+    def _parse_decklist(self) -> None:
         for json_card in self._json_data["cardList"]:
             self._parse_json_card(json_card)
 

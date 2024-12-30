@@ -71,7 +71,7 @@ class ArchidektScraper(UrlDeckScraper):
         else:
             self._maindeck.extend(playset)
 
-    def _parse_deck(self) -> None:  # override
+    def _parse_decklist(self) -> None:  # override
         for v in self._deck_data["cardMap"].values():
             self._parse_card_json(v)
 

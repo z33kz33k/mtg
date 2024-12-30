@@ -67,7 +67,7 @@ class FlexslotScraper(UrlDeckScraper):
         return ArenaParser(self._arena_decklist, metadata=self._metadata).parse(
             suppress_invalid_deck=False)
 
-    def _parse_deck(self) -> None:  # override
+    def _parse_decklist(self) -> None:  # override
         self._arena_decklist = [line.rstrip(":") for line in self._clipboard.splitlines()]
 
 

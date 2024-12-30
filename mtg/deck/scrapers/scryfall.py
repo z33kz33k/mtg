@@ -69,7 +69,7 @@ class ScryfallScraper(UrlDeckScraper):
             cards += cls.get_playset(card, quantity)
         return cards
 
-    def _parse_deck(self) -> None:  # override
+    def _parse_decklist(self) -> None:  # override
         for section_tag in self._soup.find_all("div", class_="deck-list-section"):
             title = section_tag.find("h6").text
             cards = self._parse_section(section_tag)

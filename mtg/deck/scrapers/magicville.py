@@ -76,7 +76,7 @@ class MagicVilleScraper(UrlDeckScraper):
             if date := get_date_from_french_ago_text(date_text):
                 self._metadata["date"] = date
 
-    def _parse_deck(self) -> None:  # override
+    def _parse_decklist(self) -> None:  # override
         main_tag = self._soup.find("div", id="aff_graphique")
         for tag in main_tag.descendants:
             if (tag.name in ("div", "span")

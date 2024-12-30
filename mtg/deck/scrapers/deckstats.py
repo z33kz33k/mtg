@@ -131,7 +131,7 @@ class DeckstatsScraper(UrlDeckScraper):
             self._set_commander(card)
         return self.get_playset(card, quantity)
 
-    def _parse_deck(self) -> None:  # override
+    def _parse_decklist(self) -> None:  # override
         cards = itertools.chain(
             *[section["cards"] for section in self._json_data["sections"]])
         for card_json in cards:

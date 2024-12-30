@@ -72,7 +72,7 @@ class OldSiteTcgPlayerScraper(UrlDeckScraper):
             cards += cls.get_playset(cls.find_card(name_tag.text.strip()), quantity)
         return cards
 
-    def _parse_deck(self) -> None:  # override
+    def _parse_decklist(self) -> None:  # override
         deck_tags = self._soup.find_all("div", class_="subdeck")
         for deck_tag in deck_tags:
             if deck_tag.find("h3").text.lower().startswith("command"):
@@ -169,7 +169,7 @@ class NewSiteTcgPlayerScraper(UrlDeckScraper):
             cardmap[int(card_id)] = card
         return cardmap
 
-    def _parse_deck(self) -> None:  # override
+    def _parse_decklist(self) -> None:  # override
         cardmap = self._get_cardmap()
         sub_decks = self._json_data["deck"]["subDecks"]
         if command_zone := sub_decks.get("commandzone"):

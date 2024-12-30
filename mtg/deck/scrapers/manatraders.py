@@ -63,7 +63,7 @@ class ManatradersScraper(UrlDeckScraper):
         if sideboard_qty := card_json.get("sideboardQuantity"):
             self._sideboard += self.get_playset(card, sideboard_qty)
 
-    def _parse_deck(self) -> None:  # override
+    def _parse_decklist(self) -> None:  # override
         for card_data in self._json_data["cards"].values():
             self._parse_card_json(card_data)
         self._derive_commander_from_sideboard()

@@ -50,7 +50,7 @@ class ManaStackScraper(UrlDeckScraper):
         *_, date_text = author_tag.text.strip().split("Last updated")
         self._metadata["date"] = get_date_from_ago_text(date_text.strip())
 
-    def _parse_deck(self) -> None:  # override
+    def _parse_decklist(self) -> None:  # override
         deck_tag = self._soup.find("div", class_="deck-list-container")
         for tag in deck_tag.descendants:
             if tag.name == "h4":

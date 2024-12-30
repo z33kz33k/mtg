@@ -15,7 +15,7 @@ from bs4 import NavigableString
 from mtg import Json, SECRETS
 from mtg.deck import ParsingState
 from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
-from mtg.deck.scrapers.goldfish import GoldfishScraper
+from mtg.deck.scrapers.goldfish import HEADERS as GOLDFISH_HEADERS
 from mtg.utils.scrape import ScrapingError, getsoup, request_json
 
 _log = logging.getLogger(__name__)
@@ -36,7 +36,7 @@ class InternationalHareruyaScraper(UrlDeckScraper):
         return url.replace("/ja/","/en/")
 
     def _pre_parse(self) -> None:  # override
-        self._soup = getsoup(self.url, headers=GoldfishScraper.HEADERS)
+        self._soup = getsoup(self.url, headers=GOLDFISH_HEADERS)
         if not self._soup:
             raise ScrapingError("Page not available")
 
@@ -65,7 +65,7 @@ class InternationalHareruyaScraper(UrlDeckScraper):
         if not self._metadata.get("name") and self._metadata.get("hareruya_archetype"):
             self._metadata["name"] = self._metadata["hareruya_archetype"]
 
-    def _parse_deck(self) -> None:  # override
+    def _parse_decklist(self) -> None:  # override
         main_tag = self._soup.find("div", class_="deckSearch-deckList__deckList__wrapper")
 
         for sub_tag in main_tag.descendants:
@@ -169,7 +169,7 @@ class JapaneseHareruyaScraper(UrlDeckScraper):
         elif json_card["board_id"] == 3:
             self._set_commander(self.find_card(name))
 
-    def _parse_deck(self) -> None:  # override
+    def _parse_decklist(self) -> None:  # override
         for card in self._json_data["cards"]:
             self._process_card(card)
 

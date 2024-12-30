@@ -70,7 +70,7 @@ class MtgTop8Scraper(UrlDeckScraper):
         if source_tag := self._soup.find("a", target="_blank"):
             self._metadata["event"]["source"] = source_tag.text.strip()
 
-    def _parse_deck(self) -> None:  # override
+    def _parse_decklist(self) -> None:  # override
         deck_tag = self._soup.find("div", style="display:flex;align-content:stretch;")
         cards, commander_on = self._maindeck, False
         for block_tag in deck_tag:

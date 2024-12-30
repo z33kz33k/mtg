@@ -31,6 +31,8 @@ _log = logging.getLogger(__name__)
 
 
 class StarCityGamesTagDeckScraper(TagDeckScraper):
+    """Scraper of a StarCityGames decklist HTML tag.
+    """
     @staticmethod
     def _parse_event_line(line: str) -> Json | str:
         if " at " in line and " on " in line:
@@ -82,13 +84,13 @@ class StarCityGamesTagDeckScraper(TagDeckScraper):
             if commander := from_iterable(self._maindeck, lambda c: c.name == deck_name):
                 self._set_commander(commander)
 
-    def _parse_deck(self) -> None:  # override
+    def _parse_decklist(self) -> None:  # override
         decklist_tag = self._deck_tag.find("div", class_="deck_card_wrapper")
         self._parse_decklist_tag(decklist_tag)
 
 
 @UrlDeckScraper.registered
-class StarCityGamesUrlScraper(UrlDeckScraper, StarCityGamesTagDeckScraper):
+class StarCityGamesUrlScraper(StarCityGamesTagDeckScraper, UrlDeckScraper):
     """Scraper of StarCityGames decklist page.
     """
     @staticmethod
@@ -109,13 +111,9 @@ class StarCityGamesUrlScraper(UrlDeckScraper, StarCityGamesTagDeckScraper):
         self._soup = getsoup(self.url)
         if not self._soup:
             raise ScrapingError("Page not available")
-
-    def _parse_metadata(self) -> None:  # override
-        self._parse_header_tag(self._soup.find("div", class_="deck_header"))
-
-    def _parse_deck(self) -> None:  # override
-        decklist_tag = self._soup.find("div", class_="deck_card_wrapper")
-        self._parse_decklist_tag(decklist_tag)
+        self._deck_tag = self._soup.find("div", class_="deck_listing")
+        if self._deck_tag is None:
+            raise ScrapingError("Deck data not found")
 
 
 @ContainerScraper.registered
@@ -162,7 +160,7 @@ class StarCityGamesArticleScraper(ContainerScraper):
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
-        return "articles.starcitygames.com/magic-the-gathering/" in url.lower()
+        return "articles.starcitygames.com/" in url.lower()
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override

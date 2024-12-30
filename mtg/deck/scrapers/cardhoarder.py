@@ -60,7 +60,7 @@ class CardhoarderScraper(UrlDeckScraper):
         self._metadata["name"] = self._deck_data["name"]
 
     # TODO: commander handling is only derived, no such input has been seen so far
-    def _parse_deck(self) -> None:  # override
+    def _parse_decklist(self) -> None:  # override
         card_jsons = []
         for _, item in self._deck_data["items"].items():
             card_jsons += item["items"]

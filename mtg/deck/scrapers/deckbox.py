@@ -61,7 +61,7 @@ class DeckboxScraper(UrlDeckScraper):
         name = name_tag.text.strip()
         return cls.get_playset(cls.find_card(name), quantity)
 
-    def _parse_deck(self) -> None:  # override
+    def _parse_decklist(self) -> None:  # override
         maindeck_table = self._soup.find("table", class_=lambda c: c and "main" in c)
         if not maindeck_table:
             raise ScrapingError(

@@ -85,7 +85,7 @@ class MtgArenaProScraper(UrlDeckScraper):
         card = cls.find_card(name)
         return cls.get_playset(card, quantity)
 
-    def _parse_deck(self) -> None:  # override
+    def _parse_decklist(self) -> None:  # override
         for card_json in self._json_data["deck_order"]:
             self._maindeck.extend(self._parse_card_json(card_json))
         for card_json in self._json_data["sidedeck_order"]:

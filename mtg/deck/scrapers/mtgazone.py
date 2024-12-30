@@ -101,7 +101,7 @@ class MtgaZoneScraper(UrlDeckScraper):
             decklist.extend(self._to_playset(card_tag))
         return decklist
 
-    def _parse_deck(self) -> None:  # override
+    def _parse_decklist(self) -> None:  # override
         if commander_tag := self._soup.select_one("div.decklist.short.commander"):
             for card in self._process_decklist(commander_tag):
                 self._set_commander(card)

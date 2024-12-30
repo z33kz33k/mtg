@@ -59,6 +59,6 @@ class CardBoardLiveScraper(UrlDeckScraper):
         return ArenaParser(self._clipboard.splitlines(), metadata=self._metadata).parse(
             suppress_invalid_deck=False)
 
-    def _parse_deck(self) -> None:  # override
+    def _parse_decklist(self) -> None:  # override
         pass
 

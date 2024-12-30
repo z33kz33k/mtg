@@ -89,7 +89,7 @@ class LigaMagicScraper(UrlDeckScraper):
             self._metadata["event"] = event_tag.find("a").text.strip()
         if right_block_tag := header_tag.find("div", class_="rightblock"):
             if date_tag := right_block_tag.find("div", class_="date"):
-                self._metadata["date"] = dateutil.parser.parse(date_tag.text.strip())
+                self._metadata["date"] = dateutil.parser.parse(date_tag.text.strip()).date()
 
     @classmethod
     def _parse_tag_list(cls, tag_list: list[Tag]) -> list[Card]:
@@ -103,7 +103,7 @@ class LigaMagicScraper(UrlDeckScraper):
             cards += cls.get_playset(card, quantity)
         return cards
 
-    def _parse_deck(self) -> None:  # override
+    def _parse_decklist(self) -> None:  # override
         for state in self._tags:
             if "Comandante" in state:
                 for card in self._parse_tag_list(self._tags[state]):

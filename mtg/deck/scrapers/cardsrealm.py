@@ -94,7 +94,7 @@ class CardsrealmScraper(UrlDeckScraper):
         elif card_json["deck_sideboard"] == 0:
             self._maindeck += self.get_playset(card, quantity)
 
-    def _parse_deck(self) -> None:  # override
+    def _parse_decklist(self) -> None:  # override
         for card_data in self._json_data:
             self._parse_card_json(card_data)
         self._derive_commander_from_sideboard()

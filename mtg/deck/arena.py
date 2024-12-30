@@ -361,7 +361,7 @@ class ArenaParser(DeckParser):
             return True
         return False
 
-    def _parse_deck(self) -> None:  # override
+    def _parse_decklist(self) -> None:  # override
         for line in self._lines:
             if _is_maindeck_line(line):
                 self._shift_to_maindeck()

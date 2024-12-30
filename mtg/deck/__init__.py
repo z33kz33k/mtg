@@ -1129,8 +1129,8 @@ SANITIZED_FORMATS = {
     "canadianhighlander": "commander",
     "cedh": "commander",
     "centurion": "commander",
-    "commander 1v1": "commander",
     "commander / edh": "commander",
+    "commander 1v1": "commander",
     "commander/edh": "commander",
     "commanderprecon": "commander",
     "commanderprecons": "commander",
@@ -1157,8 +1157,11 @@ SANITIZED_FORMATS = {
     "old school": "oldschool",
     "oldschool 93/94": "oldschool",
     "past standard": "standard",
+    "pauper commander": "paupercommander",
     "pauper edh": "paupercommander",
     "pauperedh": "paupercommander",
+    "penny dreadful": "penny",
+    "standard brawl": "standardbrawl",
     "vintage old school": "oldschool",
 }
 
@@ -1281,7 +1284,7 @@ class DeckParser(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def _parse_deck(self) -> None:
+    def _parse_decklist(self) -> None:
         raise NotImplementedError
 
     def parse(
@@ -1289,7 +1292,7 @@ class DeckParser(ABC):
             suppress_invalid_deck=True) -> Deck | None:  # override
         try:
             self._pre_parse()
-            self._parse_deck()
+            self._parse_decklist()
         except ParsingError as pe:
             if not suppress_parsing_errors:
                 _log.error(f"Parsing failed with: {pe}")
