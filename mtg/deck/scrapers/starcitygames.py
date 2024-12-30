@@ -21,6 +21,15 @@ from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
 _log = logging.getLogger(__name__)
 
 
+# the divide of deck scraping logic into tag-based scraper and URL-based scraper sprung from the
+# perceived need of parsing StarCityGames decklists-containing articles (e.g.:
+# https://articles.starcitygames.com/magic-the-gathering/the-coolest-rogue-decks-for-standard-at-magic-spotlight-foundations/
+# with a tag-based scraper (that, incidentally, could share the same deck-extracting logic with the
+# URL-based one). This turned out to be unnecessary as the decklist HTML tags in StarCityGames
+# articles contain also decklist URLs so the old approach of parsing deck URLs for decks
+# could be utilized.
+
+
 class StarCityGamesTagDeckScraper(TagDeckScraper):
     @staticmethod
     def _parse_event_line(line: str) -> Json | str:
@@ -142,3 +151,37 @@ class StarCityGamesEventScraper(ContainerScraper):
             a_tag for a_tag in section_tag.find_all(
                 "a", href=lambda h: h and StarCityGamesUrlScraper.is_deck_url(h))]
         return [tag.attrs["href"] for tag in deck_tags if tag is not None]
+
+
+@ContainerScraper.registered
+class StarCityGamesArticleScraper(ContainerScraper):
+    """Scraper of StarCityGames decks article page.
+    """
+    CONTAINER_NAME = "StarCityGames article"  # override
+    _DECK_SCRAPER = StarCityGamesUrlScraper  # override
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return "articles.starcitygames.com/magic-the-gathering/" in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url)
+
+    def _collect(self) -> list[str]:  # override
+        self._soup = getsoup(self.url)
+        if not self._soup:
+            _, name = self.CONTAINER_NAME.split()
+            _log.warning(f"{name.title()} data not available")
+            return []
+
+        deck_divs = [div for div in self._soup.find_all("div", class_="deck_listing")]
+        deck_headers = [
+            tag for tag in [d.find("header", class_="deck_title") for d in deck_divs]
+            if tag is not None]
+        a_tags = [
+            tag for tag in
+            [h.find("a", href=lambda h: h and StarCityGamesUrlScraper.is_deck_url(h))
+             for h in deck_headers]
+            if tag is not None]
+        return [tag.attrs["href"] for tag in a_tags]

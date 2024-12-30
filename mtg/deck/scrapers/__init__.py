@@ -26,6 +26,8 @@ _log = logging.getLogger(__name__)
 
 
 class DeckScraper(DeckParser):
+    """Abstract deck scraper.
+    """
     THROTTLING = Throttling(0.6, 0.15)
 
     @abstractmethod
@@ -81,6 +83,11 @@ class DeckScraper(DeckParser):
 
 
 class UrlDeckScraper(DeckScraper):
+    """Abstract URL-based deck scraper.
+
+    URL-based scrapers process a single, decklist and metadata holding, URL and return a Deck
+    object (if able).
+    """
     _REGISTRY: set[Type["UrlDeckScraper"]] = set()
 
     @property
@@ -141,6 +148,11 @@ class UrlDeckScraper(DeckScraper):
 
 
 class TagDeckScraper(DeckScraper):
+    """Abstract HTML tag based deck scraper.
+
+    HTML tag based scrapers process a single, decklist and metadata holding, HTML tag extracted
+    from a webpage and return a Deck object (if able).
+    """
     def __init__(self, metadata: Json | None = None, deck_tag: Tag | None = None) -> None:
         super().__init__(metadata)
         self._deck_tag = deck_tag
