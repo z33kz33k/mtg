@@ -119,49 +119,49 @@ descriptions).
 ### Scraped decks breakdown
 | No | Format | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | commander       | 16077 |    30.67 % |
-| 2  | standard        | 13583 |    25.91 % |
-| 3  | modern          |  4016 |     7.66 % |
-| 4  | pioneer         |  3345 |     6.38 % |
-| 5  | pauper          |  2711 |     5.17 % |
-| 6  | legacy          |  2201 |     4.20 % |
-| 7  | historic        |  1469 |     2.80 % |
-| 8  | brawl           |  1456 |     2.78 % |
+| 1  | commander       | 16141 |    30.73 % |
+| 2  | standard        | 13593 |    25.88 % |
+| 3  | modern          |  4018 |     7.65 % |
+| 4  | pioneer         |  3345 |     6.37 % |
+| 5  | pauper          |  2735 |     5.21 % |
+| 6  | legacy          |  2209 |     4.21 % |
+| 7  | historic        |  1470 |     2.80 % |
+| 8  | brawl           |  1455 |     2.77 % |
 | 9  | explorer        |  1349 |     2.57 % |
-| 10 | undefined       |  1192 |     2.27 % |
+| 10 | undefined       |  1191 |     2.27 % |
 | 11 | timeless        |  1175 |     2.24 % |
 | 12 | duel            |  1044 |     1.99 % |
 | 13 | premodern       |   560 |     1.07 % |
 | 14 | paupercommander |   462 |     0.88 % |
 | 15 | vintage         |   415 |     0.79 % |
-| 16 | irregular       |   395 |     0.75 % |
+| 16 | irregular       |   398 |     0.76 % |
 | 17 | alchemy         |   361 |     0.69 % |
 | 18 | penny           |   278 |     0.53 % |
-| 19 | standardbrawl   |   184 |     0.35 % |
+| 19 | standardbrawl   |   183 |     0.35 % |
 | 20 | oathbreaker     |    70 |     0.13 % |
 | 21 | gladiator       |    44 |     0.08 % |
 | 22 | oldschool       |    17 |     0.03 % |
 | 23 | future          |    14 |     0.03 % |
-|  | TOTAL           | 52418 | 100.00 %|
+|  | TOTAL           | 52527 | 100.00 %|
 
 | No | Source | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | moxfield.com           | 19877 |    37.92 % |
-| 2  | arena.decklist         |  6991 |    13.34 % |
-| 3  | aetherhub.com          |  6465 |    12.33 % |
-| 4  | mtggoldfish.com        |  5711 |    10.90 % |
-| 5  | archidekt.com          |  2758 |     5.26 % |
-| 6  | mtga.untapped.gg       |  1396 |     2.66 % |
-| 7  | tappedout.net          |  1287 |     2.46 % |
-| 8  | melee.gg               |  1068 |     2.04 % |
-| 9  | streamdecker.com       |  1055 |     2.01 % |
-| 10 | mtgtop8.com            |  1015 |     1.94 % |
+| 1  | moxfield.com           | 19942 |    37.97 % |
+| 2  | arena.decklist         |  6991 |    13.31 % |
+| 3  | aetherhub.com          |  6465 |    12.31 % |
+| 4  | mtggoldfish.com        |  5714 |    10.88 % |
+| 5  | archidekt.com          |  2758 |     5.25 % |
+| 6  | mtga.untapped.gg       |  1397 |     2.66 % |
+| 7  | tappedout.net          |  1287 |     2.45 % |
+| 8  | melee.gg               |  1093 |     2.08 % |
+| 9  | streamdecker.com       |  1054 |     2.01 % |
+| 10 | mtgtop8.com            |  1015 |     1.93 % |
 | 11 | mtgdecks.net           |   971 |     1.85 % |
-| 12 | tcgplayer.com          |   899 |     1.72 % |
+| 12 | tcgplayer.com          |   899 |     1.71 % |
 | 13 | mtg.cardsrealm.com     |   652 |     1.24 % |
-| 14 | deckstats.net          |   506 |     0.97 % |
+| 14 | deckstats.net          |   506 |     0.96 % |
 | 15 | hareruyamtg.com        |   272 |     0.52 % |
-| 16 | pennydreadfulmagic.com |   249 |     0.48 % |
+| 16 | pennydreadfulmagic.com |   249 |     0.47 % |
 | 17 | scryfall.com           |   198 |     0.38 % |
 | 18 | mtgazone.com           |   191 |     0.36 % |
 | 19 | magic-ville.com        |   186 |     0.35 % |
@@ -175,7 +175,7 @@ descriptions).
 | 27 | mtgarena.pro           |    23 |     0.04 % |
 | 28 | paupermtg.com          |    22 |     0.04 % |
 | 29 | cardhoarder.com        |    20 |     0.04 % |
-| 30 | app.cardboard.live     |    12 |     0.02 % |
-| 31 | old.starcitygames.com  |     2 |     0.00 % |
+| 30 | old.starcitygames.com  |    18 |     0.03 % |
+| 31 | app.cardboard.live     |    12 |     0.02 % |
 | 32 | mtgotraders.com        |     1 |     0.00 % |
-|  | TOTAL                  | 52418 | 100.00 %|
+|  | TOTAL                  | 52527 | 100.00 %|

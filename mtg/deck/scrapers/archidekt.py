@@ -32,7 +32,11 @@ class ArchidektScraper(UrlDeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url)
+        url = strip_url_params(url, with_endpoint=False)
+        if "#" in url:
+            url, _ = url.rsplit("#", maxsplit=1)
+            return url
+        return url
 
     def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)

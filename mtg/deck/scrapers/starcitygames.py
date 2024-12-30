@@ -86,6 +86,8 @@ class StarCityGamesTagDeckScraper(TagDeckScraper):
 
     def _parse_decklist(self) -> None:  # override
         decklist_tag = self._deck_tag.find("div", class_="deck_card_wrapper")
+        if decklist_tag is None:
+            raise ScrapingError("Decklist not found (probably paywalled)")
         self._parse_decklist_tag(decklist_tag)
 
 
@@ -113,7 +115,9 @@ class StarCityGamesUrlScraper(StarCityGamesTagDeckScraper, UrlDeckScraper):
             raise ScrapingError("Page not available")
         self._deck_tag = self._soup.find("div", class_="deck_listing")
         if self._deck_tag is None:
-            raise ScrapingError("Deck data not found")
+            self._deck_tag = self._soup.find("div", class_="deck_listing2")
+            if self._deck_tag is None:
+                raise ScrapingError("Deck data not found")
 
 
 @ContainerScraper.registered
@@ -160,11 +164,11 @@ class StarCityGamesArticleScraper(ContainerScraper):
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
-        return "articles.starcitygames.com/" in url.lower()
+        return "articles.starcitygames.com/" in url.lower() and "/author/" not in url.lower()
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url)
+        return strip_url_params(url, with_endpoint=False)
 
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url)
