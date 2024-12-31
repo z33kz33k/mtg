@@ -13,7 +13,6 @@ import dateutil.parser
 from bs4 import Tag
 
 from mtg import Json
-from mtg.deck import ParsingState
 from mtg.deck.scrapers import ContainerScraper, TagDeckScraper, UrlDeckScraper
 from mtg.utils import extract_int, from_iterable, sanitize_whitespace
 from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
@@ -60,24 +59,24 @@ class StarCityGamesTagDeckScraper(TagDeckScraper):
         for tag in decklist_tag.descendants:
             if tag.name == "h3":
                 if "Sideboard" in tag.text:
-                    self._shift_to_sideboard()
+                    self._state.shift_to_sideboard()
                 elif "Commander" in tag.text:
-                    self._shift_to_commander()
+                    self._state.shift_to_commander()
                 elif "Companion" in tag.text:
-                    self._shift_to_companion()
-                elif self._state is not ParsingState.MAINDECK:
-                    self._shift_to_maindeck()
+                    self._state.shift_to_companion()
+                elif not self._state.is_maindeck:
+                    self._state.shift_to_maindeck()
             elif tag.name == "li":
                 name = tag.find("a").text.strip()
                 quantity = int(tag.text.strip().removesuffix(name).strip())
                 cards = self.get_playset(self.find_card(name), quantity)
-                if self._state is ParsingState.MAINDECK:
+                if self._state.is_maindeck:
                     self._maindeck += cards
-                elif self._state is ParsingState.SIDEBOARD:
+                elif self._state.is_sideboard:
                     self._sideboard += cards
-                elif self._state is ParsingState.COMMANDER:
+                elif self._state.is_commander:
                     self._set_commander(cards[0])
-                elif self._state is ParsingState.COMPANION:
+                elif self._state.is_companion:
                     self._companion = cards[0]
         if self.fmt == "commander":
             deck_name = self._metadata["name"]

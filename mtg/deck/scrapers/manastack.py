@@ -11,7 +11,6 @@ import logging
 
 from selenium.common.exceptions import TimeoutException
 
-from mtg.deck import ParsingState
 from mtg.deck.scrapers import UrlDeckScraper
 from mtg.utils import get_date_from_ago_text
 from mtg.utils.scrape import ScrapingError, strip_url_params
@@ -55,24 +54,24 @@ class ManaStackScraper(UrlDeckScraper):
         for tag in deck_tag.descendants:
             if tag.name == "h4":
                 if "Sideboard" in tag.text:
-                    self._shift_to_sideboard()
+                    self._state.shift_to_sideboard()
                 elif "Commander" in tag.text:
-                    self._shift_to_commander()
+                    self._state.shift_to_commander()
                 elif "Companion" in tag.text:
-                    self._shift_to_companion()
-                elif self._state is not ParsingState.MAINDECK:
-                    self._shift_to_maindeck()
+                    self._state.shift_to_companion()
+                elif not self._state.is_maindeck:
+                    self._state.shift_to_maindeck()
             elif tag.name == "div":
                 class_ = tag.attrs.get("class")
                 if "deck-list-item" in class_:
                     name = tag.find("a").text.strip()
                     quantity = int(tag.text.strip().removesuffix(name).strip())
                     cards = self.get_playset(self.find_card(name), quantity)
-                    if self._state is ParsingState.MAINDECK:
+                    if self._state.is_maindeck:
                         self._maindeck += cards
-                    elif self._state is ParsingState.SIDEBOARD:
+                    elif self._state.is_sideboard:
                         self._sideboard += cards
-                    elif self._state is ParsingState.COMMANDER:
+                    elif self._state.is_commander:
                         self._set_commander(cards[0])
-                    elif self._state is ParsingState.COMPANION:
+                    elif self._state.is_companion:
                         self._companion = cards[0]

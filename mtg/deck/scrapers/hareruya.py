@@ -13,7 +13,6 @@ import dateutil.parser
 from bs4 import NavigableString
 
 from mtg import Json, SECRETS
-from mtg.deck import ParsingState
 from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
 from mtg.deck.scrapers.goldfish import HEADERS as GOLDFISH_HEADERS
 from mtg.utils.scrape import ScrapingError, getsoup, request_json
@@ -75,11 +74,11 @@ class InternationalHareruyaScraper(UrlDeckScraper):
             if class_ := sub_tag.attrs.get("class"):
                 if "deckSearch-deckList__deckList__totalNumber" in class_:
                     if "Sideboard" in sub_tag.text:
-                        self._shift_to_sideboard()
+                        self._state.shift_to_sideboard()
                     elif "Commander" in sub_tag.text:
-                        self._shift_to_commander()
-                    elif self._state is not ParsingState.MAINDECK:
-                        self._shift_to_maindeck()
+                        self._state.shift_to_commander()
+                    elif not self._state.is_maindeck:
+                        self._state.shift_to_maindeck()
             else:
                 name_tag = sub_tag.find("a", class_="popup_product")
                 if not name_tag:
@@ -90,11 +89,11 @@ class InternationalHareruyaScraper(UrlDeckScraper):
                     continue
                 quantity = int(qty_tag.text)
                 cards = self.get_playset(self.find_card(name), quantity)
-                if self._state is ParsingState.MAINDECK:
+                if self._state.is_maindeck:
                     self._maindeck += cards
-                elif self._state is ParsingState.SIDEBOARD:
+                elif self._state.is_sideboard:
                     self._sideboard += cards
-                elif self._state is ParsingState.COMMANDER:
+                elif self._state.is_commander:
                     self._set_commander(cards[0])
 
 

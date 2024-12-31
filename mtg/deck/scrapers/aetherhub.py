@@ -13,7 +13,7 @@ from datetime import datetime
 import dateutil.parser
 from selenium.common.exceptions import TimeoutException
 
-from mtg.deck import Archetype, Mode, ParsingState
+from mtg.deck import Archetype, Mode
 from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
 from mtg.utils import extract_float, extract_int, from_iterable
 from mtg.utils.scrape import ScrapingError, get_dynamic_soup, getsoup, strip_url_params
@@ -143,13 +143,13 @@ class AetherhubScraper(UrlDeckScraper):
         for tag in deck_tag.descendants:
             if tag.name == "h5":
                 if "Side" in tag.text:
-                    self._shift_to_sideboard()
+                    self._state.shift_to_sideboard()
                 elif "Commander" in tag.text:
-                    self._shift_to_commander()
+                    self._state.shift_to_commander()
                 elif "Companion" in tag.text:
-                    self._shift_to_companion()
-                elif self._state is not ParsingState.MAINDECK:
-                    self._shift_to_maindeck()
+                    self._state.shift_to_companion()
+                elif not self._state.is_maindeck:
+                    self._state.shift_to_maindeck()
             elif tag.name == "tr":
                 td_tags = tag.find_all("td")
                 if td_tags:
@@ -164,13 +164,13 @@ class AetherhubScraper(UrlDeckScraper):
                     collector = card_tag.attrs.get("data-card-number")
                     set_col = (set_code, collector) if set_code and collector else None
                     cards = self.get_playset(self.find_card(name, set_col), quantity)
-                    if self._state is ParsingState.MAINDECK:
+                    if self._state.is_maindeck:
                         self._maindeck += cards
-                    elif self._state is ParsingState.SIDEBOARD:
+                    elif self._state.is_sideboard:
                         self._sideboard += cards
-                    elif self._state is ParsingState.COMMANDER:
+                    elif self._state.is_commander:
                         self._set_commander(cards[0])
-                    elif self._state is ParsingState.COMPANION:
+                    elif self._state.is_companion:
                         self._companion = cards[0]
 
 

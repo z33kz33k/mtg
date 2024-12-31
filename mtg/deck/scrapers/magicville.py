@@ -9,7 +9,6 @@
 """
 import logging
 
-from mtg.deck import ParsingState
 from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
 from mtg.utils import get_date_from_french_ago_text
 from mtg.utils.scrape import ScrapingError, getsoup
@@ -82,7 +81,8 @@ class MagicVilleScraper(UrlDeckScraper):
             if (tag.name in ("div", "span")
                     and tag.attrs.get("class") == ["O16"]
                     and tag.text == "SIDEBOARD"):
-                    self._state = ParsingState.SIDEBOARD
+                if not self._state.is_sideboard:
+                    self._state.shift_to_sideboard()
             elif (tag.name == "div"
                   and tag.attrs.get("class") == ["S14"]
                   and len([*tag.find_all("a")]) == 1):
@@ -98,7 +98,7 @@ class MagicVilleScraper(UrlDeckScraper):
                     qty = 1
                 name = tag.find("a").text.strip()
                 playset = self.get_playset(self.find_card(name.strip()), qty)
-                if self._state == ParsingState.SIDEBOARD:
+                if self._state.is_sideboard:
                     self._sideboard += playset
                 else:
                     self._maindeck += playset

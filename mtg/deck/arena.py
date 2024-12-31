@@ -12,7 +12,7 @@ import re
 from typing import Generator
 
 from mtg import Json
-from mtg.deck import ARENA_MULTIFACE_SEPARATOR, CardNotFound, DeckParser, ParsingState
+from mtg.deck import ARENA_MULTIFACE_SEPARATOR, CardNotFound, DeckParser
 from mtg.scryfall import Card, MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, \
     query_api_for_card
 from mtg.utils import extract_int, getrepr
@@ -350,9 +350,9 @@ class ArenaParser(DeckParser):
     # not to be weeded out at this point
     def _quantity_exceeded(self, playset: list[Card]) -> bool:
         max_quantity, word = self.MAX_CARD_QUANTITY, "card"
-        if self._state is ParsingState.COMMANDER:
+        if self._state.is_commander:
             max_quantity, word = 1, "commander card"
-        elif self._state is ParsingState.COMPANION:
+        elif self._state.is_companion:
             max_quantity, word = 1, "companion card"
         if len(playset) > max_quantity:
             _log.warning(
@@ -364,28 +364,28 @@ class ArenaParser(DeckParser):
     def _parse_decklist(self) -> None:  # override
         for line in self._lines:
             if _is_maindeck_line(line):
-                self._shift_to_maindeck()
+                self._state.shift_to_maindeck()
             elif _is_sideboard_line(line):
-                self._shift_to_sideboard()
+                self._state.shift_to_sideboard()
             elif _is_commander_line(line):
-                self._shift_to_commander()
+                self._state.shift_to_commander()
             elif _is_companion_line(line):
-                self._shift_to_companion()
+                self._state.shift_to_companion()
             elif _is_name_line(line):
                 self._metadata["name"] = line.removeprefix("Name ")
             elif _is_playset_line(line):
-                if self._state is ParsingState.IDLE:
-                    self._shift_to_maindeck()
+                if self._state.is_idle:
+                    self._state.shift_to_maindeck()
 
                 playset = PlaysetLine(line).to_playset()
                 if self._quantity_exceeded(playset):
                     continue
 
-                if self._state is ParsingState.SIDEBOARD:
+                if self._state.is_sideboard:
                     self._sideboard.extend(playset)
-                elif self._state is ParsingState.COMMANDER:
+                elif self._state.is_commander:
                     self._set_commander(playset[0])
-                elif self._state is ParsingState.COMPANION:
+                elif self._state.is_companion:
                     self._companion = playset[0]
-                elif self._state is ParsingState.MAINDECK:
+                elif self._state.is_maindeck:
                     self._maindeck.extend(playset)

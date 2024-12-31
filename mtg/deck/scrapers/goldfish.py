@@ -12,7 +12,7 @@ import logging
 import dateutil.parser
 from bs4 import Tag
 
-from mtg.deck import Deck, Mode, ParsingState
+from mtg.deck import Deck, Mode
 from mtg.deck.scrapers import ContainerScraper, TagDeckScraper, UrlDeckScraper
 from mtg.scryfall import all_formats
 from mtg.utils import extract_int, timed
@@ -76,13 +76,13 @@ class GoldfishTagScraper(TagDeckScraper):
             if tag.name == "tr" and tag.has_attr(
                     "class") and "deck-category-header" in tag.attrs["class"]:
                 if "Sideboard" in tag.text:
-                    self._shift_to_sideboard()
+                    self._state.shift_to_sideboard()
                 elif "Commander" in tag.text:
-                    self._shift_to_commander()
+                    self._state.shift_to_commander()
                 elif "Companion" in tag.text:
-                    self._shift_to_companion()
-                elif self._state is not ParsingState.MAINDECK:
-                    self._shift_to_maindeck()
+                    self._state.shift_to_companion()
+                elif not self._state.is_maindeck:
+                    self._state.shift_to_maindeck()
             elif tag.name == "tr":
                 td_tags = tag.find_all("td")
                 if td_tags and len(td_tags) >= 3:
@@ -90,13 +90,13 @@ class GoldfishTagScraper(TagDeckScraper):
                     quantity = extract_int(qty_tag.text)
                     name = name_tag.text.strip()
                     cards = self.get_playset(self.find_card(name), quantity)
-                    if self._state is ParsingState.MAINDECK:
+                    if self._state.is_maindeck:
                         self._maindeck += cards
-                    elif self._state is ParsingState.SIDEBOARD:
+                    elif self._state.is_sideboard:
                         self._sideboard += cards
-                    elif self._state is ParsingState.COMMANDER:
+                    elif self._state.is_commander:
                         self._set_commander(cards[0])
-                    elif self._state is ParsingState.COMPANION:
+                    elif self._state.is_companion:
                         self._companion = cards[0]
 
     def _parse_decklist(self) -> None:  # override

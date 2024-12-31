@@ -30,10 +30,8 @@ class MtgDecksNetScraper(UrlDeckScraper):
     _XPATH = "//textarea[@id='arena_deck']"
 
     _FORMATS = {
-        "duel-commander": "duel",
         "brawl": "standardbrawl",
         "historic-brawl": "brawl",
-        "old-school": "oldschool",
     }
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:

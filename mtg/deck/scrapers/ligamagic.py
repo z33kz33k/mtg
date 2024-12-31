@@ -51,6 +51,7 @@ class LigaMagicScraper(UrlDeckScraper):
         super().__init__(url, metadata)
         self._tags = defaultdict(list)
 
+    # TODO: take care of LigaMagic's own: `lig.ae` shortener URLs
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return all(t in url.lower() for t in ("ligamagic.com.br", "/deck", "&id="))

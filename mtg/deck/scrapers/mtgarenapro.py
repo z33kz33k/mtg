@@ -10,6 +10,8 @@
 import logging
 from datetime import datetime
 
+import dateutil.parser
+
 from mtg import Json
 from mtg.deck.scrapers import UrlDeckScraper
 from mtg.utils.scrape import ScrapingError, dissect_js, getsoup
@@ -76,7 +78,7 @@ class MtgArenaProScraper(UrlDeckScraper):
         self._metadata["name"] = self._json_data["humanname"]
         if fmt := self._parse_fmt():
             self._update_fmt(fmt)
-        self._metadata["date"] = datetime.utcfromtimestamp(self._json_data["date"]).date()
+        self._metadata["date"] = dateutil.parser.parse(self._json_data["date"]).date()
 
     @classmethod
     def _parse_card_json(cls, card_json: Json) -> list[Card]:

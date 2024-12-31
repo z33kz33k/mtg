@@ -34,7 +34,7 @@ class CardhoarderScraper(UrlDeckScraper):
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
-        return "www.cardhoarder.com/d/" in url.lower()
+        return "cardhoarder.com/d/" in url.lower()
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override

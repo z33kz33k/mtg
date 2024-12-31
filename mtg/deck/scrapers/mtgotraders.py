@@ -62,9 +62,4 @@ class MtgoTradersScraper(UrlDeckScraper):
         if sideboard := self._json_data.get("sideboard"):
             for json_card in sideboard:
                 self._sideboard += self._parse_json_card(json_card)
-
-        if len(self._sideboard) == 1:
-            commander = self._sideboard[0]
-            if commander.commander_suitable:
-                self._set_commander(commander)
-                self._sideboard = []
+        self._derive_commander_from_sideboard()

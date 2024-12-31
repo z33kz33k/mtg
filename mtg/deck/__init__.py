@@ -27,7 +27,8 @@ from mtg.scryfall import (
     find_by_mtgo_id, find_by_name, find_by_oracle_id,
     find_by_scryfall_id, find_by_tcgplayer_id, find_sets,
     query_api_for_card)
-from mtg.utils import ParsingError, extract_int, from_iterable, getid, getrepr, serialize_dates
+from mtg.utils import ParsingError, extract_int, from_iterable, getid, getrepr, serialize_dates, \
+    type_checker
 from mtg.utils.files import getdir, getfile
 
 _log = logging.getLogger(__name__)
@@ -1104,14 +1105,67 @@ Name={}
         dst.write_text(data, encoding="utf-8")
 
 
-class ParsingState(Enum):
-    """State machine for deck parsing.
+class _ParsingStates(Enum):
+    """Enumeration of parsing states.
     """
     IDLE = auto()
     MAINDECK = auto()
     SIDEBOARD = auto()
     COMMANDER = auto()
     COMPANION = auto()
+
+
+class _ParsingState:
+    """State machine for deck parsing.
+    """
+    @property
+    def state(self) -> _ParsingStates:
+        return self.__state
+
+    @state.setter
+    @type_checker(_ParsingStates)
+    def state(self, value: _ParsingStates) -> None:
+        if value is self.state:
+            raise ParsingError(f"Invalid transition from {self.state.name!r} to {value.name!r}")
+        self.__state = value
+
+    @property
+    def is_idle(self) -> bool:
+        return self.state is _ParsingStates.IDLE
+
+    @property
+    def is_maindeck(self) -> bool:
+        return self.state is _ParsingStates.MAINDECK
+
+    @property
+    def is_sideboard(self) -> bool:
+        return self.state is _ParsingStates.SIDEBOARD
+
+    @property
+    def is_commander(self) -> bool:
+        return self.state is _ParsingStates.COMMANDER
+
+    @property
+    def is_companion(self) -> bool:
+        return self.state is _ParsingStates.COMPANION
+
+    def __init__(self) -> None:
+        self.__state = _ParsingStates.IDLE
+
+    def shift_to_maindeck(self) -> None:
+        self.state = _ParsingStates.MAINDECK
+
+    def shift_to_sideboard(self) -> None:
+        self.state = _ParsingStates.SIDEBOARD
+
+    def shift_to_commander(self) -> None:
+        self.state = _ParsingStates.COMMANDER
+
+    def shift_to_companion(self) -> None:
+        self.state = _ParsingStates.COMPANION
+
+    def shift_to_idle(self) -> None:
+        self.state = _ParsingStates.IDLE
 
 
 class CardNotFound(ParsingError):
@@ -1135,6 +1189,7 @@ SANITIZED_FORMATS = {
     "commanderprecon": "commander",
     "commanderprecons": "commander",
     "duel commander": "duel",
+    "duel-commander": "duel",
     "duelcommander": "duel",
     "duelcommanderrussian": "duel",
     "edh": "commander",
@@ -1155,6 +1210,7 @@ SANITIZED_FORMATS = {
     "historicpauper": "historic",
     "no banned list modern": "modern",
     "old school": "oldschool",
+    "old-school": "oldschool",
     "oldschool 93/94": "oldschool",
     "past standard": "standard",
     "pauper commander": "paupercommander",
@@ -1175,7 +1231,7 @@ class DeckParser(ABC):
 
     def __init__(self, metadata: Json | None = None) -> None:
         self._metadata = metadata or {}
-        self._state = ParsingState.IDLE
+        self._state = _ParsingState()
         self._maindeck, self._sideboard = [], []
         self._commander, self._partner_commander, self._companion = None, None, None
 
@@ -1203,25 +1259,6 @@ class DeckParser(ABC):
                 self._set_commander(c)
             self._sideboard = []
 
-    def _shift_to_maindeck(self) -> None:
-        if self._state is ParsingState.MAINDECK:
-            raise ParsingError(f"Invalid transition to MAINDECK from: {self._state.name}")
-        self._state = ParsingState.MAINDECK
-
-    def _shift_to_sideboard(self) -> None:
-        if self._state is ParsingState.SIDEBOARD:
-            raise ParsingError(f"Invalid transition to SIDEBOARD from: {self._state.name}")
-        self._state = ParsingState.SIDEBOARD
-
-    def _shift_to_commander(self) -> None:
-        if self._state is ParsingState.COMMANDER:
-            raise ParsingError(f"Invalid transition to COMMANDER from: {self._state.name}")
-        self._state = ParsingState.COMMANDER
-
-    def _shift_to_companion(self) -> None:
-        if self._state is ParsingState.COMPANION:
-            raise ParsingError(f"Invalid transition to COMPANION from: {self._state.name}")
-        self._state = ParsingState.COMPANION
 
     @classmethod
     def find_card(
