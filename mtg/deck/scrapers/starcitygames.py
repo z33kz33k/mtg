@@ -13,7 +13,7 @@ import dateutil.parser
 from bs4 import Tag
 
 from mtg import Json
-from mtg.deck.scrapers import UrlBasedContainerScraper, TagBasedDeckScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, TagBasedDeckScraper, UrlBasedDeckScraper
 from mtg.utils import extract_int, from_iterable, sanitize_whitespace
 from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
 
@@ -119,8 +119,8 @@ class StarCityGamesUrlBasedDeckScraper(StarCityGamesTagBasedDeckScraper, UrlBase
                 raise ScrapingError("Deck data not found")
 
 
-@UrlBasedContainerScraper.registered
-class StarCityGamesEventScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class StarCityGamesEventScraper(DeckUrlsContainerScraper):
     """Scraper of StarCityGames event page.
     """
     CONTAINER_NAME = "StarCityGames event"  # override
@@ -153,8 +153,8 @@ class StarCityGamesEventScraper(UrlBasedContainerScraper):
         return [tag.attrs["href"] for tag in deck_tags if tag is not None]
 
 
-@UrlBasedContainerScraper.registered
-class StarCityGamesArticleScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class StarCityGamesArticleScraper(DeckUrlsContainerScraper):
     """Scraper of StarCityGames decks article page.
     """
     CONTAINER_NAME = "StarCityGames article"  # override
@@ -186,8 +186,8 @@ class StarCityGamesArticleScraper(UrlBasedContainerScraper):
         return [tag.attrs["href"] for tag in a_tags]
 
 
-@UrlBasedContainerScraper.registered
-class StarCityGamesDatabaseScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class StarCityGamesDatabaseScraper(DeckUrlsContainerScraper):
     """Scraper of StarCityGames author's decks database page.
     """
     CONTAINER_NAME = "StarCityGames author's deck database"  # override

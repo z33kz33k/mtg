@@ -15,7 +15,7 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, UrlBasedDeckScraper
 from mtg.utils import extract_float, extract_int
 from mtg.utils.scrape import ScrapingError
 from mtg.utils.scrape import get_dynamic_soup, strip_url_params
@@ -166,8 +166,8 @@ class UntappedMetaDeckScraper(UrlBasedDeckScraper):
         pass
 
 
-@UrlBasedContainerScraper.registered
-class UntappedProfileScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class UntappedProfileScraper(DeckUrlsContainerScraper):
     """Scraper of Untapped.gg user profile page.
     """
     CONTAINER_NAME = "Untapped profile"  # override

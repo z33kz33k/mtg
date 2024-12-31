@@ -11,7 +11,7 @@ import logging
 
 from bs4 import Tag
 
-from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, UrlBasedDeckScraper
 from mtg.scryfall import COMMANDER_FORMATS, Card
 from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
 
@@ -84,8 +84,8 @@ class DeckboxDeckScraper(UrlBasedDeckScraper):
             self._set_commander(self._sideboard.pop())
 
 
-@UrlBasedContainerScraper.registered
-class DeckboxUserScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class DeckboxUserScraper(DeckUrlsContainerScraper):
     """Scraper of Deckbox user page.
     """
     CONTAINER_NAME = "Deckbox user"  # override
@@ -112,8 +112,8 @@ class DeckboxUserScraper(UrlBasedContainerScraper):
         return [self.DECK_URL_TEMPLATE.format(url) for url in sorted(urls)]
 
 
-@UrlBasedContainerScraper.registered
-class DeckboxEventScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class DeckboxEventScraper(DeckUrlsContainerScraper):
     """Scraper of Deckbox community event page.
     """
     CONTAINER_NAME = "Deckbox event"  # override

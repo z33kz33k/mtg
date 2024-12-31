@@ -11,7 +11,7 @@ import logging
 
 from selenium.common.exceptions import TimeoutException
 
-from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, UrlBasedDeckScraper
 from mtg.utils import get_date_from_ago_text
 from mtg.utils.scrape import ScrapingError, strip_url_params
 from mtg.utils.scrape import get_dynamic_soup
@@ -77,8 +77,8 @@ class ManaStackDeckScraper(UrlBasedDeckScraper):
                         self._companion = cards[0]
 
 
-@UrlBasedContainerScraper.registered
-class ManaStackUserScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class ManaStackUserScraper(DeckUrlsContainerScraper):
     """Scraper of ManaStack user page.
     """
     CONTAINER_NAME = "ManaStack user"  # override

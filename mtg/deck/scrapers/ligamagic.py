@@ -17,7 +17,7 @@ from bs4 import BeautifulSoup, Tag
 
 from mtg import Json
 from mtg import SECRETS
-from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, UrlBasedDeckScraper
 from mtg.scryfall import Card
 from mtg.utils import extract_int
 from mtg.utils.scrape import ScrapingError, getsoup, url_decode
@@ -119,7 +119,7 @@ class LigaMagicDeckScraper(UrlBasedDeckScraper):
 
 # TODO: uncomment when ready
 # @ContainerScraper.registered
-class LigaMagicEventScraper(UrlBasedContainerScraper):
+class LigaMagicEventScraper(DeckUrlsContainerScraper):
     """Scraper of LigaMagic event page.
     """
     CONTAINER_NAME = "LigaMagic event"  # override

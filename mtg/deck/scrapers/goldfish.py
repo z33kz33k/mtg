@@ -13,7 +13,7 @@ import dateutil.parser
 from bs4 import Tag
 
 from mtg.deck import Deck, Mode
-from mtg.deck.scrapers import UrlBasedContainerScraper, TagBasedDeckScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, TagBasedDeckScraper, UrlBasedDeckScraper
 from mtg.scryfall import all_formats
 from mtg.utils import extract_int, timed
 from mtg.utils.scrape import ScrapingError, getsoup, http_requests_counted, strip_url_params, \
@@ -164,8 +164,8 @@ def scrape_meta(fmt="standard") -> list[Deck]:
     return decks
 
 
-@UrlBasedContainerScraper.registered
-class GoldfishTournamentScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class GoldfishTournamentScraper(DeckUrlsContainerScraper):
     """Scraper of MTGGoldfish tournament page.
     """
     CONTAINER_NAME = "Goldfish tournament"  # override
@@ -194,8 +194,8 @@ class GoldfishTournamentScraper(UrlBasedContainerScraper):
         return [self.DECK_URL_TEMPLATE.format(deck_tag.attrs["href"]) for deck_tag in deck_tags]
 
 
-@UrlBasedContainerScraper.registered
-class GoldfishPlayerScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class GoldfishPlayerScraper(DeckUrlsContainerScraper):
     """Scraper of MTGGoldfish player search page.
     """
     CONTAINER_NAME = "Goldfish player"  # override

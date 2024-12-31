@@ -19,7 +19,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from mtg import Json
-from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, UrlBasedDeckScraper
 from mtg.utils.scrape import SELENIUM_TIMEOUT, ScrapingError, accept_consent, dissect_js, getsoup, \
     strip_url_params
 from mtg.utils import timed
@@ -100,8 +100,8 @@ class CardsrealmDeckScraper(UrlBasedDeckScraper):
         self._derive_commander_from_sideboard()
 
 
-@UrlBasedContainerScraper.registered
-class CardsrealmProfileScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class CardsrealmProfileScraper(DeckUrlsContainerScraper):
     """Scraper of Cardsrealm user profile page.
     """
     CONTAINER_NAME = "Cardsrealm profile"  # override
@@ -131,7 +131,7 @@ class CardsrealmProfileScraper(UrlBasedContainerScraper):
         return [self.DECK_URL_TEMPLATE.format(url) for url in urls]
 
 
-@UrlBasedContainerScraper.registered
+@DeckUrlsContainerScraper.registered
 class CardsrealmFolderScraper(CardsrealmProfileScraper):
     """Scraper of Cardsrealm decks folder page.
     """
@@ -158,8 +158,8 @@ def _is_regular_tournament_url(url: str) -> bool:
             and "/meta-decks/" not in url.lower())
 
 
-@UrlBasedContainerScraper.registered
-class CardsrealmMetaTournamentScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class CardsrealmMetaTournamentScraper(DeckUrlsContainerScraper):
     """Scraper of Cardsrealm meta-deck tournaments page.
     """
     CONTAINER_NAME = "Cardsrealm meta-deck tournament"  # override
@@ -191,8 +191,8 @@ class CardsrealmMetaTournamentScraper(UrlBasedContainerScraper):
         return [self.DECK_URL_TEMPLATE.format(url) for url in sorted(urls)]
 
 
-@UrlBasedContainerScraper.registered
-class CardsrealmRegularTournamentScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class CardsrealmRegularTournamentScraper(DeckUrlsContainerScraper):
     """Scraper of Cardsrealm regular tournaments page.
     """
     CONTAINER_NAME = "Cardsrealm regular tournament"  # override
@@ -251,8 +251,8 @@ class CardsrealmRegularTournamentScraper(UrlBasedContainerScraper):
         return [tag.attrs["href"] for tag in deck_tags if tag is not None]
 
 
-@UrlBasedContainerScraper.registered
-class CardsrealmArticleScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class CardsrealmArticleScraper(DeckUrlsContainerScraper):
     """Scraper of Cardsrealm decks article page.
     """
     CONTAINER_NAME = "Cardsrealm article"  # override

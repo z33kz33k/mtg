@@ -11,7 +11,7 @@ import json
 import logging
 
 from mtg import Json
-from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, UrlBasedDeckScraper
 from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
 
 _log = logging.getLogger(__name__)
@@ -69,8 +69,8 @@ class ManatradersDeckScraper(UrlBasedDeckScraper):
         self._derive_commander_from_sideboard()
 
 
-@UrlBasedContainerScraper.registered
-class ManatradersUserScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class ManatradersUserScraper(DeckUrlsContainerScraper):
     """Scraper of Manatraders user search page.
     """
     CONTAINER_NAME = "Manatraders user"  # override

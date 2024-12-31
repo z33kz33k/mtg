@@ -12,7 +12,7 @@ import logging
 from datetime import datetime
 
 from mtg import Json
-from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, UrlBasedDeckScraper
 from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
 
 _log = logging.getLogger(__name__)
@@ -80,8 +80,8 @@ class ArchidektDeckScraper(UrlBasedDeckScraper):
             self._parse_card_json(v)
 
 
-@UrlBasedContainerScraper.registered
-class ArchidektFolderScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class ArchidektFolderScraper(DeckUrlsContainerScraper):
     """Scraper of Archidekt folder page.
     """
     CONTAINER_NAME = "Archidekt folder"  # override
@@ -108,8 +108,8 @@ class ArchidektFolderScraper(UrlBasedContainerScraper):
         return [self.URL_TEMPLATE.format(url) for url in deck_urls]
 
 
-@UrlBasedContainerScraper.registered
-class ArchidektUserScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class ArchidektUserScraper(DeckUrlsContainerScraper):
     """Scraper of Archidekt folder page.
     """
     CONTAINER_NAME = "Archidekt user"  # override

@@ -9,7 +9,7 @@
 """
 import logging
 
-from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, UrlBasedDeckScraper
 from mtg.utils import get_date_from_french_ago_text
 from mtg.utils.scrape import ScrapingError, getsoup
 
@@ -104,8 +104,8 @@ class MagicVilleDeckScraper(UrlBasedDeckScraper):
                     self._maindeck += playset
 
 
-@UrlBasedContainerScraper.registered
-class MagicVilleEventScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class MagicVilleEventScraper(DeckUrlsContainerScraper):
     """Scraper of MagicVille event page.
     """
     CONTAINER_NAME = "MagicVille event"  # override
@@ -126,8 +126,8 @@ class MagicVilleEventScraper(UrlBasedContainerScraper):
         return [self.DECK_URL_TEMPLATE.format(deck_tag.attrs["href"]) for deck_tag in deck_tags]
 
 
-@UrlBasedContainerScraper.registered
-class MagicVilleUserScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class MagicVilleUserScraper(DeckUrlsContainerScraper):
     """Scraper of MagicVille user page.
     """
     CONTAINER_NAME = "MagicVille user"  # override

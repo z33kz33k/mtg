@@ -13,7 +13,7 @@ from datetime import date
 from requests import ReadTimeout
 
 from mtg import Json
-from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, UrlBasedDeckScraper
 from mtg.utils import get_date_from_ago_text
 from mtg.utils.scrape import ScrapingError, request_json, strip_url_params
 
@@ -82,8 +82,8 @@ class StreamdeckerDeckScraper(UrlBasedDeckScraper):
             self._parse_json_card(json_card)
 
 
-@UrlBasedContainerScraper.registered
-class StreamdeckerUserScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class StreamdeckerUserScraper(DeckUrlsContainerScraper):
     """Scraper of Streamdecker user page.
     """
     CONTAINER_NAME = "Streamdecker user"  # override

@@ -14,7 +14,7 @@ import dateutil.parser
 from selenium.common.exceptions import TimeoutException
 
 from mtg.deck import Archetype, Mode
-from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, UrlBasedDeckScraper
 from mtg.utils import extract_float, extract_int, from_iterable
 from mtg.utils.scrape import ScrapingError, get_dynamic_soup, getsoup, strip_url_params
 
@@ -174,8 +174,8 @@ class AetherhubDeckScraper(UrlBasedDeckScraper):
                         self._companion = cards[0]
 
 
-@UrlBasedContainerScraper.registered
-class AetherhubUserScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class AetherhubUserScraper(DeckUrlsContainerScraper):
     """Scraper of Aetherhub user page.
     """
     CONTAINER_NAME = "Aetherhub user"  # override
@@ -212,8 +212,8 @@ class AetherhubUserScraper(UrlBasedContainerScraper):
                 for row in tbody.find_all("tr")]
 
 
-@UrlBasedContainerScraper.registered
-class AetherhubEventScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class AetherhubEventScraper(DeckUrlsContainerScraper):
     """Scraper of Aetherhub event page.
     """
     CONTAINER_NAME = "Aetherhub event"  # override

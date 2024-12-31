@@ -13,7 +13,7 @@ from datetime import datetime
 from bs4 import NavigableString, Tag
 
 from mtg import Json
-from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, UrlBasedDeckScraper
 from mtg.scryfall import Card
 from mtg.utils import extract_int
 from mtg.utils.scrape import ScrapingError
@@ -85,8 +85,8 @@ class TCDecksDeckScraper(UrlBasedDeckScraper):
                 self._maindeck += self._parse_td(td_tag)
 
 
-@UrlBasedContainerScraper.registered
-class TCDecksEventScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class TCDecksEventScraper(DeckUrlsContainerScraper):
     """Scraper of TCDecks event page.
     """
     CONTAINER_NAME = "TCDecks event"  # override

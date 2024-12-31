@@ -13,7 +13,7 @@ import dateutil.parser
 from bs4 import NavigableString
 
 from mtg import Json, SECRETS
-from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, UrlBasedDeckScraper
 from mtg.deck.scrapers.goldfish import HEADERS as GOLDFISH_HEADERS
 from mtg.utils.scrape import ScrapingError, getsoup, request_json
 
@@ -173,8 +173,8 @@ class JapaneseHareruyaDeckScraper(UrlBasedDeckScraper):
             self._process_card(card)
 
 
-@UrlBasedContainerScraper.registered
-class HareruyaEventScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class HareruyaEventScraper(DeckUrlsContainerScraper):
     """Scraper of Hareruya event decks search page.
     """
     CONTAINER_NAME = "Hareruya event"  # override
@@ -184,7 +184,7 @@ class HareruyaEventScraper(UrlBasedContainerScraper):
         "Accept-Language": "en-US,en;q=0.5",
         "Accept-Encoding": "gzip, deflate, br, zstd",
         "Connection": "keep-alive",
-        "Cookie": SECRETS["hareruya_cookie"],
+        "Cookie": SECRETS["hareruya"]["cookie"],
         "DNT": "1",
         "Host": "www.hareruyamtg.com",
         "Priority": "u=0, i",
@@ -213,8 +213,8 @@ class HareruyaEventScraper(UrlBasedContainerScraper):
             "a", class_="deckSearch-searchResult__itemWrapper")]
 
 
-@UrlBasedContainerScraper.registered
-class HareruyaPlayerScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class HareruyaPlayerScraper(DeckUrlsContainerScraper):
     """Scraper of Hareruya player decks search page.
     """
     CONTAINER_NAME = "Hareruya player"  # override

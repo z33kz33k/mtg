@@ -15,7 +15,7 @@ from selenium.common.exceptions import TimeoutException
 from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, UrlBasedDeckScraper
 from mtg.utils.scrape import get_dynamic_soup, getsoup, strip_url_params
 from mtg.utils.scrape import ScrapingError
 
@@ -78,8 +78,8 @@ class MtgDecksNetDeckScraper(UrlBasedDeckScraper):
         self._arena_decklist = deck_tag.text.strip().splitlines()
 
 
-@UrlBasedContainerScraper.registered
-class MtgDecksNetTournamentScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class MtgDecksNetTournamentScraper(DeckUrlsContainerScraper):
     """Scraper of MTGDecks.net tournament page.
     """
     CONTAINER_NAME = "MTGDecks.net tournament"  # override

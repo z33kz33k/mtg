@@ -11,7 +11,7 @@ import contextlib
 import logging
 from datetime import datetime
 
-from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, UrlBasedDeckScraper
 from mtg.utils import extract_int
 from mtg.utils.scrape import ScrapingError
 from mtg.utils.scrape import getsoup
@@ -93,8 +93,8 @@ class MtgTop8DeckScraper(UrlBasedDeckScraper):
                         cards += self.get_playset(card, quantity)
 
 
-@UrlBasedContainerScraper.registered
-class MtgTop8EventScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class MtgTop8EventScraper(DeckUrlsContainerScraper):
     """Scraper of MTGTop8 event page.
     """
     CONTAINER_NAME = "MTGTop8 event"  # override

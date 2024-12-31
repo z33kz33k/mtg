@@ -16,7 +16,7 @@ from bs4 import BeautifulSoup
 from requests import Response
 
 from mtg import Json
-from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, UrlBasedDeckScraper
 from mtg.scryfall import Card
 from mtg.utils.scrape import ScrapingError, Throttling, dissect_js, request_json, strip_url_params, \
     throttle, timed_request
@@ -141,8 +141,8 @@ class DeckstatsDeckScraper(UrlBasedDeckScraper):
                 self._sideboard.extend(self._parse_card_json(card_json))
 
 
-@UrlBasedContainerScraper.registered
-class DeckstatsUserScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class DeckstatsUserScraper(DeckUrlsContainerScraper):
     """Scraper of Deckstats user page.
     """
     THROTTLING = Throttling(0.8, 0.15)

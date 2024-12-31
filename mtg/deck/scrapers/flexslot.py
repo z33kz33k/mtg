@@ -15,7 +15,7 @@ from selenium.common.exceptions import TimeoutException
 from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, UrlBasedDeckScraper
 from mtg.utils.scrape import get_dynamic_soup, strip_url_params
 from mtg.utils.scrape import ScrapingError
 
@@ -71,8 +71,8 @@ class FlexslotDeckScraper(UrlBasedDeckScraper):
         self._arena_decklist = [line.rstrip(":") for line in self._clipboard.splitlines()]
 
 
-@UrlBasedContainerScraper.registered
-class FlexslotUserScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class FlexslotUserScraper(DeckUrlsContainerScraper):
     """Scraper of Flexslot user page.
     """
     CONTAINER_NAME = "Flexslot user"  # override

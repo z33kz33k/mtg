@@ -15,7 +15,7 @@ from bs4 import Tag
 from httpcore import ReadTimeout
 
 from mtg import Json
-from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, UrlBasedDeckScraper
 from mtg.scryfall import Card
 from mtg.utils import extract_int
 from mtg.utils.scrape import ScrapingError, getsoup, request_json, strip_url_params
@@ -85,8 +85,8 @@ class TcgPlayerDeckScraper(UrlBasedDeckScraper):
                 self._maindeck = self._process_deck_tag(deck_tag)
 
 
-@UrlBasedContainerScraper.registered
-class TcgPlayerPlayerScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class TcgPlayerPlayerScraper(DeckUrlsContainerScraper):
     """Scraper of TCG Player (old-site) player search page.
     """
     CONTAINER_NAME = "TCGPlayer (old-site) player"  # override
@@ -187,8 +187,8 @@ class TcgPlayerInfiniteDeckScraper(UrlBasedDeckScraper):
                 self._sideboard += self.get_playset(cardmap[card_id], quantity)
 
 
-@UrlBasedContainerScraper.registered
-class TcgPlayerInfinitePlayerScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class TcgPlayerInfinitePlayerScraper(DeckUrlsContainerScraper):
     """Scraper of TCG Player new-site player page.
     """
     CONTAINER_NAME = "TCGPlayer Infinite player"  # override
@@ -220,7 +220,7 @@ class TcgPlayerInfinitePlayerScraper(UrlBasedContainerScraper):
         return [self.DECK_URL_TEMPLATE.format( d["canonicalURL"]) for d in json_data["result"]]
 
 
-@UrlBasedContainerScraper.registered
+@DeckUrlsContainerScraper.registered
 class TcgPlayerInfiniteAuthorScraper(TcgPlayerInfinitePlayerScraper):
     """Scraper of TCG Player Infinite author search page.
     """
@@ -242,8 +242,8 @@ class TcgPlayerInfiniteAuthorScraper(TcgPlayerInfinitePlayerScraper):
         return author
 
 
-@UrlBasedContainerScraper.registered
-class TcgPlayerInfiniteEventScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class TcgPlayerInfiniteEventScraper(DeckUrlsContainerScraper):
     """Scraper of TCG Player Infinite event page.
     """
     CONTAINER_NAME = "TCGPlayer Infinite event"  # override

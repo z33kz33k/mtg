@@ -17,7 +17,7 @@ from requests import Response
 from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, UrlBasedDeckScraper
 from mtg.utils import extract_int, get_date_from_ago_text
 from mtg.utils.scrape import ScrapingError, getsoup, request_json, strip_url_params, \
     throttle, timed_request
@@ -106,8 +106,8 @@ class TappedoutDeckScraper(UrlBasedDeckScraper):
         self._metadata["name"] = name_line.removeprefix("Name ")
 
 
-@UrlBasedContainerScraper.registered
-class TappedoutUserScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class TappedoutUserScraper(DeckUrlsContainerScraper):
     """Scraper of Tappedout user page.
     """
     CONTAINER_NAME = "Tappedout user"  # override
@@ -146,8 +146,8 @@ class TappedoutUserScraper(UrlBasedContainerScraper):
         return collected
 
 
-@UrlBasedContainerScraper.registered
-class TappedoutFolderScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class TappedoutFolderScraper(DeckUrlsContainerScraper):
     """Scraper of Tappedout folder page.
     """
     CONTAINER_NAME = "Tappedout folder"  # override
@@ -181,7 +181,7 @@ class TappedoutFolderScraper(UrlBasedContainerScraper):
         return [self.DECK_URL_TEMPLATE.format(d["url"]) for d in json_data["folder"]["decks"]]
 
 
-@UrlBasedContainerScraper.registered
+@DeckUrlsContainerScraper.registered
 class TappedoutUserFolderScraper(TappedoutUserScraper):
     """Scraper of Tappedout user folders page.
     """

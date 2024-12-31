@@ -11,7 +11,7 @@ import logging
 
 from bs4 import Tag
 
-from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, UrlBasedDeckScraper
 from mtg.scryfall import Card
 from mtg.utils import from_iterable, get_date_from_ago_text, get_date_from_month_text
 from mtg.utils.scrape import ScrapingError, getsoup, request_json, strip_url_params
@@ -80,8 +80,8 @@ class PennyDreadfulMagicDeckScraper(UrlBasedDeckScraper):
                         self._maindeck += cards
 
 
-@UrlBasedContainerScraper.registered
-class PennyDreadfulMagicCompetitionScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class PennyDreadfulMagicCompetitionScraper(DeckUrlsContainerScraper):
     """Scraper of PennyDreadfulMagic competition page.
     """
     CONTAINER_NAME = "PennyDreadfulMagic competition"  # override
@@ -111,8 +111,8 @@ class PennyDreadfulMagicCompetitionScraper(UrlBasedContainerScraper):
         return [self.DECK_URL_TEMPLATE.format(d["url"]) for d in json_data["objects"]]
 
 
-@UrlBasedContainerScraper.registered
-class PennyDreadfulMagicUserScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class PennyDreadfulMagicUserScraper(DeckUrlsContainerScraper):
     """Scraper of PennyDreadfulMagic user page.
     """
     CONTAINER_NAME = "PennyDreadfulMagic user"  # override

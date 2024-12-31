@@ -11,7 +11,7 @@ import logging
 from datetime import datetime
 
 from mtg import Json
-from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, UrlBasedDeckScraper
 from mtg.scryfall import Card
 from mtg.utils.scrape import ScrapingError, get_selenium_json, strip_url_params
 
@@ -94,8 +94,8 @@ class MoxfieldDeckScraper(UrlBasedDeckScraper):
             self._companion = result[0]
 
 
-@UrlBasedContainerScraper.registered
-class MoxfieldBookmarkScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class MoxfieldBookmarkScraper(DeckUrlsContainerScraper):
     """Scraper of Moxfield bookmark page.
     """
     CONTAINER_NAME = "Moxfield bookmark"  # override
@@ -122,8 +122,8 @@ class MoxfieldBookmarkScraper(UrlBasedContainerScraper):
         return [d["deck"]["publicUrl"] for d in json_data["decks"]["data"]]
 
 
-@UrlBasedContainerScraper.registered
-class MoxfieldUserScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class MoxfieldUserScraper(DeckUrlsContainerScraper):
     """Scraper of Moxfield user page.
     """
     CONTAINER_NAME = "Moxfield user"  # override

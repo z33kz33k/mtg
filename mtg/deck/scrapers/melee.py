@@ -15,7 +15,7 @@ from selenium.common import TimeoutException
 from mtg.deck import Deck
 from mtg import Json, SECRETS
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, UrlBasedDeckScraper
 from mtg.utils.scrape import ScrapingError, get_dynamic_soup, getsoup
 
 _log = logging.getLogger(__name__)
@@ -29,7 +29,7 @@ _HEADERS = {
     "Accept-Language": "en-US,en;q=0.5",
     "Accept-Encoding": "gzip, deflate, br, zstd",
     "Connection": "keep-alive",
-    "Cookie": SECRETS["melee_cookie"],
+    "Cookie": SECRETS["melee_gg"]["cookie"],
     "Upgrade-Insecure-Requests": "1",
     "Sec-Fetch-Dest": "document",
     "Sec-Fetch-Mode": "navigate",
@@ -90,8 +90,8 @@ class MeleeGgDeckScraper(UrlBasedDeckScraper):
             "textarea.decklist-builder-paste-field").text.strip().splitlines()
 
 
-@UrlBasedContainerScraper.registered
-class MeleeGgTournamentScraper(UrlBasedContainerScraper):
+@DeckUrlsContainerScraper.registered
+class MeleeGgTournamentScraper(DeckUrlsContainerScraper):
     """Scraper of Melee.gg tournament page.
     """
     CONTAINER_NAME = "Melee.gg tournament"  # override
