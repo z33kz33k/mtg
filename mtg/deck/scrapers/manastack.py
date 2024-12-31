@@ -11,7 +11,7 @@ import logging
 
 from selenium.common.exceptions import TimeoutException
 
-from mtg.deck.scrapers import UrlBasedDeckScraper
+from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
 from mtg.utils import get_date_from_ago_text
 from mtg.utils.scrape import ScrapingError, strip_url_params
 from mtg.utils.scrape import get_dynamic_soup
@@ -75,3 +75,38 @@ class ManaStackDeckScraper(UrlBasedDeckScraper):
                         self._set_commander(cards[0])
                     elif self._state.is_companion:
                         self._companion = cards[0]
+
+
+@UrlBasedContainerScraper.registered
+class ManaStackUserScraper(UrlBasedContainerScraper):
+    """Scraper of ManaStack user page.
+    """
+    CONTAINER_NAME = "ManaStack user"  # override
+    URL_TEMPLATE = "https://manastack.com{}"
+    _DECK_SCRAPER = ManaStackDeckScraper  # override
+    _XPATH = '//div[@class="deck-listing-container"]'
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return "manastack.com/user/" in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url)
+
+    def _collect(self) -> list[str]:  # override
+        try:
+            self._soup, _, _ = get_dynamic_soup(self.url, self._XPATH)
+            if not self._soup:
+                _log.warning(self._error_msg)
+                return []
+        except TimeoutException:
+            _log.warning(self._error_msg)
+            return []
+
+        rows = self._soup.find_all("div", class_="deck-listing-container")
+        deck_tags = [
+            tag for tag in
+            [row.find("a", href=lambda h: h and h.lower().startswith("/deck/")) for row in rows]
+            if tag is not None]
+        return [self.URL_TEMPLATE.format(deck_tag["href"]) for deck_tag in deck_tags]
