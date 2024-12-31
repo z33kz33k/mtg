@@ -17,7 +17,7 @@ from bs4 import BeautifulSoup, Tag
 
 from mtg import Json
 from mtg import SECRETS
-from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
+from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
 from mtg.scryfall import Card
 from mtg.utils import extract_int
 from mtg.utils.scrape import ScrapingError, getsoup, url_decode
@@ -42,7 +42,7 @@ def _get_soup_with_zenrows(url: str, css_selector: str) -> BeautifulSoup | None:
 
 # TODO: uncomment when ready
 # @DeckScraper.registered
-class LigaMagicScraper(UrlDeckScraper):
+class LigaMagicDeckScraper(UrlBasedDeckScraper):
     """Scraper of LigaMagic decklist page.
     """
     _CSS_SELECTOR = "div#deck-view"
@@ -119,12 +119,12 @@ class LigaMagicScraper(UrlDeckScraper):
 
 # TODO: uncomment when ready
 # @ContainerScraper.registered
-class LigaMagicEventScraper(ContainerScraper):
+class LigaMagicEventScraper(UrlBasedContainerScraper):
     """Scraper of LigaMagic event page.
     """
     CONTAINER_NAME = "LigaMagic event"  # override
     DECK_URL_TEMPLATE = "https://www.ligamagic.com.br{}"
-    _DECK_SCRAPER = LigaMagicScraper  # override
+    _DECK_SCRAPER = LigaMagicDeckScraper  # override
     _CSS_SELECTOR = "div.evnt-dks"
 
     @staticmethod
@@ -134,7 +134,7 @@ class LigaMagicEventScraper(ContainerScraper):
     def _collect(self) -> list[str]:  # override
         self._soup = _get_soup_with_zenrows(self.url, self._CSS_SELECTOR)
         if not self._soup:
-            _log.warning("Event data not available")
+            _log.warning(self._error_msg)
             return []
 
         deck_tags = [tag.find("a") for tag in self._soup.find_all("div", class_="deckname")]

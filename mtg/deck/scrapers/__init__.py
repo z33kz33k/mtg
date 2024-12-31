@@ -82,13 +82,13 @@ class DeckScraper(DeckParser):
             return None
 
 
-class UrlDeckScraper(DeckScraper):
+class UrlBasedDeckScraper(DeckScraper):
     """Abstract URL-based deck scraper.
 
     URL-based scrapers process a single, decklist and metadata holding, URL and return a Deck
     object (if able).
     """
-    _REGISTRY: set[Type["UrlDeckScraper"]] = set()
+    _REGISTRY: set[Type["UrlBasedDeckScraper"]] = set()
 
     @property
     def url(self) -> str:
@@ -130,24 +130,24 @@ class UrlDeckScraper(DeckScraper):
         raise NotImplementedError
 
     @classmethod
-    def registered(cls, scraper_type: Type["UrlDeckScraper"]) -> Type["UrlDeckScraper"]:
+    def registered(cls, scraper_type: Type["UrlBasedDeckScraper"]) -> Type["UrlBasedDeckScraper"]:
         """Class decorator for registering subclasses of DeckScraper.
         """
-        if issubclass(scraper_type, UrlDeckScraper):
+        if issubclass(scraper_type, UrlBasedDeckScraper):
             cls._REGISTRY.add(scraper_type)
         else:
             raise TypeError(f"Not a subclass of DeckScraper: {scraper_type!r}")
         return scraper_type
 
     @classmethod
-    def from_url(cls, url: str, metadata: Json | None = None) -> Optional["UrlDeckScraper"]:
+    def from_url(cls, url: str, metadata: Json | None = None) -> Optional["UrlBasedDeckScraper"]:
         for scraper_type in cls._REGISTRY:
             if scraper_type.is_deck_url(url):
                 return scraper_type(url, metadata)
         return None
 
 
-class TagDeckScraper(DeckScraper):
+class TagBasedDeckScraper(DeckScraper):
     """Abstract HTML tag based deck scraper.
 
     HTML tag based scrapers process a single, decklist and metadata holding, HTML tag extracted
@@ -169,15 +169,22 @@ class TagDeckScraper(DeckScraper):
         raise NotImplementedError
 
 
-class ContainerScraper:
+class UrlBasedContainerScraper:
     CONTAINER_NAME = None
-    THROTTLING = UrlDeckScraper.THROTTLING
-    _REGISTRY: set[Type["ContainerScraper"]] = set()
-    _DECK_SCRAPER: Type[UrlDeckScraper] | None = None
+    THROTTLING = UrlBasedDeckScraper.THROTTLING
+    _REGISTRY: set[Type["UrlBasedContainerScraper"]] = set()
+    _DECK_SCRAPER: Type[UrlBasedDeckScraper] | None = None
 
     @property
     def url(self) -> str:
         return self._url
+
+    @property
+    def _error_msg(self) -> str:
+        if not self.CONTAINER_NAME:
+            return "Data not available"
+        *_, name = self.CONTAINER_NAME.split()
+        return f"{name.title()} data not available"
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         url = url.removesuffix("/")
@@ -214,7 +221,7 @@ class ContainerScraper:
         failed_deck_urls = set()
         for i, deck_url in enumerate(self._deck_urls, start=1):
             scraper = self._DECK_SCRAPER(
-                deck_url, dict(self._metadata)) if self._DECK_SCRAPER else UrlDeckScraper.from_url(
+                deck_url, dict(self._metadata)) if self._DECK_SCRAPER else UrlBasedDeckScraper.from_url(
                 deck_url, dict(self._metadata))
             if not scraper:
                 raise ScrapingError(f"Failed to find scraper suitable for deck URL: {deck_url!r}")
@@ -257,17 +264,19 @@ class ContainerScraper:
         return self._process_decks(already_scraped_deck_urls, already_failed_deck_urls)
 
     @classmethod
-    def registered(cls, scraper_type: Type["ContainerScraper"]) -> Type["ContainerScraper"]:
+    def registered(cls, scraper_type: Type["UrlBasedContainerScraper"]) -> Type[
+        "UrlBasedContainerScraper"]:
         """Class decorator for registering subclasses of DeckContainerScraper.
         """
-        if issubclass(scraper_type, ContainerScraper):
+        if issubclass(scraper_type, UrlBasedContainerScraper):
             cls._REGISTRY.add(scraper_type)
         else:
             raise TypeError(f"Not a subclass of DeckContainerScraper: {scraper_type!r}")
         return scraper_type
 
     @classmethod
-    def from_url(cls, url: str, metadata: Json | None = None) -> Optional["ContainerScraper"]:
+    def from_url(cls, url: str, metadata: Json | None = None) -> Optional[
+        "UrlBasedContainerScraper"]:
         for scraper_type in cls._REGISTRY:
             if scraper_type.is_container_url(url):
                 return scraper_type(url, metadata)

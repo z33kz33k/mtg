@@ -15,7 +15,7 @@ from selenium.common import TimeoutException
 from mtg.deck import Deck
 from mtg import Json, SECRETS
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
+from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
 from mtg.utils.scrape import ScrapingError, get_dynamic_soup, getsoup
 
 _log = logging.getLogger(__name__)
@@ -45,8 +45,8 @@ def get_source(src: str) -> str | None:
     return None
 
 
-@UrlDeckScraper.registered
-class MeleeGgScraper(UrlDeckScraper):
+@UrlBasedDeckScraper.registered
+class MeleeGgDeckScraper(UrlBasedDeckScraper):
     """Scraper of Melee.gg decklist page.
     """
 
@@ -90,13 +90,13 @@ class MeleeGgScraper(UrlDeckScraper):
             "textarea.decklist-builder-paste-field").text.strip().splitlines()
 
 
-@ContainerScraper.registered
-class MeleeGgTournamentScraper(ContainerScraper):
+@UrlBasedContainerScraper.registered
+class MeleeGgTournamentScraper(UrlBasedContainerScraper):
     """Scraper of Melee.gg tournament page.
     """
     CONTAINER_NAME = "Melee.gg tournament"  # override
     DECK_URL_TEMPLATE = "https://melee.gg{}"
-    _DECK_SCRAPER = MeleeGgScraper  # override
+    _DECK_SCRAPER = MeleeGgDeckScraper  # override
     _XPATH = '//a[@data-type="decklist"]'
 
     @staticmethod
@@ -107,10 +107,10 @@ class MeleeGgTournamentScraper(ContainerScraper):
         try:
             self._soup, _, _ = get_dynamic_soup(self.url, self._XPATH)
             if not self._soup:
-                _log.warning("Tournament data not available")
+                _log.warning(self._error_msg)
                 return []
         except TimeoutException:
-            _log.warning("Tournament data not available")
+            _log.warning(self._error_msg)
             return []
 
         game_tag = self._soup.find("p", id="tournament-headline-game")

@@ -12,14 +12,14 @@ import logging
 from datetime import datetime
 
 from mtg import Json
-from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
+from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
 from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
 
 _log = logging.getLogger(__name__)
 
 
-@UrlDeckScraper.registered
-class ArchidektScraper(UrlDeckScraper):
+@UrlBasedDeckScraper.registered
+class ArchidektDeckScraper(UrlBasedDeckScraper):
     """Scraper of Archidekt decklist page.
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
@@ -80,13 +80,13 @@ class ArchidektScraper(UrlDeckScraper):
             self._parse_card_json(v)
 
 
-@ContainerScraper.registered
-class ArchidektFolderScraper(ContainerScraper):
+@UrlBasedContainerScraper.registered
+class ArchidektFolderScraper(UrlBasedContainerScraper):
     """Scraper of Archidekt folder page.
     """
     CONTAINER_NAME = "Archidekt folder"  # override
     URL_TEMPLATE = "https://archidekt.com{}"
-    _DECK_SCRAPER = ArchidektScraper  #
+    _DECK_SCRAPER = ArchidektDeckScraper  #
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -99,7 +99,7 @@ class ArchidektFolderScraper(ContainerScraper):
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url)
         if not self._soup:
-            _log.warning("Folder data not available")
+            _log.warning(self._error_msg)
             return []
 
         deck_urls = []
@@ -108,13 +108,13 @@ class ArchidektFolderScraper(ContainerScraper):
         return [self.URL_TEMPLATE.format(url) for url in deck_urls]
 
 
-@ContainerScraper.registered
-class ArchidektUserScraper(ContainerScraper):
+@UrlBasedContainerScraper.registered
+class ArchidektUserScraper(UrlBasedContainerScraper):
     """Scraper of Archidekt folder page.
     """
     CONTAINER_NAME = "Archidekt user"  # override
     URL_TEMPLATE = "https://archidekt.com{}"
-    _DECK_SCRAPER = ArchidektScraper  # override
+    _DECK_SCRAPER = ArchidektDeckScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -129,7 +129,7 @@ class ArchidektUserScraper(ContainerScraper):
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url)
         if not self._soup:
-            _log.warning("Folder data not available")
+            _log.warning(self._error_msg)
             return []
 
         info_tags = self._soup.find_all("div", class_="deckLink_info__ww_n5")

@@ -13,7 +13,7 @@ import dateutil.parser
 from bs4 import Tag
 
 from mtg.deck import Deck, Mode
-from mtg.deck.scrapers import ContainerScraper, TagDeckScraper, UrlDeckScraper
+from mtg.deck.scrapers import UrlBasedContainerScraper, TagBasedDeckScraper, UrlBasedDeckScraper
 from mtg.scryfall import all_formats
 from mtg.utils import extract_int, timed
 from mtg.utils.scrape import ScrapingError, getsoup, http_requests_counted, strip_url_params, \
@@ -36,7 +36,7 @@ HEADERS = {
 # yet another alternative approach would be to scrape:
 # https://www.mtggoldfish.com/deck/arena_download/{DECK_ID} but this entails another request and
 # parsing a DECK_ID from the first URL
-class GoldfishTagScraper(TagDeckScraper):
+class GoldfishTagBasedDeckScraper(TagBasedDeckScraper):
     """Scraper of a MtGGoldfish decklist HTML tag.
     """
     def _parse_header_tag(self, header_tag: Tag) -> None:
@@ -104,8 +104,8 @@ class GoldfishTagScraper(TagDeckScraper):
         self._parse_decklist_tag(decklist_tag)
 
 
-@UrlDeckScraper.registered
-class GoldfishUrlScraper(GoldfishTagScraper, UrlDeckScraper):
+@UrlBasedDeckScraper.registered
+class GoldfishUrlBasedDeckScraper(GoldfishTagBasedDeckScraper, UrlBasedDeckScraper):
     """Scraper of MtGGoldfish decklist page.
     """
     @staticmethod
@@ -149,7 +149,7 @@ def scrape_meta(fmt="standard") -> list[Deck]:
     decks, metas = [], []
     for i, tile in enumerate(tiles, start=1):
         link = tile.find("a").attrs["href"]
-        deck = GoldfishUrlScraper(
+        deck = GoldfishUrlBasedDeckScraper(
             f"https://www.mtggoldfish.com{link}", {"format": fmt}).scrape(
             throttled=True, suppress_invalid_deck=False)
         count = tile.find("span", class_="archetype-tile-statistic-value-extra-data").text.strip()
@@ -164,13 +164,13 @@ def scrape_meta(fmt="standard") -> list[Deck]:
     return decks
 
 
-@ContainerScraper.registered
-class GoldfishTournamentScraper(ContainerScraper):
+@UrlBasedContainerScraper.registered
+class GoldfishTournamentScraper(UrlBasedContainerScraper):
     """Scraper of MTGGoldfish tournament page.
     """
     CONTAINER_NAME = "Goldfish tournament"  # override
     DECK_URL_TEMPLATE = "https://www.mtggoldfish.com{}"
-    _DECK_SCRAPER = GoldfishUrlScraper  # override
+    _DECK_SCRAPER = GoldfishUrlBasedDeckScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -186,7 +186,7 @@ class GoldfishTournamentScraper(ContainerScraper):
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url, headers=HEADERS)
         if not self._soup:
-            _log.warning("Tournament data not available")
+            _log.warning(self._error_msg)
             return []
 
         table_tag = self._soup.find("table", class_="table-tournament")
@@ -194,13 +194,13 @@ class GoldfishTournamentScraper(ContainerScraper):
         return [self.DECK_URL_TEMPLATE.format(deck_tag.attrs["href"]) for deck_tag in deck_tags]
 
 
-@ContainerScraper.registered
-class GoldfishPlayerScraper(ContainerScraper):
+@UrlBasedContainerScraper.registered
+class GoldfishPlayerScraper(UrlBasedContainerScraper):
     """Scraper of MTGGoldfish player search page.
     """
     CONTAINER_NAME = "Goldfish player"  # override
     DECK_URL_TEMPLATE = "https://www.mtggoldfish.com{}"
-    _DECK_SCRAPER = GoldfishUrlScraper  # override
+    _DECK_SCRAPER = GoldfishUrlBasedDeckScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -210,7 +210,7 @@ class GoldfishPlayerScraper(ContainerScraper):
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url, headers=HEADERS)
         if not self._soup:
-            _log.warning("Player search data not available")
+            _log.warning(self._error_msg)
             return []
 
         table_tag = self._soup.find("table", class_=lambda c: c and "table-striped" in c)

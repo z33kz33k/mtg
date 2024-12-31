@@ -14,7 +14,7 @@ import dateutil.parser
 from selenium.common.exceptions import TimeoutException
 
 from mtg.deck import Archetype, Mode
-from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
+from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
 from mtg.utils import extract_float, extract_int, from_iterable
 from mtg.utils.scrape import ScrapingError, get_dynamic_soup, getsoup, strip_url_params
 
@@ -22,8 +22,8 @@ _log = logging.getLogger(__name__)
 
 
 # TODO: scrape the meta
-@UrlDeckScraper.registered
-class AetherhubScraper(UrlDeckScraper):
+@UrlBasedDeckScraper.registered
+class AetherhubDeckScraper(UrlBasedDeckScraper):
     """Scraper of Aetherhub decklist page.
 
     Note:
@@ -174,13 +174,13 @@ class AetherhubScraper(UrlDeckScraper):
                         self._companion = cards[0]
 
 
-@ContainerScraper.registered
-class AetherhubUserScraper(ContainerScraper):
+@UrlBasedContainerScraper.registered
+class AetherhubUserScraper(UrlBasedContainerScraper):
     """Scraper of Aetherhub user page.
     """
     CONTAINER_NAME = "Aetherhub user"  # override
     URL_TEMPLATE = "https://aetherhub.com{}"
-    _DECK_SCRAPER = AetherhubScraper  # override
+    _DECK_SCRAPER = AetherhubDeckScraper  # override
     _XPATH = '//table[@id="metaHubTable"]'
     CONSENT_XPATH = '//button[@class="ncmp__btn" and contains(text(), "Accept")]'
 
@@ -201,10 +201,10 @@ class AetherhubUserScraper(ContainerScraper):
                 self.url, self._XPATH, consent_xpath=self.CONSENT_XPATH,
                 wait_for_consent_disappearance=False)
             if not self._soup:
-                _log.warning("User data not available")
+                _log.warning(self._error_msg)
                 return []
         except TimeoutException:
-            _log.warning("User data not available")
+            _log.warning(self._error_msg)
             return []
 
         tbody = self._soup.find("tbody")
@@ -212,13 +212,13 @@ class AetherhubUserScraper(ContainerScraper):
                 for row in tbody.find_all("tr")]
 
 
-@ContainerScraper.registered
-class AetherhubEventScraper(ContainerScraper):
+@UrlBasedContainerScraper.registered
+class AetherhubEventScraper(UrlBasedContainerScraper):
     """Scraper of Aetherhub event page.
     """
     CONTAINER_NAME = "Aetherhub event"  # override
     URL_TEMPLATE = "https://aetherhub.com{}"
-    _DECK_SCRAPER = AetherhubScraper  # override
+    _DECK_SCRAPER = AetherhubDeckScraper  # override
     _XPATH = '//tr[@class="deckdata"]'
 
     @staticmethod
@@ -235,10 +235,10 @@ class AetherhubEventScraper(ContainerScraper):
                 self.url, self._XPATH, consent_xpath=AetherhubUserScraper.CONSENT_XPATH,
                 wait_for_consent_disappearance=False)
             if not self._soup:
-                _log.warning("Event data not available")
+                _log.warning(self._error_msg)
                 return []
         except TimeoutException:
-            _log.warning("Event data not available")
+            _log.warning(self._error_msg)
             return []
 
         rows = self._soup.find_all("tr", class_="deckdata")

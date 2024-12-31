@@ -12,7 +12,7 @@ import logging
 from bs4 import Tag
 
 from mtg import Json
-from mtg.deck.scrapers import UrlDeckScraper
+from mtg.deck.scrapers import UrlBasedDeckScraper
 from mtg.scryfall import Card
 from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
 
@@ -27,8 +27,8 @@ _STATES = {
 }
 
 
-@UrlDeckScraper.registered
-class PauperMtgScraper(UrlDeckScraper):
+@UrlBasedDeckScraper.registered
+class PauperMtgDeckScraper(UrlBasedDeckScraper):
     """Scraper of PauperMTG decklist page.
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:

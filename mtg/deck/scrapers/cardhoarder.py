@@ -13,7 +13,7 @@ import logging
 from selenium.common.exceptions import TimeoutException
 
 from mtg import Json
-from mtg.deck.scrapers import UrlDeckScraper
+from mtg.deck.scrapers import UrlBasedDeckScraper
 from mtg.utils.scrape import ScrapingError, get_dynamic_soup, strip_url_params
 
 _log = logging.getLogger(__name__)
@@ -21,8 +21,8 @@ _log = logging.getLogger(__name__)
 
 # Cardhoarder has anti-scraping protection (I doubt they care much about user-posted decks
 # though), but it seems it's bypassed by Selenium
-@UrlDeckScraper.registered
-class CardhoarderScraper(UrlDeckScraper):
+@UrlBasedDeckScraper.registered
+class CardhoarderDeckScraper(UrlBasedDeckScraper):
     """Scraper of Cardhoarder decklist page.
     """
     _XPATH = "//div[@id='deck-viewer']"

@@ -11,15 +11,15 @@ import logging
 
 from bs4 import Tag
 
-from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
+from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
 from mtg.scryfall import COMMANDER_FORMATS, Card
 from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
 
 _log = logging.getLogger(__name__)
 
 
-@UrlDeckScraper.registered
-class DeckboxScraper(UrlDeckScraper):
+@UrlBasedDeckScraper.registered
+class DeckboxDeckScraper(UrlBasedDeckScraper):
     """Scraper of Deckbox decklist page.
     """
     @staticmethod
@@ -84,13 +84,13 @@ class DeckboxScraper(UrlDeckScraper):
             self._set_commander(self._sideboard.pop())
 
 
-@ContainerScraper.registered
-class DeckboxUserScraper(ContainerScraper):
+@UrlBasedContainerScraper.registered
+class DeckboxUserScraper(UrlBasedContainerScraper):
     """Scraper of Deckbox user page.
     """
     CONTAINER_NAME = "Deckbox user"  # override
     DECK_URL_TEMPLATE = "https://deckbox.org{}"
-    _DECK_SCRAPER = DeckboxScraper  # override
+    _DECK_SCRAPER = DeckboxDeckScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -103,7 +103,7 @@ class DeckboxUserScraper(ContainerScraper):
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url)
         if not self._soup:
-            _log.warning("User data not available")
+            _log.warning(self._error_msg)
             return []
 
         deck_tags = [
@@ -112,13 +112,13 @@ class DeckboxUserScraper(ContainerScraper):
         return [self.DECK_URL_TEMPLATE.format(url) for url in sorted(urls)]
 
 
-@ContainerScraper.registered
-class DeckboxEventScraper(ContainerScraper):
+@UrlBasedContainerScraper.registered
+class DeckboxEventScraper(UrlBasedContainerScraper):
     """Scraper of Deckbox community event page.
     """
     CONTAINER_NAME = "Deckbox event"  # override
     DECK_URL_TEMPLATE = "https://deckbox.org{}"
-    _DECK_SCRAPER = DeckboxScraper  # override
+    _DECK_SCRAPER = DeckboxDeckScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -131,7 +131,7 @@ class DeckboxEventScraper(ContainerScraper):
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url)
         if not self._soup:
-            _log.warning("Event data not available")
+            _log.warning(self._error_msg)
             return []
 
         table_tag = self._soup.find("table", class_="simple_table")

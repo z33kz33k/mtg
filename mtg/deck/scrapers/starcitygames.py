@@ -13,7 +13,7 @@ import dateutil.parser
 from bs4 import Tag
 
 from mtg import Json
-from mtg.deck.scrapers import ContainerScraper, TagDeckScraper, UrlDeckScraper
+from mtg.deck.scrapers import UrlBasedContainerScraper, TagBasedDeckScraper, UrlBasedDeckScraper
 from mtg.utils import extract_int, from_iterable, sanitize_whitespace
 from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
 
@@ -29,7 +29,7 @@ _log = logging.getLogger(__name__)
 # could be utilized.
 
 
-class StarCityGamesTagDeckScraper(TagDeckScraper):
+class StarCityGamesTagBasedDeckScraper(TagBasedDeckScraper):
     """Scraper of a StarCityGames decklist HTML tag.
     """
     @staticmethod
@@ -90,8 +90,8 @@ class StarCityGamesTagDeckScraper(TagDeckScraper):
         self._parse_decklist_tag(decklist_tag)
 
 
-@UrlDeckScraper.registered
-class StarCityGamesUrlScraper(StarCityGamesTagDeckScraper, UrlDeckScraper):
+@UrlBasedDeckScraper.registered
+class StarCityGamesUrlBasedScraper(StarCityGamesTagBasedDeckScraper, UrlBasedDeckScraper):
     """Scraper of StarCityGames decklist page.
     """
     @staticmethod
@@ -119,12 +119,12 @@ class StarCityGamesUrlScraper(StarCityGamesTagDeckScraper, UrlDeckScraper):
                 raise ScrapingError("Deck data not found")
 
 
-@ContainerScraper.registered
-class StarCityGamesEventScraper(ContainerScraper):
+@UrlBasedContainerScraper.registered
+class StarCityGamesEventScraper(UrlBasedContainerScraper):
     """Scraper of StarCityGames event page.
     """
     CONTAINER_NAME = "StarCityGames event"  # override
-    _DECK_SCRAPER = StarCityGamesUrlScraper  # override
+    _DECK_SCRAPER = StarCityGamesUrlBasedScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -143,23 +143,22 @@ class StarCityGamesEventScraper(ContainerScraper):
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url)
         if not self._soup:
-            _, name = self.CONTAINER_NAME.split()
-            _log.warning(f"{name.title()} data not available")
+            _log.warning(self._error_msg)
             return []
 
         section_tag = self._soup.select_one("section#content")
         deck_tags = [
             a_tag for a_tag in section_tag.find_all(
-                "a", href=lambda h: h and StarCityGamesUrlScraper.is_deck_url(h))]
+                "a", href=lambda h: h and StarCityGamesUrlBasedScraper.is_deck_url(h))]
         return [tag.attrs["href"] for tag in deck_tags if tag is not None]
 
 
-@ContainerScraper.registered
-class StarCityGamesArticleScraper(ContainerScraper):
+@UrlBasedContainerScraper.registered
+class StarCityGamesArticleScraper(UrlBasedContainerScraper):
     """Scraper of StarCityGames decks article page.
     """
     CONTAINER_NAME = "StarCityGames article"  # override
-    _DECK_SCRAPER = StarCityGamesUrlScraper  # override
+    _DECK_SCRAPER = StarCityGamesUrlBasedScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -172,8 +171,7 @@ class StarCityGamesArticleScraper(ContainerScraper):
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url)
         if not self._soup:
-            _, name = self.CONTAINER_NAME.split()
-            _log.warning(f"{name.title()} data not available")
+            _log.warning(self._error_msg)
             return []
 
         deck_divs = [div for div in self._soup.find_all("div", class_="deck_listing")]
@@ -182,7 +180,7 @@ class StarCityGamesArticleScraper(ContainerScraper):
             if tag is not None]
         a_tags = [
             tag for tag in
-            [h.find("a", href=lambda h: h and StarCityGamesUrlScraper.is_deck_url(h))
+            [h.find("a", href=lambda h: h and StarCityGamesUrlBasedScraper.is_deck_url(h))
              for h in deck_headers]
             if tag is not None]
         return [tag.attrs["href"] for tag in a_tags]

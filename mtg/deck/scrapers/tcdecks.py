@@ -13,7 +13,7 @@ from datetime import datetime
 from bs4 import NavigableString, Tag
 
 from mtg import Json
-from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
+from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
 from mtg.scryfall import Card
 from mtg.utils import extract_int
 from mtg.utils.scrape import ScrapingError
@@ -22,8 +22,8 @@ from mtg.utils.scrape import getsoup
 _log = logging.getLogger(__name__)
 
 
-@UrlDeckScraper.registered
-class TCDecksScraper(UrlDeckScraper):
+@UrlBasedDeckScraper.registered
+class TCDecksDeckScraper(UrlBasedDeckScraper):
     """Scraper of TCDecks decklist page.
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
@@ -85,13 +85,13 @@ class TCDecksScraper(UrlDeckScraper):
                 self._maindeck += self._parse_td(td_tag)
 
 
-@ContainerScraper.registered
-class TCDecksEventScraper(ContainerScraper):
+@UrlBasedContainerScraper.registered
+class TCDecksEventScraper(UrlBasedContainerScraper):
     """Scraper of TCDecks event page.
     """
     CONTAINER_NAME = "TCDecks event"  # override
     DECK_URL_TEMPLATE = "https://www.tcdecks.net/{}"
-    _DECK_SCRAPER = TCDecksScraper  # override
+    _DECK_SCRAPER = TCDecksDeckScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -100,7 +100,7 @@ class TCDecksEventScraper(ContainerScraper):
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url)
         if not self._soup:
-            _log.warning("Event data not available")
+            _log.warning(self._error_msg)
             return []
 
         table_tag = self._soup.find("table", class_="tourney_list")

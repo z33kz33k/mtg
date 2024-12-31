@@ -11,7 +11,7 @@ import contextlib
 import logging
 from datetime import datetime
 
-from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
+from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
 from mtg.utils import extract_int
 from mtg.utils.scrape import ScrapingError
 from mtg.utils.scrape import getsoup
@@ -23,8 +23,8 @@ EVENT_RANKS = "minor", "regular", "major"  # indicated by number of stars (1, 2,
 
 
 # TODO: scrape metagame
-@UrlDeckScraper.registered
-class MtgTop8Scraper(UrlDeckScraper):
+@UrlBasedDeckScraper.registered
+class MtgTop8DeckScraper(UrlBasedDeckScraper):
     """Scraper of MTGTop8 decklist page.
     """
     @staticmethod
@@ -93,13 +93,13 @@ class MtgTop8Scraper(UrlDeckScraper):
                         cards += self.get_playset(card, quantity)
 
 
-@ContainerScraper.registered
-class MtgTop8EventScraper(ContainerScraper):
+@UrlBasedContainerScraper.registered
+class MtgTop8EventScraper(UrlBasedContainerScraper):
     """Scraper of MTGTop8 event page.
     """
     CONTAINER_NAME = "MTGTop8 event"  # override
     DECK_URL_TEMPLATE = "https://www.mtgtop8.com/event{}"
-    _DECK_SCRAPER = MtgTop8Scraper  # override
+    _DECK_SCRAPER = MtgTop8DeckScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -107,12 +107,12 @@ class MtgTop8EventScraper(ContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return MtgTop8Scraper.sanitize_url(url)
+        return MtgTop8DeckScraper.sanitize_url(url)
 
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url)
         if not self._soup:
-            _log.warning("Event data not available")
+            _log.warning(self._error_msg)
             return []
 
         a_tags = [tag for tag in self._soup.find_all(

@@ -13,15 +13,15 @@ import dateutil.parser
 from bs4 import NavigableString
 
 from mtg import Json, SECRETS
-from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
+from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
 from mtg.deck.scrapers.goldfish import HEADERS as GOLDFISH_HEADERS
 from mtg.utils.scrape import ScrapingError, getsoup, request_json
 
 _log = logging.getLogger(__name__)
 
 
-@UrlDeckScraper.registered
-class InternationalHareruyaScraper(UrlDeckScraper):
+@UrlBasedDeckScraper.registered
+class InternationalHareruyaDeckScraper(UrlBasedDeckScraper):
     """Scraper of international Hareruya decklist page.
     """
     @staticmethod
@@ -97,8 +97,8 @@ class InternationalHareruyaScraper(UrlDeckScraper):
                     self._set_commander(cards[0])
 
 
-@UrlDeckScraper.registered
-class JapaneseHareruyaScraper(UrlDeckScraper):
+@UrlBasedDeckScraper.registered
+class JapaneseHareruyaDeckScraper(UrlBasedDeckScraper):
     """Scraper of Japanese Hareruya decklist page.
     """
     API_URL_TEMPLATE = "https://api.deck.hareruyamtg.com/api/deck/{}?display_token={}"
@@ -173,8 +173,8 @@ class JapaneseHareruyaScraper(UrlDeckScraper):
             self._process_card(card)
 
 
-@ContainerScraper.registered
-class HareruyaEventScraper(ContainerScraper):
+@UrlBasedContainerScraper.registered
+class HareruyaEventScraper(UrlBasedContainerScraper):
     """Scraper of Hareruya event decks search page.
     """
     CONTAINER_NAME = "Hareruya event"  # override
@@ -206,15 +206,15 @@ class HareruyaEventScraper(ContainerScraper):
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url, headers=self.HEADERS)
         if not self._soup:
-            _log.warning("Event data not available")
+            _log.warning(self._error_msg)
             return []
 
         return [a_tag.attrs["href"] for a_tag in self._soup.find_all(
             "a", class_="deckSearch-searchResult__itemWrapper")]
 
 
-@ContainerScraper.registered
-class HareruyaPlayerScraper(ContainerScraper):
+@UrlBasedContainerScraper.registered
+class HareruyaPlayerScraper(UrlBasedContainerScraper):
     """Scraper of Hareruya player decks search page.
     """
     CONTAINER_NAME = "Hareruya player"  # override
@@ -227,7 +227,7 @@ class HareruyaPlayerScraper(ContainerScraper):
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url, headers=HareruyaEventScraper.HEADERS)
         if not self._soup:
-            _log.warning("Player data not available")
+            _log.warning(self._error_msg)
             return []
 
         return [a_tag.attrs["href"] for a_tag in self._soup.find_all(

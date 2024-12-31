@@ -9,15 +9,15 @@
 """
 import logging
 
-from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
+from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
 from mtg.utils import get_date_from_french_ago_text
 from mtg.utils.scrape import ScrapingError, getsoup
 
 _log = logging.getLogger(__name__)
 
 
-@UrlDeckScraper.registered
-class MagicVilleScraper(UrlDeckScraper):
+@UrlBasedDeckScraper.registered
+class MagicVilleDeckScraper(UrlBasedDeckScraper):
     """Scraper of MagicVille decklist page.
     """
     @staticmethod
@@ -104,13 +104,13 @@ class MagicVilleScraper(UrlDeckScraper):
                     self._maindeck += playset
 
 
-@ContainerScraper.registered
-class MagicVilleEventScraper(ContainerScraper):
+@UrlBasedContainerScraper.registered
+class MagicVilleEventScraper(UrlBasedContainerScraper):
     """Scraper of MagicVille event page.
     """
     CONTAINER_NAME = "MagicVille event"  # override
     DECK_URL_TEMPLATE = "https://www.magic-ville.com/fr/decks/{}"
-    _DECK_SCRAPER = MagicVilleScraper  # override
+    _DECK_SCRAPER = MagicVilleDeckScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -119,20 +119,20 @@ class MagicVilleEventScraper(ContainerScraper):
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url)
         if not self._soup:
-            _log.warning("Event data not available")
+            _log.warning(self._error_msg)
             return []
 
         deck_tags = self._soup.find_all("a", href=lambda h: h and "showdeck?ref=" in h)
         return [self.DECK_URL_TEMPLATE.format(deck_tag.attrs["href"]) for deck_tag in deck_tags]
 
 
-@ContainerScraper.registered
-class MagicVilleUserScraper(ContainerScraper):
+@UrlBasedContainerScraper.registered
+class MagicVilleUserScraper(UrlBasedContainerScraper):
     """Scraper of MagicVille user page.
     """
     CONTAINER_NAME = "MagicVille user"  # override
     DECK_URL_TEMPLATE = "https://www.magic-ville.com/fr/{}"
-    _DECK_SCRAPER = MagicVilleScraper  # override
+    _DECK_SCRAPER = MagicVilleDeckScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -141,7 +141,7 @@ class MagicVilleUserScraper(ContainerScraper):
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url)
         if not self._soup:
-            _log.warning("User data not available")
+            _log.warning(self._error_msg)
             return []
 
         deck_tags = self._soup.find_all("a", href=lambda h: h and "/decks/showdeck.php?ref=" in h)

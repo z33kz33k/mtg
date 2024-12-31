@@ -13,15 +13,15 @@ from datetime import date
 from requests import ReadTimeout
 
 from mtg import Json
-from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
+from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
 from mtg.utils import get_date_from_ago_text
 from mtg.utils.scrape import ScrapingError, request_json, strip_url_params
 
 _log = logging.getLogger(__name__)
 
 
-@UrlDeckScraper.registered
-class StreamdeckerScraper(UrlDeckScraper):
+@UrlBasedDeckScraper.registered
+class StreamdeckerDeckScraper(UrlBasedDeckScraper):
     """Scraper of Streamdecker deck page.
     """
     API_URL_TEMPLATE = "https://www.streamdecker.com/api/deck/{}"
@@ -82,14 +82,14 @@ class StreamdeckerScraper(UrlDeckScraper):
             self._parse_json_card(json_card)
 
 
-@ContainerScraper.registered
-class StreamdeckerUserScraper(ContainerScraper):
+@UrlBasedContainerScraper.registered
+class StreamdeckerUserScraper(UrlBasedContainerScraper):
     """Scraper of Streamdecker user page.
     """
     CONTAINER_NAME = "Streamdecker user"  # override
     API_URL_TEMPLATE = "https://www.streamdecker.com/api/userdecks/{}"
     DECK_URL_TEMPLATE = "https://www.streamdecker.com/deck/{}"
-    _DECK_SCRAPER = StreamdeckerScraper  # override
+    _DECK_SCRAPER = StreamdeckerDeckScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -106,6 +106,6 @@ class StreamdeckerUserScraper(ContainerScraper):
     def _collect(self) -> list[str]:  # override
         json_data = request_json(self.API_URL_TEMPLATE.format(self._get_user_name()))
         if not json_data or not json_data.get("data") or not json_data["data"].get("decks"):
-            _log.warning("User data not available")
+            _log.warning(self._error_msg)
             return []
         return [self.DECK_URL_TEMPLATE.format(d["deckLink"]) for d in json_data["data"]["decks"]]

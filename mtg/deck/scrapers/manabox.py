@@ -13,7 +13,7 @@ import dateutil.parser
 from bs4 import Tag
 
 from mtg import Json
-from mtg.deck.scrapers import UrlDeckScraper
+from mtg.deck.scrapers import UrlBasedDeckScraper
 from mtg.scryfall import Card
 from mtg.utils.scrape import ScrapingError
 from mtg.utils.scrape import getsoup
@@ -21,8 +21,8 @@ from mtg.utils.scrape import getsoup
 _log = logging.getLogger(__name__)
 
 
-@UrlDeckScraper.registered
-class ManaBoxScraper(UrlDeckScraper):
+@UrlBasedDeckScraper.registered
+class ManaBoxDeckScraper(UrlBasedDeckScraper):
     """Scraper of ManaBox decklist page.
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:

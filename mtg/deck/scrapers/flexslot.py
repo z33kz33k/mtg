@@ -15,7 +15,7 @@ from selenium.common.exceptions import TimeoutException
 from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
+from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
 from mtg.utils.scrape import get_dynamic_soup, strip_url_params
 from mtg.utils.scrape import ScrapingError
 
@@ -23,8 +23,8 @@ _log = logging.getLogger(__name__)
 CONSENT_XPATH = "//p[text()='Consent']"
 
 
-@UrlDeckScraper.registered
-class FlexslotScraper(UrlDeckScraper):
+@UrlBasedDeckScraper.registered
+class FlexslotDeckScraper(UrlBasedDeckScraper):
     """Scraper of Flexslot.gg decklist page.
     """
     _XPATH = "//h3[@class='text-center']"
@@ -71,13 +71,13 @@ class FlexslotScraper(UrlDeckScraper):
         self._arena_decklist = [line.rstrip(":") for line in self._clipboard.splitlines()]
 
 
-@ContainerScraper.registered
-class FlexslotUserScraper(ContainerScraper):
+@UrlBasedContainerScraper.registered
+class FlexslotUserScraper(UrlBasedContainerScraper):
     """Scraper of Flexslot user page.
     """
     CONTAINER_NAME = "Flexslot user"  # override
     URL_TEMPLATE = "https://flexslot.gg{}"
-    _DECK_SCRAPER = FlexslotScraper  # override
+    _DECK_SCRAPER = FlexslotDeckScraper  # override
     _XPATH = '//a[contains(@href, "/decks/")]'
 
     @staticmethod
@@ -92,10 +92,10 @@ class FlexslotUserScraper(ContainerScraper):
         try:
             self._soup, _, _ = get_dynamic_soup(self.url, self._XPATH, consent_xpath=CONSENT_XPATH)
             if not self._soup:
-                _log.warning("User data not available")
+                _log.warning(self._error_msg)
                 return []
         except TimeoutException:
-            _log.warning("User data not available")
+            _log.warning(self._error_msg)
             return []
 
         deck_tags = self._soup.find_all("a", href=lambda h: h and "/decks/" in h)

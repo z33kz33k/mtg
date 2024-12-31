@@ -15,7 +15,7 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
+from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
 from mtg.utils import extract_float, extract_int
 from mtg.utils.scrape import ScrapingError
 from mtg.utils.scrape import get_dynamic_soup, strip_url_params
@@ -25,8 +25,8 @@ CONSENT_XPATH = '//button[contains(@class, "fc-button fc-cta-consent") and @aria
 CLIPBOARD_XPATH = "//span[text()='Copy to MTGA']"
 
 
-@UrlDeckScraper.registered
-class UntappedProfileDeckScraper(UrlDeckScraper):
+@UrlBasedDeckScraper.registered
+class UntappedProfileDeckScraper(UrlBasedDeckScraper):
     """Scraper of decklist page of Untapped.gg user's profile.
     """
     _NO_GAMES_XPATH = ("//div[text()='No games have been played with this deck in the selected "
@@ -70,8 +70,8 @@ class UntappedProfileDeckScraper(UrlDeckScraper):
         pass
 
 
-@UrlDeckScraper.registered
-class UntappedRegularDeckScraper(UrlDeckScraper):
+@UrlBasedDeckScraper.registered
+class UntappedRegularDeckScraper(UrlBasedDeckScraper):
     """Scraper of a regular Untapped.gg decklist page.
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
@@ -110,8 +110,8 @@ class UntappedRegularDeckScraper(UrlDeckScraper):
         pass
 
 
-@UrlDeckScraper.registered
-class UntappedMetaDeckScraper(UrlDeckScraper):
+@UrlBasedDeckScraper.registered
+class UntappedMetaDeckScraper(UrlBasedDeckScraper):
     """Scraper of Untapped meta-decks page.
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
@@ -166,8 +166,8 @@ class UntappedMetaDeckScraper(UrlDeckScraper):
         pass
 
 
-@ContainerScraper.registered
-class UntappedProfileScraper(ContainerScraper):
+@UrlBasedContainerScraper.registered
+class UntappedProfileScraper(UrlBasedContainerScraper):
     """Scraper of Untapped.gg user profile page.
     """
     CONTAINER_NAME = "Untapped profile"  # override
@@ -188,10 +188,10 @@ class UntappedProfileScraper(ContainerScraper):
             self._soup, _, _ = get_dynamic_soup(
                 self.url, self._XPATH, consent_xpath=CONSENT_XPATH)
             if not self._soup:
-                _log.warning("Profile data not available")
+                _log.warning(self._error_msg)
                 return []
         except TimeoutException:
-            _log.warning("Profile data not available")
+            _log.warning(self._error_msg)
             return []
 
         a_tags = self._soup.find_all("a", href=lambda h: h and "/profile/" in h)

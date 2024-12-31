@@ -19,7 +19,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from mtg import Json
-from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
+from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
 from mtg.utils.scrape import SELENIUM_TIMEOUT, ScrapingError, accept_consent, dissect_js, getsoup, \
     strip_url_params
 from mtg.utils import timed
@@ -46,8 +46,8 @@ def to_eng_url(url: str, lang_code_delimiter: str) -> str:
     return url.replace(f"/{lang}/", "/en-us/")
 
 
-@UrlDeckScraper.registered
-class CardsrealmScraper(UrlDeckScraper):
+@UrlBasedDeckScraper.registered
+class CardsrealmDeckScraper(UrlBasedDeckScraper):
     """Scraper of Cardsrealm decklist page.
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
@@ -100,13 +100,13 @@ class CardsrealmScraper(UrlDeckScraper):
         self._derive_commander_from_sideboard()
 
 
-@ContainerScraper.registered
-class CardsrealmProfileScraper(ContainerScraper):
+@UrlBasedContainerScraper.registered
+class CardsrealmProfileScraper(UrlBasedContainerScraper):
     """Scraper of Cardsrealm user profile page.
     """
     CONTAINER_NAME = "Cardsrealm profile"  # override
     DECK_URL_TEMPLATE = "https://mtg.cardsrealm.com{}"
-    _DECK_SCRAPER = CardsrealmScraper  # override
+    _DECK_SCRAPER = CardsrealmDeckScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -121,7 +121,7 @@ class CardsrealmProfileScraper(ContainerScraper):
         self._soup = getsoup(self.url)
         if not self._soup:
             _, name = self.CONTAINER_NAME.split()
-            _log.warning(f"{name.title()} data not available")
+            _log.warning(self._error_msg)
             return []
 
         deck_divs = [
@@ -131,7 +131,7 @@ class CardsrealmProfileScraper(ContainerScraper):
         return [self.DECK_URL_TEMPLATE.format(url) for url in urls]
 
 
-@ContainerScraper.registered
+@UrlBasedContainerScraper.registered
 class CardsrealmFolderScraper(CardsrealmProfileScraper):
     """Scraper of Cardsrealm decks folder page.
     """
@@ -158,13 +158,13 @@ def _is_regular_tournament_url(url: str) -> bool:
             and "/meta-decks/" not in url.lower())
 
 
-@ContainerScraper.registered
-class CardsrealmMetaTournamentScraper(ContainerScraper):
+@UrlBasedContainerScraper.registered
+class CardsrealmMetaTournamentScraper(UrlBasedContainerScraper):
     """Scraper of Cardsrealm meta-deck tournaments page.
     """
     CONTAINER_NAME = "Cardsrealm meta-deck tournament"  # override
     DECK_URL_TEMPLATE = "https://mtg.cardsrealm.com{}"
-    _DECK_SCRAPER = CardsrealmScraper  # override
+    _DECK_SCRAPER = CardsrealmDeckScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -178,7 +178,7 @@ class CardsrealmMetaTournamentScraper(ContainerScraper):
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url)
         if not self._soup:
-            _log.warning(f"Tournament data not available")
+            _log.warning(self._error_msg)
             return []
 
         deck_tags = [
@@ -191,12 +191,12 @@ class CardsrealmMetaTournamentScraper(ContainerScraper):
         return [self.DECK_URL_TEMPLATE.format(url) for url in sorted(urls)]
 
 
-@ContainerScraper.registered
-class CardsrealmRegularTournamentScraper(ContainerScraper):
+@UrlBasedContainerScraper.registered
+class CardsrealmRegularTournamentScraper(UrlBasedContainerScraper):
     """Scraper of Cardsrealm regular tournaments page.
     """
     CONTAINER_NAME = "Cardsrealm regular tournament"  # override
-    _DECK_SCRAPER = CardsrealmScraper  # override
+    _DECK_SCRAPER = CardsrealmDeckScraper  # override
     _CONSENT_XPATH = '//button[@id="ez-accept-all"]'
     _XPATH = "//button[text()='show deck']"
 
@@ -242,7 +242,7 @@ class CardsrealmRegularTournamentScraper(ContainerScraper):
     def _collect(self) -> list[str]:  # override
         self._soup = self._get_dynamic_soup()
         if not self._soup:
-            _log.warning(f"Tournament data not available")
+            _log.warning(self._error_msg)
             return []
 
         deck_divs = [
@@ -251,13 +251,13 @@ class CardsrealmRegularTournamentScraper(ContainerScraper):
         return [tag.attrs["href"] for tag in deck_tags if tag is not None]
 
 
-@ContainerScraper.registered
-class CardsrealmArticleScraper(ContainerScraper):
+@UrlBasedContainerScraper.registered
+class CardsrealmArticleScraper(UrlBasedContainerScraper):
     """Scraper of Cardsrealm decks article page.
     """
     CONTAINER_NAME = "Cardsrealm article"  # override
     DECK_URL_TEMPLATE = "https://mtg.cardsrealm.com{}"
-    _DECK_SCRAPER = CardsrealmScraper  # override
+    _DECK_SCRAPER = CardsrealmDeckScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -271,8 +271,7 @@ class CardsrealmArticleScraper(ContainerScraper):
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url)
         if not self._soup:
-            _, name = self.CONTAINER_NAME.split()
-            _log.warning(f"{name.title()} data not available")
+            _log.warning(self._error_msg)
             return []
 
         deck_divs = [

@@ -64,7 +64,7 @@ descriptions).
     * Other decklist services are in plans (but, it does seem like I've pretty much exhausted the 
       possibilities already :))
     * Both Untapped decklist types featured in YT videos are supported: regular deck and profile deck
-    * Both old and new TCGPlayer sites are supported
+    * Both old TCGPlayer site and TCGPlayer Infinite are supported
     * Both international and native Hareruya sites are supported 
     * Sites that need it are scraped using [Selenium](https://github.com/SeleniumHQ/Selenium)
     * LigaMagic is the only sore spot that demands from me investing in scraping APIs to bypass 
@@ -98,7 +98,7 @@ descriptions).
         * TappedOut users, folders, and user folders
         * TCDecks events
         * TCGPlayer (old-site) players
-        * TCGPlayer (new-site) players (profile page), authors (search page) and events
+        * TCGPlayer Infinite players (profile page), authors (search page) and events
         * Untapped profiles
         * others in plans
 * Assessing the meta:

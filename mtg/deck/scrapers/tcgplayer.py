@@ -15,7 +15,7 @@ from bs4 import Tag
 from httpcore import ReadTimeout
 
 from mtg import Json
-from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
+from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
 from mtg.scryfall import Card
 from mtg.utils import extract_int
 from mtg.utils.scrape import ScrapingError, getsoup, request_json, strip_url_params
@@ -31,9 +31,9 @@ def get_source(src: str) -> str | None:
     return None
 
 
-@UrlDeckScraper.registered
-class OldSiteTcgPlayerScraper(UrlDeckScraper):
-    """Scraper of TCG Player old-site decklist page.
+@UrlBasedDeckScraper.registered
+class TcgPlayerDeckScraper(UrlBasedDeckScraper):
+    """Scraper of TCG Player (old-site) decklist page.
     """
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -85,13 +85,13 @@ class OldSiteTcgPlayerScraper(UrlDeckScraper):
                 self._maindeck = self._process_deck_tag(deck_tag)
 
 
-@ContainerScraper.registered
-class OldSiteTcgPlayerPlayerScraper(ContainerScraper):
-    """Scraper of TCG Player old-site player search page.
+@UrlBasedContainerScraper.registered
+class TcgPlayerPlayerScraper(UrlBasedContainerScraper):
+    """Scraper of TCG Player (old-site) player search page.
     """
     CONTAINER_NAME = "TCGPlayer (old-site) player"  # override
     DECK_URL_TEMPLATE = "https://decks.tcgplayer.com{}"
-    _DECK_SCRAPER = OldSiteTcgPlayerScraper  # override
+    _DECK_SCRAPER = TcgPlayerDeckScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -101,7 +101,7 @@ class OldSiteTcgPlayerPlayerScraper(ContainerScraper):
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url)
         if not self._soup:
-            _log.warning("Player search data not available")
+            _log.warning(self._error_msg)
             return []
 
         deck_tags = self._soup.find_all(
@@ -109,9 +109,9 @@ class OldSiteTcgPlayerPlayerScraper(ContainerScraper):
         return [self.DECK_URL_TEMPLATE.format(deck_tag.attrs["href"]) for deck_tag in deck_tags]
 
 
-@UrlDeckScraper.registered
-class NewSiteTcgPlayerScraper(UrlDeckScraper):
-    """Scraper of TCG Player new-site decklist page.
+@UrlBasedDeckScraper.registered
+class TcgPlayerInfiniteDeckScraper(UrlBasedDeckScraper):
+    """Scraper of TCG Player Infinite decklist page.
     """
     API_URL_TEMPLATE = ("https://infinite-api.tcgplayer.com/deck/magic/{}/?source=infinite-"
                         "content&subDecks=true&cards=true&stats=true")
@@ -187,17 +187,17 @@ class NewSiteTcgPlayerScraper(UrlDeckScraper):
                 self._sideboard += self.get_playset(cardmap[card_id], quantity)
 
 
-@ContainerScraper.registered
-class NewSiteTcgPlayerPlayerScraper(ContainerScraper):
+@UrlBasedContainerScraper.registered
+class TcgPlayerInfinitePlayerScraper(UrlBasedContainerScraper):
     """Scraper of TCG Player new-site player page.
     """
-    CONTAINER_NAME = "TCGPlayer (new-site) player"  # override
+    CONTAINER_NAME = "TCGPlayer Infinite player"  # override
     # 100 rows is pretty arbitrary but tested to work
     API_URL_TEMPLATE = ("https://infinite-api.tcgplayer.com/content/decks/magic?source=infinite"
                         "-content&rows=100&format=&playerName"
                         "={}&latest=true&sort=created&order=desc")
     DECK_URL_TEMPLATE = "https://infinite.tcgplayer.com{}"
-    _DECK_SCRAPER = NewSiteTcgPlayerScraper  # override
+    _DECK_SCRAPER = TcgPlayerInfiniteDeckScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -215,16 +215,16 @@ class NewSiteTcgPlayerPlayerScraper(ContainerScraper):
         json_data = request_json(
             self.API_URL_TEMPLATE.format(self._get_player_name()))
         if not json_data or not json_data.get("result"):
-            _log.warning("Player data not available")
+            _log.warning(self._error_msg)
             return []
         return [self.DECK_URL_TEMPLATE.format( d["canonicalURL"]) for d in json_data["result"]]
 
 
-@ContainerScraper.registered
-class NewSiteTcgPlayerAuthorScraper(NewSiteTcgPlayerPlayerScraper):
-    """Scraper of TCG Player new-site author search page.
+@UrlBasedContainerScraper.registered
+class TcgPlayerInfiniteAuthorScraper(TcgPlayerInfinitePlayerScraper):
+    """Scraper of TCG Player Infinite author search page.
     """
-    CONTAINER_NAME = "TCGPlayer (new-site) author"  # override
+    CONTAINER_NAME = "TCGPlayer Infinite author"  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -242,16 +242,16 @@ class NewSiteTcgPlayerAuthorScraper(NewSiteTcgPlayerPlayerScraper):
         return author
 
 
-@ContainerScraper.registered
-class NewSiteTcgPlayerEventScraper(ContainerScraper):
-    """Scraper of TCG Player new-site event page.
+@UrlBasedContainerScraper.registered
+class TcgPlayerInfiniteEventScraper(UrlBasedContainerScraper):
+    """Scraper of TCG Player Infinite event page.
     """
-    CONTAINER_NAME = "TCGPlayer (new-site) event"  # override
+    CONTAINER_NAME = "TCGPlayer Infinite event"  # override
     # 200 rows is pretty arbitrary but tested to work (even though usually events have fewer rows)
     API_URL_TEMPLATE = ("https://infinite-api.tcgplayer.com/content/decks/magic?source="
                         "infinite-content&rows=200&eventNames={}")
     DECK_URL_TEMPLATE = "https://infinite.tcgplayer.com{}"
-    _DECK_SCRAPER = NewSiteTcgPlayerScraper  # override
+    _DECK_SCRAPER = TcgPlayerInfiniteDeckScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -269,6 +269,6 @@ class NewSiteTcgPlayerEventScraper(ContainerScraper):
         json_data = request_json(
             self.API_URL_TEMPLATE.format(self._get_event_name()))
         if not json_data or not json_data.get("result"):
-            _log.warning("Event data not available")
+            _log.warning(self._error_msg)
             return []
         return [self.DECK_URL_TEMPLATE.format( d["canonicalURL"]) for d in json_data["result"]]

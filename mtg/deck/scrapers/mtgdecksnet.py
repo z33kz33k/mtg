@@ -15,7 +15,7 @@ from selenium.common.exceptions import TimeoutException
 from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
+from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
 from mtg.utils.scrape import get_dynamic_soup, getsoup, strip_url_params
 from mtg.utils.scrape import ScrapingError
 
@@ -23,8 +23,8 @@ _log = logging.getLogger(__name__)
 
 
 # TODO: scrape the meta
-@UrlDeckScraper.registered
-class MtgDecksNetScraper(UrlDeckScraper):
+@UrlBasedDeckScraper.registered
+class MtgDecksNetDeckScraper(UrlBasedDeckScraper):
     """Scraper of MTGDecks.net decklist page.
     """
     _XPATH = "//textarea[@id='arena_deck']"
@@ -78,13 +78,13 @@ class MtgDecksNetScraper(UrlDeckScraper):
         self._arena_decklist = deck_tag.text.strip().splitlines()
 
 
-@ContainerScraper.registered
-class MtgDecksNetTournamentScraper(ContainerScraper):
+@UrlBasedContainerScraper.registered
+class MtgDecksNetTournamentScraper(UrlBasedContainerScraper):
     """Scraper of MTGDecks.net tournament page.
     """
     CONTAINER_NAME = "MTGDecks.net tournament"  # override
     DECK_URL_TEMPLATE = "https://mtgdecks.net{}"
-    _DECK_SCRAPER = MtgDecksNetScraper  # override
+    _DECK_SCRAPER = MtgDecksNetDeckScraper  # override
     _XPATH = '//a[contains(@href, "-decklist-")]'
 
     @staticmethod
@@ -95,10 +95,10 @@ class MtgDecksNetTournamentScraper(ContainerScraper):
         try:
             self._soup, _, _ = get_dynamic_soup(self.url, self._XPATH)
             if not self._soup:
-                _log.warning("Tournament data not available")
+                _log.warning(self._error_msg)
                 return []
         except TimeoutException:
-            _log.warning("Tournament data not available")
+            _log.warning(self._error_msg)
             return []
 
         deck_tags = [

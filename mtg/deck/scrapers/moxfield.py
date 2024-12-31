@@ -11,15 +11,15 @@ import logging
 from datetime import datetime
 
 from mtg import Json
-from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
+from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
 from mtg.scryfall import Card
 from mtg.utils.scrape import ScrapingError, get_selenium_json, strip_url_params
 
 _log = logging.getLogger(__name__)
 
 
-@UrlDeckScraper.registered
-class MoxfieldScraper(UrlDeckScraper):
+@UrlBasedDeckScraper.registered
+class MoxfieldDeckScraper(UrlBasedDeckScraper):
     """Scraper of Moxfield decklist page.
     """
     API_URL_TEMPLATE = "https://api2.moxfield.com/v3/decks/all/{}"
@@ -94,13 +94,13 @@ class MoxfieldScraper(UrlDeckScraper):
             self._companion = result[0]
 
 
-@ContainerScraper.registered
-class MoxfieldBookmarkScraper(ContainerScraper):
+@UrlBasedContainerScraper.registered
+class MoxfieldBookmarkScraper(UrlBasedContainerScraper):
     """Scraper of Moxfield bookmark page.
     """
     CONTAINER_NAME = "Moxfield bookmark"  # override
     API_URL_TEMPLATE = "https://api2.moxfield.com/v1/bookmarks/{}"
-    _DECK_SCRAPER = MoxfieldScraper  # override
+    _DECK_SCRAPER = MoxfieldDeckScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -117,13 +117,13 @@ class MoxfieldBookmarkScraper(ContainerScraper):
         json_data = get_selenium_json(
             self.API_URL_TEMPLATE.format(self._get_bookmark_id()))
         if not json_data or not json_data.get("decks") or not json_data["decks"].get("data"):
-            _log.warning("Bookmark data not available")
+            _log.warning(self._error_msg)
             return []
         return [d["deck"]["publicUrl"] for d in json_data["decks"]["data"]]
 
 
-@ContainerScraper.registered
-class MoxfieldUserScraper(ContainerScraper):
+@UrlBasedContainerScraper.registered
+class MoxfieldUserScraper(UrlBasedContainerScraper):
     """Scraper of Moxfield user page.
     """
     CONTAINER_NAME = "Moxfield user"  # override
@@ -131,7 +131,7 @@ class MoxfieldUserScraper(ContainerScraper):
     API_URL_TEMPLATE = ("https://api2.moxfield.com/v2/decks/search?includePinned=true&showIllegal"
                         "=true&authorUserNames={}&pageNumber=1&pageSize=100&sortType="
                         "updated&sortDirection=descending&board=mainboard")
-    _DECK_SCRAPER = MoxfieldScraper  # override
+    _DECK_SCRAPER = MoxfieldDeckScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -148,6 +148,6 @@ class MoxfieldUserScraper(ContainerScraper):
     def _collect(self) -> list[str]:  # override
         json_data = get_selenium_json(self.API_URL_TEMPLATE.format(self._get_user_name()))
         if not json_data or not json_data.get("data"):
-            _log.warning("User data not available")
+            _log.warning(self._error_msg)
             return []
         return [d["publicUrl"] for d in json_data["data"]]

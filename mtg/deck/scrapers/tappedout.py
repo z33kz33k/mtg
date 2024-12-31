@@ -17,7 +17,7 @@ from requests import Response
 from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
+from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
 from mtg.utils import extract_int, get_date_from_ago_text
 from mtg.utils.scrape import ScrapingError, getsoup, request_json, strip_url_params, \
     throttle, timed_request
@@ -40,8 +40,8 @@ def _backoff_handler(details: dict) -> None:
     _log.info("Backing off {wait:0.1f} seconds after {tries} tries...".format(**details))
 
 
-@UrlDeckScraper.registered
-class TappedoutScraper(UrlDeckScraper):
+@UrlBasedDeckScraper.registered
+class TappedoutDeckScraper(UrlBasedDeckScraper):
     """Scraper of TappedOut decklist page.
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
@@ -106,14 +106,14 @@ class TappedoutScraper(UrlDeckScraper):
         self._metadata["name"] = name_line.removeprefix("Name ")
 
 
-@ContainerScraper.registered
-class TappedoutUserScraper(ContainerScraper):
+@UrlBasedContainerScraper.registered
+class TappedoutUserScraper(UrlBasedContainerScraper):
     """Scraper of Tappedout user page.
     """
     CONTAINER_NAME = "Tappedout user"  # override
     API_URL_TEMPLATE = "https://tappedout.net/api/users/{}/deck-list/?p={}&o=-date_updated"
     DECK_URL_TEMPLATE = "https://tappedout.net{}"
-    _DECK_SCRAPER = TappedoutScraper  # override
+    _DECK_SCRAPER = TappedoutDeckScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -133,11 +133,11 @@ class TappedoutUserScraper(ContainerScraper):
         collected, total, page = [], 1, 1
         while len(collected) < total:
             if page != 1:
-                throttle(*UrlDeckScraper.THROTTLING)
+                throttle(*UrlBasedDeckScraper.THROTTLING)
             json_data = request_json(self.API_URL_TEMPLATE.format(username, page))
             if not json_data or not json_data.get("results") or not json_data.get("total_decks"):
                 if not collected:
-                    _log.warning("User data not available")
+                    _log.warning(self._error_msg)
                 break
             total = json_data["total_decks"]
             collected += [
@@ -146,14 +146,14 @@ class TappedoutUserScraper(ContainerScraper):
         return collected
 
 
-@ContainerScraper.registered
-class TappedoutFolderScraper(ContainerScraper):
+@UrlBasedContainerScraper.registered
+class TappedoutFolderScraper(UrlBasedContainerScraper):
     """Scraper of Tappedout folder page.
     """
     CONTAINER_NAME = "Tappedout folder"  # override
     API_URL_TEMPLATE = "https://tappedout.net/api/folder/{}/detail/"
     DECK_URL_TEMPLATE = "https://tappedout.net{}"
-    _DECK_SCRAPER = TappedoutScraper  # override
+    _DECK_SCRAPER = TappedoutDeckScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -176,12 +176,12 @@ class TappedoutFolderScraper(ContainerScraper):
     def _collect(self) -> list[str]:  # override
         json_data = request_json(self.API_URL_TEMPLATE.format(self._get_folder_id()))
         if not json_data or not json_data.get("folder") or not json_data["folder"].get("decks"):
-            _log.warning("Folder data not available")
+            _log.warning(self._error_msg)
             return []
         return [self.DECK_URL_TEMPLATE.format(d["url"]) for d in json_data["folder"]["decks"]]
 
 
-@ContainerScraper.registered
+@UrlBasedContainerScraper.registered
 class TappedoutUserFolderScraper(TappedoutUserScraper):
     """Scraper of Tappedout user folders page.
     """
@@ -197,7 +197,7 @@ class TappedoutUserFolderScraper(TappedoutUserScraper):
         collected, has_next, page = [], True, 1
         while has_next:
             if page != 1:
-                throttle(*UrlDeckScraper.THROTTLING)
+                throttle(*UrlBasedDeckScraper.THROTTLING)
             json_data = request_json(self.API_URL_TEMPLATE.format(username, page))
             if not json_data or not json_data.get("results"):
                 if not collected:

@@ -16,7 +16,7 @@ from bs4 import BeautifulSoup
 from requests import Response
 
 from mtg import Json
-from mtg.deck.scrapers import ContainerScraper, UrlDeckScraper
+from mtg.deck.scrapers import UrlBasedContainerScraper, UrlBasedDeckScraper
 from mtg.scryfall import Card
 from mtg.utils.scrape import ScrapingError, Throttling, dissect_js, request_json, strip_url_params, \
     throttle, timed_request
@@ -56,8 +56,8 @@ def _backoff_handler(details: dict) -> None:
     _log.info("Backing off {wait:0.1f} seconds after {tries} tries...".format(**details))
 
 
-@UrlDeckScraper.registered
-class DeckstatsScraper(UrlDeckScraper):
+@UrlBasedDeckScraper.registered
+class DeckstatsDeckScraper(UrlBasedDeckScraper):
     """Scraper of Deckstats decklist page.
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
@@ -141,8 +141,8 @@ class DeckstatsScraper(UrlDeckScraper):
                 self._sideboard.extend(self._parse_card_json(card_json))
 
 
-@ContainerScraper.registered
-class DeckstatsUserScraper(ContainerScraper):
+@UrlBasedContainerScraper.registered
+class DeckstatsUserScraper(UrlBasedContainerScraper):
     """Scraper of Deckstats user page.
     """
     THROTTLING = Throttling(0.8, 0.15)
@@ -150,7 +150,7 @@ class DeckstatsUserScraper(ContainerScraper):
     API_URL_TEMPLATE = ("https://deckstats.net/api.php?action=user_folder_get&result_type="
                         "folder%3Bdecks%3Bparent_tree%3Bsubfolders&owner_id={}&folder_id=0&"
                         "decks_page={}")
-    _DECK_SCRAPER = DeckstatsScraper  # override
+    _DECK_SCRAPER = DeckstatsDeckScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -186,7 +186,7 @@ class DeckstatsUserScraper(ContainerScraper):
                 break
             if not json_data or not json_data.get("folder") or not json_data["folder"].get("decks"):
                 if not collected:
-                    _log.warning("User data not available")
+                    _log.warning(self._error_msg)
                 break
             total = json_data["folder"]["decks_total"]
             collected += [f'https:{d["url_neutral"]}' for d in json_data["folder"]["decks"]]
