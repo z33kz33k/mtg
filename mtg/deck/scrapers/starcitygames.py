@@ -13,6 +13,7 @@ import dateutil.parser
 from bs4 import Tag
 
 from mtg import Json
+from mtg.deck import Deck
 from mtg.deck.scrapers import DeckUrlsContainerScraper, TagBasedDeckScraper, UrlBasedDeckScraper
 from mtg.utils import extract_int, from_iterable, sanitize_whitespace
 from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
@@ -91,9 +92,13 @@ class StarCityGamesTagBasedDeckScraper(TagBasedDeckScraper):
 
 
 @UrlBasedDeckScraper.registered
-class StarCityGamesUrlBasedDeckScraper(StarCityGamesTagBasedDeckScraper, UrlBasedDeckScraper):
+class StarCityGamesUrlBasedDeckScraper(UrlBasedDeckScraper):
     """Scraper of StarCityGames decklist page.
     """
+    def __init__(self, url: str, metadata: Json | None = None) -> None:
+        super().__init__(url, metadata)
+        self._tag_scraper: StarCityGamesTagBasedDeckScraper | None = None
+
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         if "old.starcitygames.com/decks/" not in url.lower():
@@ -112,11 +117,21 @@ class StarCityGamesUrlBasedDeckScraper(StarCityGamesTagBasedDeckScraper, UrlBase
         self._soup = getsoup(self.url)
         if not self._soup:
             raise ScrapingError("Page not available")
-        self._deck_tag = self._soup.find("div", class_="deck_listing")
-        if self._deck_tag is None:
-            self._deck_tag = self._soup.find("div", class_="deck_listing2")
-            if self._deck_tag is None:
+        deck_tag = self._soup.find("div", class_="deck_listing")
+        if deck_tag is None:
+            deck_tag = self._soup.find("div", class_="deck_listing2")
+            if deck_tag is None:
                 raise ScrapingError("Deck data not found")
+        self._tag_scraper = StarCityGamesTagBasedDeckScraper(deck_tag, self._metadata)
+
+    def _parse_metadata(self) -> None:  # override
+        pass
+
+    def _parse_decklist(self) -> None:  # override
+        pass
+
+    def _build_deck(self) -> Deck:  # override
+        return self._tag_scraper.scrape()
 
 
 @DeckUrlsContainerScraper.registered

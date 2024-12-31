@@ -13,13 +13,13 @@ from typing import Iterable, Optional, Type
 
 import backoff
 from bs4 import BeautifulSoup, Tag
-from requests import ConnectionError, ReadTimeout, HTTPError
+from requests import ConnectionError, HTTPError, ReadTimeout
 from selenium.common.exceptions import ElementClickInterceptedException
 
 from mtg import Json
 from mtg.deck import Deck, DeckParser, InvalidDeck
 from mtg.utils import ParsingError, timed
-from mtg.utils.scrape import ScrapingError, getsoup
+from mtg.utils.scrape import ScrapingError
 from mtg.utils.scrape import Throttling, extract_source, throttle
 
 _log = logging.getLogger(__name__)
@@ -153,9 +153,33 @@ class TagBasedDeckScraper(DeckScraper):
     HTML tag based scrapers process a single, decklist and metadata holding, HTML tag extracted
     from a webpage and return a Deck object (if able).
     """
-    def __init__(self, metadata: Json | None = None, deck_tag: Tag | None = None) -> None:
+    def __init__(self, deck_tag: Tag,  metadata: Json | None = None) -> None:
         super().__init__(metadata)
         self._deck_tag = deck_tag
+
+    def _pre_parse(self) -> None:  # override
+        pass
+
+    @abstractmethod
+    def _parse_metadata(self) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def _parse_decklist(self) -> None:
+        raise NotImplementedError
+
+
+# TODO: use this abstraction in deck scrapers that process JSON
+class JsonBasedDeckScraper(DeckScraper):
+    """Abstract JSON data based deck scraper.
+
+    JSON data based scrapers process a single, decklist and metadata holding, piece of JSON data
+    either dissected from a webpage's JavaScript code or obtained via a separate JSON API
+    request and return a Deck object (if able).
+    """
+    def __init__(self, metadata: Json | None = None, deck_data: Json | None = None) -> None:
+        super().__init__(metadata)
+        self._deck_data = deck_data or {}
 
     def _pre_parse(self) -> None:  # override
         pass
@@ -363,11 +387,11 @@ class DeckTagsContainerScraper:
         return None
 
 
-class DeckJsonContainerScraper:
+class DecksJsonContainerScraper:
     """Abstract scraper of deck-JSON-containing pages.
     """
     CONTAINER_NAME = None
-    _REGISTRY: set[Type["DeckJsonContainerScraper"]] = set()
+    _REGISTRY: set[Type["DecksJsonContainerScraper"]] = set()
 
     @property
     def url(self) -> str:
@@ -385,7 +409,7 @@ class DeckJsonContainerScraper:
         self._validate_url(url)
         self._url, self._metadata = self.sanitize_url(url), metadata or {}
         self._json_data: Json | None = None
-        self._deck_data: list[Json] = []
+        self._decks_data: list[Json] = []
 
     @classmethod
     def _validate_url(cls, url):
@@ -405,6 +429,9 @@ class DeckJsonContainerScraper:
     def _pre_parse(self) -> None:
         raise NotImplementedError
 
+    def _parse_metadata(self) -> None:
+        pass
+
     @abstractmethod
     def _parse_deck(self, deck_json: Json) -> Deck | None:
         raise NotImplementedError
@@ -414,29 +441,30 @@ class DeckJsonContainerScraper:
         backoff.expo, (ConnectionError, HTTPError, ReadTimeout), max_time=60)
     def scrape(self) -> list[Deck]:
         self._pre_parse()
+        self._parse_metadata()
         _log.info(
-            f"Gathered data for {len(self._deck_data)} deck(s) from a {self.CONTAINER_NAME} "
+            f"Gathered data for {len(self._decks_data)} deck(s) from a {self.CONTAINER_NAME} "
             f"at: {self.url!r}")
         return [
             d for d in
-            [self._parse_deck(deck_json) for deck_json in self._deck_data]
+            [self._parse_deck(deck_json) for deck_json in self._decks_data]
             if d]
 
     @classmethod
     def registered(
             cls,
-            scraper_type: Type["DeckJsonContainerScraper"]) -> Type["DeckJsonContainerScraper"]:
-        """Class decorator for registering subclasses of DeckJsonContainerScraper.
+            scraper_type: Type["DecksJsonContainerScraper"]) -> Type["DecksJsonContainerScraper"]:
+        """Class decorator for registering subclasses of DecksJsonContainerScraper.
         """
-        if issubclass(scraper_type, DeckJsonContainerScraper):
+        if issubclass(scraper_type, DecksJsonContainerScraper):
             cls._REGISTRY.add(scraper_type)
         else:
-            raise TypeError(f"Not a subclass of DeckJsonContainerScraper: {scraper_type!r}")
+            raise TypeError(f"Not a subclass of DecksJsonContainerScraper: {scraper_type!r}")
         return scraper_type
 
     @classmethod
     def from_url(
-            cls, url: str, metadata: Json | None = None) -> Optional["DeckJsonContainerScraper"]:
+            cls, url: str, metadata: Json | None = None) -> Optional["DecksJsonContainerScraper"]:
         for scraper_type in cls._REGISTRY:
             if scraper_type.is_container_url(url):
                 return scraper_type(url, metadata)
