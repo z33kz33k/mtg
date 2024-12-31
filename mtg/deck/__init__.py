@@ -1123,7 +1123,7 @@ class _ParsingState:
         return self.__state
 
     @state.setter
-    @type_checker(_ParsingStates)
+    @type_checker(_ParsingStates, is_method=True)
     def state(self, value: _ParsingStates) -> None:
         if value is self.state:
             raise ParsingError(f"Invalid transition from {self.state.name!r} to {value.name!r}")

@@ -93,7 +93,7 @@ descriptions).
         * MTGDecks.net tournaments
         * MTGTop8 events
         * PennyDreadfulMagic competitions and users
-        * StarCityGames events and articles
+        * StarCityGames events, articles and author's decks databases
         * Streamdecker users
         * TappedOut users, folders, and user folders
         * TCDecks events

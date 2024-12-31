@@ -91,7 +91,7 @@ class StarCityGamesTagBasedDeckScraper(TagBasedDeckScraper):
 
 
 @UrlBasedDeckScraper.registered
-class StarCityGamesUrlBasedScraper(StarCityGamesTagBasedDeckScraper, UrlBasedDeckScraper):
+class StarCityGamesUrlBasedDeckScraper(StarCityGamesTagBasedDeckScraper, UrlBasedDeckScraper):
     """Scraper of StarCityGames decklist page.
     """
     @staticmethod
@@ -124,7 +124,7 @@ class StarCityGamesEventScraper(UrlBasedContainerScraper):
     """Scraper of StarCityGames event page.
     """
     CONTAINER_NAME = "StarCityGames event"  # override
-    _DECK_SCRAPER = StarCityGamesUrlBasedScraper  # override
+    _DECK_SCRAPER = StarCityGamesUrlBasedDeckScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -149,7 +149,7 @@ class StarCityGamesEventScraper(UrlBasedContainerScraper):
         section_tag = self._soup.select_one("section#content")
         deck_tags = [
             a_tag for a_tag in section_tag.find_all(
-                "a", href=lambda h: h and StarCityGamesUrlBasedScraper.is_deck_url(h))]
+                "a", href=lambda h: h and StarCityGamesUrlBasedDeckScraper.is_deck_url(h))]
         return [tag.attrs["href"] for tag in deck_tags if tag is not None]
 
 
@@ -158,7 +158,7 @@ class StarCityGamesArticleScraper(UrlBasedContainerScraper):
     """Scraper of StarCityGames decks article page.
     """
     CONTAINER_NAME = "StarCityGames article"  # override
-    _DECK_SCRAPER = StarCityGamesUrlBasedScraper  # override
+    _DECK_SCRAPER = StarCityGamesUrlBasedDeckScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -180,7 +180,37 @@ class StarCityGamesArticleScraper(UrlBasedContainerScraper):
             if tag is not None]
         a_tags = [
             tag for tag in
-            [h.find("a", href=lambda h: h and StarCityGamesUrlBasedScraper.is_deck_url(h))
+            [h.find("a", href=lambda h: h and StarCityGamesUrlBasedDeckScraper.is_deck_url(h))
              for h in deck_headers]
             if tag is not None]
         return [tag.attrs["href"] for tag in a_tags]
+
+
+@UrlBasedContainerScraper.registered
+class StarCityGamesDatabaseScraper(UrlBasedContainerScraper):
+    """Scraper of StarCityGames author's decks database page.
+    """
+    CONTAINER_NAME = "StarCityGames author's deck database"  # override
+    _DECK_SCRAPER = StarCityGamesUrlBasedDeckScraper  # override
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return "starcitygames.com/content/" in url.lower() and "-decks" in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url, with_endpoint=False)
+
+    def _collect(self) -> list[str]:  # override
+        self._soup = getsoup(self.url)
+        if not self._soup:
+            _log.warning(self._error_msg)
+            return []
+
+        db_div = self._soup.find("div", id="deck-database")
+        if db_div is None:
+            _log.warning(self._error_msg)
+            return []
+
+        a_tags = [tag for tag in db_div.find_all("a", class_="dd-deck-link")]
+        return [tag.attrs["href"].strip() for tag in a_tags]
