@@ -97,7 +97,7 @@ class StarCityGamesUrlBasedDeckScraper(UrlBasedDeckScraper):
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        self._tag_scraper: StarCityGamesTagBasedDeckScraper | None = None
+        self._deck_scraper: StarCityGamesTagBasedDeckScraper | None = None
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -122,7 +122,7 @@ class StarCityGamesUrlBasedDeckScraper(UrlBasedDeckScraper):
             deck_tag = self._soup.find("div", class_="deck_listing2")
             if deck_tag is None:
                 raise ScrapingError("Deck data not found")
-        self._tag_scraper = StarCityGamesTagBasedDeckScraper(deck_tag, self._metadata)
+        self._deck_scraper = StarCityGamesTagBasedDeckScraper(deck_tag, self._metadata)
 
     def _parse_metadata(self) -> None:  # override
         pass
@@ -131,7 +131,7 @@ class StarCityGamesUrlBasedDeckScraper(UrlBasedDeckScraper):
         pass
 
     def _build_deck(self) -> Deck:  # override
-        return self._tag_scraper.scrape()
+        return self._deck_scraper.scrape()
 
 
 @DeckUrlsContainerScraper.registered

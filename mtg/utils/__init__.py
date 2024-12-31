@@ -514,3 +514,9 @@ def find_longest_seqs(seq: list[int]) -> list[list[int]]:
 
     max_len = max(len(s) for s in seqs)
     return [group for group in seqs if len(group) == max_len]
+
+
+def get_ordinal_suffix(num: int) -> str:
+    """Return the ordinal suffix of ``num``.
+    """
+    return "th" if 11 <= num % 100 <= 13 else {1: "st", 2: "nd", 3: "rd"}.get(num % 10, "th")

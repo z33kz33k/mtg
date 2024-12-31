@@ -25,6 +25,7 @@ from mtg.utils.scrape import Throttling, extract_source, throttle
 _log = logging.getLogger(__name__)
 
 
+# TODO: simplify back the naming scheme
 class DeckScraper(DeckParser):
     """Abstract deck scraper.
     """
@@ -177,9 +178,9 @@ class JsonBasedDeckScraper(DeckScraper):
     either dissected from a webpage's JavaScript code or obtained via a separate JSON API
     request and return a Deck object (if able).
     """
-    def __init__(self, metadata: Json | None = None, deck_data: Json | None = None) -> None:
+    def __init__(self,  deck_data: Json, metadata: Json | None = None) -> None:
         super().__init__(metadata)
-        self._deck_data = deck_data or {}
+        self._deck_data = deck_data
 
     def _pre_parse(self) -> None:  # override
         pass
@@ -363,7 +364,7 @@ class DeckTagsContainerScraper:
             f" {self.url!r}")
         return [
             d for d in
-            [self._DECK_SCRAPER(self._metadata, tag).scrape() for tag in self._deck_tags]
+            [self._DECK_SCRAPER(tag, self._metadata).scrape() for tag in self._deck_tags]
             if d]
 
     @classmethod

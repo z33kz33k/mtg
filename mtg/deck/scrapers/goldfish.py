@@ -111,7 +111,7 @@ class GoldfishUrlBasedDeckScraper(UrlBasedDeckScraper):
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        self._tag_scraper: GoldfishTagBasedDeckScraper | None = None
+        self._deck_scraper: GoldfishTagBasedDeckScraper | None = None
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -136,7 +136,7 @@ class GoldfishUrlBasedDeckScraper(UrlBasedDeckScraper):
         deck_tag = self._soup.find("div", class_="deck-container")
         if deck_tag is None:
             raise ScrapingError("Deck data not found")
-        self._tag_scraper = GoldfishTagBasedDeckScraper(deck_tag, self._metadata)
+        self._deck_scraper = GoldfishTagBasedDeckScraper(deck_tag, self._metadata)
 
     def _parse_metadata(self) -> None:  # override
         pass
@@ -145,7 +145,7 @@ class GoldfishUrlBasedDeckScraper(UrlBasedDeckScraper):
         pass
 
     def _build_deck(self) -> Deck:  # override
-        return self._tag_scraper.scrape()
+        return self._deck_scraper.scrape()
 
 
 @http_requests_counted("scraping meta decks")
