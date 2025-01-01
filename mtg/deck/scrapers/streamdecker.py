@@ -37,7 +37,7 @@ class StreamdeckerDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url)
+        return strip_url_params(url, keep_endpoint=False, keep_fragment=False)
 
     def _pre_parse(self) -> None:  # override
         try:
@@ -97,7 +97,7 @@ class StreamdeckerUserScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url)
+        return strip_url_params(url, keep_endpoint=False, keep_fragment=False)
 
     def _get_user_name(self) -> str:
         *_, last = self.url.split("/")

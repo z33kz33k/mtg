@@ -60,7 +60,7 @@ class CardsrealmDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        url = strip_url_params(url, with_endpoint=False)
+        url = strip_url_params(url)
         return to_eng_url(url, "/decks/")
 
     def _get_json(self) -> Json:
@@ -114,7 +114,7 @@ class CardsrealmProfileScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        url = strip_url_params(url, with_endpoint=False)
+        url = strip_url_params(url)
         return to_eng_url(url, "/profile/")
 
     def _collect(self) -> list[str]:  # override
@@ -143,7 +143,7 @@ class CardsrealmFolderScraper(CardsrealmProfileScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        url = strip_url_params(url, with_endpoint=False)
+        url = strip_url_params(url)
         return to_eng_url(url, "/decks/")
 
 
@@ -172,7 +172,7 @@ class CardsrealmMetaTournamentScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        url = strip_url_params(url, with_endpoint=False)
+        url = strip_url_params(url)
         return to_eng_url(url, "/meta-decks/")
 
     def _collect(self) -> list[str]:  # override
@@ -206,7 +206,7 @@ class CardsrealmRegularTournamentScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        url = strip_url_params(url, with_endpoint=False)
+        url = strip_url_params(url)
         return to_eng_url(url, "/tournament/")
 
     @timed("getting dynamic soup")
@@ -265,7 +265,7 @@ class CardsrealmArticleScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        url = strip_url_params(url, with_endpoint=False)
+        url = strip_url_params(url)
         return to_eng_url(url, "/articles/")
 
     def _collect(self) -> list[str]:  # override

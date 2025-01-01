@@ -30,7 +30,7 @@ class ScryfallDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        url = strip_url_params(url)
+        url = strip_url_params(url, keep_endpoint=False, keep_fragment=False)
         return f"{url}?as=list&with=usd"
 
     def _pre_parse(self) -> None:  # override

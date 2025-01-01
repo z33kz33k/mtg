@@ -279,7 +279,7 @@ def dissect_js(
     return json.loads(second)
 
 
-def strip_url_params(url: str, with_endpoint=True) -> str:
+def strip_url_params(url: str, keep_endpoint=True, keep_fragment=True) -> str:
     """Strip URL parameters from ``url``.
 
     https://www.youtube.com/watch?v=93gF1q7ey84 ==> https://www.youtube.com
@@ -287,14 +287,20 @@ def strip_url_params(url: str, with_endpoint=True) -> str:
 
     Args:
         url: URL to be stripped
-        with_endpoint: whether to strip any endpoint coming before parameters (part between "?" and the last "/", e.g.: "watch" in YT URLs)
+        keep_endpoint: whether to keep any endpoint coming before parameters (part between "?" and the last "/", e.g.: "watch" in YT URLs)
+        keep_fragment: whether to keep any fragment coming after parameters (last part indicated by '#', e.g.: "#deck_Walker735" in https://www.mtgo.com/decklist/pauper-challenge-32-2024-11-0312703226#deck_Walker735)
     """
+    fragment = ""
+    if "#" in url:
+        url, fragment = url.rsplit("#", maxsplit=1)
+        fragment = "#" + fragment
     if "?" in url:
         url, _ = url.split("?", maxsplit=1)
-        if with_endpoint and "/" in url:
+        if not keep_endpoint and "/" in url:
             first, _ = url.rsplit("/", maxsplit=1)
             if first not in ("https://", "http://"):
                 url = first
+    url = url + fragment if keep_fragment else url
     return url.removesuffix("/")
 
 

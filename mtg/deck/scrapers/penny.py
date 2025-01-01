@@ -29,7 +29,7 @@ class PennyDreadfulMagicDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url)
+        return strip_url_params(url, keep_endpoint=False, keep_fragment=False)
 
     def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)
@@ -97,7 +97,7 @@ class PennyDreadfulMagicCompetitionScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url)
+        return strip_url_params(url, keep_endpoint=False, keep_fragment=False)
 
     def _get_competition_id(self) -> str:
         *_, last = self.url.split("/")
@@ -132,7 +132,7 @@ class PennyDreadfulMagicUserScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url)
+        return strip_url_params(url, keep_endpoint=False, keep_fragment=False)
 
     @staticmethod
     def _parse_url_for_ids(url: str) -> tuple[str, str]:

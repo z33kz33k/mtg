@@ -144,7 +144,7 @@ class MtgoDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url, with_endpoint=False)
+        return strip_url_params(url)
 
     def _parse_player_name(self) -> str:
         *_, rest = self.url.split("/")
@@ -189,7 +189,7 @@ class MtgoEventScraper(DecksJsonContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url, with_endpoint=False)
+        return strip_url_params(url)
 
     def _collect(self) -> list[Json]:  # override
         self._soup = getsoup(self.url, headers=HEADERS)

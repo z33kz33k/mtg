@@ -43,7 +43,7 @@ from mtg.utils.scrape import ScrapingError, extract_source, extract_url, \
     timed_request, unshorten
 from mtg.yt.data import CHANNELS_DIR, CHANNEL_URL_TEMPLATE, ChannelData, DecklistPath, \
     ScrapingSession, VIDEO_URL_TEMPLATE, find_channel_files, find_orphans, load_channel, \
-    load_channels, prune_channel_data_file, retrieve_ids
+    load_channels, prune_channel_data_file, retrieve_ids, sanitize_source
 
 _log = logging.getLogger(__name__)
 
@@ -947,8 +947,8 @@ class Channel:
             videos=[json.loads(v.json, object_hook=deserialize_dates) for v in self.videos],
         )
         text = self.get_url_and_title(self.id, self.title)
-        sources = {d.metadata.get("source") for v in self.videos for d in v.decks}
-        sources = sorted(s for s in sources if s)
+        sources = [d.metadata.get("source") for v in self.videos for d in v.decks]
+        sources = sorted({sanitize_source(s) for s in sources if s})
         if sources:
             text += f" [{', '.join(sources)}]"
         _log.info(f"Scraped *** {len(self.decks)} deck(s) *** in total for {text}")

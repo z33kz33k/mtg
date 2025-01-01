@@ -43,6 +43,19 @@ VERY_DECK_STALE_THRESHOLD = 100  # videos
 EXCESSIVELY_DECK_STALE_THRESHOLD = 150  # videos
 
 
+def sanitize_source(src: str) -> str:
+    src = src.removeprefix("www.") if src.startswith("www.") else src
+    if new_src := cardsrealm_get_source(src):
+        src = new_src
+    elif new_src := melee_get_source(src):
+        src = new_src
+    elif new_src := mtgarenapro_get_source(src):
+        src = new_src
+    elif new_src := tcgplayer_get_source(src):
+        src = new_src
+    return src
+
+
 @dataclass
 class ChannelData:
     id: str
@@ -68,7 +81,7 @@ class ChannelData:
 
     @property
     def deck_sources(self) -> Counter:
-        return Counter(d["metadata"]["source"] for d in self.decks)
+        return Counter(sanitize_source(d["metadata"]["source"]) for d in self.decks)
 
     @property
     def deck_formats(self) -> Counter:
@@ -415,16 +428,7 @@ def get_aggregate_deck_data() -> tuple[Counter, Counter]:
     format_counter = Counter(fmts)
     sources = []
     for d in decks:
-        src = d["metadata"]["source"]
-        src = src.removeprefix("www.") if src.startswith("www.") else src
-        if new_src := cardsrealm_get_source(src):
-            src = new_src
-        elif new_src := melee_get_source(src):
-            src = new_src
-        elif new_src := mtgarenapro_get_source(src):
-            src = new_src
-        elif new_src := tcgplayer_get_source(src):
-            src = new_src
+        src = sanitize_source(d["metadata"]["source"])
         sources.append(src)
     source_counter = Counter(sources)
     return format_counter, source_counter
@@ -623,15 +627,19 @@ def discover_new_channels(
 
 
 def get_channel_ids(*urls: str, only_new=True) -> list[str]:
+    retrieved_ids = set(retrieve_ids())
     ids = []
     for url in urls:
         soup = getsoup(url)
         prefix = CHANNEL_URL_TEMPLATE[:-2]
         tag = soup.find("link", rel="canonical")
-        ids.append(tag.attrs["href"].removeprefix(prefix))
-
-    if only_new:
-        retrieved_ids = set(retrieve_ids())
-        return [i for i in ids if i not in retrieved_ids]
+        chid = tag.attrs["href"].removeprefix(prefix)
+        if chid in retrieved_ids:
+            if only_new:
+                _log.info(f"Skipping already retrieved channel ID: {chid!r}...")
+                continue
+            else:
+                _log.warning(f"Adding already retrieved channel ID: {chid!r}")
+        ids.append(chid)
 
     return ids

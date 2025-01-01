@@ -111,7 +111,7 @@ class StarCityGamesDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url, with_endpoint=False)
+        return strip_url_params(url)
 
     def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)
@@ -153,7 +153,7 @@ class StarCityGamesEventScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url, with_endpoint=False)
+        return strip_url_params(url)
 
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url)
@@ -181,7 +181,7 @@ class StarCityGamesArticleScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url, with_endpoint=False)
+        return strip_url_params(url)
 
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url)
@@ -214,7 +214,7 @@ class StarCityGamesDatabaseScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url, with_endpoint=False)
+        return strip_url_params(url)
 
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url)

@@ -54,7 +54,7 @@ class TappedoutDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url)
+        return strip_url_params(url, keep_endpoint=False, keep_fragment=False)
 
     @backoff.on_predicate(
         backoff.runtime,
@@ -121,7 +121,7 @@ class TappedoutUserScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url)
+        return strip_url_params(url, keep_endpoint=False, keep_fragment=False)
 
     def _get_user_name(self) -> str:
         url = self.url.removeprefix("https://").removeprefix("http://")
@@ -161,7 +161,7 @@ class TappedoutFolderScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url)
+        return strip_url_params(url, keep_endpoint=False, keep_fragment=False)
 
     def _get_folder_id(self) -> int:
         soup = getsoup(self.url)

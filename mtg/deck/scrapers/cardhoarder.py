@@ -38,7 +38,7 @@ class CardhoarderDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url)
+        return strip_url_params(url, keep_endpoint=False, keep_fragment=False)
 
     def _get_deck_data(self) -> Json:
         deck_tag = self._soup.find("div", id="deck-viewer")

@@ -31,7 +31,7 @@ class ManaStackDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url)
+        return strip_url_params(url, keep_endpoint=False, keep_fragment=False)
 
     def _pre_parse(self) -> None:  # override
         try:
@@ -92,7 +92,7 @@ class ManaStackUserScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url)
+        return strip_url_params(url, keep_endpoint=False, keep_fragment=False)
 
     def _collect(self) -> list[str]:  # override
         try:

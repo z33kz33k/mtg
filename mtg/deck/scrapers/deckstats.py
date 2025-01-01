@@ -68,7 +68,7 @@ class DeckstatsDeckScraper(DeckScraper):
     def is_deck_url(url: str) -> bool:  # override
         if "deckstats.net/decks/" not in url.lower():
             return False
-        url = strip_url_params(url)
+        url = strip_url_params(url, keep_endpoint=False, keep_fragment=False)
         url = url.removeprefix("https://").removeprefix("http://")
         if url.count("/") == 3:
             domain, _, user_id, deck_id = url.split("/")
@@ -78,7 +78,7 @@ class DeckstatsDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url)
+        return strip_url_params(url, keep_endpoint=False, keep_fragment=False)
 
     @backoff.on_predicate(
         backoff.runtime,
@@ -156,7 +156,7 @@ class DeckstatsUserScraper(DeckUrlsContainerScraper):
     def is_container_url(url: str) -> bool:  # override
         if "deckstats.net/decks/" not in url.lower():
             return False
-        url = strip_url_params(url)
+        url = strip_url_params(url, keep_endpoint=False, keep_fragment=False)
         url = url.removeprefix("https://").removeprefix("http://")
         if url.count("/") != 2:
             return False
@@ -167,7 +167,7 @@ class DeckstatsUserScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url)
+        return strip_url_params(url, keep_endpoint=False, keep_fragment=False)
 
     def _get_user_id(self) -> str:
         url = self.url.removeprefix("https://").removeprefix("http://")

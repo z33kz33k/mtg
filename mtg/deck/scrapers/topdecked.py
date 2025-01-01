@@ -61,7 +61,7 @@ class TopDeckedRegularDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url)
+        return strip_url_params(url, keep_endpoint=False, keep_fragment=False)
 
     def _process_metadata_with_selenium(self, driver: webdriver.Chrome) -> None:
         name_el = driver.find_element(By.XPATH, self._NAME_XPATH)

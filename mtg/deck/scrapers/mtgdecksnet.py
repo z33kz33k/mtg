@@ -44,7 +44,7 @@ class MtgDecksNetDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        url = strip_url_params(url)
+        url = strip_url_params(url, keep_endpoint=False, keep_fragment=False)
         return url.removesuffix("/visual")
 
     def _pre_parse(self) -> None:  # override
@@ -90,6 +90,10 @@ class MtgDecksNetTournamentScraper(DeckUrlsContainerScraper):
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
         return "mtgdecks.net/" in url.lower() and "-tournament-" in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return url.removesuffix("/").removesuffix("/winrates")
 
     def _collect(self) -> list[str]:  # override
         try:

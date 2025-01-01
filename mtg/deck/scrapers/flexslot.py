@@ -40,7 +40,7 @@ class FlexslotDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url).removesuffix("/view")
+        return strip_url_params(url, keep_endpoint=False, keep_fragment=False).removesuffix("/view")
 
     def _pre_parse(self) -> None:  # override
         try:
@@ -86,7 +86,7 @@ class FlexslotUserScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url)
+        return strip_url_params(url, keep_endpoint=False, keep_fragment=False)
 
     def _collect(self) -> list[str]:  # override
         try:

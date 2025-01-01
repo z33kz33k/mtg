@@ -43,7 +43,7 @@ class UntappedProfileDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url, with_endpoint=False)
+        return strip_url_params(url)
 
     def _pre_parse(self) -> None:  # override
         try:
@@ -84,7 +84,7 @@ class UntappedRegularDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        url = strip_url_params(url, with_endpoint=False)
+        url = strip_url_params(url)
         return url.replace("input/", "") if "/input/" in url else url
 
     def _pre_parse(self) -> None:  # override
@@ -124,7 +124,7 @@ class UntappedMetaDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url, with_endpoint=False)
+        return strip_url_params(url)
 
     def _pre_parse(self) -> None:  # override
         try:
@@ -181,7 +181,7 @@ class UntappedProfileScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url, with_endpoint=False)
+        return strip_url_params(url)
 
     def _collect(self) -> list[str]:  # override
         try:

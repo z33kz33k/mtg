@@ -121,7 +121,7 @@ class GoldfishDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        url = strip_url_params(url, with_endpoint=False)
+        url = strip_url_params(url)
         if "/visual/" in url:
             url = url.replace("/visual/", "/")
         if "#" in url:

@@ -58,7 +58,7 @@ class AetherhubDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        url = strip_url_params(url)
+        url = strip_url_params(url, keep_endpoint=False, keep_fragment=False)
         if "/gallery/" in url.lower():
             url = url.replace("/Gallery/", "/Public/").replace("/gallery/", "/public/")
         elif url.lower().endswith("/gallery"):
@@ -190,7 +190,7 @@ class AetherhubUserScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        url = strip_url_params(url)
+        url = strip_url_params(url, keep_endpoint=False, keep_fragment=False)
         if not url.lower().endswith("/decks"):
             return f"{url}/decks"
         return url
@@ -227,7 +227,7 @@ class AetherhubEventScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url)
+        return strip_url_params(url, keep_endpoint=False, keep_fragment=False)
 
     def _collect(self) -> list[str]:  # override
         try:
