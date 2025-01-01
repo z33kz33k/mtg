@@ -760,6 +760,9 @@ class Video:
                 decks.update(container_decks)
                 self._failed_deck_urls.update(failed_urls)
             elif scraper := DecksJsonContainerScraper.from_url(link, self.metadata):
+                if link in self._already_scraped_deck_urls:
+                    _log.info(f"Skipping already scraped deck container URL: {link!r}...")
+                    continue
                 decks.update(scraper.scrape())
 
         return sorted(decks)

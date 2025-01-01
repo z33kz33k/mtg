@@ -129,7 +129,7 @@ class MtgoDeckJsonParser(JsonBasedDeckParser):
 
 @DeckScraper.registered
 class MtgoDeckScraper(DeckScraper):
-    """Scraper of MGTO decklists page that points to an individual deck.
+    """Scraper of MGTO event page that points to an individual deck.
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -196,8 +196,12 @@ class MtgoEventScraper(DecksJsonContainerScraper):
         if not self._soup:
             _log.warning(self._error_msg)
             return []
+        try:
+            json_data = _get_json(self._soup)
+        except ScrapingError:
+            _log.warning(self._error_msg)
+            return []
 
-        json_data = _get_json(self._soup)
         decks_data = _get_decks_data(json_data)
         if rank_data := json_data.get("final_rank"):
             _process_ranks(rank_data, *decks_data)

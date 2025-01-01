@@ -315,6 +315,8 @@ class DeckTagsContainerScraper:
         url = url.removesuffix("/")
         self._validate_url(url)
         self._url, self._metadata = self.sanitize_url(url), metadata or {}
+        self._metadata["url"] = self.url
+        self._metadata["source"] = extract_source(self.url)
         self._soup: BeautifulSoup | None = None
         self._deck_tags: list[Tag] = []
 
@@ -392,6 +394,8 @@ class DecksJsonContainerScraper:
         url = url.removesuffix("/")
         self._validate_url(url)
         self._url, self._metadata = self.sanitize_url(url), metadata or {}
+        self._metadata["url"] = self.url
+        self._metadata["source"] = extract_source(self.url)
         self._decks_data: list[Json] = []
 
     @classmethod

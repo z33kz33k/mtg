@@ -28,7 +28,7 @@ class InternationalHareruyaDeckScraper(DeckScraper):
     def is_deck_url(url: str) -> bool:  # override
         url = url.lower()
         return ("hareruyamtg.com" in url and "/deck/" in url
-                and not "deck.hareruyamtg.com/deck/" in url)
+                and "deck.hareruyamtg.com/deck/" not in url and "/result?" not in url)
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
@@ -200,7 +200,6 @@ class HareruyaEventScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
-        url = url.lower()
         return all(t in url for t in {"hareruyamtg.com", "/deck", "/result?", "eventName="})
 
     def _collect(self) -> list[str]:  # override
