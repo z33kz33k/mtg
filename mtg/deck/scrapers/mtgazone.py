@@ -15,7 +15,7 @@ from bs4 import Tag
 
 from mtg import Json
 from mtg.deck import Deck, Mode
-from mtg.deck.scrapers import UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckScraper
 from mtg.scryfall import ARENA_FORMATS, Card
 from mtg.utils import extract_int, from_iterable, timed
 from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
@@ -26,8 +26,8 @@ _log = logging.getLogger(__name__)
 # alternative approach would be to scrape:
 # self._soup.find("input", {"type": "hidden", "name": "c"}).attrs["value"].split("||")
 # but it has a downside of not having clear sideboard-maindeck separation
-@UrlBasedDeckScraper.registered
-class MtgaZoneDeckScraper(UrlBasedDeckScraper):
+@DeckScraper.registered
+class MtgaZoneDeckScraper(DeckScraper):
     """Scraper of MTG Arena Zone decklist page.
 
     TODO: refactor this, make user decks scraping into a separate ContainerScraper

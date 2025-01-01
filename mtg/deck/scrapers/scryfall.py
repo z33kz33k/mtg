@@ -12,7 +12,7 @@ from datetime import date
 
 from bs4 import Tag
 
-from mtg.deck.scrapers import UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckScraper
 from mtg.scryfall import Card
 from mtg.utils import extract_int, sanitize_whitespace
 from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
@@ -20,8 +20,8 @@ from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
 _log = logging.getLogger(__name__)
 
 
-@UrlBasedDeckScraper.registered
-class ScryfallDeckScraper(UrlBasedDeckScraper):
+@DeckScraper.registered
+class ScryfallDeckScraper(DeckScraper):
     """Scraper of Scryfall decklist page.
     """
     @staticmethod

@@ -13,7 +13,7 @@ from datetime import datetime
 import dateutil.parser
 
 from mtg import Json
-from mtg.deck.scrapers import UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckScraper
 from mtg.utils.scrape import ScrapingError, dissect_js, getsoup
 from mtg.scryfall import Card
 
@@ -27,8 +27,8 @@ def get_source(src: str) -> str | None:
     return None
 
 
-@UrlBasedDeckScraper.registered
-class MtgArenaProDeckScraper(UrlBasedDeckScraper):
+@DeckScraper.registered
+class MtgArenaProDeckScraper(DeckScraper):
     """Scraper of MTGArena.Pro decklist page.
     """
 

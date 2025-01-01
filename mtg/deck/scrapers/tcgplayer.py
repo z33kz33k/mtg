@@ -15,7 +15,7 @@ from bs4 import Tag
 from httpcore import ReadTimeout
 
 from mtg import Json
-from mtg.deck.scrapers import DeckUrlsContainerScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
 from mtg.scryfall import Card
 from mtg.utils import extract_int
 from mtg.utils.scrape import ScrapingError, getsoup, request_json, strip_url_params
@@ -31,8 +31,8 @@ def get_source(src: str) -> str | None:
     return None
 
 
-@UrlBasedDeckScraper.registered
-class TcgPlayerDeckScraper(UrlBasedDeckScraper):
+@DeckScraper.registered
+class TcgPlayerDeckScraper(DeckScraper):
     """Scraper of TCG Player (old-site) decklist page.
     """
     @staticmethod
@@ -109,8 +109,8 @@ class TcgPlayerPlayerScraper(DeckUrlsContainerScraper):
         return [self.DECK_URL_TEMPLATE.format(deck_tag.attrs["href"]) for deck_tag in deck_tags]
 
 
-@UrlBasedDeckScraper.registered
-class TcgPlayerInfiniteDeckScraper(UrlBasedDeckScraper):
+@DeckScraper.registered
+class TcgPlayerInfiniteDeckScraper(DeckScraper):
     """Scraper of TCG Player Infinite decklist page.
     """
     API_URL_TEMPLATE = ("https://infinite-api.tcgplayer.com/deck/magic/{}/?source=infinite-"

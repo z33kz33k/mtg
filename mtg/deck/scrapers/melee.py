@@ -15,7 +15,7 @@ from selenium.common import TimeoutException
 from mtg.deck import Deck
 from mtg import Json, SECRETS
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import DeckUrlsContainerScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
 from mtg.utils.scrape import ScrapingError, get_dynamic_soup, getsoup
 
 _log = logging.getLogger(__name__)
@@ -45,8 +45,8 @@ def get_source(src: str) -> str | None:
     return None
 
 
-@UrlBasedDeckScraper.registered
-class MeleeGgDeckScraper(UrlBasedDeckScraper):
+@DeckScraper.registered
+class MeleeGgDeckScraper(DeckScraper):
     """Scraper of Melee.gg decklist page.
     """
 

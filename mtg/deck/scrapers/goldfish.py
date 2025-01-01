@@ -14,7 +14,7 @@ from bs4 import Tag
 
 from mtg import Json
 from mtg.deck import Deck, Mode
-from mtg.deck.scrapers import DeckUrlsContainerScraper, TagBasedDeckScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, TagBasedDeckParser, DeckScraper
 from mtg.scryfall import all_formats
 from mtg.utils import extract_int, timed
 from mtg.utils.scrape import ScrapingError, getsoup, http_requests_counted, strip_url_params, \
@@ -37,8 +37,8 @@ HEADERS = {
 # yet another alternative approach would be to scrape:
 # https://www.mtggoldfish.com/deck/arena_download/{DECK_ID} but this entails another request and
 # parsing a DECK_ID from the first URL
-class GoldfishTagBasedDeckScraper(TagBasedDeckScraper):
-    """Scraper of a MtGGoldfish decklist HTML tag.
+class GoldfishDeckTagParser(TagBasedDeckParser):
+    """Parser of a MtGGoldfish decklist HTML tag.
     """
     def _parse_header_tag(self, header_tag: Tag) -> None:
         title_tag = header_tag.find("h1", class_="title")
@@ -105,13 +105,13 @@ class GoldfishTagBasedDeckScraper(TagBasedDeckScraper):
         self._parse_decklist_tag(decklist_tag)
 
 
-@UrlBasedDeckScraper.registered
-class GoldfishUrlBasedDeckScraper(UrlBasedDeckScraper):
+@DeckScraper.registered
+class GoldfishDeckScraper(DeckScraper):
     """Scraper of MtGGoldfish decklist page.
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        self._deck_scraper: GoldfishTagBasedDeckScraper | None = None
+        self._deck_parser: GoldfishDeckTagParser | None = None
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -136,7 +136,7 @@ class GoldfishUrlBasedDeckScraper(UrlBasedDeckScraper):
         deck_tag = self._soup.find("div", class_="deck-container")
         if deck_tag is None:
             raise ScrapingError("Deck data not found")
-        self._deck_scraper = GoldfishTagBasedDeckScraper(deck_tag, self._metadata)
+        self._deck_parser = GoldfishDeckTagParser(deck_tag, self._metadata)
 
     def _parse_metadata(self) -> None:  # override
         pass
@@ -145,7 +145,7 @@ class GoldfishUrlBasedDeckScraper(UrlBasedDeckScraper):
         pass
 
     def _build_deck(self) -> Deck:  # override
-        return self._deck_scraper.scrape()
+        return self._deck_parser.parse()
 
 
 @http_requests_counted("scraping meta decks")
@@ -164,7 +164,7 @@ def scrape_meta(fmt="standard") -> list[Deck]:
     decks, metas = [], []
     for i, tile in enumerate(tiles, start=1):
         link = tile.find("a").attrs["href"]
-        deck = GoldfishUrlBasedDeckScraper(
+        deck = GoldfishDeckScraper(
             f"https://www.mtggoldfish.com{link}", {"format": fmt}).scrape(
             throttled=True, suppress_invalid_deck=False)
         count = tile.find("span", class_="archetype-tile-statistic-value-extra-data").text.strip()
@@ -185,7 +185,7 @@ class GoldfishTournamentScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Goldfish tournament"  # override
     DECK_URL_TEMPLATE = "https://www.mtggoldfish.com{}"
-    _DECK_SCRAPER = GoldfishUrlBasedDeckScraper  # override
+    _DECK_SCRAPER = GoldfishDeckScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -215,7 +215,7 @@ class GoldfishPlayerScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Goldfish player"  # override
     DECK_URL_TEMPLATE = "https://www.mtggoldfish.com{}"
-    _DECK_SCRAPER = GoldfishUrlBasedDeckScraper  # override
+    _DECK_SCRAPER = GoldfishDeckScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override

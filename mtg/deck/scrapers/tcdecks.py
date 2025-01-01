@@ -13,7 +13,7 @@ from datetime import datetime
 from bs4 import NavigableString, Tag
 
 from mtg import Json
-from mtg.deck.scrapers import DeckUrlsContainerScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
 from mtg.scryfall import Card
 from mtg.utils import extract_int
 from mtg.utils.scrape import ScrapingError
@@ -22,8 +22,8 @@ from mtg.utils.scrape import getsoup
 _log = logging.getLogger(__name__)
 
 
-@UrlBasedDeckScraper.registered
-class TCDecksDeckScraper(UrlBasedDeckScraper):
+@DeckScraper.registered
+class TCDecksDeckScraper(DeckScraper):
     """Scraper of TCDecks decklist page.
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:

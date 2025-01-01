@@ -14,7 +14,7 @@ from selenium.common.exceptions import TimeoutException
 from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckScraper
 from mtg.utils.scrape import get_dynamic_soup, strip_url_params
 from mtg.utils.scrape import ScrapingError
 
@@ -22,8 +22,8 @@ _log = logging.getLogger(__name__)
 CLIPBOARD_XPATH = "//span[text()='Export to Arena']"
 
 
-@UrlBasedDeckScraper.registered
-class CardBoardLiveDeckScraper(UrlBasedDeckScraper):
+@DeckScraper.registered
+class CardBoardLiveDeckScraper(DeckScraper):
     """Scraper of a CardBoard Live decklist page.
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:

@@ -343,6 +343,7 @@ class ArenaParser(DeckParser):
 
         self._handle_missing_commander_line()
 
+    def _parse_metadata(self) -> None:  # override
         if not self._metadata.get("source"):
             self._metadata["source"] = "arena.decklist"
 

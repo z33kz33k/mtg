@@ -11,14 +11,14 @@ import json
 import logging
 
 from mtg import Json
-from mtg.deck.scrapers import DeckUrlsContainerScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
 from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
 
 _log = logging.getLogger(__name__)
 
 
-@UrlBasedDeckScraper.registered
-class ManatradersDeckScraper(UrlBasedDeckScraper):
+@DeckScraper.registered
+class ManatradersDeckScraper(DeckScraper):
     """Scraper of Manatraders decklist page.
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:

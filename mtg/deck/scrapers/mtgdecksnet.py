@@ -15,7 +15,7 @@ from selenium.common.exceptions import TimeoutException
 from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import DeckUrlsContainerScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
 from mtg.utils.scrape import get_dynamic_soup, getsoup, strip_url_params
 from mtg.utils.scrape import ScrapingError
 
@@ -23,8 +23,8 @@ _log = logging.getLogger(__name__)
 
 
 # TODO: scrape the meta
-@UrlBasedDeckScraper.registered
-class MtgDecksNetDeckScraper(UrlBasedDeckScraper):
+@DeckScraper.registered
+class MtgDecksNetDeckScraper(DeckScraper):
     """Scraper of MTGDecks.net decklist page.
     """
     _XPATH = "//textarea[@id='arena_deck']"

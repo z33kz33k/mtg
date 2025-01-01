@@ -14,7 +14,7 @@ from bs4 import Tag
 
 from mtg import Json
 from mtg.deck import Deck
-from mtg.deck.scrapers import DeckUrlsContainerScraper, TagBasedDeckScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, TagBasedDeckParser, DeckScraper
 from mtg.utils import extract_int, from_iterable, sanitize_whitespace
 from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
 
@@ -30,8 +30,8 @@ _log = logging.getLogger(__name__)
 # could be utilized.
 
 
-class StarCityGamesTagBasedDeckScraper(TagBasedDeckScraper):
-    """Scraper of a StarCityGames decklist HTML tag.
+class StarCityGamesDeckTagParser(TagBasedDeckParser):
+    """Parser of a StarCityGames decklist HTML tag.
     """
     @staticmethod
     def _parse_event_line(line: str) -> Json | str:
@@ -91,13 +91,13 @@ class StarCityGamesTagBasedDeckScraper(TagBasedDeckScraper):
         self._parse_decklist_tag(decklist_tag)
 
 
-@UrlBasedDeckScraper.registered
-class StarCityGamesUrlBasedDeckScraper(UrlBasedDeckScraper):
+@DeckScraper.registered
+class StarCityGamesDeckScraper(DeckScraper):
     """Scraper of StarCityGames decklist page.
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        self._deck_scraper: StarCityGamesTagBasedDeckScraper | None = None
+        self._deck_parser: StarCityGamesDeckTagParser | None = None
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -122,7 +122,7 @@ class StarCityGamesUrlBasedDeckScraper(UrlBasedDeckScraper):
             deck_tag = self._soup.find("div", class_="deck_listing2")
             if deck_tag is None:
                 raise ScrapingError("Deck data not found")
-        self._deck_scraper = StarCityGamesTagBasedDeckScraper(deck_tag, self._metadata)
+        self._deck_parser = StarCityGamesDeckTagParser(deck_tag, self._metadata)
 
     def _parse_metadata(self) -> None:  # override
         pass
@@ -131,7 +131,7 @@ class StarCityGamesUrlBasedDeckScraper(UrlBasedDeckScraper):
         pass
 
     def _build_deck(self) -> Deck:  # override
-        return self._deck_scraper.scrape()
+        return self._deck_parser.parse()
 
 
 @DeckUrlsContainerScraper.registered
@@ -139,7 +139,7 @@ class StarCityGamesEventScraper(DeckUrlsContainerScraper):
     """Scraper of StarCityGames event page.
     """
     CONTAINER_NAME = "StarCityGames event"  # override
-    _DECK_SCRAPER = StarCityGamesUrlBasedDeckScraper  # override
+    _DECK_SCRAPER = StarCityGamesDeckScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -164,7 +164,7 @@ class StarCityGamesEventScraper(DeckUrlsContainerScraper):
         section_tag = self._soup.select_one("section#content")
         deck_tags = [
             a_tag for a_tag in section_tag.find_all(
-                "a", href=lambda h: h and StarCityGamesUrlBasedDeckScraper.is_deck_url(h))]
+                "a", href=lambda h: h and StarCityGamesDeckScraper.is_deck_url(h))]
         return [tag.attrs["href"] for tag in deck_tags if tag is not None]
 
 
@@ -173,7 +173,7 @@ class StarCityGamesArticleScraper(DeckUrlsContainerScraper):
     """Scraper of StarCityGames decks article page.
     """
     CONTAINER_NAME = "StarCityGames article"  # override
-    _DECK_SCRAPER = StarCityGamesUrlBasedDeckScraper  # override
+    _DECK_SCRAPER = StarCityGamesDeckScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -195,7 +195,7 @@ class StarCityGamesArticleScraper(DeckUrlsContainerScraper):
             if tag is not None]
         a_tags = [
             tag for tag in
-            [h.find("a", href=lambda h: h and StarCityGamesUrlBasedDeckScraper.is_deck_url(h))
+            [h.find("a", href=lambda h: h and StarCityGamesDeckScraper.is_deck_url(h))
              for h in deck_headers]
             if tag is not None]
         return [tag.attrs["href"] for tag in a_tags]
@@ -206,7 +206,7 @@ class StarCityGamesDatabaseScraper(DeckUrlsContainerScraper):
     """Scraper of StarCityGames author's decks database page.
     """
     CONTAINER_NAME = "StarCityGames author's deck database"  # override
-    _DECK_SCRAPER = StarCityGamesUrlBasedDeckScraper  # override
+    _DECK_SCRAPER = StarCityGamesDeckScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override

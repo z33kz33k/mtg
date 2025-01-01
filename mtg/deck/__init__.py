@@ -1327,6 +1327,10 @@ class DeckParser(ABC):
         raise NotImplementedError
 
     @abstractmethod
+    def _parse_metadata(self) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
     def _parse_decklist(self) -> None:
         raise NotImplementedError
 
@@ -1335,6 +1339,7 @@ class DeckParser(ABC):
             suppress_invalid_deck=True) -> Deck | None:  # override
         try:
             self._pre_parse()
+            self._parse_metadata()
             self._parse_decklist()
         except ParsingError as pe:
             if not suppress_parsing_errors:

@@ -14,7 +14,7 @@ from bs4 import BeautifulSoup
 
 from mtg import Json, SECRETS
 from mtg.deck import Deck
-from mtg.deck.scrapers import JsonBasedDeckScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import JsonBasedDeckParser, DeckScraper
 from mtg.scryfall import all_formats
 from mtg.utils import from_iterable, get_ordinal_suffix
 from mtg.utils.scrape import ScrapingError, dissect_js, getsoup, strip_url_params
@@ -40,8 +40,8 @@ HEADERS = {
 }
 
 
-class MgtoJsonBasedDeckScraper(JsonBasedDeckScraper):
-    """Scraper of MGTO individual decklist JSON data.
+class MgtoDeckJsonParser(JsonBasedDeckParser):
+    """Parser of MGTO individual decklist JSON data.
     """
     def _derive_name(self) -> str:
         name = self._deck_data["player"]
@@ -71,8 +71,8 @@ class MgtoJsonBasedDeckScraper(JsonBasedDeckScraper):
             self._parse_card(card)
 
 
-@UrlBasedDeckScraper.registered
-class MgtoUrlBasedDeckScraper(UrlBasedDeckScraper):
+@DeckScraper.registered
+class MgtoDeckScraper(DeckScraper):
     """Scraper of MGTO decklists page that points to an individual deck.
     """
     _FORMATS = {
@@ -88,7 +88,8 @@ class MgtoUrlBasedDeckScraper(UrlBasedDeckScraper):
         super().__init__(url, metadata)
         self._json_data: Json | None = None
         self._player_name = self._parse_player_name()
-        self._decks_data, self._deck_scraper = [], None
+        self._decks_data = []
+        self._deck_parser: MgtoDeckJsonParser | None = None
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -155,7 +156,7 @@ class MgtoUrlBasedDeckScraper(UrlBasedDeckScraper):
                 rank_data, lambda d: d["loginid"] == deck_data["loginid"])
             deck_data["final_rank"] = deck_rank_data["rank"]
         self._metadata.update(self.get_event_metadata(self._json_data))
-        self._deck_scraper = MgtoJsonBasedDeckScraper(deck_data, self._metadata)
+        self._deck_parser = MgtoDeckJsonParser(deck_data, self._metadata)
 
     def _parse_metadata(self) -> None:  # override
         pass
@@ -164,4 +165,4 @@ class MgtoUrlBasedDeckScraper(UrlBasedDeckScraper):
         pass
 
     def _build_deck(self) -> Deck:  # override
-        return self._deck_scraper.scrape()
+        return self._deck_parser.parse()

@@ -11,15 +11,15 @@ import logging
 from datetime import datetime
 
 from mtg import Json
-from mtg.deck.scrapers import UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckScraper
 from mtg.scryfall import Card
 from mtg.utils.scrape import ScrapingError, request_json
 
 _log = logging.getLogger(__name__)
 
 
-@UrlBasedDeckScraper.registered
-class MtgoTradersDeckScraper(UrlBasedDeckScraper):
+@DeckScraper.registered
+class MtgoTradersDeckScraper(DeckScraper):
     """Scraper of MTGO Traders deck page.
     """
     REQUEST_URL_TEMPLATE = "https://www.mtgotraders.com/deck/data/getdeck.php?deck={}"

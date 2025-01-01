@@ -17,7 +17,7 @@ from bs4 import BeautifulSoup, Tag
 
 from mtg import Json
 from mtg import SECRETS
-from mtg.deck.scrapers import DeckUrlsContainerScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
 from mtg.scryfall import Card
 from mtg.utils import extract_int
 from mtg.utils.scrape import ScrapingError, getsoup, url_decode
@@ -42,7 +42,7 @@ def _get_soup_with_zenrows(url: str, css_selector: str) -> BeautifulSoup | None:
 
 # TODO: uncomment when ready
 # @DeckScraper.registered
-class LigaMagicDeckScraper(UrlBasedDeckScraper):
+class LigaMagicDeckScraper(DeckScraper):
     """Scraper of LigaMagic decklist page.
     """
     _CSS_SELECTOR = "div#deck-view"

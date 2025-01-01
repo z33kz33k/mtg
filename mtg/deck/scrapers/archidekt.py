@@ -12,14 +12,14 @@ import logging
 from datetime import datetime
 
 from mtg import Json
-from mtg.deck.scrapers import DeckUrlsContainerScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
 from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
 
 _log = logging.getLogger(__name__)
 
 
-@UrlBasedDeckScraper.registered
-class ArchidektDeckScraper(UrlBasedDeckScraper):
+@DeckScraper.registered
+class ArchidektDeckScraper(DeckScraper):
     """Scraper of Archidekt decklist page.
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:

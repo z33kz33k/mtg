@@ -15,7 +15,7 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import DeckUrlsContainerScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
 from mtg.utils import extract_float, extract_int
 from mtg.utils.scrape import ScrapingError
 from mtg.utils.scrape import get_dynamic_soup, strip_url_params
@@ -25,8 +25,8 @@ CONSENT_XPATH = '//button[contains(@class, "fc-button fc-cta-consent") and @aria
 CLIPBOARD_XPATH = "//span[text()='Copy to MTGA']"
 
 
-@UrlBasedDeckScraper.registered
-class UntappedProfileDeckScraper(UrlBasedDeckScraper):
+@DeckScraper.registered
+class UntappedProfileDeckScraper(DeckScraper):
     """Scraper of decklist page of Untapped.gg user's profile.
     """
     _NO_GAMES_XPATH = ("//div[text()='No games have been played with this deck in the selected "
@@ -70,8 +70,8 @@ class UntappedProfileDeckScraper(UrlBasedDeckScraper):
         pass
 
 
-@UrlBasedDeckScraper.registered
-class UntappedRegularDeckScraper(UrlBasedDeckScraper):
+@DeckScraper.registered
+class UntappedRegularDeckScraper(DeckScraper):
     """Scraper of a regular Untapped.gg decklist page.
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
@@ -110,8 +110,8 @@ class UntappedRegularDeckScraper(UrlBasedDeckScraper):
         pass
 
 
-@UrlBasedDeckScraper.registered
-class UntappedMetaDeckScraper(UrlBasedDeckScraper):
+@DeckScraper.registered
+class UntappedMetaDeckScraper(DeckScraper):
     """Scraper of Untapped meta-decks page.
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:

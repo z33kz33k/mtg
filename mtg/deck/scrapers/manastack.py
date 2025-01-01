@@ -11,7 +11,7 @@ import logging
 
 from selenium.common.exceptions import TimeoutException
 
-from mtg.deck.scrapers import DeckUrlsContainerScraper, UrlBasedDeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
 from mtg.utils import get_date_from_ago_text
 from mtg.utils.scrape import ScrapingError, strip_url_params
 from mtg.utils.scrape import get_dynamic_soup
@@ -19,8 +19,8 @@ from mtg.utils.scrape import get_dynamic_soup
 _log = logging.getLogger(__name__)
 
 
-@UrlBasedDeckScraper.registered
-class ManaStackDeckScraper(UrlBasedDeckScraper):
+@DeckScraper.registered
+class ManaStackDeckScraper(DeckScraper):
     """Scraper of ManaStack decklist page.
     """
     _XPATH = "//div[@class='deck-list-container']"
