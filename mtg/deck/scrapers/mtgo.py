@@ -14,7 +14,7 @@ from bs4 import BeautifulSoup
 
 from mtg import Json, SECRETS
 from mtg.deck import Deck
-from mtg.deck.scrapers import JsonBasedDeckParser, DeckScraper
+from mtg.deck.scrapers import DecksJsonContainerScraper, JsonBasedDeckParser, DeckScraper
 from mtg.scryfall import all_formats
 from mtg.utils import from_iterable, get_ordinal_suffix
 from mtg.utils.scrape import ScrapingError, dissect_js, getsoup, strip_url_params
@@ -40,7 +40,62 @@ HEADERS = {
 }
 
 
-class MgtoDeckJsonParser(JsonBasedDeckParser):
+def _get_json(soup: BeautifulSoup) -> Json:
+    data = dissect_js(
+        soup, "window.MTGO.decklists.data = ", "window.MTGO.decklists.type",
+        lambda s: s.rstrip().rstrip(";"))
+    if data is None:
+        raise ScrapingError("Data not available")
+    return data
+
+
+def _get_decks_data(json_data: Json) -> list[Json]:
+    return json_data["decklists"]
+
+
+def _process_ranks(rank_data: list[Json], *decks_data: Json) -> None:
+    for deck_data in decks_data:
+        deck_rank_data = from_iterable(
+                    rank_data, lambda d: d["loginid"] == deck_data["loginid"])
+        if deck_rank_data:
+            deck_data["final_rank"] = deck_rank_data["rank"]
+
+
+_FORMATS = {
+    "cstandard": "standard",
+    "cmodern": "modern",
+    "cpioneer": "pioneer",
+    "cvintage": "vintage",
+    "clegacy": "legacy",
+    "cpauper": "pauper",
+}
+
+
+def _get_event_metadata(json_data: Json) -> Json:
+    metadata = {"event": {}}
+    if name := json_data.get("description"):
+        metadata["event"]["name"] = name
+    elif name := json_data.get("name"):
+        metadata["event"]["name"] = name
+    if type_ := json_data.get("type"):
+        metadata["event"]["type"] = type_.lower()
+    if player_count := json_data.get("player_count", {}).get("players"):
+        metadata["event"]["player_count"] = int(player_count)
+    date = json_data.get("starttime") or json_data.get("publish_date")
+    if date:
+        metadata["event"]["date"] = dateutil.parser.parse(date).date()
+    fmt = json_data.get("format")
+    if fmt:
+        fmt = _FORMATS.get(fmt.lower())
+        if not fmt:
+            if site_name := json_data.get("site_name"):
+                fmt = from_iterable(site_name.split("-"), lambda t: t in all_formats())
+        if fmt:
+            metadata["event"]["format"] = fmt
+    return metadata
+
+
+class MtgoDeckJsonParser(JsonBasedDeckParser):
     """Parser of MGTO individual decklist JSON data.
     """
     def _derive_name(self) -> str:
@@ -52,7 +107,7 @@ class MgtoDeckJsonParser(JsonBasedDeckParser):
             name += f" ({rank}{get_ordinal_suffix(rank)} place)"
         return name
 
-    def _parse_metadata(self) -> None:
+    def _parse_metadata(self) -> None:  # override
         self._metadata["author"] = self._deck_data["player"]
         self._metadata["name"] = self._derive_name()
         if fmt := self._metadata.get("event", {}).get("format"):
@@ -66,30 +121,22 @@ class MgtoDeckJsonParser(JsonBasedDeckParser):
         card = self.find_card(name, mtgo_id=mtgo_id)
         decklist += self.get_playset(card, qty)
 
-    def _parse_decklist(self) -> None:
+    def _parse_decklist(self) -> None:  # override
         for card in [*self._deck_data["main_deck"], *self._deck_data.get("sideboard_deck", [])]:
             self._parse_card(card)
+        self._derive_commander_from_sideboard()
 
 
 @DeckScraper.registered
-class MgtoDeckScraper(DeckScraper):
+class MtgoDeckScraper(DeckScraper):
     """Scraper of MGTO decklists page that points to an individual deck.
     """
-    _FORMATS = {
-        "cstandard": "standard",
-        "cmodern": "modern",
-        "cpioneer": "pioneer",
-        "cvintage": "vintage",
-        "clegacy": "legacy",
-        "cpauper": "pauper",
-    }
-
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
         self._json_data: Json | None = None
         self._player_name = self._parse_player_name()
         self._decks_data = []
-        self._deck_parser: MgtoDeckJsonParser | None = None
+        self._deck_parser: MtgoDeckJsonParser | None = None
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -104,59 +151,20 @@ class MgtoDeckScraper(DeckScraper):
         _, rest = rest.split("#")
         return rest.removeprefix("deck_")
 
-    @staticmethod
-    def get_json(soup: BeautifulSoup) -> Json:
-        data = dissect_js(
-            soup, "window.MTGO.decklists.data = ", "window.MTGO.decklists.type",
-            lambda s: s.rstrip().rstrip(";"))
-        if data is None:
-            raise ScrapingError("Data not available")
-        return data
-
-    @staticmethod
-    def get_decks_data(json_data: Json) -> list[Json]:
-        return json_data["decklists"]
-
-    @classmethod
-    def get_event_metadata(cls, json_data: Json) -> Json:
-        metadata = {"event": {}}
-        if name := json_data.get("description"):
-            metadata["event"]["name"] = name
-        elif name := json_data.get("name"):
-            metadata["event"]["name"] = name
-        if type_ := json_data.get("type"):
-            metadata["event"]["type"] = type_.lower()
-        if player_count := json_data.get("player_count", {}).get("players"):
-            metadata["event"]["player_count"] = int(player_count)
-        date = json_data.get("starttime") or json_data.get("publish_date")
-        if date:
-            metadata["event"]["date"] = dateutil.parser.parse(date).date()
-        fmt = json_data.get("format")
-        if fmt:
-            fmt = cls._FORMATS.get(fmt.lower())
-            if not fmt:
-                if site_name := json_data.get("site_name"):
-                    fmt = from_iterable(site_name.split("-"), lambda t: t in all_formats())
-            if fmt:
-                metadata["event"]["format"] = fmt
-        return metadata
-
     def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)
         if not self._soup:
             raise ScrapingError("Page not available")
-        self._json_data = self.get_json(self._soup)
-        self._decks_data = self.get_decks_data(self._json_data)
+        self._json_data = _get_json(self._soup)
+        self._decks_data = _get_decks_data(self._json_data)
         deck_data = from_iterable(
             self._decks_data, lambda d: d["player"] == self._player_name)
         if not deck_data:
             raise ScrapingError(f"Deck designated by {self._player_name!r} not found")
         if rank_data := self._json_data.get("final_rank"):
-            deck_rank_data = from_iterable(
-                rank_data, lambda d: d["loginid"] == deck_data["loginid"])
-            deck_data["final_rank"] = deck_rank_data["rank"]
-        self._metadata.update(self.get_event_metadata(self._json_data))
-        self._deck_parser = MgtoDeckJsonParser(deck_data, self._metadata)
+            _process_ranks(rank_data, deck_data)
+        self._metadata.update(_get_event_metadata(self._json_data))
+        self._deck_parser = MtgoDeckJsonParser(deck_data, self._metadata)
 
     def _parse_metadata(self) -> None:  # override
         pass
@@ -166,3 +174,32 @@ class MgtoDeckScraper(DeckScraper):
 
     def _build_deck(self) -> Deck:  # override
         return self._deck_parser.parse()
+
+
+@DecksJsonContainerScraper.registered
+class MtgoEventScraper(DecksJsonContainerScraper):
+    """Scraper of MTGO event page.
+    """
+    CONTAINER_NAME = "MTGO event"
+    _DECK_PARSER = MtgoDeckJsonParser
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return f"mtgo.com/decklist/" in url.lower() and "#deck_" not in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url, with_endpoint=False)
+
+    def _collect(self) -> list[Json]:  # override
+        self._soup = getsoup(self.url, headers=HEADERS)
+        if not self._soup:
+            _log.warning(self._error_msg)
+            return []
+
+        json_data = _get_json(self._soup)
+        decks_data = _get_decks_data(json_data)
+        if rank_data := json_data.get("final_rank"):
+            _process_ranks(rank_data, *decks_data)
+        self._metadata.update(_get_event_metadata(json_data))
+        return decks_data

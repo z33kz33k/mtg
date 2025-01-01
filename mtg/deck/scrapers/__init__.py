@@ -392,7 +392,6 @@ class DecksJsonContainerScraper:
         url = url.removesuffix("/")
         self._validate_url(url)
         self._url, self._metadata = self.sanitize_url(url), metadata or {}
-        self._json_data: Json | None = None
         self._decks_data: list[Json] = []
 
     @classmethod
@@ -421,11 +420,13 @@ class DecksJsonContainerScraper:
         _log.info(
             f"Gathered data for {len(self._decks_data)} deck(s) from a {self.CONTAINER_NAME} "
             f"at: {self.url!r}")
-        return [
-            d for d in
-            [self._DECK_PARSER(deck_json, dict(self._metadata)).parse()
-             for deck_json in self._decks_data]
-            if d]
+        decks = []
+        for i, deck_data in enumerate(self._decks_data, start=1):
+            d = self._DECK_PARSER(deck_data, dict(self._metadata)).parse()
+            if d:
+                decks.append(d)
+                _log.info(f"Parsed deck {i}/{len(self._decks_data)}: {d.name!r}")
+        return decks
 
     @classmethod
     def registered(
