@@ -35,7 +35,8 @@ from youtubesearchpython import Channel as YtspChannel
 from mtg import FILENAME_TIMESTAMP_FORMAT, Json, OUTPUT_DIR, PathLike, SECRETS
 from mtg.deck import Deck, SANITIZED_FORMATS
 from mtg.deck.arena import ArenaParser, get_arena_lines, group_arena_lines
-from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper, DecksJsonContainerScraper
+from mtg.deck.scrapers import DeckTagsContainerScraper, DeckUrlsContainerScraper, DeckScraper, \
+    DecksJsonContainerScraper
 from mtg.scryfall import all_formats
 from mtg.utils import Counter, deserialize_dates, extract_float, find_longest_seqs, \
     from_iterable, getrepr, multiply_by_symbol, sanitize_filename, serialize_dates, timed
@@ -825,6 +826,11 @@ class Video:
                 decks.update(container_decks)
                 self._failed_deck_urls.update(failed_urls)
             elif scraper := DecksJsonContainerScraper.from_url(link, self.metadata):
+                if link in self._already_scraped_deck_urls:
+                    _log.info(f"Skipping already scraped deck container URL: {link!r}...")
+                    continue
+                decks.update(scraper.scrape())
+            elif scraper := DeckTagsContainerScraper.from_url(link, self.metadata):
                 if link in self._already_scraped_deck_urls:
                     _log.info(f"Skipping already scraped deck container URL: {link!r}...")
                     continue

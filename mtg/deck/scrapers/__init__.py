@@ -339,10 +339,15 @@ class DeckTagsContainerScraper(ContainerScraper):
             f" {self.url!r}")
         decks = []
         for i, deck_tag in enumerate(self._deck_tags, start=1):
-            d = self._DECK_PARSER(deck_tag, dict(self._metadata)).parse()
-            if d:
-                decks.append(d)
-                _log.info(f"Parsed deck {i}/{len(self._deck_tags)}: {d.name!r}")
+            try:
+                d = self._DECK_PARSER(deck_tag, dict(self._metadata)).parse()
+                if d:
+                    decks.append(d)
+                    _log.info(f"Parsed deck {i}/{len(self._deck_tags)}: {d.name!r}")
+            except AttributeError as ae:
+                _log.warning(f"Failed to parse deck {i}/{len(self._deck_tags)}: {ae}. Skipping...")
+                continue
+
         return decks
 
     @classmethod

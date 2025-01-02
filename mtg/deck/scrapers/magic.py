@@ -13,13 +13,14 @@ import logging
 
 import dateutil.parser
 from bs4 import BeautifulSoup, Comment, NavigableString, Tag
+from selenium.common import TimeoutException
 
 from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import DeckScraper, TagBasedDeckParser
-from mtg.utils import from_iterable, sanitize_whitespace
-from mtg.utils.scrape import ScrapingError
+from mtg.deck.scrapers import DeckScraper, DeckTagsContainerScraper, TagBasedDeckParser
+from mtg.utils import sanitize_whitespace
+from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
 from mtg.utils.scrape.dynamic import get_dynamic_soup
 
 _log = logging.getLogger(__name__)
@@ -140,7 +141,8 @@ def _get_event_name(soup: BeautifulSoup) -> str:
 class MagicGgDeckScraper(DeckScraper):
     """Scraper of Magic.gg event page that points to an individual deck.
     """
-    _XPATH = '//div[@class="css-3X0PN"]'
+    XPATH = '//div[@class="css-3X0PN"]'
+    CONSENT_XPATH = '//button[@aria-label="Reject All"]'
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -156,9 +158,14 @@ class MagicGgDeckScraper(DeckScraper):
         return id_
 
     def _pre_parse(self) -> None:  # override
-        self._soup, _, _ = get_dynamic_soup(self.url, self._XPATH)
-        if not self._soup:
-            raise ScrapingError("Page not available")
+        try:
+            self._soup, _, _ = get_dynamic_soup(
+                self.url, self.XPATH, consent_xpath=self.CONSENT_XPATH)
+            if not self._soup:
+                raise ScrapingError("Page not available")
+        except TimeoutException:
+            raise ScrapingError(f"Scraping failed due to Selenium timing out")
+
         deck_tag = self._soup.find("div", id=self._decklist_id)
         if deck_tag is None:
             raise ScrapingError(f"Deck designated by {self._decklist_id!r} data not found")
@@ -173,36 +180,43 @@ class MagicGgDeckScraper(DeckScraper):
 
     def _build_deck(self) -> Deck:  # override
         return self._deck_parser.parse()
-#
-#
-# @DecksJsonContainerScraper.registered
-# class MtgoEventScraper(DecksJsonContainerScraper):
-#     """Scraper of MTGO event page.
-#     """
-#     CONTAINER_NAME = "MTGO event"
-#     _DECK_PARSER = MtgoDeckJsonParser
-#
-#     @staticmethod
-#     def is_container_url(url: str) -> bool:  # override
-#         return f"mtgo.com/decklist/" in url.lower() and "#deck_" not in url.lower()
-#
-#     @staticmethod
-#     def sanitize_url(url: str) -> str:  # override
-#         return strip_url_params(url)
-#
-#     def _collect(self) -> list[Json]:  # override
-#         self._soup = getsoup(self.url, headers=HEADERS)
-#         if not self._soup:
-#             _log.warning(self._error_msg)
-#             return []
-#         try:
-#             json_data = _get_json(self._soup)
-#         except ScrapingError:
-#             _log.warning(self._error_msg)
-#             return []
-#
-#         decks_data = _get_decks_data(json_data)
-#         if rank_data := json_data.get("final_rank"):
-#             _process_ranks(rank_data, *decks_data)
-#         self._metadata.update(_get_event_metadata(json_data))
-#         return decks_data
+
+
+@DeckTagsContainerScraper.registered
+class MagicGgEventScraper(DeckTagsContainerScraper):
+    """Scraper of Magic.gg event page.
+    """
+    CONTAINER_NAME = "Magic.gg event"
+    _DECK_PARSER = MagicGgNewDeckTagParser
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return f"magic.gg/decklists/" in url.lower() and "?decklist=" not in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url, keep_fragment=False)
+
+    def _collect(self) -> list[Tag]:  # override
+        self._soup = getsoup(self.url)
+        if not self._soup:
+            _log.warning(self._error_msg)
+            return []
+
+        deck_tags = [*self._soup.find_all("deck-list")]
+        if not deck_tags:
+            self.__class__._DECK_PARSER = MagicGgOldDeckTagParser
+            try:
+                self._soup, _, _ = get_dynamic_soup(
+                    self.url, MagicGgDeckScraper.XPATH,
+                    consent_xpath=MagicGgDeckScraper.CONSENT_XPATH)
+                deck_tags = [*self._soup.find_all("div", class_="css-3X0PN")]
+                if not deck_tags:
+                    _log.warning(self._error_msg)
+                    return []
+            except TimeoutException:
+                _log.warning(self._error_msg)
+                return []
+            self._metadata["event"] = {"name": _get_event_name(self._soup)}
+
+        return deck_tags

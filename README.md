@@ -28,7 +28,7 @@ descriptions).
     * [youtube-comment-downloader](https://github.com/egbertbouman/youtube-comment-downloader) 
 * Scraping YT videos' descriptions (or comments) for decks:    
     * Text decklists in Arena/MTGO format pasted into video descriptions are parsed into Deck objects
-    * Links to decklist services are scraped into Deck objects. 33 services are supported so far:
+    * Links to decklist services are scraped into Deck objects. 34 services are supported so far:
         * [Aetherhub](https://aetherhub.com)
         * [Archidekt](https://archidekt.com)
         * [CardBoard Live](https://cardboard.live)
@@ -40,6 +40,7 @@ descriptions).
         * [Goldfish](https://www.mtggoldfish.com)
         * [Hareruya](https://www.hareruyamtg.com/en/)
         * [LigaMagic](https://www.ligamagic.com.br/?view=home) _(with caveats)_
+        * [Magic.gg](https://magic.gg)
         * [MagicVille](https://magic-ville.com/fr/index.php)
         * [ManaBox](https://manabox.app)
         * [ManaStack](https://manastack.com/home)
@@ -103,6 +104,7 @@ descriptions).
         * TCGPlayer Infinite players (profile page), authors (search page) and events
         * Untapped profiles
     * Other, non-URL based container pages are processed for decks, too. These include:
+        * Magic.gg events
         * MGTO events
 * Assessing the meta:
     * Scraping Goldfish and MGTAZone for meta-decks (others in plans)
