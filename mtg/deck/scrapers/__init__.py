@@ -8,7 +8,7 @@
 
 """
 import logging
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from typing import Iterable, Optional, Type
 
 import backoff
@@ -176,13 +176,12 @@ class JsonBasedDeckParser(DeckParser):
         raise NotImplementedError
 
 
-class DeckUrlsContainerScraper:
-    """Abstract scraper of deck-links-containing pages.
+class ContainerScraper(ABC):
+    """Abstract base container scraper.
     """
     CONTAINER_NAME = None
-    THROTTLING = DeckScraper.THROTTLING
-    _REGISTRY: set[Type["DeckUrlsContainerScraper"]] = set()
-    _DECK_SCRAPER: Type[DeckScraper] | None = None
+    _REGISTRY: set[Type["ContainerScraper"]] | None = None
+    _DECK_SCRAPER: Type[DeckParser] | None = None
 
     @property
     def url(self) -> str:
@@ -200,7 +199,6 @@ class DeckUrlsContainerScraper:
         self._validate_url(url)
         self._url, self._metadata = self.sanitize_url(url), metadata or {}
         self._soup: BeautifulSoup | None = None
-        self._deck_urls = []
 
     @classmethod
     def _validate_url(cls, url):
@@ -215,6 +213,23 @@ class DeckUrlsContainerScraper:
     @staticmethod
     def sanitize_url(url: str) -> str:
         return url.removesuffix("/")
+
+
+class DeckUrlsContainerScraper(ContainerScraper):
+    """Abstract scraper of deck-links-containing pages.
+    """
+    THROTTLING = DeckScraper.THROTTLING
+    _REGISTRY: set[Type["DeckUrlsContainerScraper"]] = set()
+    _DECK_SCRAPER: Type[DeckScraper] | None = None
+
+    def __init__(self, url: str, metadata: Json | None = None) -> None:
+        super().__init__(url, metadata)
+        self._deck_urls = []
+
+    @staticmethod
+    @abstractmethod
+    def is_container_url(url: str) -> bool:
+        raise NotImplementedError
 
     @abstractmethod
     def _collect(self) -> list[str]:
@@ -293,46 +308,23 @@ class DeckUrlsContainerScraper:
         return None
 
 
-class DeckTagsContainerScraper:
+class DeckTagsContainerScraper(ContainerScraper):
     """Abstract scraper of deck-HTML-tags-containing pages.
     """
     CONTAINER_NAME = None
     _REGISTRY: set[Type["DeckTagsContainerScraper"]] = set()
     _DECK_PARSER: Type[TagBasedDeckParser] | None = None
 
-    @property
-    def url(self) -> str:
-        return self._url
-
-    @property
-    def _error_msg(self) -> str:
-        if not self.CONTAINER_NAME:
-            return "Data not available"
-        *_, name = self.CONTAINER_NAME.split()
-        return f"{name.title()} data not available"
-
     def __init__(self, url: str, metadata: Json | None = None) -> None:
-        url = url.removesuffix("/")
-        self._validate_url(url)
-        self._url, self._metadata = self.sanitize_url(url), metadata or {}
+        super().__init__(url, metadata)
         self._metadata["url"] = self.url
         self._metadata["source"] = extract_source(self.url)
-        self._soup: BeautifulSoup | None = None
         self._deck_tags: list[Tag] = []
-
-    @classmethod
-    def _validate_url(cls, url):
-        if url and not cls.is_container_url(url):
-            raise ValueError(f"Not a {cls.CONTAINER_NAME} URL: {url!r}")
 
     @staticmethod
     @abstractmethod
     def is_container_url(url: str) -> bool:
         raise NotImplementedError
-
-    @staticmethod
-    def sanitize_url(url: str) -> str:
-        return url.removesuffix("/")
 
     @abstractmethod
     def _collect(self) -> list[Tag]:
@@ -346,10 +338,13 @@ class DeckTagsContainerScraper:
         _log.info(
             f"Gathered {len(self._deck_tags)} deck tag(s) from a {self.CONTAINER_NAME} at:"
             f" {self.url!r}")
-        return [
-            d for d in
-            [self._DECK_PARSER(tag, dict(self._metadata)).parse() for tag in self._deck_tags]
-            if d]
+        decks = []
+        for i, deck_tag in enumerate(self._deck_tags, start=1):
+            d = self._DECK_PARSER(deck_tag, dict(self._metadata)).parse()
+            if d:
+                decks.append(d)
+                _log.info(f"Parsed deck {i}/{len(self._deck_tags)}: {d.name!r}")
+        return decks
 
     @classmethod
     def registered(
@@ -372,45 +367,22 @@ class DeckTagsContainerScraper:
         return None
 
 
-class DecksJsonContainerScraper:
+class DecksJsonContainerScraper(ContainerScraper):
     """Abstract scraper of deck-JSON-containing pages.
     """
-    CONTAINER_NAME = None
     _REGISTRY: set[Type["DecksJsonContainerScraper"]] = set()
     _DECK_PARSER: Type[JsonBasedDeckParser] | None = None
 
-    @property
-    def url(self) -> str:
-        return self._url
-
-    @property
-    def _error_msg(self) -> str:
-        if not self.CONTAINER_NAME:
-            return "Data not available"
-        *_, name = self.CONTAINER_NAME.split()
-        return f"{name.title()} data not available"
-
     def __init__(self, url: str, metadata: Json | None = None) -> None:
-        url = url.removesuffix("/")
-        self._validate_url(url)
-        self._url, self._metadata = self.sanitize_url(url), metadata or {}
+        super().__init__(url, metadata)
         self._metadata["url"] = self.url
         self._metadata["source"] = extract_source(self.url)
         self._decks_data: list[Json] = []
-
-    @classmethod
-    def _validate_url(cls, url):
-        if url and not cls.is_container_url(url):
-            raise ValueError(f"Not a {cls.CONTAINER_NAME} URL: {url!r}")
 
     @staticmethod
     @abstractmethod
     def is_container_url(url: str) -> bool:
         raise NotImplementedError
-
-    @staticmethod
-    def sanitize_url(url: str) -> str:
-        return url.removesuffix("/")
 
     @abstractmethod
     def _collect(self) -> list[Json]:
