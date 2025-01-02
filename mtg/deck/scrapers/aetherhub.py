@@ -16,7 +16,8 @@ from selenium.common.exceptions import TimeoutException
 from mtg.deck import Archetype, Mode
 from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
 from mtg.utils import extract_float, extract_int, from_iterable
-from mtg.utils.scrape import ScrapingError, get_dynamic_soup, getsoup, strip_url_params
+from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
+from mtg.utils.scrape.dynamic import get_dynamic_soup
 
 _log = logging.getLogger(__name__)
 

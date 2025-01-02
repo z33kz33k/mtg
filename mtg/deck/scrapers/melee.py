@@ -16,7 +16,8 @@ from mtg.deck import Deck
 from mtg import Json, SECRETS
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
-from mtg.utils.scrape import ScrapingError, get_dynamic_soup, getsoup
+from mtg.utils.scrape import ScrapingError, getsoup
+from mtg.utils.scrape.dynamic import get_dynamic_soup
 
 _log = logging.getLogger(__name__)
 

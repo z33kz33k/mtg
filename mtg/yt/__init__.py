@@ -41,8 +41,10 @@ from mtg.utils import Counter, deserialize_dates, extract_float, find_longest_se
     from_iterable, getrepr, multiply_by_symbol, sanitize_filename, serialize_dates, timed
 from mtg.utils.files import getdir
 from mtg.utils.scrape import ScrapingError, extract_source, extract_url, \
-    get_dynamic_soup, http_requests_counted, throttle_with_countdown, throttled, \
+    http_requests_counted, throttle_with_countdown, throttled, \
     timed_request, unshorten
+from mtg.utils.scrape.dynamic import get_dynamic_soup
+from mtg.utils.scrape.linktree import Linktree
 from mtg.yt.data import CHANNELS_DIR, CHANNEL_URL_TEMPLATE, ChannelData, DecklistPath, \
     ScrapingSession, VIDEO_URL_TEMPLATE, find_channel_files, find_orphans, load_channel, \
     load_channels, prune_channel_data_file, retrieve_ids, sanitize_source
@@ -594,6 +596,17 @@ class Video:
         self._unshortened_links: list[str] = []
         self._scrape()
 
+    def _parse_linktree(self) -> list[str]:
+        links = []
+        for link in self.links:
+            if Linktree.is_linktree_url(link):
+                new_links = [l for l in Linktree(link).data.links if l not in self.links]
+                _log.info(f"Parsed {len(new_links)} new link(s) from: {link!r}")
+                links.extend(new_links)
+            else:
+                links.append(link)
+        return links
+
     @timed("gathering video data")
     def _scrape(self):
         self._get_pytube_data()
@@ -601,6 +614,7 @@ class Video:
         self._derived_format = self._derive_format()
         self._derived_name = self._derive_name()
         self._links, self._arena_lines = self._parse_lines(*self._desc_lines)
+        self._links = self._parse_linktree()
         self._decks = self._collect(self._links, self._arena_lines)
         if not self._decks:  # try with the most popular comment
             comment_lines = self._get_comment_lines()

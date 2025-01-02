@@ -13,7 +13,8 @@ from datetime import datetime
 from mtg import Json
 from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
 from mtg.scryfall import Card
-from mtg.utils.scrape import ScrapingError, get_selenium_json, strip_url_params
+from mtg.utils.scrape import ScrapingError, strip_url_params
+from mtg.utils.scrape.dynamic import get_selenium_json
 
 _log = logging.getLogger(__name__)
 

@@ -15,9 +15,10 @@ from selenium.common.exceptions import TimeoutException
 from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
-from mtg.utils.scrape import get_dynamic_soup, getsoup, strip_url_params
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.utils.scrape import ScrapingError
+from mtg.utils.scrape import strip_url_params
+from mtg.utils.scrape.dynamic import get_dynamic_soup
 
 _log = logging.getLogger(__name__)
 

@@ -22,10 +22,10 @@ from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser, PlaysetLine
 from mtg.deck.scrapers import DeckScraper
-from mtg.utils.scrape import SELENIUM_TIMEOUT, click_for_clipboard, strip_url_params
-from mtg.utils import get_date_from_ago_text, extract_float
 from mtg.scryfall import COMMANDER_FORMATS
-from mtg.utils.scrape import ScrapingError
+from mtg.utils import extract_float, get_date_from_ago_text
+from mtg.utils.scrape import ScrapingError, strip_url_params
+from mtg.utils.scrape.dynamic import SELENIUM_TIMEOUT, click_for_clipboard
 
 _log = logging.getLogger(__name__)
 
