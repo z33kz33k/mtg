@@ -616,7 +616,7 @@ class Video:
         self._links, self._arena_lines = self._parse_lines(*self._desc_lines)
         self._links = self._parse_linktree()
         self._decks = self._collect(self._links, self._arena_lines)
-        if not self._decks:  # try with the most popular comment
+        if not self._decks:  # try with author's comment
             comment_lines = self._get_comment_lines()
             if comment_lines:
                 links, arena_lines = self._parse_lines(*comment_lines)

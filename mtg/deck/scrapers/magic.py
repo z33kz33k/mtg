@@ -12,11 +12,15 @@
 import logging
 
 import dateutil.parser
-from bs4 import Comment, NavigableString
+from bs4 import BeautifulSoup, Comment, NavigableString, Tag
 
+from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import TagBasedDeckParser
+from mtg.deck.scrapers import DeckScraper, TagBasedDeckParser
+from mtg.utils import from_iterable, sanitize_whitespace
+from mtg.utils.scrape import ScrapingError
+from mtg.utils.scrape.dynamic import get_dynamic_soup
 
 _log = logging.getLogger(__name__)
 
@@ -62,18 +66,29 @@ class MagicGgNewDeckTagParser(TagBasedDeckParser):
 class MagicGgOldDeckTagParser(TagBasedDeckParser):
     """Parser of Magic.gg (old-type) decklist HTML tag.
     """
-    # TODO: parse event name higher up the abstraction order (from <title> tag)
     def _parse_metadata(self) -> None:  # override
         author = self._deck_tag.select_one("div.css-2vNWs > span.css-3LH7E").text.strip()
         self._metadata["author"] = author
         subtitle = self._deck_tag.find(
             "span", class_=lambda c: c and all(
                 t in c for t in ("css-2vNWs", "css-ausnN", "css-1dxey"))).text.strip()
+        subtitle = sanitize_whitespace(subtitle)
         self._metadata["name"] = f"{subtitle} ({author})"
 
-        fmt_tag, date_tag, *_ = self._deck_tag.select("div.css-1AJSc > span.css-3F_4f")
+        tags = [*self._deck_tag.select("div.css-1AJSc > span.css-3F_4f")]
+        event_tag = None
+        if len(tags) == 3:
+            fmt_tag, date_tag, _ = tags
+        elif len(tags) == 4:
+            event_tag, fmt_tag, date_tag, _ = tags
+        else:
+            return
         self._update_fmt(fmt_tag.text.strip())
         self._metadata["date"] = dateutil.parser.parse(date_tag.text.strip()).date()
+        if event_tag is not None:
+            self._metadata["event"] = {
+                "name": event_tag.text.strip(),
+            }
 
     def _parse_decklist(self) -> None:  # override
         first_card_name = None
@@ -113,53 +128,51 @@ class MagicGgOldDeckTagParser(TagBasedDeckParser):
                     self._companion = cards[0]
 
 
-# @DeckScraper.registered
-# class MtgoDeckScraper(DeckScraper):
-#     """Scraper of MGTO event page that points to an individual deck.
-#     """
-#     def __init__(self, url: str, metadata: Json | None = None) -> None:
-#         super().__init__(url, metadata)
-#         self._json_data: Json | None = None
-#         self._player_name = self._parse_player_name()
-#         self._decks_data = []
-#         self._deck_parser: MtgoDeckJsonParser | None = None
-#
-#     @staticmethod
-#     def is_deck_url(url: str) -> bool:  # override
-#         return f"mtgo.com/decklist/" in url.lower() and "#deck_" in url.lower()
-#
-#     @staticmethod
-#     def sanitize_url(url: str) -> str:  # override
-#         return strip_url_params(url)
-#
-#     def _parse_player_name(self) -> str:
-#         *_, rest = self.url.split("/")
-#         _, rest = rest.split("#")
-#         return rest.removeprefix("deck_")
-#
-#     def _pre_parse(self) -> None:  # override
-#         self._soup = getsoup(self.url)
-#         if not self._soup:
-#             raise ScrapingError("Page not available")
-#         self._json_data = _get_json(self._soup)
-#         self._decks_data = _get_decks_data(self._json_data)
-#         deck_data = from_iterable(
-#             self._decks_data, lambda d: d["player"] == self._player_name)
-#         if not deck_data:
-#             raise ScrapingError(f"Deck designated by {self._player_name!r} not found")
-#         if rank_data := self._json_data.get("final_rank"):
-#             _process_ranks(rank_data, deck_data)
-#         self._metadata.update(_get_event_metadata(self._json_data))
-#         self._deck_parser = MtgoDeckJsonParser(deck_data, self._metadata)
-#
-#     def _parse_metadata(self) -> None:  # override
-#         pass
-#
-#     def _parse_decklist(self) -> None:  # override
-#         pass
-#
-#     def _build_deck(self) -> Deck:  # override
-#         return self._deck_parser.parse()
+def _get_event_name(soup: BeautifulSoup) -> str:
+    title = soup.select_one("head > title").text.strip()
+    if "Decklist" in title:
+        title, _ = title.split("Decklist", maxsplit=1)
+        return title.strip()
+    return title
+
+
+@DeckScraper.registered
+class MagicGgDeckScraper(DeckScraper):
+    """Scraper of Magic.gg event page that points to an individual deck.
+    """
+    _XPATH = '//div[@class="css-3X0PN"]'
+
+    def __init__(self, url: str, metadata: Json | None = None) -> None:
+        super().__init__(url, metadata)
+        self._decklist_id = self._parse_decklist_id()
+        self._deck_parser: MagicGgOldDeckTagParser | None = None
+
+    @staticmethod
+    def is_deck_url(url: str) -> bool:  # override
+        return f"magic.gg/decklists/" in url.lower() and "?decklist=" in url.lower()
+
+    def _parse_decklist_id(self) -> str:
+        *_, id_ = self.url.split("?decklist=")
+        return id_
+
+    def _pre_parse(self) -> None:  # override
+        self._soup, _, _ = get_dynamic_soup(self.url, self._XPATH)
+        if not self._soup:
+            raise ScrapingError("Page not available")
+        deck_tag = self._soup.find("div", id=self._decklist_id)
+        if deck_tag is None:
+            raise ScrapingError(f"Deck designated by {self._decklist_id!r} data not found")
+        self._metadata["event"] = {"name": _get_event_name(self._soup)}
+        self._deck_parser = MagicGgOldDeckTagParser(deck_tag, self._metadata)
+
+    def _parse_metadata(self) -> None:  # override
+        pass
+
+    def _parse_decklist(self) -> None:  # override
+        pass
+
+    def _build_deck(self) -> Deck:  # override
+        return self._deck_parser.parse()
 #
 #
 # @DecksJsonContainerScraper.registered
