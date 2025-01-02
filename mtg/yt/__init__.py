@@ -19,6 +19,7 @@ from datetime import datetime
 from decimal import Decimal
 from functools import cached_property
 from http.client import RemoteDisconnected
+from pathlib import Path
 from typing import Callable, Generator, Iterable
 
 import backoff
@@ -67,6 +68,7 @@ def back_up_channel_files(chid: str, *files: PathLike) -> None:
         backup_path = backup_root / timestamp /  f"{chid} ({next(counter)})"
     backup_dir = getdir(backup_path)
     for f in files:
+        f = Path(f)
         dst = backup_dir / f.name
         _log.info(f"Backing-up '{f}' to '{dst}'...")
         shutil.copy(f, dst)
@@ -91,11 +93,13 @@ def rescrape_missing_decklists() -> None:
     for path in [DecklistPath.from_path(p) for p in decklist_paths]:
         channels[path.channel_id].add(path.video_id)
 
+    if not channels:
+        _log.info("No videos found that needed re-scraping")
+        return
+
     for i, (channel_id, video_ids) in enumerate(channels.items(), start=1):
         _log.info(f"Re-scraping {i}/{len(channels)} channel for missing decklists data...")
         _process_videos(channel_id, *video_ids)
-    else:
-        _log.info("No videos found that needed re-scraping")
 
 
 def rescrape_videos(
@@ -117,11 +121,13 @@ def rescrape_videos(
         if vids:
             channels[chid].extend(vids)
 
+    if not channels:
+        _log.info("No videos found that needed re-scraping")
+        return
+
     for i, (channel_id, video_ids) in enumerate(channels.items(), start=1):
         _log.info(f"Re-scraping {len(video_ids)} video(s) of {i}/{len(channels)} channel...")
         _process_videos(channel_id, *video_ids)
-    else:
-        _log.info("No videos found that needed re-scraping")
 
 
 @http_requests_counted("channel videos scraping")

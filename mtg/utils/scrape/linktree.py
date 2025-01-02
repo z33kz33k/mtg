@@ -33,8 +33,10 @@ import logging
 from dataclasses import dataclass
 from datetime import UTC, datetime
 
+import backoff
+
 from mtg import Json
-from mtg.utils.scrape import getsoup, timed_request
+from mtg.utils.scrape import ScrapingError, getsoup, timed_request
 
 _log = logging.getLogger(__name__)
 
@@ -53,6 +55,13 @@ class LinktreeData:
 
 
 class Linktree:
+    HEADERS = {
+        "origin": "https://linktr.ee",
+        "referer": "https://linktr.ee",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, "
+                      "like Gecko) Chrome/91.0.4472.77 Safari/537.36"
+    }
+
     @property
     def url(self) -> str:
         return self._url
@@ -74,21 +83,20 @@ class Linktree:
     def is_linktree_url(url: str) -> bool:
         return "linktr.ee/" in url
 
+    @backoff.on_exception(backoff.expo, ScrapingError, max_time=60)
     def _get_json(self) -> Json:
-        soup = getsoup(self.url)
+        soup = getsoup(self.url, self.HEADERS)
+        if not soup:
+            raise ScrapingError("Page not available")
         user_info_tag = soup.find('script', id="__NEXT_DATA__")
+        if user_info_tag is None:
+            raise ScrapingError("Data not available")
         return json.loads(user_info_tag.contents[0])["props"]["pageProps"]
 
     def _uncensor_links(self, *link_ids : int) -> list[str]:
         if not link_ids:
             return []
 
-        headers = {
-            "origin": "https://linktr.ee",
-            "referer": "https://linktr.ee",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, "
-                          "like Gecko) Chrome/91.0.4472.77 Safari/537.36"
-        }
         data = {
             "accountId": self._account_id,
             "validationInput": {
@@ -100,7 +108,7 @@ class Linktree:
         }
         url = "https://linktr.ee/api/profiles/validation/gates"
         try:
-            resp = timed_request(url, postdata=data, headers=headers)
+            resp = timed_request(url, postdata=data, headers=self.HEADERS)
             return [link["url"] for link in resp.json()["links"]]
         except Exception as e:
             _log.warning(f"linktr.ee links uncensoring failed with: '{e}'")

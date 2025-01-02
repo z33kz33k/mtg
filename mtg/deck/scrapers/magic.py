@@ -26,13 +26,22 @@ from mtg.utils.scrape.dynamic import get_dynamic_soup
 _log = logging.getLogger(__name__)
 
 
+def _get_deck_name(author: str, subtitle: str) -> str:
+    if subtitle and author:
+        return f"{subtitle} ({author})"
+    if author:
+        return author
+    return subtitle
+
+
 class MagicGgNewDeckTagParser(TagBasedDeckParser):
     """Parser of Magic.gg (new-type) decklist HTML tag.
     """
     def _parse_metadata(self) -> None:  # override
         attrs = self._deck_tag.attrs
         self._metadata["author"] = attrs["deck-title"]
-        self._metadata["name"] = f"{attrs['subtitle']} ({attrs['deck-title']})"
+        if name := _get_deck_name(attrs["deck-title"], attrs["subtitle"]):
+            self._metadata["name"] = name
         self._update_fmt(attrs["format"])
         self._metadata["event"] = {
             "name": attrs["event-name"],
@@ -44,17 +53,21 @@ class MagicGgNewDeckTagParser(TagBasedDeckParser):
         lines = []
         # <commander-card> tag is only derived based on seen companion treatment
         if commander := self._deck_tag.find("commander-card"):
-            lines += ["Commander", "", *commander.text.splitlines()]
+            commander_text = commander.text.lstrip()
+            if commander_text:
+                lines += ["Commander", *commander_text.splitlines()]
         if companion := self._deck_tag.find("companion-card"):
-            if lines:
-                lines.append("")
-            lines += ["Companion", "", *companion.text.splitlines()]
+            companion_text = companion.text.lstrip()
+            if companion_text:
+                if lines:
+                    lines.append("")
+                lines += ["Companion", *companion_text.splitlines()]
         if lines:
             lines.append("")
-        lines += self._deck_tag.find("main-deck").text.splitlines()
+        lines += ["Deck", *self._deck_tag.find("main-deck").text.lstrip().splitlines()]
         lines += ["", "Sideboard"]
         if sideboard := self._deck_tag.find("side-board"):
-            lines += sideboard.text.splitlines()
+            lines += sideboard.text.lstrip().splitlines()
         return lines
 
     def _parse_decklist(self) -> None:  # override
@@ -74,7 +87,8 @@ class MagicGgOldDeckTagParser(TagBasedDeckParser):
             "span", class_=lambda c: c and all(
                 t in c for t in ("css-2vNWs", "css-ausnN", "css-1dxey"))).text.strip()
         subtitle = sanitize_whitespace(subtitle)
-        self._metadata["name"] = f"{subtitle} ({author})"
+        if name := _get_deck_name(author, subtitle):
+            self._metadata["name"] = name
 
         tags = [*self._deck_tag.select("div.css-1AJSc > span.css-3F_4f")]
         event_tag = None
@@ -218,5 +232,7 @@ class MagicGgEventScraper(DeckTagsContainerScraper):
                 _log.warning(self._error_msg)
                 return []
             self._metadata["event"] = {"name": _get_event_name(self._soup)}
+        else:
+            self.__class__._DECK_PARSER = MagicGgNewDeckTagParser
 
         return deck_tags
