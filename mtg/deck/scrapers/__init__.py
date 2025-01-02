@@ -152,7 +152,6 @@ class TagBasedDeckParser(DeckParser):
         raise NotImplementedError
 
 
-# TODO: use this abstraction in deck scrapers that process JSON
 class JsonBasedDeckParser(DeckParser):
     """Abstract JSON data based deck parser.
 

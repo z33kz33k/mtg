@@ -56,6 +56,7 @@ def sanitize_source(src: str) -> str:
     return src
 
 
+# TODO: formalize video data structure (#231)
 @dataclass
 class ChannelData:
     id: str

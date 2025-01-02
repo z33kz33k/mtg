@@ -11,6 +11,7 @@ import itertools
 import json
 import logging
 import re
+import shutil
 import urllib.error
 from collections import defaultdict
 from dataclasses import asdict
@@ -18,12 +19,13 @@ from datetime import datetime
 from decimal import Decimal
 from functools import cached_property
 from http.client import RemoteDisconnected
-from typing import Generator, Iterable
+from typing import Callable, Generator, Iterable
 
 import backoff
 import httpcore
 import httpx
 import pytubefix
+import pytubefix.exceptions
 import scrapetube
 from requests import HTTPError, ReadTimeout, Timeout
 from selenium.common.exceptions import TimeoutException
@@ -53,6 +55,30 @@ DEAD_THRESHOLD = 2500  # days (ca. 7 yrs) - only used in gsheet to trim dead fro
 MAX_VIDEOS = 400
 
 
+def back_up_channel_files(chid: str, *files: PathLike) -> None:
+    now = datetime.now()
+    timestamp = f"{now.year}{now.month:02}{now.day:02}"
+    backup_root = getdir(OUTPUT_DIR / "_archive" / "channels")
+    backup_path, counter = backup_root / timestamp / chid, itertools.count(1)
+    while backup_path.exists():
+        backup_path = backup_root / timestamp /  f"{chid} ({next(counter)})"
+    backup_dir = getdir(backup_path)
+    for f in files:
+        dst = backup_dir / f.name
+        _log.info(f"Backing-up '{f}' to '{dst}'...")
+        shutil.copy(f, dst)
+
+
+def _process_videos(channel_id: str, *video_ids: str) -> None:
+    files = find_channel_files(channel_id, *video_ids)
+    if not files:
+        return
+    back_up_channel_files(channel_id, *files)
+    if scrape_channel_videos(channel_id, *video_ids):
+        for f in files:
+            prune_channel_data_file(f, *video_ids)
+
+
 def rescrape_missing_decklists() -> None:
     """Re-scrape those YT videos that contain decklists that are missing from global decklists
     repositories.
@@ -64,10 +90,33 @@ def rescrape_missing_decklists() -> None:
 
     for i, (channel_id, video_ids) in enumerate(channels.items(), start=1):
         _log.info(f"Re-scraping {i}/{len(channels)} channel for missing decklists data...")
-        files = find_channel_files(channel_id, *video_ids)
-        if scrape_channel_videos(channel_id, *video_ids):
-            for f in files:
-                prune_channel_data_file(f, *video_ids)
+        _process_videos(channel_id, *video_ids)
+    else:
+        _log.info("No videos found that needed re-scraping")
+
+
+def rescrape_videos(
+        *chids: str, video_filter: Callable[[dict], bool] = lambda _: True) -> None:
+    """Re-scrape videos across all specified channels. Optionally, define a video-filtering
+    predicate.
+
+    The default for scraping is all known channels and all their videos.
+
+    Args:
+        *chids: channel IDs
+        video_filter: video-filtering predicate
+    """
+    chids = chids or retrieve_ids()
+    channels = defaultdict(list)
+    for chid in chids:
+        ch = load_channel(chid)
+        vids = [v["id"] for v in ch.videos if video_filter(v)]
+        if vids:
+            channels[chid].extend(vids)
+
+    for i, (channel_id, video_ids) in enumerate(channels.items(), start=1):
+        _log.info(f"Re-scraping {len(video_ids)} video(s) of {i}/{len(channels)} channel...")
+        _process_videos(channel_id, *video_ids)
     else:
         _log.info("No videos found that needed re-scraping")
 
@@ -75,7 +124,10 @@ def rescrape_missing_decklists() -> None:
 @http_requests_counted("channel videos scraping")
 @timed("channel videos scraping", precision=1)
 def scrape_channel_videos(channel_id: str, *video_ids: str) -> bool:
-    """Scrape specified videos of a YouTube channel. Save the scraped data as .json files.
+    """Scrape specified videos of a YouTube channel in a session.
+
+    Scraped channel's data is saved in a .json file and session ensures decklists are saved
+    in global decklists repositories.
 
     Args:
         channel_id: ID of a channel to scrape
@@ -109,27 +161,29 @@ def scrape_channel_videos(channel_id: str, *video_ids: str) -> bool:
 @http_requests_counted("channels scraping")
 @timed("channels scraping", precision=1)
 def scrape_channels(
-        *ids: str,
+        *chids: str,
         videos=25,
         only_earlier_than_last_scraped=True) -> None:
-    """Scrape YouTube channels specified in private Google Sheet. Save the scraped data as .json
-    files.
+    """Scrape YouTube channels as specified in a session.
+
+    Each scraped channel's data is saved in a .json file and session ensures decklists are saved
+    in global decklists repositories.
 
     Args:
-        ids: IDs of channels to scrape
+        chids: IDs of channels to scrape
         videos: number of videos to scrape per channel
         only_earlier_than_last_scraped: if True, only scrape videos earlier than the last one scraped
     """
     with ScrapingSession() as session:
         current_videos, total_videos = 0, 0
         total_channels, total_decks = 0, 0
-        for i, id_ in enumerate(ids, start=1):
+        for i, id_ in enumerate(chids, start=1):
             try:
                 ch = Channel(
                     id_, *session.get_failed(id_),
                     only_earlier_than_last_scraped=only_earlier_than_last_scraped)
                 text = Channel.get_url_and_title(ch.id, ch.title)
-                _log.info(f"Scraping channel {i}/{len(ids)}: {text}...")
+                _log.info(f"Scraping channel {i}/{len(chids)}: {text}...")
                 ch.scrape(videos)
                 session.update_failed(ch.id, *ch.already_failed_deck_urls)
                 if ch.data:
@@ -156,8 +210,8 @@ def scrape_channels(
 
 def scrape_fresh(
         videos=25, only_earlier_than_last_scraped=True, only_deck_fresh=True) -> None:
-    """Scrape these YouTube channels specified in private Google Sheet that are not active,
-    dormant nor abandoned. Save the scraped data as .json files.
+    """Scrape those YouTube channels saved in a private Google Sheet that are not active,
+    dormant nor abandoned.
     """
     ids = []
     for id_ in retrieve_ids():
@@ -179,8 +233,7 @@ def scrape_fresh(
 
 def scrape_active(
         videos=25, only_earlier_than_last_scraped=True, only_deck_fresh=True) -> None:
-    """Scrape these YouTube channels specified in private Google Sheet that are active. Save
-    the scraped data as .json files.
+    """Scrape those YouTube channels saved in a private Google Sheet that are active.
     """
     ids = []
     for id_ in retrieve_ids():
@@ -200,8 +253,7 @@ def scrape_active(
 
 def scrape_dormant(
         videos=25, only_earlier_than_last_scraped=True, only_deck_fresh=True) -> None:
-    """Scrape these YouTube channels specified in private Google Sheet that are dormant. Save
-    the scraped data as .json files.
+    """Scrape those YouTube channels saved in a private Google Sheet that are dormant.
     """
     ids = []
     for id_ in retrieve_ids():
@@ -221,8 +273,7 @@ def scrape_dormant(
 
 def scrape_abandoned(
         videos=25, only_earlier_than_last_scraped=True, only_deck_fresh=True) -> None:
-    """Scrape these YouTube channels specified in private Google Sheet that are abandoned. Save
-    the scraped data as .json files.
+    """Scrape those YouTube channels saved in a private Google Sheet that are abandoned.
     """
     ids = []
     for id_ in retrieve_ids():
@@ -242,8 +293,8 @@ def scrape_abandoned(
 
 def scrape_deck_stale(
         videos=25, only_earlier_than_last_scraped=True, only_fresh_or_active=True) -> None:
-    """Scrape these YouTube channels specified in private Google Sheet that are considered
-    deck-stale. Save the scraped data as .json files.
+    """Scrape those YouTube channels saved in a private Google Sheet that are considered
+    deck-stale.
     """
     ids = []
     for id_ in retrieve_ids():
@@ -263,8 +314,8 @@ def scrape_deck_stale(
 
 def scrape_very_deck_stale(
         videos=25, only_earlier_than_last_scraped=True, only_fresh_or_active=True) -> None:
-    """Scrape these YouTube channels specified in private Google Sheet that are considered
-    very deck-stale. Save the scraped data as .json files.
+    """Scrape those YouTube channels saved in a private Google Sheet that are considered
+    very deck-stale.
     """
     ids = []
     for id_ in retrieve_ids():
@@ -284,8 +335,8 @@ def scrape_very_deck_stale(
 
 def scrape_excessively_deck_stale(
         videos=25, only_earlier_than_last_scraped=True, only_fresh_or_active=True) -> None:
-    """Scrape these YouTube channels specified in private Google Sheet that are considered
-    excessively deck-stale. Save the scraped data as .json files.
+    """Scrape those YouTube channels saved in a private Google Sheet that are considered
+    excessively deck-stale.
     """
     ids = []
     for id_ in retrieve_ids():
@@ -917,7 +968,11 @@ class Channel:
         for i, vid in enumerate(video_ids, start=1):
             _log.info(
                 f"Scraping video {i}/{len(video_ids)}: 'https://www.youtube.com/watch?v={vid}'...")
-            video = Video(vid, self._already_scraped_deck_urls, self.already_failed_deck_urls)
+            try:
+                video = Video(vid, self._already_scraped_deck_urls, self.already_failed_deck_urls)
+            except pytubefix.exceptions.VideoPrivate:
+                _log.warning(f"Skipping private video: 'https://www.youtube.com/watch?v={vid}'...")
+                continue
             self._videos.append(video)
             self._already_scraped_deck_urls.update({d.url for d in video.decks if d.url})
             self._already_failed_deck_urls.update(video.failed_deck_urls)
