@@ -752,10 +752,14 @@ class Video:
 
     def _process_deck(self, link: str) -> Deck | None:
         if scraper := DeckScraper.from_url(link, self.metadata):
-            if deck := scraper.scrape(throttled=any(site in link for site in self._THROTTLED)):
-                return deck
-            self._already_failed_deck_urls.add(link.lower().removesuffix("/"))
-            self._failed_deck_urls.add(link.lower().removesuffix("/"))
+            try:
+                if deck := scraper.scrape(throttled=any(site in link for site in self._THROTTLED)):
+                    return deck
+                self._already_failed_deck_urls.add(link.lower().removesuffix("/"))
+                self._failed_deck_urls.add(link.lower().removesuffix("/"))
+            except ReadTimeout:
+                _log.warning(f"Back-offed scraping of {link!r} failed with read timeout")
+                return None
 
         elif any(h in link for h in self.PASTEBIN_LIKE_HOOKS):
             if "gist.github.com/" in link and not link.endswith("/raw"):

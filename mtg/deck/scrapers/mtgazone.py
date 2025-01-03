@@ -14,8 +14,7 @@ from typing import Iterable
 
 import backoff
 from bs4 import Tag
-from requests import HTTPError, ConnectionError, ReadTimeout
-from urllib3 import HTTPSConnectionPool
+from requests import ConnectionError, HTTPError, ReadTimeout
 
 from mtg import Json
 from mtg.deck import Deck, Mode
@@ -201,7 +200,7 @@ class MtgaZoneAuthorScraper(DeckUrlsContainerScraper):
     # override
     @timed("container scraping", precision=2)
     @backoff.on_exception(
-        backoff.expo, (ConnectionError, HTTPError, ReadTimeout, HTTPSConnectionPool), max_time=60)
+        backoff.expo, (ConnectionError, HTTPError, ReadTimeout), max_time=60)
     def scrape(
             self, already_scraped_deck_urls: Iterable[str] = (),
             already_failed_deck_urls: Iterable[str] = ()) -> tuple[list[Deck], set[str]]:

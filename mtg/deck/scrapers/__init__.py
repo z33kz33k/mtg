@@ -15,7 +15,6 @@ import backoff
 from bs4 import BeautifulSoup, Tag
 from requests import ConnectionError, HTTPError, ReadTimeout
 from selenium.common.exceptions import ElementClickInterceptedException
-from urllib3 import HTTPSConnectionPool
 
 from mtg import Json
 from mtg.deck import Deck, DeckParser, InvalidDeck
@@ -82,7 +81,7 @@ class DeckScraper(DeckParser):
         )
 
     @backoff.on_exception(
-        backoff.expo, (ConnectionError, HTTPError, ReadTimeout, HTTPSConnectionPool), max_time=60)
+        backoff.expo, (ConnectionError, HTTPError, ReadTimeout), max_time=60)
     def scrape(
             self, throttled=False, suppress_parsing_errors=True, suppress_scraping_errors=True,
             suppress_invalid_deck=True) -> Deck | None:
@@ -277,7 +276,7 @@ class DeckUrlsContainerScraper(ContainerScraper):
 
     @timed("container scraping", precision=2)
     @backoff.on_exception(
-        backoff.expo, (ConnectionError, HTTPError, ReadTimeout, HTTPSConnectionPool), max_time=60)
+        backoff.expo, (ConnectionError, HTTPError, ReadTimeout), max_time=60)
     def scrape(
             self, already_scraped_deck_urls: Iterable[str] = (),
             already_failed_deck_urls: Iterable[str] = ()) -> tuple[list[Deck], set[str]]:
@@ -332,7 +331,7 @@ class DeckTagsContainerScraper(ContainerScraper):
 
     @timed("container scraping", precision=2)
     @backoff.on_exception(
-        backoff.expo, (ConnectionError, HTTPError, ReadTimeout, HTTPSConnectionPool), max_time=60)
+        backoff.expo, (ConnectionError, HTTPError, ReadTimeout), max_time=60)
     def scrape(self) -> list[Deck]:
         self._deck_tags = self._collect()
         _log.info(
