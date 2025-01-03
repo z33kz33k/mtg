@@ -186,12 +186,21 @@ class ContainerScraper(ABC):
     def url(self) -> str:
         return self._url
 
+    @classmethod
+    def short_name(cls) -> str:
+        if not cls.CONTAINER_NAME:
+            return ""
+        try:
+            *_, name = cls.CONTAINER_NAME.split()
+            return name
+        except ValueError:
+            return cls.CONTAINER_NAME
+
     @property
     def _error_msg(self) -> str:
         if not self.CONTAINER_NAME:
             return "Data not available"
-        *_, name = self.CONTAINER_NAME.split()
-        return f"{name.title()} data not available"
+        return f"{self.short_name().title()} data not available"
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         url = url.removesuffix("/")
@@ -212,6 +221,10 @@ class ContainerScraper(ABC):
     @staticmethod
     def sanitize_url(url: str) -> str:
         return url.removesuffix("/")
+
+    @abstractmethod
+    def scrape(self) -> list[Deck]:
+        raise NotImplementedError
 
 
 class DeckUrlsContainerScraper(ContainerScraper):
@@ -274,6 +287,7 @@ class DeckUrlsContainerScraper(ContainerScraper):
 
         return decks, failed_deck_urls
 
+    # override
     @timed("container scraping", precision=2)
     @backoff.on_exception(
         backoff.expo, (ConnectionError, HTTPError, ReadTimeout), max_time=60)
@@ -310,7 +324,6 @@ class DeckUrlsContainerScraper(ContainerScraper):
 class DeckTagsContainerScraper(ContainerScraper):
     """Abstract scraper of deck-HTML-tags-containing pages.
     """
-    CONTAINER_NAME = None
     _REGISTRY: set[Type["DeckTagsContainerScraper"]] = set()
     _DECK_PARSER: Type[TagBasedDeckParser] | None = None
 
@@ -329,6 +342,7 @@ class DeckTagsContainerScraper(ContainerScraper):
     def _collect(self) -> list[Tag]:
         raise NotImplementedError
 
+    # override
     @timed("container scraping", precision=2)
     @backoff.on_exception(
         backoff.expo, (ConnectionError, HTTPError, ReadTimeout), max_time=60)
@@ -392,6 +406,7 @@ class DecksJsonContainerScraper(ContainerScraper):
     def _collect(self) -> list[Json]:
         raise NotImplementedError
 
+    # override
     @timed("container scraping", precision=2)
     @backoff.on_exception(
         backoff.expo, (ConnectionError, HTTPError, ReadTimeout), max_time=60)
@@ -423,6 +438,91 @@ class DecksJsonContainerScraper(ContainerScraper):
     @classmethod
     def from_url(
             cls, url: str, metadata: Json | None = None) -> Optional["DecksJsonContainerScraper"]:
+        for scraper_type in cls._REGISTRY:
+            if scraper_type.is_container_url(url):
+                return scraper_type(url, metadata)
+        return None
+
+
+class HybridContainerScraper(DeckUrlsContainerScraper):
+    """Abstract scraper of both deck and deck container URLs.
+
+    This scraper acts as regular scraper of deck URLs containing pages, insofar as it encounters
+    only deck URLs within the scraped page. However, on encountering a link leading to another
+    decks containing page, it dispatches work to another ContainerScraper. Therefore, it's both
+    hybrid and nested.
+    """
+    _REGISTRY: set[Type["HybridContainerScraper"]] = set()  # override
+    _CONTAINER_SCRAPER: Type[ContainerScraper] | None = None
+
+    def __init__(self, url: str, metadata: Json | None = None) -> None:
+        super().__init__(url, metadata)
+        self._container_urls = []
+
+    @staticmethod
+    @abstractmethod
+    def is_container_url(url: str) -> bool:
+        raise NotImplementedError
+
+    @abstractmethod
+    def _collect(self) -> tuple[list[str], list[str]]:  # override
+        raise NotImplementedError
+
+    # override
+    @timed("nested container scraping", precision=2)
+    @backoff.on_exception(
+        backoff.expo, (ConnectionError, HTTPError, ReadTimeout), max_time=60)
+    def scrape(
+            self, already_scraped_deck_urls: Iterable[str] = (),
+            already_failed_deck_urls: Iterable[str] = ()) -> tuple[list[Deck], set[str]]:
+        decks, failed_deck_urls = [], set()
+        self._deck_urls, self._container_urls = self._collect()
+        if self._deck_urls:
+            _log.info(
+                f"Gathered {len(self._deck_urls)} deck URL(s) from a {self.CONTAINER_NAME} at:"
+                f" {self.url!r}")
+            scraped_decks, scraped_failed = self._process_deck_urls(
+                already_scraped_deck_urls, already_failed_deck_urls)
+            decks.extend(scraped_decks)
+            failed_deck_urls.update(scraped_failed)
+        if self._container_urls:
+            already_scraped_deck_urls = {
+                url.removesuffix("/").lower() for url in already_scraped_deck_urls}
+            _log.info(
+                f"Gathered {len(self._container_urls)} {self._CONTAINER_SCRAPER.short_name()} "
+                f"URL(s) from a {self.CONTAINER_NAME} at: {self.url!r}")
+            for i, url in enumerate(self._container_urls, start=1):
+                sanitized_url = self._CONTAINER_SCRAPER.sanitize_url(url)
+                if sanitized_url.lower() in already_scraped_deck_urls:
+                    _log.info(f"Skipping already scraped article URL: {sanitized_url!r}...")
+                elif sanitized_url.lower() in already_failed_deck_urls:
+                    _log.info(f"Skipping already failed article URL: {sanitized_url!r}...")
+                else:
+                    _log.info(f"Scraping article {i}/{len(self._container_urls)}...")
+                    article_decks = self._CONTAINER_SCRAPER(url, dict(self._metadata)).scrape()
+                    if not article_decks:
+                        failed_deck_urls.add(sanitized_url.lower())
+                    else:
+                        decks += [d for d in article_decks if d not in decks]
+        return decks, failed_deck_urls
+
+    # override
+    @classmethod
+    def registered(
+            cls,
+            scraper_type: Type["HybridContainerScraper"]) -> Type["HybridContainerScraper"]:
+        """Class decorator for registering subclasses of HybridContainerScraper.
+        """
+        if issubclass(scraper_type, HybridContainerScraper):
+            cls._REGISTRY.add(scraper_type)
+        else:
+            raise TypeError(f"Not a subclass of HybridContainerScraper: {scraper_type!r}")
+        return scraper_type
+
+    # override
+    @classmethod
+    def from_url(
+            cls, url: str, metadata: Json | None = None) -> Optional["HybridContainerScraper"]:
         for scraper_type in cls._REGISTRY:
             if scraper_type.is_container_url(url):
                 return scraper_type(url, metadata)

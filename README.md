@@ -127,12 +127,12 @@ descriptions).
 | No | Format | Count | Percentage |
 |:---|:-----|------:|-----------:|
 | 1  | commander       | 17679 |    28.85 % |
-| 2  | standard        | 15554 |    25.38 % |
+| 2  | standard        | 15556 |    25.38 % |
 | 3  | modern          |  5162 |     8.42 % |
 | 4  | pauper          |  4906 |     8.01 % |
 | 5  | pioneer         |  3719 |     6.07 % |
 | 6  | legacy          |  2721 |     4.44 % |
-| 7  | historic        |  1613 |     2.63 % |
+| 7  | historic        |  1617 |     2.64 % |
 | 8  | brawl           |  1544 |     2.52 % |
 | 9  | explorer        |  1439 |     2.35 % |
 | 10 | timeless        |  1270 |     2.07 % |
@@ -149,7 +149,7 @@ descriptions).
 | 21 | oathbreaker     |    73 |     0.12 % |
 | 22 | oldschool       |    20 |     0.03 % |
 | 23 | future          |    15 |     0.02 % |
-|  | TOTAL           | 61277 | 100.00 %|
+|  | TOTAL           | 61283 | 100.00 %|
 
 | No | Source | Count | Percentage |
 |:---|:-----|------:|-----------:|
@@ -169,7 +169,7 @@ descriptions).
 | 14 | tcgplayer.com          |   927 |     1.51 % |
 | 15 | mtg.cardsrealm.com     |   684 |     1.12 % |
 | 16 | deckstats.net          |   509 |     0.83 % |
-| 17 | mtgazone.com           |   391 |     0.64 % |
+| 17 | mtgazone.com           |   397 |     0.65 % |
 | 18 | hareruyamtg.com        |   292 |     0.48 % |
 | 19 | pennydreadfulmagic.com |   249 |     0.41 % |
 | 20 | scryfall.com           |   199 |     0.32 % |
@@ -187,4 +187,4 @@ descriptions).
 | 32 | cardhoarder.com        |    20 |     0.03 % |
 | 33 | app.cardboard.live     |    14 |     0.02 % |
 | 34 | mtgotraders.com        |     1 |     0.00 % |
-|  | TOTAL                  | 61277 | 100.00 %|
+|  | TOTAL                  | 61283 | 100.00 %|
