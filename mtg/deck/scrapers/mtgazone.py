@@ -15,7 +15,7 @@ from bs4 import Tag
 
 from mtg import Json
 from mtg.deck import Deck, Mode
-from mtg.deck.scrapers import DeckScraper
+from mtg.deck.scrapers import DeckScraper, TagBasedDeckParser
 from mtg.scryfall import ARENA_FORMATS, Card
 from mtg.utils import extract_int, from_iterable, timed
 from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
@@ -26,35 +26,11 @@ _log = logging.getLogger(__name__)
 # alternative approach would be to scrape:
 # self._soup.find("input", {"type": "hidden", "name": "c"}).attrs["value"].split("||")
 # but it has a downside of not having clear sideboard-maindeck separation
-@DeckScraper.registered
-class MtgaZoneDeckScraper(DeckScraper):
-    """Scraper of MTG Arena Zone decklist page.
-
-    TODO: refactor this, make user decks scraping into a separate ContainerScraper
-    This scraper can be used both to scrape individual MTGAZone deck pages and to scrape
-    decklist blocks that are aggregated on thematic (e.g. meta, post-rotation, guide) sites. In
-    the latter case a deck block Tag object should be provided - a URL is not needed so an empty
-    string should be passed instead.
+class MtgaZoneDeckTagParser(TagBasedDeckParser):
+    """Parser of a MTGAZone decklist HTML tag.
     """
-    def __init__(self, url: str, metadata: Json | None = None, deck_tag: Tag | None = None) -> None:
-        super().__init__(url, metadata)
-        self._deck_tag = deck_tag
-
-    @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
-        return "mtgazone.com/user-decks/" in url.lower() or "mtgazone.com/deck/" in url.lower()
-
-    @staticmethod
-    def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url, keep_endpoint=False, keep_fragment=False)
-
-    def _pre_parse(self) -> None:  # override
-        self._soup = self._deck_tag or getsoup(self.url)
-        if not self._soup:
-            raise ScrapingError("Soup not available")
-
     def _parse_metadata(self) -> None:  # override
-        name_author_tag = self._soup.find("div", class_="name-container")
+        name_author_tag = self._deck_tag.find("div", class_="name-container")
         if not name_author_tag:
             raise ScrapingError(
                 "Name tag not found. The deck you're trying to scrape has been most probably "
@@ -75,14 +51,14 @@ class MtgaZoneDeckScraper(DeckScraper):
         self._metadata["author"] = author
         if event:
             self._metadata["event"] = event
-        fmt_tag = self._soup.find("div", class_="format")
+        fmt_tag = self._deck_tag.find("div", class_="format")
         if not fmt_tag:
             raise ScrapingError(
                 "Format tag not found. The deck you're trying to scrape has been most probably "
                 "paywalled by MTGAZone")
         fmt = fmt_tag.text.strip().lower()
         self._update_fmt(fmt)
-        if time_tag := self._soup.find("time", class_="ct-meta-element-date"):
+        if time_tag := self._deck_tag.find("time", class_="ct-meta-element-date"):
             self._metadata["date"] = datetime.fromisoformat(time_tag.attrs["datetime"]).date()
 
     @classmethod
@@ -102,20 +78,55 @@ class MtgaZoneDeckScraper(DeckScraper):
         return decklist
 
     def _parse_decklist(self) -> None:  # override
-        if commander_tag := self._soup.select_one("div.decklist.short.commander"):
+        if commander_tag := self._deck_tag.select_one("div.decklist.short.commander"):
             for card in self._process_decklist(commander_tag):
                 self._set_commander(card)
 
-        if companion_tag := self._soup.select_one("div.decklist.short.companion"):
+        if companion_tag := self._deck_tag.select_one("div.decklist.short.companion"):
             self._companion = self._process_decklist(companion_tag)[0]
 
-        main_tag = self._soup.select_one("div.decklist.main")
+        main_tag = self._deck_tag.select_one("div.decklist.main")
         self._maindeck = self._process_decklist(main_tag)
 
-        if sideboard_tags := self._soup.select("div.decklist.sideboard"):
+        if sideboard_tags := self._deck_tag.select("div.decklist.sideboard"):
             with contextlib.suppress(IndexError):
                 sideboard_tag = sideboard_tags[1]
                 self._sideboard = self._process_decklist(sideboard_tag)
+
+
+@DeckScraper.registered
+class MtgaZoneDeckScraper(DeckScraper):
+    """Scraper of MTG Arena Zone decklist page.
+    """
+    def __init__(self, url: str, metadata: Json | None = None) -> None:
+        super().__init__(url, metadata)
+        self._deck_parser: MtgaZoneDeckTagParser | None = None
+
+    @staticmethod
+    def is_deck_url(url: str) -> bool:  # override
+        return "mtgazone.com/user-decks/" in url.lower() or "mtgazone.com/deck/" in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url, keep_endpoint=False, keep_fragment=False)
+
+    def _pre_parse(self) -> None:  # override
+        self._soup = getsoup(self.url)
+        if not self._soup:
+            raise ScrapingError("Page not available")
+        deck_tag = self._soup.find("div", class_="deck-block")
+        if deck_tag is None:
+            raise ScrapingError("Deck data not found")
+        self._deck_parser = MtgaZoneDeckTagParser(deck_tag, self._metadata)
+
+    def _parse_metadata(self) -> None:  # override
+        pass
+
+    def _parse_decklist(self) -> None:  # override
+        pass
+
+    def _build_deck(self) -> Deck:  # override
+        return self._deck_parser.parse()
 
 
 def _parse_tiers(table: Tag) -> dict[str, int]:
@@ -129,7 +140,7 @@ def _parse_tiers(table: Tag) -> dict[str, int]:
 
 
 def _parse_meta_deck(deck_tag: Tag, decks2tiers: dict[str, int], deck_place: int) -> Deck:
-    deck = MtgaZoneDeckScraper("", deck_tag=deck_tag).scrape(suppress_invalid_deck=False)
+    deck = MtgaZoneDeckTagParser(deck_tag).parse(suppress_invalid_deck=False)
     meta = {
         "meta": {
             "place": deck_place
