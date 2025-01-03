@@ -99,7 +99,8 @@ class MagicGgOldDeckTagParser(TagBasedDeckParser):
         else:
             return
         self._update_fmt(fmt_tag.text.strip())
-        self._metadata["date"] = dateutil.parser.parse(date_tag.text.strip()).date()
+        date_text = date_tag.text.strip().replace("_", "/")
+        self._metadata["date"] = dateutil.parser.parse(date_text).date()
         if event_tag is not None:
             self._metadata["event"] = {
                 "name": event_tag.text.strip(),

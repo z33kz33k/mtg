@@ -36,7 +36,7 @@ from datetime import UTC, datetime
 import backoff
 
 from mtg import Json
-from mtg.utils.scrape import ScrapingError, getsoup, timed_request
+from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params, timed_request
 
 _log = logging.getLogger(__name__)
 
@@ -73,7 +73,7 @@ class Linktree:
     def __init__(self, url: str) -> None:
         if not self.is_linktree_url(url):
             raise ValueError(f"Not a linktr.ee URL: {url!r}")
-        self._url = url.removesuffix("/")
+        self._url = strip_url_params(url, keep_fragment=False)
         self._json_data = self._get_json()
         self._account_id = self._json_data["account"]["id"]
         self._links = self._get_links()
