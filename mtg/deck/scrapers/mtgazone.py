@@ -15,7 +15,7 @@ from bs4 import Tag
 
 from mtg import Json
 from mtg.deck import Deck, Mode
-from mtg.deck.scrapers import DeckScraper, TagBasedDeckParser
+from mtg.deck.scrapers import DeckScraper, DeckTagsContainerScraper, TagBasedDeckParser
 from mtg.scryfall import ARENA_FORMATS, Card
 from mtg.utils import extract_int, from_iterable, timed
 from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
@@ -27,7 +27,7 @@ _log = logging.getLogger(__name__)
 # self._soup.find("input", {"type": "hidden", "name": "c"}).attrs["value"].split("||")
 # but it has a downside of not having clear sideboard-maindeck separation
 class MtgaZoneDeckTagParser(TagBasedDeckParser):
-    """Parser of a MTGAZone decklist HTML tag.
+    """Parser of a MTG Arena Zone decklist HTML tag.
     """
     def _parse_metadata(self) -> None:  # override
         name_author_tag = self._deck_tag.find("div", class_="name-container")
@@ -116,7 +116,7 @@ class MtgaZoneDeckScraper(DeckScraper):
             raise ScrapingError("Page not available")
         deck_tag = self._soup.find("div", class_="deck-block")
         if deck_tag is None:
-            raise ScrapingError("Deck data not found")
+            raise ScrapingError("Deck data not found (probably paywalled)")
         self._deck_parser = MtgaZoneDeckTagParser(deck_tag, self._metadata)
 
     def _parse_metadata(self) -> None:  # override
@@ -127,6 +127,38 @@ class MtgaZoneDeckScraper(DeckScraper):
 
     def _build_deck(self) -> Deck:  # override
         return self._deck_parser.parse()
+
+
+@DeckTagsContainerScraper.registered
+class MtgaZoneArticleScraper(DeckTagsContainerScraper):
+    """Scraper of MTG Arena Zone article page.
+    """
+    CONTAINER_NAME = "MTGAZone article"
+    _DECK_PARSER = MtgaZoneDeckTagParser
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return f"mtgazone.com/" in url.lower() and not any(
+            t in url.lower() for t in ("/user-decks", "/deck/", "/plans/premium",
+                                       "/mtg-arena-codes", "/author/"))
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url, keep_fragment=False)
+
+    def _collect(self) -> list[Tag]:  # override
+        self._soup = getsoup(self.url)
+        if not self._soup:
+            _log.warning(self._error_msg)
+            return []
+
+        deck_tags = [*self._soup.find_all("div", class_="deck-block")]
+        if not deck_tags:
+            if not deck_tags:
+                _log.warning(self._error_msg)
+                return []
+
+        return deck_tags
 
 
 def _parse_tiers(table: Tag) -> dict[str, int]:
