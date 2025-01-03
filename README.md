@@ -93,6 +93,7 @@ descriptions).
         * Manatraders users
         * Melee.gg tournaments
         * Moxfield bookmarks and users
+        * MTGAZone authors
         * MTGDecks.net tournaments
         * MTGTop8 events
         * PennyDreadfulMagic competitions and users

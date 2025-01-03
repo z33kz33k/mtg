@@ -10,12 +10,17 @@
 import contextlib
 import logging
 from datetime import datetime
+from typing import Iterable
 
+import backoff
 from bs4 import Tag
+from requests import HTTPError, ConnectionError, ReadTimeout
+from urllib3 import HTTPSConnectionPool
 
 from mtg import Json
 from mtg.deck import Deck, Mode
-from mtg.deck.scrapers import DeckScraper, DeckTagsContainerScraper, TagBasedDeckParser
+from mtg.deck.scrapers import DeckScraper, DeckTagsContainerScraper, DeckUrlsContainerScraper, \
+    TagBasedDeckParser
 from mtg.scryfall import ARENA_FORMATS, Card
 from mtg.utils import extract_int, from_iterable, timed
 from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
@@ -108,7 +113,7 @@ class MtgaZoneDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url, keep_endpoint=False, keep_fragment=False)
+        return strip_url_params(url, keep_fragment=False)
 
     def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)
@@ -159,6 +164,67 @@ class MtgaZoneArticleScraper(DeckTagsContainerScraper):
                 return []
 
         return deck_tags
+
+
+@DeckUrlsContainerScraper.registered
+class MtgaZoneAuthorScraper(DeckUrlsContainerScraper):
+    """Scraper of MTG Arena Zone article page.
+    """
+    CONTAINER_NAME = "MTGAZone author"  # override
+    _DECK_SCRAPER = MtgaZoneDeckScraper  # override
+
+    def __init__(self, url: str, metadata: Json | None = None) -> None:
+        super().__init__(url, metadata)
+        self._deck_urls, self._article_urls = [], []
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return "mtgazone.com/author/" in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url, keep_fragment=False)
+
+    def _collect(self) -> list[str]:  # override
+        self._soup = getsoup(self.url)
+        if not self._soup:
+            _log.warning(self._error_msg)
+            return []
+
+        links = [
+            t.attrs["href"].removesuffix("/") for t in self._soup.select("article > h2 > a")]
+        deck_urls = [l for l in links if MtgaZoneDeckScraper.is_deck_url(l)]
+        self._article_urls = [l for l in links if MtgaZoneArticleScraper.is_container_url(l)]
+
+        return deck_urls
+
+    # override
+    @timed("container scraping", precision=2)
+    @backoff.on_exception(
+        backoff.expo, (ConnectionError, HTTPError, ReadTimeout, HTTPSConnectionPool), max_time=60)
+    def scrape(
+            self, already_scraped_deck_urls: Iterable[str] = (),
+            already_failed_deck_urls: Iterable[str] = ()) -> tuple[list[Deck], set[str]]:
+        decks, failed_deck_urls = [], set()
+        self._deck_urls = self._collect()
+        if self._deck_urls:
+            _log.info(
+                f"Gathered {len(self._deck_urls)} deck URL(s) from a {self.CONTAINER_NAME} at:"
+                f" {self.url!r}")
+            scraped_decks, scraped_failed = self._process_deck_urls(
+                already_scraped_deck_urls, already_failed_deck_urls)
+            decks.extend(scraped_decks)
+            failed_deck_urls.update(scraped_failed)
+        if self._article_urls:
+            _log.info(
+                f"Gathered {len(self._article_urls)} article URL(s) from a {self.CONTAINER_NAME} "
+                f"at: {self.url!r}")
+            for i, url in enumerate(self._article_urls, start=1):
+                _log.info(f"Scraping article {i}/{len(self._article_urls)}...")
+                decks += [
+                    d for d in MtgaZoneArticleScraper(url, dict(self._metadata)).scrape()
+                    if d not in decks]
+        return decks, failed_deck_urls
 
 
 def _parse_tiers(table: Tag) -> dict[str, int]:
