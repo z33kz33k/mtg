@@ -22,6 +22,11 @@ from mtg.utils.scrape.dynamic import get_dynamic_soup
 _log = logging.getLogger(__name__)
 
 
+# TODO:
+#  articles: https://aetherhub.com/Article/Top-Standard-Decks---December-2024
+#  deck writeups: https://aetherhub.com/Decks/Writeups/Traditional-Standard/shenanigans-two-day-dec-21-22-std-rcq
+
+
 # TODO: scrape the meta
 @DeckScraper.registered
 class AetherhubDeckScraper(DeckScraper):

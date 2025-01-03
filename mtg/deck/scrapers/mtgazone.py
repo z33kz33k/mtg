@@ -198,7 +198,7 @@ class MtgaZoneAuthorScraper(DeckUrlsContainerScraper):
         return deck_urls
 
     # override
-    @timed("container scraping", precision=2)
+    @timed("nested container scraping", precision=2)
     @backoff.on_exception(
         backoff.expo, (ConnectionError, HTTPError, ReadTimeout), max_time=60)
     def scrape(
@@ -215,14 +215,24 @@ class MtgaZoneAuthorScraper(DeckUrlsContainerScraper):
             decks.extend(scraped_decks)
             failed_deck_urls.update(scraped_failed)
         if self._article_urls:
+            already_scraped_deck_urls = {
+                url.removesuffix("/").lower() for url in already_scraped_deck_urls}
             _log.info(
                 f"Gathered {len(self._article_urls)} article URL(s) from a {self.CONTAINER_NAME} "
                 f"at: {self.url!r}")
             for i, url in enumerate(self._article_urls, start=1):
-                _log.info(f"Scraping article {i}/{len(self._article_urls)}...")
-                decks += [
-                    d for d in MtgaZoneArticleScraper(url, dict(self._metadata)).scrape()
-                    if d not in decks]
+                sanitized_url = MtgaZoneArticleScraper.sanitize_url(url)
+                if sanitized_url.lower() in already_scraped_deck_urls:
+                    _log.info(f"Skipping already scraped article URL: {sanitized_url!r}...")
+                elif sanitized_url.lower() in already_failed_deck_urls:
+                    _log.info(f"Skipping already failed article URL: {sanitized_url!r}...")
+                else:
+                    _log.info(f"Scraping article {i}/{len(self._article_urls)}...")
+                    article_decks = MtgaZoneArticleScraper(url, dict(self._metadata)).scrape()
+                    if not article_decks:
+                        failed_deck_urls.add(sanitized_url.lower())
+                    else:
+                        decks += [d for d in article_decks if d not in decks]
         return decks, failed_deck_urls
 
 
