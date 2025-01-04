@@ -453,7 +453,7 @@ class HybridContainerScraper(DeckUrlsContainerScraper):
     hybrid and nested.
     """
     _REGISTRY: set[Type["HybridContainerScraper"]] = set()  # override
-    _CONTAINER_SCRAPER: Type[ContainerScraper] | None = None
+    _CONTAINER_SCRAPERS: tuple[Type[ContainerScraper], ...] = ()
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -467,6 +467,14 @@ class HybridContainerScraper(DeckUrlsContainerScraper):
     @abstractmethod
     def _collect(self) -> tuple[list[str], list[str]]:  # override
         raise NotImplementedError
+
+    @classmethod
+    def _dispatch(
+            cls, url: str, metadata: Json | None = None) -> Optional[ContainerScraper]:
+        for scraper_type in cls._CONTAINER_SCRAPERS:
+            if scraper_type.is_container_url(url):
+                return scraper_type(url, metadata)
+        return None
 
     # override
     @timed("nested container scraping", precision=2)
@@ -489,21 +497,23 @@ class HybridContainerScraper(DeckUrlsContainerScraper):
             already_scraped_deck_urls = {
                 url.removesuffix("/").lower() for url in already_scraped_deck_urls}
             _log.info(
-                f"Gathered {len(self._container_urls)} {self._CONTAINER_SCRAPER.short_name()} "
+                f"Gathered {len(self._container_urls)} container "
                 f"URL(s) from a {self.CONTAINER_NAME} at: {self.url!r}")
             for i, url in enumerate(self._container_urls, start=1):
-                sanitized_url = self._CONTAINER_SCRAPER.sanitize_url(url)
-                if sanitized_url.lower() in already_scraped_deck_urls:
-                    _log.info(f"Skipping already scraped article URL: {sanitized_url!r}...")
-                elif sanitized_url.lower() in already_failed_deck_urls:
-                    _log.info(f"Skipping already failed article URL: {sanitized_url!r}...")
-                else:
-                    _log.info(f"Scraping article {i}/{len(self._container_urls)}...")
-                    article_decks = self._CONTAINER_SCRAPER(url, dict(self._metadata)).scrape()
-                    if not article_decks:
-                        failed_deck_urls.add(sanitized_url.lower())
+                if scraper := self._dispatch(url, dict(self._metadata)):
+                    sanitized_url = scraper.sanitize_url(url)
+                    if sanitized_url.lower() in already_scraped_deck_urls:
+                        _log.info(f"Skipping already scraped article URL: {sanitized_url!r}...")
+                    elif sanitized_url.lower() in already_failed_deck_urls:
+                        _log.info(f"Skipping already failed article URL: {sanitized_url!r}...")
                     else:
-                        decks += [d for d in article_decks if d not in decks]
+                        _log.info(f"Scraping container URL {i}/{len(self._container_urls)} "
+                                  f"({scraper.short_name()})...")
+                        container_decks = scraper.scrape()
+                        if not container_decks:
+                            failed_deck_urls.add(sanitized_url.lower())
+                        else:
+                            decks += [d for d in container_decks if d not in decks]
         return decks, failed_deck_urls
 
     # override

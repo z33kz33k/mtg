@@ -171,7 +171,7 @@ class MtgaZoneAuthorScraper(HybridContainerScraper):
     """
     CONTAINER_NAME = "MTGAZone author"  # override
     _DECK_SCRAPER = MtgaZoneDeckScraper  # override
-    _CONTAINER_SCRAPER = MtgaZoneArticleScraper  # override
+    _CONTAINER_SCRAPERS = MtgaZoneArticleScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
