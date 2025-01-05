@@ -78,9 +78,9 @@ descriptions).
     * Deck's name and format are derived (from a video's title, description and keywords) if not readily available
     * Foreign cards and other that cannot be found in the downloaded Scryfall bulk data are looked 
       up with queries to the Scryfall API
-    * Individual decklist URLs are extracted from container pages and further processed for decks. 
+    * Individual decklists are extracted from container pages and further processed for decks. 
       These include:
-        * Aetherhub users and events
+        * Aetherhub users, events and articles
         * Archidekt folders and users
         * Cardsrealm profiles, folders, tournaments and articles
         * Deckbox users and events
@@ -92,10 +92,12 @@ descriptions).
         * MagicVille events and users
         * ManaStack users
         * Manatraders users
+        * Magic.gg events
         * Melee.gg tournaments
         * Moxfield bookmarks and users
-        * MTGAZone authors
+        * MTGAZone articles and authors
         * MTGDecks.net tournaments
+        * MTGO events
         * MTGTop8 events
         * PennyDreadfulMagic competitions and users
         * StarCityGames events, articles and author's decks databases
@@ -105,10 +107,6 @@ descriptions).
         * TCGPlayer (old-site) players
         * TCGPlayer Infinite players (profile page), authors (search page) and events
         * Untapped profiles
-    * Other, non-URL based container pages are processed for decks, too. These include:
-        * Magic.gg events
-        * MTGAZone articles
-        * MGTO events
 * Assessing the meta:
     * Scraping Goldfish and MGTAZone for meta-decks (others in plans)
     * Scraping a singular Untapped meta-deck decklist page
@@ -127,10 +125,10 @@ descriptions).
 ### Scraped decks breakdown
 | No | Format | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | commander       | 18282 |    29.26 % |
+| 1  | commander       | 18294 |    29.27 % |
 | 2  | standard        | 15735 |    25.18 % |
 | 3  | modern          |  5212 |     8.34 % |
-| 4  | pauper          |  4915 |     7.87 % |
+| 4  | pauper          |  4915 |     7.86 % |
 | 5  | pioneer         |  3830 |     6.13 % |
 | 6  | legacy          |  2793 |     4.47 % |
 | 7  | historic        |  1643 |     2.63 % |
@@ -150,13 +148,13 @@ descriptions).
 | 21 | oathbreaker     |    73 |     0.12 % |
 | 22 | oldschool       |    20 |     0.03 % |
 | 23 | future          |    15 |     0.02 % |
-|  | TOTAL           | 62489 | 100.00 %|
+|  | TOTAL           | 62501 | 100.00 %|
 
 | No | Source | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | moxfield.com           | 23518 |    37.64 % |
-| 2  | arena.decklist         |  7428 |    11.89 % |
-| 3  | aetherhub.com          |  6736 |    10.78 % |
+| 1  | moxfield.com           | 23511 |    37.62 % |
+| 2  | arena.decklist         |  7428 |    11.88 % |
+| 3  | aetherhub.com          |  6755 |    10.81 % |
 | 4  | mtggoldfish.com        |  6036 |     9.66 % |
 | 5  | archidekt.com          |  3067 |     4.91 % |
 | 6  | mtgo.com               |  2838 |     4.54 % |
@@ -188,4 +186,4 @@ descriptions).
 | 32 | cardhoarder.com        |    20 |     0.03 % |
 | 33 | app.cardboard.live     |    15 |     0.02 % |
 | 34 | mtgotraders.com        |     1 |     0.00 % |
-|  | TOTAL                  | 62489 | 100.00 %|
+|  | TOTAL                  | 62501 | 100.00 %|

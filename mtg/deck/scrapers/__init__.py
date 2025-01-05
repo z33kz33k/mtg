@@ -519,11 +519,18 @@ class HybridContainerScraper(DeckUrlsContainerScraper):
                         _log.info(
                             f"Scraping container URL {i}/{len(self._container_urls)} "
                             f"({scraper.short_name()})...")
-                        container_decks = scraper.scrape()
+                        result = scraper.scrape()
+                        if isinstance(result, tuple):
+                            container_decks, container_failed = result
+                            failed_deck_urls.update(container_failed)
+                        else:
+                            container_decks = result
                         if not container_decks:
                             failed_deck_urls.add(sanitized_url.lower())
                         else:
                             decks += [d for d in container_decks if d not in decks]
+        if not self._deck_urls and not self._container_urls:
+            _log.info(f"Nothing gathered from a {self.CONTAINER_NAME} at: {self.url!r}")
         return decks, failed_deck_urls
 
     # override

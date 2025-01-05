@@ -15,7 +15,8 @@ from selenium.common.exceptions import TimeoutException
 
 from mtg import Json
 from mtg.deck import Archetype, Deck, Mode
-from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper, TagBasedDeckParser
+from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper, HybridContainerScraper, \
+    TagBasedDeckParser
 from mtg.utils import extract_float, extract_int, from_iterable
 from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
 from mtg.utils.scrape.dynamic import get_dynamic_soup
@@ -103,8 +104,9 @@ class AetherhubDeckScraper(DeckScraper):
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         url = url.lower()
-        return ("aetherhub.com/" in url and "/deck/" in url and "/mydecks/" not in url
-                and "/builder" not in url)
+        tokens = "export/", "/mydecks", "/builder"
+        return ("aetherhub.com/" in url and "/deck/" in url
+                and not any(t in url.lower() for t in tokens))
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
@@ -220,12 +222,14 @@ class AetherhubWriteupDeckScraper(AetherhubDeckScraper):
         return deck_tag
 
 
+URL_TEMPLATE = "https://aetherhub.com{}"
+
+
 @DeckUrlsContainerScraper.registered
 class AetherhubUserScraper(DeckUrlsContainerScraper):
     """Scraper of Aetherhub user page.
     """
     CONTAINER_NAME = "Aetherhub user"  # override
-    URL_TEMPLATE = "https://aetherhub.com{}"
     _DECK_SCRAPERS = AetherhubDeckScraper,  # override
     _XPATH = '//table[@id="metaHubTable"]'
     CONSENT_XPATH = '//button[@class="ncmp__btn" and contains(text(), "Accept")]'
@@ -254,7 +258,7 @@ class AetherhubUserScraper(DeckUrlsContainerScraper):
             return []
 
         tbody = self._soup.find("tbody")
-        return [self.URL_TEMPLATE.format(row.find("a")["href"])
+        return [URL_TEMPLATE.format(row.find("a")["href"])
                 for row in tbody.find_all("tr")]
 
 
@@ -263,7 +267,6 @@ class AetherhubEventScraper(DeckUrlsContainerScraper):
     """Scraper of Aetherhub event page.
     """
     CONTAINER_NAME = "Aetherhub event"  # override
-    URL_TEMPLATE = "https://aetherhub.com{}"
     _DECK_SCRAPERS = AetherhubDeckScraper,  # override
     _XPATH = '//tr[@class="deckdata"]'
 
@@ -293,4 +296,44 @@ class AetherhubEventScraper(DeckUrlsContainerScraper):
             _, deck_tag, *_ = row.find_all("td")
             deck_tags.append(deck_tag.find("a", href=lambda h: h and "/deck/" in h.lower()))
         deck_tags = [d for d in deck_tags if d is not None]
-        return [self.URL_TEMPLATE.format(deck_tag["href"]) for deck_tag in deck_tags]
+        return [URL_TEMPLATE.format(deck_tag["href"]) for deck_tag in deck_tags]
+
+
+@HybridContainerScraper.registered
+class AetherhubArticleScraper(HybridContainerScraper):
+    """Scraper of Aetherhub article page.
+    """
+    CONTAINER_NAME = "Aetherhub article"  # override
+    _DECK_SCRAPERS = AetherhubDeckScraper, AetherhubWriteupDeckScraper  # override
+    _CONTAINER_SCRAPERS = AetherhubUserScraper, AetherhubEventScraper  # override
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return "aetherhub.com/article/" in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_params(url, keep_fragment=False)
+
+    def _collect(self) -> tuple[list[str], list[str]]:  # override
+        self._soup = getsoup(self.url)
+        if not self._soup:
+            _log.warning(self._error_msg)
+            return [], []
+
+        article_tag = self._soup.find("div", id="article-text")
+        if article_tag is None:
+            _log.warning(self._error_msg)
+            return [], []
+
+        links = {
+            t.attrs["href"].removesuffix("/")
+            for t in article_tag.find_all("a", href=lambda h: h)}
+        links = {
+            URL_TEMPLATE.format(l) if not l.startswith("https://aetherhub.com") else l
+            for l in links}
+        deck_urls = sorted(l for l in links if any(ds.is_deck_url(l) for ds in self._DECK_SCRAPERS))
+        container_urls = sorted(
+            l for l in links if any(cs.is_container_url(l) for cs in self._CONTAINER_SCRAPERS))
+
+        return deck_urls, container_urls
