@@ -227,6 +227,8 @@ class ContainerScraper(ABC):
         raise NotImplementedError
 
 
+# TODO: dispatch from arbitrary number of deck scrapers similar to what HybridContainerScraper
+#  does for containers
 class DeckUrlsContainerScraper(ContainerScraper):
     """Abstract scraper of deck-links-containing pages.
     """
@@ -503,9 +505,13 @@ class HybridContainerScraper(DeckUrlsContainerScraper):
                 if scraper := self._dispatch(url, dict(self._metadata)):
                     sanitized_url = scraper.sanitize_url(url)
                     if sanitized_url.lower() in already_scraped_deck_urls:
-                        _log.info(f"Skipping already scraped article URL: {sanitized_url!r}...")
+                        _log.info(
+                            f"Skipping already scraped {scraper.short_name()} URL: "
+                            f"{sanitized_url!r}...")
                     elif sanitized_url.lower() in already_failed_deck_urls:
-                        _log.info(f"Skipping already failed article URL: {sanitized_url!r}...")
+                        _log.info(
+                            f"Skipping already failed {scraper.short_name()} URL: "
+                            f"{sanitized_url!r}...")
                     else:
                         _log.info(f"Scraping container URL {i}/{len(self._container_urls)} "
                                   f"({scraper.short_name()})...")

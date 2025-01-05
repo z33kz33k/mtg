@@ -26,7 +26,7 @@ from mtg.deck.scrapers.tcgplayer import get_source as tcgplayer_get_source
 from mtg.utils import Counter, breadcrumbs, deserialize_dates, serialize_dates
 from mtg.utils.files import getdir, getfile
 from mtg.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
-from mtg.utils.scrape import getsoup
+from mtg.utils.scrape import extract_url, getsoup
 
 _log = logging.getLogger(__name__)
 VIDEO_URL_TEMPLATE = "https://www.youtube.com/watch?v={}"
@@ -644,3 +644,8 @@ def get_channel_ids(*urls: str, only_new=True) -> list[str]:
         ids.append(chid)
 
     return ids
+
+
+def extract_urls(description: str) -> list[str]:
+    lines = description.splitlines()
+    return [url for url in [extract_url(l) for l in lines] if url]

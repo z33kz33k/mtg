@@ -809,6 +809,7 @@ Name={}
 """
     NAME_SEP = "_"
 
+    # TODO: overhaul this
     SOURCE_NICKNAMES = {
         "aetherhub.com": "Aetherhub",
         "archidekt.com": "Archidekt",
@@ -1355,6 +1356,9 @@ class DeckParser(ABC):
                 raise err
             _log.warning(f"Parsing failed with: {err}")
             return None
+
+    def update_metadata(self, **data: Any) -> None:
+        self._metadata.update(data)
 
     def _update_fmt(self, fmt: str) -> None:
         fmt = fmt.strip().lower()
