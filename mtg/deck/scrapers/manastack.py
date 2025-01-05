@@ -83,7 +83,7 @@ class ManaStackUserScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "ManaStack user"  # override
     URL_TEMPLATE = "https://manastack.com{}"
-    _DECK_SCRAPER = ManaStackDeckScraper  # override
+    _DECK_SCRAPERS = ManaStackDeckScraper,  # override
     _XPATH = '//div[@class="deck-listing-container"]'
 
     @staticmethod

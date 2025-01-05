@@ -139,7 +139,7 @@ class StarCityGamesEventScraper(DeckUrlsContainerScraper):
     """Scraper of StarCityGames event page.
     """
     CONTAINER_NAME = "StarCityGames event"  # override
-    _DECK_SCRAPER = StarCityGamesDeckScraper  # override
+    _DECK_SCRAPERS = StarCityGamesDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -168,12 +168,13 @@ class StarCityGamesEventScraper(DeckUrlsContainerScraper):
         return [tag.attrs["href"] for tag in deck_tags if tag is not None]
 
 
+# TODO: make it a hybrid scraper that would cover all other containers too
 @DeckUrlsContainerScraper.registered
 class StarCityGamesArticleScraper(DeckUrlsContainerScraper):
     """Scraper of StarCityGames decks article page.
     """
     CONTAINER_NAME = "StarCityGames article"  # override
-    _DECK_SCRAPER = StarCityGamesDeckScraper  # override
+    _DECK_SCRAPERS = StarCityGamesDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -206,7 +207,7 @@ class StarCityGamesDatabaseScraper(DeckUrlsContainerScraper):
     """Scraper of StarCityGames author's decks database page.
     """
     CONTAINER_NAME = "StarCityGames author's deck database"  # override
-    _DECK_SCRAPER = StarCityGamesDeckScraper  # override
+    _DECK_SCRAPERS = StarCityGamesDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override

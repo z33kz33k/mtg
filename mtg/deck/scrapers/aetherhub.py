@@ -226,7 +226,7 @@ class AetherhubUserScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Aetherhub user"  # override
     URL_TEMPLATE = "https://aetherhub.com{}"
-    _DECK_SCRAPER = AetherhubDeckScraper  # override
+    _DECK_SCRAPERS = AetherhubDeckScraper,  # override
     _XPATH = '//table[@id="metaHubTable"]'
     CONSENT_XPATH = '//button[@class="ncmp__btn" and contains(text(), "Accept")]'
 
@@ -264,7 +264,7 @@ class AetherhubEventScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Aetherhub event"  # override
     URL_TEMPLATE = "https://aetherhub.com{}"
-    _DECK_SCRAPER = AetherhubDeckScraper  # override
+    _DECK_SCRAPERS = AetherhubDeckScraper,  # override
     _XPATH = '//tr[@class="deckdata"]'
 
     @staticmethod

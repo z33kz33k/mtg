@@ -90,7 +90,7 @@ class DeckboxUserScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Deckbox user"  # override
     DECK_URL_TEMPLATE = "https://deckbox.org{}"
-    _DECK_SCRAPER = DeckboxDeckScraper  # override
+    _DECK_SCRAPERS = DeckboxDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -118,7 +118,7 @@ class DeckboxEventScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Deckbox event"  # override
     DECK_URL_TEMPLATE = "https://deckbox.org{}"
-    _DECK_SCRAPER = DeckboxDeckScraper  # override
+    _DECK_SCRAPERS = DeckboxDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override

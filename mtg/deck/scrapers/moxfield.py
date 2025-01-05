@@ -101,7 +101,7 @@ class MoxfieldBookmarkScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Moxfield bookmark"  # override
     API_URL_TEMPLATE = "https://api2.moxfield.com/v1/bookmarks/{}"
-    _DECK_SCRAPER = MoxfieldDeckScraper  # override
+    _DECK_SCRAPERS = MoxfieldDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -132,7 +132,7 @@ class MoxfieldUserScraper(DeckUrlsContainerScraper):
     API_URL_TEMPLATE = ("https://api2.moxfield.com/v2/decks/search?includePinned=true&showIllegal"
                         "=true&authorUserNames={}&pageNumber=1&pageSize=100&sortType="
                         "updated&sortDirection=descending&board=mainboard")
-    _DECK_SCRAPER = MoxfieldDeckScraper  # override
+    _DECK_SCRAPERS = MoxfieldDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override

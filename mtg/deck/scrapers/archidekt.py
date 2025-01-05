@@ -86,7 +86,7 @@ class ArchidektFolderScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Archidekt folder"  # override
     URL_TEMPLATE = "https://archidekt.com{}"
-    _DECK_SCRAPER = ArchidektDeckScraper  #
+    _DECK_SCRAPERS = ArchidektDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -114,7 +114,7 @@ class ArchidektUserScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Archidekt user"  # override
     URL_TEMPLATE = "https://archidekt.com{}"
-    _DECK_SCRAPER = ArchidektDeckScraper  # override
+    _DECK_SCRAPERS = ArchidektDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override

@@ -85,7 +85,7 @@ class MtgDecksNetTournamentScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "MTGDecks.net tournament"  # override
     DECK_URL_TEMPLATE = "https://mtgdecks.net{}"
-    _DECK_SCRAPER = MtgDecksNetDeckScraper  # override
+    _DECK_SCRAPERS = MtgDecksNetDeckScraper,  # override
     _XPATH = '//a[contains(@href, "-decklist-")]'
 
     @staticmethod

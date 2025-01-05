@@ -97,7 +97,7 @@ class MeleeGgTournamentScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Melee.gg tournament"  # override
     DECK_URL_TEMPLATE = "https://melee.gg{}"
-    _DECK_SCRAPER = MeleeGgDeckScraper  # override
+    _DECK_SCRAPERS = MeleeGgDeckScraper,  # override
     _XPATH = '//a[@data-type="decklist"]'
 
     @staticmethod

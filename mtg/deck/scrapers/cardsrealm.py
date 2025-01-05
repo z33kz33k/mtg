@@ -106,7 +106,7 @@ class CardsrealmProfileScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Cardsrealm profile"  # override
     DECK_URL_TEMPLATE = "https://mtg.cardsrealm.com{}"
-    _DECK_SCRAPER = CardsrealmDeckScraper  # override
+    _DECK_SCRAPERS = CardsrealmDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -164,7 +164,7 @@ class CardsrealmMetaTournamentScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Cardsrealm meta-deck tournament"  # override
     DECK_URL_TEMPLATE = "https://mtg.cardsrealm.com{}"
-    _DECK_SCRAPER = CardsrealmDeckScraper  # override
+    _DECK_SCRAPERS = CardsrealmDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -196,7 +196,7 @@ class CardsrealmRegularTournamentScraper(DeckUrlsContainerScraper):
     """Scraper of Cardsrealm regular tournaments page.
     """
     CONTAINER_NAME = "Cardsrealm regular tournament"  # override
-    _DECK_SCRAPER = CardsrealmDeckScraper  # override
+    _DECK_SCRAPERS = CardsrealmDeckScraper,  # override
     _CONSENT_XPATH = '//button[@id="ez-accept-all"]'
     _XPATH = "//button[text()='show deck']"
 
@@ -251,17 +251,20 @@ class CardsrealmRegularTournamentScraper(DeckUrlsContainerScraper):
         return [tag.attrs["href"] for tag in deck_tags if tag is not None]
 
 
+# TODO: make it a hybrid scraper that would cover all other containers too
 @DeckUrlsContainerScraper.registered
 class CardsrealmArticleScraper(DeckUrlsContainerScraper):
     """Scraper of Cardsrealm decks article page.
     """
     CONTAINER_NAME = "Cardsrealm article"  # override
     DECK_URL_TEMPLATE = "https://mtg.cardsrealm.com{}"
-    _DECK_SCRAPER = CardsrealmDeckScraper  # override
+    _DECK_SCRAPERS = CardsrealmDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
-        return all(t in url.lower() for t in (f"{BASIC_DOMAIN}/", "/articles/"))
+        return (all(
+            t in url.lower() for t in (f"{BASIC_DOMAIN}/", "/articles/"))
+                and "/search/" not in url.lower())
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override

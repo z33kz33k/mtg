@@ -91,7 +91,7 @@ class TCDecksEventScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "TCDecks event"  # override
     DECK_URL_TEMPLATE = "https://www.tcdecks.net/{}"
-    _DECK_SCRAPER = TCDecksDeckScraper  # override
+    _DECK_SCRAPERS = TCDecksDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override

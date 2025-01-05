@@ -91,7 +91,7 @@ class TcgPlayerPlayerScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "TCGPlayer (old-site) player"  # override
     DECK_URL_TEMPLATE = "https://decks.tcgplayer.com{}"
-    _DECK_SCRAPER = TcgPlayerDeckScraper  # override
+    _DECK_SCRAPERS = TcgPlayerDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -197,7 +197,7 @@ class TcgPlayerInfinitePlayerScraper(DeckUrlsContainerScraper):
                         "-content&rows=100&format=&playerName"
                         "={}&latest=true&sort=created&order=desc")
     DECK_URL_TEMPLATE = "https://infinite.tcgplayer.com{}"
-    _DECK_SCRAPER = TcgPlayerInfiniteDeckScraper  # override
+    _DECK_SCRAPERS = TcgPlayerInfiniteDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -251,7 +251,7 @@ class TcgPlayerInfiniteEventScraper(DeckUrlsContainerScraper):
     API_URL_TEMPLATE = ("https://infinite-api.tcgplayer.com/content/decks/magic?source="
                         "infinite-content&rows=200&eventNames={}")
     DECK_URL_TEMPLATE = "https://infinite.tcgplayer.com{}"
-    _DECK_SCRAPER = TcgPlayerInfiniteDeckScraper  # override
+    _DECK_SCRAPERS = TcgPlayerInfiniteDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override

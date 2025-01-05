@@ -110,7 +110,7 @@ class MagicVilleEventScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "MagicVille event"  # override
     DECK_URL_TEMPLATE = "https://www.magic-ville.com/fr/decks/{}"
-    _DECK_SCRAPER = MagicVilleDeckScraper  # override
+    _DECK_SCRAPERS = MagicVilleDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -132,7 +132,7 @@ class MagicVilleUserScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "MagicVille user"  # override
     DECK_URL_TEMPLATE = "https://www.magic-ville.com/fr/{}"
-    _DECK_SCRAPER = MagicVilleDeckScraper  # override
+    _DECK_SCRAPERS = MagicVilleDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override

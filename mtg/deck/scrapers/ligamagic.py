@@ -124,7 +124,7 @@ class LigaMagicEventScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "LigaMagic event"  # override
     DECK_URL_TEMPLATE = "https://www.ligamagic.com.br{}"
-    _DECK_SCRAPER = LigaMagicDeckScraper  # override
+    _DECK_SCRAPERS = LigaMagicDeckScraper,  # override
     _CSS_SELECTOR = "div.evnt-dks"
 
     @staticmethod

@@ -150,7 +150,7 @@ class DeckstatsUserScraper(DeckUrlsContainerScraper):
     API_URL_TEMPLATE = ("https://deckstats.net/api.php?action=user_folder_get&result_type="
                         "folder%3Bdecks%3Bparent_tree%3Bsubfolders&owner_id={}&folder_id=0&"
                         "decks_page={}")
-    _DECK_SCRAPER = DeckstatsDeckScraper  # override
+    _DECK_SCRAPERS = DeckstatsDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override

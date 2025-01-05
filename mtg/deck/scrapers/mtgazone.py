@@ -170,7 +170,7 @@ class MtgaZoneAuthorScraper(HybridContainerScraper):
     """Scraper of MTG Arena Zone author page.
     """
     CONTAINER_NAME = "MTGAZone author"  # override
-    _DECK_SCRAPER = MtgaZoneDeckScraper  # override
+    _DECK_SCRAPERS = MtgaZoneDeckScraper,  # override
     _CONTAINER_SCRAPERS = MtgaZoneArticleScraper,  # override
 
     @staticmethod

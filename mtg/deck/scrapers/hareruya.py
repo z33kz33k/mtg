@@ -197,6 +197,7 @@ class HareruyaEventScraper(DeckUrlsContainerScraper):
         "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:131.0) Gecko/20100101 "
                       "Firefox/131.0",
     }
+    _DECK_SCRAPERS = InternationalHareruyaDeckScraper, JapaneseHareruyaDeckScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -217,6 +218,7 @@ class HareruyaPlayerScraper(DeckUrlsContainerScraper):
     """Scraper of Hareruya player decks search page.
     """
     CONTAINER_NAME = "Hareruya player"  # override
+    _DECK_SCRAPERS = InternationalHareruyaDeckScraper, JapaneseHareruyaDeckScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override

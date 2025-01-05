@@ -185,7 +185,7 @@ class GoldfishTournamentScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Goldfish tournament"  # override
     DECK_URL_TEMPLATE = "https://www.mtggoldfish.com{}"
-    _DECK_SCRAPER = GoldfishDeckScraper  # override
+    _DECK_SCRAPERS = GoldfishDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -215,7 +215,7 @@ class GoldfishPlayerScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Goldfish player"  # override
     DECK_URL_TEMPLATE = "https://www.mtggoldfish.com{}"
-    _DECK_SCRAPER = GoldfishDeckScraper  # override
+    _DECK_SCRAPERS = GoldfishDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override

@@ -75,7 +75,7 @@ class ManatradersUserScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Manatraders user"  # override
     DECK_URL_TEMPLATE = "https://www.manatraders.com{}"
-    _DECK_SCRAPER = ManatradersDeckScraper  # override
+    _DECK_SCRAPERS = ManatradersDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override

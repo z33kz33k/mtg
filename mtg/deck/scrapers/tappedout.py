@@ -113,7 +113,7 @@ class TappedoutUserScraper(DeckUrlsContainerScraper):
     CONTAINER_NAME = "Tappedout user"  # override
     API_URL_TEMPLATE = "https://tappedout.net/api/users/{}/deck-list/?p={}&o=-date_updated"
     DECK_URL_TEMPLATE = "https://tappedout.net{}"
-    _DECK_SCRAPER = TappedoutDeckScraper  # override
+    _DECK_SCRAPERS = TappedoutDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -153,7 +153,7 @@ class TappedoutFolderScraper(DeckUrlsContainerScraper):
     CONTAINER_NAME = "Tappedout folder"  # override
     API_URL_TEMPLATE = "https://tappedout.net/api/folder/{}/detail/"
     DECK_URL_TEMPLATE = "https://tappedout.net{}"
-    _DECK_SCRAPER = TappedoutDeckScraper  # override
+    _DECK_SCRAPERS = TappedoutDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override

@@ -78,7 +78,7 @@ class FlexslotUserScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Flexslot user"  # override
     URL_TEMPLATE = "https://flexslot.gg{}"
-    _DECK_SCRAPER = FlexslotDeckScraper  # override
+    _DECK_SCRAPERS = FlexslotDeckScraper,  # override
     _XPATH = '//a[contains(@href, "/decks/")]'
 
     @staticmethod

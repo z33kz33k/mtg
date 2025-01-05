@@ -89,7 +89,7 @@ class PennyDreadfulMagicCompetitionScraper(DeckUrlsContainerScraper):
                         "cardName=&competitionId={}&competitionFlagId=&deckType=&page=0&page"
                         "Size=200&personId=&q=&seasonId=")
     DECK_URL_TEMPLATE = "https://pennydreadfulmagic.com{}"
-    _DECK_SCRAPER = PennyDreadfulMagicDeckScraper  # override
+    _DECK_SCRAPERS = PennyDreadfulMagicDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -120,7 +120,7 @@ class PennyDreadfulMagicUserScraper(DeckUrlsContainerScraper):
                         "&cardName=&competitionId=&competitionFlagId=&deckType=all&page=0&page"
                         "Size=200&personId={}&q=&seasonId={}")
     DECK_URL_TEMPLATE = "https://pennydreadfulmagic.com{}"
-    _DECK_SCRAPER = PennyDreadfulMagicDeckScraper  # override
+    _DECK_SCRAPERS = PennyDreadfulMagicDeckScraper,  # override
 
     @property
     def _ids_in_url(self) -> bool:

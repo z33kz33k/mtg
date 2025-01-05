@@ -180,7 +180,6 @@ class ContainerScraper(ABC):
     """
     CONTAINER_NAME = None
     _REGISTRY: set[Type["ContainerScraper"]] | None = None
-    _DECK_SCRAPER: Type[DeckParser] | None = None
 
     @property
     def url(self) -> str:
@@ -227,14 +226,12 @@ class ContainerScraper(ABC):
         raise NotImplementedError
 
 
-# TODO: dispatch from arbitrary number of deck scrapers similar to what HybridContainerScraper
-#  does for containers
 class DeckUrlsContainerScraper(ContainerScraper):
     """Abstract scraper of deck-links-containing pages.
     """
     THROTTLING = DeckScraper.THROTTLING
     _REGISTRY: set[Type["DeckUrlsContainerScraper"]] = set()
-    _DECK_SCRAPER: Type[DeckScraper] | None = None
+    _DECK_SCRAPERS: tuple[Type[DeckScraper], ...] = ()
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -249,6 +246,14 @@ class DeckUrlsContainerScraper(ContainerScraper):
     def _collect(self) -> list[str]:
         raise NotImplementedError
 
+    @classmethod
+    def _dispatch_deck_scraper(
+            cls, url: str, metadata: Json | None = None) -> Optional[DeckScraper]:
+        for scraper_type in cls._DECK_SCRAPERS:
+            if scraper_type.is_deck_url(url):
+                return scraper_type(url, metadata)
+        return None
+
     def _process_deck_urls(
             self, already_scraped_deck_urls: Iterable[str],
             already_failed_deck_urls: Iterable[str]) -> tuple[list[Deck], set[str]]:
@@ -258,11 +263,9 @@ class DeckUrlsContainerScraper(ContainerScraper):
         already_failed_deck_urls = set(already_failed_deck_urls)
         failed_deck_urls = set()
         for i, deck_url in enumerate(self._deck_urls, start=1):
-            scraper = self._DECK_SCRAPER(
-                deck_url, dict(self._metadata)) if self._DECK_SCRAPER else DeckScraper.from_url(
-                deck_url, dict(self._metadata))
+            scraper = self._dispatch_deck_scraper(deck_url, dict(self._metadata))
             if not scraper:
-                raise ScrapingError(f"Failed to find scraper suitable for deck URL: {deck_url!r}")
+                continue
             sanitized_deck_url = scraper.sanitize_url(deck_url)
             if sanitized_deck_url.lower() in already_scraped_deck_urls:
                 _log.info(f"Skipping already scraped deck URL: {sanitized_deck_url!r}...")
@@ -471,7 +474,7 @@ class HybridContainerScraper(DeckUrlsContainerScraper):
         raise NotImplementedError
 
     @classmethod
-    def _dispatch(
+    def _dispatch_container_scraper(
             cls, url: str, metadata: Json | None = None) -> Optional[ContainerScraper]:
         for scraper_type in cls._CONTAINER_SCRAPERS:
             if scraper_type.is_container_url(url):
@@ -502,7 +505,7 @@ class HybridContainerScraper(DeckUrlsContainerScraper):
                 f"Gathered {len(self._container_urls)} container "
                 f"URL(s) from a {self.CONTAINER_NAME} at: {self.url!r}")
             for i, url in enumerate(self._container_urls, start=1):
-                if scraper := self._dispatch(url, dict(self._metadata)):
+                if scraper := self._dispatch_container_scraper(url, dict(self._metadata)):
                     sanitized_url = scraper.sanitize_url(url)
                     if sanitized_url.lower() in already_scraped_deck_urls:
                         _log.info(
@@ -513,8 +516,9 @@ class HybridContainerScraper(DeckUrlsContainerScraper):
                             f"Skipping already failed {scraper.short_name()} URL: "
                             f"{sanitized_url!r}...")
                     else:
-                        _log.info(f"Scraping container URL {i}/{len(self._container_urls)} "
-                                  f"({scraper.short_name()})...")
+                        _log.info(
+                            f"Scraping container URL {i}/{len(self._container_urls)} "
+                            f"({scraper.short_name()})...")
                         container_decks = scraper.scrape()
                         if not container_decks:
                             failed_deck_urls.add(sanitized_url.lower())

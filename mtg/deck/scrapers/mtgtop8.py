@@ -99,7 +99,7 @@ class MtgTop8EventScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "MTGTop8 event"  # override
     DECK_URL_TEMPLATE = "https://www.mtgtop8.com/event{}"
-    _DECK_SCRAPER = MtgTop8DeckScraper  # override
+    _DECK_SCRAPERS = MtgTop8DeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
