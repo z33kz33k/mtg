@@ -233,7 +233,7 @@ def extract_url(text: str, https=True) -> str | None:
     match = re.search(pattern, text)
     if not match:
         return None
-    url = match.group("url").rstrip("])}/\u2060").removesuffix("...").removesuffix("..")
+    url = match.group("url").rstrip(",])}/\u2060").removesuffix("...").removesuffix("..")
     if url.count("https://") > 1:
         return "https://" + [part for part in url.split("https://") if part][0]
     elif url.count("http://") > 1:
