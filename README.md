@@ -100,7 +100,7 @@ descriptions).
         * MTGO events
         * MTGTop8 events
         * PennyDreadfulMagic competitions and users
-        * StarCityGames events, articles and author's decks databases
+        * StarCityGames events, players, articles and author's decks databases
         * Streamdecker users
         * TappedOut users, folders, and user folders
         * TCDecks events
