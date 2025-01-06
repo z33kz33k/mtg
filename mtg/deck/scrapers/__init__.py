@@ -481,6 +481,24 @@ class HybridContainerScraper(DeckUrlsContainerScraper):
                 return scraper_type(url, metadata)
         return None
 
+    def _get_links(
+            self, links_container: Tag | None, url_template="") -> tuple[list[str], list[str]]:
+        """Get all links from the container tag or the soup, and clean them up.
+
+        Args:
+            links_container: a BeautifulSoup tag containing links (or the whole soup if not provided)
+            url_template: template to obtain absolute URLs from relative ones (e.g. 'https://aetherhub.com{}')
+        """
+        tag = links_container if links_container is not None else self._soup
+        links = {t.attrs["href"].removesuffix("/") for t in tag.find_all("a", href=lambda h: h)}
+        if url_template:
+            prefix = url_template[:-2]
+            links = {url_template.format(l) if not l.startswith(prefix) else l for l in links}
+        deck_urls = sorted(l for l in links if any(ds.is_deck_url(l) for ds in self._DECK_SCRAPERS))
+        container_urls = sorted(
+            l for l in links if any(cs.is_container_url(l) for cs in self._CONTAINER_SCRAPERS))
+        return deck_urls, container_urls
+
     # override
     @timed("nested container scraping", precision=2)
     @backoff.on_exception(

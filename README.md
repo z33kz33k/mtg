@@ -127,12 +127,12 @@ descriptions).
 |:---|:-----|------:|-----------:|
 | 1  | commander       | 18652 |    29.64 % |
 | 2  | standard        | 15775 |    25.07 % |
-| 3  | modern          |  5213 |     8.28 % |
-| 4  | pauper          |  4917 |     7.81 % |
+| 3  | modern          |  5218 |     8.29 % |
+| 4  | pauper          |  4909 |     7.80 % |
 | 5  | pioneer         |  3830 |     6.09 % |
 | 6  | legacy          |  2793 |     4.44 % |
 | 7  | historic        |  1646 |     2.62 % |
-| 8  | brawl           |  1600 |     2.54 % |
+| 8  | brawl           |  1601 |     2.54 % |
 | 9  | explorer        |  1461 |     2.32 % |
 | 10 | undefined       |  1279 |     2.03 % |
 | 11 | timeless        |  1275 |     2.03 % |
@@ -148,14 +148,14 @@ descriptions).
 | 21 | gladiator       |    76 |     0.12 % |
 | 22 | oldschool       |    20 |     0.03 % |
 | 23 | future          |    15 |     0.02 % |
-|  | TOTAL           | 62922 | 100.00 %|
+|  | TOTAL           | 62920 | 100.00 %|
 
 | No | Source | Count | Percentage |
 |:---|:-----|------:|-----------:|
 | 1  | moxfield.com           | 23886 |    37.96 % |
 | 2  | arena.decklist         |  7431 |    11.81 % |
 | 3  | aetherhub.com          |  6767 |    10.75 % |
-| 4  | mtggoldfish.com        |  6057 |     9.63 % |
+| 4  | mtggoldfish.com        |  6058 |     9.63 % |
 | 5  | archidekt.com          |  3067 |     4.87 % |
 | 6  | mtgo.com               |  2838 |     4.51 % |
 | 7  | mtga.untapped.gg       |  1494 |     2.37 % |
@@ -166,7 +166,7 @@ descriptions).
 | 12 | mtgtop8.com            |  1042 |     1.66 % |
 | 13 | magic.gg               |   986 |     1.57 % |
 | 14 | tcgplayer.com          |   927 |     1.47 % |
-| 15 | mtg.cardsrealm.com     |   686 |     1.09 % |
+| 15 | mtg.cardsrealm.com     |   683 |     1.09 % |
 | 16 | deckstats.net          |   509 |     0.81 % |
 | 17 | mtgazone.com           |   397 |     0.63 % |
 | 18 | hareruyamtg.com        |   292 |     0.46 % |
@@ -186,4 +186,4 @@ descriptions).
 | 32 | cardhoarder.com        |    20 |     0.03 % |
 | 33 | app.cardboard.live     |    15 |     0.02 % |
 | 34 | mtgotraders.com        |     1 |     0.00 % |
-|  | TOTAL                  | 62922 | 100.00 %|
+|  | TOTAL                  | 62920 | 100.00 %|

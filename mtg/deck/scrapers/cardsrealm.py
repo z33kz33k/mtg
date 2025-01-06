@@ -19,13 +19,14 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from mtg import Json
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper
 from mtg.utils import timed
 from mtg.utils.scrape import ScrapingError, dissect_js, getsoup, strip_url_params
 from mtg.utils.scrape.dynamic import SELENIUM_TIMEOUT, accept_consent
 
 _log = logging.getLogger(__name__)
 BASIC_DOMAIN = "cardsrealm.com"
+URL_TEMPLATE = "https://mtg.cardsrealm.com{}"
 
 
 def get_source(src: str) -> str | None:
@@ -105,7 +106,6 @@ class CardsrealmProfileScraper(DeckUrlsContainerScraper):
     """Scraper of Cardsrealm user profile page.
     """
     CONTAINER_NAME = "Cardsrealm profile"  # override
-    DECK_URL_TEMPLATE = "https://mtg.cardsrealm.com{}"
     _DECK_SCRAPERS = CardsrealmDeckScraper,  # override
 
     @staticmethod
@@ -128,7 +128,7 @@ class CardsrealmProfileScraper(DeckUrlsContainerScraper):
             div for div in self._soup.find_all("div", class_=lambda c: c and "deck_div_all" in c)]
         deck_tags = [d.find("a", href=lambda h: h and "/decks/" in h) for d in deck_divs]
         urls = [tag.attrs["href"] for tag in deck_tags]
-        return [self.DECK_URL_TEMPLATE.format(url) for url in urls]
+        return [URL_TEMPLATE.format(url) for url in urls]
 
 
 @DeckUrlsContainerScraper.registered
@@ -163,7 +163,6 @@ class CardsrealmMetaTournamentScraper(DeckUrlsContainerScraper):
     """Scraper of Cardsrealm meta-deck tournaments page.
     """
     CONTAINER_NAME = "Cardsrealm meta-deck tournament"  # override
-    DECK_URL_TEMPLATE = "https://mtg.cardsrealm.com{}"
     _DECK_SCRAPERS = CardsrealmDeckScraper,  # override
 
     @staticmethod
@@ -188,7 +187,7 @@ class CardsrealmMetaTournamentScraper(DeckUrlsContainerScraper):
                           and t.text.strip() == "Decklist"
                           and t.parent.name == "span")]
         urls = {tag.attrs["href"] for tag in deck_tags}
-        return [self.DECK_URL_TEMPLATE.format(url) for url in sorted(urls)]
+        return [URL_TEMPLATE.format(url) for url in sorted(urls)]
 
 
 @DeckUrlsContainerScraper.registered
@@ -251,14 +250,15 @@ class CardsrealmRegularTournamentScraper(DeckUrlsContainerScraper):
         return [tag.attrs["href"] for tag in deck_tags if tag is not None]
 
 
-# TODO: make it a hybrid scraper that would cover all other containers too
-@DeckUrlsContainerScraper.registered
-class CardsrealmArticleScraper(DeckUrlsContainerScraper):
+@HybridContainerScraper.registered
+class CardsrealmArticleScraper(HybridContainerScraper):
     """Scraper of Cardsrealm decks article page.
     """
     CONTAINER_NAME = "Cardsrealm article"  # override
-    DECK_URL_TEMPLATE = "https://mtg.cardsrealm.com{}"
     _DECK_SCRAPERS = CardsrealmDeckScraper,  # override
+    # override
+    _CONTAINER_SCRAPERS = (CardsrealmProfileScraper, CardsrealmFolderScraper,
+                           CardsrealmRegularTournamentScraper, CardsrealmMetaTournamentScraper)
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -271,14 +271,15 @@ class CardsrealmArticleScraper(DeckUrlsContainerScraper):
         url = strip_url_params(url)
         return to_eng_url(url, "/articles/")
 
-    def _collect(self) -> list[str]:  # override
+    def _collect(self) -> tuple[list[str], list[str]]:  # override
         self._soup = getsoup(self.url)
         if not self._soup:
             _log.warning(self._error_msg)
-            return []
+            return [], []
 
-        deck_divs = [
-            div for div in self._soup.find_all("div", class_=lambda c: c and "mainDeck" in c)]
-        deck_tags = [d.find("a", href=lambda h: h and "/decks/" in h) for d in deck_divs]
-        urls = [tag.attrs["href"] for tag in deck_tags]
-        return [self.DECK_URL_TEMPLATE.format(url) for url in urls]
+        article_tag = self._soup.find("div", id="article_div_all")
+        if article_tag is None:
+            _log.warning(self._error_msg)
+            return [], []
+
+        return self._get_links(article_tag, URL_TEMPLATE)

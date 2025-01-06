@@ -22,11 +22,10 @@ from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
 from mtg.utils.scrape.dynamic import get_dynamic_soup
 
 _log = logging.getLogger(__name__)
+URL_TEMPLATE = "https://aetherhub.com{}"
 
 
 # TODO: scrape the meta
-# TODO:
-#  articles: https://aetherhub.com/Article/Top-Standard-Decks---December-2024
 
 
 class AetherhubDeckTagParser(TagBasedDeckParser):
@@ -222,9 +221,6 @@ class AetherhubWriteupDeckScraper(AetherhubDeckScraper):
         return deck_tag
 
 
-URL_TEMPLATE = "https://aetherhub.com{}"
-
-
 @DeckUrlsContainerScraper.registered
 class AetherhubUserScraper(DeckUrlsContainerScraper):
     """Scraper of Aetherhub user page.
@@ -326,14 +322,5 @@ class AetherhubArticleScraper(HybridContainerScraper):
             _log.warning(self._error_msg)
             return [], []
 
-        links = {
-            t.attrs["href"].removesuffix("/")
-            for t in article_tag.find_all("a", href=lambda h: h)}
-        links = {
-            URL_TEMPLATE.format(l) if not l.startswith("https://aetherhub.com") else l
-            for l in links}
-        deck_urls = sorted(l for l in links if any(ds.is_deck_url(l) for ds in self._DECK_SCRAPERS))
-        container_urls = sorted(
-            l for l in links if any(cs.is_container_url(l) for cs in self._CONTAINER_SCRAPERS))
+        return self._get_links(article_tag, URL_TEMPLATE)
 
-        return deck_urls, container_urls
