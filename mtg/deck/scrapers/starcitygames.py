@@ -220,16 +220,13 @@ class StarCityGamesDatabaseScraper(DeckUrlsContainerScraper):
         return [tag.attrs["href"].strip() for tag in a_tags]
 
 
-@DeckUrlsContainerScraper.registered
-class StarCityGamesArticleScraper(DeckUrlsContainerScraper):
+@HybridContainerScraper.registered
+class StarCityGamesArticleScraper(HybridContainerScraper):
     """Scraper of StarCityGames decks article page.
-
-    Note: there's no use making it a HybridContainerScraper, as each decklist tag contains also a
-    link to its author's page (actually a search's result page) which would unreasonably inflate
-    the results.
     """
     CONTAINER_NAME = "StarCityGames article"  # override
     _DECK_SCRAPERS = StarCityGamesDeckScraper,  # override
+    _CONTAINER_SCRAPERS = StarCityGamesEventScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -239,19 +236,15 @@ class StarCityGamesArticleScraper(DeckUrlsContainerScraper):
     def sanitize_url(url: str) -> str:  # override
         return strip_url_params(url, keep_fragment=False)
 
-    def _collect(self) -> list[str]:  # override
+    def _collect(self) -> tuple[list[str], list[str]]:  # override
         self._soup = getsoup(self.url)
         if not self._soup:
             _log.warning(self._error_msg)
-            return []
+            return [], []
 
-        deck_divs = [div for div in self._soup.find_all("div", class_="deck_listing")]
-        deck_headers = [
-            tag for tag in [d.find("header", class_="deck_title") for d in deck_divs]
-            if tag is not None]
-        a_tags = [
-            tag for tag in
-            [h.find("a", href=lambda h: h and StarCityGamesDeckScraper.is_deck_url(h))
-             for h in deck_headers]
-            if tag is not None]
-        return [tag.attrs["href"] for tag in a_tags]
+        article_tag = self._soup.find("article", {"data-template": "post-content"})
+        if article_tag is None:
+            _log.warning(self._error_msg)
+            return [], []
+
+        return self._get_links(article_tag)

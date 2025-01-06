@@ -74,12 +74,13 @@ def back_up_channel_files(chid: str, *files: PathLike) -> None:
         shutil.copy(f, dst)
 
 
-def _process_videos(channel_id: str, *video_ids: str) -> None:
+def _process_videos(channel_id: str, *video_ids: str, skip_earlier_scraped_deck_urls=True) -> None:
     files = find_channel_files(channel_id, *video_ids)
     if not files:
         return
     back_up_channel_files(channel_id, *files)
-    if scrape_channel_videos(channel_id, *video_ids):
+    if scrape_channel_videos(
+            channel_id, *video_ids, skip_earlier_scraped_deck_urls=skip_earlier_scraped_deck_urls):
         for f in files:
             prune_channel_data_file(f, *video_ids)
 
@@ -99,7 +100,7 @@ def rescrape_missing_decklists() -> None:
 
     for i, (channel_id, video_ids) in enumerate(channels.items(), start=1):
         _log.info(f"Re-scraping {i}/{len(channels)} channel for missing decklists data...")
-        _process_videos(channel_id, *video_ids)
+        _process_videos(channel_id, *video_ids, skip_earlier_scraped_deck_urls=False)
 
 
 def rescrape_videos(
@@ -132,7 +133,8 @@ def rescrape_videos(
 
 @http_requests_counted("channel videos scraping")
 @timed("channel videos scraping", precision=1)
-def scrape_channel_videos(channel_id: str, *video_ids: str) -> bool:
+def scrape_channel_videos(
+        channel_id: str, *video_ids: str, skip_earlier_scraped_deck_urls=True) -> bool:
     """Scrape specified videos of a YouTube channel in a session.
 
     Scraped channel's data is saved in a .json file and session ensures decklists are saved
@@ -141,12 +143,14 @@ def scrape_channel_videos(channel_id: str, *video_ids: str) -> bool:
     Args:
         channel_id: ID of a channel to scrape
         *video_ids: IDs of videos to scrape
+        skip_earlier_scraped_deck_urls: whether to skip previously scraped decklist URLs
     """
     with ScrapingSession() as session:
         total_videos, total_decks = 0, 0
         try:
             ch = Channel(
-                channel_id, *session.get_failed(channel_id), skip_earlier_scraped_deck_urls=False)
+                channel_id, *session.get_failed(channel_id),
+                skip_earlier_scraped_deck_urls=skip_earlier_scraped_deck_urls)
             text = Channel.get_url_and_title(ch.id, ch.title)
             _log.info(f"Scraping {len(video_ids)} video(s) from channel {text}...")
             ch.scrape_videos(*video_ids)
@@ -777,7 +781,7 @@ class Video:
         downloader = YoutubeCommentDownloader()
         try:
             comments = downloader.get_comments_from_url(self.url, sort_by=SORT_BY_POPULAR)
-        except RuntimeError:
+        except (RuntimeError, json.JSONDecodeError):
             return []
         if not comments:
             return []
