@@ -128,6 +128,10 @@ def rescrape_videos(
 
     for i, (channel_id, video_ids) in enumerate(channels.items(), start=1):
         _log.info(f"Re-scraping {len(video_ids)} video(s) of {i}/{len(channels)} channel...")
+        # NOTE: disabling 'skip_earlier_scraped_deck_urls' has an upside of no accidental data
+        # loss (when decks scraped in the previous video scrape are skipped and then pruned) and
+        # a serious downside of many redundant scrapes. Overall, enabling seems to bring better
+        # results
         _process_videos(channel_id, *video_ids)
 
 

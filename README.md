@@ -86,7 +86,7 @@ descriptions).
         * Deckbox users and events
         * Deckstats users
         * Flexslot users
-        * Goldfish tournaments and players
+        * Goldfish tournaments, players and articles
         * Hareruya events and players
         * LigaMagic events _(with caveats)_
         * MagicVille events and users
@@ -125,22 +125,22 @@ descriptions).
 ### Scraped decks breakdown
 | No | Format | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | commander       | 18992 |    29.75 % |
-| 2  | standard        | 15922 |    24.94 % |
-| 3  | modern          |  5262 |     8.24 % |
-| 4  | pauper          |  4916 |     7.70 % |
-| 5  | pioneer         |  4077 |     6.39 % |
-| 6  | legacy          |  2793 |     4.38 % |
-| 7  | historic        |  1670 |     2.62 % |
-| 8  | brawl           |  1654 |     2.59 % |
-| 9  | explorer        |  1461 |     2.29 % |
-| 10 | undefined       |  1290 |     2.02 % |
-| 11 | timeless        |  1277 |     2.00 % |
-| 12 | duel            |  1245 |     1.95 % |
+| 1  | commander       | 19042 |    29.73 % |
+| 2  | standard        | 16021 |    25.02 % |
+| 3  | modern          |  5278 |     8.24 % |
+| 4  | pauper          |  4920 |     7.68 % |
+| 5  | pioneer         |  4093 |     6.39 % |
+| 6  | legacy          |  2791 |     4.36 % |
+| 7  | historic        |  1670 |     2.61 % |
+| 8  | brawl           |  1659 |     2.59 % |
+| 9  | explorer        |  1472 |     2.30 % |
+| 10 | undefined       |  1290 |     2.01 % |
+| 11 | timeless        |  1282 |     2.00 % |
+| 12 | duel            |  1245 |     1.94 % |
 | 13 | premodern       |   622 |     0.97 % |
-| 14 | vintage         |   574 |     0.90 % |
-| 15 | irregular       |   526 |     0.82 % |
-| 16 | paupercommander |   477 |     0.75 % |
+| 14 | vintage         |   578 |     0.90 % |
+| 15 | irregular       |   528 |     0.82 % |
+| 16 | paupercommander |   477 |     0.74 % |
 | 17 | alchemy         |   407 |     0.64 % |
 | 18 | penny           |   279 |     0.44 % |
 | 19 | standardbrawl   |   189 |     0.30 % |
@@ -148,26 +148,26 @@ descriptions).
 | 21 | gladiator       |    76 |     0.12 % |
 | 22 | oldschool       |    20 |     0.03 % |
 | 23 | future          |    15 |     0.02 % |
-|  | TOTAL           | 63831 | 100.00 %|
+|  | TOTAL           | 64041 | 100.00 %|
 
 | No | Source | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | moxfield.com           | 24467 |    38.33 % |
-| 2  | arena.decklist         |  7497 |    11.75 % |
-| 3  | aetherhub.com          |  6767 |    10.60 % |
-| 4  | mtggoldfish.com        |  6065 |     9.50 % |
-| 5  | archidekt.com          |  3067 |     4.80 % |
-| 6  | mtgo.com               |  3030 |     4.75 % |
+| 1  | moxfield.com           | 24464 |    38.20 % |
+| 2  | arena.decklist         |  7497 |    11.71 % |
+| 3  | aetherhub.com          |  6765 |    10.56 % |
+| 4  | mtggoldfish.com        |  6310 |     9.85 % |
+| 5  | archidekt.com          |  3067 |     4.79 % |
+| 6  | mtgo.com               |  3030 |     4.73 % |
 | 7  | mtga.untapped.gg       |  1496 |     2.34 % |
-| 8  | mtgdecks.net           |  1392 |     2.18 % |
-| 9  | tappedout.net          |  1344 |     2.11 % |
-| 10 | melee.gg               |  1331 |     2.09 % |
-| 11 | streamdecker.com       |  1078 |     1.69 % |
+| 8  | mtgdecks.net           |  1392 |     2.17 % |
+| 9  | tappedout.net          |  1339 |     2.09 % |
+| 10 | melee.gg               |  1306 |     2.04 % |
+| 11 | streamdecker.com       |  1078 |     1.68 % |
 | 12 | mtgtop8.com            |  1043 |     1.63 % |
 | 13 | magic.gg               |   986 |     1.54 % |
 | 14 | tcgplayer.com          |   928 |     1.45 % |
 | 15 | mtg.cardsrealm.com     |   683 |     1.07 % |
-| 16 | deckstats.net          |   509 |     0.80 % |
+| 16 | deckstats.net          |   509 |     0.79 % |
 | 17 | mtgazone.com           |   403 |     0.63 % |
 | 18 | hareruyamtg.com        |   292 |     0.46 % |
 | 19 | pennydreadfulmagic.com |   250 |     0.39 % |
@@ -186,4 +186,4 @@ descriptions).
 | 32 | cardhoarder.com        |    20 |     0.03 % |
 | 33 | app.cardboard.live     |    15 |     0.02 % |
 | 34 | mtgotraders.com        |     1 |     0.00 % |
-|  | TOTAL                  | 63831 | 100.00 %|
+|  | TOTAL                  | 64041 | 100.00 %|
