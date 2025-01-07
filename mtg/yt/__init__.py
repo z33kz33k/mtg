@@ -834,26 +834,22 @@ class Video:
 
         # 4th stage: deck containers
         for link in [*links, *self._unshortened_links]:
-            if scraper := DeckUrlsContainerScraper.from_url(link, self.metadata):
+            if scraper := DeckUrlsContainerScraper.from_url(
+                    link, self.metadata) or HybridContainerScraper.from_url(link, self.metadata):
                 container_decks, failed_urls = scraper.scrape(
                     self._already_scraped_deck_urls, self._already_failed_deck_urls)
                 decks.update(container_decks)
                 self._failed_deck_urls.update(failed_urls)
-            elif scraper := HybridContainerScraper.from_url(link, self.metadata):
-                container_decks, failed_urls = scraper.scrape(
-                    self._already_scraped_deck_urls, self._already_failed_deck_urls)
-                decks.update(container_decks)
-                self._failed_deck_urls.update(failed_urls)
-            elif scraper := DecksJsonContainerScraper.from_url(link, self.metadata):
+            elif scraper := DecksJsonContainerScraper.from_url(
+                    link, self.metadata) or DeckTagsContainerScraper.from_url(link, self.metadata):
                 if link in self._already_scraped_deck_urls:
                     _log.info(f"Skipping already scraped {scraper.short_name()} URL: {link!r}...")
                     continue
-                decks.update(scraper.scrape())
-            elif scraper := DeckTagsContainerScraper.from_url(link, self.metadata):
-                if link in self._already_scraped_deck_urls:
-                    _log.info(f"Skipping already scraped {scraper.short_name()} URL: {link!r}...")
-                    continue
-                decks.update(scraper.scrape())
+                container_decks = scraper.scrape()
+                if container_decks:
+                    decks.update(container_decks)
+                else:
+                    self._failed_deck_urls.add(link)
 
         return sorted(decks)
 

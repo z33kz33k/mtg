@@ -547,8 +547,9 @@ class HybridContainerScraper(DeckUrlsContainerScraper):
                             failed_deck_urls.add(sanitized_url.lower())
                         else:
                             decks += [d for d in container_decks if d not in decks]
-        if not self._deck_urls and not self._container_urls:
+        if not decks:
             _log.info(f"Nothing gathered from a {self.CONTAINER_NAME} at: {self.url!r}")
+            failed_deck_urls.add(self.url)
         return decks, failed_deck_urls
 
     # override
