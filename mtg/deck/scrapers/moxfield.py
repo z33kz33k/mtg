@@ -13,7 +13,7 @@ from datetime import datetime
 from mtg import Json
 from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
 from mtg.scryfall import Card
-from mtg.utils.scrape import ScrapingError, strip_url_params
+from mtg.utils.scrape import ScrapingError, strip_url_query
 from mtg.utils.scrape.dynamic import get_selenium_json
 
 _log = logging.getLogger(__name__)
@@ -42,7 +42,7 @@ class MoxfieldDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        url = strip_url_params(url)
+        url = strip_url_query(url)
         if url.endswith("/primer"):
             return url.removesuffix("/primer")
         elif url.endswith("/primer/"):
@@ -140,7 +140,7 @@ class MoxfieldUserScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url)
+        return strip_url_query(url)
 
     def _get_user_name(self) -> str:
         *_, last = self.url.split("/")

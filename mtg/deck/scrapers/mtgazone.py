@@ -10,19 +10,16 @@
 import contextlib
 import logging
 from datetime import datetime
-from typing import Iterable
 
-import backoff
 from bs4 import Tag
-from requests import ConnectionError, HTTPError, ReadTimeout
 
 from mtg import Json
 from mtg.deck import Deck, Mode
-from mtg.deck.scrapers import DeckScraper, DeckTagsContainerScraper, DeckUrlsContainerScraper, \
-    HybridContainerScraper, TagBasedDeckParser
+from mtg.deck.scrapers import DeckScraper, DeckTagsContainerScraper, HybridContainerScraper, \
+    TagBasedDeckParser
 from mtg.scryfall import ARENA_FORMATS, Card
 from mtg.utils import extract_int, from_iterable, timed
-from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
+from mtg.utils.scrape import ScrapingError, getsoup, strip_url_query
 
 _log = logging.getLogger(__name__)
 
@@ -112,7 +109,7 @@ class MtgaZoneDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url, keep_fragment=False)
+        return strip_url_query(url)
 
     def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)
@@ -148,7 +145,7 @@ class MtgaZoneArticleScraper(DeckTagsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url, keep_fragment=False)
+        return strip_url_query(url)
 
     def _collect(self) -> list[Tag]:  # override
         self._soup = getsoup(self.url)
@@ -179,7 +176,7 @@ class MtgaZoneAuthorScraper(HybridContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url, keep_fragment=False)
+        return strip_url_query(url)
 
     def _collect(self) -> tuple[list[str], list[str]]:  # override
         self._soup = getsoup(self.url)

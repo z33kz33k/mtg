@@ -15,12 +15,11 @@ from selenium.common import TimeoutException
 
 from mtg import Json
 from mtg.deck import Deck, Mode
-from mtg.deck.scrapers import DeckTagsContainerScraper, DeckUrlsContainerScraper, \
-    TagBasedDeckParser, DeckScraper
-from mtg.deck.scrapers.mtgazone import MtgaZoneDeckTagParser
+from mtg.deck.scrapers import DeckScraper, DeckTagsContainerScraper, DeckUrlsContainerScraper, \
+    TagBasedDeckParser
 from mtg.scryfall import all_formats
 from mtg.utils import extract_int, timed
-from mtg.utils.scrape import ScrapingError, getsoup, http_requests_counted, strip_url_params, \
+from mtg.utils.scrape import ScrapingError, getsoup, http_requests_counted, strip_url_query, \
     throttled_soup
 from mtg.utils.scrape.dynamic import get_dynamic_soup
 
@@ -125,12 +124,9 @@ class GoldfishDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        url = strip_url_params(url)
+        url = strip_url_query(url)
         if "/visual/" in url:
             url = url.replace("/visual/", "/")
-        if "#" in url:
-            url, _ = url.rsplit("#", maxsplit=1)
-            return url
         return url
 
     def _pre_parse(self) -> None:  # override
@@ -221,7 +217,7 @@ class GoldfishArticleScraper(DeckTagsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url, keep_fragment=False)
+        return strip_url_query(url)
 
     def _collect(self) -> list[Tag]:  # override
         try:

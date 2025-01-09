@@ -47,7 +47,7 @@ from mtg.utils.scrape import ScrapingError, extract_source, extract_url, \
     timed_request, unshorten
 from mtg.utils.scrape.dynamic import get_dynamic_soup
 from mtg.utils.scrape.linktree import Linktree
-from mtg.yt.data import CHANNELS_DIR, CHANNEL_URL_TEMPLATE, ChannelData, DecklistPath, \
+from mtg.yt.data import CHANNELS_DIR, CHANNEL_URL_TEMPLATE, ChannelData, DataPath, \
     ScrapingSession, VIDEO_URL_TEMPLATE, find_channel_files, find_orphans, load_channel, \
     load_channels, prune_channel_data_file, retrieve_ids, sanitize_source
 
@@ -91,7 +91,7 @@ def rescrape_missing_decklists() -> None:
     """
     decklist_paths = {p for lst in find_orphans().values() for p in lst}
     channels = defaultdict(set)
-    for path in [DecklistPath.from_path(p) for p in decklist_paths]:
+    for path in [DataPath.from_path(p) for p in decklist_paths]:
         channels[path.channel_id].add(path.video_id)
 
     if not channels:

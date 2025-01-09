@@ -13,7 +13,7 @@ from bs4 import Tag
 
 from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
 from mtg.scryfall import COMMANDER_FORMATS, Card
-from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
+from mtg.utils.scrape import ScrapingError, getsoup, strip_url_query
 
 _log = logging.getLogger(__name__)
 
@@ -28,7 +28,7 @@ class DeckboxDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url, keep_endpoint=False, keep_fragment=False)
+        return strip_url_query(url)
 
     def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)
@@ -98,7 +98,7 @@ class DeckboxUserScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url, keep_endpoint=False, keep_fragment=False)
+        return strip_url_query(url)
 
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url)
@@ -126,7 +126,7 @@ class DeckboxEventScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url, keep_endpoint=False, keep_fragment=False)
+        return strip_url_query(url)
 
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url)

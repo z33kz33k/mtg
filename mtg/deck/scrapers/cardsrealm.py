@@ -21,7 +21,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper
 from mtg.utils import timed
-from mtg.utils.scrape import ScrapingError, dissect_js, getsoup, strip_url_params
+from mtg.utils.scrape import ScrapingError, dissect_js, getsoup, strip_url_query
 from mtg.utils.scrape.dynamic import SELENIUM_TIMEOUT, accept_consent
 
 _log = logging.getLogger(__name__)
@@ -61,7 +61,7 @@ class CardsrealmDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        url = strip_url_params(url)
+        url = strip_url_query(url)
         return to_eng_url(url, "/decks/")
 
     def _get_json(self) -> Json:
@@ -114,7 +114,7 @@ class CardsrealmProfileScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        url = strip_url_params(url)
+        url = strip_url_query(url)
         return to_eng_url(url, "/profile/")
 
     def _collect(self) -> list[str]:  # override
@@ -143,7 +143,7 @@ class CardsrealmFolderScraper(CardsrealmProfileScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        url = strip_url_params(url)
+        url = strip_url_query(url)
         return to_eng_url(url, "/decks/")
 
 
@@ -171,7 +171,7 @@ class CardsrealmMetaTournamentScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        url = strip_url_params(url)
+        url = strip_url_query(url)
         return to_eng_url(url, "/meta-decks/")
 
     def _collect(self) -> list[str]:  # override
@@ -205,7 +205,7 @@ class CardsrealmRegularTournamentScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        url = strip_url_params(url)
+        url = strip_url_query(url)
         return to_eng_url(url, "/tournament/")
 
     @timed("getting dynamic soup")
@@ -268,7 +268,7 @@ class CardsrealmArticleScraper(HybridContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        url = strip_url_params(url)
+        url = strip_url_query(url)
         return to_eng_url(url, "/articles/")
 
     def _collect(self) -> tuple[list[str], list[str]]:  # override

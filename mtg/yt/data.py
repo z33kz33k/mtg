@@ -365,7 +365,7 @@ def retrieve_decklist(decklist_id: str) -> str | None:
 
 
 @dataclass(frozen=True)
-class DecklistPath:
+class DataPath:
     """Structural path to a channel/video/decklist in the channel data.
     """
     channel_id: str
@@ -376,9 +376,9 @@ class DecklistPath:
         return breadcrumbs(*[crumb for crumb in astuple(self) if crumb])
 
     @staticmethod
-    def from_path(path: str) -> "DecklistPath":
+    def from_path(path: str) -> "DataPath":
         parts = path.strip("/").split("/", maxsplit=2)
-        return DecklistPath(*parts)
+        return DataPath(*parts)
 
 
 def find_orphans() -> dict[str, list[str]]:
@@ -394,8 +394,8 @@ def find_orphans() -> dict[str, list[str]]:
     for ch in load_channels():
         for v in ch.videos:
             for deck in v["decks"]:
-                path_regular = DecklistPath(ch.id, v["id"], deck["decklist_id"])
-                path_extended = DecklistPath(ch.id, v["id"], deck["decklist_extended_id"])
+                path_regular = DataPath(ch.id, v["id"], deck["decklist_id"])
+                path_extended = DataPath(ch.id, v["id"], deck["decklist_extended_id"])
                 regular_ids[deck["decklist_id"]] = path_regular
                 extended_ids[deck["decklist_extended_id"]] = path_extended
 

@@ -267,42 +267,56 @@ def dissect_js(
     return json.loads(second)
 
 
-def strip_url_params(url: str, keep_endpoint=True, keep_fragment=True) -> str:
-    """Strip URL parameters from ``url``.
+def strip_url_query(url: str, keep_fragment=False) -> str:
+    """Strip query parameters from the URL.
 
-    https://www.youtube.com/watch?v=93gF1q7ey84 ==> https://www.youtube.com
+    https://www.youtube.com/watch?v=93gF1q7ey84 ==> https://www.youtube.com/watch
     https://deckstats.net/?lng=en ==> https://deckstats.net
 
     Args:
         url: URL to be stripped
-        keep_endpoint: whether to keep any endpoint coming before parameters (part between "?" and the last "/", e.g.: "watch" in YT URLs)
-        keep_fragment: whether to keep any fragment coming after parameters (last part indicated by '#', e.g.: "#deck_Walker735" in https://www.mtgo.com/decklist/pauper-challenge-32-2024-11-0312703226#deck_Walker735)
+        keep_fragment: whether to keep the fragment part of the URL
+
+    Returns:
+        URL with query parameters removed
     """
-    fragment = ""
-    if "#" in url:
-        url, fragment = url.rsplit("#", maxsplit=1)
-        fragment = "#" + fragment
-    if "?" in url:
-        url, _ = url.split("?", maxsplit=1)
-        if not keep_endpoint and "/" in url:
-            first, _ = url.rsplit("/", maxsplit=1)
-            if first not in ("https://", "http://"):
-                url = first
-    url = url + fragment if keep_fragment else url
-    return url.removesuffix("/")
+    # split the URL into its components
+    parsed_url = urllib.parse.urlsplit(url)
+
+    # reconstruct the URL without query parameters
+    stripped_url = urllib.parse.urlunsplit((
+        parsed_url.scheme,
+        parsed_url.netloc,
+        parsed_url.path.removesuffix('/'),  # remove any trailing slash
+        '',  # remove query
+        parsed_url.fragment if keep_fragment else ''  # keep or remove fragment
+    ))
+
+    return stripped_url.removesuffix("/")
 
 
-def extract_url_endpoint(url: str) -> str:
-    """Extract endpoint from ``url`` (part between "?" (if present) and the last "/", e.g.: "watch"
-    in YT URLs).
+def trim_url(url: str, level=0, keep_scheme=False) -> str:
+    """Trim URL to domain (level=0) or any subfolders after it (level>0).
     """
-    url = url.removesuffix("/")
-    if "?" in url:
-        url, _ = url.split("?", maxsplit=1)
-    if "/" in url:
-        _, endpoint = url.rsplit("/", maxsplit=1)
-        return endpoint
-    return ""
+    if not "/" in url:
+        return url
+    if url.startswith("https://"):
+        scheme = "https://"
+    elif url.startswith("http://"):
+        scheme = "http://"
+    else:
+        scheme = ""
+    url = url.removeprefix("https://").removeprefix("http://").removesuffix("/")
+    parts = url.split("/")
+    trimmed, *rest = parts
+    if not rest:
+        return scheme + trimmed if keep_scheme else trimmed
+    while rest and level > 0:
+        if "(" in rest:
+            return trimmed + "/" + rest
+        trimmed += "/" + rest.pop(0)
+        level -= 1
+    return scheme + trimmed if keep_scheme else trimmed
 
 
 def url_decode(encoded: str) -> str:
@@ -312,3 +326,5 @@ def url_decode(encoded: str) -> str:
         ""Virtue+of+Loyalty+%2F%2F+Ardenvale+Fealty"" ==> "Virtue of Loyalty // Ardenvale Fealty"
     """
     return urllib.parse.unquote(encoded.replace('+', ' '))
+
+

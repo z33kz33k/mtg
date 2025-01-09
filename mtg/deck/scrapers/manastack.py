@@ -13,7 +13,7 @@ from selenium.common.exceptions import TimeoutException
 
 from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
 from mtg.utils import get_date_from_ago_text
-from mtg.utils.scrape import ScrapingError, strip_url_params
+from mtg.utils.scrape import ScrapingError, strip_url_query
 from mtg.utils.scrape.dynamic import get_dynamic_soup
 
 _log = logging.getLogger(__name__)
@@ -31,7 +31,7 @@ class ManaStackDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url, keep_endpoint=False, keep_fragment=False)
+        return strip_url_query(url)
 
     def _pre_parse(self) -> None:  # override
         try:
@@ -92,7 +92,7 @@ class ManaStackUserScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url, keep_endpoint=False, keep_fragment=False)
+        return strip_url_query(url)
 
     def _collect(self) -> list[str]:  # override
         try:

@@ -15,7 +15,7 @@ from bs4 import Tag
 from mtg.deck.scrapers import DeckScraper
 from mtg.scryfall import Card
 from mtg.utils import extract_int, sanitize_whitespace
-from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
+from mtg.utils.scrape import ScrapingError, getsoup, strip_url_query
 
 _log = logging.getLogger(__name__)
 
@@ -30,7 +30,7 @@ class ScryfallDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        url = strip_url_params(url, keep_endpoint=False, keep_fragment=False)
+        url = strip_url_query(url)
         return f"{url}?as=list&with=usd"
 
     def _pre_parse(self) -> None:  # override

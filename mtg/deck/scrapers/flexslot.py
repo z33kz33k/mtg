@@ -16,7 +16,7 @@ from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
-from mtg.utils.scrape import strip_url_params
+from mtg.utils.scrape import strip_url_query
 from mtg.utils.scrape.dynamic import get_dynamic_soup
 from mtg.utils.scrape import ScrapingError
 
@@ -41,7 +41,7 @@ class FlexslotDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url, keep_endpoint=False, keep_fragment=False).removesuffix("/view")
+        return strip_url_query(url).removesuffix("/view")
 
     def _pre_parse(self) -> None:  # override
         try:
@@ -87,7 +87,7 @@ class FlexslotUserScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url, keep_endpoint=False, keep_fragment=False)
+        return strip_url_query(url)
 
     def _collect(self) -> list[str]:  # override
         try:

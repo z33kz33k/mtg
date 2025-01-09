@@ -12,7 +12,7 @@ import logging
 
 from mtg import Json
 from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
-from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
+from mtg.utils.scrape import ScrapingError, getsoup, strip_url_query
 
 _log = logging.getLogger(__name__)
 
@@ -35,7 +35,7 @@ class ManatradersDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url)
+        return strip_url_query(url)
 
     def _get_json_data(self) -> Json:
         json_data = self._soup.find(
@@ -90,6 +90,4 @@ class ManatradersUserScraper(DeckUrlsContainerScraper):
         deck_tags = [
             tag for tag in self._soup.find_all("a", href=lambda h: h and "/webshop/deck/" in h)]
         urls = {tag.attrs["href"] for tag in deck_tags}
-        return [
-            strip_url_params(self.DECK_URL_TEMPLATE.format(url), with_endpoint=False)
-            for url in sorted(urls)]
+        return [strip_url_query(self.DECK_URL_TEMPLATE.format(url)) for url in sorted(urls)]

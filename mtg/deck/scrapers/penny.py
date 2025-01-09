@@ -14,7 +14,7 @@ from bs4 import Tag
 from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
 from mtg.scryfall import Card
 from mtg.utils import from_iterable, get_date_from_ago_text, get_date_from_month_text
-from mtg.utils.scrape import ScrapingError, getsoup, request_json, strip_url_params
+from mtg.utils.scrape import ScrapingError, getsoup, request_json, strip_url_query
 
 _log = logging.getLogger(__name__)
 
@@ -29,7 +29,7 @@ class PennyDreadfulMagicDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url, keep_endpoint=False, keep_fragment=False)
+        return strip_url_query(url)
 
     def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)
@@ -97,7 +97,7 @@ class PennyDreadfulMagicCompetitionScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url, keep_endpoint=False, keep_fragment=False)
+        return strip_url_query(url)
 
     def _get_competition_id(self) -> str:
         *_, last = self.url.split("/")
@@ -132,7 +132,7 @@ class PennyDreadfulMagicUserScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url, keep_endpoint=False, keep_fragment=False)
+        return strip_url_query(url)
 
     @staticmethod
     def _parse_url_for_ids(url: str) -> tuple[str, str]:

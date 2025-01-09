@@ -18,7 +18,7 @@ from mtg.deck import Archetype, Deck, Mode
 from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper, HybridContainerScraper, \
     TagBasedDeckParser
 from mtg.utils import extract_float, extract_int, from_iterable
-from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
+from mtg.utils.scrape import ScrapingError, getsoup, strip_url_query
 from mtg.utils.scrape.dynamic import get_dynamic_soup
 
 _log = logging.getLogger(__name__)
@@ -109,7 +109,7 @@ class AetherhubDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        url = strip_url_params(url, keep_endpoint=False, keep_fragment=False)
+        url = strip_url_query(url)
         if "/gallery/" in url.lower():
             url = url.replace("/Gallery/", "/Public/").replace("/gallery/", "/public/")
         elif url.lower().endswith("/gallery"):
@@ -212,7 +212,7 @@ class AetherhubWriteupDeckScraper(AetherhubDeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url, keep_fragment=False)
+        return strip_url_query(url)
 
     def _get_deck_tag(self):  # override
         deck_tag = self._soup.find("div", id="tab_deck")
@@ -236,7 +236,7 @@ class AetherhubUserScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        url = strip_url_params(url, keep_endpoint=False, keep_fragment=False)
+        url = strip_url_query(url)
         if not url.lower().endswith("/decks"):
             return f"{url}/decks"
         return url
@@ -272,7 +272,7 @@ class AetherhubEventScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url, keep_endpoint=False, keep_fragment=False)
+        return strip_url_query(url)
 
     def _collect(self) -> list[str]:  # override
         try:
@@ -309,7 +309,7 @@ class AetherhubArticleScraper(HybridContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url, keep_fragment=False)
+        return strip_url_query(url)
 
     def _collect(self) -> tuple[list[str], list[str]]:  # override
         self._soup = getsoup(self.url)

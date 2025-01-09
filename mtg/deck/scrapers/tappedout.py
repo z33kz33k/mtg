@@ -19,7 +19,7 @@ from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
 from mtg.utils import extract_int, get_date_from_ago_text
-from mtg.utils.scrape import ScrapingError, getsoup, request_json, strip_url_params, \
+from mtg.utils.scrape import ScrapingError, getsoup, request_json, strip_url_query, \
     throttle, timed_request
 
 _log = logging.getLogger(__name__)
@@ -54,7 +54,7 @@ class TappedoutDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url, keep_endpoint=False, keep_fragment=False)
+        return strip_url_query(url)
 
     @backoff.on_predicate(
         backoff.runtime,
@@ -121,7 +121,7 @@ class TappedoutUserScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url, keep_endpoint=False, keep_fragment=False)
+        return strip_url_query(url)
 
     def _get_user_name(self) -> str:
         url = self.url.removeprefix("https://").removeprefix("http://")
@@ -161,7 +161,7 @@ class TappedoutFolderScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url, keep_endpoint=False, keep_fragment=False)
+        return strip_url_query(url)
 
     def _get_folder_id(self) -> int:
         soup = getsoup(self.url)

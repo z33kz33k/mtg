@@ -13,7 +13,7 @@ from datetime import datetime
 
 from mtg import Json
 from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
-from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
+from mtg.utils.scrape import ScrapingError, getsoup, strip_url_query
 
 _log = logging.getLogger(__name__)
 
@@ -32,11 +32,7 @@ class ArchidektDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        url = strip_url_params(url)
-        if "#" in url:
-            url, _ = url.rsplit("#", maxsplit=1)
-            return url
-        return url
+        return strip_url_query(url)
 
     def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url)
@@ -94,7 +90,7 @@ class ArchidektFolderScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url)
+        return strip_url_query(url)
 
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url)
@@ -121,10 +117,6 @@ class ArchidektUserScraper(DeckUrlsContainerScraper):
         url = url.lower()
         return ("archidekt.com/u/" in url or "archidekt.com/user/" in url
                 or ("archidekt.com/search/decks?" in url and "owner=" in url))
-
-    @staticmethod
-    def sanitize_url(url: str) -> str:  # override
-        return url
 
     def _collect(self) -> list[str]:  # override
         self._soup = getsoup(self.url)

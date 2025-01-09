@@ -24,7 +24,7 @@ from mtg.deck.arena import ArenaParser, PlaysetLine
 from mtg.deck.scrapers import DeckScraper
 from mtg.scryfall import COMMANDER_FORMATS
 from mtg.utils import extract_float, get_date_from_ago_text
-from mtg.utils.scrape import ScrapingError, strip_url_params
+from mtg.utils.scrape import ScrapingError, strip_url_query
 from mtg.utils.scrape.dynamic import SELENIUM_TIMEOUT, click_for_clipboard
 
 _log = logging.getLogger(__name__)
@@ -61,7 +61,7 @@ class TopDeckedRegularDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url, keep_endpoint=False, keep_fragment=False)
+        return strip_url_query(url)
 
     def _process_metadata_with_selenium(self, driver: webdriver.Chrome) -> None:
         name_el = driver.find_element(By.XPATH, self._NAME_XPATH)

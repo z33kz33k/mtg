@@ -18,7 +18,7 @@ from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
 from mtg.utils import extract_float, extract_int
 from mtg.utils.scrape import ScrapingError
-from mtg.utils.scrape import strip_url_params
+from mtg.utils.scrape import strip_url_query
 from mtg.utils.scrape.dynamic import get_dynamic_soup
 
 _log = logging.getLogger(__name__)
@@ -44,7 +44,7 @@ class UntappedProfileDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url)
+        return strip_url_query(url)
 
     def _pre_parse(self) -> None:  # override
         try:
@@ -85,7 +85,7 @@ class UntappedRegularDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        url = strip_url_params(url)
+        url = strip_url_query(url)
         return url.replace("input/", "") if "/input/" in url else url
 
     def _pre_parse(self) -> None:  # override
@@ -125,7 +125,7 @@ class UntappedMetaDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url)
+        return strip_url_query(url)
 
     def _pre_parse(self) -> None:  # override
         try:
@@ -182,7 +182,7 @@ class UntappedProfileScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url)
+        return strip_url_query(url)
 
     def _collect(self) -> list[str]:  # override
         try:

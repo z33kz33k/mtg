@@ -17,7 +17,7 @@ from mtg.deck import Deck
 from mtg.deck.scrapers import DecksJsonContainerScraper, JsonBasedDeckParser, DeckScraper
 from mtg.scryfall import all_formats
 from mtg.utils import from_iterable, get_ordinal_suffix
-from mtg.utils.scrape import ScrapingError, dissect_js, getsoup, strip_url_params
+from mtg.utils.scrape import ScrapingError, dissect_js, getsoup, strip_url_query
 
 _log = logging.getLogger(__name__)
 
@@ -144,7 +144,7 @@ class MtgoDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url)
+        return strip_url_query(url, keep_fragment=True)
 
     def _parse_player_name(self) -> str:
         *_, rest = self.url.split("/")
@@ -189,7 +189,7 @@ class MtgoEventScraper(DecksJsonContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url)
+        return strip_url_query(url)
 
     def _collect(self) -> list[Json]:  # override
         self._soup = getsoup(self.url, headers=HEADERS)

@@ -20,7 +20,7 @@ from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckScraper, DeckTagsContainerScraper, TagBasedDeckParser
 from mtg.utils import sanitize_whitespace
-from mtg.utils.scrape import ScrapingError, getsoup, strip_url_params
+from mtg.utils.scrape import ScrapingError, getsoup, strip_url_query
 from mtg.utils.scrape.dynamic import get_dynamic_soup
 
 _log = logging.getLogger(__name__)
@@ -210,7 +210,7 @@ class MagicGgEventScraper(DeckTagsContainerScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_params(url, keep_fragment=False)
+        return strip_url_query(url)
 
     def _collect(self) -> list[Tag]:  # override
         self._soup = getsoup(self.url)
