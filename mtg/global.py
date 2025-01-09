@@ -38,6 +38,7 @@ class UrlsStateManager:  # singleton
         self._scraped: dict[str, set[str]] = {}  # maps 'channel_id/video_id' path to set of URLs
         self._failed: dict[str, set[str]] = {}  # maps 'channel_id' to set of URLs
         self.current_channel, self.current_video = None, None
+
     def _get_scraped(self, channel_id="", video_id="") -> set[str]:
         if channel_id and video_id:
             return self._scraped.get(f"{channel_id}/{video_id}", set())
@@ -52,12 +53,6 @@ class UrlsStateManager:  # singleton
     def _get_failed(self, channel_id="") -> set[str]:
         return set(
             url for k, v in self._failed.items() if k == channel_id or not channel_id for url in v)
-
-    def is_scraped(self, url: str, channel_id="", video_id="") -> bool:
-        return url in self._get_scraped(channel_id, video_id)
-
-    def is_failed(self, url: str, channel_id="") -> bool:
-        return url in self._get_failed(channel_id)
 
     # used by the scraping session to load initial global state from disk
     def update_scraped(self, data: dict[str, set[str]]) -> None:
@@ -77,3 +72,10 @@ class UrlsStateManager:  # singleton
 
     def add_failed(self, url: str) -> None:
         self._failed.setdefault(self.current_channel, set()).add(url)
+
+    def is_scraped(self, url: str, channel_id="", video_id="") -> bool:
+        return url in self._get_scraped(channel_id, video_id)
+
+    def is_failed(self, url: str, channel_id="") -> bool:
+        return url in self._get_failed(channel_id)
+
