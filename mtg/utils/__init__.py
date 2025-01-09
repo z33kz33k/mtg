@@ -1,7 +1,7 @@
 """
 
-    mtg.utils.py
-    ~~~~~~~~~~~~~~~~~
+    mtg.utils.__init__.py
+    ~~~~~~~~~~~~~~~~~~~~~
     Utilities.
 
     @author: z33k

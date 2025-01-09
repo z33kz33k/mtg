@@ -1,7 +1,7 @@
 """
 
-    mtg.yt.py
-    ~~~~~~~~~~~~~~
+    mtg.yt.__init__.py
+    ~~~~~~~~~~~~~~~~~~
     Scrape YouTube.
 
     @author: z33k

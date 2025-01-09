@@ -1,7 +1,7 @@
 """
 
-    mtg.utils.scrape.py
-    ~~~~~~~~~~~~~~~~~~~
+    mtg.utils.scrape.__init__.py
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Utilities for scraping.
 
     @author: z33k
