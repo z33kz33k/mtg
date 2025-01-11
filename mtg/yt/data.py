@@ -27,6 +27,8 @@ from mtg.utils import Counter, breadcrumbs, deserialize_dates, serialize_dates
 from mtg.utils.files import getdir, getfile
 from mtg.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
 from mtg.utils.scrape import extract_url, getsoup
+from mtg.gstate import UrlsStateManager
+
 
 _log = logging.getLogger(__name__)
 VIDEO_URL_TEMPLATE = "https://www.youtube.com/watch?v={}"
@@ -306,18 +308,21 @@ class ScrapingSession:
     """
     def __init__(self) -> None:
         self._regular_decklists, self._extended_decklists = {}, {}
-        self._failed_urls = {}
-        self._regular_count, self._extended_count, self._failed_count = 0, 0, 0
+        self._regular_count, self._extended_count = 0, 0
+        self._initial_failed_count = 0
+        self._urls_manager = UrlsStateManager()
 
     def __enter__(self) -> "ScrapingSession":
         decklists = load_decklists()
         self._regular_decklists = decklists["regular"]
         self._extended_decklists = decklists["extended"]
-        self._failed_urls = {k: set(v) for k, v in json.loads(FAILED_URLS_FILE.read_text(
+        failed_urls = {k: set(v) for k, v in json.loads(FAILED_URLS_FILE.read_text(
                 encoding="utf-8")).items()} if FAILED_URLS_FILE.is_file() else {}
+        self._initial_failed_count = sum(len(v) for v in failed_urls.values())
         _log.info(
-            f"Loaded {len({url for v in self._failed_urls.values() for url in v}):,} decklist "
+            f"Loaded {len({url for v in failed_urls.values() for url in v}):,} decklist "
             f"URL(s) that previously failed from the global repository")
+        self._urls_manager.update_failed(failed_urls)
         return self
 
     def __exit__(
@@ -325,7 +330,7 @@ class ScrapingSession:
             exc_tb: TracebackType | None) -> None:
         dump_decklists(self._regular_decklists, self._extended_decklists)
         FAILED_URLS_FILE.write_text(
-            json.dumps({k: sorted(v) for k, v in self._failed_urls.items()}, indent=4,
+            json.dumps({k: sorted(v) for k, v in self._urls_manager.failed.items()}, indent=4,
                        ensure_ascii=False), encoding="utf-8")
         _log.info(
             f"Total of {self._regular_count:,} unique regular decklist(s) added to the global "
@@ -333,10 +338,13 @@ class ScrapingSession:
         _log.info(
             f"Total of {self._extended_count:,} unique extended decklist(s) added to the global "
             f"repository")
+        failed_count = sum(len(v) for v in self._urls_manager.failed.values())
         _log.info(
-            f"Total of {self._failed_count:,} newly failed decklist URLs added to the global "
-            f"repository to be avoided in the future")
+            f"Total of {failed_count - self._initial_failed_count:,} newly failed decklist URLs "
+            f"added to the global repository to be avoided in the future")
+        self._urls_manager.reset()
 
+    # TODO: move to global decklists state manager in gstate.py
     def update_regular(self, decklist_id: str, decklist: str) -> None:
         if decklist_id not in self._regular_decklists:
             self._regular_decklists[decklist_id] = decklist
@@ -346,17 +354,6 @@ class ScrapingSession:
         if decklist_id not in self._extended_decklists:
             self._extended_decklists[decklist_id] = decklist
             self._extended_count += 1
-
-    def update_failed(self, channel_id: str, *urls: str) -> None:
-        urls = {url.lower().removesuffix("/") for url in urls}
-        failed_urls = self._failed_urls.setdefault(channel_id, set())
-        for url in urls:
-            if url not in failed_urls:
-                failed_urls.add(url)
-                self._failed_count += 1
-
-    def get_failed(self, channel_id: str) -> list[str]:
-        return sorted(self._failed_urls.get(channel_id, set()))
 
 
 def retrieve_decklist(decklist_id: str) -> str | None:
