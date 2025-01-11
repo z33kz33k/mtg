@@ -1,7 +1,7 @@
 """
 
-    mtg.yt.py
-    ~~~~~~~~~~~~~~
+    mtg.yt.__init__.py
+    ~~~~~~~~~~~~~~~~~~
     Scrape YouTube.
 
     @author: z33k
@@ -20,7 +20,7 @@ from decimal import Decimal
 from functools import cached_property
 from http.client import RemoteDisconnected
 from pathlib import Path
-from typing import Callable, Generator, Iterable
+from typing import Callable, Generator
 
 import backoff
 import httpcore
@@ -38,6 +38,8 @@ from mtg.deck import Deck, SANITIZED_FORMATS
 from mtg.deck.arena import ArenaParser, get_arena_lines, group_arena_lines
 from mtg.deck.scrapers import DeckScraper, DeckTagsContainerScraper, DeckUrlsContainerScraper, \
     DecksJsonContainerScraper, HybridContainerScraper
+from mtg.gstate import UrlsStateManager, ignore_already_scraped_urls, \
+    ignore_already_scraped_urls_within_current_video
 from mtg.scryfall import all_formats
 from mtg.utils import Counter, deserialize_dates, extract_float, find_longest_seqs, \
     from_iterable, getrepr, multiply_by_symbol, sanitize_filename, serialize_dates, timed
@@ -79,8 +81,7 @@ def _process_videos(channel_id: str, *video_ids: str, skip_earlier_scraped_deck_
     if not files:
         return
     back_up_channel_files(channel_id, *files)
-    if scrape_channel_videos(
-            channel_id, *video_ids, skip_earlier_scraped_deck_urls=skip_earlier_scraped_deck_urls):
+    if scrape_channel_videos(channel_id, *video_ids):
         for f in files:
             prune_channel_data_file(f, *video_ids)
 
@@ -98,9 +99,10 @@ def rescrape_missing_decklists() -> None:
         _log.info("No videos found that needed re-scraping")
         return
 
-    for i, (channel_id, video_ids) in enumerate(channels.items(), start=1):
-        _log.info(f"Re-scraping {i}/{len(channels)} channel for missing decklists data...")
-        _process_videos(channel_id, *video_ids, skip_earlier_scraped_deck_urls=False)
+    with ignore_already_scraped_urls():
+        for i, (channel_id, video_ids) in enumerate(channels.items(), start=1):
+            _log.info(f"Re-scraping {i}/{len(channels)} channel for missing decklists data...")
+            _process_videos(channel_id, *video_ids)
 
 
 def rescrape_videos(
@@ -126,19 +128,15 @@ def rescrape_videos(
         _log.info("No videos found that needed re-scraping")
         return
 
-    for i, (channel_id, video_ids) in enumerate(channels.items(), start=1):
-        _log.info(f"Re-scraping {len(video_ids)} video(s) of {i}/{len(channels)} channel...")
-        # NOTE: disabling 'skip_earlier_scraped_deck_urls' has an upside of no accidental data
-        # loss (when decks scraped in the previous video scrape are skipped and then pruned) and
-        # a serious downside of many redundant scrapes. Overall, enabling seems to bring better
-        # results
-        _process_videos(channel_id, *video_ids)
+    with ignore_already_scraped_urls_within_current_video():
+        for i, (channel_id, video_ids) in enumerate(channels.items(), start=1):
+            _log.info(f"Re-scraping {len(video_ids)} video(s) of {i}/{len(channels)} channel...")
+            _process_videos(channel_id, *video_ids)
 
 
 @http_requests_counted("channel videos scraping")
 @timed("channel videos scraping", precision=1)
-def scrape_channel_videos(
-        channel_id: str, *video_ids: str, skip_earlier_scraped_deck_urls=True) -> bool:
+def scrape_channel_videos(channel_id: str, *video_ids: str) -> bool:
     """Scrape specified videos of a YouTube channel in a session.
 
     Scraped channel's data is saved in a .json file and session ensures decklists are saved
@@ -147,18 +145,14 @@ def scrape_channel_videos(
     Args:
         channel_id: ID of a channel to scrape
         *video_ids: IDs of videos to scrape
-        skip_earlier_scraped_deck_urls: whether to skip previously scraped decklist URLs
     """
     with ScrapingSession() as session:
         total_videos, total_decks = 0, 0
         try:
-            ch = Channel(
-                channel_id, *session.get_failed(channel_id),
-                skip_earlier_scraped_deck_urls=skip_earlier_scraped_deck_urls)
+            ch = Channel(channel_id)
             text = Channel.get_url_and_title(ch.id, ch.title)
             _log.info(f"Scraping {len(video_ids)} video(s) from channel {text}...")
             ch.scrape_videos(*video_ids)
-            session.update_failed(ch.id, *ch.already_failed_deck_urls)
             if ch.data:
                 dst = getdir(CHANNELS_DIR / channel_id)
                 ch.dump(dst)
@@ -196,13 +190,10 @@ def scrape_channels(
         total_channels, total_decks = 0, 0
         for i, id_ in enumerate(chids, start=1):
             try:
-                ch = Channel(
-                    id_, *session.get_failed(id_),
-                    only_earlier_than_last_scraped=only_earlier_than_last_scraped)
+                ch = Channel(id_)
                 text = Channel.get_url_and_title(ch.id, ch.title)
                 _log.info(f"Scraping channel {i}/{len(chids)}: {text}...")
                 ch.scrape(videos)
-                session.update_failed(ch.id, *ch.already_failed_deck_urls)
                 if ch.data:
                     dst = getdir(CHANNELS_DIR / id_)
                     ch.dump(dst)
@@ -576,27 +567,18 @@ class Video:
             metadata["date"] = self.publish_time.date()
         return metadata
 
-    @property
-    def failed_deck_urls(self) -> set[str]:
-        return self._failed_deck_urls
-
-    def __init__(
-            self, video_id: str, already_scraped_deck_urls: Iterable[str] = (),
-            already_failed_deck_urls: Iterable[str] = ()) -> None:
+    def __init__(self, video_id: str) -> None:
         """Initialize.
 
         Args:
             video_id: unique string identifying a YouTube video (the part after `v=` in the URL)
-            already_scraped_deck_urls: URLs of decks that have already been scraped within a channel
-            already_failed_deck_urls: URLs of decks that have already failed to be scraped
         """
-        self._already_scraped_deck_urls = set(already_scraped_deck_urls)
-        self._already_failed_deck_urls = set(already_failed_deck_urls)
-        self._failed_deck_urls = set()
+        self._urls_manager = UrlsStateManager()
+        self._urls_manager.current_video = video_id
         self._process(video_id)
 
     @throttled(1.25, 0.25)
-    def _process(self, video_id):
+    def _process(self, video_id: str) -> None:
         self._id = video_id
         try:
             self._pytube = self._get_pytube()
@@ -623,7 +605,7 @@ class Video:
         return links
 
     @timed("gathering video data")
-    def _scrape(self):
+    def _scrape(self) -> None:
         self._get_pytube_data()
         self._format_soup = self._get_format_soup()
         self._derived_format = self._derive_format()
@@ -759,26 +741,44 @@ class Video:
         return links, get_arena_lines(*other_lines)
 
     def _process_deck(self, link: str) -> Deck | None:
+        deck = None
         if scraper := DeckScraper.from_url(link, self.metadata):
+            sanitized_link = scraper.sanitize_url(link)
+            if self._urls_manager.is_scraped(sanitized_link):
+                _log.info(f"Skipping already scraped deck URL: {sanitized_link!r}...")
+                return None
+            elif self._urls_manager.is_failed(sanitized_link):
+                _log.info(f"Skipping already failed deck URL: {sanitized_link!r}...")
+                return None
             try:
-                if deck := scraper.scrape(throttled=any(site in link for site in self._THROTTLED)):
-                    return deck
-                self._already_failed_deck_urls.add(link.lower().removesuffix("/"))
-                self._failed_deck_urls.add(link.lower().removesuffix("/"))
+                deck = scraper.scrape(throttled=any(site in link for site in self._THROTTLED))
             except ReadTimeout:
                 _log.warning(f"Back-offed scraping of {link!r} failed with read timeout")
-                return None
+            if not deck:
+                self._urls_manager.add_failed(sanitized_link)
 
         elif any(h in link for h in self.PASTEBIN_LIKE_HOOKS):
             if "gist.github.com/" in link and not link.endswith("/raw"):
                 link = f"{link}/raw"
+            if self._urls_manager.is_failed(link):
+                _log.info(f"Skipping already failed deck URL: {link!r}...")
+                return None
             response = timed_request(link)
             if response:
                 try:
-                    return ArenaParser(response.text.splitlines(), self.metadata).parse()
+                    deck = ArenaParser(response.text.splitlines(), self.metadata).parse()
                 except ValueError as ve:
                     _log.warning(f"Failed to parse Arena decklist from: {link!r}: {ve}")
-        return None
+            if not deck:
+                self._urls_manager.add_failed(link)
+
+        if deck:
+            deck_name = f"{deck.name!r} deck" if deck.name else "Deck"
+            _log.info(f"{deck_name} scraped successfully")
+            if deck_url := deck.metadata.get("url"):
+                self._urls_manager.add_scraped(deck_url)
+
+        return deck
 
     @timed("comments lookup")
     def _get_comment_lines(self) -> list[str]:
@@ -795,21 +795,9 @@ class Video:
     def _process_urls(self, *urls: str) -> list[Deck]:
         decks = []
         for url in urls:
-            if url.lower().removesuffix("/") in {
-                u.lower().removesuffix("/") for u in self._already_scraped_deck_urls}:
-                _log.info(f"Skipping already scraped deck URL: {url!r}...")
-                continue
-            if url.lower().removesuffix("/") in self._already_failed_deck_urls:
-                _log.info(f"Skipping already failed deck URL: {url!r}...")
-                continue
             self._sources.add(extract_source(url))
             if deck := self._process_deck(url):
-                deck_name = f"{deck.name!r} deck" if deck.name else "Deck"
-                _log.info(f"{deck_name} scraped successfully")
                 decks.append(deck)
-                if deck_url := deck.metadata.get("url"):
-                    self._already_scraped_deck_urls.add(deck_url)
-
         return decks
 
     def _collect(self, links: list[str], arena_lines: list[str]) -> list[Deck]:
@@ -840,20 +828,28 @@ class Video:
         for link in [*links, *self._unshortened_links]:
             if scraper := DeckUrlsContainerScraper.from_url(
                     link, self.metadata) or HybridContainerScraper.from_url(link, self.metadata):
-                container_decks, failed_urls = scraper.scrape(
-                    self._already_scraped_deck_urls, self._already_failed_deck_urls)
-                decks.update(container_decks)
-                self._failed_deck_urls.update(failed_urls)
+                decks.update(scraper.scrape())
             elif scraper := DecksJsonContainerScraper.from_url(
                     link, self.metadata) or DeckTagsContainerScraper.from_url(link, self.metadata):
-                if link in self._already_scraped_deck_urls:
-                    _log.info(f"Skipping already scraped {scraper.short_name()} URL: {link!r}...")
+                sanitized_link = scraper.sanitize_url(link)
+                if self._urls_manager.is_scraped(sanitized_link):
+                    _log.info(
+                        f"Skipping already scraped {scraper.short_name()} URL: "
+                        f"{sanitized_link!r}...")
+                    continue
+                if self._urls_manager.is_failed(sanitized_link):
+                    _log.info(
+                        f"Skipping already failed {scraper.short_name()} URL: "
+                        f"{sanitized_link!r}...")
                     continue
                 container_decks = scraper.scrape()
+                # URLs state management is better here than in scrapers as it avoids duplication
                 if container_decks:
+                    if deck_url := container_decks[0].metadata.get("url"):
+                        self._urls_manager.add_scraped(deck_url)
                     decks.update(container_decks)
                 else:
-                    self._failed_deck_urls.add(link)
+                    self._urls_manager.add_failed(link)
 
         return sorted(decks)
 
@@ -939,33 +935,33 @@ class Channel:
     def earlier_data(self) -> ChannelData | None:
         return self._earlier_data
 
-    @property
-    def already_failed_deck_urls(self) -> set[str]:
-        return self._already_failed_deck_urls
-
-    def __init__(
-            self, channel_id: str, *already_failed_deck_urls: str,
-            only_earlier_than_last_scraped=True, skip_earlier_scraped_deck_urls=True) -> None:
-        self._id, self._already_failed_deck_urls = channel_id, set(already_failed_deck_urls)
-        self._only_earlier_than_last = only_earlier_than_last_scraped
+    def __init__(self, channel_id: str) -> None:
+        self._id = channel_id
+        self._urls_manager = UrlsStateManager()
+        self._urls_manager.current_channel = self.id
         self._title, self._description, self._tags = None, None, None
         self._subscribers, self._scrape_time, self._videos = None, None, []
         self._ytsp_data, self._data = None, None
+        self._handle_earlier_data()
+
+    def _handle_earlier_data(self):
         try:
             self._earlier_data = load_channel(self.id)
             self._title = self._earlier_data.title
-            self._already_scraped_deck_urls = {
-                *self._earlier_data.deck_urls} if skip_earlier_scraped_deck_urls else set()
+            self._urls_manager.update_scraped({self.id: self.earlier_data.deck_urls})
+            self._urls_manager.update_scraped(
+                {f"{self.id}/{v['id']}": {d["metadata"]["url"] for d in v["decks"]
+                                          if d.get("metadata") and d["metadata"].get("url")}
+                 for v in self.earlier_data.videos})
         except FileNotFoundError:
             self._earlier_data = None
-            self._already_scraped_deck_urls = set()
 
-    def get_unscraped_video_ids(self, limit=10) -> list[str]:
+    def get_unscraped_video_ids(self, limit=10, only_newer_than_last_scraped=True) -> list[str]:
         scraped_ids = [v["id"] for v in self.earlier_data.videos] if self.earlier_data else []
         if not scraped_ids:
             last_scraped_id = None
         else:
-            last_scraped_id = scraped_ids[0] if self._only_earlier_than_last else None
+            last_scraped_id = scraped_ids[0] if only_newer_than_last_scraped else None
 
         video_ids, scraped_ids = [], set(scraped_ids)
         count = 0
@@ -1008,13 +1004,11 @@ class Channel:
             _log.info(
                 f"Scraping video {i}/{len(video_ids)}: 'https://www.youtube.com/watch?v={vid}'...")
             try:
-                video = Video(vid, self._already_scraped_deck_urls, self.already_failed_deck_urls)
+                video = Video(vid)
             except pytubefix.exceptions.VideoPrivate:
                 _log.warning(f"Skipping private video: 'https://www.youtube.com/watch?v={vid}'...")
                 continue
             self._videos.append(video)
-            self._already_scraped_deck_urls.update({d.url for d in video.decks if d.url})
-            self._already_failed_deck_urls.update(video.failed_deck_urls)
         try:
             self._ytsp_data = self._get_ytsp() if self._id else None
             self._description = self._ytsp_data.result.get("description") if self._id else None
@@ -1052,8 +1046,9 @@ class Channel:
         self._scrape_videos(*video_ids)
 
     @timed("channel scraping", precision=2)
-    def scrape(self, limit=10) -> None:
-        video_ids = self.get_unscraped_video_ids(limit)
+    def scrape(self, limit=10, only_newer_than_last_scraped=True) -> None:
+        video_ids = self.get_unscraped_video_ids(
+            limit, only_newer_than_last_scraped=only_newer_than_last_scraped)
         text = self.get_url_and_title(self.id, self.title)
         if not video_ids:
             _log.info(f"Channel data for {text} already up to date")

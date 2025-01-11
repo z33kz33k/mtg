@@ -1,7 +1,7 @@
 """
 
     mtg.deck.__init__.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~
     Parse decklist URL/text for deck data.
 
     @author: z33k
