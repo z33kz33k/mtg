@@ -574,11 +574,11 @@ class Video:
             video_id: unique string identifying a YouTube video (the part after `v=` in the URL)
         """
         self._urls_manager = UrlsStateManager()
-        self._urls_manager.current_video = self.id
+        self._urls_manager.current_video = video_id
         self._process(video_id)
 
     @throttled(1.25, 0.25)
-    def _process(self, video_id):
+    def _process(self, video_id: str) -> None:
         self._id = video_id
         try:
             self._pytube = self._get_pytube()
@@ -605,7 +605,7 @@ class Video:
         return links
 
     @timed("gathering video data")
-    def _scrape(self):
+    def _scrape(self) -> None:
         self._get_pytube_data()
         self._format_soup = self._get_format_soup()
         self._derived_format = self._derive_format()
@@ -741,25 +741,44 @@ class Video:
         return links, get_arena_lines(*other_lines)
 
     def _process_deck(self, link: str) -> Deck | None:
+        deck = None
         if scraper := DeckScraper.from_url(link, self.metadata):
+            sanitized_link = scraper.sanitize_url(link)
+            if self._urls_manager.is_scraped(sanitized_link):
+                _log.info(f"Skipping already scraped deck URL: {sanitized_link!r}...")
+                return None
+            elif self._urls_manager.is_failed(sanitized_link):
+                _log.info(f"Skipping already failed deck URL: {sanitized_link!r}...")
+                return None
             try:
-                if deck := scraper.scrape(throttled=any(site in link for site in self._THROTTLED)):
-                    return deck
+                deck = scraper.scrape(throttled=any(site in link for site in self._THROTTLED))
             except ReadTimeout:
                 _log.warning(f"Back-offed scraping of {link!r} failed with read timeout")
+            if not deck:
+                self._urls_manager.add_failed(sanitized_link)
 
         elif any(h in link for h in self.PASTEBIN_LIKE_HOOKS):
             if "gist.github.com/" in link and not link.endswith("/raw"):
                 link = f"{link}/raw"
+            if self._urls_manager.is_failed(link):
+                _log.info(f"Skipping already failed deck URL: {link!r}...")
+                return None
             response = timed_request(link)
             if response:
                 try:
-                    return ArenaParser(response.text.splitlines(), self.metadata).parse()
+                    deck = ArenaParser(response.text.splitlines(), self.metadata).parse()
                 except ValueError as ve:
                     _log.warning(f"Failed to parse Arena decklist from: {link!r}: {ve}")
+            if not deck:
+                self._urls_manager.add_failed(link)
 
-        self._urls_manager.add_failed(link)
-        return None
+        if deck:
+            deck_name = f"{deck.name!r} deck" if deck.name else "Deck"
+            _log.info(f"{deck_name} scraped successfully")
+            if deck_url := deck.metadata.get("url"):
+                self._urls_manager.add_scraped(deck_url)
+
+        return deck
 
     @timed("comments lookup")
     def _get_comment_lines(self) -> list[str]:
@@ -776,20 +795,9 @@ class Video:
     def _process_urls(self, *urls: str) -> list[Deck]:
         decks = []
         for url in urls:
-            if self._urls_manager.is_scraped(url):
-                _log.info(f"Skipping already scraped deck URL: {url!r}...")
-                continue
-            if self._urls_manager.is_failed(url):
-                _log.info(f"Skipping already failed deck URL: {url!r}...")
-                continue
             self._sources.add(extract_source(url))
             if deck := self._process_deck(url):
-                deck_name = f"{deck.name!r} deck" if deck.name else "Deck"
-                _log.info(f"{deck_name} scraped successfully")
                 decks.append(deck)
-                if deck_url := deck.metadata.get("url"):
-                    self._urls_manager.add_scraped(deck_url)
-
         return decks
 
     def _collect(self, links: list[str], arena_lines: list[str]) -> list[Deck]:
@@ -823,14 +831,25 @@ class Video:
                 decks.update(scraper.scrape())
             elif scraper := DecksJsonContainerScraper.from_url(
                     link, self.metadata) or DeckTagsContainerScraper.from_url(link, self.metadata):
-                if self._urls_manager.is_scraped(link):
-                    _log.info(f"Skipping already scraped {scraper.short_name()} URL: {link!r}...")
+                sanitized_link = scraper.sanitize_url(link)
+                if self._urls_manager.is_scraped(sanitized_link):
+                    _log.info(
+                        f"Skipping already scraped {scraper.short_name()} URL: "
+                        f"{sanitized_link!r}...")
+                    continue
+                if self._urls_manager.is_failed(sanitized_link):
+                    _log.info(
+                        f"Skipping already failed {scraper.short_name()} URL: "
+                        f"{sanitized_link!r}...")
                     continue
                 container_decks = scraper.scrape()
+                # URLs state management is better here than in scrapers as it avoids duplication
                 if container_decks:
+                    if deck_url := container_decks[0].metadata.get("url"):
+                        self._urls_manager.add_scraped(deck_url)
                     decks.update(container_decks)
                 else:
-                    self._urls_manager.add_failed(link)  # TODO: move this to the scraper
+                    self._urls_manager.add_failed(link)
 
         return sorted(decks)
 

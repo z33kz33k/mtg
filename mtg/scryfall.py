@@ -25,7 +25,7 @@ import scrython
 from tqdm import tqdm
 from unidecode import unidecode
 from aiohttp.client_exceptions import ContentTypeError, ServerTimeoutError
-from asyncio.exceptions import TimeoutError
+from asyncio.exceptions import TimeoutError as AsyncIoTimeoutError
 
 from mtg import DATA_DIR, Json
 from mtg.mtgwiki import CLASSES, RACES
@@ -1305,7 +1305,7 @@ def query_api_for_card(card_name: str, foreign=False) -> Card | None:
                         return Card(dict(result.scryfallJson))
                     except (scrython.foundation.ScryfallError, ContentTypeError):
                         return None
-    except (ServerTimeoutError, TimeoutError):
+    except (ServerTimeoutError, AsyncIoTimeoutError):
         _log.warning("Scryfall API timed out")
         return None
 

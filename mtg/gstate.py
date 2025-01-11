@@ -56,14 +56,18 @@ class UrlsStateManager:  # singleton
     def failed(self) -> dict[str, set[str]]:
         return dict(self._failed)
 
+    _initialized = False
+
     def __init__(self) -> None:
-        # pilfered this neat singleton solution from: https://stackoverflow.com/a/64545504/4465708
-        self.__class__.__new__ = lambda _: self
-        # init state
-        self._scraped: dict[str, set[str]] = {}  # maps 'channel_id/video_id' path to set of URLs
-        self._failed: dict[str, set[str]] = {}  # maps 'channel_id' to set of URLs
-        self.current_channel, self.current_video = "", ""
-        self.ignore_scraped, self.ignore_scraped_within_current_video = False, False
+        if not UrlsStateManager._initialized:
+            # pilfered this neat singleton solution from: https://stackoverflow.com/a/64545504/4465708
+            self.__class__.__new__ = lambda _: self
+            # init state
+            self._scraped: dict[str, set[str]] = {}  # maps 'channel_id/video_id' path to set of URLs
+            self._failed: dict[str, set[str]] = {}  # maps 'channel_id' to set of URLs
+            self.current_channel, self.current_video = "", ""
+            self.ignore_scraped, self.ignore_scraped_within_current_video = False, False
+            UrlsStateManager._initialized = True
 
     def _get_scraped(self, channel_id: str, video_id="") -> set[str]:
         if channel_id and video_id:

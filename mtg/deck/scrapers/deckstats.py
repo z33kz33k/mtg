@@ -9,7 +9,7 @@
 """
 import itertools
 import logging
-from datetime import datetime
+from datetime import datetime, UTC
 
 import backoff
 from bs4 import BeautifulSoup
@@ -111,7 +111,7 @@ class DeckstatsDeckScraper(DeckScraper):
             fmt = _FORMATS.get(self._json_data["format_id"])
             if fmt:
                 self._update_fmt(fmt)
-        self._metadata["date"] = datetime.utcfromtimestamp(self._json_data["updated"]).date()
+        self._metadata["date"] = datetime.fromtimestamp(self._json_data["updated"], UTC).date()
         if tags := self._json_data.get("tags"):
             self._metadata["tags"] = tags
         if description := self._json_data.get("description"):
