@@ -175,6 +175,7 @@ class JsonBasedDeckParser(DeckParser):
         raise NotImplementedError
 
 
+# TODO: URLs state manager usage
 class ContainerScraper(ABC):
     """Abstract base container scraper.
     """

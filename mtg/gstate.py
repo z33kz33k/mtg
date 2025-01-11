@@ -72,10 +72,12 @@ class UrlsStateManager:  # singleton
 
     # used by the scraping session to load initial global state from disk
     def update_scraped(self, data: dict[str, set[str]]) -> None:
-        self._scraped.update(data)
+        self._scraped.update(
+            {k: {url.removesuffix("/").lower() for url in v} for k, v in data.items()})
 
     def update_failed(self, data: dict[str, set[str]]) -> None:
-        self._failed.update(data)
+        self._failed.update(
+            {k: {url.removesuffix("/").lower() for url in v} for k, v in data.items()})
 
     # used by the scraping session on finish
     def reset(self) -> None:
@@ -86,25 +88,28 @@ class UrlsStateManager:  # singleton
 
     # used by URL-based scrapers
     def add_scraped(self, url: str) -> None:
-        self._scraped.setdefault(self.current_channel, set()).add(url)
-        self._scraped.setdefault(f"{self.current_channel}/{self.current_video}", set()).add(url)
+        self._scraped.setdefault(self.current_channel, set()).add(url.removesuffix("/").lower())
+        self._scraped.setdefault(
+            f"{self.current_channel}/{self.current_video}",
+            set()).add(url.removesuffix("/").lower())
 
     def add_failed(self, url: str) -> None:
-        self._failed.setdefault(self.current_channel, set()).add(url)
+        self._failed.setdefault(self.current_channel, set()).add(url.removesuffix("/").lower())
 
-    def is_scraped_within(self, url: str, channel_id="", video_id="") -> bool:
+    def _is_scraped_within(self, url: str, channel_id="", video_id="") -> bool:
         if self.ignore_scraped:
             return False
-        return url in self._get_scraped(channel_id, video_id)
+        return url.removesuffix("/").lower() in self._get_scraped(channel_id, video_id)
 
     def is_scraped(self, url: str) -> bool:
-        if self.ignore_scraped_within_current_video and self.is_scraped_within(
+        url = url.removesuffix("/").lower()
+        if self.ignore_scraped_within_current_video and self._is_scraped_within(
             url, self.current_channel, self.current_video):
             return False
-        return self.is_scraped_within(url, self.current_channel)
+        return self._is_scraped_within(url, self.current_channel)
 
     def is_failed(self, url: str) -> bool:
-        return url in self._failed.get(self.current_channel, set())
+        return url.removesuffix("/").lower() in self._failed.get(self.current_channel, set())
 
 
 @contextmanager
