@@ -65,20 +65,10 @@ class UrlsStateManager:  # singleton
         self.current_channel, self.current_video = "", ""
         self.ignore_scraped, self.ignore_scraped_within_current_video = False, False
 
-    def _get_scraped(self, channel_id="", video_id="") -> set[str]:
+    def _get_scraped(self, channel_id: str, video_id="") -> set[str]:
         if channel_id and video_id:
             return self._scraped.get(f"{channel_id}/{video_id}", set())
-        if channel_id:
-            return set(
-                url for k, v in self._scraped.items() if k.startswith(channel_id) for url in v)
-        if video_id:
-            return set(
-                url for k, v in self._scraped.items() if k.endswith(video_id) for url in v)
-        return set(url for k, v in self._scraped.items() for url in v)
-
-    def _get_failed(self, channel_id="") -> set[str]:
-        return set(
-            url for k, v in self._failed.items() if k == channel_id or not channel_id for url in v)
+        return self._scraped.get(channel_id, set())
 
     # used by the scraping session to load initial global state from disk
     def update_scraped(self, data: dict[str, set[str]]) -> None:
@@ -92,9 +82,11 @@ class UrlsStateManager:  # singleton
         self._scraped, self._failed = {}, {}
         self.current_channel, self.current_video = "", ""
         self.ignore_scraped = False
+        self.ignore_scraped_within_current_video = False
 
     # used by URL-based scrapers
     def add_scraped(self, url: str) -> None:
+        self._scraped.setdefault(self.current_channel, set()).add(url)
         self._scraped.setdefault(f"{self.current_channel}/{self.current_video}", set()).add(url)
 
     def add_failed(self, url: str) -> None:
@@ -105,9 +97,6 @@ class UrlsStateManager:  # singleton
             return False
         return url in self._get_scraped(channel_id, video_id)
 
-    def is_failed_within(self, url: str, channel_id="") -> bool:
-        return url in self._get_failed(channel_id)
-
     def is_scraped(self, url: str) -> bool:
         if self.ignore_scraped_within_current_video and self.is_scraped_within(
             url, self.current_channel, self.current_video):
@@ -115,7 +104,7 @@ class UrlsStateManager:  # singleton
         return self.is_scraped_within(url, self.current_channel)
 
     def is_failed(self, url: str) -> bool:
-        return self.is_failed_within(url, self.current_channel)
+        return url in self._failed.get(self.current_channel, set())
 
 
 @contextmanager

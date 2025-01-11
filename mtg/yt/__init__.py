@@ -946,10 +946,17 @@ class Channel:
         self._title, self._description, self._tags = None, None, None
         self._subscribers, self._scrape_time, self._videos = None, None, []
         self._ytsp_data, self._data = None, None
+        self._handle_earlier_data()
+
+    def _handle_earlier_data(self):
         try:
             self._earlier_data = load_channel(self.id)
             self._title = self._earlier_data.title
             self._urls_manager.update_scraped({self.id: self.earlier_data.deck_urls})
+            self._urls_manager.update_scraped(
+                {f"{self.id}/{v['id']}": {d["metadata"]["url"] for d in v["decks"]
+                                          if d.get("metadata") and d["metadata"].get("url")}
+                 for v in self.earlier_data.videos})
         except FileNotFoundError:
             self._earlier_data = None
 
