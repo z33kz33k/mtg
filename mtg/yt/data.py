@@ -316,32 +316,20 @@ class ScrapingSession:
         decklists = load_decklists()
         self._regular_decklists = decklists["regular"]
         self._extended_decklists = decklists["extended"]
-        failed_urls = {k: set(v) for k, v in json.loads(FAILED_URLS_FILE.read_text(
-                encoding="utf-8")).items()} if FAILED_URLS_FILE.is_file() else {}
-        self._initial_failed_count = sum(len(v) for v in failed_urls.values())
-        _log.info(
-            f"Loaded {len({url for v in failed_urls.values() for url in v}):,} decklist "
-            f"URL(s) that previously failed from the global repository")
-        self._urls_manager.update_failed(failed_urls)
+        self._urls_manager.load_failed(FAILED_URLS_FILE)
         return self
 
     def __exit__(
             self, exc_type: Type[BaseException] | None, exc_val: BaseException | None,
             exc_tb: TracebackType | None) -> None:
         dump_decklists(self._regular_decklists, self._extended_decklists)
-        FAILED_URLS_FILE.write_text(
-            json.dumps({k: sorted(v) for k, v in self._urls_manager.failed.items()}, indent=4,
-                       ensure_ascii=False), encoding="utf-8")
+        self._urls_manager.dump_failed(FAILED_URLS_FILE)
         _log.info(
             f"Total of {self._regular_count:,} unique regular decklist(s) added to the global "
             f"repository")
         _log.info(
             f"Total of {self._extended_count:,} unique extended decklist(s) added to the global "
             f"repository")
-        failed_count = sum(len(v) for v in self._urls_manager.failed.values())
-        _log.info(
-            f"Total of {failed_count - self._initial_failed_count:,} newly failed decklist URLs "
-            f"added to the global repository to be avoided in the future")
         self._urls_manager.reset()
 
     # TODO: move to global decklists state manager in gstate.py
