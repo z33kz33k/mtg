@@ -9,18 +9,40 @@
 """
 import json
 import logging
+from abc import ABC, abstractmethod
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Generator
+from typing import Callable, Generator
 
+from mtg import OUTPUT_DIR, PathLike
 from mtg.utils.check_type import type_checker
 from mtg.utils.files import getfile
 
 
 _log = logging.getLogger(__name__)
+CHANNELS_DIR = OUTPUT_DIR / "channels"
+REGULAR_DECKLISTS_FILE = CHANNELS_DIR / "regular_decklists.json"
+EXTENDED_DECKLISTS_FILE = CHANNELS_DIR / "extended_decklists.json"
+FAILED_URLS_FILE = CHANNELS_DIR / "failed_urls.json"
 
 
-class UrlsStateManager:  # singleton
+class _Singleton(ABC):
+    _initialized = False
+
+    def __init__(self) -> None:
+        if not self.__class__._initialized:
+            # pilfered this neat singleton solution from: https://stackoverflow.com/a/64545504/4465708
+            self.__class__.__new__ = lambda _: self
+            # init state
+            self.reset()
+            self.__class__._initialized = True
+
+    @abstractmethod
+    def reset(self) -> None:
+        raise NotImplementedError
+
+
+class UrlsStateManager(_Singleton):
     """State manager for already scraped and failed URLs.
     """
     @property
@@ -67,20 +89,6 @@ class UrlsStateManager:  # singleton
     def failed_count(self) -> int:
         return sum(len(v) for v in self._failed.values())
 
-    _initialized = False
-
-    def __init__(self) -> None:
-        if not UrlsStateManager._initialized:
-            # pilfered this neat singleton solution from: https://stackoverflow.com/a/64545504/4465708
-            self.__class__.__new__ = lambda _: self
-            # init state
-            self._scraped: dict[str, set[str]] = {}  # maps 'channel_id/video_id' path to set of URLs
-            self._failed: dict[str, set[str]] = {}  # maps 'channel_id' to set of URLs
-            self.current_channel, self.current_video = "", ""
-            self.ignore_scraped, self.ignore_scraped_within_current_video = False, False
-            self._initial_failed_count = 0
-            UrlsStateManager._initialized = True
-
     def _get_scraped(self, channel_id: str, video_id="") -> set[str]:
         if channel_id and video_id:
             return self._scraped.get(f"{channel_id}/{video_id}", set())
@@ -95,21 +103,21 @@ class UrlsStateManager:  # singleton
         self._failed.update(
             {k: {url.removesuffix("/").lower() for url in v} for k, v in data.items()})
 
-    def load_failed(self, failed_urls_repo: str) -> None:
+    def load_failed(self) -> None:
         if self._initial_failed_count:
             _log.warning("Failed URLs already loaded")
             return
-        failed_urls_repo = getfile(failed_urls_repo)
-        self._failed = {k: set(v) for k, v in json.loads(failed_urls_repo.read_text(
+        src = getfile(FAILED_URLS_FILE)
+        self._failed = {k: set(v) for k, v in json.loads(src.read_text(
                 encoding="utf-8")).items()}
         self._initial_failed_count = self.failed_count
         _log.info(
             f"Loaded {self._initial_failed_count:,} decklist URL(s) that previously failed from "
             f"the global repository")
 
-    def dump_failed(self, failed_urls_repo: str) -> None:
-        failed_urls_repo = Path(failed_urls_repo)
-        failed_urls_repo.write_text(
+    def dump_failed(self) -> None:
+        dst = Path(FAILED_URLS_FILE)
+        dst.write_text(
             json.dumps({k: sorted(v) for k, v in self.failed.items()}, indent=4,
                        ensure_ascii=False), encoding="utf-8")
         _log.info(
@@ -118,10 +126,11 @@ class UrlsStateManager:  # singleton
 
     # used by the scraping session on finish
     def reset(self) -> None:
-        self._scraped, self._failed = {}, {}
+        self._scraped: dict[str, set[str]] = {}  # maps 'channel_id/video_id' path to set of URLs
+        self._failed: dict[str, set[str]] = {}  # maps 'channel_id' to set of URLs
         self.current_channel, self.current_video = "", ""
-        self.ignore_scraped = False
-        self.ignore_scraped_within_current_video = False
+        self.ignore_scraped, self.ignore_scraped_within_current_video = False, False
+        self._initial_failed_count = 0
 
     # used by URL-based scrapers
     def add_scraped(self, url: str) -> None:
@@ -163,4 +172,72 @@ def ignore_already_scraped_urls_within_current_video() -> Generator[UrlsStateMan
     usm.ignore_scraped_within_current_video = True
     yield usm
     usm.ignore_scraped_within_current_video = False
+
+
+class DecklistsStateManager(_Singleton):
+    @property
+    def regular(self) -> dict[str, str]:
+        return dict(self._regular)
+
+    @property
+    def extended(self) -> dict[str, str]:
+        return dict(self._extended)
+
+    def reset(self) -> None:
+        self._regular: dict[str, str] = {}
+        self._extended: dict[str, str] = {}
+        self._initial_regular_count, self._initial_extended_count = 0, 0
+
+    def load(self) -> None:
+        if self._initial_regular_count or self._initial_extended_count:
+            _log.warning("Decklists already loaded")
+            return
+        regular_src, extended_src = getfile(REGULAR_DECKLISTS_FILE), getfile(
+            EXTENDED_DECKLISTS_FILE)
+        self._regular = json.loads(regular_src.read_text(encoding="utf-8"))
+        self._initial_regular_count = len(self._regular)
+        _log.info(
+            f"Loaded {self._initial_regular_count:,} regular decklist(s) from the global "
+            f"repository")
+        self._extended = json.loads(extended_src.read_text(encoding="utf-8"))
+        self._initial_extended_count = len(self._extended)
+        _log.info(
+            f"Loaded {self._initial_extended_count:,} extended decklist(s) from the global "
+            f"repository")
+
+    def dump(self) -> None:
+        regular_dst, extended_dst = Path(REGULAR_DECKLISTS_FILE), Path(EXTENDED_DECKLISTS_FILE)
+        regular_count, extended_count = len(self._regular), len(self._extended)
+        _log.info(f"Dumping {regular_count:,} decklist(s) to '{regular_dst}'...")
+        regular_dst.write_text(
+            json.dumps(self._regular, indent=4, ensure_ascii=False), encoding="utf-8")
+        _log.info(f"Dumping {extended_count:,} decklist(s) to '{extended_dst}'...")
+        extended_dst.write_text(
+            json.dumps(self._extended, indent=4, ensure_ascii=False),encoding="utf-8")
+        _log.info(
+            f"Total of {regular_count - self._initial_regular_count:,} unique regular "
+            f"decklist(s) added to the global repository")
+        _log.info(
+            f"Total of {extended_count - self._initial_extended_count:,} unique extended "
+            f"decklist(s) added to the global repository")
+
+    def add_regular(self, decklist_id: str, decklist: str) -> None:
+        self._regular[decklist_id] = decklist
+
+    def add_extended(self, decklist_id: str, decklist: str) -> None:
+        self._extended[decklist_id] = decklist
+
+    def retrieve(self, decklist_id: str) -> str | None:
+        if not self._regular or not self._extended:
+            _log.warning("No decklists. Are you sure you loaded them?")
+        return self._regular.get(decklist_id) or self._extended.get(decklist_id)
+
+    def prune(self, filter_: Callable[[str], bool]) -> None:
+        """Prune all decklists that match the given filter.
+
+        Args:
+            filter_: a function that takes a decklist ID and returns a boolean.
+        """
+        self._regular = {k: v for k, v in self._regular.items() if not filter_(k)}
+        self._extended = {k: v for k, v in self._extended.items() if not filter_(k)}
 

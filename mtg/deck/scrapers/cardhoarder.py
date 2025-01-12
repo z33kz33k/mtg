@@ -10,11 +10,12 @@
 import json
 import logging
 
+import dateutil.parser
 from selenium.common.exceptions import TimeoutException
 
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper
-from mtg.utils.scrape import ScrapingError, strip_url_query
+from mtg.utils.scrape import ScrapingError, dissect_js, strip_url_query
 from mtg.utils.scrape.dynamic import get_dynamic_soup
 
 _log = logging.getLogger(__name__)
@@ -26,8 +27,8 @@ _log = logging.getLogger(__name__)
 class CardhoarderDeckScraper(DeckScraper):
     """Scraper of Cardhoarder decklist page.
     """
-    _XPATH = "//div[@id='deck-viewer']"
-    _CONSENT_XPATH = "//div[@id='checkbox']"
+    _XPATH = "//div[contains(@id, 'deck-viewer')]"
+    # _CONSENT_XPATH = "//div[@id='checkbox']"
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -42,39 +43,46 @@ class CardhoarderDeckScraper(DeckScraper):
         return strip_url_query(url)
 
     def _get_deck_data(self) -> Json:
-        deck_tag = self._soup.find("div", id="deck-viewer")
-        if not deck_tag:
-            raise ScrapingError(
-                "No deck tag in the requested page code. You're probably being blocked by "
-                "Cardhoarder anti-bot measures")
-        return json.loads(deck_tag.attrs["data-deck"])
+        start = 'const props = JSON.parse('
+        end = ');\n\t\t\twindow.Cardhoarder.helpers.addDeckViewer('
+        # this returns raw JSON string instead of dict...
+        deck_data = dissect_js(self._soup, start, end)
+        if not deck_data:
+            raise ScrapingError("Deck data not available")
+        # ...that needs to be reparsed
+        return json.loads(deck_data)
 
     def _pre_parse(self) -> None:  # override
         try:
-            self._soup, _, _ = get_dynamic_soup(
-                self.url, self._XPATH, consent_xpath=self._CONSENT_XPATH)
-            self._deck_data = self._get_deck_data()
+            self._soup, _, _ = get_dynamic_soup(self.url, self._XPATH)
         except TimeoutException:
             raise ScrapingError(f"Scraping failed due to Selenium timing out")
+        self._deck_data = self._get_deck_data()
 
     def _parse_metadata(self) -> None:  # override
-        self._metadata["name"] = self._deck_data["name"]
+        self._metadata["name"] = self._deck_data["deck"]["name"]
+        self._metadata["date"] = dateutil.parser.parse(self._deck_data["deck"]["updated_at"]).date()
 
-    # TODO: commander handling is only derived, no such input has been seen so far
     def _parse_decklist(self) -> None:  # override
-        card_jsons = []
-        for _, item in self._deck_data["items"].items():
-            card_jsons += item["items"]
+        maindeck, sideboard = [], []
+        for item in self._deck_data["items"]:
+            card_data = item["card"]["card_data"]
+            name = card_data["name"]
+            set_code = card_data["scryfall_set_code"]
+            collector_number = card_data["collector_number"]
+            scryfall_id = card_data["scryfall_id"]
+            card = self.find_card(name, (set_code, collector_number), scryfall_id)
 
-        for data in card_jsons:
-            name = data["SavedDeckItem"]["name"]
-            card = self.find_card(name)
-            if quantity_commander := int(data["SavedDeckItem"].get("quantity_commander", 0)):
-                for _ in range(quantity_commander):
-                    self._set_commander(card)
-            else:
-                quantity_main = int(data["SavedDeckItem"]["quantity_main"])
-                quantity_sideboard = int(data["SavedDeckItem"]["quantity_sideboard"])
-                self._maindeck += self.get_playset(card, quantity_main)
-                if quantity_sideboard:
-                    self._sideboard += self.get_playset(card, quantity_sideboard)
+            quantity_main = int(item["quantity_main"])
+            quantity_sideboard = int(item.get("quantity_sideboard", 0))
+            maindeck += self.get_playset(card, quantity_main)
+            if quantity_sideboard:
+                sideboard += self.get_playset(card, quantity_sideboard)
+
+        if len(maindeck) in (1, 2):
+            for card in maindeck:
+                self._set_commander(card)
+            self._maindeck = sideboard
+        else:
+            self._maindeck = maindeck
+            self._sideboard = sideboard

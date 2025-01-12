@@ -38,7 +38,7 @@ from mtg.deck import Deck, SANITIZED_FORMATS
 from mtg.deck.arena import ArenaParser, get_arena_lines, group_arena_lines
 from mtg.deck.scrapers import DeckScraper, DeckTagsContainerScraper, DeckUrlsContainerScraper, \
     DecksJsonContainerScraper, HybridContainerScraper
-from mtg.gstate import UrlsStateManager, ignore_already_scraped_urls, \
+from mtg.gstate import DecklistsStateManager, UrlsStateManager, ignore_already_scraped_urls, \
     ignore_already_scraped_urls_within_current_video
 from mtg.scryfall import all_formats
 from mtg.utils import Counter, deserialize_dates, extract_float, find_longest_seqs, \
@@ -158,9 +158,6 @@ def scrape_channel_videos(channel_id: str, *video_ids: str) -> bool:
                 ch.dump(dst)
                 total_videos += len(ch.videos)
                 total_decks += len(ch.decks)
-                for deck in ch.decks:
-                    session.update_regular(deck.decklist_id, deck.decklist)
-                    session.update_extended(deck.decklist_extended_id, deck.decklist_extended)
         except Exception as err:
             _log.exception(f"Scraping of channel {channel_id!r} failed with: '{err}'")
             return False
@@ -201,9 +198,6 @@ def scrape_channels(
                     total_videos += len(ch.videos)
                     total_channels += 1
                     total_decks += len(ch.decks)
-                    for deck in ch.decks:
-                        session.update_regular(deck.decklist_id, deck.decklist)
-                        session.update_extended(deck.decklist_extended_id, deck.decklist_extended)
             except Exception as err:
                 _log.exception(f"Scraping of channel {id_!r} failed with: '{err}'. Skipping...")
             if current_videos > MAX_VIDEOS:
@@ -389,6 +383,7 @@ class Video:
         "name.com/",
         "oe.cd/",
         "ow.ly/",
+        "partner.tcgplayer.com/",  # TCGPlayer affiliate referral link
         "qti.ai/",
         "rb.gy/",
         "rebrandly.com/",
@@ -575,6 +570,7 @@ class Video:
         """
         self._urls_manager = UrlsStateManager()
         self._urls_manager.current_video = video_id
+        self._decklists_manager = DecklistsStateManager()
         self._process(video_id)
 
     @throttled(1.25, 0.25)
@@ -850,6 +846,11 @@ class Video:
                     decks.update(container_decks)
                 else:
                     self._urls_manager.add_failed(link)
+
+        for deck in decks:
+                self._decklists_manager.add_regular(deck.decklist_id, deck.decklist)
+                self._decklists_manager.add_extended(
+                    deck.decklist_extended_id, deck.decklist_extended)
 
         return sorted(decks)
 
