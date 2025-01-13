@@ -10,25 +10,24 @@
 import itertools
 import json
 import logging
-from operator import attrgetter, itemgetter
 from dataclasses import astuple, dataclass
 from datetime import date, datetime
+from operator import attrgetter, itemgetter
 from types import TracebackType
 from typing import Generator, Iterator, Literal, Type
 
 import scrapetube
 
-from mtg import OUTPUT_DIR, READABLE_TIMESTAMP_FORMAT, README, FILENAME_TIMESTAMP_FORMAT, PathLike
+from mtg import FILENAME_TIMESTAMP_FORMAT, PathLike, READABLE_TIMESTAMP_FORMAT, README
 from mtg.deck.scrapers.cardsrealm import get_source as cardsrealm_get_source
 from mtg.deck.scrapers.melee import get_source as melee_get_source
 from mtg.deck.scrapers.mtgarenapro import get_source as mtgarenapro_get_source
 from mtg.deck.scrapers.tcgplayer import get_source as tcgplayer_get_source
+from mtg.gstate import CHANNELS_DIR, DecklistsStateManager, UrlsStateManager
 from mtg.utils import Counter, breadcrumbs, deserialize_dates, serialize_dates
 from mtg.utils.files import getdir, getfile
 from mtg.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
 from mtg.utils.scrape import extract_url, getsoup
-from mtg.gstate import DecklistsStateManager, UrlsStateManager, CHANNELS_DIR
-
 
 _log = logging.getLogger(__name__)
 VIDEO_URL_TEMPLATE = "https://www.youtube.com/watch?v={}"

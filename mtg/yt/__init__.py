@@ -57,7 +57,7 @@ _log = logging.getLogger(__name__)
 
 
 GOOGLE_API_KEY = SECRETS["google"]["api_key"]  # not used anywhere
-DEAD_THRESHOLD = 2500  # days (ca. 7 yrs) - only used in gsheet to trim dead from abandoned
+DEAD_THRESHOLD = 2000  # days (ca. 5.5 yrs) - only used in gsheet to trim dead from abandoned
 MAX_VIDEOS = 400
 
 
@@ -754,8 +754,11 @@ class Video:
                 self._urls_manager.add_failed(sanitized_link)
 
         elif any(h in link for h in self.PASTEBIN_LIKE_HOOKS):
+            # TODO: refactor this processing out of here
             if "gist.github.com/" in link and not link.endswith("/raw"):
                 link = f"{link}/raw"
+            elif "pastebin.com/" in link and "/raw/" not in link:
+                link = link.replace("pastebin.com/", "pastebin.com/raw/")
             if self._urls_manager.is_failed(link):
                 _log.info(f"Skipping already failed deck URL: {link!r}...")
                 return None
