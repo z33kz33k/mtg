@@ -13,7 +13,7 @@ import logging
 import dateutil.parser
 
 from mtg import Json
-from mtg.deck.scrapers import DeckScraper
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.scryfall import Card
 from mtg.utils import from_iterable
 from mtg.utils.scrape import ScrapingError, getsoup, strip_url_query
@@ -82,3 +82,30 @@ class MtgStocksDeckScraper(DeckScraper):
         if sideboard := self._deck_data["boards"].get("sideboard"):
             for card in sideboard["cards"]:
                 self._sideboard.extend(self._parse_playset(card))
+
+
+@DeckUrlsContainerScraper.registered
+class MtgStocksArticleScraper(DeckUrlsContainerScraper):
+    """Scraper of MTGStocks article page.
+    """
+    CONTAINER_NAME = "MTGStocks article"  # override
+    _DECK_SCRAPERS = MtgStocksDeckScraper,  # override
+    URL_TEMPLATE = "https://mtgstocks.com{}"
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return "mtgstocks.com/news/" in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_query(url)
+
+    def _collect(self) -> list[str]:  # override
+        self._soup = getsoup(self.url)
+        if not self._soup:
+            _log.warning(self._error_msg)
+            return []
+
+        deck_tags = self._soup.find_all("news-deck")
+        a_tags = [tag.find("a", href=lambda h: h and "/decks/" in h) for tag in deck_tags]
+        return [self.URL_TEMPLATE.format(t.attrs["href"]) for t in a_tags if t is not None]

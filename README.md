@@ -100,6 +100,7 @@ descriptions).
         * MTGAZone articles and authors
         * MTGDecks.net tournaments
         * MTGO events
+        * MTGStocks articles
         * MTGTop8 events
         * PennyDreadfulMagic competitions and users
         * StarCityGames events, players, articles and author's decks databases

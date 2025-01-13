@@ -43,6 +43,13 @@ class _Singleton(ABC):
 
 class UrlsStateManager(_Singleton):
     """State manager for already scraped and failed URLs.
+
+    Scraped URLs are stored within deck data and their initial state is loaded from there by third
+    parties and only injected here via 'update_scraped()' method. This object tracks dynamically
+    changing state afterward.
+
+    Failed URLs on the other hand are stored in their own dedicated file and both this file's
+    management and the dynamic state of the URLs are a responsibility of this object.
     """
     @property
     def current_channel(self) -> str:
@@ -124,7 +131,7 @@ class UrlsStateManager(_Singleton):
             f"URLs added to the global repository to be avoided in the future")
 
     # used by the scraping session on finish
-    def reset(self) -> None:
+    def reset(self) -> None:  # override
         self._scraped: dict[str, set[str]] = {}  # maps 'channel_id/video_id' path to set of URLs
         self._failed: dict[str, set[str]] = {}  # maps 'channel_id' to set of URLs
         self.current_channel, self.current_video = "", ""
@@ -174,6 +181,17 @@ def ignore_already_scraped_urls_within_current_video() -> Generator[UrlsStateMan
 
 
 class DecklistsStateManager(_Singleton):
+    """State manager for decklists stored in separately from deck data.
+
+    MTGO/Arena text format decklists mapped to their hash digest IDs are stored in two files: one
+    for regular decklists and the second for decklists in 'extended' form (i.e. where each line
+    specifies also a set code and card's collector number - this detail makes a deck specific in
+    terms of card prints).
+
+    Storing decklists in that way makes keeping only hash digests IDs (instead of whole
+    decklists) in the deck data possible and, thus, cuts down data bloat due to decklists
+    duplication across the scraped decks.
+    """
     @property
     def regular(self) -> dict[str, str]:
         return dict(self._regular)
@@ -182,7 +200,7 @@ class DecklistsStateManager(_Singleton):
     def extended(self) -> dict[str, str]:
         return dict(self._extended)
 
-    def reset(self) -> None:
+    def reset(self) -> None:  # override
         self._regular: dict[str, str] = {}
         self._extended: dict[str, str] = {}
         self._initial_regular_count, self._initial_extended_count = 0, 0
