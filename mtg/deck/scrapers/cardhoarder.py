@@ -1,7 +1,7 @@
 """
 
     mtg.deck.scrapers.cardhoarder.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Cardhoarder decklists.
 
     @author: z33k
@@ -28,7 +28,6 @@ class CardhoarderDeckScraper(DeckScraper):
     """Scraper of Cardhoarder decklist page.
     """
     _XPATH = "//div[contains(@id, 'deck-viewer')]"
-    # _CONSENT_XPATH = "//div[@id='checkbox']"
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -45,7 +44,7 @@ class CardhoarderDeckScraper(DeckScraper):
     def _get_deck_data(self) -> Json:
         start = 'const props = JSON.parse('
         end = ');\n\t\t\twindow.Cardhoarder.helpers.addDeckViewer('
-        # this returns raw JSON string instead of dict...
+        # in this case, it returns raw JSON string instead of dict...
         deck_data = dissect_js(self._soup, start, end)
         if not deck_data:
             raise ScrapingError("Deck data not available")

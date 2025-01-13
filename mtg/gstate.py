@@ -14,10 +14,9 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Callable, Generator
 
-from mtg import OUTPUT_DIR, PathLike
+from mtg import OUTPUT_DIR
 from mtg.utils.check_type import type_checker
 from mtg.utils.files import getfile
-
 
 _log = logging.getLogger(__name__)
 CHANNELS_DIR = OUTPUT_DIR / "channels"
