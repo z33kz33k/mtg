@@ -36,14 +36,18 @@ class MtgStocksDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        return strip_url_query(url)
+        url = strip_url_query(url)
+        return url.replace("/visual/", "/")
 
     def _parse_deck_id(self) -> int:
-        _, id_part = self.url.split("mtgstocks.com/decks/", maxsplit=1)
-        if "/" in id_part:
-            id_, _ = id_part.split("/", maxsplit=1)
-            return int(id_)
-        return int(id_part)
+        try:
+            _, id_part = self.url.split("mtgstocks.com/decks/", maxsplit=1)
+            if "/" in id_part:
+                id_, _ = id_part.split("/", maxsplit=1)
+                return int(id_)
+            return int(id_part)
+        except ValueError:
+            raise ScrapingError(f"Deck ID not available: {self.url!r}")
 
     def _get_deck_data(self) -> Json:
         script_tag = self._soup.find("script", id="ng-state")
