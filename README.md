@@ -109,6 +109,7 @@ descriptions).
         * TCDecks events
         * TCGPlayer (old-site) players
         * TCGPlayer Infinite players (profile page), authors (search page) and events
+        * [TopDeck.gg](https://topdeck.gg) brackets
         * Untapped profiles
 * Assessing the meta:
     * Scraping Goldfish and MGTAZone for meta-decks (others in plans)
