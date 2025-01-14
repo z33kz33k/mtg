@@ -38,8 +38,7 @@ from mtg.deck import Deck, SANITIZED_FORMATS
 from mtg.deck.arena import ArenaParser, get_arena_lines, group_arena_lines
 from mtg.deck.scrapers import DeckScraper, DeckTagsContainerScraper, DeckUrlsContainerScraper, \
     DecksJsonContainerScraper, HybridContainerScraper
-from mtg.gstate import DecklistsStateManager, UrlsStateManager, ignore_already_scraped_urls, \
-    ignore_already_scraped_urls_within_current_video
+from mtg.gstate import DecklistsStateManager, UrlsStateManager
 from mtg.scryfall import all_formats
 from mtg.utils import Counter, deserialize_dates, extract_float, find_longest_seqs, \
     from_iterable, getrepr, multiply_by_symbol, sanitize_filename, serialize_dates, timed
@@ -99,10 +98,11 @@ def rescrape_missing_decklists() -> None:
         _log.info("No videos found that needed re-scraping")
         return
 
-    with ignore_already_scraped_urls():
-        for i, (channel_id, video_ids) in enumerate(channels.items(), start=1):
-            _log.info(f"Re-scraping {i}/{len(channels)} channel for missing decklists data...")
-            _process_videos(channel_id, *video_ids)
+    for i, (channel_id, video_ids) in enumerate(channels.items(), start=1):
+        _log.info(f"Re-scraping {i}/{len(channels)} channel for missing decklists data...")
+        manager = UrlsStateManager()
+        manager.ignore_scraped = True
+        _process_videos(channel_id, *video_ids)
 
 
 def rescrape_videos(
@@ -128,10 +128,11 @@ def rescrape_videos(
         _log.info("No videos found that needed re-scraping")
         return
 
-    with ignore_already_scraped_urls_within_current_video():
-        for i, (channel_id, video_ids) in enumerate(channels.items(), start=1):
-            _log.info(f"Re-scraping {len(video_ids)} video(s) of {i}/{len(channels)} channel...")
-            _process_videos(channel_id, *video_ids)
+    for i, (channel_id, video_ids) in enumerate(channels.items(), start=1):
+        _log.info(f"Re-scraping {len(video_ids)} video(s) of {i}/{len(channels)} channel...")
+        manager = UrlsStateManager()
+        manager.ignore_scraped_within_current_video = True
+        _process_videos(channel_id, *video_ids)
 
 
 @http_requests_counted("channel videos scraping")

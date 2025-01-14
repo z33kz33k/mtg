@@ -164,22 +164,6 @@ class UrlsStateManager(_Singleton):
         return url.removesuffix("/").lower() in self._failed.get(self.current_channel, set())
 
 
-@contextmanager
-def ignore_already_scraped_urls() -> Generator[UrlsStateManager, None, None]:
-    usm = UrlsStateManager()
-    usm.ignore_scraped = True
-    yield usm
-    usm.ignore_scraped = False
-
-
-@contextmanager
-def ignore_already_scraped_urls_within_current_video() -> Generator[UrlsStateManager, None, None]:
-    usm = UrlsStateManager()
-    usm.ignore_scraped_within_current_video = True
-    yield usm
-    usm.ignore_scraped_within_current_video = False
-
-
 class DecklistsStateManager(_Singleton):
     """State manager for decklists stored in separately from deck data.
 
