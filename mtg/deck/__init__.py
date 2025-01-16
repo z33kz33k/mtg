@@ -465,6 +465,8 @@ class Deck:
     @property
     def avg_cmc(self) -> float:
         manas = [card.cmc for card in self.cards if card.cmc]
+        if not manas:
+            return 0
         return sum(manas) / len(manas)
 
     @property
@@ -1193,6 +1195,7 @@ SANITIZED_FORMATS = {
     "commanderprecons": "commander",
     "cpauper": "pauper",
     "cpioneer": "pioneer",
+    "cpdh": "paupercommander",
     "cstandard": "standard",
     "cvintage": "vintage",
     "duel commander": "duel",
@@ -1223,6 +1226,8 @@ SANITIZED_FORMATS = {
     "pauper commander": "paupercommander",
     "pauper edh": "paupercommander",
     "pauperedh": "paupercommander",
+    "pedh": "paupercommander",
+    "pdh": "paupercommander",
     "penny dreadful": "penny",
     "standard brawl": "standardbrawl",
     "vintage old school": "oldschool",

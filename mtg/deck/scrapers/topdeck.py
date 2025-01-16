@@ -25,7 +25,7 @@ class TopDeckBracketScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "TopDeck.gg bracket"  # override
     _DECK_SCRAPERS = MoxfieldDeckScraper,  # override
-    _XPATH = "//a[text()='Decklist']"
+    _XPATH = "//table[contains(@class, 'table') and contains(@class, 'dataTable')]"
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override

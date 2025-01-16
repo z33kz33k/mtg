@@ -77,6 +77,8 @@ class TappedoutDeckScraper(DeckScraper):
 
     def _parse_metadata(self) -> None:  # override
         fmt_tag = self._soup.select_one("a.btn.btn-success.btn-xs")
+        if fmt_tag is None:
+            raise ScrapingError(f"Format tag not found: {self.url!r}")
         fmt = fmt_tag.text.strip().removesuffix("*").lower()
         self._update_fmt(fmt)
         self._metadata["author"] = self._soup.select_one('a[href*="/users/"]').text.strip()

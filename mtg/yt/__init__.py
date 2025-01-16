@@ -43,7 +43,7 @@ from mtg.scryfall import all_formats
 from mtg.utils import Counter, deserialize_dates, extract_float, find_longest_seqs, \
     from_iterable, getrepr, multiply_by_symbol, sanitize_filename, serialize_dates, timed
 from mtg.utils.files import getdir
-from mtg.utils.scrape import ScrapingError, extract_source, extract_url, \
+from mtg.utils.scrape import ScrapingError, dissect_js, extract_source, extract_url, \
     http_requests_counted, throttle_with_countdown, throttled, \
     timed_request, unshorten
 from mtg.utils.scrape.dynamic import get_dynamic_soup
@@ -358,6 +358,200 @@ def scrape_excessively_deck_stale(
         *ids, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
 
 
+# TODO: async
+class _LinksExpander:
+    """Expand links to prospective pages into lines eligible for deck-processing.
+
+    Note: On 15th Jan 2025 there were only 108 `pastebin.com` and 2 `gist.github.com` links
+    identified across 278,101 links scraped so far from YT videos' descriptions in total.
+    """
+    PASTEBIN_LIKE_HOOKS = {
+        "gist.github.com/",
+        "pastebin.com/",
+    }
+    OBSCURE_PASTEBIN_LIKE_HOOKS = {
+        "bitbin.it/",
+        "bpa.st/",
+        "cl1p.net/",
+        "codebeautify.org/",
+        "codeshare.io/",
+        "commie.io/",
+        "controlc.com/",
+        "cutapaste.net/",
+        "defuse.ca/pastebin.htm/",
+        "dotnetfiddle.net/",
+        "dpaste.com/",
+        "dpaste.org/",
+        "everfall.com/paste/",
+        "friendpaste.com/",
+        "hastebin.com/",
+        "ide.geeksforgeeks.org/",
+        "ideone.com/",
+        "ivpaste.com/",
+        "jpst.it/",
+        "jsbin.com/",
+        "jsfiddle.net/",
+        "jsitor.com/",
+        "justpaste.it/",
+        "justpaste.me/",
+        "kpaste.net/",
+        "n0paste.tk/",
+        "nekobin.com/",
+        "notes.io/",
+        "p.ip.fi/",
+        "paste-bin.xyz/",
+        "paste.centos.org/",
+        "paste.debian.net/",
+        "paste.ee/",
+        "paste.jp/",
+        "paste.mozilla.org/",
+        "paste.ofcode.org/",
+        "paste.opensuse.org/",
+        "paste.org.ru/",
+        "paste.rohitab.com/",
+        "paste.sh/",
+        "paste2.org/",
+        "pastebin.ai/",
+        "pastebin.fi/",
+        "pastebin.fr/",
+        "pastebin.osuosl.org/",
+        "pastecode.io/",
+        "pasted.co/",
+        "pasteio.com/",
+        "pastelink.net/",
+        "pastie.org/",
+        "privatebin.net/",
+        "pst.innomi.net/",
+        "quickhighlighter.com/",
+        "termbin.com/",
+        "tny.cz/",
+        "tutpaste.com/",
+        "vpaste.net/",
+        "www.paste.lv/",
+        "www.paste4btc.com/",
+        "www.pastebin.pt/",
+    }
+
+    _PATREON_XPATH = "//div[contains(@class, 'sc-dtMgUX') and contains(@class, 'IEufa')]"
+    _GOOGLE_DOC_XPATH = ("//div[contains(@class, 'kix-scrollareadocumentplugin') and "
+                         "contains(@class, 'docs-ui-hit-region-surface') and "
+                         "contains(@class, 'enable-next-chapter-bottom-fab')]")
+
+    @property
+    def expanded_links(self) -> list[str]:
+        return self._expanded_links
+
+    @property
+    def gathered_links(self) -> list[str]:
+        return self._gathered_links
+
+    @property
+    def lines(self) -> list[str]:
+        return self._lines
+
+    def __init__(self, *links: str) -> None:
+        self._links = links
+        self._urls_manager = UrlsStateManager()
+        self._pastebin_links = [l for l in links if any(h in l for h in self.PASTEBIN_LIKE_HOOKS)]
+        if obscure_links := [
+            l for l in links if any(h in l for h in self.OBSCURE_PASTEBIN_LIKE_HOOKS)]:
+            _log.warning(f"Obscure pastebin-like link(s) found: {obscure_links}")
+        self._patreon_links = [link for link in links if self.is_patreon_url(link)]
+        self._google_doc_links = [link for link in links if self.is_google_doc_url(link)]
+        self._expanded_links, self._gathered_links, self._lines = [], [], []
+        self._expand_pastebin()
+        self._expand_patreon()
+        self._expand_google_doc()
+
+    def _expand_pastebin(self) -> None:
+        for link in self._pastebin_links:
+            original_link = link
+            if "gist.github.com/" in link and not link.endswith("/raw"):
+                link = f"{link}/raw"
+            elif "pastebin.com/" in link and "/raw/" not in link:
+                link = link.replace("pastebin.com/", "pastebin.com/raw/")
+            if self._urls_manager.is_failed(link):
+                _log.info(f"Skipping expansion of already failed URL: {link!r}...")
+                continue
+
+            _log.info(f"Expanding {link!r}...")
+            response = timed_request(link)
+            if not response:
+                self._urls_manager.add_failed(link)
+                continue
+
+            self._lines += response.text.splitlines()
+            self._expanded_links.append(original_link)
+
+    @staticmethod
+    def is_patreon_url(url: str) -> bool:
+        return "patreon.com/posts/" in url.lower()
+
+    def _expand_patreon(self) -> None:
+        for link in self._patreon_links:
+            if self._urls_manager.is_failed(link):
+                _log.info(f"Skipping expansion of already failed URL: {link!r}...")
+                continue
+
+            _log.info(f"Expanding {link!r}...")
+            try:
+                soup, _, _ = get_dynamic_soup(link, self._PATREON_XPATH)
+                if not soup:
+                    _log.warning("Patreon post data not available")
+                    self._urls_manager.add_failed(link)
+                    return
+            except TimeoutException:
+                _log.warning("Patreon post data not available")
+                self._urls_manager.add_failed(link)
+                return
+
+            text_tag = soup.find("div", class_=lambda c: c and "sc-dtMgUX" in c and 'IEufa' in c)
+            self._lines += [p_tag.text for p_tag in text_tag.find_all("p")]
+            self._expanded_links.append(link)
+
+    @staticmethod
+    def is_google_doc_url(url: str) -> bool:
+        return "docs.google.com/document/" in url.lower()
+
+    def _expand_google_doc(self) -> None:
+        # url = "https://docs.google.com/document/d/1Bnsd4M7n_8LHfN6uEJVxoRr72antIEIO9w4YOGKltiU/edit"
+        for link in self._google_doc_links:
+
+            _log.info(f"Expanding {link!r}...")
+            try:
+                soup, _, _ = get_dynamic_soup(link, self._GOOGLE_DOC_XPATH)
+                if not soup:
+                    _log.warning("Google Docs document data not available")
+                    self._urls_manager.add_failed(link)
+                    return
+            except TimeoutException:
+                _log.warning("Google Docs document data not available")
+                self._urls_manager.add_failed(link)
+                return
+
+            start = "DOCS_modelChunk = "
+            end = "; DOCS_modelChunkLoadStart = "
+            js = dissect_js(soup, start_hook=start, end_hook=end, left_split_on_start_hook=True)
+
+            if not js:
+                _log.warning("Google Docs document data not available")
+                self._urls_manager.add_failed(link)
+                return
+
+            matched_text = None
+            for i, d in enumerate(js):
+                match d:
+                    case {"s": text} if i == 0:
+                        matched_text = text.strip()
+                    case {"sm": {'lnks_link': {'ulnk_url': link}}}:
+                        self._gathered_links.append(link)
+                    case _:
+                        pass
+
+            if matched_text:
+                self._lines += matched_text.splitlines()
+
+
 class Video:
     """YouTube video showcasing a MtG deck with its most important metadata.
     """
@@ -413,70 +607,6 @@ class Video:
         "zws.im/",
     }
 
-    PASTEBIN_LIKE_HOOKS = {
-        "bitbin.it/",
-        "bpa.st/",
-        "cl1p.net/",
-        "codebeautify.org/",
-        "codeshare.io/",
-        "commie.io/",
-        "controlc.com/",
-        "cutapaste.net/",
-        "defuse.ca/pastebin.htm/",
-        "dotnetfiddle.net/",
-        "dpaste.com/",
-        "dpaste.org/",
-        "everfall.com/paste/",
-        "friendpaste.com/",
-        "gist.github.com/",
-        "hastebin.com/",
-        "ide.geeksforgeeks.org/",
-        "ideone.com/",
-        "ivpaste.com/",
-        "jpst.it/",
-        "jsbin.com/",
-        "jsfiddle.net/",
-        "jsitor.com/",
-        "justpaste.it/",
-        "justpaste.me/",
-        "kpaste.net/",
-        "n0paste.tk/",
-        "nekobin.com/",
-        "notes.io/",
-        "p.ip.fi/",
-        "paste-bin.xyz/",
-        "paste.centos.org/",
-        "paste.debian.net/",
-        "paste.ee/",
-        "paste.jp/",
-        "paste.mozilla.org/",
-        "paste.ofcode.org/",
-        "paste.opensuse.org/",
-        "paste.org.ru/",
-        "paste.rohitab.com/",
-        "paste.sh/",
-        "paste2.org/",
-        "pastebin.ai/",
-        "pastebin.com/",
-        "pastebin.fi/",
-        "pastebin.fr/",
-        "pastebin.osuosl.org/",
-        "pastecode.io/",
-        "pasted.co/",
-        "pasteio.com/",
-        "pastelink.net/",
-        "pastie.org/",
-        "privatebin.net/",
-        "pst.innomi.net/",
-        "quickhighlighter.com/",
-        "termbin.com/",
-        "tny.cz/",
-        "tutpaste.com/",
-        "vpaste.net/",
-        "www.paste.lv/",
-        "www.paste4btc.com/",
-        "www.pastebin.pt/",
-    }
     _THROTTLED = (
         "aetherhub.com",
         "deckstats.net",
@@ -531,18 +661,6 @@ class Video:
         return [line.strip() for line in self.description.split("\n")] if self.description else []
 
     @property
-    def links(self) -> list[str]:
-        return self._links
-
-    @property
-    def shortened_links(self) -> set[str]:
-        return {link for link in self.links if any(hook in link for hook in self.SHORTENER_HOOKS)}
-
-    @property
-    def unshortened_links(self) -> list[str]:
-        return self._unshortened_links
-
-    @property
     def sources(self) -> list[str]:
         return sorted(self._sources)
 
@@ -587,19 +705,7 @@ class Video:
         self._author, self._description, self._title = None, None, None
         self._keywords, self._publish_time, self._views = None, None, None
         self._sources = set()
-        self._unshortened_links: list[str] = []
         self._scrape()
-
-    def _parse_linktree(self) -> list[str]:
-        links = []
-        for link in self.links:
-            if Linktree.is_linktree_url(link):
-                new_links = [l for l in Linktree(link).data.links if l not in self.links]
-                _log.info(f"Parsed {len(new_links)} new link(s) from: {link!r}")
-                links.extend(new_links)
-            else:
-                links.append(link)
-        return links
 
     @timed("gathering video data")
     def _scrape(self) -> None:
@@ -607,14 +713,13 @@ class Video:
         self._format_soup = self._get_format_soup()
         self._derived_format = self._derive_format()
         self._derived_name = self._derive_name()
-        self._links, self._arena_lines = self._parse_lines(*self._desc_lines)
-        self._links = self._parse_linktree()
-        self._decks = self._collect(self._links, self._arena_lines)
+        links, lines = self._parse_lines(*self._desc_lines)
+        self._decks = self._collect(links, get_arena_lines(*lines))
         if not self._decks:  # try with author's comment
             comment_lines = self._get_comment_lines()
             if comment_lines:
-                links, arena_lines = self._parse_lines(*comment_lines)
-                self._decks = self._collect(links, arena_lines)
+                links, lines = self._parse_lines(*comment_lines)
+                self._decks = self._collect(links, get_arena_lines(*lines))
 
     def __repr__(self) -> str:
         return getrepr(
@@ -725,17 +830,33 @@ class Video:
             return None
         return " ".join(title_words[i] for i in seq)
 
-    @classmethod
-    def _parse_lines(cls, *lines) -> tuple[list[str], list[str]]:
-        links, other_lines = [], []
+
+    @classmethod  # recursive
+    def _parse_lines(cls, *lines, expand_links=True) -> tuple[list[str], list[str]]:
+        links, other_lines = set(), []
         for line in lines:
-            cls._extract_formats(line)
             url = extract_url(line)
             if url:
-                links.append(url)
+                if any(h in url for h in cls.SHORTENER_HOOKS):
+                    url = unshorten(url)
+                if Linktree.is_linktree_url(url):
+                    new_links = Linktree(url).data.links
+                    _log.info(f"Parsed {len(new_links)} link(s) from: {url!r}")
+                    links.update(new_links)
+                else:
+                    links.add(url)
             else:
                 other_lines.append(line)
-        return links, get_arena_lines(*other_lines)
+
+        if expand_links:
+            expander = _LinksExpander(*links)
+            links = {l for l in links if l not in expander.expanded_links}
+            links.update(expander.gathered_links)
+            new_links, new_lines = cls._parse_lines(*expander.lines, expand_links=False)
+            links.update(new_links)
+            other_lines.extend(new_lines)
+
+        return sorted(links), other_lines
 
     def _process_deck(self, link: str) -> Deck | None:
         deck = None
@@ -753,24 +874,6 @@ class Video:
                 _log.warning(f"Back-offed scraping of {link!r} failed with read timeout")
             if not deck:
                 self._urls_manager.add_failed(sanitized_link)
-
-        elif any(h in link for h in self.PASTEBIN_LIKE_HOOKS):
-            # TODO: refactor this processing out of here
-            if "gist.github.com/" in link and not link.endswith("/raw"):
-                link = f"{link}/raw"
-            elif "pastebin.com/" in link and "/raw/" not in link:
-                link = link.replace("pastebin.com/", "pastebin.com/raw/")
-            if self._urls_manager.is_failed(link):
-                _log.info(f"Skipping already failed deck URL: {link!r}...")
-                return None
-            response = timed_request(link)
-            if response:
-                try:
-                    deck = ArenaParser(response.text.splitlines(), self.metadata).parse()
-                except ValueError as ve:
-                    _log.warning(f"Failed to parse Arena decklist from: {link!r}: {ve}")
-            if not deck:
-                self._urls_manager.add_failed(link)
 
         if deck:
             deck_name = f"{deck.name!r} deck" if deck.name else "Deck"
@@ -803,18 +906,10 @@ class Video:
     def _collect(self, links: list[str], arena_lines: list[str]) -> list[Deck]:
         decks: set[Deck] = set()
 
-        # 1st stage: regular URLs
+        # 1st stage: URLs
         decks.update(self._process_urls(*links))
 
-        # 2nd stage: shortened URLs
-        shortened_urls = [link for link in links
-                          if any(hook in link for hook in self.SHORTENER_HOOKS)]
-        if shortened_urls:
-            unshortened_urls = [unshorten(url) for url in shortened_urls]
-            self._unshortened_links = [url for url in unshortened_urls if url]
-            decks.update(self._process_urls(*self.unshortened_links))
-
-        # 3rd stage: Arena lines
+        # 2nd stage: Arena lines
         if arena_lines:
             self._sources.add("arena.decklist")
             for decklist in group_arena_lines(*arena_lines):
@@ -824,8 +919,8 @@ class Video:
                         _log.info(f"{deck_name} scraped successfully")
                         decks.add(deck)
 
-        # 4th stage: deck containers
-        for link in [*links, *self._unshortened_links]:
+        # 3rd stage: deck containers
+        for link in links:
             if scraper := DeckUrlsContainerScraper.from_url(
                     link, self.metadata) or HybridContainerScraper.from_url(link, self.metadata):
                 decks.update(scraper.scrape())
