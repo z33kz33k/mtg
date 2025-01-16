@@ -75,13 +75,16 @@ class Linktree:
             raise ValueError(f"Not a linktr.ee URL: {url!r}")
         self._url = strip_url_query(url)
         self._json_data = self._get_json()
-        self._account_id = self._json_data["account"]["id"]
+        try:
+            self._account_id = self._json_data["account"]["id"]
+        except KeyError:
+            raise ScrapingError("Account ID not available")
         self._links = self._get_links()
         self._data = self._get_data()
 
     @staticmethod
     def is_linktree_url(url: str) -> bool:
-        return "linktr.ee/" in url
+        return "linktr.ee/" in url.lower()
 
     @backoff.on_exception(backoff.expo, ScrapingError, max_time=60)
     def _get_json(self) -> Json:

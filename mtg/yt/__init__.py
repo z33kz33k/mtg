@@ -452,104 +452,105 @@ class _LinksExpander:
     def __init__(self, *links: str) -> None:
         self._links = links
         self._urls_manager = UrlsStateManager()
-        self._pastebin_links = [l for l in links if any(h in l for h in self.PASTEBIN_LIKE_HOOKS)]
-        if obscure_links := [
-            l for l in links if any(h in l for h in self.OBSCURE_PASTEBIN_LIKE_HOOKS)]:
-            _log.warning(f"Obscure pastebin-like link(s) found: {obscure_links}")
-        self._patreon_links = [link for link in links if self.is_patreon_url(link)]
-        self._google_doc_links = [link for link in links if self.is_google_doc_url(link)]
         self._expanded_links, self._gathered_links, self._lines = [], [], []
-        self._expand_pastebin()
-        self._expand_patreon()
-        self._expand_google_doc()
+        self._expand()
 
-    def _expand_pastebin(self) -> None:
-        for link in self._pastebin_links:
-            original_link = link
-            if "gist.github.com/" in link and not link.endswith("/raw"):
-                link = f"{link}/raw"
-            elif "pastebin.com/" in link and "/raw/" not in link:
-                link = link.replace("pastebin.com/", "pastebin.com/raw/")
+    @classmethod
+    def is_pastebin_like_url(cls, url: str) -> bool:
+        return any(h in url for h in cls.PASTEBIN_LIKE_HOOKS)
+
+    @classmethod
+    def is_obscure_pastebin_like_url(cls, url: str) -> bool:
+        return any(h in url for h in cls.OBSCURE_PASTEBIN_LIKE_HOOKS)
+
+    def _expand(self) -> None:
+        for link in self._links:
             if self._urls_manager.is_failed(link):
                 _log.info(f"Skipping expansion of already failed URL: {link!r}...")
                 continue
-
             _log.info(f"Expanding {link!r}...")
-            response = timed_request(link)
-            if not response:
-                self._urls_manager.add_failed(link)
-                continue
+            if self.is_pastebin_like_url(link):
+                self._expand_pastebin(link)
+            elif self.is_obscure_pastebin_like_url(link):
+                _log.warning(f"Obscure pastebin-like link found: {link!r}...")
+            elif self.is_patreon_url(link):
+                self._expand_patreon(link)
+            elif self.is_google_doc_url(link):
+                self._expand_google_doc(link)
 
-            self._lines += response.text.splitlines()
-            self._expanded_links.append(original_link)
+    def _expand_pastebin(self, link: str) -> None:
+        original_link = link
+        if "gist.github.com/" in link and not link.endswith("/raw"):
+            link = f"{link}/raw"
+        elif "pastebin.com/" in link and "/raw/" not in link:
+            link = link.replace("pastebin.com/", "pastebin.com/raw/")
+
+        response = timed_request(link)
+        if not response:
+            self._urls_manager.add_failed(original_link)
+            return
+
+        self._lines += response.text.splitlines()
+        self._expanded_links.append(original_link)
 
     @staticmethod
     def is_patreon_url(url: str) -> bool:
         return "patreon.com/posts/" in url.lower()
 
-    def _expand_patreon(self) -> None:
-        for link in self._patreon_links:
-            if self._urls_manager.is_failed(link):
-                _log.info(f"Skipping expansion of already failed URL: {link!r}...")
-                continue
-
-            _log.info(f"Expanding {link!r}...")
-            try:
-                soup, _, _ = get_dynamic_soup(link, self._PATREON_XPATH)
-                if not soup:
-                    _log.warning("Patreon post data not available")
-                    self._urls_manager.add_failed(link)
-                    return
-            except TimeoutException:
+    def _expand_patreon(self, link: str) -> None:
+        try:
+            soup, _, _ = get_dynamic_soup(link, self._PATREON_XPATH)
+            if not soup:
                 _log.warning("Patreon post data not available")
                 self._urls_manager.add_failed(link)
                 return
+        except TimeoutException:
+            _log.warning("Patreon post data not available")
+            self._urls_manager.add_failed(link)
+            return
 
-            text_tag = soup.find("div", class_=lambda c: c and "sc-dtMgUX" in c and 'IEufa' in c)
-            self._lines += [p_tag.text for p_tag in text_tag.find_all("p")]
-            self._expanded_links.append(link)
+        text_tag = soup.find("div", class_=lambda c: c and "sc-dtMgUX" in c and 'IEufa' in c)
+        self._lines += [p_tag.text for p_tag in text_tag.find_all("p")]
+        self._expanded_links.append(link)
 
     @staticmethod
     def is_google_doc_url(url: str) -> bool:
         return "docs.google.com/document/" in url.lower()
 
-    def _expand_google_doc(self) -> None:
+    def _expand_google_doc(self, link: str) -> None:
         # url = "https://docs.google.com/document/d/1Bnsd4M7n_8LHfN6uEJVxoRr72antIEIO9w4YOGKltiU/edit"
-        for link in self._google_doc_links:
-
-            _log.info(f"Expanding {link!r}...")
-            try:
-                soup, _, _ = get_dynamic_soup(link, self._GOOGLE_DOC_XPATH)
-                if not soup:
-                    _log.warning("Google Docs document data not available")
-                    self._urls_manager.add_failed(link)
-                    return
-            except TimeoutException:
+        try:
+            soup, _, _ = get_dynamic_soup(link, self._GOOGLE_DOC_XPATH)
+            if not soup:
                 _log.warning("Google Docs document data not available")
                 self._urls_manager.add_failed(link)
                 return
+        except TimeoutException:
+            _log.warning("Google Docs document data not available")
+            self._urls_manager.add_failed(link)
+            return
 
-            start = "DOCS_modelChunk = "
-            end = "; DOCS_modelChunkLoadStart = "
-            js = dissect_js(soup, start_hook=start, end_hook=end, left_split_on_start_hook=True)
+        start = "DOCS_modelChunk = "
+        end = "; DOCS_modelChunkLoadStart = "
+        js = dissect_js(soup, start_hook=start, end_hook=end, left_split_on_start_hook=True)
 
-            if not js:
-                _log.warning("Google Docs document data not available")
-                self._urls_manager.add_failed(link)
-                return
+        if not js:
+            _log.warning("Google Docs document data not available")
+            self._urls_manager.add_failed(link)
+            return
 
-            matched_text = None
-            for i, d in enumerate(js):
-                match d:
-                    case {"s": text} if i == 0:
-                        matched_text = text.strip()
-                    case {"sm": {'lnks_link': {'ulnk_url': link}}}:
-                        self._gathered_links.append(link)
-                    case _:
-                        pass
+        matched_text = None
+        for i, d in enumerate(js):
+            match d:
+                case {"s": text} if i == 0:
+                    matched_text = text.strip()
+                case {"sm": {'lnks_link': {'ulnk_url': link}}}:
+                    self._gathered_links.append(link)
+                case _:
+                    pass
 
-            if matched_text:
-                self._lines += matched_text.splitlines()
+        if matched_text:
+            self._lines += matched_text.splitlines()
 
 
 class Video:
@@ -830,6 +831,9 @@ class Video:
             return None
         return " ".join(title_words[i] for i in seq)
 
+    @classmethod
+    def is_shortened_url(cls, url: str) -> bool:
+        return any(h in url for h in cls.SHORTENER_HOOKS)
 
     @classmethod  # recursive
     def _parse_lines(cls, *lines, expand_links=True) -> tuple[list[str], list[str]]:
@@ -837,12 +841,15 @@ class Video:
         for line in lines:
             url = extract_url(line)
             if url:
-                if any(h in url for h in cls.SHORTENER_HOOKS):
-                    url = unshorten(url)
+                if cls.is_shortened_url(url):
+                    url = unshorten(url) or url
                 if Linktree.is_linktree_url(url):
-                    new_links = Linktree(url).data.links
-                    _log.info(f"Parsed {len(new_links)} link(s) from: {url!r}")
-                    links.update(new_links)
+                    try:
+                        new_links = Linktree(url).data.links
+                        _log.info(f"Parsed {len(new_links)} link(s) from: {url!r}")
+                        links.update(new_links)
+                    except ScrapingError as se:
+                        _log.warning(f"Parsing '{url!r}' failed with: {se}")
                 else:
                     links.add(url)
             else:

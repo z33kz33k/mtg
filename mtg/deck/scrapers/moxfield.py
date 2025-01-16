@@ -10,11 +10,13 @@
 import logging
 from datetime import datetime
 
+from selenium.common import TimeoutException
+
 from mtg import Json
 from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
 from mtg.scryfall import Card
 from mtg.utils.scrape import ScrapingError, strip_url_query
-from mtg.utils.scrape.dynamic import get_selenium_json
+from mtg.utils.scrape.dynamic import get_dynamic_soup, get_selenium_json
 
 _log = logging.getLogger(__name__)
 
@@ -33,7 +35,8 @@ class MoxfieldDeckScraper(DeckScraper):
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         url = url.lower()
-        return "moxfield.com/decks/" in url and "/personal" not in url and "/history" not in url
+        tokens = "public?q=", "/personal", "/history"
+        return "moxfield.com/decks/" in url and all(t not in url for t in tokens)
 
     def _pre_parse(self) -> None:  # override
         self._json_data = get_selenium_json(self.API_URL_TEMPLATE.format(self._decklist_id))
@@ -148,6 +151,51 @@ class MoxfieldUserScraper(DeckUrlsContainerScraper):
 
     def _collect(self) -> list[str]:  # override
         json_data = get_selenium_json(self.API_URL_TEMPLATE.format(self._get_user_name()))
+        if not json_data or not json_data.get("data"):
+            _log.warning(self._error_msg)
+            return []
+        return [d["publicUrl"] for d in json_data["data"]]
+
+
+@DeckUrlsContainerScraper.registered
+class MoxfieldSearchScraper(DeckUrlsContainerScraper):
+    """Scraper of Moxfield search results page.
+    """
+    CONTAINER_NAME = "Moxfield search results"  # override
+    # 100 page size is pretty arbitrary but tested to work
+    API_URL_TEMPLATE = ("https://api2.moxfield.com/v2/decks/search?pageNumber=1&pageSize=100&sort"
+                        "Type=updated&sortDirection=descending&filter={}")
+    _DECK_SCRAPERS = MoxfieldDeckScraper,  # override
+    _XPATH = "//input[@id='filter']"
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return "moxfield.com/decks/public?q=" in url.lower()
+
+    def _get_filter(self) -> str | None:
+        try:
+            soup, _, _ = get_dynamic_soup(self.url, self._XPATH)
+            if not soup:
+                _log.warning(self._error_msg)
+                return None
+        except TimeoutException:
+            _log.warning(self._error_msg)
+            return None
+
+        input_tag = soup.find("input", id="filter")
+        if not input_tag:
+            _log.warning(self._error_msg)
+            return None
+
+        return input_tag.attrs["value"]
+
+    def _collect(self) -> list[str]:  # override
+        filter_ = self._get_filter()
+        if not filter_:
+            _log.warning(self._error_msg)
+            return []
+        api_url = self.API_URL_TEMPLATE.format(filter_)
+        json_data = get_selenium_json(api_url)
         if not json_data or not json_data.get("data"):
             _log.warning(self._error_msg)
             return []
