@@ -1,0 +1,100 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 133000,
+    "scrape_time": "2025-01-02 01:49:03",
+    "videos": [
+        {
+            "id": "1CDpsQj6Bf4",
+            "url": "https://www.youtube.com/watch?v=1CDpsQj6Bf4",
+            "author": "LegenVD",
+            "title": "The best Standard deck of the year (so far).",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a blue/red pirates deck in Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:23 - Match 1\n10:43 - Match 2\n15:38 - Match 3\n20:43 - Match 4\n24:25 - Match 5\n32:05 - Match 6\n36:08 - Match 7\n39:32 - Match 8\n\nDecklist:\nhttps://aetherhub.com/Deck/foundations-pirates\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtgfoundations #mtgfdn #mtg #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "artifact",
+                "blue",
+                "deck",
+                "decks",
+                "fdn",
+                "fnd",
+                "foundations",
+                "foundations standard",
+                "gameplay",
+                "guide",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtg foundations",
+                "mtg pirates",
+                "mtga",
+                "new standard",
+                "pirate deck",
+                "pirates",
+                "red",
+                "roaming",
+                "roaming throne",
+                "standard",
+                "standard deck",
+                "standard pirates",
+                "throne",
+                "vehicle"
+            ],
+            "publish_time": "2025-01-01 09:00:01",
+            "views": 14342,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-01-01",
+                        "exports": 464,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Foundations Pirates",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/foundations-pirates",
+                        "views": 455
+                    },
+                    "decklist_id": "02a8dc5e-779d-0624-3106-3ab65f74d89e",
+                    "decklist_extended_id": "edea66c5-9f0d-f504-0b33-a60fdfd9597a"
+                }
+            ]
+        }
+    ]
+}

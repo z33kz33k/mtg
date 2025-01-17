@@ -1,0 +1,102 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 133000,
+    "scrape_time": "2024-12-26 01:27:10",
+    "videos": [
+        {
+            "id": "u1BtAJrQBR4",
+            "url": "https://www.youtube.com/watch?v=u1BtAJrQBR4",
+            "author": "LegenVD",
+            "title": "This deck has become Legendary.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a Gruul Bard Class deck in Explorer. \n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:34 - Match 1\n11:13 - Match 2\n16:47 - Match 3\n26:13 - Match 4\n27:45 - Match 5\n31:53 - Match 6\n39:30 - Match 7\n\nDecklist:\nhttps://aetherhub.com/Deck/oath-bard-class\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtg #magicthegathering",
+            "keywords": [
+                "bard class",
+                "birgi",
+                "deck",
+                "decks",
+                "domri",
+                "explorer",
+                "explorer bard class",
+                "gameplay",
+                "green",
+                "gruul",
+                "gruul legends",
+                "guide",
+                "hajar",
+                "klothys",
+                "legend",
+                "legends",
+                "lvd",
+                "magic the gathering",
+                "mox amber",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "oath of nissa",
+                "pioneer",
+                "pioneer bard class",
+                "pioneer deck",
+                "pioneer masters",
+                "red",
+                "ruby",
+                "samut",
+                "targ nar",
+                "xenagos"
+            ],
+            "publish_time": "2024-12-25 09:01:00",
+            "views": 12872,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2024-12-25",
+                        "exports": 137,
+                        "format": "explorer",
+                        "mode": "Bo3",
+                        "name": "Oath Bard Class",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/oath-bard-class",
+                        "views": 313
+                    },
+                    "decklist_id": "2c4b99c7-38c0-81c3-b257-4ec1b3351e87",
+                    "decklist_extended_id": "18b9e746-15b2-d6ac-9f40-33118a4a3fe9"
+                }
+            ]
+        }
+    ]
+}

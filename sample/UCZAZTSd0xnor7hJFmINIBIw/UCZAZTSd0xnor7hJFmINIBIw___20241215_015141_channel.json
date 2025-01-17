@@ -1,50 +1,14 @@
 {
-    "url": "https://www.youtube.com/@MTGGoldfish",
-    "id": "UCZAZTSd0xnor7hJFmINIBIw",
-    "title": "MTGGoldfish",
-    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
-    "tags": [
-        "MTG",
-        "Magic the Gathering",
-        "mtggoldfish"
-    ],
-    "subscribers": 333000,
-    "scrape_time": "2024-12-15 01:51:41",
-    "videos": [
-        {
-            "id": "X1ynHlJ4FzI",
-            "url": "https://www.youtube.com/watch?v=X1ynHlJ4FzI",
-            "author": "MTGGoldfish",
-            "title": "Phenax Defender Mill",
-            "description": "Phenax, God of Deception is on Arena and looking to gather all the creatures with defender and high toughness to Mil our opponents out! Coral Colony & Sylvan Carytid are the perfect cards to bring along!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-phenax-defender-mill\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6793397#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/Qu5yo\n◼ Purchase this deck (Magic Online): http://mtg.fish/pQjOy\n\n#MTG\n#MagicTheGathering\n#MTGO\n#MTGExplorer",
-            "keywords": [
-                "Gameplay",
-                "MTG",
-                "MTG Arena",
-                "Magic Arena",
-                "Magic the Gathering"
-            ],
-            "publish_time": "2024-12-14 08:00:04",
-            "views": 14821,
-            "sources": [
-                "mtg.fish",
-                "www.cardkingdom.com",
-                "www.mtggoldfish.com"
-            ],
-            "decks": [
-                {
-                    "metadata": {
-                        "author": "TheAsianAvenger",
-                        "date": "2024-12-06",
-                        "format": "explorer",
-                        "name": "Phenax",
-                        "source": "www.mtggoldfish.com",
-                        "url": "https://www.mtggoldfish.com/deck/6793397"
-                    },
-                    "decklist_id": "fe787037-a2b6-488b-c881-1ab1415c7a89",
-                    "decklist_extended_id": "76750ac4-f331-4fce-9fa7-5fb2c3a2bab1"
-                }
-            ]
-        }
-    ]
+  "url": "https://www.youtube.com/@MTGGoldfish",
+  "id": "UCZAZTSd0xnor7hJFmINIBIw",
+  "title": "MTGGoldfish",
+  "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+  "tags": [
+    "MTG",
+    "Magic the Gathering",
+    "mtggoldfish"
+  ],
+  "subscribers": 333000,
+  "scrape_time": "2024-12-15 01:51:41",
+  "videos": []
 }

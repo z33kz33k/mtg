@@ -1,0 +1,102 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 133000,
+    "scrape_time": "2024-12-28 01:45:01",
+    "videos": [
+        {
+            "id": "xOFAg2Szqxg",
+            "url": "https://www.youtube.com/watch?v=xOFAg2Szqxg",
+            "author": "LegenVD",
+            "title": "Casting big artifacts for free.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a Metalwork Colossus deck in Explorer. \n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n03:49 - Match 1\n06:37 - Match 2\n09:43 - Match 3\n13:34 - Match 4\n17:59 - Match 5\n20:02 - Match 6\n25:36 - Match 7\n28:43 - Match 8\n31:48 - Match 9\n\nDecklist:\nhttps://aetherhub.com/Deck/explorer-metalwork-colossus\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtg #magicthegathering",
+            "keywords": [
+                "bard class",
+                "birgi",
+                "deck",
+                "decks",
+                "domri",
+                "explorer",
+                "explorer bard class",
+                "gameplay",
+                "green",
+                "gruul",
+                "gruul legends",
+                "guide",
+                "hajar",
+                "klothys",
+                "legend",
+                "legends",
+                "lvd",
+                "magic the gathering",
+                "mox amber",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "oath of nissa",
+                "pioneer",
+                "pioneer bard class",
+                "pioneer deck",
+                "pioneer masters",
+                "red",
+                "ruby",
+                "samut",
+                "targ nar",
+                "xenagos"
+            ],
+            "publish_time": "2024-12-27 09:00:53",
+            "views": 13847,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2024-12-27",
+                        "exports": 158,
+                        "format": "explorer",
+                        "mode": "Bo1",
+                        "name": "Explorer Metalwork Colossus",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/explorer-metalwork-colossus",
+                        "views": 263
+                    },
+                    "decklist_id": "4ba1ff8a-9a18-7365-da14-20572cc92807",
+                    "decklist_extended_id": "686ae84e-8039-2f66-d6d4-f8c23591fb45"
+                }
+            ]
+        }
+    ]
+}

@@ -1,123 +1,14 @@
 {
-    "url": "https://www.youtube.com/@MTGGoldfish",
-    "id": "UCZAZTSd0xnor7hJFmINIBIw",
-    "title": "MTGGoldfish",
-    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
-    "tags": [
-        "MTG",
-        "Magic the Gathering",
-        "mtggoldfish"
-    ],
-    "subscribers": 327000,
-    "scrape_time": "2024-09-22 22:07:28",
-    "videos": [
-        {
-            "id": "PouzhXRePa0",
-            "url": "https://www.youtube.com/watch?v=PouzhXRePa0",
-            "author": "MTGGoldfish",
-            "title": "It Was Agatha's Cauldron All Along!  Standard",
-            "description": "Agatha's Cauldron combo may have had pieces rotate but it's still possible to pull off! So I guess its time to cook in standard.\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: t he Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-it-was-agatha-s-cauldron-all-along\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6638145#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/3DNdz\n◼ Purchase this deck (Magic Online): http://mtg.fish/2IW1N\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
-            "keywords": [
-                "Gameplay",
-                "MTG",
-                "MTG Arena",
-                "Magic Arena",
-                "Magic the Gathering"
-            ],
-            "publish_time": "2024-09-21 11:41:48",
-            "views": 16903,
-            "sources": [
-                "mtg.fish",
-                "www.cardkingdom.com",
-                "www.mtggoldfish.com"
-            ],
-            "derived_format": "standard",
-            "decks": [
-                {
-                    "metadata": {
-                        "author": "TheAsianAvenger",
-                        "date": "2024-09-16",
-                        "format": "standard",
-                        "name": "Cauldron",
-                        "source": "www.mtggoldfish.com",
-                        "url": "https://www.mtggoldfish.com/deck/6638145"
-                    },
-                    "decklist_id": "f8d9f8d9-aa9a-a820-9236-da078b4d2eab",
-                    "decklist_extended_id": "000dda28-2cc7-0b9e-c73b-bc60274b385b"
-                }
-            ]
-        },
-        {
-            "id": "BMqehFaCtfY",
-            "url": "https://www.youtube.com/watch?v=BMqehFaCtfY",
-            "author": "MTGGoldfish",
-            "title": "Tokens, but No One Can Cast Spells  Much Abrew",
-            "description": "Today we're heading to Pioneer to play a deck that looks like Tokens but really it's a hard lock prison deck that can keep both players from casting spells forever!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/much-abrew-tokens-but-really-it-s-prison-pioneer\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6630211#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/KQxzm\n◼ Purchase this deck (Magic Online): http://mtg.fish/iHZbl\n\n#MTG\n#MagicTheGathering\n#MTGO\n#mtgpioneer \n\n0:00 Start\n3:34 Games",
-            "keywords": [
-                "Gameplay",
-                "MTG",
-                "MTG Arena",
-                "Magic Arena",
-                "Magic the Gathering"
-            ],
-            "publish_time": "2024-09-20 08:00:15",
-            "views": 55750,
-            "sources": [
-                "mtg.fish",
-                "www.cardkingdom.com",
-                "www.mtggoldfish.com"
-            ],
-            "derived_format": "pioneer",
-            "decks": [
-                {
-                    "metadata": {
-                        "author": "TwoSevenOff",
-                        "date": "2024-09-11",
-                        "format": "pioneer",
-                        "name": "Token Prison",
-                        "source": "www.mtggoldfish.com",
-                        "url": "https://www.mtggoldfish.com/deck/6630211"
-                    },
-                    "decklist_id": "35c35b91-2803-162a-d2ab-68093f3fd582",
-                    "decklist_extended_id": "3d788c30-ed9a-e8ee-5e3b-9fefbaf5bc65"
-                }
-            ]
-        },
-        {
-            "id": "mOiQvsxTV8Q",
-            "url": "https://www.youtube.com/watch?v=mOiQvsxTV8Q",
-            "author": "MTGGoldfish",
-            "title": "Abuelo's Reanimator Combo  Standard",
-            "description": "Abuelo's Awakening was a fun best of one combo before rotation, lets see if it can still catch the meta off guard?\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkigndom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-abuelo-s-reanimator-combo\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6634472#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/EbtVT\n◼ Purchase this deck (Magic Online): http://mtg.fish/F5Hvn\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
-            "keywords": [
-                "Gameplay",
-                "MTG",
-                "MTG Arena",
-                "Magic Arena",
-                "Magic the Gathering"
-            ],
-            "publish_time": "2024-09-19 08:00:05",
-            "views": 20639,
-            "sources": [
-                "mtg.fish",
-                "www.cardkigndom.com",
-                "www.mtggoldfish.com"
-            ],
-            "derived_format": "standard",
-            "decks": [
-                {
-                    "metadata": {
-                        "author": "TheAsianAvenger",
-                        "date": "2024-09-14",
-                        "format": "standard",
-                        "name": "Abuelo",
-                        "source": "www.mtggoldfish.com",
-                        "url": "https://www.mtggoldfish.com/deck/6634472"
-                    },
-                    "decklist_id": "22aca959-f6a1-b400-75be-a83c9abc8169",
-                    "decklist_extended_id": "86dcdeda-292e-3d77-ca43-060e4d7076d2"
-                }
-            ]
-        }
-    ]
+  "url": "https://www.youtube.com/@MTGGoldfish",
+  "id": "UCZAZTSd0xnor7hJFmINIBIw",
+  "title": "MTGGoldfish",
+  "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+  "tags": [
+    "MTG",
+    "Magic the Gathering",
+    "mtggoldfish"
+  ],
+  "subscribers": 327000,
+  "scrape_time": "2024-09-22 22:07:28",
+  "videos": []
 }

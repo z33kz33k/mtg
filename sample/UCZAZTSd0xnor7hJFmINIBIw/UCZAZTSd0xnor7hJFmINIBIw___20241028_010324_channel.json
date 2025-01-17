@@ -1,120 +1,14 @@
 {
-    "url": "https://www.youtube.com/@MTGGoldfish",
-    "id": "UCZAZTSd0xnor7hJFmINIBIw",
-    "title": "MTGGoldfish",
-    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
-    "tags": [
-        "MTG",
-        "Magic the Gathering",
-        "mtggoldfish"
-    ],
-    "subscribers": 330000,
-    "scrape_time": "2024-10-28 01:03:24",
-    "videos": [
-        {
-            "id": "wPq2ZnkoR2o",
-            "url": "https://www.youtube.com/watch?v=wPq2ZnkoR2o",
-            "author": "MTGGoldfish",
-            "title": "Did Everyone Forget About Faeries in Standard?",
-            "description": "Remember those Faerie cards we got in Eldraine? They might be better than you'd think!!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-did-everyone-forget-about-faeries\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6697566#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/TYjO6\n◼ Purchase this deck (Magic Online): http://mtg.fish/1V5Ay\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
-            "keywords": [
-                "Gameplay",
-                "MTG",
-                "MTG Arena",
-                "Magic Arena",
-                "Magic the Gathering"
-            ],
-            "publish_time": "2024-10-26 08:00:03",
-            "views": 19559,
-            "sources": [
-                "mtg.fish",
-                "www.cardkingdom.com",
-                "www.mtggoldfish.com"
-            ],
-            "decks": [
-                {
-                    "metadata": {
-                        "author": "TheAsianAvenger",
-                        "date": "2024-10-17",
-                        "format": "standard",
-                        "name": "Crocker",
-                        "source": "www.mtggoldfish.com",
-                        "url": "https://www.mtggoldfish.com/deck/6697566"
-                    },
-                    "decklist_id": "f9e5c495-9dde-658e-65f5-4abc3c712b1b",
-                    "decklist_extended_id": "bd56ac4a-44af-9bfc-954b-f3a58c304035"
-                }
-            ]
-        },
-        {
-            "id": "gTzxUmn5Ikc",
-            "url": "https://www.youtube.com/watch?v=gTzxUmn5Ikc",
-            "author": "MTGGoldfish",
-            "title": "Can Fecund Greenshell Hit Mythic in Pioneer?  Much Abrew",
-            "description": "What are the odds of hitting mythic in Pioneer with Fecund Greenshell backed by a motely crew of frogs and deserts? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/much-abrew-fecund-deserts-pioneer\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6694248#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/BncUp\n◼ Purchase this deck (Magic Online): http://mtg.fish/aXC95\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#mtgpioneer \n\n0:00 Start\n4:44 Games",
-            "keywords": [
-                "Gameplay",
-                "MTG",
-                "MTG Arena",
-                "Magic Arena",
-                "Magic the Gathering"
-            ],
-            "publish_time": "2024-10-25 08:00:13",
-            "views": 46959,
-            "sources": [
-                "mtg.fish",
-                "www.cardkingdom.com",
-                "www.mtggoldfish.com"
-            ],
-            "decks": [
-                {
-                    "metadata": {
-                        "author": "PredatorStyle",
-                        "date": "2024-10-16",
-                        "format": "pioneer",
-                        "name": "The Fecund Desert",
-                        "source": "www.mtggoldfish.com",
-                        "url": "https://www.mtggoldfish.com/deck/6694248"
-                    },
-                    "decklist_id": "601f21bc-5079-e12b-672f-4b44487b1c31",
-                    "decklist_extended_id": "1f605279-d91b-e80f-f039-a1349ee5eaa0"
-                }
-            ]
-        },
-        {
-            "id": "m0YatL4rYes",
-            "url": "https://www.youtube.com/watch?v=m0YatL4rYes",
-            "author": "MTGGoldfish",
-            "title": "This Deck is Too Fair to Work in Pioneer?",
-            "description": "In the current year, a deck loaded with 2 powered creatures may be what we needed? The most broken card in this deck is Collected Company?! Really!?\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-this-deck-is-too-fair-to-work\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6692376#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/5r1UI\n◼ Purchase this deck (Magic Online): http://mtg.fish/MPfsX\n\n#MTG\n#MagicTheGathering\n#MTGO\n#MTGExplorer",
-            "keywords": [
-                "Gameplay",
-                "MTG",
-                "MTG Arena",
-                "Magic Arena",
-                "Magic the Gathering"
-            ],
-            "publish_time": "2024-10-24 08:00:08",
-            "views": 24319,
-            "sources": [
-                "mtg.fish",
-                "www.cardkingdom.com",
-                "www.mtggoldfish.com"
-            ],
-            "decks": [
-                {
-                    "metadata": {
-                        "author": "TheAsianAvenger",
-                        "date": "2024-10-15",
-                        "format": "explorer",
-                        "name": "2Fair",
-                        "source": "www.mtggoldfish.com",
-                        "url": "https://www.mtggoldfish.com/deck/6692376"
-                    },
-                    "decklist_id": "c714d8c7-2650-d2e3-5c41-e88d81985d0c",
-                    "decklist_extended_id": "2da9b867-d233-20bb-e77b-ddbdbdb0c362"
-                }
-            ]
-        }
-    ]
+  "url": "https://www.youtube.com/@MTGGoldfish",
+  "id": "UCZAZTSd0xnor7hJFmINIBIw",
+  "title": "MTGGoldfish",
+  "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+  "tags": [
+    "MTG",
+    "Magic the Gathering",
+    "mtggoldfish"
+  ],
+  "subscribers": 330000,
+  "scrape_time": "2024-10-28 01:03:24",
+  "videos": []
 }

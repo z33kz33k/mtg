@@ -1,51 +1,14 @@
 {
-    "url": "https://www.youtube.com/@MTGGoldfish",
-    "id": "UCZAZTSd0xnor7hJFmINIBIw",
-    "title": "MTGGoldfish",
-    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
-    "tags": [
-        "MTG",
-        "Magic the Gathering",
-        "mtggoldfish"
-    ],
-    "subscribers": 326000,
-    "scrape_time": "2024-09-15 18:33:49",
-    "videos": [
-        {
-            "id": "XNvZlaY9fiI",
-            "url": "https://www.youtube.com/watch?v=XNvZlaY9fiI",
-            "author": "MTGGoldfish",
-            "title": "Calamity Combo Is Faster Than Aggro?",
-            "description": "Calamity + Terror combo might just be what we need to quick close out against aggro and all the grindy match ups?\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-calamity-combo-is-faster-than-aggro\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6625792#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/uTGQN\n◼ Purchase this deck (Magic Online): http://mtg.fish/iTX75\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
-            "keywords": [
-                "Gameplay",
-                "MTG",
-                "MTG Arena",
-                "Magic Arena",
-                "Magic the Gathering"
-            ],
-            "publish_time": "2024-09-14 08:00:04",
-            "views": 24331,
-            "sources": [
-                "mtg.fish",
-                "www.cardkingdom.com",
-                "www.mtggoldfish.com"
-            ],
-            "derived_format": "standard",
-            "decks": [
-                {
-                    "metadata": {
-                        "author": "TheAsianAvenger",
-                        "date": "2024-09-09",
-                        "format": "standard",
-                        "name": "Calamity Combo",
-                        "source": "www.mtggoldfish.com",
-                        "url": "https://www.mtggoldfish.com/deck/6625792"
-                    },
-                    "decklist_id": "fb9ba0d9-ee9c-5851-4264-8c712f3d26f8",
-                    "decklist_extended_id": "ab476caf-45b8-917b-237c-4a7f7044ed9f"
-                }
-            ]
-        }
-    ]
+  "url": "https://www.youtube.com/@MTGGoldfish",
+  "id": "UCZAZTSd0xnor7hJFmINIBIw",
+  "title": "MTGGoldfish",
+  "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+  "tags": [
+    "MTG",
+    "Magic the Gathering",
+    "mtggoldfish"
+  ],
+  "subscribers": 326000,
+  "scrape_time": "2024-09-15 18:33:49",
+  "videos": []
 }

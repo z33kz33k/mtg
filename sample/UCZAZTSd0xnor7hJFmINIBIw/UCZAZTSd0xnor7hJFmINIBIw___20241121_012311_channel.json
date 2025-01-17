@@ -1,50 +1,14 @@
 {
-    "url": "https://www.youtube.com/@MTGGoldfish",
-    "id": "UCZAZTSd0xnor7hJFmINIBIw",
-    "title": "MTGGoldfish",
-    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
-    "tags": [
-        "MTG",
-        "Magic the Gathering",
-        "mtggoldfish"
-    ],
-    "subscribers": 331000,
-    "scrape_time": "2024-11-21 01:23:11",
-    "videos": [
-        {
-            "id": "IUibLG9IfzI",
-            "url": "https://www.youtube.com/watch?v=IUibLG9IfzI",
-            "author": "MTGGoldfish",
-            "title": "I Stole All My Opponent's Lands!  Against the Odds",
-            "description": "What are the odds of stealing all of your opponent's lands (and other permanents too) with Eminent Domain in Foundations Standard? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggolfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/against-the-odds-i-stole-all-my-opponent-s-lands-foundations-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6754091#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/XMHPS\n◼ Purchase this deck (Magic Online): http://mtg.fish/8uPrs\n\n#MTG\n#MagicTheGathering\n#magicarena \n#mtgstandard \n\n0:00 Start\n3:24 Games",
-            "keywords": [
-                "Gameplay",
-                "MTG",
-                "MTG Arena",
-                "Magic Arena",
-                "Magic the Gathering"
-            ],
-            "publish_time": "2024-11-20 08:00:07",
-            "views": 21543,
-            "sources": [
-                "mtg.fish",
-                "www.cardkingdom.com",
-                "www.mtggoldfish.com"
-            ],
-            "decks": [
-                {
-                    "metadata": {
-                        "author": "SaffronOlive",
-                        "date": "2024-11-13",
-                        "format": "standard",
-                        "name": "Eminent Domain",
-                        "source": "www.mtggoldfish.com",
-                        "url": "https://www.mtggoldfish.com/deck/6754091"
-                    },
-                    "decklist_id": "51cb0e72-54b1-f2f2-671f-ccb4fbed81b2",
-                    "decklist_extended_id": "ed3faa45-c649-0dd6-b37f-ddbff5f61bba"
-                }
-            ]
-        }
-    ]
+  "url": "https://www.youtube.com/@MTGGoldfish",
+  "id": "UCZAZTSd0xnor7hJFmINIBIw",
+  "title": "MTGGoldfish",
+  "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+  "tags": [
+    "MTG",
+    "Magic the Gathering",
+    "mtggoldfish"
+  ],
+  "subscribers": 331000,
+  "scrape_time": "2024-11-21 01:23:11",
+  "videos": []
 }

@@ -1,50 +1,14 @@
 {
-    "url": "https://www.youtube.com/@MTGGoldfish",
-    "id": "UCZAZTSd0xnor7hJFmINIBIw",
-    "title": "MTGGoldfish",
-    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
-    "tags": [
-        "MTG",
-        "Magic the Gathering",
-        "mtggoldfish"
-    ],
-    "subscribers": 331000,
-    "scrape_time": "2024-11-20 02:28:59",
-    "videos": [
-        {
-            "id": "zhuCqy96tAE",
-            "url": "https://www.youtube.com/watch?v=zhuCqy96tAE",
-            "author": "MTGGoldfish",
-            "title": "We Have to Lose the Game to Win  Foundations Standard",
-            "description": "Demonic Pact is back and there are a ton of new tools to use to hand off all these terrible cards we've put in our deck!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-we-have-to-lose-the-game-to-win\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6753712#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/rQi42\n◼ Purchase this deck (Magic Online): http://mtg.fish/OY6sU\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
-            "keywords": [
-                "Gameplay",
-                "MTG",
-                "MTG Arena",
-                "Magic Arena",
-                "Magic the Gathering"
-            ],
-            "publish_time": "2024-11-19 08:00:06",
-            "views": 11953,
-            "sources": [
-                "mtg.fish",
-                "www.cardkingdom.com",
-                "www.mtggoldfish.com"
-            ],
-            "decks": [
-                {
-                    "metadata": {
-                        "author": "TheAsianAvenger",
-                        "date": "2024-11-13",
-                        "format": "standard",
-                        "name": "Pact",
-                        "source": "www.mtggoldfish.com",
-                        "url": "https://www.mtggoldfish.com/deck/6753712"
-                    },
-                    "decklist_id": "2016fa7f-3c56-5b55-74f5-ffb3070f4911",
-                    "decklist_extended_id": "2392c703-f051-5e32-4231-caf3d1da4000"
-                }
-            ]
-        }
-    ]
+  "url": "https://www.youtube.com/@MTGGoldfish",
+  "id": "UCZAZTSd0xnor7hJFmINIBIw",
+  "title": "MTGGoldfish",
+  "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+  "tags": [
+    "MTG",
+    "Magic the Gathering",
+    "mtggoldfish"
+  ],
+  "subscribers": 331000,
+  "scrape_time": "2024-11-20 02:28:59",
+  "videos": []
 }

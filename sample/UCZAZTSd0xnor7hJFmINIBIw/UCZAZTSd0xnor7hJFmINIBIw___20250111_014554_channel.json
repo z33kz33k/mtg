@@ -1,0 +1,81 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 335000,
+    "scrape_time": "2025-01-11 01:45:54",
+    "videos": [
+        {
+            "id": "JeF0bvU_1fU",
+            "url": "https://www.youtube.com/watch?v=JeF0bvU_1fU",
+            "author": "MTGGoldfish",
+            "title": "I'll Build My Own Sneak Attack With Blackjack and...  Much Abrew",
+            "description": "Cheating Emrakul into play is powerful, but are Yggdragil, Rebirth Engine and Portent of Calamity a legitimate way to get a fast flying spaghetti monster in Modern? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/much-abrew-yggdrasil-rebirth-engine-modern\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6816727#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/gsXQN\n◼ Purchase this deck (Magic Online): http://mtg.fish/lAT5C\n\n#MTG\n#MagicTheGathering\n#MTGO\n#MTGModern",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTGO",
+                "Magic Online",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-01-10 10:00:10",
+            "views": 13134,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "@BravoBrenden",
+                        "date": "2024-12-20",
+                        "format": "modern",
+                        "name": "Yggdrasil, Rebirth Engine",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/much-abrew-yggdrasil-rebirth-engine-modern"
+                    },
+                    "decklist_id": "b2c1755b-c5b4-b545-6925-ca218bd09786",
+                    "decklist_extended_id": "260828df-09d7-1226-9b22-bde9ee43de1f"
+                },
+                {
+                    "metadata": {
+                        "author": "@BravoBrenden",
+                        "date": "2024-12-20",
+                        "format": "modern",
+                        "name": "Yggdrasil, Rebirth Engine",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6816727"
+                    },
+                    "decklist_id": "b2c1755b-c5b4-b545-6925-ca218bd09786",
+                    "decklist_extended_id": "260828df-09d7-1226-9b22-bde9ee43de1f"
+                }
+            ]
+        },
+        {
+            "id": "X4UFAymh6Bg",
+            "url": "https://www.youtube.com/watch?v=X4UFAymh6Bg",
+            "author": "MTGGoldfish",
+            "title": "Innistrad Remastered Spoilers  Everything You Need to Know",
+            "description": "We got the full set spoiler for Innistrad Remastered! Is it worth buying? What's included? Here's everything you need to know!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\nSee the full set: https://www.mtgpreviews.com\n\n#MTG #magicthegathering #mtgspoilers #mtginnistrad",
+            "keywords": [
+                "MTG",
+                "MTG Arena",
+                "MTGGoldfish",
+                "Magic: the Gathering"
+            ],
+            "publish_time": "2025-01-10 06:37:37",
+            "views": 13557,
+            "sources": [
+                "www.cardkingdom.com",
+                "www.mtgpreviews.com"
+            ],
+            "decks": []
+        }
+    ]
+}

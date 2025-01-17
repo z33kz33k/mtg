@@ -1,0 +1,97 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 133000,
+    "scrape_time": "2024-12-31 01:38:11",
+    "videos": [
+        {
+            "id": "V4u2NuUi9t0",
+            "url": "https://www.youtube.com/watch?v=V4u2NuUi9t0",
+            "author": "LegenVD",
+            "title": "Ghostbusting in Standard.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a monoblack Skeleton deck in Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n03:18 - Match 1\n11:08 - Match 2\n18:01 - Match 3\n13:37 - Match 4\n18:12 - Match 5\n23:05 - Match 6\n26:52 - Match 7\n30:57 - Match 8\n36:33 - Match 9\n39:27 - Match 10\n\nDecklist:\nhttps://aetherhub.com/Deck/foundations-skeletons\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtgfoundations #mtgfdn #mtg #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "black",
+                "crime",
+                "deck",
+                "decks",
+                "fdn",
+                "fnd",
+                "foundations",
+                "foundations standard",
+                "gameplay",
+                "ghostbuster",
+                "gisa",
+                "guide",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "monoblack",
+                "mtg",
+                "mtg arena",
+                "mtg foundations",
+                "mtga",
+                "new standard",
+                "skeleton deck",
+                "skeletons",
+                "standard",
+                "standard deck",
+                "vacuum"
+            ],
+            "publish_time": "2024-12-30 09:00:27",
+            "views": 13777,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2024-12-30",
+                        "exports": 317,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Foundations Skeletons",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/foundations-skeletons",
+                        "views": 428
+                    },
+                    "decklist_id": "bf74b8b1-45f5-f98c-2677-7060dc89799a",
+                    "decklist_extended_id": "6635901d-e1ea-21fa-5a54-b2c63f029aba"
+                }
+            ]
+        }
+    ]
+}

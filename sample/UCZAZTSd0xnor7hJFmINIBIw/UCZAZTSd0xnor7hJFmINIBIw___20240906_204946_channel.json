@@ -1,129 +1,57 @@
 {
-    "url": "https://www.youtube.com/@MTGGoldfish",
-    "id": "UCZAZTSd0xnor7hJFmINIBIw",
-    "title": "MTGGoldfish",
-    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
-    "tags": [
+  "url": "https://www.youtube.com/@MTGGoldfish",
+  "id": "UCZAZTSd0xnor7hJFmINIBIw",
+  "title": "MTGGoldfish",
+  "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+  "tags": [
+    "MTG",
+    "Magic the Gathering",
+    "mtggoldfish"
+  ],
+  "subscribers": 325000,
+  "scrape_time": "2024-09-06 20:49:46",
+  "videos": [
+    {
+      "id": "H0279eV5YKM",
+      "url": "https://www.youtube.com/watch?v=H0279eV5YKM",
+      "author": "MTGGoldfish",
+      "title": "Duskmourn Spoilers  Unblockable 101 for Three????  MTG",
+      "description": "Today as we reach the end of week one of Duskmourn spoilers we get a 10/1 for just three mana, and it can't even be blocked! Plus our green leyline, some nerdy counters shenanigans, Demonic card draw and more! Let's discuss!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\nMore spoilers: https://www.mtgpreviews.com\n\n0:00 Start\n0:54 Leyline of Mutation\n5:59 The Mind Render\n10:30 Omnivorous Flytrap\n12:52 Unholy Lobby / Ritual Chamber\n16:50 Reluctant Role Model\n21:29 \"Here's Johnny...\"\n22:50 Greenhouse / Rickety Gazebo\n23:58 Sawblade Skinripper\n25:12 Grab the Prize\n26:07 Emerge from the Cacoon\n\n#MTG #magicthegathering #mtgspoilers",
+      "keywords": [
         "MTG",
-        "Magic the Gathering",
-        "mtggoldfish"
-    ],
-    "subscribers": 325000,
-    "scrape_time": "2024-09-06 20:49:46",
-    "videos": [
-        {
-            "id": "H0279eV5YKM",
-            "url": "https://www.youtube.com/watch?v=H0279eV5YKM",
-            "author": "MTGGoldfish",
-            "title": "Duskmourn Spoilers  Unblockable 101 for Three????  MTG",
-            "description": "Today as we reach the end of week one of Duskmourn spoilers we get a 10/1 for just three mana, and it can't even be blocked! Plus our green leyline, some nerdy counters shenanigans, Demonic card draw and more! Let's discuss!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\nMore spoilers: https://www.mtgpreviews.com\n\n0:00 Start\n0:54 Leyline of Mutation\n5:59 The Mind Render\n10:30 Omnivorous Flytrap\n12:52 Unholy Lobby / Ritual Chamber\n16:50 Reluctant Role Model\n21:29 \"Here's Johnny...\"\n22:50 Greenhouse / Rickety Gazebo\n23:58 Sawblade Skinripper\n25:12 Grab the Prize\n26:07 Emerge from the Cacoon\n\n#MTG #magicthegathering #mtgspoilers",
-            "keywords": [
-                "MTG",
-                "MTG Arena",
-                "MTGGoldfish",
-                "Magic: the Gathering"
-            ],
-            "publish_time": "2024-09-06 09:33:21",
-            "views": 6714,
-            "sources": [
-                "www.cardkingdom.com",
-                "www.mtgpreviews.com"
-            ],
-            "derived_format": null,
-            "decks": []
-        },
-        {
-            "id": "incQu0D_Xlg",
-            "url": "https://www.youtube.com/watch?v=incQu0D_Xlg",
-            "author": "MTGGoldfish",
-            "title": "Can Rabbits Boost Naya Tokens Power?  Standard",
-            "description": "Finneas can also be used in a Non-rabbit deck! Baylen is also a fun card to try to make work with all the token producers in Naya!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-can-rabbits-boost-naya-tokens-power\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6601154#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/rhCSZ\n◼ Purchase this deck (Magic Online): http://mtg.fish/mUwpS\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
-            "keywords": [
-                "Gameplay",
-                "MTG",
-                "MTG Arena",
-                "Magic Arena",
-                "Magic the Gathering"
-            ],
-            "publish_time": "2024-09-05 19:00:05",
-            "views": 15276,
-            "sources": [
-                "mtg.fish",
-                "www.cardkingdom.com",
-                "www.mtggoldfish.com"
-            ],
-            "derived_format": "standard",
-            "decks": [
-                {
-                    "metadata": {
-                        "author": "TheAsianAvenger",
-                        "date": "2024-08-28",
-                        "format": "standard",
-                        "name": "Naya Tokens",
-                        "source": "www.mtggoldfish.com",
-                        "url": "https://www.mtggoldfish.com/deck/6601154"
-                    },
-                    "decklist_id": "632e91de-d4c9-17c1-0780-8a3f40058ecc",
-                    "decklist_extended_id": "9390ed76-6258-2a2a-de4f-cafefd5fba88"
-                }
-            ]
-        },
-        {
-            "id": "ca6CU7PG7Lc",
-            "url": "https://www.youtube.com/watch?v=ca6CU7PG7Lc",
-            "author": "MTGGoldfish",
-            "title": "Duskmourn MTG Spoilers  Worst. Ride. Ever.",
-            "description": "Today in Duskmourn we get a wild rollercoaster ride, a nearly unkillable Zombie Assassin, a blue Lich and so much more! Let's discuss!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\nMore spoilers: https://www.mtgpreviews.com\n\n0:00 Start\n0:51 The Rollercrusher Ride\n5:13 Marina Vendrell's Grimoire\n11:05 Unstoppable Slasher\n18:34 Silent Hallcreeper\n22:01 Popular Egotist\n23:25 Cynical Loner\n24:55 Betraying Bargain\n26:09 Trapped in the Screen\n26:54 Threats Around Every Corner\n27:48 Untimely Malfunction\n28:56 Floodpits Drowner\n30:30 Haunted Screen\n31:18 Jank",
-            "keywords": [
-                "MTG",
-                "MTG Arena",
-                "MTGGoldfish",
-                "Magic: the Gathering"
-            ],
-            "publish_time": "2024-09-05 08:45:36",
-            "views": 38497,
-            "sources": [
-                "www.cardkingdom.com",
-                "www.mtgpreviews.com"
-            ],
-            "derived_format": null,
-            "decks": []
-        },
-        {
-            "id": "pZDSxaHpD1Y",
-            "url": "https://www.youtube.com/watch?v=pZDSxaHpD1Y",
-            "author": "MTGGoldfish",
-            "title": "Teaching Arena Zoomers About Owls and Creature Locks  Against the Odds",
-            "description": "What are the odds of locking opponents out of playing creatures forever with our commander Maha, Its Feather Night and Night of Souls' Betrayal? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/against-the-odds-teaching-arena-zoomers-about-owl-and-creature-locks\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6600208#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/7oP8W\n◼ Purchase this deck (Magic Online): http://mtg.fish/rpmAj\n\n#MTG\n#MagicTheGathering\n#MTGO\n#MTGBrawl",
-            "keywords": [
-                "Gameplay",
-                "MTG",
-                "MTG Arena",
-                "Magic Arena",
-                "Magic the Gathering"
-            ],
-            "publish_time": "2024-09-04 19:00:06",
-            "views": 47942,
-            "sources": [
-                "mtg.fish",
-                "www.cardkingdom.com",
-                "www.mtggoldfish.com"
-            ],
-            "derived_format": "commander",
-            "decks": [
-                {
-                    "metadata": {
-                        "author": "SaffronOlive",
-                        "date": "2024-08-28",
-                        "format": "brawl",
-                        "name": "Maha",
-                        "source": "www.mtggoldfish.com",
-                        "url": "https://www.mtggoldfish.com/deck/6600208"
-                    },
-                    "decklist_id": "1e231b3c-4d31-6e48-a99f-2661dc363e12",
-                    "decklist_extended_id": "33df65a3-23bf-769d-410b-4c4411ccb18e"
-                }
-            ]
-        }
-    ]
+        "MTG Arena",
+        "MTGGoldfish",
+        "Magic: the Gathering"
+      ],
+      "publish_time": "2024-09-06 09:33:21",
+      "views": 6714,
+      "sources": [
+        "www.cardkingdom.com",
+        "www.mtgpreviews.com"
+      ],
+      "derived_format": null,
+      "decks": []
+    },
+    {
+      "id": "ca6CU7PG7Lc",
+      "url": "https://www.youtube.com/watch?v=ca6CU7PG7Lc",
+      "author": "MTGGoldfish",
+      "title": "Duskmourn MTG Spoilers  Worst. Ride. Ever.",
+      "description": "Today in Duskmourn we get a wild rollercoaster ride, a nearly unkillable Zombie Assassin, a blue Lich and so much more! Let's discuss!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\nMore spoilers: https://www.mtgpreviews.com\n\n0:00 Start\n0:51 The Rollercrusher Ride\n5:13 Marina Vendrell's Grimoire\n11:05 Unstoppable Slasher\n18:34 Silent Hallcreeper\n22:01 Popular Egotist\n23:25 Cynical Loner\n24:55 Betraying Bargain\n26:09 Trapped in the Screen\n26:54 Threats Around Every Corner\n27:48 Untimely Malfunction\n28:56 Floodpits Drowner\n30:30 Haunted Screen\n31:18 Jank",
+      "keywords": [
+        "MTG",
+        "MTG Arena",
+        "MTGGoldfish",
+        "Magic: the Gathering"
+      ],
+      "publish_time": "2024-09-05 08:45:36",
+      "views": 38497,
+      "sources": [
+        "www.cardkingdom.com",
+        "www.mtgpreviews.com"
+      ],
+      "derived_format": null,
+      "decks": []
+    }
+  ]
 }

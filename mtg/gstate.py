@@ -10,9 +10,8 @@
 import json
 import logging
 from abc import ABC, abstractmethod
-from contextlib import contextmanager
 from pathlib import Path
-from typing import Callable, Generator
+from typing import Callable
 
 from mtg import OUTPUT_DIR
 from mtg.utils.check_type import type_checker

@@ -1,51 +1,14 @@
 {
-    "url": "https://www.youtube.com/@MTGGoldfish",
-    "id": "UCZAZTSd0xnor7hJFmINIBIw",
-    "title": "MTGGoldfish",
-    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
-    "tags": [
-        "MTG",
-        "Magic the Gathering",
-        "mtggoldfish"
-    ],
-    "subscribers": 331000,
-    "scrape_time": "2024-11-17 01:17:17",
-    "videos": [
-        {
-            "id": "EbJGMYIsL2U",
-            "url": "https://www.youtube.com/watch?v=EbJGMYIsL2U",
-            "author": "MTGGoldfish",
-            "title": "Operation Turtle Desert  Pioneer",
-            "description": "We're taking amphibians and turtles.... to the Desert? Lets see how this Simic deck does in Pio/Exp!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-operation-turtle-desert\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6748929#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/d8jDr\n◼ Purchase this deck (Magic Online): http://mtg.fish/j5S3s\n\n#MTG\n#MagicTheGathering\n#MTGO\n#MTGExplorer",
-            "keywords": [
-                "Gameplay",
-                "MTG",
-                "MTG Arena",
-                "Magic Arena",
-                "Magic the Gathering"
-            ],
-            "publish_time": "2024-11-16 08:00:05",
-            "views": 10182,
-            "sources": [
-                "mtg.fish",
-                "www.cardkingdom.com",
-                "www.mtggoldfish.com"
-            ],
-            "decks": [
-                {
-                    "metadata": {
-                        "author": "TheAsianAvenger",
-                        "date": "2024-11-10",
-                        "format": "explorer",
-                        "goldfish_theme": "Other",
-                        "name": "Turtle Deserts",
-                        "source": "www.mtggoldfish.com",
-                        "url": "https://www.mtggoldfish.com/deck/6748929"
-                    },
-                    "decklist_id": "333d33b9-cf44-4036-ce4c-06c46c952b9b",
-                    "decklist_extended_id": "3fe56501-5cba-6ca1-6bf3-7ec0a7676cd5"
-                }
-            ]
-        }
-    ]
+  "url": "https://www.youtube.com/@MTGGoldfish",
+  "id": "UCZAZTSd0xnor7hJFmINIBIw",
+  "title": "MTGGoldfish",
+  "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+  "tags": [
+    "MTG",
+    "Magic the Gathering",
+    "mtggoldfish"
+  ],
+  "subscribers": 331000,
+  "scrape_time": "2024-11-17 01:17:17",
+  "videos": []
 }

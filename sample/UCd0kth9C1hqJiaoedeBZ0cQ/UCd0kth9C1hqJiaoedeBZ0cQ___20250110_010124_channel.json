@@ -1,0 +1,98 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 134000,
+    "scrape_time": "2025-01-10 01:01:24",
+    "videos": [
+        {
+            "id": "JCIUt3olBY8",
+            "url": "https://www.youtube.com/watch?v=JCIUt3olBY8",
+            "author": "LegenVD",
+            "title": "I can now attack without fear.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a boros aggro deck, featuring Iroas, God of Victory as commander in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro \n01:03 - Deck Tech\n07:19 - vs Phylath, World Sculptor\n12:42 - vs Coram, the Undertaker\n18:49 - vs Mythweaver Poq\n21:05 - vs Davriel, Soul Broker\n25:05 - vs Narset Transcendent\n40:02 - vs Tinybones, Trinket Thief\n44:41 - vs Plagon, Lord of the Beach\n51:20 - vs Nahiri, Forged in Fury\n54:29 - vs Muldrotha, the Gravetide\n\nDecklist: \nhttps://aetherhub.com/Deck/iroas-god-of-victory-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtg  #mtgarena #magicthegathering",
+            "keywords": [
+                "attack",
+                "battalion",
+                "boros",
+                "boros aggro",
+                "boros deck",
+                "brawl",
+                "brawl deck",
+                "commander",
+                "deck",
+                "decks",
+                "edh",
+                "gameplay",
+                "god",
+                "guide",
+                "historic brawl",
+                "iroas",
+                "iroas brawl",
+                "iroas commander",
+                "iroas edh",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "menace",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "red",
+                "white"
+            ],
+            "publish_time": "2025-01-09 09:00:16",
+            "views": 11560,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-01-09",
+                        "exports": 150,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Iroas, God of Victory Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/iroas-god-of-victory-brawl",
+                        "views": 263
+                    },
+                    "decklist_id": "60305993-b969-80ac-633f-8be2c0644f54",
+                    "decklist_extended_id": "af2254c5-399f-a800-a4fc-975ca9554089"
+                }
+            ]
+        }
+    ]
+}

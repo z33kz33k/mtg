@@ -1,0 +1,108 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 335000,
+    "scrape_time": "2025-01-08 00:48:33",
+    "videos": [
+        {
+            "id": "lNlyfIpM9Ls",
+            "url": "https://www.youtube.com/watch?v=lNlyfIpM9Ls",
+            "author": "MTGGoldfish",
+            "title": "Merfolk Needed Agatha's Soul Cauldron",
+            "description": "Merfolk's evolution in Pioneer involves a Soul Cauldron combo!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-merfolk-needed-agatha-s-soul-cauldron\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6837144#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/kVU8o\n◼ Purchase this deck (Magic Online): http://mtg.fish/X64r9\n\n#MTG\n#MagicTheGathering\n#MTGO\n#MTGPioneer",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-01-07 08:00:08",
+            "views": 10688,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-01-02",
+                        "format": "pioneer",
+                        "name": "Merfolk Combo",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6837144"
+                    },
+                    "decklist_id": "c2928f37-2ebb-b929-64c6-b6cc6915e7cc",
+                    "decklist_extended_id": "df4c762f-9721-61ca-9394-ad96081aac97"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-01-02",
+                        "format": "pioneer",
+                        "name": "Merfolk Combo",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-merfolk-needed-agatha-s-soul-cauldron"
+                    },
+                    "decklist_id": "c2928f37-2ebb-b929-64c6-b6cc6915e7cc",
+                    "decklist_extended_id": "df4c762f-9721-61ca-9394-ad96081aac97"
+                }
+            ]
+        },
+        {
+            "id": "fhKApI0sHt0",
+            "url": "https://www.youtube.com/watch?v=fhKApI0sHt0",
+            "author": "MTGGoldfish",
+            "title": "Do New Foundation's Felines Crack Cats?  Much Abrew",
+            "description": "Did Foundations give us enough good Cats for the tribe to compete in Standard? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/much-abrew-cats-foundations-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6770750#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/wy9k4\n◼ Purchase this deck (Magic Online): http://mtg.fish/ji4qT\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#mtgstandard \n\n0:00 Start\n5:02 Games",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-01-06 08:00:05",
+            "views": 44098,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2024-11-22",
+                        "format": "standard",
+                        "name": "Cats",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/much-abrew-cats-foundations-standard"
+                    },
+                    "decklist_id": "37a87405-c080-32f5-4660-efb71d6d1d1e",
+                    "decklist_extended_id": "b63ddbde-06a9-e294-5242-f45887b2fee8"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2024-11-22",
+                        "format": "standard",
+                        "name": "Cats",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6770750"
+                    },
+                    "decklist_id": "37a87405-c080-32f5-4660-efb71d6d1d1e",
+                    "decklist_extended_id": "b63ddbde-06a9-e294-5242-f45887b2fee8"
+                }
+            ]
+        }
+    ]
+}

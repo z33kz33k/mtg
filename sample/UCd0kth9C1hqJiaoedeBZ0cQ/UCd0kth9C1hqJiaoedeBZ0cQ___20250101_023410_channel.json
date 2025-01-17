@@ -1,0 +1,101 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 133000,
+    "scrape_time": "2025-01-01 02:34:10",
+    "videos": [
+        {
+            "id": "eSNkzQoysBg",
+            "url": "https://www.youtube.com/watch?v=eSNkzQoysBg",
+            "author": "LegenVD",
+            "title": "The craziest brawl deck of the year.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a cascade combo deck, featuring Monstrous Vortex and Imoti as commander in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro \n01:23 - Deck Tech\n08:37 - vs Rosheen, Roaring Prophet\n18:28 - vs Anzrag, the Quake-Mole\n24:56 - vs Vren, the Relentless\n28:09 - vs Emmara, Soul of the Accord\n38:29 - vs Miirym, Sentinel Wyrm\n43:49 - vs Glarb, Calamity's Augur\n52:24 - vs Rakdos, the Muscle\n54:24 - vs Nicol Bolas, the Ravager\n\nDecklist: \nhttps://aetherhub.com/Deck/imoti-monstrous-vortex-combo\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtg  #mtgarena #magicthegathering",
+            "keywords": [
+                "blue",
+                "brawl deck",
+                "cascade",
+                "cascade deck",
+                "channel",
+                "combo",
+                "commander",
+                "deck",
+                "decks",
+                "discover",
+                "discover combo",
+                "discover deck",
+                "edh",
+                "gameplay",
+                "green",
+                "guide",
+                "historic brawl",
+                "imoti brawl",
+                "imoti commander",
+                "imoti edh",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "monstrous vortex",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "plot",
+                "prototype",
+                "room",
+                "simic"
+            ],
+            "publish_time": "2024-12-31 09:00:45",
+            "views": 14426,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2024-12-31",
+                        "exports": 262,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Imoti Monstrous Vortex Combo",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/imoti-monstrous-vortex-combo",
+                        "views": 412
+                    },
+                    "decklist_id": "a98c8ce6-005a-3530-a00f-5a219debd52a",
+                    "decklist_extended_id": "a632a948-7e37-2453-96ab-067987f718fd"
+                }
+            ]
+        }
+    ]
+}

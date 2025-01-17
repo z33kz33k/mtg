@@ -1,70 +1,14 @@
 {
-    "url": "https://www.youtube.com/@MTGGoldfish",
-    "id": "UCZAZTSd0xnor7hJFmINIBIw",
-    "title": "MTGGoldfish",
-    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
-    "tags": [
-        "MTG",
-        "Magic the Gathering",
-        "mtggoldfish"
-    ],
-    "subscribers": 326000,
-    "scrape_time": "2024-09-09 15:37:48",
-    "videos": [
-        {
-            "id": "D4s8wokwdx8",
-            "url": "https://www.youtube.com/watch?v=D4s8wokwdx8",
-            "author": "MTGGoldfish",
-            "title": "I Build the Worst Deck Ever for My Friend",
-            "description": "Brewer's Kitchen and SaffronOlive gift each other the worst decks ever...\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\nDecklists: https://www.mtggoldfish.com/articles/i-build-the-worst-deck-ever-for-my-friend\n\n#MTG #magicthegathering",
-            "keywords": [
-                "MTG",
-                "Magic the Gathering"
-            ],
-            "publish_time": "2024-09-08 08:00:05",
-            "views": 60736,
-            "sources": [
-                "www.cardkingdom.com",
-                "www.mtggoldfish.com"
-            ],
-            "derived_format": null,
-            "decks": []
-        },
-        {
-            "id": "AW5MGXhQaB0",
-            "url": "https://www.youtube.com/watch?v=AW5MGXhQaB0",
-            "author": "MTGGoldfish",
-            "title": "Kaya and The Superfriends  Standard",
-            "description": "With all the Planeswalker removal right now, Kaya, Intangible Slayer might be one of the better late game win conditions! Let's see what we can make with her and her army of superfriends. \n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-kaya-and-the-superfriends\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6601239#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/O53XU\n◼ Purchase this deck (Magic Online): http://mtg.fish/vTHEx\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
-            "keywords": [
-                "Gameplay",
-                "MTG",
-                "MTG Arena",
-                "Magic Arena",
-                "Magic the Gathering"
-            ],
-            "publish_time": "2024-09-07 08:00:03",
-            "views": 23472,
-            "sources": [
-                "mtg.fish",
-                "www.cardkingdom.com",
-                "www.mtggoldfish.com"
-            ],
-            "derived_format": "standard",
-            "decks": [
-                {
-                    "metadata": {
-                        "author": "TheAsianAvenger",
-                        "date": "2024-08-29",
-                        "format": "standard",
-                        "name": "Superfriends",
-                        "source": "www.mtggoldfish.com",
-                        "url": "https://www.mtggoldfish.com/deck/6601239"
-                    },
-                    "decklist_id": "dae7c5c5-21c5-47c1-f9d8-0a1f8caafbbd",
-                    "decklist_extended_id": "fbf26ac5-9f65-ad92-7921-d50902d5815e"
-                }
-            ]
-        }
-    ]
+  "url": "https://www.youtube.com/@MTGGoldfish",
+  "id": "UCZAZTSd0xnor7hJFmINIBIw",
+  "title": "MTGGoldfish",
+  "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+  "tags": [
+    "MTG",
+    "Magic the Gathering",
+    "mtggoldfish"
+  ],
+  "subscribers": 326000,
+  "scrape_time": "2024-09-09 15:37:48",
+  "videos": []
 }

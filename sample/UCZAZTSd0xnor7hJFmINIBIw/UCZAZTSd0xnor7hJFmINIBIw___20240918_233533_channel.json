@@ -1,107 +1,35 @@
 {
-    "url": "https://www.youtube.com/@MTGGoldfish",
-    "id": "UCZAZTSd0xnor7hJFmINIBIw",
-    "title": "MTGGoldfish",
-    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
-    "tags": [
+  "url": "https://www.youtube.com/@MTGGoldfish",
+  "id": "UCZAZTSd0xnor7hJFmINIBIw",
+  "title": "MTGGoldfish",
+  "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+  "tags": [
+    "MTG",
+    "Magic the Gathering",
+    "mtggoldfish"
+  ],
+  "subscribers": 327000,
+  "scrape_time": "2024-09-18 23:35:33",
+  "videos": [
+    {
+      "id": "_2hLhMWBUNg",
+      "url": "https://www.youtube.com/watch?v=_2hLhMWBUNg",
+      "author": "MTGGoldfish",
+      "title": "The Best Magic the Gathering Plays of All Time",
+      "description": "Magic's had some amazing moments over the past 30 years. Here are the best plays ever caught on tape!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n#MTG #magicthegathering",
+      "keywords": [
         "MTG",
-        "Magic the Gathering",
-        "mtggoldfish"
-    ],
-    "subscribers": 327000,
-    "scrape_time": "2024-09-18 23:35:33",
-    "videos": [
-        {
-            "id": "a0a9fD8PALA",
-            "url": "https://www.youtube.com/watch?v=a0a9fD8PALA",
-            "author": "MTGGoldfish",
-            "title": "I Built a Deck to Never Lose to Aggro  Against the Odds",
-            "description": "Did you realize there's a secret tech card in Standard to help make a deck that never loses to aggro? What's the card and the odds it works? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/against-the-odds-i-built-a-deck-to-never-lose-to-aggro-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6622695#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/r02bo\n◼ Purchase this deck (Magic Online): http://mtg.fish/QhewX\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
-            "keywords": [
-                "Gameplay",
-                "MTG",
-                "MTG Arena",
-                "Magic Arena",
-                "Magic the Gathering"
-            ],
-            "publish_time": "2024-09-18 08:00:06",
-            "views": 22475,
-            "sources": [
-                "mtg.fish",
-                "www.cardkingdom.com",
-                "www.mtggoldfish.com"
-            ],
-            "derived_format": "standard",
-            "decks": [
-                {
-                    "metadata": {
-                        "author": "SaffronOlive",
-                        "date": "2024-09-07",
-                        "format": "standard",
-                        "name": "Foggin' Aggro",
-                        "source": "www.mtggoldfish.com",
-                        "url": "https://www.mtggoldfish.com/deck/6622695"
-                    },
-                    "decklist_id": "441df3a5-c9e8-da72-6a87-4f6e035ded86",
-                    "decklist_extended_id": "9944d689-d4e1-0ca2-8169-379c2dfb5044"
-                }
-            ]
-        },
-        {
-            "id": "DFQXNTPBRto",
-            "url": "https://www.youtube.com/watch?v=DFQXNTPBRto",
-            "author": "MTGGoldfish",
-            "title": "Cache Grab is Truly Insidious(Roots)  Standard",
-            "description": "Insidious Roots decks got Cache Grab and Vineyard Lasher from Bloomburrow so lets see how they do on the ladder!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-cache-grab-is-truly-insidious-roots\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6630678#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/mviw5\n◼ Purchase this deck (Magic Online): http://mtg.fish/uiTl8\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
-            "keywords": [
-                "Gameplay",
-                "MTG",
-                "MTG Arena",
-                "Magic Arena",
-                "Magic the Gathering"
-            ],
-            "publish_time": "2024-09-17 08:00:08",
-            "views": 22603,
-            "sources": [
-                "mtg.fish",
-                "www.cardkingdom.com",
-                "www.mtggoldfish.com"
-            ],
-            "derived_format": "standard",
-            "decks": [
-                {
-                    "metadata": {
-                        "author": "TheAsianAvenger",
-                        "date": "2024-09-11",
-                        "format": "standard",
-                        "name": "Insidious Vines",
-                        "source": "www.mtggoldfish.com",
-                        "url": "https://www.mtggoldfish.com/deck/6630678"
-                    },
-                    "decklist_id": "6c750d8c-1cb5-8601-a491-3c80dc25a661",
-                    "decklist_extended_id": "5d513355-45bd-a307-4d96-725cece65ad3"
-                }
-            ]
-        },
-        {
-            "id": "_2hLhMWBUNg",
-            "url": "https://www.youtube.com/watch?v=_2hLhMWBUNg",
-            "author": "MTGGoldfish",
-            "title": "The Best Magic the Gathering Plays of All Time",
-            "description": "Magic's had some amazing moments over the past 30 years. Here are the best plays ever caught on tape!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n#MTG #magicthegathering",
-            "keywords": [
-                "MTG",
-                "MTG Arena",
-                "MTGGoldfish",
-                "Magic: the Gathering"
-            ],
-            "publish_time": "2024-09-16 08:00:06",
-            "views": 83275,
-            "sources": [
-                "www.cardkingdom.com"
-            ],
-            "derived_format": null,
-            "decks": []
-        }
-    ]
+        "MTG Arena",
+        "MTGGoldfish",
+        "Magic: the Gathering"
+      ],
+      "publish_time": "2024-09-16 08:00:06",
+      "views": 83275,
+      "sources": [
+        "www.cardkingdom.com"
+      ],
+      "derived_format": null,
+      "decks": []
+    }
+  ]
 }

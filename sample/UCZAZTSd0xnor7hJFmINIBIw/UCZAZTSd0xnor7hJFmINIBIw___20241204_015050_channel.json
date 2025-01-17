@@ -1,50 +1,14 @@
 {
-    "url": "https://www.youtube.com/@MTGGoldfish",
-    "id": "UCZAZTSd0xnor7hJFmINIBIw",
-    "title": "MTGGoldfish",
-    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
-    "tags": [
-        "MTG",
-        "Magic the Gathering",
-        "mtggoldfish"
-    ],
-    "subscribers": 333000,
-    "scrape_time": "2024-12-04 01:50:50",
-    "videos": [
-        {
-            "id": "2T6MokAK6Sg",
-            "url": "https://www.youtube.com/watch?v=2T6MokAK6Sg",
-            "author": "MTGGoldfish",
-            "title": "Ending Our Opponent's Turn is Fun!",
-            "description": "Time to cast Mystical Teachings and abruptly ending our opponents' turns with Time Stop!! Hopefully Mindsplicer Apparatus \n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-ending-our-opponent-s-turn-is-fun\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6767942#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/QnDXp\n◼ Purchase this deck (Magic Online): http://mtg.fish/WtdDw\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
-            "keywords": [
-                "Gameplay",
-                "MTG",
-                "MTG Arena",
-                "Magic Arena",
-                "Magic the Gathering"
-            ],
-            "publish_time": "2024-12-03 08:00:06",
-            "views": 16571,
-            "sources": [
-                "mtg.fish",
-                "www.cardkingdom.com",
-                "www.mtggoldfish.com"
-            ],
-            "decks": [
-                {
-                    "metadata": {
-                        "author": "TheAsianAvenger",
-                        "date": "2024-11-21",
-                        "format": "standard",
-                        "name": "LOL Teachings",
-                        "source": "www.mtggoldfish.com",
-                        "url": "https://www.mtggoldfish.com/deck/6767942"
-                    },
-                    "decklist_id": "5b959ce6-5b81-ea3c-845d-849dc376e20b",
-                    "decklist_extended_id": "ff41999f-3585-c458-4713-88b881b33b7c"
-                }
-            ]
-        }
-    ]
+  "url": "https://www.youtube.com/@MTGGoldfish",
+  "id": "UCZAZTSd0xnor7hJFmINIBIw",
+  "title": "MTGGoldfish",
+  "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+  "tags": [
+    "MTG",
+    "Magic the Gathering",
+    "mtggoldfish"
+  ],
+  "subscribers": 333000,
+  "scrape_time": "2024-12-04 01:50:50",
+  "videos": []
 }

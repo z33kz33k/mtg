@@ -1,49 +1,13 @@
 {
-    "id": "UCZAZTSd0xnor7hJFmINIBIw",
-    "title": "MTGGoldfish",
-    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
-    "tags": [
-        "MTG",
-        "Magic the Gathering",
-        "mtggoldfish"
-    ],
-    "subscribers": 334000,
-    "scrape_time": "2024-12-21 02:17:11",
-    "videos": [
-        {
-            "id": "6Ncy2A0B96E",
-            "url": "https://www.youtube.com/watch?v=6Ncy2A0B96E",
-            "author": "MTGGoldfish",
-            "title": "You'll Never Draw a Meaningful Card Again  Much Abrew",
-            "description": "Mox Opal is back in Modern. Does this mean the format's most infamous prison deck has a chance to shine again? Let's play some Lantern Control and find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkigndom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/much-abrew-how-good-in-lantern-control-in-2024-actually-modern\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6809878#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/zjM1o\n◼ Purchase this deck (Magic Online): \n\n#MTG\n#MagicTheGathering\n#MTGO\n#mtgmodern \n\n0:00 Start\n6:32 Match 1\n22:44 Match 2\n47:13 Match 3\n59:32 Match 4\n1:19:38 Match 5",
-            "keywords": [
-                "Gameplay",
-                "MTG",
-                "MTGO",
-                "Magic Online",
-                "Magic the Gathering"
-            ],
-            "publish_time": "2024-12-20 08:00:09",
-            "views": 23833,
-            "sources": [
-                "mtg.fish",
-                "www.cardkigndom.com",
-                "www.mtggoldfish.com"
-            ],
-            "decks": [
-                {
-                    "metadata": {
-                        "author": "SaffronOlive",
-                        "date": "2024-12-16",
-                        "format": "modern",
-                        "name": "Lantern Control",
-                        "source": "www.mtggoldfish.com",
-                        "url": "https://www.mtggoldfish.com/deck/6809878"
-                    },
-                    "decklist_id": "41bfcb10-4849-e5ab-d4cf-ac4c82701d95",
-                    "decklist_extended_id": "f4e8fcc6-ef1a-04e5-d911-f661aba5bea5"
-                }
-            ]
-        }
-    ]
+  "id": "UCZAZTSd0xnor7hJFmINIBIw",
+  "title": "MTGGoldfish",
+  "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+  "tags": [
+    "MTG",
+    "Magic the Gathering",
+    "mtggoldfish"
+  ],
+  "subscribers": 334000,
+  "scrape_time": "2024-12-21 02:17:11",
+  "videos": []
 }

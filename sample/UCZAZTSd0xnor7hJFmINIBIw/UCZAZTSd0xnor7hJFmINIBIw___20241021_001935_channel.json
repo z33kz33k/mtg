@@ -1,85 +1,14 @@
 {
-    "url": "https://www.youtube.com/@MTGGoldfish",
-    "id": "UCZAZTSd0xnor7hJFmINIBIw",
-    "title": "MTGGoldfish",
-    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
-    "tags": [
-        "MTG",
-        "Magic the Gathering",
-        "mtggoldfish"
-    ],
-    "subscribers": 329000,
-    "scrape_time": "2024-10-21 00:19:35",
-    "videos": [
-        {
-            "id": "uanbJYasxco",
-            "url": "https://www.youtube.com/watch?v=uanbJYasxco",
-            "author": "MTGGoldfish",
-            "title": "Tree of Perdition is the Truth",
-            "description": "Tree of Perdition is not something I had my bingo card for tournament ready decks! It won a tournament so naturally, we had to try it for ourselves.\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at http://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-tree-of-perdition-is-the-truth\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6679394#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/72B5Y\n◼ Purchase this deck (Magic Online): http://mtg.fish/zqJP0\n\n#MTG\n#MagicTheGathering\n#mtgarena \n#MTGExplorer",
-            "keywords": [
-                "Gameplay",
-                "MTG",
-                "MTG Arena",
-                "Magic Arena",
-                "Magic the Gathering"
-            ],
-            "publish_time": "2024-10-19 08:00:06",
-            "views": 23396,
-            "sources": [
-                "mtg.fish",
-                "www.cardkingdom.com",
-                "www.mtggoldfish.com"
-            ],
-            "decks": [
-                {
-                    "metadata": {
-                        "author": "TheAsianAvenger",
-                        "date": "2024-10-07",
-                        "format": "explorer",
-                        "name": "LOL TREE?",
-                        "source": "www.mtggoldfish.com",
-                        "url": "https://www.mtggoldfish.com/deck/6679394"
-                    },
-                    "decklist_id": "fa5c5ea0-83af-3a7c-d9ca-70899ebc31ae",
-                    "decklist_extended_id": "c8c2b292-1611-7eae-4fc6-414a3f4ded44"
-                }
-            ]
-        },
-        {
-            "id": "xtr8BU7pHNQ",
-            "url": "https://www.youtube.com/watch?v=xtr8BU7pHNQ",
-            "author": "MTGGoldfish",
-            "title": "I Make Opponents Roll Dice for Their Lives  Much Abrew",
-            "description": "Commander precon card Maddening Hex is on Magic Arena for the first time and it just might be busted, so today we make Timeless opponents roll some dice to see if they live or die!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/much-abrew-maddening-hex-timeless\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6670081#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/r65Ni\n◼ Purchase this deck (Magic Online): http://mtg.fish/OuK6A\n\n#MTG\n#MagicTheGathering\n#MTGO\n#mtgtimeless \n\n0:00 Start\n2:43 Games",
-            "keywords": [
-                "Gameplay",
-                "MTG",
-                "MTG Arena",
-                "Magic Arena",
-                "Magic the Gathering"
-            ],
-            "publish_time": "2024-10-18 08:00:09",
-            "views": 54187,
-            "sources": [
-                "mtg.fish",
-                "www.cardkingdom.com",
-                "www.mtggoldfish.com"
-            ],
-            "decks": [
-                {
-                    "metadata": {
-                        "author": "SaffronOlive",
-                        "date": "2024-10-03",
-                        "format": "timeless",
-                        "name": "Maddening Hex",
-                        "source": "www.mtggoldfish.com",
-                        "url": "https://www.mtggoldfish.com/deck/6670081"
-                    },
-                    "decklist_id": "5915cfbb-a05a-cda4-719a-ccb6101ac4e9",
-                    "decklist_extended_id": "30974ed3-b2d6-0bb7-31c5-48d4150eadfb"
-                }
-            ]
-        }
-    ]
+  "url": "https://www.youtube.com/@MTGGoldfish",
+  "id": "UCZAZTSd0xnor7hJFmINIBIw",
+  "title": "MTGGoldfish",
+  "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+  "tags": [
+    "MTG",
+    "Magic the Gathering",
+    "mtggoldfish"
+  ],
+  "subscribers": 329000,
+  "scrape_time": "2024-10-21 00:19:35",
+  "videos": []
 }

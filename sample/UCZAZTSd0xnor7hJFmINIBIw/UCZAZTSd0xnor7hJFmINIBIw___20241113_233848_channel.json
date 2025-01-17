@@ -1,50 +1,14 @@
 {
-    "url": "https://www.youtube.com/@MTGGoldfish",
-    "id": "UCZAZTSd0xnor7hJFmINIBIw",
-    "title": "MTGGoldfish",
-    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
-    "tags": [
-        "MTG",
-        "Magic the Gathering",
-        "mtggoldfish"
-    ],
-    "subscribers": 331000,
-    "scrape_time": "2024-11-13 23:38:48",
-    "videos": [
-        {
-            "id": "XVuQ_2nsvrk",
-            "url": "https://www.youtube.com/watch?v=XVuQ_2nsvrk",
-            "author": "MTGGoldfish",
-            "title": "I Made Infinite Merfolk in Standard  Against the Odds",
-            "description": "What are the odds of winning by making infinite Merfolk in Standard? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/against-the-odds-i-made-infinite-merfolk-in-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6739723#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/4ZBks\n◼ Purchase this deck (Magic Online): http://mtg.fish/Bl3nY\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
-            "keywords": [
-                "Gameplay",
-                "MTG",
-                "MTG Arena",
-                "Magic Arena",
-                "Magic the Gathering"
-            ],
-            "publish_time": "2024-11-13 07:00:10",
-            "views": 14362,
-            "sources": [
-                "mtg.fish",
-                "www.cardkingdom.com",
-                "www.mtggoldfish.com"
-            ],
-            "decks": [
-                {
-                    "metadata": {
-                        "author": "SaffronOlive",
-                        "date": "2024-11-05",
-                        "format": "standard",
-                        "name": "Infinite Merfolk",
-                        "source": "www.mtggoldfish.com",
-                        "url": "https://www.mtggoldfish.com/deck/6739723"
-                    },
-                    "decklist_id": "3322c598-6d7b-bcd5-f3f7-505ead95451c",
-                    "decklist_extended_id": "deb8ae63-e870-3606-9277-30c694278dbd"
-                }
-            ]
-        }
-    ]
+  "url": "https://www.youtube.com/@MTGGoldfish",
+  "id": "UCZAZTSd0xnor7hJFmINIBIw",
+  "title": "MTGGoldfish",
+  "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+  "tags": [
+    "MTG",
+    "Magic the Gathering",
+    "mtggoldfish"
+  ],
+  "subscribers": 331000,
+  "scrape_time": "2024-11-13 23:38:48",
+  "videos": []
 }

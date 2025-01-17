@@ -1,0 +1,108 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 335000,
+    "scrape_time": "2025-01-16 01:59:08",
+    "videos": [
+        {
+            "id": "lhISNo9AVTY",
+            "url": "https://www.youtube.com/watch?v=lhISNo9AVTY",
+            "author": "MTGGoldfish",
+            "title": "I Double My Burn Which Doubles My Burn and You Die!  Against the Odds",
+            "description": "What are the odds of turning Screaming Nemesis into a no attack needed, one turn kill combo piece in Pioneer? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/against-the-odds-screaming-nemesis-combo-pioneer\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6815161#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/HNDQm\n◼ Purchase this deck (Magic Online): http://mtg.fish/je653\n\n#MTG\n#MagicTheGathering\n#MTGArena\n#mtgpioneer \n\n0:00 Start\n4:28 Games",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-01-15 08:00:09",
+            "views": 23383,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2024-12-19",
+                        "format": "pioneer",
+                        "name": "Screaming Nemesis Combo",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6815161"
+                    },
+                    "decklist_id": "725b0b54-5c8f-2bf9-36e7-f26a8efef68c",
+                    "decklist_extended_id": "b3aa339d-c6c8-bd8e-69fb-f7cbe3c250d5"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2024-12-19",
+                        "format": "pioneer",
+                        "name": "Screaming Nemesis Combo",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/against-the-odds-screaming-nemesis-combo-pioneer"
+                    },
+                    "decklist_id": "725b0b54-5c8f-2bf9-36e7-f26a8efef68c",
+                    "decklist_extended_id": "b3aa339d-c6c8-bd8e-69fb-f7cbe3c250d5"
+                }
+            ]
+        },
+        {
+            "id": "1O2YjUsnyW0",
+            "url": "https://www.youtube.com/watch?v=1O2YjUsnyW0",
+            "author": "MTGGoldfish",
+            "title": "Mill You? Nope! I'm Here to Mill Me!",
+            "description": "This week, we turn the mill engine away from our opponents....and do it to our own deck!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-mill-you-nope-i-m-here-to-mill-me\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6863413#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/4K0Wj\n◼ Purchase this deck (Magic Online): http://mtg.fish/N84oF\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-01-14 08:00:08",
+            "views": 27654,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-01-13",
+                        "format": "standard",
+                        "name": "Self Mill",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6863413"
+                    },
+                    "decklist_id": "64c0a43b-9ef5-1d0f-6d7c-fd0e86a5655e",
+                    "decklist_extended_id": "94827d54-d85d-4c57-34f1-d46b3522ef31"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-01-13",
+                        "format": "standard",
+                        "name": "Self Mill",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-mill-you-nope-i-m-here-to-mill-me"
+                    },
+                    "decklist_id": "64c0a43b-9ef5-1d0f-6d7c-fd0e86a5655e",
+                    "decklist_extended_id": "94827d54-d85d-4c57-34f1-d46b3522ef31"
+                }
+            ]
+        }
+    ]
+}

@@ -1,85 +1,14 @@
 {
-    "url": "https://www.youtube.com/@MTGGoldfish",
-    "id": "UCZAZTSd0xnor7hJFmINIBIw",
-    "title": "MTGGoldfish",
-    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
-    "tags": [
-        "MTG",
-        "Magic the Gathering",
-        "mtggoldfish"
-    ],
-    "subscribers": 330000,
-    "scrape_time": "2024-11-05 21:42:58",
-    "videos": [
-        {
-            "id": "0kCZF-qF0XQ",
-            "url": "https://www.youtube.com/watch?v=0kCZF-qF0XQ",
-            "author": "MTGGoldfish",
-            "title": "Getting Creative with Valgavoth  Pioneer",
-            "description": "Valgavoth is our new baddie and they're here to terrorize the Pioneer meta!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-getting-creative-with-valgavoth\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6727591#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/7Al3d\n◼ Purchase this deck (Magic Online): http://mtg.fish/fRW7g\n\n#MTG\n#MagicTheGathering\n#MTGO\n#MTGExplorer",
-            "keywords": [
-                "Gameplay",
-                "MTG",
-                "MTG Arena",
-                "Magic Arena",
-                "Magic the Gathering"
-            ],
-            "publish_time": "2024-11-05 08:00:06",
-            "views": 6213,
-            "sources": [
-                "mtg.fish",
-                "www.cardkingdom.com",
-                "www.mtggoldfish.com"
-            ],
-            "decks": [
-                {
-                    "metadata": {
-                        "author": "TheAsianAvenger",
-                        "date": "2024-10-31",
-                        "format": "explorer",
-                        "name": "Valgavoth Creativity",
-                        "source": "www.mtggoldfish.com",
-                        "url": "https://www.mtggoldfish.com/deck/6727591"
-                    },
-                    "decklist_id": "fa2aafa1-157e-bad9-f6dc-128a206e228c",
-                    "decklist_extended_id": "d5bcf59b-81fb-4da5-5eb5-79d8113fa894"
-                }
-            ]
-        },
-        {
-            "id": "g7erZjUoMUs",
-            "url": "https://www.youtube.com/watch?v=g7erZjUoMUs",
-            "author": "MTGGoldfish",
-            "title": "Slime Against Humanity. Slime Against Humanity. Slime Against Humanity. Slime Against Humanity.",
-            "description": "Do some new Duskmourn additions mean that it's time for Slime Against Humanity to compete in Standard? Let's give this infamous small Japanese tournament brew a try and find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/much-abrew-slimes-against-humanity-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6701621#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/9ojO5\n◼ Purchase this deck (Magic Online): http://mtg.fish/jGJuW\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#mtgstandard \n\n0:00 Start\n4:15 Games",
-            "keywords": [
-                "Gameplay",
-                "MTG",
-                "MTG Arena",
-                "Magic Arena",
-                "Magic the Gathering"
-            ],
-            "publish_time": "2024-11-04 08:00:05",
-            "views": 46925,
-            "sources": [
-                "mtg.fish",
-                "www.cardkingdom.com",
-                "www.mtggoldfish.com"
-            ],
-            "decks": [
-                {
-                    "metadata": {
-                        "author": "ヤギ タカシ",
-                        "date": "2024-10-17",
-                        "format": "standard",
-                        "name": "Slimes Against Humanity",
-                        "source": "www.mtggoldfish.com",
-                        "url": "https://www.mtggoldfish.com/deck/6701621"
-                    },
-                    "decklist_id": "3bc0411b-ae1e-b7e9-5306-3ccef521d5e9",
-                    "decklist_extended_id": "7653c0df-f7c7-64ef-6867-562189b04c14"
-                }
-            ]
-        }
-    ]
+  "url": "https://www.youtube.com/@MTGGoldfish",
+  "id": "UCZAZTSd0xnor7hJFmINIBIw",
+  "title": "MTGGoldfish",
+  "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+  "tags": [
+    "MTG",
+    "Magic the Gathering",
+    "mtggoldfish"
+  ],
+  "subscribers": 330000,
+  "scrape_time": "2024-11-05 21:42:58",
+  "videos": []
 }

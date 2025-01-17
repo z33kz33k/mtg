@@ -1,144 +1,36 @@
 {
-    "url": "https://www.youtube.com/@MTGGoldfish",
-    "id": "UCZAZTSd0xnor7hJFmINIBIw",
-    "title": "MTGGoldfish",
-    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
-    "tags": [
+  "url": "https://www.youtube.com/@MTGGoldfish",
+  "id": "UCZAZTSd0xnor7hJFmINIBIw",
+  "title": "MTGGoldfish",
+  "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+  "tags": [
+    "MTG",
+    "Magic the Gathering",
+    "mtggoldfish"
+  ],
+  "subscribers": 326000,
+  "scrape_time": "2024-09-14 02:59:36",
+  "videos": [
+    {
+      "id": "M-CCqmggyaU",
+      "url": "https://www.youtube.com/watch?v=M-CCqmggyaU",
+      "author": "MTGGoldfish",
+      "title": "Duskmourn MTG Spoilers  The Best Overlord and an UFO?",
+      "description": "Today in Duskmourn we get our final member of the mythic overlord cycle, a UFO vehicle, a legendary survivalist and more! Let's discuss!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\nMore spoilers: https://www.mtgpreviews.com\n\n#MTG #magicthegathering #mtgspoilers #mtgdsk \n\n0:00 Start\n1:30 Overlord of the Balemurk\n5:54 Waltz of Rage\n8:41 Unidentified Hovership\n12:38 Ghostly Dancers\n15:04 Rip, Spawn Hunter\n19:03 Dissection Tools\n23:35 Get Out\n24:52 Surgical Suite // Hospital Room\n25:45 Winter's Intervention\n26:24 Keys to the House\n27:39 Sheltered by Ghosts\n29:19 Jank",
+      "keywords": [
         "MTG",
-        "Magic the Gathering",
-        "mtggoldfish"
-    ],
-    "subscribers": 326000,
-    "scrape_time": "2024-09-14 02:59:36",
-    "videos": [
-        {
-            "id": "nkyiJWp9PcU",
-            "url": "https://www.youtube.com/watch?v=nkyiJWp9PcU",
-            "author": "MTGGoldfish",
-            "title": "Annie Joins Up to Double Up Bloomburrow  Much Abrew",
-            "description": "What crazy things can the legendary Panharmonicon Annie Joins Up do thanks to the new legends of Bloomburrow? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/much-abrew-annie-joins-up-with-bloomburrow-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6574572#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/KSjEi\n◼ Purchase this deck (Magic Online): http://mtg.fish/J5LSU\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#mtgstandard \n\n0:00 Start\n3:52 Games",
-            "keywords": [
-                "Gameplay",
-                "MTG",
-                "MTG Arena",
-                "Magic Arena",
-                "Magic the Gathering"
-            ],
-            "publish_time": "2024-09-13 08:00:03",
-            "views": 15243,
-            "sources": [
-                "mtg.fish",
-                "www.cardkingdom.com",
-                "www.mtggoldfish.com"
-            ],
-            "derived_format": "standard",
-            "decks": [
-                {
-                    "metadata": {
-                        "author": "SaffronOlive",
-                        "date": "2024-08-14",
-                        "format": "standard",
-                        "name": "Annie Joins Up",
-                        "source": "www.mtggoldfish.com",
-                        "url": "https://www.mtggoldfish.com/deck/6574572"
-                    },
-                    "decklist_id": "30e050bc-206b-a706-abc0-ddeb83298501",
-                    "decklist_extended_id": "f235e733-6801-0a21-424d-30877d91683a"
-                }
-            ]
-        },
-        {
-            "id": "yxH84K_yXjU",
-            "url": "https://www.youtube.com/watch?v=yxH84K_yXjU",
-            "author": "MTGGoldfish",
-            "title": "Tapout Kaya Control  Standard",
-            "description": "Kaya, Intangible Slayer is easily one of the best finishers in Standard right now if you can live long enough to get to her!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-tapout-kaya-control\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6617377#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/bY5NC\n◼ Purchase this deck (Magic Online): http://mtg.fish/4ayxw\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
-            "keywords": [
-                "Gameplay",
-                "MTG",
-                "MTG Arena",
-                "Magic Arena",
-                "Magic the Gathering"
-            ],
-            "publish_time": "2024-09-12 20:00:04",
-            "views": 17437,
-            "sources": [
-                "mtg.fish",
-                "www.cardkingdom.com",
-                "www.mtggoldfish.com"
-            ],
-            "derived_format": "standard",
-            "decks": [
-                {
-                    "metadata": {
-                        "author": "TheAsianAvenger",
-                        "date": "2024-09-05",
-                        "format": "standard",
-                        "name": "Kaya Control",
-                        "source": "www.mtggoldfish.com",
-                        "url": "https://www.mtggoldfish.com/deck/6617377"
-                    },
-                    "decklist_id": "a4c398ea-3af1-0a2c-97a9-56b455a675fd",
-                    "decklist_extended_id": "d14a3632-c1aa-1082-88af-aea5d5f5a945"
-                }
-            ]
-        },
-        {
-            "id": "M-CCqmggyaU",
-            "url": "https://www.youtube.com/watch?v=M-CCqmggyaU",
-            "author": "MTGGoldfish",
-            "title": "Duskmourn MTG Spoilers  The Best Overlord and an UFO?",
-            "description": "Today in Duskmourn we get our final member of the mythic overlord cycle, a UFO vehicle, a legendary survivalist and more! Let's discuss!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\nMore spoilers: https://www.mtgpreviews.com\n\n#MTG #magicthegathering #mtgspoilers #mtgdsk \n\n0:00 Start\n1:30 Overlord of the Balemurk\n5:54 Waltz of Rage\n8:41 Unidentified Hovership\n12:38 Ghostly Dancers\n15:04 Rip, Spawn Hunter\n19:03 Dissection Tools\n23:35 Get Out\n24:52 Surgical Suite // Hospital Room\n25:45 Winter's Intervention\n26:24 Keys to the House\n27:39 Sheltered by Ghosts\n29:19 Jank",
-            "keywords": [
-                "MTG",
-                "MTG Arena",
-                "MTGGoldfish",
-                "Magic: the Gathering"
-            ],
-            "publish_time": "2024-09-12 08:32:11",
-            "views": 25969,
-            "sources": [
-                "www.cardkingdom.com",
-                "www.mtgpreviews.com"
-            ],
-            "derived_format": null,
-            "decks": []
-        },
-        {
-            "id": "q-pIbZWJx_E",
-            "url": "https://www.youtube.com/watch?v=q-pIbZWJx_E",
-            "author": "MTGGoldfish",
-            "title": "How Will You Stop My Duplicity of Otters?  Against the Odds",
-            "description": "What are the odds of using Vesuvan Duplimancy to win by making an absurdly big board of Daring Waveriders in Standard? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/against-the-odds-otter-duplimancy-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6588991#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/dIfT1\n◼ Purchase this deck (Magic Online): http://mtg.fish/z9YcB\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#mtgstandard \n\n0:00 Start\n4:40 Games",
-            "keywords": [
-                "Gameplay",
-                "MTG",
-                "MTG Arena",
-                "Magic Arena",
-                "Magic the Gathering"
-            ],
-            "publish_time": "2024-09-11 19:00:04",
-            "views": 47399,
-            "sources": [
-                "mtg.fish",
-                "www.cardkingdom.com",
-                "www.mtggoldfish.com"
-            ],
-            "derived_format": "standard",
-            "decks": [
-                {
-                    "metadata": {
-                        "author": "SaffronOlive",
-                        "date": "2024-08-22",
-                        "format": "standard",
-                        "name": "Otter Duplimancy",
-                        "source": "www.mtggoldfish.com",
-                        "url": "https://www.mtggoldfish.com/deck/6588991"
-                    },
-                    "decklist_id": "39e39e4f-9d2e-5259-5302-0f8e06d3edc7",
-                    "decklist_extended_id": "8be0f3d5-057d-7f06-098c-196dfcc60b2a"
-                }
-            ]
-        }
-    ]
+        "MTG Arena",
+        "MTGGoldfish",
+        "Magic: the Gathering"
+      ],
+      "publish_time": "2024-09-12 08:32:11",
+      "views": 25969,
+      "sources": [
+        "www.cardkingdom.com",
+        "www.mtgpreviews.com"
+      ],
+      "derived_format": null,
+      "decks": []
+    }
+  ]
 }

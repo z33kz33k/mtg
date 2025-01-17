@@ -1,0 +1,60 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 335000,
+    "scrape_time": "2025-01-17 02:31:01",
+    "videos": [
+        {
+            "id": "SG8A7HAn74I",
+            "url": "https://www.youtube.com/watch?v=SG8A7HAn74I",
+            "author": "MTGGoldfish",
+            "title": "My Opponent and I Are Going To Eat Our Veggies",
+            "description": "The Green Machine may not be tier 1 but it'll be fun to just play some honest stompy with our best (bristle)bud. Thanks to all the enchantments running around, we've got a surplus of ways of dealing with them thanks to Scrapshooter, Nissa, & More.\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at htps://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-my-opponent-and-i-are-going-to-eat-our-veggies\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6865214#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/2iGxu\n◼ Purchase this deck (Magic Online): http://mtg.fish/QZDuk\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-01-16 08:00:06",
+            "views": 13248,
+            "sources": [
+                "mtg.fish",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-01-14",
+                        "format": "standard",
+                        "name": "Eat Your Veggies!",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6865214"
+                    },
+                    "decklist_id": "9436186b-e953-b78b-ec3d-d6d48981d136",
+                    "decklist_extended_id": "8c9086ee-ca0e-40f1-e467-2df829ed3a1d"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-01-14",
+                        "format": "standard",
+                        "name": "Eat Your Veggies!",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-my-opponent-and-i-are-going-to-eat-our-veggies"
+                    },
+                    "decklist_id": "9436186b-e953-b78b-ec3d-d6d48981d136",
+                    "decklist_extended_id": "8c9086ee-ca0e-40f1-e467-2df829ed3a1d"
+                }
+            ]
+        }
+    ]
+}

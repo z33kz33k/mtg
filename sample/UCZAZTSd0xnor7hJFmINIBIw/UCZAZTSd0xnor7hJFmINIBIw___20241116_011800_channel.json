@@ -1,50 +1,14 @@
 {
-    "url": "https://www.youtube.com/@MTGGoldfish",
-    "id": "UCZAZTSd0xnor7hJFmINIBIw",
-    "title": "MTGGoldfish",
-    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
-    "tags": [
-        "MTG",
-        "Magic the Gathering",
-        "mtggoldfish"
-    ],
-    "subscribers": 331000,
-    "scrape_time": "2024-11-16 01:18:00",
-    "videos": [
-        {
-            "id": "7Uy0pbX9OtU",
-            "url": "https://www.youtube.com/watch?v=7Uy0pbX9OtU",
-            "author": "MTGGoldfish",
-            "title": "Your Doom Has Been Foretold  Much Abrew",
-            "description": "Pioneer is missing a real prison deck. Is grinding away opponent's permanent with Doom Foretold as close as we can get to making prison work in the format? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/much-abrew-your-doom-has-been-foretold-pioneer\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6741048#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/exbMn\n◼ Purchase this deck (Magic Online): http://mtg.fish/gzF9Y\n\n#MTG\n#MagicTheGathering\n#MTGO\n#MTGPioneer\n\n0:00 Start\n4:25 Games",
-            "keywords": [
-                "Gameplay",
-                "MTG",
-                "MTG Arena",
-                "Magic Arena",
-                "Magic the Gathering"
-            ],
-            "publish_time": "2024-11-15 08:00:14",
-            "views": 17929,
-            "sources": [
-                "mtg.fish",
-                "www.cardkingdom.com",
-                "www.mtggoldfish.com"
-            ],
-            "decks": [
-                {
-                    "metadata": {
-                        "author": "ミワ リョウ",
-                        "date": "2024-11-06",
-                        "format": "pioneer",
-                        "name": "Doom Foretold",
-                        "source": "www.mtggoldfish.com",
-                        "url": "https://www.mtggoldfish.com/deck/6741048"
-                    },
-                    "decklist_id": "bd899776-cffd-2fc6-6a9d-c3f551226fe0",
-                    "decklist_extended_id": "72d4025f-fb18-816c-4c7d-6e2be82e7fb8"
-                }
-            ]
-        }
-    ]
+  "url": "https://www.youtube.com/@MTGGoldfish",
+  "id": "UCZAZTSd0xnor7hJFmINIBIw",
+  "title": "MTGGoldfish",
+  "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+  "tags": [
+    "MTG",
+    "Magic the Gathering",
+    "mtggoldfish"
+  ],
+  "subscribers": 331000,
+  "scrape_time": "2024-11-16 01:18:00",
+  "videos": []
 }

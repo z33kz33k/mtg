@@ -1,49 +1,13 @@
 {
-    "id": "UCZAZTSd0xnor7hJFmINIBIw",
-    "title": "MTGGoldfish",
-    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
-    "tags": [
-        "MTG",
-        "Magic the Gathering",
-        "mtggoldfish"
-    ],
-    "subscribers": 334000,
-    "scrape_time": "2024-12-25 00:30:56",
-    "videos": [
-        {
-            "id": "Gosa2gWhMWE",
-            "url": "https://www.youtube.com/watch?v=Gosa2gWhMWE",
-            "author": "MTGGoldfish",
-            "title": "Mono Red Can Be More Than Aggro!  Standard",
-            "description": "Mono Red is more than just Aggro. Lets see if we can use Artist's Talent and Enduring Courage to push a Midrange Red deck!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-mono-red-can-be-more-than-aggro\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6742101#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/JXezk\n◼ Purchase this deck (Magic Online): http://mtg.fish/2aryB\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
-            "keywords": [
-                "Gameplay",
-                "MTG",
-                "MTG Arena",
-                "Magic Arena",
-                "Magic the Gathering"
-            ],
-            "publish_time": "2024-11-14 08:00:04",
-            "views": 28449,
-            "sources": [
-                "mtg.fish",
-                "www.cardkingdom.com",
-                "www.mtggoldfish.com"
-            ],
-            "decks": [
-                {
-                    "metadata": {
-                        "author": "TheAsianAvenger",
-                        "date": "2024-11-07",
-                        "format": "standard",
-                        "name": "Big Red",
-                        "source": "www.mtggoldfish.com",
-                        "url": "https://www.mtggoldfish.com/deck/6742101"
-                    },
-                    "decklist_id": "9092e29d-4cd0-fe1c-ad1b-85614ac10f8b",
-                    "decklist_extended_id": "1ad61c30-2ca7-535f-dd78-8925e957d549"
-                }
-            ]
-        }
-    ]
+  "id": "UCZAZTSd0xnor7hJFmINIBIw",
+  "title": "MTGGoldfish",
+  "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+  "tags": [
+    "MTG",
+    "Magic the Gathering",
+    "mtggoldfish"
+  ],
+  "subscribers": 334000,
+  "scrape_time": "2024-12-25 00:30:56",
+  "videos": []
 }
