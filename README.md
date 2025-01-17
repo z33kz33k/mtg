@@ -88,6 +88,7 @@ descriptions).
         * Cardsrealm profiles, folders, tournaments and articles
         * Deckbox users and events
         * Deckstats users
+        * [EDHTop16](https://edhtop16.com) tournaments
         * Flexslot users
         * Goldfish tournaments, players and articles
         * Hareruya events and players

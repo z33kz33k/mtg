@@ -2,7 +2,7 @@
 
     mtg.deck.scrapers.topdeck.py
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Scrape TopDeck.gg decklists.
+    Scrape TopDeck.gg deck containers.
 
     @author: z33k
 
