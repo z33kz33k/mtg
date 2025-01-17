@@ -480,7 +480,9 @@ class LinksExpander:
             self._urls_manager.add_failed(original_link)
             return
 
+        lines = [l.strip() for l in response.text.splitlines()]
         self._lines += [l.strip() for l in response.text.splitlines()]
+        _log.info(f"Expanded {len(lines)} Pastebin-like line(s)")
         self._expanded_links.append(original_link)
 
     @staticmethod
@@ -500,7 +502,9 @@ class LinksExpander:
             return
 
         text_tag = soup.find("div", class_=lambda c: c and "sc-dtMgUX" in c and 'IEufa' in c)
-        self._lines += [p_tag.text.strip() for p_tag in text_tag.find_all("p")]
+        lines = [p_tag.text.strip() for p_tag in text_tag.find_all("p")]
+        self._lines += lines
+        _log.info(f"Expanded {len(lines)} Patreon line(s)")
         self._expanded_links.append(link)
 
     @staticmethod
@@ -529,18 +533,23 @@ class LinksExpander:
             self._urls_manager.add_failed(link)
             return
 
-        matched_text = None
+        matched_text, links = None, []
         for i, d in enumerate(js):
             match d:
                 case {"s": text} if i == 0:
                     matched_text = text.strip()
                 case {"sm": {'lnks_link': {'ulnk_url': link}}}:
+                    links.append(link)
                     self._gathered_links.append(link)
                 case _:
                     pass
 
+        lines = []
         if matched_text:
-            self._lines += [l.strip() for l in matched_text.splitlines()]
+            lines = [l.strip() for l in matched_text.splitlines()]
+            self._lines += lines
+
+        _log.info(f"Expanded {len(lines)} Google Docs line(s) and gathered {len(links)} link(s)")
 
 
 class Video:
