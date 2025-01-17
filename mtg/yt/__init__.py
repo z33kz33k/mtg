@@ -38,7 +38,7 @@ from mtg.deck import Deck, SANITIZED_FORMATS
 from mtg.deck.arena import ArenaParser, get_arena_lines, group_arena_lines
 from mtg.deck.scrapers import DeckScraper, DeckTagsContainerScraper, DeckUrlsContainerScraper, \
     DecksJsonContainerScraper, HybridContainerScraper
-from mtg.gstate import DecklistsStateManager, UrlsStateManager
+from mtg.gstate import CoolOffManager, DecklistsStateManager, UrlsStateManager
 from mtg.scryfall import all_formats
 from mtg.utils import Counter, deserialize_dates, extract_float, find_longest_seqs, \
     from_iterable, getrepr, multiply_by_symbol, sanitize_filename, serialize_dates, timed
@@ -57,7 +57,6 @@ _log = logging.getLogger(__name__)
 
 GOOGLE_API_KEY = SECRETS["google"]["api_key"]  # not used anywhere
 DEAD_THRESHOLD = 2000  # days (ca. 5.5 yrs) - only used in gsheet to trim dead from abandoned
-MAX_VIDEOS = 400
 
 
 def back_up_channel_files(chid: str, *files: PathLike) -> None:
@@ -75,7 +74,7 @@ def back_up_channel_files(chid: str, *files: PathLike) -> None:
         shutil.copy(f, dst)
 
 
-def _process_videos(channel_id: str, *video_ids: str, skip_earlier_scraped_deck_urls=True) -> None:
+def _process_videos(channel_id: str, *video_ids: str) -> None:
     files = find_channel_files(channel_id, *video_ids)
     if not files:
         return
@@ -85,6 +84,8 @@ def _process_videos(channel_id: str, *video_ids: str, skip_earlier_scraped_deck_
             prune_channel_data_file(f, *video_ids)
 
 
+@http_requests_counted("re-scraping videos")
+@timed("re-scraping videos", precision=1)
 def rescrape_missing_decklists() -> None:
     """Re-scrape those YT videos that contain decklists that are missing from global decklists
     repositories.
@@ -98,13 +99,17 @@ def rescrape_missing_decklists() -> None:
         _log.info("No videos found that needed re-scraping")
         return
 
-    for i, (channel_id, video_ids) in enumerate(channels.items(), start=1):
-        _log.info(f"Re-scraping {i}/{len(channels)} channel for missing decklists data...")
+    with ScrapingSession() as session:
         manager = UrlsStateManager()
         manager.ignore_scraped = True
-        _process_videos(channel_id, *video_ids)
+        for i, (channel_id, video_ids) in enumerate(channels.items(), start=1):
+            _log.info(
+                f"Re-scraping ==> {i}/{len(channels)} <== channel for missing decklists data...")
+            _process_videos(channel_id, *video_ids)
 
 
+@http_requests_counted("re-scraping videos")
+@timed("re-scraping videos", precision=1)
 def rescrape_videos(
         *chids: str, video_filter: Callable[[dict], bool] = lambda _: True) -> None:
     """Re-scrape videos across all specified channels. Optionally, define a video-filtering
@@ -128,11 +133,13 @@ def rescrape_videos(
         _log.info("No videos found that needed re-scraping")
         return
 
-    for i, (channel_id, video_ids) in enumerate(channels.items(), start=1):
-        _log.info(f"Re-scraping {len(video_ids)} video(s) of {i}/{len(channels)} channel...")
+    with ScrapingSession() as session:
         manager = UrlsStateManager()
         manager.ignore_scraped_within_current_video = True
-        _process_videos(channel_id, *video_ids)
+        for i, (channel_id, video_ids) in enumerate(channels.items(), start=1):
+            _log.info(
+                f"Re-scraping {len(video_ids)} video(s) of ==> {i}/{len(channels)} <== channel...")
+            _process_videos(channel_id, *video_ids)
 
 
 @http_requests_counted("channel videos scraping")
@@ -147,23 +154,18 @@ def scrape_channel_videos(channel_id: str, *video_ids: str) -> bool:
         channel_id: ID of a channel to scrape
         *video_ids: IDs of videos to scrape
     """
-    with ScrapingSession() as session:
-        total_videos, total_decks = 0, 0
-        try:
-            ch = Channel(channel_id)
-            text = Channel.get_url_and_title(ch.id, ch.title)
-            _log.info(f"Scraping {len(video_ids)} video(s) from channel {text}...")
-            ch.scrape_videos(*video_ids)
-            if ch.data:
-                dst = getdir(CHANNELS_DIR / channel_id)
-                ch.dump(dst)
-                total_videos += len(ch.videos)
-                total_decks += len(ch.decks)
-        except Exception as err:
-            _log.exception(f"Scraping of channel {channel_id!r} failed with: '{err}'")
-            return False
+    try:
+        ch = Channel(channel_id)
+        text = Channel.get_url_and_title(ch.id, ch.title)
+        _log.info(f"Scraping {len(video_ids)} video(s) from channel {text}...")
+        ch.scrape_videos(*video_ids)
+        if ch.data:
+            dst = getdir(CHANNELS_DIR / channel_id)
+            ch.dump(dst)
+    except Exception as err:
+        _log.exception(f"Scraping of channel {channel_id!r} failed with: '{err}'")
+        return False
 
-        _log.info(f"Scraped {total_decks} deck(s) from {total_videos} video(s)")
     return True
 
 
@@ -184,8 +186,6 @@ def scrape_channels(
         only_earlier_than_last_scraped: if True, only scrape videos earlier than the last one scraped
     """
     with ScrapingSession() as session:
-        current_videos, total_videos = 0, 0
-        total_channels, total_decks = 0, 0
         for i, id_ in enumerate(chids, start=1):
             try:
                 ch = Channel(id_)
@@ -195,20 +195,8 @@ def scrape_channels(
                 if ch.data:
                     dst = getdir(CHANNELS_DIR / id_)
                     ch.dump(dst)
-                    current_videos += len(ch.videos)
-                    total_videos += len(ch.videos)
-                    total_channels += 1
-                    total_decks += len(ch.decks)
             except Exception as err:
                 _log.exception(f"Scraping of channel {id_!r} failed with: '{err}'. Skipping...")
-            if current_videos > MAX_VIDEOS:
-                current_videos = 0
-                _log.info(f"Throttling for 5 minutes before the next batch...")
-                throttle_with_countdown(5 * 60)
-
-        _log.info(
-            f"Scraped {total_decks} deck(s) from {total_videos} video(s) from {total_channels} "
-            f"channel(s)")
 
 
 def scrape_fresh(
@@ -359,7 +347,7 @@ def scrape_excessively_deck_stale(
 
 
 # TODO: async
-class _LinksExpander:
+class LinksExpander:
     """Expand links to prospective pages into lines eligible for deck-processing.
 
     Note: On 15th Jan 2025 there were only 108 `pastebin.com` and 2 `gist.github.com` links
@@ -468,14 +456,16 @@ class _LinksExpander:
             if self._urls_manager.is_failed(link):
                 _log.info(f"Skipping expansion of already failed URL: {link!r}...")
                 continue
-            _log.info(f"Expanding {link!r}...")
             if self.is_pastebin_like_url(link):
+                _log.info(f"Expanding {link!r}...")
                 self._expand_pastebin(link)
             elif self.is_obscure_pastebin_like_url(link):
                 _log.warning(f"Obscure pastebin-like link found: {link!r}...")
             elif self.is_patreon_url(link):
+                _log.info(f"Expanding {link!r}...")
                 self._expand_patreon(link)
             elif self.is_google_doc_url(link):
+                _log.info(f"Expanding {link!r}...")
                 self._expand_google_doc(link)
 
     def _expand_pastebin(self, link: str) -> None:
@@ -490,7 +480,7 @@ class _LinksExpander:
             self._urls_manager.add_failed(original_link)
             return
 
-        self._lines += response.text.splitlines()
+        self._lines += [l.strip() for l in response.text.splitlines()]
         self._expanded_links.append(original_link)
 
     @staticmethod
@@ -510,7 +500,7 @@ class _LinksExpander:
             return
 
         text_tag = soup.find("div", class_=lambda c: c and "sc-dtMgUX" in c and 'IEufa' in c)
-        self._lines += [p_tag.text for p_tag in text_tag.find_all("p")]
+        self._lines += [p_tag.text.strip() for p_tag in text_tag.find_all("p")]
         self._expanded_links.append(link)
 
     @staticmethod
@@ -550,7 +540,7 @@ class _LinksExpander:
                     pass
 
         if matched_text:
-            self._lines += matched_text.splitlines()
+            self._lines += [l.strip() for l in matched_text.splitlines()]
 
 
 class Video:
@@ -659,7 +649,7 @@ class Video:
 
     @cached_property
     def _desc_lines(self) -> list[str]:
-        return [line.strip() for line in self.description.split("\n")] if self.description else []
+        return [line.strip() for line in self.description.splitlines()] if self.description else []
 
     @property
     def sources(self) -> list[str]:
@@ -691,6 +681,7 @@ class Video:
         self._urls_manager = UrlsStateManager()
         self._urls_manager.current_video = video_id
         self._decklists_manager = DecklistsStateManager()
+        self._cooloff_manager = CoolOffManager()
         self._process(video_id)
 
     @throttled(1.25, 0.25)
@@ -721,6 +712,7 @@ class Video:
             if comment_lines:
                 links, lines = self._parse_lines(*comment_lines)
                 self._decks = self._collect(links, get_arena_lines(*lines))
+        self._cooloff_manager.bump_decks(len(self.decks))
 
     def __repr__(self) -> str:
         return getrepr(
@@ -856,7 +848,7 @@ class Video:
                 other_lines.append(line)
 
         if expand_links:
-            expander = _LinksExpander(*links)
+            expander = LinksExpander(*links)
             links = {l for l in links if l not in expander.expanded_links}
             links.update(expander.gathered_links)
             new_links, new_lines = cls._parse_lines(*expander.lines, expand_links=False)
@@ -1044,6 +1036,7 @@ class Channel:
 
     def __init__(self, channel_id: str) -> None:
         self._id = channel_id
+        self._cooloff_manager = CoolOffManager()
         self._urls_manager = UrlsStateManager()
         self._urls_manager.current_channel = self.id
         self._title, self._description, self._tags = None, None, None
@@ -1116,6 +1109,7 @@ class Channel:
                 _log.warning(f"Skipping private video: 'https://www.youtube.com/watch?v={vid}'...")
                 continue
             self._videos.append(video)
+            self._cooloff_manager.bump_video()
         try:
             self._ytsp_data = self._get_ytsp() if self._id else None
             self._description = self._ytsp_data.result.get("description") if self._id else None
@@ -1243,3 +1237,4 @@ class Channel:
         dst = dstdir / f"{sanitize_filename(filename)}.json"
         _log.info(f"Exporting channel to: '{dst}'...")
         dst.write_text(self.json, encoding="utf-8")
+        self._cooloff_manager.bump_channel()

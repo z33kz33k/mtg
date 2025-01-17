@@ -17,6 +17,7 @@ from typing import Callable, Generator
 from mtg import OUTPUT_DIR
 from mtg.utils.check_type import type_checker
 from mtg.utils.files import getfile
+from mtg.utils.scrape import throttle_with_countdown
 
 _log = logging.getLogger(__name__)
 CHANNELS_DIR = OUTPUT_DIR / "channels"
@@ -242,3 +243,41 @@ class DecklistsStateManager(_Singleton):
         self._regular = {k: v for k, v in self._regular.items() if not filter_(k)}
         self._extended = {k: v for k, v in self._extended.items() if not filter_(k)}
 
+
+class CoolOffManager(_Singleton):
+    """Keeps the things cool (with YT and pytube).
+    """
+    MAX_VIDEOS = 400
+
+    @property
+    def total_decks(self) -> int:
+        return self._total_decks
+
+    @property
+    def total_videos(self) -> int:
+        return self._total_videos
+
+    @property
+    def total_channels(self) -> int:
+        return self._total_channels
+
+    def reset(self) -> None:  # override
+        self._total_decks, self._total_videos, self._total_channels = 0, 0, 0
+        self._current_videos = 0
+
+    def _cool_off(self) -> None:
+        _log.info(f"Throttling for 5 minutes before the next batch...")
+        throttle_with_countdown(5 * 60)
+        self._current_videos = 0
+
+    def bump_decks(self, decks: int) -> None:
+        self._total_decks += decks
+
+    def bump_channel(self) -> None:
+        self._total_channels += 1
+
+    def bump_video(self) -> None:
+        self._total_videos += 1
+        self._current_videos += 1
+        if self._current_videos >= self.MAX_VIDEOS:
+            self._cool_off()

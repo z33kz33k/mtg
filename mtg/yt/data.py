@@ -23,11 +23,11 @@ from mtg.deck.scrapers.cardsrealm import get_source as cardsrealm_get_source
 from mtg.deck.scrapers.melee import get_source as melee_get_source
 from mtg.deck.scrapers.mtgarenapro import get_source as mtgarenapro_get_source
 from mtg.deck.scrapers.tcgplayer import get_source as tcgplayer_get_source
-from mtg.gstate import CHANNELS_DIR, DecklistsStateManager, UrlsStateManager
+from mtg.gstate import CHANNELS_DIR, CoolOffManager, DecklistsStateManager, UrlsStateManager
 from mtg.utils import Counter, breadcrumbs, deserialize_dates, serialize_dates
 from mtg.utils.files import getdir, getfile
 from mtg.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
-from mtg.utils.scrape import extract_url, getsoup
+from mtg.utils.scrape import extract_url, getsoup, throttle_with_countdown
 
 _log = logging.getLogger(__name__)
 VIDEO_URL_TEMPLATE = "https://www.youtube.com/watch?v={}"
@@ -273,10 +273,11 @@ def update_gsheet() -> None:
 
 
 class ScrapingSession:
-    """Context manager to ensure proper updates of global decklist repositories during scraping.
+    """Context manager to ensure proper state management during scraping.
     """
     def __init__(self) -> None:
         self._urls_manager, self._decklists_manager = UrlsStateManager(), DecklistsStateManager()
+        self._cooloff_manager = CoolOffManager()
 
     def __enter__(self) -> "ScrapingSession":
         self._decklists_manager.load()
@@ -286,10 +287,15 @@ class ScrapingSession:
     def __exit__(
             self, exc_type: Type[BaseException] | None, exc_val: BaseException | None,
             exc_tb: TracebackType | None) -> None:
+        _log.info(
+            f"Session finished with: {self._cooloff_manager.total_decks} deck(s) from "
+            f"{self._cooloff_manager.total_videos} video(s) from "
+            f"{self._cooloff_manager.total_channels} channel(s) scraped in total")
         self._decklists_manager.dump()
         self._urls_manager.dump_failed()
         self._decklists_manager.reset()
         self._urls_manager.reset()
+        self._cooloff_manager.reset()
 
 
 @dataclass(frozen=True)
