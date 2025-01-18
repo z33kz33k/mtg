@@ -12,18 +12,22 @@ import logging
 
 from mtg import Json
 from mtg.deck.scrapers import DeckUrlsContainerScraper
+from mtg.deck.scrapers.archidekt import ArchidektDeckScraper
 from mtg.deck.scrapers.moxfield import MoxfieldDeckScraper
+from mtg.deck.scrapers.topdeck import check_unexpected_urls
 from mtg.utils.scrape import getsoup
 
 _log = logging.getLogger(__name__)
 
 
+# TODO: decklists retrieved with data processing can be an Arena text format instead of an URL
+# TODO: re-scrape EDHTop16 videos
 @DeckUrlsContainerScraper.registered
 class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
     """Scraper of EDHTop 16 tournament page.
     """
     CONTAINER_NAME = "EDHTop16 tournament"  # override
-    _DECK_SCRAPERS = MoxfieldDeckScraper,  # override
+    _DECK_SCRAPERS = MoxfieldDeckScraper, ArchidektDeckScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -64,7 +68,10 @@ class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
             return []
 
         data = json.loads(script_tag.text)
-        return self._process_data(data)
+        deck_urls = self._process_data(data)
+        check_unexpected_urls(deck_urls, *self._DECK_SCRAPERS)
+
+        return deck_urls
 
 
 @DeckUrlsContainerScraper.registered
@@ -72,7 +79,6 @@ class EdhTop16CommanderScraper(EdhTop16TournamentScraper):
     """Scraper of EDHTop 16 commander page.
     """
     CONTAINER_NAME = "EDHTop16 commander"  # override
-    _DECK_SCRAPERS = MoxfieldDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override

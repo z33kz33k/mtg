@@ -8,10 +8,12 @@
 
 """
 import logging
+from typing import Type
 
 from selenium.common import TimeoutException
 
-from mtg.deck.scrapers import DeckUrlsContainerScraper
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
+from mtg.deck.scrapers.archidekt import ArchidektDeckScraper
 from mtg.deck.scrapers.moxfield import MoxfieldDeckScraper
 from mtg.utils.scrape import strip_url_query
 from mtg.utils.scrape.dynamic import get_dynamic_soup
@@ -19,12 +21,18 @@ from mtg.utils.scrape.dynamic import get_dynamic_soup
 _log = logging.getLogger(__name__)
 
 
+def check_unexpected_urls(urls: list[str], *scrapers: Type[DeckScraper]) -> None:
+    names = [scraper.__name__ for scraper in scrapers]
+    if unexpected := [url for url in urls if not any(s.is_deck_url(url) for s in scrapers)]:
+        _log.warning(f"Non-{names} deck(s) found: {', '.join(unexpected)}")
+
+
 @DeckUrlsContainerScraper.registered
 class TopDeckBracketScraper(DeckUrlsContainerScraper):
     """Scraper of TopDeck.gg bracket page.
     """
     CONTAINER_NAME = "TopDeck.gg bracket"  # override
-    _DECK_SCRAPERS = MoxfieldDeckScraper,  # override
+    _DECK_SCRAPERS = MoxfieldDeckScraper, ArchidektDeckScraper # override
     _XPATH = "//table[contains(@class, 'table') and contains(@class, 'dataTable')]"
 
     @staticmethod
@@ -47,8 +55,7 @@ class TopDeckBracketScraper(DeckUrlsContainerScraper):
 
         deck_tags = self._soup.find_all("a", string="Decklist")
         deck_urls = [t["href"] for t in deck_tags]
-        if non_moxfield := [url for url in deck_urls if not MoxfieldDeckScraper.is_deck_url(url)]:
-            _log.warning(f"Non-Moxfield deck(s) found: {', '.join(non_moxfield)}")
+        check_unexpected_urls(deck_urls, *self._DECK_SCRAPERS)
         return deck_urls
 
 
@@ -57,7 +64,7 @@ class TopDeckProfileScraper(DeckUrlsContainerScraper):
     """Scraper of TopDeck.gg profile page.
     """
     CONTAINER_NAME = "TopDeck.gg profile"  # override
-    _DECK_SCRAPERS = MoxfieldDeckScraper,  # override
+    _DECK_SCRAPERS = MoxfieldDeckScraper, ArchidektDeckScraper  # override
     _XPATH = ("//a[contains(@class, 'btn') and contains(@class, 'btn-sm') "
               "and not(contains(@href, 'topdeck.gg'))]")
 
@@ -83,6 +90,5 @@ class TopDeckProfileScraper(DeckUrlsContainerScraper):
             "a", class_=lambda c: c and "btn" in c and "btn-sm" in c,
             href=lambda h: h and "topdeck.gg" not in h)
         deck_urls = [t["href"] for t in deck_tags]
-        if non_moxfield := [url for url in deck_urls if not MoxfieldDeckScraper.is_deck_url(url)]:
-            _log.warning(f"Non-Moxfield deck(s) found: {', '.join(non_moxfield)}")
+        check_unexpected_urls(deck_urls, *self._DECK_SCRAPERS)
         return deck_urls
