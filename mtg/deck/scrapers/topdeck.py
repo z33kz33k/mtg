@@ -14,7 +14,13 @@ from selenium.common import TimeoutException
 
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.deck.scrapers.archidekt import ArchidektDeckScraper
+from mtg.deck.scrapers.deckbox import DeckboxDeckScraper
+from mtg.deck.scrapers.goldfish import GoldfishDeckScraper
+from mtg.deck.scrapers.manabox import ManaBoxDeckScraper
+from mtg.deck.scrapers.manastack import ManaStackDeckScraper
 from mtg.deck.scrapers.moxfield import MoxfieldDeckScraper
+from mtg.deck.scrapers.scryfall import ScryfallDeckScraper
+from mtg.deck.scrapers.tappedout import TappedoutDeckScraper
 from mtg.utils.scrape import strip_url_query
 from mtg.utils.scrape.dynamic import get_dynamic_soup
 
@@ -23,8 +29,21 @@ _log = logging.getLogger(__name__)
 
 def check_unexpected_urls(urls: list[str], *scrapers: Type[DeckScraper]) -> None:
     names = [scraper.__name__ for scraper in scrapers]
-    if unexpected := [url for url in urls if not any(s.is_deck_url(url) for s in scrapers)]:
+    if unexpected := [url for url in urls if url.startswith("http") and
+                      not any(s.is_deck_url(url) for s in scrapers)]:
         _log.warning(f"Non-{names} deck(s) found: {', '.join(unexpected)}")
+
+
+DECK_SCRAPERS = (
+    ArchidektDeckScraper,
+    DeckboxDeckScraper,
+    GoldfishDeckScraper,
+    ManaBoxDeckScraper,
+    ManaStackDeckScraper,
+    MoxfieldDeckScraper,
+    ScryfallDeckScraper,
+    TappedoutDeckScraper,
+)
 
 
 @DeckUrlsContainerScraper.registered
@@ -32,7 +51,7 @@ class TopDeckBracketScraper(DeckUrlsContainerScraper):
     """Scraper of TopDeck.gg bracket page.
     """
     CONTAINER_NAME = "TopDeck.gg bracket"  # override
-    _DECK_SCRAPERS = MoxfieldDeckScraper, ArchidektDeckScraper # override
+    _DECK_SCRAPERS = DECK_SCRAPERS # override
     _XPATH = "//table[contains(@class, 'table') and contains(@class, 'dataTable')]"
 
     @staticmethod
@@ -64,7 +83,7 @@ class TopDeckProfileScraper(DeckUrlsContainerScraper):
     """Scraper of TopDeck.gg profile page.
     """
     CONTAINER_NAME = "TopDeck.gg profile"  # override
-    _DECK_SCRAPERS = MoxfieldDeckScraper, ArchidektDeckScraper  # override
+    _DECK_SCRAPERS = DECK_SCRAPERS  # override
     _XPATH = ("//a[contains(@class, 'btn') and contains(@class, 'btn-sm') "
               "and not(contains(@href, 'topdeck.gg'))]")
 

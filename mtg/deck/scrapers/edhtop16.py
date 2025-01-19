@@ -11,30 +11,48 @@ import json
 import logging
 
 from mtg import Json
+from mtg.deck import Deck
+from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckUrlsContainerScraper
-from mtg.deck.scrapers.archidekt import ArchidektDeckScraper
-from mtg.deck.scrapers.moxfield import MoxfieldDeckScraper
-from mtg.deck.scrapers.topdeck import check_unexpected_urls
+from mtg.deck.scrapers.topdeck import DECK_SCRAPERS as TOPDECK_SCRAPERS, check_unexpected_urls
 from mtg.utils.scrape import getsoup
 
 _log = logging.getLogger(__name__)
 
 
-# TODO: decklists retrieved with data processing can be an Arena text format instead of an URL
-# TODO: re-scrape EDHTop16 videos
 @DeckUrlsContainerScraper.registered
 class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
     """Scraper of EDHTop 16 tournament page.
     """
     CONTAINER_NAME = "EDHTop16 tournament"  # override
-    _DECK_SCRAPERS = MoxfieldDeckScraper, ArchidektDeckScraper  # override
+    _DECK_SCRAPERS = TOPDECK_SCRAPERS  # override
+
+    def __init__(self, url: str, metadata: Json | None = None) -> None:
+        super().__init__(url, metadata)
+        self._arena_decklists = []
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
         return "edhtop16.com/tournament/" in url.lower()
 
     @staticmethod
-    def _process_data(data: Json) -> list[str]:
+    def _parse_decklist(decklist: str) -> str:
+        tokens = decklist.split("1 ")[1:]
+        commander, *playsets = [f"1 {t}" for t in tokens if t]
+        return "\n".join(["Commander", commander, "", "Deck"] + [*playsets])
+
+    def _process_decklist(self, decklist: str | None, urls: list[str]) -> None:
+        if decklist:
+            decklist = decklist.strip()
+            if decklist.lower().startswith("http"):
+                urls.append(decklist)
+            else:
+                try:
+                    self._arena_decklists.append(self._parse_decklist(decklist))
+                except ValueError:
+                    pass
+
+    def _process_data(self, data: Json) -> list[str]:
         urls = []
         match data:
             case {
@@ -51,7 +69,8 @@ class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
                 }
             }:
                 for entry in entries:
-                    urls.append(entry["decklist"])
+                    decklist = entry["decklist"]
+                    self._process_decklist(decklist, urls)
             case _:
                 pass
         return urls
@@ -73,6 +92,18 @@ class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
 
         return deck_urls
 
+    def scrape(self) -> list[Deck]:
+        decks = super().scrape()
+        if self._arena_decklists:
+            _log.info(
+                f"Gathered {len(self._arena_decklists)} text decklists from a {self.CONTAINER_NAME}"
+                f" at: {self.url!r}")
+            for arena_decklist in self._arena_decklists:
+                if deck := ArenaParser(
+                        arena_decklist.splitlines(), metadata=self._metadata).parse():
+                    decks.append(deck)
+        return decks
+
 
 @DeckUrlsContainerScraper.registered
 class EdhTop16CommanderScraper(EdhTop16TournamentScraper):
@@ -84,8 +115,7 @@ class EdhTop16CommanderScraper(EdhTop16TournamentScraper):
     def is_container_url(url: str) -> bool:  # override
         return "edhtop16.com/commander/" in url.lower()
 
-    @staticmethod
-    def _process_data(data: Json) -> list[str]:  # override
+    def _process_data(self, data: Json) -> list[str]:  # override
         urls = []
         match data:
             case {
@@ -104,7 +134,8 @@ class EdhTop16CommanderScraper(EdhTop16TournamentScraper):
                 }
             }:
                 for edge in edges:
-                    urls.append(edge["node"]["decklist"])
+                    decklist = edge["node"]["decklist"]
+                    self._process_decklist(decklist, urls)
             case _:
                 pass
         return urls

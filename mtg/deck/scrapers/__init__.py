@@ -206,6 +206,7 @@ class ContainerScraper(ABC):
         url = url.removesuffix("/")
         self._validate_url(url)
         self._url, self._metadata = self.sanitize_url(url), metadata or {}
+        self._metadata["container_url"] = self.url
         self._soup: BeautifulSoup | None = None
 
     @classmethod

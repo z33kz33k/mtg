@@ -103,8 +103,12 @@ def get_dynamic_soup(
 
 
 @timed("getting JSON with Selenium")
+@backoff.on_exception(backoff.expo, json.decoder.JSONDecodeError, max_time=60)
 def get_selenium_json(url: str) -> Json:
     """Get JSON data at ``url`` using Selenium WebDriver.
+
+    This function assumes there's really JSON string at the destination and uses backoff
+    redundancy on any problems with JSON parsing, so it'd better be.
     """
     with webdriver.Chrome() as driver:
         _log.info(f"Webdriving using Chrome to: '{url}'...")

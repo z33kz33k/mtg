@@ -35,7 +35,7 @@ class MoxfieldDeckScraper(DeckScraper):
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         url = url.lower()
-        tokens = "public?q=", "/personal", "/history"
+        tokens = "public?q=", "/personal"
         return "moxfield.com/decks/" in url and all(t not in url for t in tokens)
 
     def _pre_parse(self) -> None:  # override
@@ -45,11 +45,7 @@ class MoxfieldDeckScraper(DeckScraper):
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
-        url = strip_url_query(url)
-        if url.endswith("/primer"):
-            return url.removesuffix("/primer")
-        elif url.endswith("/primer/"):
-            return url.removesuffix("/primer/")
+        url = strip_url_query(url).removesuffix("/primer").removesuffix("/history")
         return url.rstrip(".,")
 
     def _parse_metadata(self) -> None:  # override

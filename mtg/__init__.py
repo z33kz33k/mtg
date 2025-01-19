@@ -84,7 +84,6 @@ from mtg.deck.scrapers.cardhoarder import DeckScraper
 from mtg.deck.scrapers.cardsrealm import DeckScraper
 from mtg.deck.scrapers.deckbox import DeckScraper
 from mtg.deck.scrapers.deckstats import DeckScraper
-from mtg.deck.scrapers.edhtop16 import DeckUrlsContainerScraper
 from mtg.deck.scrapers.flexslot import DeckScraper
 from mtg.deck.scrapers.goldfish import DeckScraper
 from mtg.deck.scrapers.hareruya import DeckScraper
@@ -110,6 +109,8 @@ from mtg.deck.scrapers.streamdecker import DeckScraper
 from mtg.deck.scrapers.tappedout import DeckScraper
 from mtg.deck.scrapers.tcdecks import DeckScraper
 from mtg.deck.scrapers.tcgplayer import DeckScraper
-from mtg.deck.scrapers.topdeck import DeckUrlsContainerScraper
 from mtg.deck.scrapers.topdecked import DeckScraper
 from mtg.deck.scrapers.untapped import DeckScraper
+# those should be last as they use statically some of those above
+from mtg.deck.scrapers.edhtop16 import DeckUrlsContainerScraper
+from mtg.deck.scrapers.topdeck import DeckUrlsContainerScraper
