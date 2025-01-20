@@ -9,11 +9,14 @@
 """
 import logging
 
+from selenium.common import TimeoutException
+
 from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckScraper
-from mtg.utils.scrape import ScrapingError, getsoup, strip_url_query
+from mtg.utils.scrape import ScrapingError, strip_url_query
+from mtg.utils.scrape.dynamic import get_dynamic_soup
 
 _log = logging.getLogger(__name__)
 
@@ -23,6 +26,10 @@ _log = logging.getLogger(__name__)
 class MtgSearchItDeckScraper(DeckScraper):
     """Scraper of a MTGSearch.it decklist page.
     """
+    _XPATH = "//div[contains(@class, 'tags') and contains(@class, 'mt10')]"
+    # TODO: detect presence of this trolling and attempt to click with Selenium
+    _XPATH_UNBLOCK = "//a[@href='/access/unblock']"
+
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
         self._arena_decklist = ""
@@ -36,9 +43,10 @@ class MtgSearchItDeckScraper(DeckScraper):
         return strip_url_query(url)
 
     def _pre_parse(self) -> None:  # override
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            raise ScrapingError("Page not available")
+        try:
+            self._soup, _, self._clipboard = get_dynamic_soup(self.url, self._XPATH)
+        except TimeoutException:
+            raise ScrapingError(f"Scraping failed due to Selenium timing out")
 
     def _parse_metadata(self) -> None:  # override
         tags = self._soup.select_one("div.tags.mt10").text.strip()
