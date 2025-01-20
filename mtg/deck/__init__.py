@@ -1382,6 +1382,10 @@ class DeckParser(ABC):
         if theme := from_iterable(THEMES, lambda t: t in custom_theme):
             self._metadata["theme"] = theme
 
+    def _update_archetype(self, archetype: str) -> None:
+        if archetype.lower() in {a.value for a in Archetype}:
+            self._metadata["archetype"] = archetype
+
     def _build_deck(self) -> Deck:
         return Deck(
             self._maindeck, self._sideboard, self._commander, self._partner_commander,
