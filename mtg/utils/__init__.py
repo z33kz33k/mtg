@@ -107,6 +107,9 @@ def get_date_from_ago_text(ago_text: str) -> date | None:
     if not ago_text:
         return None
     dt = date.today()
+    if "second" in ago_text or "minut" in ago_text:
+        return dt
+    ago_text = ago_text.replace(" few ", "")
     if "yesterday" in ago_text:
         return dt - timedelta(days=1)
     ago_text = ago_text.removesuffix(" ago")
