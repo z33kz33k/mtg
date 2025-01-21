@@ -104,6 +104,7 @@ from mtg.deck.scrapers.mtgtop8 import DeckScraper
 from mtg.deck.scrapers.paupermtg import DeckScraper
 from mtg.deck.scrapers.penny import DeckScraper
 from mtg.deck.scrapers.searchit import DeckScraper
+from mtg.deck.scrapers.seventeen import DeckScraper
 from mtg.deck.scrapers.scryfall import DeckScraper
 from mtg.deck.scrapers.starcitygames import DeckScraper
 from mtg.deck.scrapers.streamdecker import DeckScraper

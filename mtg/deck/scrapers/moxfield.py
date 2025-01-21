@@ -26,6 +26,7 @@ class MoxfieldDeckScraper(DeckScraper):
     """Scraper of Moxfield decklist page.
     """
     API_URL_TEMPLATE = "https://api2.moxfield.com/v3/decks/all/{}"
+
     def __init__(
             self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -38,15 +39,15 @@ class MoxfieldDeckScraper(DeckScraper):
         tokens = "public?q=", "/personal"
         return "moxfield.com/decks/" in url and all(t not in url for t in tokens)
 
-    def _pre_parse(self) -> None:  # override
-        self._json_data = get_selenium_json(self.API_URL_TEMPLATE.format(self._decklist_id))
-        if not self._json_data or not self._json_data.get("boards"):
-            raise ScrapingError("Data not available")
-
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
         url = strip_url_query(url).removesuffix("/primer").removesuffix("/history")
         return url.rstrip(".,")
+
+    def _pre_parse(self) -> None:  # override
+        self._json_data = get_selenium_json(self.API_URL_TEMPLATE.format(self._decklist_id))
+        if not self._json_data or not self._json_data.get("boards"):
+            raise ScrapingError("Data not available")
 
     def _parse_metadata(self) -> None:  # override
         fmt = self._json_data["format"].lower()
