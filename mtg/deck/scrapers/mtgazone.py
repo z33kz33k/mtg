@@ -141,7 +141,7 @@ class MtgaZoneArticleScraper(DeckTagsContainerScraper):
     def is_container_url(url: str) -> bool:  # override
         return f"mtgazone.com/" in url.lower() and not any(
             t in url.lower() for t in ("/user-decks", "/deck/", "/plans/premium",
-                                       "/mtg-arena-codes", "/author/"))
+                                       "/mtg-arena-codes", "/author/", "jump-in"))
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override

@@ -74,4 +74,3 @@ class SeventeenLandsDeckScraper(DeckScraper):
             self._maindeck += [card] * maindeck_card_ids.count(card_data["id"])
             if sideboard_card_ids:
                 self._sideboard += [card] * sideboard_card_ids.count(card_data["id"])
-
