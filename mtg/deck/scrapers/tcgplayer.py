@@ -221,10 +221,10 @@ class TcgPlayerInfinitePlayerScraper(DeckUrlsContainerScraper):
 
 
 @DeckUrlsContainerScraper.registered
-class TcgPlayerInfiniteAuthorScraper(TcgPlayerInfinitePlayerScraper):
+class TcgPlayerInfiniteAuthorSearchScraper(TcgPlayerInfinitePlayerScraper):
     """Scraper of TCG Player Infinite author search page.
     """
-    CONTAINER_NAME = "TCGPlayer Infinite author"  # override
+    CONTAINER_NAME = "TCGPlayer Infinite author search"  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
