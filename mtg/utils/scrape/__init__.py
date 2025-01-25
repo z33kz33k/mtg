@@ -78,8 +78,8 @@ def timed_request(
     return response
 
 
-def request_json(url: str, **requests_kwargs) -> Json | list[Json]:
-    response = timed_request(url, **requests_kwargs)
+def request_json(url: str, handle_http_errors=True, **requests_kwargs) -> Json | list[Json]:
+    response = timed_request(url, handle_http_errors=handle_http_errors, **requests_kwargs)
     if not response:
         return {}
     return response.json() if response.text else {}

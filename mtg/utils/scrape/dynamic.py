@@ -40,9 +40,12 @@ def get_dynamic_soup(
         xpath: str,
         *halt_xpaths,
         click=False,
+        wait_for_all=False,
         consent_xpath="",
-        clipboard_xpath="",
         wait_for_consent_disappearance=True,
+        clipboard_xpath="",
+        scroll_down=False,
+        scroll_down_delay=0.0,
         timeout=SELENIUM_TIMEOUT) -> tuple[BeautifulSoup, BeautifulSoup | None, str | None]:
     """Return BeautifulSoup object(s) from dynamically rendered page source at ``url`` using
     Selenium WebDriver that waits for presence of an element specified by ``xpath``.
@@ -54,14 +57,23 @@ def get_dynamic_soup(
     presence first is checked and, if confirmed, consent is clicked before attempting any other
     action.
 
+    If specified, a copy-to-clipboard element is clicked and the contents of the clipboard are
+    return as the third object.
+
+    If specified, an attempt to scroll the whole page down is performed before anything other
+    than optional consent clicking.
+
     Args:
         url: webpage's URL
         xpath: XPath to locate the main element
         halt_xpaths: XPaths to locate elements that should halt the wait
         click: if True, main element is clicked before returning the soups
+        wait_for_all: if True, wait for presence of all elements located by ``xpath``
         consent_xpath: XPath to locate a consent button (if present)
-        clipboard_xpath: Xpath to locate a copy-to-clipboard button (if present)
         wait_for_consent_disappearance: if True, wait for the consent window to disappear
+        clipboard_xpath: Xpath to locate a copy-to-clipboard button (if present)
+        scroll_down: if True, scroll the page down before returning the soups
+        scroll_down_delay: delay in seconds after scrolling
         timeout: timeout used in attempted actions (consent timeout is halved)
 
     Returns:
@@ -80,13 +92,23 @@ def get_dynamic_soup(
                 else:
                     accept_consent_without_wait(driver, consent_xpath)
 
-            element = _wait_for_elements(driver, xpath, *halt_xpaths, timeout=timeout)
+            if scroll_down:
+                time.sleep(1)
+                scroll_down_by_offset(driver)
+                scroll_down_with_end(driver, delay=scroll_down_delay)
+
+            element = _wait_for_elements(
+                driver, xpath, *halt_xpaths, wait_for_all=wait_for_all, timeout=timeout)
+
+            verb = "are" if wait_for_all else "is"
             if not element:
-                raise NoSuchElementException(f"Element specified by {xpath!r} is not present")
-            _log.info(f"Page has been loaded and element specified by {xpath!r} is present")
+                raise NoSuchElementException(
+                    f"Element(s) specified by {xpath!r} {verb} not present")
+            _log.info(f"Page has been loaded and element(s) specified by {xpath!r} {verb} present")
 
             page_source, soup2 = driver.page_source, None
             if click:
+                element = element[0] if isinstance(element, list) else element
                 element.click()
                 soup2 = BeautifulSoup(driver.page_source, "lxml")
             soup = BeautifulSoup(page_source, "lxml")
@@ -220,8 +242,8 @@ def click_for_clipboard(
 
 
 def _wait_for_elements(
-        driver: WebDriver, xpath: str, *halt_xpaths: str,
-        timeout=SELENIUM_TIMEOUT) -> WebElement | None:
+        driver: WebDriver, xpath: str, *halt_xpaths: str, wait_for_all=False,
+        timeout=SELENIUM_TIMEOUT) -> WebElement | list[WebElement] | None:
     """Wait for elements specified by ``xpath`` and ``halt_xpaths`` to be present in the current
     page.
 
@@ -232,6 +254,7 @@ def _wait_for_elements(
         driver: a Chrome webdriver object
         xpath: XPath to locate the main element
         halt_xpaths: XPaths to locate elements that should halt the wait
+        wait_for_all: wait for all elements to be present or just one
         timeout: timeout used in attempted actions
     """
     if halt_xpaths:
@@ -249,12 +272,24 @@ def _wait_for_elements(
         _log.warning("Halting element found")
         return None
 
+    if wait_for_all:
+        return WebDriverWait(driver, timeout).until(
+            EC.presence_of_all_elements_located((By.XPATH, xpath)))
+
     return WebDriverWait(driver, timeout).until(
         EC.presence_of_element_located((By.XPATH, xpath)))
 
 
-def scroll_down(driver: WebDriver, element: WebElement | None = None, pixel_offset: int = 0) -> None:
-    """Scroll down to the element specified or to the bottom of the page.
+def scroll_down(
+        driver: WebDriver, element: WebElement | None = None, pixel_offset=0,
+        delay=0.0) -> None:
+    """Scroll down to the element specified or by the offset specified or to the bottom of the page.
+
+    Args:
+        driver: a Chrome webdriver object
+        element: element to scroll to
+        pixel_offset: number of pixels to scroll
+        delay: wait time after the scroll in seconds
     """
     if element:
         driver.execute_script("arguments[0].scrollIntoView(true);", element)
@@ -262,17 +297,69 @@ def scroll_down(driver: WebDriver, element: WebElement | None = None, pixel_offs
         driver.execute_script(f"window.scrollBy(0, {pixel_offset});")
     else:
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    if delay:
+        time.sleep(delay)  # small wait between scrolls
 
 
-def scroll_with_mouse_wheel(
-        driver: WebDriver, delta_y: int, element: WebElement | None = None) -> None:
+def scroll_down_with_mouse_wheel(
+        driver: WebDriver, pixel_offset: int, element: WebElement | None = None, delay=0.0) -> None:
+    """Scroll down to the element specified and down by the specified number of pixels using
+    mouse wheel.
+
+    Args:
+        driver: a Chrome webdriver object
+        pixel_offset: number of pixels to scroll
+        element: element to scroll to (<body> if not specified)
+        delay: wait time after the scroll in seconds
+    """
     element = element or driver.find_element(By.TAG_NAME, "body")
     action = ActionChains(driver)
-    action.move_to_element(element).click_and_hold().move_by_offset(0, delta_y).release().perform()
+    action.move_to_element(
+        element).click_and_hold().move_by_offset(0, pixel_offset).release().perform()
+    if delay:
+        time.sleep(delay)
 
 
-def scroll_down_with_arrows(driver, times=5) -> None:
-    body = driver.find_element(By.TAG_NAME, "body")
+def scroll_down_by_offset(
+        driver, pixel_offset=500, times=30, delay=0.3) -> None:
+    """Scroll down to the element specified and down by the specified offset and number of times.
+
+    Args:
+        driver: a Chrome webdriver object
+        pixel_offset: number of pixels to scroll
+        times: number of times to scroll
+        delay: wait time after each scroll in seconds
+    """
     for _ in range(times):
-        body.send_keys(Keys.ARROW_DOWN)
-        driver.implicitly_wait(0.5)  # small wait between scrolls
+        driver.execute_script(f"window.scrollBy(0, {pixel_offset});")
+        time.sleep(delay)  # small wait between scrolls
+
+
+def scroll_down_with_arrows(driver, times=5, element: WebElement | None = None, delay=0.1) -> None:
+    """Scroll down to the element specified and down by the specified number of times using
+    DOWN arrow key.
+
+    Args:
+        driver: a Chrome webdriver object
+        times: number of times to scroll
+        element: element to scroll to (<body> if not specified)
+        delay: wait time after each scroll in seconds
+    """
+    element = element or driver.find_element(By.TAG_NAME, "body")
+    for _ in range(times):
+        element.send_keys(Keys.ARROW_DOWN)
+        time.sleep(delay)  # small wait between scrolls
+
+
+def scroll_down_with_end(driver, element: WebElement | None = None, delay=0.0) -> None:
+    """Scroll down to the element specified and all the way down using END key.
+
+    Args:
+        driver: a Chrome webdriver object
+        element: element to scroll to (<body> if not specified)
+        delay: wait time after the scroll in seconds
+    """
+    element = element or driver.find_element(By.TAG_NAME, "body")
+    element.send_keys(Keys.END)
+    if delay:
+        time.sleep(delay)

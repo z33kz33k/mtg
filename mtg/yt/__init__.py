@@ -44,8 +44,7 @@ from mtg.utils import Counter, deserialize_dates, extract_float, find_longest_se
     from_iterable, getrepr, multiply_by_symbol, sanitize_filename, serialize_dates, timed
 from mtg.utils.files import getdir
 from mtg.utils.scrape import ScrapingError, dissect_js, extract_source, extract_url, \
-    http_requests_counted, throttle_with_countdown, throttled, \
-    timed_request, unshorten
+    http_requests_counted, throttled, timed_request, unshorten
 from mtg.utils.scrape.dynamic import get_dynamic_soup
 from mtg.utils.scrape.linktree import Linktree
 from mtg.yt.data import CHANNELS_DIR, CHANNEL_URL_TEMPLATE, ChannelData, DataPath, \
