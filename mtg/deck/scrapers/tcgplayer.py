@@ -23,7 +23,7 @@ from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper, DecksJsonCo
 from mtg.scryfall import Card
 from mtg.utils import extract_int
 from mtg.utils.scrape import ScrapingError, getsoup, request_json, strip_url_query, throttle
-from mtg.utils.scrape.dynamic import get_dynamic_soup
+from mtg.utils.scrape.dynamic import get_dynamic_soup, SCROLL_DOWN_TIMES
 
 _log = logging.getLogger(__name__)
 
@@ -322,6 +322,10 @@ class TcgPlayerInfiniteArticleScraper(DecksJsonContainerScraper):
     _CONSENT_XPATH = ("//button[contains(@class, 'martech-button') and contains(@class, "
                       "'martech-medium') and contains(@class, 'martech-primary')]")
 
+    @property
+    def _scroll_down_times(self) -> int:
+        return 2 * SCROLL_DOWN_TIMES if "-decks-" in self.url.lower() else SCROLL_DOWN_TIMES
+
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
         return f"infinite.tcgplayer.com/article/" in url.lower()
@@ -334,12 +338,12 @@ class TcgPlayerInfiniteArticleScraper(DecksJsonContainerScraper):
         try:
             self._soup, _, _ = get_dynamic_soup(
                 self.url, self._XPATH, consent_xpath=self._CONSENT_XPATH, scroll_down=True,
-                wait_for_all=True, scroll_down_delay=2.0, timeout=5.0)
+                wait_for_all=True, scroll_down_times=self._scroll_down_times, scroll_down_delay=2.0,
+                timeout=5.0)
             if not self._soup:
                 _log.warning(self._error_msg)
                 return []
         except TimeoutException:
-            _log.warning(self._error_msg)
             return []
 
         div_tag = self._soup.find("div", class_="article-body")

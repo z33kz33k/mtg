@@ -1229,6 +1229,8 @@ SANITIZED_FORMATS = {
     "pedh": "paupercommander",
     "pdh": "paupercommander",
     "penny dreadful": "penny",
+    "pre commander": "predh",
+    "pre edh": "predh",
     "standard brawl": "standardbrawl",
     "vintage old school": "oldschool",
 }

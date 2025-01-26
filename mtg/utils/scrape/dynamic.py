@@ -31,6 +31,7 @@ from mtg.utils.scrape import DEFAULT_THROTTLING, throttled
 
 _log = logging.getLogger(__name__)
 SELENIUM_TIMEOUT = 20.0  # seconds
+SCROLL_DOWN_TIMES = 50
 
 
 @timed("getting dynamic soup")
@@ -46,6 +47,7 @@ def get_dynamic_soup(
         clipboard_xpath="",
         scroll_down=False,
         scroll_down_delay=0.0,
+        scroll_down_times=SCROLL_DOWN_TIMES,
         timeout=SELENIUM_TIMEOUT) -> tuple[BeautifulSoup, BeautifulSoup | None, str | None]:
     """Return BeautifulSoup object(s) from dynamically rendered page source at ``url`` using
     Selenium WebDriver that waits for presence of an element specified by ``xpath``.
@@ -73,7 +75,8 @@ def get_dynamic_soup(
         wait_for_consent_disappearance: if True, wait for the consent window to disappear
         clipboard_xpath: Xpath to locate a copy-to-clipboard button (if present)
         scroll_down: if True, scroll the page down before returning the soups
-        scroll_down_delay: delay in seconds after scrolling
+        scroll_down_delay: delay in seconds after scrolling to the bottom
+        scroll_down_times: times the scroll down is performed (before going to the end)
         timeout: timeout used in attempted actions (consent timeout is halved)
 
     Returns:
@@ -94,7 +97,7 @@ def get_dynamic_soup(
 
             if scroll_down:
                 time.sleep(1)
-                scroll_down_by_offset(driver)
+                scroll_down_by_offset(driver, times=scroll_down_times)
                 scroll_down_with_end(driver, delay=scroll_down_delay)
 
             element = _wait_for_elements(
@@ -321,7 +324,7 @@ def scroll_down_with_mouse_wheel(
 
 
 def scroll_down_by_offset(
-        driver, pixel_offset=500, times=50, delay=0.3) -> None:
+        driver, pixel_offset=500, times=SCROLL_DOWN_TIMES, delay=0.3) -> None:
     """Scroll down to the element specified and down by the specified offset and number of times.
 
     Args:
@@ -335,7 +338,8 @@ def scroll_down_by_offset(
         time.sleep(delay)  # small wait between scrolls
 
 
-def scroll_down_with_arrows(driver, times=5, element: WebElement | None = None, delay=0.1) -> None:
+def scroll_down_with_arrows(
+        driver, times=SCROLL_DOWN_TIMES, element: WebElement | None = None, delay=0.1) -> None:
     """Scroll down to the element specified and down by the specified number of times using
     DOWN arrow key.
 

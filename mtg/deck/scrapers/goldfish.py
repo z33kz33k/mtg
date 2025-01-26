@@ -32,6 +32,7 @@ HEADERS = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,"
               "image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
 }
+CONSENT_XPATH = "//button[@aria-label='Consent']"
 
 # alternative approach would be to scrape:
 # self._soup.find("input", id="deck_input_deck").attrs["value"] which contains a decklist in
@@ -112,6 +113,8 @@ class GoldfishDeckTagParser(TagBasedDeckParser):
 class GoldfishDeckScraper(DeckScraper):
     """Scraper of MtGGoldfish decklist page.
     """
+    _XPATH = "//table[@class='deck-view-deck-table']"
+
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
         self._deck_parser: GoldfishDeckTagParser | None = None
@@ -129,6 +132,19 @@ class GoldfishDeckScraper(DeckScraper):
             url = url.replace("/visual/", "/")
         return url
 
+    def _rescrape_deck_tag_with_selenium(self, deck_tag):
+        try:
+            self._soup, _, _ = get_dynamic_soup(
+                self.url, self._XPATH, consent_xpath=CONSENT_XPATH)
+            if not self._soup:
+                raise ScrapingError("Page not available")
+        except TimeoutException:
+            raise ScrapingError("Page not available")
+        deck_tag = self._soup.find("div", class_="deck-container")
+        if deck_tag is None:
+            raise ScrapingError("Deck data not found")
+        return deck_tag
+
     def _pre_parse(self) -> None:  # override
         self._soup = getsoup(self.url, headers=HEADERS)
         if not self._soup:
@@ -136,6 +152,11 @@ class GoldfishDeckScraper(DeckScraper):
         deck_tag = self._soup.find("div", class_="deck-container")
         if deck_tag is None:
             raise ScrapingError("Deck data not found")
+
+        table_tag = deck_tag.find("table", class_="deck-view-deck-table")
+        if table_tag is None:
+            deck_tag = self._rescrape_deck_tag_with_selenium(deck_tag)
+
         self._deck_parser = GoldfishDeckTagParser(deck_tag, self._metadata)
 
     def _parse_metadata(self) -> None:  # override
@@ -209,7 +230,6 @@ class GoldfishArticleScraper(DeckTagsContainerScraper):
     CONTAINER_NAME = "Goldfish article"
     _DECK_PARSER = GoldfishDeckTagParser
     _XPATH = "//div[@class='deck-container']"
-    _CONSENT_XPATH = "//button[@aria-label='Consent']"
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -221,8 +241,7 @@ class GoldfishArticleScraper(DeckTagsContainerScraper):
 
     def _collect(self) -> list[Tag]:  # override
         try:
-            self._soup, _, _ = get_dynamic_soup(
-                self.url, self._XPATH, consent_xpath=self._CONSENT_XPATH)
+            self._soup, _, _ = get_dynamic_soup(self.url, self._XPATH, consent_xpath=CONSENT_XPATH)
             if not self._soup:
                 _log.warning(self._error_msg)
                 return []
