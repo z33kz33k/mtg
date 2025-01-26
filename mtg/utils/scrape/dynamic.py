@@ -321,7 +321,7 @@ def scroll_down_with_mouse_wheel(
 
 
 def scroll_down_by_offset(
-        driver, pixel_offset=500, times=30, delay=0.3) -> None:
+        driver, pixel_offset=500, times=50, delay=0.3) -> None:
     """Scroll down to the element specified and down by the specified offset and number of times.
 
     Args:

@@ -183,7 +183,7 @@ def _get_deck_data_from_api(url: str, api_url_template: str) -> Json:
         raise ScrapingError("Request timed out")
 
     if not json_data and tries < 2:
-        throttle(0.4)
+        throttle(*DeckScraper.THROTTLING)
         api_url_template += "&external=true"
         json_data = request_json(api_url_template.format(decklist_id))
 
@@ -334,7 +334,7 @@ class TcgPlayerInfiniteArticleScraper(DecksJsonContainerScraper):
         try:
             self._soup, _, _ = get_dynamic_soup(
                 self.url, self._XPATH, consent_xpath=self._CONSENT_XPATH, scroll_down=True,
-                wait_for_all=True, scroll_down_delay=3.0)
+                wait_for_all=True, scroll_down_delay=2.0, timeout=5.0)
             if not self._soup:
                 _log.warning(self._error_msg)
                 return []
@@ -347,6 +347,13 @@ class TcgPlayerInfiniteArticleScraper(DecksJsonContainerScraper):
             strip_url_query(t.attrs["href"]) for t in div_tag.find_all(
                 "a", href=lambda h: h and h.startswith(self._HOOK))]
 
-        return [
-            _get_deck_data_from_api(url, TcgPlayerInfiniteDeckScraper.API_URL_TEMPLATE)
-            for url in deck_urls]
+        decks_data = []
+        for url in deck_urls:
+            try:
+                decks_data.append(
+                    _get_deck_data_from_api(url, TcgPlayerInfiniteDeckScraper.API_URL_TEMPLATE))
+            except ScrapingError as err:
+                _log.warning(f"{url!r} failed with: '{err}'")
+                continue
+            throttle(*DeckScraper.THROTTLING)
+        return decks_data
