@@ -10,11 +10,12 @@
 import itertools
 import json
 import logging
+from collections import defaultdict
 from dataclasses import astuple, dataclass
 from datetime import date, datetime
 from operator import attrgetter, itemgetter
 from types import TracebackType
-from typing import Generator, Iterator, Literal, Type
+from typing import Callable, Generator, Iterator, Literal, Type
 
 import scrapetube
 
@@ -593,3 +594,28 @@ def get_channel_ids(*urls: str, only_new=True) -> list[str]:
 def extract_urls(description: str) -> list[str]:
     lines = description.splitlines()
     return [url for url in [extract_url(l) for l in lines] if url]
+
+
+def retrieve_video_data(
+        *chids: str,
+        video_filter: Callable[[dict], bool] = lambda _: True) -> defaultdict[str, list[dict]]:
+    """Retrieve video data for specified channels. Optionally, define a video-filtering
+    predicate.
+
+    The default for retrieving all videos of all channels.
+
+    Args:
+        *chids: channel IDs
+        video_filter: video-filtering predicate
+
+    Returns:
+        A video data mapped to channel IDs
+    """
+    chids = chids or retrieve_ids()
+    channels = defaultdict(list)
+    for chid in chids:
+        ch = load_channel(chid)
+        vids = [v for v in ch.videos if video_filter(v)]
+        if vids:
+            channels[chid].extend(vids)
+    return channels

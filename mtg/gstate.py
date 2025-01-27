@@ -70,6 +70,15 @@ class UrlsStateManager(_Singleton):
         self.__current_video = value
 
     @property
+    def ignore_failed(self) -> bool:
+        return self.__ignore_failed
+
+    @ignore_failed.setter
+    @type_checker(bool, is_method=True)
+    def ignore_failed(self, value: bool) -> None:
+        self.__ignore_failed = value
+
+    @property
     def ignore_scraped(self) -> bool:
         return self.__ignore_scraped
 
@@ -135,6 +144,7 @@ class UrlsStateManager(_Singleton):
         self._scraped: dict[str, set[str]] = {}  # maps 'channel_id/video_id' path to set of URLs
         self._failed: dict[str, set[str]] = {}  # maps 'channel_id' to set of URLs
         self.current_channel, self.current_video = "", ""
+        self.ignore_failed = False
         self.ignore_scraped, self.ignore_scraped_within_current_video = False, False
         self._initial_failed_count = 0
 
@@ -161,6 +171,8 @@ class UrlsStateManager(_Singleton):
         return self._is_scraped_within(url, self.current_channel)
 
     def is_failed(self, url: str) -> bool:
+        if self.ignore_failed:
+            return False
         return url.removesuffix("/").lower() in self._failed.get(self.current_channel, set())
 
 

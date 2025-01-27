@@ -106,6 +106,8 @@ class GoldfishDeckTagParser(TagBasedDeckParser):
 
     def _parse_decklist(self) -> None:  # override
         decklist_tag = self._deck_tag.find("table", class_="deck-view-deck-table")
+        if decklist_tag is None:
+            raise ScrapingError("Decklist data not found")
         self._parse_decklist_tag(decklist_tag)
 
 
@@ -132,7 +134,7 @@ class GoldfishDeckScraper(DeckScraper):
             url = url.replace("/visual/", "/")
         return url
 
-    def _rescrape_deck_tag_with_selenium(self, deck_tag):
+    def _pre_parse(self) -> None:  # override
         try:
             self._soup, _, _ = get_dynamic_soup(
                 self.url, self._XPATH, consent_xpath=CONSENT_XPATH)
@@ -143,19 +145,6 @@ class GoldfishDeckScraper(DeckScraper):
         deck_tag = self._soup.find("div", class_="deck-container")
         if deck_tag is None:
             raise ScrapingError("Deck data not found")
-        return deck_tag
-
-    def _pre_parse(self) -> None:  # override
-        self._soup = getsoup(self.url, headers=HEADERS)
-        if not self._soup:
-            raise ScrapingError("Page not available")
-        deck_tag = self._soup.find("div", class_="deck-container")
-        if deck_tag is None:
-            raise ScrapingError("Deck data not found")
-
-        table_tag = deck_tag.find("table", class_="deck-view-deck-table")
-        if table_tag is None:
-            deck_tag = self._rescrape_deck_tag_with_selenium(deck_tag)
 
         self._deck_parser = GoldfishDeckTagParser(deck_tag, self._metadata)
 

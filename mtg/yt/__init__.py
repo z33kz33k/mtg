@@ -48,8 +48,8 @@ from mtg.utils.scrape import ScrapingError, dissect_js, extract_source, extract_
 from mtg.utils.scrape.dynamic import get_dynamic_soup
 from mtg.utils.scrape.linktree import Linktree
 from mtg.yt.data import CHANNELS_DIR, CHANNEL_URL_TEMPLATE, ChannelData, DataPath, \
-    ScrapingSession, VIDEO_URL_TEMPLATE, find_channel_files, find_orphans, load_channel, \
-    load_channels, prune_channel_data_file, retrieve_ids, sanitize_source
+    ScrapingSession, VIDEO_URL_TEMPLATE, find_channel_files, find_orphans, retrieve_video_data, \
+    load_channel, load_channels, prune_channel_data_file, retrieve_ids, sanitize_source
 
 _log = logging.getLogger(__name__)
 
@@ -134,7 +134,7 @@ def rescrape_videos(
 
     with ScrapingSession() as session:
         manager = UrlsStateManager()
-        manager.ignore_scraped_within_current_video = True
+        manager.ignore_scraped_within_current_video, manager.ignore_failed = True, True
         for i, (channel_id, video_ids) in enumerate(channels.items(), start=1):
             _log.info(
                 f"Re-scraping {len(video_ids)} video(s) of ==> {i}/{len(channels)} <== channel...")
