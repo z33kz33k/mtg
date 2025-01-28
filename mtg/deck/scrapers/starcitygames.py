@@ -247,4 +247,4 @@ class StarCityGamesArticleScraper(HybridContainerScraper):
             _log.warning(self._error_msg)
             return [], []
 
-        return self._get_links(article_tag)
+        return self._get_links_from_tag(article_tag)

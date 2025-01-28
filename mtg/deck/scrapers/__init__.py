@@ -206,6 +206,8 @@ class ContainerScraper(ABC):
         url = url.removesuffix("/")
         self._validate_url(url)
         self._url, self._metadata = self.sanitize_url(url), metadata or {}
+        if "container_url" in metadata:
+            self._metadata["outer_container_url"] = metadata["container_url"]
         self._metadata["container_url"] = self.url
         self._soup: BeautifulSoup | None = None
 
@@ -475,15 +477,15 @@ class HybridContainerScraper(DeckUrlsContainerScraper):
                 return scraper_type(url, metadata)
         return None
 
-    def _get_links(
-            self, links_container: Tag | None, url_template="") -> tuple[list[str], list[str]]:
+    def _get_links_from_tag(
+            self, links_tag: Tag | None, url_template="") -> tuple[list[str], list[str]]:
         """Get all links from the container tag or the soup, and clean them up.
 
         Args:
-            links_container: a BeautifulSoup tag containing links (or the whole soup if not provided)
+            links_tag: a BeautifulSoup tag containing links (or the whole soup if not provided)
             url_template: template to obtain absolute URLs from relative ones (e.g. 'https://aetherhub.com{}')
         """
-        tag = links_container if links_container is not None else self._soup
+        tag = links_tag if links_tag is not None else self._soup
         links = {t.attrs["href"].removesuffix("/") for t in tag.find_all("a", href=lambda h: h)}
         if url_template:
             prefix = url_template[:-2]
@@ -492,6 +494,33 @@ class HybridContainerScraper(DeckUrlsContainerScraper):
         container_urls = sorted(
             l for l in links if any(cs.is_container_url(l) for cs in self._CONTAINER_SCRAPERS))
         return deck_urls, container_urls
+
+    def process_container_urls(self) -> list[Deck]:
+        decks = []
+        _log.info(
+            f"Gathered {len(self._container_urls)} container "
+            f"URL(s) from a {self.CONTAINER_NAME} at: {self.url!r}")
+        for i, url in enumerate(self._container_urls, start=1):
+            if scraper := self._dispatch_container_scraper(url, dict(self._metadata)):
+                sanitized_url = scraper.sanitize_url(url)
+                if self._urls_manager.is_scraped(sanitized_url):
+                    _log.info(
+                        f"Skipping already scraped {scraper.short_name()} URL: "
+                        f"{sanitized_url!r}...")
+                elif self._urls_manager.is_failed(sanitized_url):
+                    _log.info(
+                        f"Skipping already failed {scraper.short_name()} URL: "
+                        f"{sanitized_url!r}...")
+                else:
+                    _log.info(
+                        f"Scraping container URL {i}/{len(self._container_urls)} "
+                        f"({scraper.short_name()})...")
+                    container_decks = scraper.scrape()
+                    if not container_decks:
+                        self._urls_manager.add_failed(sanitized_url)
+                    else:
+                        decks += [d for d in container_decks if d not in decks]
+        return decks
 
     # override
     @timed("nested container scraping", precision=2)
@@ -506,29 +535,7 @@ class HybridContainerScraper(DeckUrlsContainerScraper):
                 f" {self.url!r}")
             decks.extend(self._process_deck_urls())
         if self._container_urls:
-            _log.info(
-                f"Gathered {len(self._container_urls)} container "
-                f"URL(s) from a {self.CONTAINER_NAME} at: {self.url!r}")
-            for i, url in enumerate(self._container_urls, start=1):
-                if scraper := self._dispatch_container_scraper(url, dict(self._metadata)):
-                    sanitized_url = scraper.sanitize_url(url)
-                    if self._urls_manager.is_scraped(sanitized_url):
-                        _log.info(
-                            f"Skipping already scraped {scraper.short_name()} URL: "
-                            f"{sanitized_url!r}...")
-                    elif self._urls_manager.is_failed(sanitized_url):
-                        _log.info(
-                            f"Skipping already failed {scraper.short_name()} URL: "
-                            f"{sanitized_url!r}...")
-                    else:
-                        _log.info(
-                            f"Scraping container URL {i}/{len(self._container_urls)} "
-                            f"({scraper.short_name()})...")
-                        container_decks = scraper.scrape()
-                        if not container_decks:
-                            self._urls_manager.add_failed(sanitized_url)
-                        else:
-                            decks += [d for d in container_decks if d not in decks]
+            decks += self.process_container_urls()
         if not decks:
             _log.info(f"Nothing gathered from a {self.CONTAINER_NAME} at: {self.url!r}")
             self._urls_manager.add_failed(self.url)
