@@ -206,8 +206,8 @@ class ContainerScraper(ABC):
         url = url.removesuffix("/")
         self._validate_url(url)
         self._url, self._metadata = self.sanitize_url(url), metadata or {}
-        if "container_url" in metadata:
-            self._metadata["outer_container_url"] = metadata["container_url"]
+        if "container_url" in self._metadata:
+            self._metadata["outer_container_url"] = self._metadata["container_url"]
         self._metadata["container_url"] = self.url
         self._soup: BeautifulSoup | None = None
 
@@ -520,6 +520,7 @@ class HybridContainerScraper(DeckUrlsContainerScraper):
                         self._urls_manager.add_failed(sanitized_url)
                     else:
                         decks += [d for d in container_decks if d not in decks]
+                        self._urls_manager.add_scraped(sanitized_url)
         return decks
 
     # override

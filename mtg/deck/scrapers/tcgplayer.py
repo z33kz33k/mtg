@@ -12,7 +12,7 @@ import logging
 from datetime import datetime
 
 import dateutil.parser
-from bs4 import Tag
+from bs4 import BeautifulSoup, Tag
 from httpcore import ReadTimeout
 from requests import HTTPError
 from selenium.common import TimeoutException
@@ -388,7 +388,7 @@ class TcgPlayerInfiniteAuthorScraper(HybridContainerScraper):
     """
     CONTAINER_NAME = "TCGPlayer Infinite author"  # override
     _CONTAINER_SCRAPERS = TcgPlayerInfiniteArticleScraper,  # override
-    _XPATH = "//div[@class='grid']"
+    XPATH = "//div[@class='grid']"
     _API_URL_TEMPLATE = ("https://infinite-api.tcgplayer.com/content/author/{}"
                          "/?source=infinite-content&rows=48&game=&format=")
 
@@ -405,8 +405,9 @@ class TcgPlayerInfiniteAuthorScraper(HybridContainerScraper):
     def sanitize_url(url: str) -> str:  # override
         return strip_url_query(url)
 
-    def _get_author_id(self) -> str | None:
-        script_tag = self._soup.find(
+    @staticmethod
+    def get_author_id(soup: BeautifulSoup) -> str | None:
+        script_tag = soup.find(
             "script", string=lambda s: s and 'identifier' in s and 'description' in s)
         if script_tag is None:
             return None
@@ -427,16 +428,56 @@ class TcgPlayerInfiniteAuthorScraper(HybridContainerScraper):
     def _collect(self) -> tuple[list[str], list[str]]:  # override
         try:
             self._soup, _, _ = get_dynamic_soup(
-                self.url, self._XPATH, consent_xpath=TcgPlayerInfiniteArticleScraper.CONSENT_XPATH)
+                self.url, self.XPATH, consent_xpath=TcgPlayerInfiniteArticleScraper.CONSENT_XPATH)
             if not self._soup:
                 _log.warning(self._error_msg)
                 return [], []
         except TimeoutException:
             return [], []
 
-        self._author_id = self._get_author_id()
+        self._author_id = self.get_author_id(self._soup)
         if self._author_id is None:
             _log.warning("Author ID not available")
             return [], []
 
         return [], self._get_links_from_json()
+
+
+@DeckUrlsContainerScraper.registered
+class TcgPlayerInfiniteAuthorDecksPaneScraper(DeckUrlsContainerScraper):
+    """Scraper of TCG Player Infinite author decks page.
+    """
+    CONTAINER_NAME = "TCGPlayer Infinite author decks pane"  # override
+    # 200 rows is pretty arbitrary but tested to work (even though usually events have fewer rows)
+    API_URL_TEMPLATE = ("https://infinite-api.tcgplayer.com/content/decks/?source=infinite"
+                        "-content&rows=2008&authorID={}&latest=true&sort=created&order=desc")
+    _DECK_SCRAPERS = TcgPlayerInfiniteDeckScraper,  # override
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return "infinite.tcgplayer.com/author/" in url.lower() and url.lower().endswith("/decks")
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:  # override
+        return strip_url_query(url)
+
+    def _collect(self) -> list[str]:  # override
+        try:
+            self._soup, _, _ = get_dynamic_soup(
+                self.url, TcgPlayerInfiniteAuthorScraper.XPATH,
+                consent_xpath=TcgPlayerInfiniteArticleScraper.CONSENT_XPATH)
+            if not self._soup:
+                _log.warning(self._error_msg)
+                return []
+        except TimeoutException:
+            return []
+
+        author_id = TcgPlayerInfiniteAuthorScraper.get_author_id(self._soup)
+        if author_id is None:
+            _log.warning("Author ID not available")
+            return []
+        json_data = request_json(self.API_URL_TEMPLATE.format(author_id))
+        if not json_data or not json_data.get("result"):
+            _log.warning(self._error_msg)
+            return []
+        return [INFINITE_URL_TEMPLATE.format( d["canonicalURL"]) for d in json_data["result"]]
