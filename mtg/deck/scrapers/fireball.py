@@ -9,8 +9,9 @@
 """
 import logging
 
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
-from mtg.deck.scrapers.tcgplayer import TcgPlayerInfiniteDeckScraper, TcgPlayerInfinitePlayerScraper
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, DecksJsonContainerScraper
+from mtg.deck.scrapers.tcgplayer import (
+    TcgPlayerInfiniteArticleScraper, TcgPlayerInfiniteDeckScraper, TcgPlayerInfinitePlayerScraper)
 
 _log = logging.getLogger(__name__)
 FIREBALL_URL_TEMPLATE = "https://www.channelfireball.com{}"
@@ -45,4 +46,16 @@ class ChannelFireballPlayerScraper(TcgPlayerInfinitePlayerScraper):
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
         return "channelfireball.com/magic-the-gathering/decks/player/" in url.lower()
+
+
+@DecksJsonContainerScraper.registered
+class ChannelFireballArticleScraper(TcgPlayerInfiniteArticleScraper):
+    """Scraper of ChannelFireball article page.
+    """
+    CONTAINER_NAME = "ChannelFireball article"  # override
+    API_URL_TEMPLATE = ChannelFireballDeckScraper.API_URL_TEMPLATE
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return f"channelfireball.com/article/" in url.lower()
 

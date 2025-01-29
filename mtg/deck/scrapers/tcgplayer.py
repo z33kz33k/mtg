@@ -335,6 +335,7 @@ class TcgPlayerInfiniteArticleScraper(DecksJsonContainerScraper):
     _XPATH = f"//a[contains(@href, '{_HOOK}')]"
     CONSENT_XPATH = ("//button[contains(@class, 'martech-button') and contains(@class, "
                      "'martech-medium') and contains(@class, 'martech-primary')]")
+    API_URL_TEMPLATE = TcgPlayerInfiniteDeckScraper.API_URL_TEMPLATE
 
     @property
     def _scroll_down_times(self) -> int:
@@ -375,7 +376,7 @@ class TcgPlayerInfiniteArticleScraper(DecksJsonContainerScraper):
         for url in deck_urls:
             try:
                 decks_data.append(
-                    _get_deck_data_from_api(url, TcgPlayerInfiniteDeckScraper.API_URL_TEMPLATE))
+                    _get_deck_data_from_api(url, self.API_URL_TEMPLATE))
             except ScrapingError as err:
                 _log.warning(f"{url!r} failed with: '{err}'")
                 continue

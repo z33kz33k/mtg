@@ -89,7 +89,7 @@ descriptions).
         * Aetherhub users, events and articles
         * Archidekt folders and users
         * Cardsrealm profiles, folders, tournaments and articles
-        * ChannelFireball players
+        * ChannelFireball players and articles
         * Deckbox users and events
         * Deckstats users
         * [EDHTop16](https://edhtop16.com) tournaments and commanders
