@@ -251,6 +251,7 @@ class TcgPlayerInfinitePlayerScraper(DeckUrlsContainerScraper):
                         "-content&rows=100&format=&playerName"
                         "={}&latest=true&sort=created&order=desc")
     _DECK_SCRAPERS = TcgPlayerInfiniteDeckScraper,  # override
+    _DECK_URL_TEMPLATE = INFINITE_URL_TEMPLATE
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -269,7 +270,7 @@ class TcgPlayerInfinitePlayerScraper(DeckUrlsContainerScraper):
         if not json_data or not json_data.get("result"):
             _log.warning(self._error_msg)
             return []
-        return [INFINITE_URL_TEMPLATE.format(d["canonicalURL"]) for d in json_data["result"]]
+        return [self._DECK_URL_TEMPLATE.format(d["canonicalURL"]) for d in json_data["result"]]
 
 
 @DeckUrlsContainerScraper.registered

@@ -28,13 +28,14 @@ descriptions).
     * [youtube-comment-downloader](https://github.com/egbertbouman/youtube-comment-downloader) 
 * Scraping YT videos' descriptions (or comments) for decks:    
     * Text decklists in Arena/MTGO format pasted into video descriptions are parsed into Deck objects
-    * Links to decklist services are scraped into Deck objects. 37 services are supported so far:
+    * Links to decklist services are scraped into Deck objects. 38 services are supported so far:
         * [17Lands](https://www.17lands.com)
         * [Aetherhub](https://aetherhub.com)
         * [Archidekt](https://archidekt.com)
         * [CardBoard Live](https://cardboard.live)
         * [Cardhoarder](https://www.cardhoarder.com)
         * [Cardsrealm](https://mtg.cardsrealm.com/en-us/)
+        * [ChannelFireball](https://www.channelfireball.com)
         * [Deckbox](https://deckbox.org)
         * [Deckstats](https://deckstats.net)
         * [Flexslot](https://flexslot.gg)
@@ -88,6 +89,7 @@ descriptions).
         * Aetherhub users, events and articles
         * Archidekt folders and users
         * Cardsrealm profiles, folders, tournaments and articles
+        * ChannelFireball players
         * Deckbox users and events
         * Deckstats users
         * [EDHTop16](https://edhtop16.com) tournaments and commanders
