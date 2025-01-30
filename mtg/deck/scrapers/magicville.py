@@ -40,7 +40,7 @@ class MagicVilleDeckScraper(DeckScraper):
         _, fmt_text = fmt_text.split("&f=", maxsplit=1)
         if "&file=" in fmt_text:
             fmt_text, _ = fmt_text.split("&file=", maxsplit=1)
-        self._update_fmt(fmt_text)
+        self.update_fmt(fmt_text)
         # name
         name, name_tag = None, None
         name_tags = [

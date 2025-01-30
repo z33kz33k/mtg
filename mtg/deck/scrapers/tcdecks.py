@@ -50,7 +50,7 @@ class TCDecksDeckScraper(DeckScraper):
         fmt = fmt.removeprefix("Format: ").lower()
         players = players.removeprefix("Number of Players: ")
         date = date.removeprefix("Date: ")
-        self._update_fmt(fmt)
+        self.update_fmt(fmt)
         self._metadata["event"]["players"] = extract_int(players)
         self._metadata["event"]["date"] = datetime.strptime(date, '%d/%m/%Y').date()
         self._deck_tag = self._soup.find("table", class_="table_deck")

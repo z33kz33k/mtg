@@ -69,7 +69,7 @@ class MtgDecksNetDeckScraper(DeckScraper):
         fmt = a_tag.text.strip().removeprefix("MTG ").lower()
         if found := self._FORMATS.get("fmt"):
             fmt = found
-        self._update_fmt(fmt)
+        self.update_fmt(fmt)
 
     def _build_deck(self) -> Deck:  # override
         return ArenaParser(self._arena_decklist, self._metadata).parse(suppress_invalid_deck=False)

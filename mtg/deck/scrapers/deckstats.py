@@ -100,6 +100,9 @@ class DeckstatsDeckScraper(DeckScraper):
         if response.status_code == 429:
             raise ScrapingError(f"Page still not available after {_MAX_TRIES} backoff tries")
         self._soup = BeautifulSoup(response.text, "lxml")
+        if error_tag := self._soup.find("div", class_="ui-state-error"):
+            if "This deck does not exist." in error_tag.text:
+                raise ScrapingError("Deck does not exist")
         self._json_data = self._get_json()
 
     def _parse_metadata(self) -> None:  # override
@@ -110,7 +113,7 @@ class DeckstatsDeckScraper(DeckScraper):
         if self._json_data.get("format_id"):
             fmt = _FORMATS.get(self._json_data["format_id"])
             if fmt:
-                self._update_fmt(fmt)
+                self.update_fmt(fmt)
         self._metadata["date"] = datetime.fromtimestamp(self._json_data["updated"], UTC).date()
         if tags := self._json_data.get("tags"):
             self._metadata["tags"] = tags

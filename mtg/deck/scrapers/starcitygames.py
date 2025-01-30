@@ -52,7 +52,7 @@ class StarCityGamesDeckTagParser(TagBasedDeckParser):
         if event_tag := header_tag.find("header", class_="deck_played_placed"):
             event = sanitize_whitespace(event_tag.text.strip())
             self._metadata["event"] = self._parse_event_line(event)
-        self._update_fmt(header_tag.find("div", class_="deck_format").text.strip().lower())
+        self.update_fmt(header_tag.find("div", class_="deck_format").text.strip().lower())
 
     def _parse_metadata(self) -> None:  # override
         self._parse_header_tag(self._deck_tag.find("div", class_="deck_header"))

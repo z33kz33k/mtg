@@ -52,7 +52,7 @@ class CardBoardLiveDeckScraper(DeckScraper):
             if "Played by: " in tag.text:
                 self._metadata["author"] = tag.text.strip().removeprefix("Played by: ")
             elif "Format: " in tag.text:
-                self._update_fmt(tag.text.strip().removeprefix("Format: "))
+                self.update_fmt(tag.text.strip().removeprefix("Format: "))
             elif "Tournament: " in tag.text:
                 self._metadata["event"] = tag.text.strip().removeprefix("Tournament: ")
 

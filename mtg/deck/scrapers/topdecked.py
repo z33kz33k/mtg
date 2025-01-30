@@ -67,7 +67,7 @@ class TopDeckedRegularDeckScraper(DeckScraper):
         name_el = driver.find_element(By.XPATH, self._NAME_XPATH)
         self._metadata["name"] = _sanitize_element_text(name_el.text)
         fmt_el = driver.find_element(By.XPATH, self._FMT_XPATH)
-        self._update_fmt(_sanitize_element_text(fmt_el.text))
+        self.update_fmt(_sanitize_element_text(fmt_el.text))
         with contextlib.suppress(NoSuchElementException):  # meta-decks feature no date data
             date_el = driver.find_element(By.XPATH, self._DATE_XPATH)
             date_text = _sanitize_element_text(date_el.text)

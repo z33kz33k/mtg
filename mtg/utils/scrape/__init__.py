@@ -238,6 +238,8 @@ def extract_url(text: str, https=True) -> str | None:
         return "https://" + [part for part in url.split("https://") if part][0]
     elif url.count("http://") > 1:
         return "http://" + [part for part in url.split("http://") if part][0]
+    elif all(not url.startswith(t) for t in ("https://", "http://")) or len(url) < 10:
+        return None
     return url
 
 

@@ -73,7 +73,7 @@ class MtgStocksDeckScraper(DeckScraper):
             self._metadata["date"] = dateutil.parser.parse(date).date()
         if player := self._deck_data.get("player"):
             self._metadata["author"] = player
-        self._update_fmt(self._deck_data["format"]["name"])
+        self.update_fmt(self._deck_data["format"]["name"])
 
     def _parse_playset(self, card: Json) -> list[Card]:
         qty = int(card["quantity"])

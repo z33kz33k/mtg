@@ -80,7 +80,7 @@ class TappedoutDeckScraper(DeckScraper):
         if fmt_tag is None:
             raise ScrapingError(f"Format tag not found: {self.url!r}")
         fmt = fmt_tag.text.strip().removesuffix("*").lower()
-        self._update_fmt(fmt)
+        self.update_fmt(fmt)
         self._metadata["author"] = self._soup.select_one('a[href*="/users/"]').text.strip()
         deck_details_table = self._soup.find("table", id="deck-details")
         for row in deck_details_table.find_all("tr"):

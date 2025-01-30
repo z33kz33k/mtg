@@ -63,7 +63,7 @@ class TcgPlayerDeckScraper(DeckScraper):
         for sub_tag in info_tag.find_all("div"):
             if "Format:" in sub_tag.text:
                 fmt = sub_tag.find("a").text.strip().lower()
-                self._update_fmt(fmt)
+                self.update_fmt(fmt)
             elif "Last Modified On:" in sub_tag.text:
                 _, date_text = sub_tag.text.strip().split("On: ", maxsplit=1)
                 self._metadata["date"] = datetime.strptime(date_text, "%m/%d/%Y").date()
@@ -124,7 +124,7 @@ class TcgPlyerInfiniteDeckJsonParser(JsonBasedDeckParser):
     """
     def _parse_metadata(self) -> None:  # override
         self._metadata["name"] = self._deck_data["deck"]["name"]
-        self._update_fmt(self._deck_data["deck"]["format"])
+        self.update_fmt(self._deck_data["deck"]["format"])
         self._metadata["author"] = self._deck_data["deck"]["playerName"]
         if date_text := self._deck_data["deck"]["created"]:
             try:

@@ -58,7 +58,7 @@ class MtgaZoneDeckTagParser(TagBasedDeckParser):
                 "Format tag not found. The deck you're trying to scrape has been most probably "
                 "paywalled by MTGAZone")
         fmt = fmt_tag.text.strip().lower()
-        self._update_fmt(fmt)
+        self.update_fmt(fmt)
         if time_tag := self._deck_tag.find("time", class_="ct-meta-element-date"):
             self._metadata["date"] = datetime.fromisoformat(time_tag.attrs["datetime"]).date()
 

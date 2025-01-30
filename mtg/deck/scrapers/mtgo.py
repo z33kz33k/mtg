@@ -111,7 +111,7 @@ class MtgoDeckJsonParser(JsonBasedDeckParser):
         self._metadata["author"] = self._deck_data["player"]
         self._metadata["name"] = self._derive_name()
         if fmt := self._metadata.get("event", {}).get("format"):
-            self._update_fmt(fmt)
+            self.update_fmt(fmt)
 
     def _parse_card(self, card: Json) -> None:
         decklist = self._sideboard if card["sideboard"] == "true" else self._maindeck

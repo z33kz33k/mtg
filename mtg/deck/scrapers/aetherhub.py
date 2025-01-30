@@ -138,7 +138,7 @@ class AetherhubDeckScraper(DeckScraper):
             fmt_part = fmt_part.strip()
             if fmt_pair := self.FORMATS.get(fmt_part):
                 fmt, mode = fmt_pair
-                self._update_fmt(fmt)
+                self.update_fmt(fmt)
                 self._metadata["mode"] = mode.value
             self._metadata["name"] = name_part.strip()
 

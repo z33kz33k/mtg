@@ -49,7 +49,7 @@ class DeckboxDeckScraper(DeckScraper):
         for div in info_tag.find_all("div", class_="indented_content"):
             if div.find("span", string="Format"):
                 fmt = [*div.strings][-1].strip()
-                self._update_fmt(fmt)
+                self.update_fmt(fmt)
 
     @classmethod
     def _parse_row(cls, row_tag: Tag) -> list[Card]:

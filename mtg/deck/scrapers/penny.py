@@ -37,7 +37,7 @@ class PennyDreadfulMagicDeckScraper(DeckScraper):
             raise ScrapingError("Page not available")
 
     def _parse_metadata(self) -> None:  # override
-        self._update_fmt("penny")
+        self.update_fmt("penny")
         self._metadata["name"] = self._soup.find("h1", class_="deck-name").text.strip()
         info_tag = self._soup.find("div", class_="title")
         if archetype_tag := info_tag.find("a", href=lambda h: h and "/archetypes/" in h):

@@ -54,7 +54,7 @@ class MtgSearchItDeckScraper(DeckScraper):
             fmt, arch = tags.splitlines()
             self._update_archetype(arch)
             self._update_custom_theme("searchit", arch.lower())
-            self._update_fmt(fmt)
+            self.update_fmt(fmt)
         except ValueError:
             pass
         a_tag = self._soup.select_one("a.icon")

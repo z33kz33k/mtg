@@ -83,7 +83,7 @@ class CardsrealmDeckScraper(DeckScraper):
         self._metadata["date"] = dateutil.parser.parse(card_data["deck_lastchange"]).date()
         self._metadata["author"] = card_data["givenNameUser"]
         self._metadata["views"] = card_data["deck_views"]
-        self._update_fmt(card_data["tour_type_name"].lower())
+        self.update_fmt(card_data["tour_type_name"].lower())
 
     def _parse_card_json(self, card_json: Json) -> None:
         name = card_json["name_of_card"]

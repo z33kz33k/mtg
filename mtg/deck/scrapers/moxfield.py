@@ -51,7 +51,7 @@ class MoxfieldDeckScraper(DeckScraper):
 
     def _parse_metadata(self) -> None:  # override
         fmt = self._json_data["format"].lower()
-        self._update_fmt(fmt)
+        self.update_fmt(fmt)
         name = self._json_data["name"]
         if " - " in name:
             *_, name = name.split(" - ")

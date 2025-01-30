@@ -42,7 +42,7 @@ class MagicGgNewDeckTagParser(TagBasedDeckParser):
         self._metadata["author"] = attrs["deck-title"]
         if name := _get_deck_name(attrs["deck-title"], attrs["subtitle"]):
             self._metadata["name"] = name
-        self._update_fmt(attrs["format"])
+        self.update_fmt(attrs["format"])
         self._metadata["event"] = {
             "name": attrs["event-name"],
             "date": dateutil.parser.parse(attrs["event-date"]).date()
@@ -98,7 +98,7 @@ class MagicGgOldDeckTagParser(TagBasedDeckParser):
             event_tag, fmt_tag, date_tag, _ = tags
         else:
             return
-        self._update_fmt(fmt_tag.text.strip())
+        self.update_fmt(fmt_tag.text.strip())
         date_text = date_tag.text.strip().replace("_", "/")
         self._metadata["date"] = dateutil.parser.parse(date_text).date()
         if event_tag is not None:

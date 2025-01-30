@@ -52,7 +52,7 @@ class ManatradersDeckScraper(DeckScraper):
         self._metadata["name"] = self._json_data["name"]
         if author := self._json_data.get("playerName"):
             self._metadata["author"] = author
-        self._update_fmt(self._json_data["format"])
+        self.update_fmt(self._json_data["format"])
         self._metadata["archetype"] = self._json_data["archetype"]
 
     def _parse_card_json(self, card_json: Json) -> None:

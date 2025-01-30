@@ -51,7 +51,7 @@ class InternationalHareruyaDeckScraper(DeckScraper):
             elif cat_tag.text.strip() == "Tournament":
                 self._metadata["event"] = value_tag.text.strip()
             elif cat_tag.text.strip() == "Format":
-                self._update_fmt(value_tag.text.strip())
+                self.update_fmt(value_tag.text.strip())
             elif cat_tag.text.strip() == "Archetype":
                 self._metadata["hareruya_archetype"] = value_tag.text.strip()
             elif cat_tag.text.strip() == "Player":
@@ -133,7 +133,7 @@ class JapaneseHareruyaDeckScraper(DeckScraper):
 
     def _parse_metadata(self) -> None:  # override
         fmt = self._json_data["format_name_en"]
-        self._update_fmt(fmt)
+        self.update_fmt(fmt)
         self._metadata["name"] = self._json_data["deck_name"]
         self._metadata["author"] = self._json_data["nickname"]
         if arch := self._json_data.get("archetype_name_en"):

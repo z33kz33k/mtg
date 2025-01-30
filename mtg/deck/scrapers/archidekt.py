@@ -49,7 +49,7 @@ class ArchidektDeckScraper(DeckScraper):
             fmt = fmt_text.removesuffix(suffix).strip().lower()
             if "/" in fmt:
                 fmt, *_ = fmt.split("/")
-            self._update_fmt(fmt.strip())
+            self.update_fmt(fmt.strip())
         self._metadata["name"] = self._deck_data["name"]
         self._metadata["author"] = self._deck_data["owner"]
         self._metadata["views"] = self._deck_data["viewCount"]

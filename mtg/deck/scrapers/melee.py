@@ -80,7 +80,7 @@ class MeleeGgDeckScraper(DeckScraper):
             if "/" in tag.text and any(ch.isdigit() for ch in tag.text):
                 self._metadata["date"] = dateutil.parser.parse(tag.text.strip()).date()
             else:
-                self._update_fmt(tag.text.strip())
+                self.update_fmt(tag.text.strip())
 
     def _build_deck(self) -> Deck:  # override
         return ArenaParser(self._arena_decklist, metadata=self._metadata).parse(

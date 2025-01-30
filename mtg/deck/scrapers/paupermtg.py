@@ -57,7 +57,7 @@ class PauperMtgDeckScraper(DeckScraper):
                 self._tags[state] = tag
 
     def _parse_metadata(self) -> None:  # override
-        self._update_fmt("paupercommander") if self._is_edh else self._update_fmt("pauper")
+        self.update_fmt("paupercommander") if self._is_edh else self.update_fmt("pauper")
         self._metadata["name"] = self._soup.find(
             "h1", class_=lambda c: c and "deckTitle" in c).text.strip()
         if "player" in self._tags:

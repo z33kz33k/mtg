@@ -2,7 +2,7 @@
 
     mtg.deck.scrapers.__init__.py
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Deck scrapers.
+    Abstract deck scrapers.
 
     @author: z33k
 
@@ -355,12 +355,13 @@ class DeckTagsContainerScraper(ContainerScraper):
         decks = []
         for i, deck_tag in enumerate(self._deck_tags, start=1):
             try:
-                d = self._DECK_PARSER(deck_tag, dict(self._metadata)).parse()
+                d = self._DECK_PARSER(deck_tag, dict(self._metadata)).parse(
+                    suppress_invalid_deck=False, suppress_parsing_errors=False)
                 if d:
                     decks.append(d)
                     _log.info(f"Parsed deck {i}/{len(self._deck_tags)}: {d.name!r}")
-            except AttributeError as ae:
-                _log.warning(f"Failed to parse deck {i}/{len(self._deck_tags)}: {ae}. Skipping...")
+            except (AttributeError, ParsingError, InvalidDeck) as err:
+                _log.warning(f"Failed to parse deck {i}/{len(self._deck_tags)}: {err}. Skipping...")
                 continue
 
         return decks

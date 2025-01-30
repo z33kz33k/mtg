@@ -43,7 +43,7 @@ class ManaBoxDeckScraper(DeckScraper):
         name_tag, _, fmt_tag, date_tag, *_ = info_tag.find_all("div")
         self._metadata["name"] = name_tag.text.strip()
         fmt, *_ = fmt_tag.text.strip().split(" - ")
-        self._update_fmt(fmt)
+        self.update_fmt(fmt)
         self._metadata["date"] = dateutil.parser.parse(date_tag.text.strip()).date()
 
     @classmethod

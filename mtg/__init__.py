@@ -16,7 +16,7 @@ from typing import Any, Callable, TypeVar
 
 
 __appname__ = __name__
-__version__ = "0.5"
+__version__ = "0.6"
 __description__ = "Scrape data on MtG decks."
 __author__ = "z33k"
 __license__ = "MIT License"
@@ -88,6 +88,7 @@ from mtg.deck.scrapers.flexslot import DeckScraper
 from mtg.deck.scrapers.goldfish import DeckScraper
 from mtg.deck.scrapers.hareruya import DeckScraper
 from mtg.deck.scrapers.magic import DeckScraper
+from mtg.deck.scrapers.magicblogs import DeckTagsContainerScraper
 from mtg.deck.scrapers.magicville import DeckScraper
 from mtg.deck.scrapers.manabox import DeckScraper
 from mtg.deck.scrapers.manastack import DeckScraper

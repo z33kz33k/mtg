@@ -57,7 +57,7 @@ class MtgTop8DeckScraper(DeckScraper):
         else:
             self._metadata["name"] = name.strip()
         fmt_tag = self._soup.find("div", class_="meta_arch")
-        self._update_fmt(fmt_tag.text.strip().lower())
+        self.update_fmt(fmt_tag.text.strip().lower())
         with contextlib.suppress(IndexError):
             self._metadata["event"]["rank"] = EVENT_RANKS[len(fmt_tag.find_all("img")) - 1]
         players_date_text = self._soup.find('div', style='margin-bottom:5px;').text.strip()

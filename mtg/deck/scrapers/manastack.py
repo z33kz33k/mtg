@@ -41,7 +41,7 @@ class ManaStackDeckScraper(DeckScraper):
 
     def _parse_metadata(self) -> None:  # override
         self._metadata["name"] = self._soup.find("h3", class_="deck-name").text.strip()
-        self._update_fmt(self._soup.find("div", class_="format-listing").text.strip().lower())
+        self.update_fmt(self._soup.find("div", class_="format-listing").text.strip().lower())
         if desc_tag := self._soup.select_one("div.deck-description.text"):
             self._metadata["description"] = desc_tag.text.strip()
         author_tag =  self._soup.find("div", class_="deck-meta-user")

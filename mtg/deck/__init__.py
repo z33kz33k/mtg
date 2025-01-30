@@ -1243,6 +1243,10 @@ class DeckParser(ABC):
     def fmt(self) -> str:
         return self._metadata.get("format", "")
 
+    @property
+    def metadata(self) -> Json:
+        return self._metadata
+
     def __init__(self, metadata: Json | None = None) -> None:
         self._metadata = metadata or {}
         self._state = _ParsingState()
@@ -1272,7 +1276,6 @@ class DeckParser(ABC):
             for c in self._sideboard:
                 self._set_commander(c)
             self._sideboard = []
-
 
     @classmethod
     def find_card(
@@ -1367,7 +1370,7 @@ class DeckParser(ABC):
     def update_metadata(self, **data: Any) -> None:
         self._metadata.update(data)
 
-    def _update_fmt(self, fmt: str) -> None:
+    def update_fmt(self, fmt: str) -> None:
         fmt = fmt.strip().lower()
         fmt = SANITIZED_FORMATS.get(fmt, fmt)
         if fmt != self.fmt:

@@ -57,7 +57,7 @@ class GoldfishDeckTagParser(TagBasedDeckParser):
         for i, line in enumerate(lines):
             if line.startswith("Format:"):
                 fmt = line.removeprefix("Format:").strip().lower()
-                self._update_fmt(fmt)
+                self.update_fmt(fmt)
             elif line.startswith("Event:"):
                 self._metadata["event"] = line.removeprefix("Event:").strip()
             elif line.startswith("Deck Source:"):
