@@ -114,5 +114,6 @@ from mtg.deck.scrapers.tcgplayer import DeckScraper
 from mtg.deck.scrapers.topdecked import DeckScraper
 from mtg.deck.scrapers.untapped import DeckScraper
 # those should be last as they use statically some of those above
+from mtg.deck.scrapers.fireball import DeckScraper
 from mtg.deck.scrapers.edhtop16 import DeckUrlsContainerScraper
 from mtg.deck.scrapers.topdeck import DeckUrlsContainerScraper

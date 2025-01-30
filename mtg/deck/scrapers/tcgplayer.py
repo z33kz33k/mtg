@@ -393,6 +393,7 @@ class TcgPlayerInfiniteAuthorScraper(HybridContainerScraper):
     XPATH = "//div[@class='grid']"
     _API_URL_TEMPLATE = ("https://infinite-api.tcgplayer.com/content/author/{}"
                          "/?source=infinite-content&rows=48&game=&format=")
+    _DECK_URL_TEMPLATE = INFINITE_URL_TEMPLATE
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -424,7 +425,7 @@ class TcgPlayerInfiniteAuthorScraper(HybridContainerScraper):
         if not json_data or not json_data.get("result"):
             return []
         return [
-            INFINITE_URL_TEMPLATE.format(d["canonicalURL"])
+            self._DECK_URL_TEMPLATE.format(d["canonicalURL"])
             for d in json_data["result"]["articles"]]
 
     def _collect(self) -> tuple[list[str], list[str]]:  # override

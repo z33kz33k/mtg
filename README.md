@@ -89,7 +89,7 @@ descriptions).
         * Aetherhub users, events and articles
         * Archidekt folders and users
         * Cardsrealm profiles, folders, tournaments and articles
-        * ChannelFireball players and articles
+        * ChannelFireball players, articles and authors
         * Deckbox users and events
         * Deckstats users
         * [EDHTop16](https://edhtop16.com) tournaments and commanders
@@ -126,7 +126,7 @@ descriptions).
 * Importing back into a Deck from those formats
 * Export/import to other formats in plans
 * Dumping decks, YT videos and channels to .json
-* I compiled a list of **almost 1.8k** YT channels that feature decks in their descriptions and successfully 
+* I compiled a list of **over 1.8k** YT channels that feature decks in their descriptions and successfully 
   scraped them (at least 25 videos deep) so this data only waits to be creatively used now!
 
 ### How it looks in a Google Sheet
@@ -135,21 +135,21 @@ descriptions).
 ### Scraped decks breakdown
 | No | Format | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | commander       | 34945 |    38.90 % |
-| 2  | standard        | 19956 |    22.21 % |
-| 3  | modern          |  6945 |     7.73 % |
-| 4  | pauper          |  5650 |     6.29 % |
-| 5  | pioneer         |  5077 |     5.65 % |
-| 6  | legacy          |  3209 |     3.57 % |
+| 1  | commander       | 34965 |    38.83 % |
+| 2  | standard        | 19975 |    22.19 % |
+| 3  | modern          |  7083 |     7.87 % |
+| 4  | pauper          |  5655 |     6.28 % |
+| 5  | pioneer         |  5084 |     5.65 % |
+| 6  | legacy          |  3211 |     3.57 % |
 | 7  | brawl           |  1943 |     2.16 % |
-| 8  | historic        |  1830 |     2.04 % |
-| 9  | explorer        |  1660 |     1.85 % |
-| 10 | undefined       |  1452 |     1.62 % |
+| 8  | historic        |  1830 |     2.03 % |
+| 9  | explorer        |  1660 |     1.84 % |
+| 10 | undefined       |  1452 |     1.61 % |
 | 11 | duel            |  1361 |     1.51 % |
-| 12 | timeless        |  1353 |     1.51 % |
+| 12 | timeless        |  1353 |     1.50 % |
 | 13 | paupercommander |  1208 |     1.34 % |
 | 14 | premodern       |   730 |     0.81 % |
-| 15 | irregular       |   662 |     0.74 % |
+| 15 | irregular       |   665 |     0.74 % |
 | 16 | vintage         |   642 |     0.71 % |
 | 17 | alchemy         |   442 |     0.49 % |
 | 18 | penny           |   268 |     0.30 % |
@@ -159,23 +159,23 @@ descriptions).
 | 22 | oldschool       |    33 |     0.04 % |
 | 23 | future          |    19 |     0.02 % |
 | 24 | predh           |     1 |     0.00 % |
-|  | TOTAL           | 89842 | 100.00 %|
+|  | TOTAL           | 90036 | 100.00 %|
 
 | No | Source | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | moxfield.com           | 42075 |    46.83 % |
-| 2  | arena.decklist         |  8561 |     9.53 % |
-| 3  | aetherhub.com          |  7402 |     8.24 % |
-| 4  | mtggoldfish.com        |  7033 |     7.83 % |
-| 5  | mtgo.com               |  5091 |     5.67 % |
+| 1  | moxfield.com           | 42110 |    46.77 % |
+| 2  | arena.decklist         |  8563 |     9.51 % |
+| 3  | aetherhub.com          |  7402 |     8.22 % |
+| 4  | mtggoldfish.com        |  7033 |     7.81 % |
+| 5  | mtgo.com               |  5207 |     5.78 % |
 | 6  | archidekt.com          |  3714 |     4.13 % |
-| 7  | tcgplayer.com          |  2155 |     2.40 % |
+| 7  | tcgplayer.com          |  2155 |     2.39 % |
 | 8  | mtga.untapped.gg       |  1738 |     1.93 % |
-| 9  | mtgdecks.net           |  1634 |     1.82 % |
-| 10 | melee.gg               |  1607 |     1.79 % |
+| 9  | mtgdecks.net           |  1634 |     1.81 % |
+| 10 | melee.gg               |  1607 |     1.78 % |
 | 11 | tappedout.net          |  1537 |     1.71 % |
-| 12 | streamdecker.com       |  1119 |     1.25 % |
-| 13 | mtgtop8.com            |  1098 |     1.22 % |
+| 12 | streamdecker.com       |  1119 |     1.24 % |
+| 13 | mtgtop8.com            |  1099 |     1.22 % |
 | 14 | mtg.cardsrealm.com     |  1080 |     1.20 % |
 | 15 | magic.gg               |  1010 |     1.12 % |
 | 16 | deckstats.net          |   510 |     0.57 % |
@@ -185,19 +185,20 @@ descriptions).
 | 20 | flexslot.gg            |   246 |     0.27 % |
 | 21 | scryfall.com           |   240 |     0.27 % |
 | 22 | magic-ville.com        |   213 |     0.24 % |
-| 23 | topdecked.com          |   147 |     0.16 % |
-| 24 | old.starcitygames.com  |   147 |     0.16 % |
+| 23 | old.starcitygames.com  |   151 |     0.17 % |
+| 24 | topdecked.com          |   147 |     0.16 % |
 | 25 | manabox.app            |   117 |     0.13 % |
 | 26 | manatraders.com        |    56 |     0.06 % |
 | 27 | tcdecks.net            |    55 |     0.06 % |
 | 28 | mtgstocks.com          |    43 |     0.05 % |
 | 29 | manastack.com          |    39 |     0.04 % |
 | 30 | mtgsearch.it           |    37 |     0.04 % |
-| 31 | deckbox.org            |    28 |     0.03 % |
-| 32 | paupermtg.com          |    26 |     0.03 % |
-| 33 | cardhoarder.com        |    23 |     0.03 % |
-| 34 | mtgarena.pro           |    22 |     0.02 % |
-| 35 | app.cardboard.live     |    16 |     0.02 % |
-| 36 | 17lands.com            |    11 |     0.01 % |
-| 37 | mtgotraders.com        |     1 |     0.00 % |
-|  | TOTAL                  | 89842 | 100.00 %|
+| 31 | channelfireball.com    |    36 |     0.04 % |
+| 32 | deckbox.org            |    28 |     0.03 % |
+| 33 | paupermtg.com          |    26 |     0.03 % |
+| 34 | cardhoarder.com        |    23 |     0.03 % |
+| 35 | mtgarena.pro           |    22 |     0.02 % |
+| 36 | app.cardboard.live     |    16 |     0.02 % |
+| 37 | 17lands.com            |    11 |     0.01 % |
+| 38 | mtgotraders.com        |     1 |     0.00 % |
+|  | TOTAL                  | 90036 | 100.00 %|

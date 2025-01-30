@@ -4,14 +4,19 @@
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape ChannelFireball decklists.
 
+    ChannelFireball is a TCG Player subsidiary since 2022. As such, its webpages use TCG Player's
+    backend.
+
     @author: z33k
 
 """
 import logging
 
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, DecksJsonContainerScraper
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, DecksJsonContainerScraper, \
+    HybridContainerScraper
 from mtg.deck.scrapers.tcgplayer import (
-    TcgPlayerInfiniteArticleScraper, TcgPlayerInfiniteDeckScraper, TcgPlayerInfinitePlayerScraper)
+    TcgPlayerInfiniteArticleScraper, TcgPlayerInfiniteDeckScraper,
+    TcgPlayerInfinitePlayerScraper, TcgPlayerInfiniteAuthorScraper)
 
 _log = logging.getLogger(__name__)
 FIREBALL_URL_TEMPLATE = "https://www.channelfireball.com{}"
@@ -41,7 +46,7 @@ class ChannelFireballPlayerScraper(TcgPlayerInfinitePlayerScraper):
                         "cfb-infinite-content&rows=100&format=&playerName={}&latest=true"
                         "&sort=created&order=desc")
     _DECK_SCRAPERS = ChannelFireballDeckScraper,  # override
-    _DECK_URL_TEMPLATE = FIREBALL_URL_TEMPLATE
+    _DECK_URL_TEMPLATE = FIREBALL_URL_TEMPLATE  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -59,3 +64,17 @@ class ChannelFireballArticleScraper(TcgPlayerInfiniteArticleScraper):
     def is_container_url(url: str) -> bool:  # override
         return f"channelfireball.com/article/" in url.lower()
 
+
+@HybridContainerScraper.registered
+class ChannelFireballAuthorScraper(TcgPlayerInfiniteAuthorScraper):
+    """Scraper of ChannelFireball author page.
+    """
+    CONTAINER_NAME = "ChannelFireball author"  # override
+    _CONTAINER_SCRAPERS = ChannelFireballArticleScraper,  # override
+    _API_URL_TEMPLATE = ("https://cfb-infinite-api.tcgplayer.com/content/author/{}/?source="
+                         "cfb-infinite-content&rows=48&game=&format=")
+    _DECK_URL_TEMPLATE = FIREBALL_URL_TEMPLATE  # override
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:  # override
+        return "channelfireball.com/author/" in url.lower() and not url.lower().endswith("/decks")
