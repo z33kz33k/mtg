@@ -49,7 +49,7 @@ class DeckboxDeckScraper(DeckScraper):
         for div in info_tag.find_all("div", class_="indented_content"):
             if div.find("span", string="Format"):
                 fmt = [*div.strings][-1].strip()
-                self.update_fmt(fmt)
+                self._update_fmt(fmt)
 
     @classmethod
     def _parse_row(cls, row_tag: Tag) -> list[Card]:
@@ -90,7 +90,7 @@ class DeckboxUserScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Deckbox user"  # override
     DECK_URL_TEMPLATE = "https://deckbox.org{}"
-    _DECK_SCRAPERS = DeckboxDeckScraper,  # override
+    DECK_SCRAPERS = DeckboxDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -101,11 +101,6 @@ class DeckboxUserScraper(DeckUrlsContainerScraper):
         return strip_url_query(url)
 
     def _collect(self) -> list[str]:  # override
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            _log.warning(self._error_msg)
-            return []
-
         deck_tags = [
             tag for tag in self._soup.find_all("a", href=lambda h: h and "/sets/" in h)]
         urls = {tag.attrs["href"] for tag in deck_tags}
@@ -118,7 +113,7 @@ class DeckboxEventScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Deckbox event"  # override
     DECK_URL_TEMPLATE = "https://deckbox.org{}"
-    _DECK_SCRAPERS = DeckboxDeckScraper,  # override
+    DECK_SCRAPERS = DeckboxDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -129,11 +124,6 @@ class DeckboxEventScraper(DeckUrlsContainerScraper):
         return strip_url_query(url)
 
     def _collect(self) -> list[str]:  # override
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            _log.warning(self._error_msg)
-            return []
-
         table_tag = self._soup.find("table", class_="simple_table")
         deck_tags = [
             tag for tag in table_tag.find_all("a", href=lambda h: h and "/sets/" in h)]

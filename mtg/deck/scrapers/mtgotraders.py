@@ -42,7 +42,7 @@ class MtgoTradersDeckScraper(DeckScraper):
         self._metadata["name"] = self._json_data["Name"]
         if desc :=self._json_data.get("Description"):
             self._metadata["description"] = desc
-        self.update_fmt(self._json_data["Format"])
+        self._update_fmt(self._json_data["Format"])
         self._metadata["author"] = self._json_data["User"]
         self._metadata["date"] = datetime.strptime(
             self._json_data["Date"], "%Y-%m-%d %H:%M:%S").date()

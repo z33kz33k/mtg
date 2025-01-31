@@ -49,7 +49,7 @@ class ArchidektDeckScraper(DeckScraper):
             fmt = fmt_text.removesuffix(suffix).strip().lower()
             if "/" in fmt:
                 fmt, *_ = fmt.split("/")
-            self.update_fmt(fmt.strip())
+            self._update_fmt(fmt.strip())
         self._metadata["name"] = self._deck_data["name"]
         self._metadata["author"] = self._deck_data["owner"]
         self._metadata["views"] = self._deck_data["viewCount"]
@@ -82,7 +82,7 @@ class ArchidektFolderScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Archidekt folder"  # override
     URL_TEMPLATE = "https://archidekt.com{}"
-    _DECK_SCRAPERS = ArchidektDeckScraper,  # override
+    DECK_SCRAPERS = ArchidektDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -93,11 +93,6 @@ class ArchidektFolderScraper(DeckUrlsContainerScraper):
         return strip_url_query(url)
 
     def _collect(self) -> list[str]:  # override
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            _log.warning(self._error_msg)
-            return []
-
         deck_urls = []
         for a_tag in self._soup.select("a[class*='deck_link__']"):
             deck_urls.append(a_tag.attrs["href"])
@@ -110,7 +105,7 @@ class ArchidektUserScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Archidekt user"  # override
     URL_TEMPLATE = "https://archidekt.com{}"
-    _DECK_SCRAPERS = ArchidektDeckScraper,  # override
+    DECK_SCRAPERS = ArchidektDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -119,10 +114,5 @@ class ArchidektUserScraper(DeckUrlsContainerScraper):
                 or ("archidekt.com/search/decks?" in url and "owner=" in url))
 
     def _collect(self) -> list[str]:  # override
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            _log.warning(self._error_msg)
-            return []
-
         info_tags = self._soup.find_all("div", class_="deckLink_info__ww_n5")
         return [self.URL_TEMPLATE.format(div.find("a")["href"]) for div in info_tags]

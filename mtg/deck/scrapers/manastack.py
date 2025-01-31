@@ -23,7 +23,7 @@ _log = logging.getLogger(__name__)
 class ManaStackDeckScraper(DeckScraper):
     """Scraper of ManaStack decklist page.
     """
-    _XPATH = "//div[@class='deck-list-container']"
+    XPATH = "//div[@class='deck-list-container']"
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -35,13 +35,13 @@ class ManaStackDeckScraper(DeckScraper):
 
     def _pre_parse(self) -> None:  # override
         try:
-            self._soup, _, _ = get_dynamic_soup(self.url, self._XPATH)
+            self._soup, _, _ = get_dynamic_soup(self.url, self.XPATH)
         except TimeoutException:
             raise ScrapingError(f"Scraping failed due to Selenium timing out")
 
     def _parse_metadata(self) -> None:  # override
         self._metadata["name"] = self._soup.find("h3", class_="deck-name").text.strip()
-        self.update_fmt(self._soup.find("div", class_="format-listing").text.strip().lower())
+        self._update_fmt(self._soup.find("div", class_="format-listing").text.strip().lower())
         if desc_tag := self._soup.select_one("div.deck-description.text"):
             self._metadata["description"] = desc_tag.text.strip()
         author_tag =  self._soup.find("div", class_="deck-meta-user")
@@ -83,8 +83,8 @@ class ManaStackUserScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "ManaStack user"  # override
     URL_TEMPLATE = "https://manastack.com{}"
-    _DECK_SCRAPERS = ManaStackDeckScraper,  # override
-    _XPATH = '//div[@class="deck-listing-container"]'
+    DECK_SCRAPERS = ManaStackDeckScraper,  # override
+    XPATH = '//div[@class="deck-listing-container"]'
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -95,15 +95,6 @@ class ManaStackUserScraper(DeckUrlsContainerScraper):
         return strip_url_query(url)
 
     def _collect(self) -> list[str]:  # override
-        try:
-            self._soup, _, _ = get_dynamic_soup(self.url, self._XPATH)
-            if not self._soup:
-                _log.warning(self._error_msg)
-                return []
-        except TimeoutException:
-            _log.warning(self._error_msg)
-            return []
-
         rows = self._soup.find_all("div", class_="deck-listing-container")
         deck_tags = [
             tag for tag in

@@ -76,7 +76,7 @@ class MtgArenaProDeckScraper(DeckScraper):
         self._metadata["author"] = self._json_data["author"]
         self._metadata["name"] = self._json_data["humanname"]
         if fmt := self._parse_fmt():
-            self.update_fmt(fmt)
+            self._update_fmt(fmt)
         self._metadata["date"] = dateutil.parser.parse(self._json_data["date"]).date()
 
     @classmethod

@@ -19,7 +19,7 @@ from mtg.deck.scrapers import DeckScraper, DeckTagsContainerScraper, DeckUrlsCon
     TagBasedDeckParser
 from mtg.scryfall import all_formats
 from mtg.utils import extract_int, timed
-from mtg.utils.scrape import ScrapingError, getsoup, http_requests_counted, strip_url_query, \
+from mtg.utils.scrape import ScrapingError, http_requests_counted, strip_url_query, \
     throttled_soup
 from mtg.utils.scrape.dynamic import get_dynamic_soup
 
@@ -57,7 +57,7 @@ class GoldfishDeckTagParser(TagBasedDeckParser):
         for i, line in enumerate(lines):
             if line.startswith("Format:"):
                 fmt = line.removeprefix("Format:").strip().lower()
-                self.update_fmt(fmt)
+                self._update_fmt(fmt)
             elif line.startswith("Event:"):
                 self._metadata["event"] = line.removeprefix("Event:").strip()
             elif line.startswith("Deck Source:"):
@@ -115,7 +115,7 @@ class GoldfishDeckTagParser(TagBasedDeckParser):
 class GoldfishDeckScraper(DeckScraper):
     """Scraper of MtGGoldfish decklist page.
     """
-    _XPATH = "//table[@class='deck-view-deck-table']"
+    XPATH = "//table[@class='deck-view-deck-table']"
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -137,7 +137,7 @@ class GoldfishDeckScraper(DeckScraper):
     def _pre_parse(self) -> None:  # override
         try:
             self._soup, _, _ = get_dynamic_soup(
-                self.url, self._XPATH, consent_xpath=CONSENT_XPATH)
+                self.url, self.XPATH, consent_xpath=CONSENT_XPATH)
             if not self._soup:
                 raise ScrapingError("Page not available")
         except TimeoutException:
@@ -164,7 +164,8 @@ class GoldfishTournamentScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Goldfish tournament"  # override
     DECK_URL_TEMPLATE = "https://www.mtggoldfish.com{}"
-    _DECK_SCRAPERS = GoldfishDeckScraper,  # override
+    DECK_SCRAPERS = GoldfishDeckScraper,  # override
+    HEADERS = HEADERS  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -178,11 +179,6 @@ class GoldfishTournamentScraper(DeckUrlsContainerScraper):
         return url
 
     def _collect(self) -> list[str]:  # override
-        self._soup = getsoup(self.url, headers=HEADERS)
-        if not self._soup:
-            _log.warning(self._error_msg)
-            return []
-
         table_tag = self._soup.find("table", class_="table-tournament")
         deck_tags = table_tag.find_all("a", href=lambda h: h and "/deck/" in h)
         return [self.DECK_URL_TEMPLATE.format(deck_tag.attrs["href"]) for deck_tag in deck_tags]
@@ -194,7 +190,8 @@ class GoldfishPlayerScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Goldfish player"  # override
     DECK_URL_TEMPLATE = "https://www.mtggoldfish.com{}"
-    _DECK_SCRAPERS = GoldfishDeckScraper,  # override
+    DECK_SCRAPERS = GoldfishDeckScraper,  # override
+    HEADERS = HEADERS  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -202,11 +199,6 @@ class GoldfishPlayerScraper(DeckUrlsContainerScraper):
                 "&deck_search%5Bplayer%5D=" in url)
 
     def _collect(self) -> list[str]:  # override
-        self._soup = getsoup(self.url, headers=HEADERS)
-        if not self._soup:
-            _log.warning(self._error_msg)
-            return []
-
         table_tag = self._soup.find("table", class_=lambda c: c and "table-striped" in c)
         deck_tags = table_tag.find_all("a", href=lambda h: h and "/deck/" in h)
         return [self.DECK_URL_TEMPLATE.format(deck_tag.attrs["href"]) for deck_tag in deck_tags]
@@ -217,8 +209,10 @@ class GoldfishArticleScraper(DeckTagsContainerScraper):
     """Scraper of MTG Goldfish article page.
     """
     CONTAINER_NAME = "Goldfish article"
-    _DECK_PARSER = GoldfishDeckTagParser
-    _XPATH = "//div[@class='deck-container']"
+    DECK_PARSER = GoldfishDeckTagParser
+    HEADERS = HEADERS  # override
+    XPATH = "//div[@class='deck-container']"  # override
+    CONSENT_XPATH = CONSENT_XPATH  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -229,21 +223,11 @@ class GoldfishArticleScraper(DeckTagsContainerScraper):
         return strip_url_query(url)
 
     def _collect(self) -> list[Tag]:  # override
-        try:
-            self._soup, _, _ = get_dynamic_soup(self.url, self._XPATH, consent_xpath=CONSENT_XPATH)
-            if not self._soup:
-                _log.warning(self._error_msg)
-                return []
-        except TimeoutException:
-            _log.warning(self._error_msg)
-            return []
-
         deck_tags = [*self._soup.find_all("div", class_="deck-container")]
         if not deck_tags:
             if not deck_tags:
                 _log.warning(self._error_msg)
                 return []
-
         return deck_tags
 
 

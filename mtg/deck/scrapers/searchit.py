@@ -26,9 +26,9 @@ _log = logging.getLogger(__name__)
 class MtgSearchItDeckScraper(DeckScraper):
     """Scraper of a MTGSearch.it decklist page.
     """
-    _XPATH = "//div[contains(@class, 'tags') and contains(@class, 'mt10')]"
+    XPATH = "//div[contains(@class, 'tags') and contains(@class, 'mt10')]"
     # TODO: detect presence of this trolling and attempt to click with Selenium
-    _XPATH_UNBLOCK = "//a[@href='/access/unblock']"
+    XPATH_UNBLOCK = "//a[@href='/access/unblock']"
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -44,7 +44,7 @@ class MtgSearchItDeckScraper(DeckScraper):
 
     def _pre_parse(self) -> None:  # override
         try:
-            self._soup, _, self._clipboard = get_dynamic_soup(self.url, self._XPATH)
+            self._soup, _, self._clipboard = get_dynamic_soup(self.url, self.XPATH)
         except TimeoutException:
             raise ScrapingError(f"Scraping failed due to Selenium timing out")
 
@@ -54,7 +54,7 @@ class MtgSearchItDeckScraper(DeckScraper):
             fmt, arch = tags.splitlines()
             self._update_archetype(arch)
             self._update_custom_theme("searchit", arch.lower())
-            self.update_fmt(fmt)
+            self._update_fmt(fmt)
         except ValueError:
             pass
         a_tag = self._soup.select_one("a.icon")

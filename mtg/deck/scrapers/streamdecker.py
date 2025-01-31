@@ -89,7 +89,7 @@ class StreamdeckerUserScraper(DeckUrlsContainerScraper):
     CONTAINER_NAME = "Streamdecker user"  # override
     API_URL_TEMPLATE = "https://www.streamdecker.com/api/userdecks/{}"
     DECK_URL_TEMPLATE = "https://www.streamdecker.com/deck/{}"
-    _DECK_SCRAPERS = StreamdeckerDeckScraper,  # override
+    DECK_SCRAPERS = StreamdeckerDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override

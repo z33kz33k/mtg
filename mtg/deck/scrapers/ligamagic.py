@@ -83,7 +83,7 @@ class LigaMagicDeckScraper(DeckScraper):
         if " - " in fmt_text:
             fmt_text, theme_text = fmt_text.split(" - ", maxsplit=1)
             self._update_custom_theme("ligamagic", theme_text)
-        self.update_fmt(fmt_text)
+        self._update_fmt(fmt_text)
         if author_tag := header_tag.find("div", class_="createdby"):
             self._metadata["author"] = author_tag.find("a").text.strip()
         if event_tag := header_tag.find("div", class_="event"):
@@ -124,19 +124,19 @@ class LigaMagicEventScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "LigaMagic event"  # override
     DECK_URL_TEMPLATE = "https://www.ligamagic.com.br{}"
-    _DECK_SCRAPERS = LigaMagicDeckScraper,  # override
+    DECK_SCRAPERS = LigaMagicDeckScraper,  # override
     _CSS_SELECTOR = "div.evnt-dks"
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
         return all(t in url.lower() for t in ("ligamagic.com.br", "/evento", "&id="))
 
-    def _collect(self) -> list[str]:  # override
+    def _pre_parse(self) -> None:  # override
         self._soup = _get_soup_with_zenrows(self.url, self._CSS_SELECTOR)
         if not self._soup:
-            _log.warning(self._error_msg)
-            return []
+            raise ScrapingError(self._error_msg)
 
+    def _collect(self) -> list[str]:  # override
         deck_tags = [tag.find("a") for tag in self._soup.find_all("div", class_="deckname")]
         return [
             self.DECK_URL_TEMPLATE.format(tag.attrs["href"].removeprefix(".")) for tag in deck_tags]

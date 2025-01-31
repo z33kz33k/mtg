@@ -14,14 +14,15 @@ from typing import Optional, Type
 import backoff
 from bs4 import BeautifulSoup, Tag
 from requests import ConnectionError, HTTPError, ReadTimeout
-from selenium.common.exceptions import ElementClickInterceptedException
+from selenium.common.exceptions import ElementClickInterceptedException, TimeoutException
 
 from mtg import Json
 from mtg.deck import Deck, DeckParser, InvalidDeck
 from mtg.gstate import UrlsStateManager
 from mtg.utils import ParsingError, timed
-from mtg.utils.scrape import ScrapingError
+from mtg.utils.scrape import ScrapingError, getsoup
 from mtg.utils.scrape import Throttling, extract_source, throttle
+from mtg.utils.scrape.dynamic import get_dynamic_soup
 
 _log = logging.getLogger(__name__)
 
@@ -176,11 +177,23 @@ class JsonBasedDeckParser(DeckParser):
         raise NotImplementedError
 
 
-class ContainerScraper(ABC):
+_Collected = str | Tag | Json
+
+
+class ContainerScraper(DeckParser):
     """Abstract base container scraper.
+
+    Note: container scrapers don't scrape their page by themselves. Instead, they only collect
+    relevant deck-containing links/tags/JSON and delegate this work to their sub-scrapers or
+    sub-parsers. Still, occasionally, a container scraper may need to actually parse some part of
+    their page (e.g. to gather some data common (and therefore out of scope) for all its
+    sub-parsers). Hence, it derives from DeckParser and not from DeckScraper.
     """
     CONTAINER_NAME = None
     _REGISTRY: set[Type["ContainerScraper"]] | None = None
+    XPATH, CONSENT_XPATH = "", ""
+    API_URL_TEMPLATE = ""
+    HEADERS = None
 
     @property
     def url(self) -> str:
@@ -203,6 +216,7 @@ class ContainerScraper(ABC):
         return f"{self.short_name().title()} data not available"
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
+        super().__init__(metadata)
         url = url.removesuffix("/")
         self._validate_url(url)
         self._url, self._metadata = self.sanitize_url(url), metadata or {}
@@ -225,6 +239,38 @@ class ContainerScraper(ABC):
     def sanitize_url(url: str) -> str:
         return url.removesuffix("/")
 
+    def _pre_parse(self) -> None:  # override
+        if self.API_URL_TEMPLATE:  # JSON-based, soup not needed
+            return
+        if self.XPATH:
+            try:
+                self._soup, _, _ = get_dynamic_soup(
+                    self.url, self.XPATH, consent_xpath=self.CONSENT_XPATH)
+            except TimeoutException:
+                raise ScrapingError(self._error_msg)
+        else:
+            self._soup = getsoup(self.url, self.HEADERS)
+        if not self._soup:
+            raise ScrapingError(self._error_msg)
+
+    def _parse_metadata(self) -> None:  # override
+        pass
+
+    def _parse_decklist(self) -> None:  # override
+        pass
+
+    def _gather(self) -> list[_Collected] | tuple[list[str], list[str]]:
+        try:
+            self._pre_parse()
+        except ScrapingError:
+            _log.warning(self._error_msg)
+            return []
+        return self._collect()
+
+    @abstractmethod
+    def _collect(self) -> list[_Collected] | tuple[list[str], list[str]]:
+        raise NotImplementedError
+
     @abstractmethod
     def scrape(self) -> list[Deck]:
         raise NotImplementedError
@@ -235,7 +281,7 @@ class DeckUrlsContainerScraper(ContainerScraper):
     """
     THROTTLING = DeckScraper.THROTTLING
     _REGISTRY: set[Type["DeckUrlsContainerScraper"]] = set()
-    _DECK_SCRAPERS: tuple[Type[DeckScraper], ...] = ()
+    DECK_SCRAPERS: tuple[Type[DeckScraper], ...] = ()
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -254,7 +300,7 @@ class DeckUrlsContainerScraper(ContainerScraper):
     @classmethod
     def _dispatch_deck_scraper(
             cls, url: str, metadata: Json | None = None) -> Optional[DeckScraper]:
-        for scraper_type in cls._DECK_SCRAPERS:
+        for scraper_type in cls.DECK_SCRAPERS:
             if scraper_type.is_deck_url(url):
                 return scraper_type(url, metadata)
         return None
@@ -295,7 +341,7 @@ class DeckUrlsContainerScraper(ContainerScraper):
     @backoff.on_exception(
         backoff.expo, (ConnectionError, HTTPError, ReadTimeout), max_time=60)
     def scrape(self) -> list[Deck]:
-        self._deck_urls = [url.removesuffix("/") for url in self._collect()]
+        self._deck_urls = [url.removesuffix("/") for url in self._gather()]
         _log.info(
             f"Gathered {len(self._deck_urls)} deck URL(s) from a {self.CONTAINER_NAME} at:"
             f" {self.url!r}")
@@ -326,7 +372,7 @@ class DeckTagsContainerScraper(ContainerScraper):
     """Abstract scraper of deck-HTML-tags-containing pages.
     """
     _REGISTRY: set[Type["DeckTagsContainerScraper"]] = set()
-    _DECK_PARSER: Type[TagBasedDeckParser] | None = None
+    DECK_PARSER: Type[TagBasedDeckParser] | None = None
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -348,14 +394,14 @@ class DeckTagsContainerScraper(ContainerScraper):
     @backoff.on_exception(
         backoff.expo, (ConnectionError, HTTPError, ReadTimeout), max_time=60)
     def scrape(self) -> list[Deck]:
-        self._deck_tags = self._collect()
+        self._deck_tags = self._gather()
         _log.info(
             f"Gathered {len(self._deck_tags)} deck tag(s) from a {self.CONTAINER_NAME} at:"
             f" {self.url!r}")
         decks = []
         for i, deck_tag in enumerate(self._deck_tags, start=1):
             try:
-                d = self._DECK_PARSER(deck_tag, dict(self._metadata)).parse(
+                d = self.DECK_PARSER(deck_tag, dict(self._metadata)).parse(
                     suppress_invalid_deck=False, suppress_parsing_errors=False)
                 if d:
                     decks.append(d)
@@ -391,7 +437,7 @@ class DecksJsonContainerScraper(ContainerScraper):
     """Abstract scraper of deck-JSON-containing pages.
     """
     _REGISTRY: set[Type["DecksJsonContainerScraper"]] = set()
-    _DECK_PARSER: Type[JsonBasedDeckParser] | None = None
+    DECK_PARSER: Type[JsonBasedDeckParser] | None = None
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -413,13 +459,13 @@ class DecksJsonContainerScraper(ContainerScraper):
     @backoff.on_exception(
         backoff.expo, (ConnectionError, HTTPError, ReadTimeout), max_time=60)
     def scrape(self) -> list[Deck]:
-        self._decks_data = self._collect()
+        self._decks_data = self._gather()
         _log.info(
             f"Gathered data for {len(self._decks_data)} deck(s) from a {self.CONTAINER_NAME} "
             f"at: {self.url!r}")
         decks = []
         for i, deck_data in enumerate(self._decks_data, start=1):
-            d = self._DECK_PARSER(deck_data, dict(self._metadata)).parse()
+            d = self.DECK_PARSER(deck_data, dict(self._metadata)).parse()
             if d:
                 decks.append(d)
                 _log.info(f"Parsed deck {i}/{len(self._decks_data)}: {d.name!r}")
@@ -455,7 +501,7 @@ class HybridContainerScraper(DeckUrlsContainerScraper):
     hybrid and nested.
     """
     _REGISTRY: set[Type["HybridContainerScraper"]] = set()  # override
-    _CONTAINER_SCRAPERS: tuple[Type[ContainerScraper], ...] = ()
+    CONTAINER_SCRAPERS: tuple[Type[ContainerScraper], ...] = ()
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -470,10 +516,18 @@ class HybridContainerScraper(DeckUrlsContainerScraper):
     def _collect(self) -> tuple[list[str], list[str]]:  # override
         raise NotImplementedError
 
+    def _gather(self) -> tuple[list[str], list[str]]:  # override
+        try:
+            self._pre_parse()
+        except ScrapingError:
+            _log.warning(self._error_msg)
+            return [], []
+        return self._collect()
+
     @classmethod
     def _dispatch_container_scraper(
             cls, url: str, metadata: Json | None = None) -> Optional[ContainerScraper]:
-        for scraper_type in cls._CONTAINER_SCRAPERS:
+        for scraper_type in cls.CONTAINER_SCRAPERS:
             if scraper_type.is_container_url(url):
                 return scraper_type(url, metadata)
         return None
@@ -491,9 +545,9 @@ class HybridContainerScraper(DeckUrlsContainerScraper):
         if url_template:
             prefix = url_template[:-2]
             links = {url_template.format(l) if not l.startswith(prefix) else l for l in links}
-        deck_urls = sorted(l for l in links if any(ds.is_deck_url(l) for ds in self._DECK_SCRAPERS))
+        deck_urls = sorted(l for l in links if any(ds.is_deck_url(l) for ds in self.DECK_SCRAPERS))
         container_urls = sorted(
-            l for l in links if any(cs.is_container_url(l) for cs in self._CONTAINER_SCRAPERS))
+            l for l in links if any(cs.is_container_url(l) for cs in self.CONTAINER_SCRAPERS))
         return deck_urls, container_urls
 
     def process_container_urls(self) -> list[Deck]:
@@ -530,7 +584,7 @@ class HybridContainerScraper(DeckUrlsContainerScraper):
         backoff.expo, (ConnectionError, HTTPError, ReadTimeout), max_time=60)
     def scrape(self) -> list[Deck]:
         decks = []
-        self._deck_urls, self._container_urls = self._collect()
+        self._deck_urls, self._container_urls = self._gather()
         if self._deck_urls:
             _log.info(
                 f"Gathered {len(self._deck_urls)} deck URL(s) from a {self.CONTAINER_NAME} at:"

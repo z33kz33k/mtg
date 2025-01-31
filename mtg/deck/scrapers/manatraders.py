@@ -52,7 +52,7 @@ class ManatradersDeckScraper(DeckScraper):
         self._metadata["name"] = self._json_data["name"]
         if author := self._json_data.get("playerName"):
             self._metadata["author"] = author
-        self.update_fmt(self._json_data["format"])
+        self._update_fmt(self._json_data["format"])
         self._metadata["archetype"] = self._json_data["archetype"]
 
     def _parse_card_json(self, card_json: Json) -> None:
@@ -75,18 +75,13 @@ class ManatradersUserScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Manatraders user"  # override
     DECK_URL_TEMPLATE = "https://www.manatraders.com{}"
-    _DECK_SCRAPERS = ManatradersDeckScraper,  # override
+    DECK_SCRAPERS = ManatradersDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
         return all(t in url.lower() for t in ("manatraders.com/decks?", "search_name"))
 
     def _collect(self) -> list[str]:  # override
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            _log.warning(self._error_msg)
-            return []
-
         deck_tags = [
             tag for tag in self._soup.find_all("a", href=lambda h: h and "/webshop/deck/" in h)]
         urls = {tag.attrs["href"] for tag in deck_tags}

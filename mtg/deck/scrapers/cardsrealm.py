@@ -83,7 +83,7 @@ class CardsrealmDeckScraper(DeckScraper):
         self._metadata["date"] = dateutil.parser.parse(card_data["deck_lastchange"]).date()
         self._metadata["author"] = card_data["givenNameUser"]
         self._metadata["views"] = card_data["deck_views"]
-        self.update_fmt(card_data["tour_type_name"].lower())
+        self._update_fmt(card_data["tour_type_name"].lower())
 
     def _parse_card_json(self, card_json: Json) -> None:
         name = card_json["name_of_card"]
@@ -106,7 +106,7 @@ class CardsrealmProfileScraper(DeckUrlsContainerScraper):
     """Scraper of Cardsrealm user profile page.
     """
     CONTAINER_NAME = "Cardsrealm profile"  # override
-    _DECK_SCRAPERS = CardsrealmDeckScraper,  # override
+    DECK_SCRAPERS = CardsrealmDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -118,12 +118,6 @@ class CardsrealmProfileScraper(DeckUrlsContainerScraper):
         return to_eng_url(url, "/profile/")
 
     def _collect(self) -> list[str]:  # override
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            _, name = self.CONTAINER_NAME.split()
-            _log.warning(self._error_msg)
-            return []
-
         deck_divs = [
             div for div in self._soup.find_all("div", class_=lambda c: c and "deck_div_all" in c)]
         deck_tags = [d.find("a", href=lambda h: h and "/decks/" in h) for d in deck_divs]
@@ -163,7 +157,7 @@ class CardsrealmMetaTournamentScraper(DeckUrlsContainerScraper):
     """Scraper of Cardsrealm meta-deck tournaments page.
     """
     CONTAINER_NAME = "Cardsrealm meta-deck tournament"  # override
-    _DECK_SCRAPERS = CardsrealmDeckScraper,  # override
+    DECK_SCRAPERS = CardsrealmDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -175,11 +169,6 @@ class CardsrealmMetaTournamentScraper(DeckUrlsContainerScraper):
         return to_eng_url(url, "/meta-decks/")
 
     def _collect(self) -> list[str]:  # override
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            _log.warning(self._error_msg)
-            return []
-
         deck_tags = [
             tag for tag in
             self._soup.find_all(
@@ -195,9 +184,9 @@ class CardsrealmRegularTournamentScraper(DeckUrlsContainerScraper):
     """Scraper of Cardsrealm regular tournaments page.
     """
     CONTAINER_NAME = "Cardsrealm regular tournament"  # override
-    _DECK_SCRAPERS = CardsrealmDeckScraper,  # override
-    _CONSENT_XPATH = '//button[@id="ez-accept-all"]'
-    _XPATH = "//button[text()='show deck']"
+    DECK_SCRAPERS = CardsrealmDeckScraper,  # override
+    CONSENT_XPATH = '//button[@id="ez-accept-all"]'
+    XPATH = "//button[text()='show deck']"
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -215,12 +204,12 @@ class CardsrealmRegularTournamentScraper(DeckUrlsContainerScraper):
                 _log.info(f"Webdriving using Chrome to: '{self.url}'...")
                 driver.get(self.url)
 
-                accept_consent(driver, self._CONSENT_XPATH)
+                accept_consent(driver, self.CONSENT_XPATH)
 
                 buttons = WebDriverWait(driver, SELENIUM_TIMEOUT).until(
-                    EC.presence_of_all_elements_located((By.XPATH, self._XPATH)))
+                    EC.presence_of_all_elements_located((By.XPATH, self.XPATH)))
                 _log.info(
-                    f"Page has been loaded and elements specified by {self._XPATH!r} are present")
+                    f"Page has been loaded and elements specified by {self.XPATH!r} are present")
 
                 for btn in buttons:
                     btn.click()
@@ -237,13 +226,12 @@ class CardsrealmRegularTournamentScraper(DeckUrlsContainerScraper):
                 _log.warning(f"Selenium timed out during tournament scraping")
                 return BeautifulSoup(driver.page_source, "lxml")
 
-
-    def _collect(self) -> list[str]:  # override
+    def _pre_parse(self) -> None:  # override
         self._soup = self._get_dynamic_soup()
         if not self._soup:
-            _log.warning(self._error_msg)
-            return []
+            raise ScrapingError(self._error_msg)
 
+    def _collect(self) -> list[str]:  # override
         deck_divs = [
             div for div in self._soup.find_all("div", class_=lambda c: c and "mainDeck" in c)]
         deck_tags = [d.find("a", href=lambda h: h and "/decks/" in h) for d in deck_divs]
@@ -255,10 +243,10 @@ class CardsrealmArticleScraper(HybridContainerScraper):
     """Scraper of Cardsrealm decks article page.
     """
     CONTAINER_NAME = "Cardsrealm article"  # override
-    _DECK_SCRAPERS = CardsrealmDeckScraper,  # override
+    DECK_SCRAPERS = CardsrealmDeckScraper,  # override
     # override
-    _CONTAINER_SCRAPERS = (CardsrealmProfileScraper, CardsrealmFolderScraper,
-                           CardsrealmRegularTournamentScraper, CardsrealmMetaTournamentScraper)
+    CONTAINER_SCRAPERS = (CardsrealmProfileScraper, CardsrealmFolderScraper,
+                          CardsrealmRegularTournamentScraper, CardsrealmMetaTournamentScraper)
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -272,14 +260,8 @@ class CardsrealmArticleScraper(HybridContainerScraper):
         return to_eng_url(url, "/articles/")
 
     def _collect(self) -> tuple[list[str], list[str]]:  # override
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            _log.warning(self._error_msg)
-            return [], []
-
         article_tag = self._soup.find("div", id="article_div_all")
         if article_tag is None:
             _log.warning(self._error_msg)
             return [], []
-
         return self._get_links_from_tag(article_tag, URL_TEMPLATE)

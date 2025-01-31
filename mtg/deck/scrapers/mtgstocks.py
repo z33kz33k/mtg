@@ -73,7 +73,7 @@ class MtgStocksDeckScraper(DeckScraper):
             self._metadata["date"] = dateutil.parser.parse(date).date()
         if player := self._deck_data.get("player"):
             self._metadata["author"] = player
-        self.update_fmt(self._deck_data["format"]["name"])
+        self._update_fmt(self._deck_data["format"]["name"])
 
     def _parse_playset(self, card: Json) -> list[Card]:
         qty = int(card["quantity"])
@@ -93,7 +93,7 @@ class MtgStocksArticleScraper(DeckUrlsContainerScraper):
     """Scraper of MTGStocks article page.
     """
     CONTAINER_NAME = "MTGStocks article"  # override
-    _DECK_SCRAPERS = MtgStocksDeckScraper,  # override
+    DECK_SCRAPERS = MtgStocksDeckScraper,  # override
     URL_TEMPLATE = "https://mtgstocks.com{}"
 
     @staticmethod
@@ -105,11 +105,6 @@ class MtgStocksArticleScraper(DeckUrlsContainerScraper):
         return strip_url_query(url)
 
     def _collect(self) -> list[str]:  # override
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            _log.warning(self._error_msg)
-            return []
-
         deck_tags = self._soup.find_all("news-deck")
         a_tags = [tag.find("a", href=lambda h: h and "/decks/" in h) for tag in deck_tags]
         return [self.URL_TEMPLATE.format(t.attrs["href"]) for t in a_tags if t is not None]

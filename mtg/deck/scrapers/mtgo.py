@@ -111,7 +111,7 @@ class MtgoDeckJsonParser(JsonBasedDeckParser):
         self._metadata["author"] = self._deck_data["player"]
         self._metadata["name"] = self._derive_name()
         if fmt := self._metadata.get("event", {}).get("format"):
-            self.update_fmt(fmt)
+            self._update_fmt(fmt)
 
     def _parse_card(self, card: Json) -> None:
         decklist = self._sideboard if card["sideboard"] == "true" else self._maindeck
@@ -181,7 +181,8 @@ class MtgoEventScraper(DecksJsonContainerScraper):
     """Scraper of MTGO event page.
     """
     CONTAINER_NAME = "MTGO event"
-    _DECK_PARSER = MtgoDeckJsonParser
+    DECK_PARSER = MtgoDeckJsonParser
+    HEADERS = HEADERS  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -192,10 +193,6 @@ class MtgoEventScraper(DecksJsonContainerScraper):
         return strip_url_query(url)
 
     def _collect(self) -> list[Json]:  # override
-        self._soup = getsoup(self.url, headers=HEADERS)
-        if not self._soup:
-            _log.warning(self._error_msg)
-            return []
         try:
             json_data = _get_json(self._soup)
         except ScrapingError:

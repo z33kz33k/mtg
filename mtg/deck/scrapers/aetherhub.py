@@ -138,7 +138,7 @@ class AetherhubDeckScraper(DeckScraper):
             fmt_part = fmt_part.strip()
             if fmt_pair := self.FORMATS.get(fmt_part):
                 fmt, mode = fmt_pair
-                self.update_fmt(fmt)
+                self._update_fmt(fmt)
                 self._metadata["mode"] = mode.value
             self._metadata["name"] = name_part.strip()
 
@@ -221,14 +221,17 @@ class AetherhubWriteupDeckScraper(AetherhubDeckScraper):
         return deck_tag
 
 
+CONSENT_XPATH = '//button[@class="ncmp__btn" and contains(text(), "Accept")]'
+
+
 @DeckUrlsContainerScraper.registered
 class AetherhubUserScraper(DeckUrlsContainerScraper):
     """Scraper of Aetherhub user page.
     """
     CONTAINER_NAME = "Aetherhub user"  # override
-    _DECK_SCRAPERS = AetherhubDeckScraper,  # override
-    _XPATH = '//table[@id="metaHubTable"]'
-    CONSENT_XPATH = '//button[@class="ncmp__btn" and contains(text(), "Accept")]'
+    DECK_SCRAPERS = AetherhubDeckScraper,  # override
+    XPATH = '//table[@id="metaHubTable"]'
+    CONSENT_XPATH = CONSENT_XPATH
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -241,18 +244,17 @@ class AetherhubUserScraper(DeckUrlsContainerScraper):
             return f"{url}/decks"
         return url
 
-    def _collect(self) -> list[str]:  # override
+    def _pre_parse(self) -> None:  # override
         try:
             self._soup, _, _ = get_dynamic_soup(
-                self.url, self._XPATH, consent_xpath=self.CONSENT_XPATH,
+                self.url, self.XPATH, consent_xpath=self.CONSENT_XPATH,
                 wait_for_consent_disappearance=False)
             if not self._soup:
-                _log.warning(self._error_msg)
-                return []
+                raise ScrapingError(self._error_msg)
         except TimeoutException:
-            _log.warning(self._error_msg)
-            return []
+            raise ScrapingError(self._error_msg)
 
+    def _collect(self) -> list[str]:  # override
         tbody = self._soup.find("tbody")
         return [URL_TEMPLATE.format(row.find("a")["href"])
                 for row in tbody.find_all("tr")]
@@ -263,8 +265,9 @@ class AetherhubEventScraper(DeckUrlsContainerScraper):
     """Scraper of Aetherhub event page.
     """
     CONTAINER_NAME = "Aetherhub event"  # override
-    _DECK_SCRAPERS = AetherhubDeckScraper,  # override
-    _XPATH = '//tr[@class="deckdata"]'
+    DECK_SCRAPERS = AetherhubDeckScraper,  # override
+    XPATH = '//tr[@class="deckdata"]'
+    CONSENT_XPATH = CONSENT_XPATH
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -274,18 +277,17 @@ class AetherhubEventScraper(DeckUrlsContainerScraper):
     def sanitize_url(url: str) -> str:  # override
         return strip_url_query(url)
 
-    def _collect(self) -> list[str]:  # override
+    def _pre_parse(self) -> None:  # override
         try:
             self._soup, _, _ = get_dynamic_soup(
-                self.url, self._XPATH, consent_xpath=AetherhubUserScraper.CONSENT_XPATH,
+                self.url, self.XPATH, consent_xpath=self.CONSENT_XPATH,
                 wait_for_consent_disappearance=False)
             if not self._soup:
-                _log.warning(self._error_msg)
-                return []
+                raise ScrapingError(self._error_msg)
         except TimeoutException:
-            _log.warning(self._error_msg)
-            return []
+            raise ScrapingError(self._error_msg)
 
+    def _collect(self) -> list[str]:  # override
         rows = self._soup.find_all("tr", class_="deckdata")
         deck_tags = []
         for row in rows:
@@ -300,8 +302,8 @@ class AetherhubArticleScraper(HybridContainerScraper):
     """Scraper of Aetherhub article page.
     """
     CONTAINER_NAME = "Aetherhub article"  # override
-    _DECK_SCRAPERS = AetherhubDeckScraper, AetherhubWriteupDeckScraper  # override
-    _CONTAINER_SCRAPERS = AetherhubUserScraper, AetherhubEventScraper  # override
+    DECK_SCRAPERS = AetherhubDeckScraper, AetherhubWriteupDeckScraper  # override
+    CONTAINER_SCRAPERS = AetherhubUserScraper, AetherhubEventScraper  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -312,15 +314,8 @@ class AetherhubArticleScraper(HybridContainerScraper):
         return strip_url_query(url)
 
     def _collect(self) -> tuple[list[str], list[str]]:  # override
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            _log.warning(self._error_msg)
-            return [], []
-
         article_tag = self._soup.find("div", id="article-text")
         if article_tag is None:
             _log.warning(self._error_msg)
             return [], []
-
         return self._get_links_from_tag(article_tag, URL_TEMPLATE)
-

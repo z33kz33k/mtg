@@ -51,7 +51,7 @@ class MoxfieldDeckScraper(DeckScraper):
 
     def _parse_metadata(self) -> None:  # override
         fmt = self._json_data["format"].lower()
-        self.update_fmt(fmt)
+        self._update_fmt(fmt)
         name = self._json_data["name"]
         if " - " in name:
             *_, name = name.split(" - ")
@@ -101,7 +101,7 @@ class MoxfieldBookmarkScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Moxfield bookmark"  # override
     API_URL_TEMPLATE = "https://api2.moxfield.com/v1/bookmarks/{}"
-    _DECK_SCRAPERS = MoxfieldDeckScraper,  # override
+    DECK_SCRAPERS = MoxfieldDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -132,7 +132,7 @@ class MoxfieldUserScraper(DeckUrlsContainerScraper):
     API_URL_TEMPLATE = ("https://api2.moxfield.com/v2/decks/search?includePinned=true&showIllegal"
                         "=true&authorUserNames={}&pageNumber=1&pageSize=100&sortType="
                         "updated&sortDirection=descending&board=mainboard")
-    _DECK_SCRAPERS = MoxfieldDeckScraper,  # override
+    DECK_SCRAPERS = MoxfieldDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -162,8 +162,8 @@ class MoxfieldSearchScraper(DeckUrlsContainerScraper):
     # 100 page size is pretty arbitrary but tested to work
     API_URL_TEMPLATE = ("https://api2.moxfield.com/v2/decks/search?pageNumber=1&pageSize=100&sort"
                         "Type=updated&sortDirection=descending&filter={}")
-    _DECK_SCRAPERS = MoxfieldDeckScraper,  # override
-    _XPATH = "//input[@id='filter']"
+    DECK_SCRAPERS = MoxfieldDeckScraper,  # override
+    XPATH = "//input[@id='filter']"
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -171,7 +171,7 @@ class MoxfieldSearchScraper(DeckUrlsContainerScraper):
 
     def _get_filter(self) -> str | None:
         try:
-            soup, _, _ = get_dynamic_soup(self.url, self._XPATH)
+            soup, _, _ = get_dynamic_soup(self.url, self.XPATH)
             if not soup:
                 _log.warning(self._error_msg)
                 return None

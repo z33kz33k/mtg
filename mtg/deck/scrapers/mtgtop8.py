@@ -57,7 +57,7 @@ class MtgTop8DeckScraper(DeckScraper):
         else:
             self._metadata["name"] = name.strip()
         fmt_tag = self._soup.find("div", class_="meta_arch")
-        self.update_fmt(fmt_tag.text.strip().lower())
+        self._update_fmt(fmt_tag.text.strip().lower())
         with contextlib.suppress(IndexError):
             self._metadata["event"]["rank"] = EVENT_RANKS[len(fmt_tag.find_all("img")) - 1]
         players_date_text = self._soup.find('div', style='margin-bottom:5px;').text.strip()
@@ -99,7 +99,7 @@ class MtgTop8EventScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "MTGTop8 event"  # override
     DECK_URL_TEMPLATE = "https://www.mtgtop8.com/event{}"
-    _DECK_SCRAPERS = MtgTop8DeckScraper,  # override
+    DECK_SCRAPERS = MtgTop8DeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -110,11 +110,6 @@ class MtgTop8EventScraper(DeckUrlsContainerScraper):
         return MtgTop8DeckScraper.sanitize_url(url)
 
     def _collect(self) -> list[str]:  # override
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            _log.warning(self._error_msg)
-            return []
-
         a_tags = [tag for tag in self._soup.find_all(
             "a", href=lambda h: h and "e=" in h and "&d="in h) if not tag.find("img")
                   and tag.text not in ('Switch to Visual', '→')]

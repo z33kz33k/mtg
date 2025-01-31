@@ -50,7 +50,7 @@ class TCDecksDeckScraper(DeckScraper):
         fmt = fmt.removeprefix("Format: ").lower()
         players = players.removeprefix("Number of Players: ")
         date = date.removeprefix("Date: ")
-        self.update_fmt(fmt)
+        self._update_fmt(fmt)
         self._metadata["event"]["players"] = extract_int(players)
         self._metadata["event"]["date"] = datetime.strptime(date, '%d/%m/%Y').date()
         self._deck_tag = self._soup.find("table", class_="table_deck")
@@ -91,18 +91,13 @@ class TCDecksEventScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "TCDecks event"  # override
     DECK_URL_TEMPLATE = "https://www.tcdecks.net/{}"
-    _DECK_SCRAPERS = TCDecksDeckScraper,  # override
+    DECK_SCRAPERS = TCDecksDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
         return "tcdecks.net/deck.php?id=" in url.lower() and "&iddeck=" not in url.lower()
 
     def _collect(self) -> list[str]:  # override
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            _log.warning(self._error_msg)
-            return []
-
         table_tag = self._soup.find("table", class_="tourney_list")
         a_tags = table_tag.find_all("a", href=lambda h: h and "deck.php?id=" in h)
         return sorted(set(self.DECK_URL_TEMPLATE.format(a_tag.attrs["href"]) for a_tag in a_tags))

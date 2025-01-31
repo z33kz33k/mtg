@@ -13,7 +13,7 @@ from datetime import datetime
 from bs4 import Tag
 
 from mtg.deck.scrapers import DeckTagsContainerScraper, TagBasedDeckParser
-from mtg.utils.scrape import ScrapingError, getsoup, strip_url_query
+from mtg.utils.scrape import ScrapingError, strip_url_query
 
 _log = logging.getLogger(__name__)
 
@@ -70,7 +70,7 @@ class MagicBlogsArticleScraper(DeckTagsContainerScraper):
     """Scraper of MagicBlogs.de article page.
     """
     CONTAINER_NAME = "MagicBlogs.de article"
-    _DECK_PARSER = MagicBlogsDeckTagParser
+    DECK_PARSER = MagicBlogsDeckTagParser
     _MONTHS = {
         'Januar': 'January',
         'Februar': 'February',
@@ -107,11 +107,9 @@ class MagicBlogsArticleScraper(DeckTagsContainerScraper):
         # parse the date
         return datetime.strptime(english_date_string, "%d %B %Y").date()
 
-    def _parse_metadata(self) -> None:
+    def _parse_metadata(self) -> None:  # override
         if fmt_tag := self._soup.find("a", rel="category tag"):
-            dummy = MagicBlogsDeckTagParser(fmt_tag)
-            dummy.update_fmt(fmt_tag.text)
-            self._metadata.update(dummy.metadata)
+            self._update_fmt(fmt_tag.text)
         self._metadata["name"] = self._soup.find("title").text
         if author_tag := self._soup.find("a", rel="author"):
             self._metadata["author"] = author_tag.text
@@ -119,11 +117,6 @@ class MagicBlogsArticleScraper(DeckTagsContainerScraper):
             self._metadata["date"] = self._parse_date(time_tag.text)
 
     def _collect(self) -> list[Tag]:  # override
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            _log.warning(self._error_msg)
-            return []
-
         deck_tags = [*self._soup.find_all("div", class_="mtgh")]
         if not deck_tags:
             _log.warning(self._error_msg)

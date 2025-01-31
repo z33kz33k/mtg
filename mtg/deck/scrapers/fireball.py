@@ -45,8 +45,8 @@ class ChannelFireballPlayerScraper(TcgPlayerInfinitePlayerScraper):
     API_URL_TEMPLATE = ("https://cfb-infinite-api.tcgplayer.com/content/decks/magic?source="
                         "cfb-infinite-content&rows=100&format=&playerName={}&latest=true"
                         "&sort=created&order=desc")
-    _DECK_SCRAPERS = ChannelFireballDeckScraper,  # override
-    _DECK_URL_TEMPLATE = FIREBALL_URL_TEMPLATE  # override
+    DECK_SCRAPERS = ChannelFireballDeckScraper,  # override
+    DECK_URL_TEMPLATE = FIREBALL_URL_TEMPLATE  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -70,10 +70,10 @@ class ChannelFireballAuthorScraper(TcgPlayerInfiniteAuthorScraper):
     """Scraper of ChannelFireball author page.
     """
     CONTAINER_NAME = "ChannelFireball author"  # override
-    _CONTAINER_SCRAPERS = ChannelFireballArticleScraper,  # override
-    _API_URL_TEMPLATE = ("https://cfb-infinite-api.tcgplayer.com/content/author/{}/?source="
-                         "cfb-infinite-content&rows=48&game=&format=")
-    _DECK_URL_TEMPLATE = FIREBALL_URL_TEMPLATE  # override
+    CONTAINER_SCRAPERS = ChannelFireballArticleScraper,  # override
+    AUTHOR_API_URL_TEMPLATE =  ("https://cfb-infinite-api.tcgplayer.com/content/author/{}/?source="
+                                "cfb-infinite-content&rows=48&game=&format=")
+    DECK_URL_TEMPLATE = FIREBALL_URL_TEMPLATE  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override

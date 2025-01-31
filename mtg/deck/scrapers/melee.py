@@ -10,19 +10,17 @@
 import logging
 
 import dateutil.parser
-from selenium.common import TimeoutException
 
-from mtg.deck import Deck
 from mtg import Json, SECRETS
+from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.utils.scrape import ScrapingError, getsoup
-from mtg.utils.scrape.dynamic import get_dynamic_soup
 
 _log = logging.getLogger(__name__)
 
 
-_HEADERS = {
+HEADERS = {
     "Host": "melee.gg",
     "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:130.0) Gecko/20100101 Firefox/130.0",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,"
@@ -64,7 +62,7 @@ class MeleeGgDeckScraper(DeckScraper):
         return url.replace(ALT_DOMAIN, "melee.gg")
 
     def _pre_parse(self) -> None:  # override
-        self._soup = getsoup(self.url, headers=_HEADERS)
+        self._soup = getsoup(self.url, headers=HEADERS)
         if not self._soup:
             raise ScrapingError("Page not available")
 
@@ -80,7 +78,7 @@ class MeleeGgDeckScraper(DeckScraper):
             if "/" in tag.text and any(ch.isdigit() for ch in tag.text):
                 self._metadata["date"] = dateutil.parser.parse(tag.text.strip()).date()
             else:
-                self.update_fmt(tag.text.strip())
+                self._update_fmt(tag.text.strip())
 
     def _build_deck(self) -> Deck:  # override
         return ArenaParser(self._arena_decklist, metadata=self._metadata).parse(
@@ -97,27 +95,17 @@ class MeleeGgTournamentScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Melee.gg tournament"  # override
     DECK_URL_TEMPLATE = "https://melee.gg{}"
-    _DECK_SCRAPERS = MeleeGgDeckScraper,  # override
-    _XPATH = '//a[@data-type="decklist"]'
+    DECK_SCRAPERS = MeleeGgDeckScraper,  # override
+    XPATH = '//a[@data-type="decklist"]'
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
         return "melee.gg/tournament/" in url.lower()
 
     def _collect(self) -> list[str]:  # override
-        try:
-            self._soup, _, _ = get_dynamic_soup(self.url, self._XPATH)
-            if not self._soup:
-                _log.warning(self._error_msg)
-                return []
-        except TimeoutException:
-            _log.warning(self._error_msg)
-            return []
-
         game_tag = self._soup.find("p", id="tournament-headline-game")
         if not game_tag.text.strip() == "Game: Magic: The Gathering":
             _log.warning("Not a MtG tournament")
             return []
-
         deck_tags = self._soup.find_all("a", href=lambda h: h and "/Decklist/View/" in h)
         return [self.DECK_URL_TEMPLATE.format(deck_tag.attrs["href"]) for deck_tag in deck_tags]

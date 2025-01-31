@@ -37,7 +37,7 @@ class PennyDreadfulMagicDeckScraper(DeckScraper):
             raise ScrapingError("Page not available")
 
     def _parse_metadata(self) -> None:  # override
-        self.update_fmt("penny")
+        self._update_fmt("penny")
         self._metadata["name"] = self._soup.find("h1", class_="deck-name").text.strip()
         info_tag = self._soup.find("div", class_="title")
         if archetype_tag := info_tag.find("a", href=lambda h: h and "/archetypes/" in h):
@@ -89,7 +89,7 @@ class PennyDreadfulMagicCompetitionScraper(DeckUrlsContainerScraper):
                         "cardName=&competitionId={}&competitionFlagId=&deckType=&page=0&page"
                         "Size=200&personId=&q=&seasonId=")
     DECK_URL_TEMPLATE = "https://pennydreadfulmagic.com{}"
-    _DECK_SCRAPERS = PennyDreadfulMagicDeckScraper,  # override
+    DECK_SCRAPERS = PennyDreadfulMagicDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -120,7 +120,7 @@ class PennyDreadfulMagicUserScraper(DeckUrlsContainerScraper):
                         "&cardName=&competitionId=&competitionFlagId=&deckType=all&page=0&page"
                         "Size=200&personId={}&q=&seasonId={}")
     DECK_URL_TEMPLATE = "https://pennydreadfulmagic.com{}"
-    _DECK_SCRAPERS = PennyDreadfulMagicDeckScraper,  # override
+    DECK_SCRAPERS = PennyDreadfulMagicDeckScraper,  # override
 
     @property
     def _ids_in_url(self) -> bool:

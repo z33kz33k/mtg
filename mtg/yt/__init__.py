@@ -995,8 +995,8 @@ class Video:
 class Channel:
     """YouTube channel showcasing MtG decks.
     """
-    _CONSENT_XPATH = "//button[@aria-label='Accept all']"
-    _XPATH = "//span[contains(., 'subscribers')]"
+    CONSENT_XPATH = "//button[@aria-label='Accept all']"
+    XPATH = "//span[contains(., 'subscribers')]"
 
     @property
     def id(self) -> str:
@@ -1198,7 +1198,7 @@ class Channel:
 
     def _scrape_subscribers_with_selenium(self) -> int:
         try:
-            soup, _, _ = get_dynamic_soup(self.url, self._XPATH, consent_xpath=self._CONSENT_XPATH)
+            soup, _, _ = get_dynamic_soup(self.url, self.XPATH, consent_xpath=self.CONSENT_XPATH)
             text = soup.find("span", string=lambda t: t and "subscribers" in t).text.removesuffix(
                 " subscribers")
             number = extract_float(text)
@@ -1212,8 +1212,8 @@ class Channel:
     def _scrape_title_with_selenium(self) -> str | None:
         try:
             soup, _, _ = get_dynamic_soup(
-                self.url, self._XPATH.replace("subscribers", "subscriber"),
-                consent_xpath=self._CONSENT_XPATH)
+                self.url, self.XPATH.replace("subscribers", "subscriber"),
+                consent_xpath=self.CONSENT_XPATH)
             text_tag = soup.find(
                 "span", class_=lambda c: c and "yt-core-attributed-string" in c,
                 dir="auto", role="text")

@@ -27,7 +27,7 @@ _log = logging.getLogger(__name__)
 class CardhoarderDeckScraper(DeckScraper):
     """Scraper of Cardhoarder decklist page.
     """
-    _XPATH = "//div[contains(@id, 'deck-viewer')]"
+    XPATH = "//div[contains(@id, 'deck-viewer')]"
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -53,7 +53,7 @@ class CardhoarderDeckScraper(DeckScraper):
 
     def _pre_parse(self) -> None:  # override
         try:
-            self._soup, _, _ = get_dynamic_soup(self.url, self._XPATH)
+            self._soup, _, _ = get_dynamic_soup(self.url, self.XPATH)
         except TimeoutException:
             raise ScrapingError(f"Scraping failed due to Selenium timing out")
         self._deck_data = self._get_deck_data()

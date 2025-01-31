@@ -30,9 +30,9 @@ CLIPBOARD_XPATH = "//span[text()='Copy to MTGA']"
 class UntappedProfileDeckScraper(DeckScraper):
     """Scraper of decklist page of Untapped.gg user's profile.
     """
-    _NO_GAMES_XPATH = ("//div[text()='No games have been played with this deck in the selected "
+    NO_GAMES_XPATH = ("//div[text()='No games have been played with this deck in the selected "
                        "time frame']")
-    _PRIVATE_XPATH = "//div[text()='This profile is private']"
+    PRIVATE_XPATH = "//div[text()='This profile is private']"
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -49,7 +49,7 @@ class UntappedProfileDeckScraper(DeckScraper):
     def _pre_parse(self) -> None:  # override
         try:
             self._soup, _, self._clipboard = get_dynamic_soup(
-                self.url, CLIPBOARD_XPATH, self._NO_GAMES_XPATH, self._PRIVATE_XPATH,
+                self.url, CLIPBOARD_XPATH, self.NO_GAMES_XPATH, self.PRIVATE_XPATH,
                 consent_xpath=CONSENT_XPATH, clipboard_xpath=CLIPBOARD_XPATH)
         except NoSuchElementException:
             raise ScrapingError("Scraping failed due to absence of the looked for element")
@@ -173,8 +173,9 @@ class UntappedProfileScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Untapped profile"  # override
     URL_TEMPLATE = "https://mtga.untapped.gg{}"
-    _DECK_SCRAPERS = UntappedProfileDeckScraper,  # override
-    _XPATH = "//a[contains(@href, '/profile/') and contains(@class, 'deckbox')]"
+    DECK_SCRAPERS = UntappedProfileDeckScraper,  # override
+    XPATH = "//a[contains(@href, '/profile/') and contains(@class, 'deckbox')]"
+    CONSENT_XPATH = CONSENT_XPATH
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -185,16 +186,6 @@ class UntappedProfileScraper(DeckUrlsContainerScraper):
         return strip_url_query(url)
 
     def _collect(self) -> list[str]:  # override
-        try:
-            self._soup, _, _ = get_dynamic_soup(
-                self.url, self._XPATH, consent_xpath=CONSENT_XPATH)
-            if not self._soup:
-                _log.warning(self._error_msg)
-                return []
-        except TimeoutException:
-            _log.warning(self._error_msg)
-            return []
-
         a_tags = self._soup.find_all("a", href=lambda h: h and "/profile/" in h)
         a_tags = [a_tag for a_tag in a_tags if "deckbox" in a_tag.attrs["class"]]
         return [self.URL_TEMPLATE.format(a_tag["href"]) for a_tag in a_tags]

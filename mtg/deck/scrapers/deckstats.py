@@ -113,7 +113,7 @@ class DeckstatsDeckScraper(DeckScraper):
         if self._json_data.get("format_id"):
             fmt = _FORMATS.get(self._json_data["format_id"])
             if fmt:
-                self.update_fmt(fmt)
+                self._update_fmt(fmt)
         self._metadata["date"] = datetime.fromtimestamp(self._json_data["updated"], UTC).date()
         if tags := self._json_data.get("tags"):
             self._metadata["tags"] = tags
@@ -153,7 +153,7 @@ class DeckstatsUserScraper(DeckUrlsContainerScraper):
     API_URL_TEMPLATE = ("https://deckstats.net/api.php?action=user_folder_get&result_type="
                         "folder%3Bdecks%3Bparent_tree%3Bsubfolders&owner_id={}&folder_id=0&"
                         "decks_page={}")
-    _DECK_SCRAPERS = DeckstatsDeckScraper,  # override
+    DECK_SCRAPERS = DeckstatsDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override

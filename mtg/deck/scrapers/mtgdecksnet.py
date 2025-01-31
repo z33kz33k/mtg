@@ -28,7 +28,7 @@ _log = logging.getLogger(__name__)
 class MtgDecksNetDeckScraper(DeckScraper):
     """Scraper of MTGDecks.net decklist page.
     """
-    _XPATH = "//textarea[@id='arena_deck']"
+    XPATH = "//textarea[@id='arena_deck']"
 
     _FORMATS = {
         "brawl": "standardbrawl",
@@ -50,7 +50,7 @@ class MtgDecksNetDeckScraper(DeckScraper):
 
     def _pre_parse(self) -> None:  # override
         try:
-            self._soup, _, _ = get_dynamic_soup(self.url, self._XPATH)
+            self._soup, _, _ = get_dynamic_soup(self.url, self.XPATH)
         except TimeoutException:
             raise ScrapingError(f"Scraping failed due to Selenium timing out")
 
@@ -69,7 +69,7 @@ class MtgDecksNetDeckScraper(DeckScraper):
         fmt = a_tag.text.strip().removeprefix("MTG ").lower()
         if found := self._FORMATS.get("fmt"):
             fmt = found
-        self.update_fmt(fmt)
+        self._update_fmt(fmt)
 
     def _build_deck(self) -> Deck:  # override
         return ArenaParser(self._arena_decklist, self._metadata).parse(suppress_invalid_deck=False)
@@ -85,8 +85,8 @@ class MtgDecksNetTournamentScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "MTGDecks.net tournament"  # override
     DECK_URL_TEMPLATE = "https://mtgdecks.net{}"
-    _DECK_SCRAPERS = MtgDecksNetDeckScraper,  # override
-    _XPATH = '//a[contains(@href, "-decklist-")]'
+    DECK_SCRAPERS = MtgDecksNetDeckScraper,  # override
+    XPATH = '//a[contains(@href, "-decklist-")]'
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -97,15 +97,6 @@ class MtgDecksNetTournamentScraper(DeckUrlsContainerScraper):
         return url.removesuffix("/").removesuffix("/winrates")
 
     def _collect(self) -> list[str]:  # override
-        try:
-            self._soup, _, _ = get_dynamic_soup(self.url, self._XPATH)
-            if not self._soup:
-                _log.warning(self._error_msg)
-                return []
-        except TimeoutException:
-            _log.warning(self._error_msg)
-            return []
-
         deck_tags = [
             tag for tag in self._soup.find_all("a", href=lambda h: h and "-decklist-" in h)]
         return [self.DECK_URL_TEMPLATE.format(deck_tag.attrs["href"]) for deck_tag in deck_tags]

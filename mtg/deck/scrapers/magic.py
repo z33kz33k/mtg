@@ -20,7 +20,7 @@ from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckScraper, DeckTagsContainerScraper, TagBasedDeckParser
 from mtg.utils import sanitize_whitespace
-from mtg.utils.scrape import ScrapingError, getsoup, strip_url_query
+from mtg.utils.scrape import ScrapingError, strip_url_query
 from mtg.utils.scrape.dynamic import get_dynamic_soup
 
 _log = logging.getLogger(__name__)
@@ -42,7 +42,7 @@ class MagicGgNewDeckTagParser(TagBasedDeckParser):
         self._metadata["author"] = attrs["deck-title"]
         if name := _get_deck_name(attrs["deck-title"], attrs["subtitle"]):
             self._metadata["name"] = name
-        self.update_fmt(attrs["format"])
+        self._update_fmt(attrs["format"])
         self._metadata["event"] = {
             "name": attrs["event-name"],
             "date": dateutil.parser.parse(attrs["event-date"]).date()
@@ -98,7 +98,7 @@ class MagicGgOldDeckTagParser(TagBasedDeckParser):
             event_tag, fmt_tag, date_tag, _ = tags
         else:
             return
-        self.update_fmt(fmt_tag.text.strip())
+        self._update_fmt(fmt_tag.text.strip())
         date_text = date_tag.text.strip().replace("_", "/")
         self._metadata["date"] = dateutil.parser.parse(date_text).date()
         if event_tag is not None:
@@ -202,7 +202,7 @@ class MagicGgEventScraper(DeckTagsContainerScraper):
     """Scraper of Magic.gg event page.
     """
     CONTAINER_NAME = "Magic.gg event"
-    _DECK_PARSER = MagicGgNewDeckTagParser
+    DECK_PARSER = MagicGgNewDeckTagParser
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -212,12 +212,10 @@ class MagicGgEventScraper(DeckTagsContainerScraper):
     def sanitize_url(url: str) -> str:  # override
         return strip_url_query(url)
 
-    def _collect(self) -> list[Tag]:  # override
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            _log.warning(self._error_msg)
-            return []
+    def _parse_metadata(self) -> None:  # override
+        self._metadata["event"] = {"name": _get_event_name(self._soup)}
 
+    def _collect(self) -> list[Tag]:  # override
         deck_tags = [*self._soup.find_all("deck-list")]
         if not deck_tags:
             self.__class__._DECK_PARSER = MagicGgOldDeckTagParser
@@ -232,7 +230,7 @@ class MagicGgEventScraper(DeckTagsContainerScraper):
             except TimeoutException:
                 _log.warning(self._error_msg)
                 return []
-            self._metadata["event"] = {"name": _get_event_name(self._soup)}
+            self._parse_metadata()
         else:
             self.__class__._DECK_PARSER = MagicGgNewDeckTagParser
 

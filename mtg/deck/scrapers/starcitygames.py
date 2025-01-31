@@ -52,7 +52,7 @@ class StarCityGamesDeckTagParser(TagBasedDeckParser):
         if event_tag := header_tag.find("header", class_="deck_played_placed"):
             event = sanitize_whitespace(event_tag.text.strip())
             self._metadata["event"] = self._parse_event_line(event)
-        self.update_fmt(header_tag.find("div", class_="deck_format").text.strip().lower())
+        self._update_fmt(header_tag.find("div", class_="deck_format").text.strip().lower())
 
     def _parse_metadata(self) -> None:  # override
         self._parse_header_tag(self._deck_tag.find("div", class_="deck_header"))
@@ -146,7 +146,7 @@ class StarCityGamesEventScraper(DeckUrlsContainerScraper):
     """Scraper of StarCityGames event page (or non-player deck search page).
     """
     CONTAINER_NAME = "StarCityGames event"  # override
-    _DECK_SCRAPERS = StarCityGamesDeckScraper,  # override
+    DECK_SCRAPERS = StarCityGamesDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -167,11 +167,6 @@ class StarCityGamesEventScraper(DeckUrlsContainerScraper):
         return strip_url_query(url)
 
     def _collect(self) -> list[str]:  # override
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            _log.warning(self._error_msg)
-            return []
-
         section_tag = self._soup.select_one("section#content")
         deck_tags = [
             a_tag for a_tag in section_tag.find_all(
@@ -195,7 +190,7 @@ class StarCityGamesDatabaseScraper(DeckUrlsContainerScraper):
     """Scraper of StarCityGames author's decks database page.
     """
     CONTAINER_NAME = "StarCityGames author's deck database"  # override
-    _DECK_SCRAPERS = StarCityGamesDeckScraper,  # override
+    DECK_SCRAPERS = StarCityGamesDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -206,16 +201,10 @@ class StarCityGamesDatabaseScraper(DeckUrlsContainerScraper):
         return strip_url_query(url)
 
     def _collect(self) -> list[str]:  # override
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            _log.warning(self._error_msg)
-            return []
-
         db_div = self._soup.find("div", id="deck-database")
         if db_div is None:
             _log.warning(self._error_msg)
             return []
-
         a_tags = [tag for tag in db_div.find_all("a", class_="dd-deck-link")]
         return [tag.attrs["href"].strip() for tag in a_tags]
 
@@ -225,8 +214,8 @@ class StarCityGamesArticleScraper(HybridContainerScraper):
     """Scraper of StarCityGames decks article page.
     """
     CONTAINER_NAME = "StarCityGames article"  # override
-    _DECK_SCRAPERS = StarCityGamesDeckScraper,  # override
-    _CONTAINER_SCRAPERS = StarCityGamesEventScraper,  # override
+    DECK_SCRAPERS = StarCityGamesDeckScraper,  # override
+    CONTAINER_SCRAPERS = StarCityGamesEventScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -237,11 +226,6 @@ class StarCityGamesArticleScraper(HybridContainerScraper):
         return strip_url_query(url)
 
     def _collect(self) -> tuple[list[str], list[str]]:  # override
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            _log.warning(self._error_msg)
-            return [], []
-
         article_tag = self._soup.find("article", {"data-template": "post-content"})
         if article_tag is None:
             _log.warning(self._error_msg)

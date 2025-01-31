@@ -40,7 +40,7 @@ class MagicVilleDeckScraper(DeckScraper):
         _, fmt_text = fmt_text.split("&f=", maxsplit=1)
         if "&file=" in fmt_text:
             fmt_text, _ = fmt_text.split("&file=", maxsplit=1)
-        self.update_fmt(fmt_text)
+        self._update_fmt(fmt_text)
         # name
         name, name_tag = None, None
         name_tags = [
@@ -110,18 +110,13 @@ class MagicVilleEventScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "MagicVille event"  # override
     DECK_URL_TEMPLATE = "https://www.magic-ville.com/fr/decks/{}"
-    _DECK_SCRAPERS = MagicVilleDeckScraper,  # override
+    DECK_SCRAPERS = MagicVilleDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
         return all(t in url.lower() for t in ("magic-ville.com/", "decks/decklists?", "event="))
 
     def _collect(self) -> list[str]:  # override
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            _log.warning(self._error_msg)
-            return []
-
         deck_tags = self._soup.find_all("a", href=lambda h: h and "showdeck?ref=" in h)
         return [self.DECK_URL_TEMPLATE.format(deck_tag.attrs["href"]) for deck_tag in deck_tags]
 
@@ -132,20 +127,14 @@ class MagicVilleUserScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "MagicVille user"  # override
     DECK_URL_TEMPLATE = "https://www.magic-ville.com/fr/{}"
-    _DECK_SCRAPERS = MagicVilleDeckScraper,  # override
+    DECK_SCRAPERS = MagicVilleDeckScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
         return all(t in url.lower() for t in ("magic-ville.com/", "register/perso?", "user="))
 
     def _collect(self) -> list[str]:  # override
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            _log.warning(self._error_msg)
-            return []
-
         deck_tags = self._soup.find_all("a", href=lambda h: h and "/decks/showdeck.php?ref=" in h)
         return [
             self.DECK_URL_TEMPLATE.format(deck_tag.attrs["href"].removeprefix("../"))
             for deck_tag in deck_tags]
-

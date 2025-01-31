@@ -46,7 +46,7 @@ class ScryfallDeckScraper(DeckScraper):
             self._metadata["name"] = sanitize_whitespace(name_tag.text.strip())
         info_tag = self._soup.find("p", class_="deck-details-subtitle")
         if fmt_tag := info_tag.find("strong"):
-            self.update_fmt(sanitize_whitespace(fmt_tag.text.strip()))
+            self._update_fmt(sanitize_whitespace(fmt_tag.text.strip()))
         date_text = info_tag.find("abbr").attrs["title"]
         date_text, _ = date_text.split(" ", maxsplit=1)
         self._metadata["date"] = date.fromisoformat(date_text)

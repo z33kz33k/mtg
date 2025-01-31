@@ -41,15 +41,15 @@ def _sanitize_element_text(text: str) -> str:
 class TopDeckedRegularDeckScraper(DeckScraper):
     """Scraper of TopDecked regular decklist page.
     """
-    _CONSENT_XPATH = "//ion-button[contains(., 'Ok!')]"
-    _CONSENT_TIMEOUT = 30
-    _SHARE_XPATH = "//ion-button[@tourstep='decklist_view_share']"
-    _ARENA_XPATH = "//button[descendant::*[contains(text(), 'Share to Arena')]]"
-    _ARENA_DELAY = 5
-    _NAME_XPATH = "//ion-title[contains(@class, 'title-default')]"
-    _FMT_XPATH = "//span[contains(@class, 'format') and contains(@class, 'text-uppercase')]"
-    _DATE_XPATH = ("//span[contains(@class, 'prefix') and contains(@class, 'text-none') and "
-                   "contains(@class, 'ng-star-inserted')]")
+    CONSENT_XPATH = "//ion-button[contains(., 'Ok!')]"
+    CONSENT_TIMEOUT = 30
+    SHARE_XPATH = "//ion-button[@tourstep='decklist_view_share']"
+    ARENA_XPATH = "//button[descendant::*[contains(text(), 'Share to Arena')]]"
+    ARENA_DELAY = 5
+    NAME_XPATH = "//ion-title[contains(@class, 'title-default')]"
+    FMT_XPATH = "//span[contains(@class, 'format') and contains(@class, 'text-uppercase')]"
+    DATE_XPATH = ("//span[contains(@class, 'prefix') and contains(@class, 'text-none') and "
+                  "contains(@class, 'ng-star-inserted')]")
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -64,12 +64,12 @@ class TopDeckedRegularDeckScraper(DeckScraper):
         return strip_url_query(url)
 
     def _process_metadata_with_selenium(self, driver: webdriver.Chrome) -> None:
-        name_el = driver.find_element(By.XPATH, self._NAME_XPATH)
+        name_el = driver.find_element(By.XPATH, self.NAME_XPATH)
         self._metadata["name"] = _sanitize_element_text(name_el.text)
-        fmt_el = driver.find_element(By.XPATH, self._FMT_XPATH)
-        self.update_fmt(_sanitize_element_text(fmt_el.text))
+        fmt_el = driver.find_element(By.XPATH, self.FMT_XPATH)
+        self._update_fmt(_sanitize_element_text(fmt_el.text))
         with contextlib.suppress(NoSuchElementException):  # meta-decks feature no date data
-            date_el = driver.find_element(By.XPATH, self._DATE_XPATH)
+            date_el = driver.find_element(By.XPATH, self.DATE_XPATH)
             date_text = _sanitize_element_text(date_el.text)
             if "ago" in date_text:
                 self._metadata["date"] = get_date_from_ago_text(date_text)
@@ -82,11 +82,11 @@ class TopDeckedRegularDeckScraper(DeckScraper):
             driver.get(self.url)
 
             # consent
-            consent = WebDriverWait(driver, self._CONSENT_TIMEOUT).until(
-                EC.element_to_be_clickable((By.XPATH, self._CONSENT_XPATH)))
+            consent = WebDriverWait(driver, self.CONSENT_TIMEOUT).until(
+                EC.element_to_be_clickable((By.XPATH, self.CONSENT_XPATH)))
             consent.click()
             WebDriverWait(driver, SELENIUM_TIMEOUT / 2).until_not(
-                EC.presence_of_element_located((By.XPATH, self._CONSENT_XPATH)))
+                EC.presence_of_element_located((By.XPATH, self.CONSENT_XPATH)))
             _log.info("Consent pop-up closed")
 
             # metadata
@@ -94,10 +94,10 @@ class TopDeckedRegularDeckScraper(DeckScraper):
 
             # arena decklist
             share_btn = WebDriverWait(driver, SELENIUM_TIMEOUT).until(
-                EC.element_to_be_clickable((By.XPATH, self._SHARE_XPATH)))
+                EC.element_to_be_clickable((By.XPATH, self.SHARE_XPATH)))
             share_btn.click()
             _log.info("Share button clicked")
-            arena = click_for_clipboard(driver, self._ARENA_XPATH, self._ARENA_DELAY)
+            arena = click_for_clipboard(driver, self.ARENA_XPATH, self.ARENA_DELAY)
             return arena.splitlines()
 
     # pre-process does all the work here
@@ -141,7 +141,7 @@ class TopDeckedRegularDeckScraper(DeckScraper):
 class TopDeckedMetaDeckScraper(TopDeckedRegularDeckScraper):
     """Scarper of TopDecked meta-deck decklist page.
     """
-    _SHARE_XPATH = "//ion-button[contains(text(), 'Share')]"
+    SHARE_XPATH = "//ion-button[contains(text(), 'Share')]"
     _META_SHARE_XPATH = (
         "//span[contains(@class, 'text-medium') and contains(@class, 'subtext') "
         "and contains(text(), 'of meta')]")

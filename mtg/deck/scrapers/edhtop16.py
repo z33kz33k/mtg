@@ -15,7 +15,6 @@ from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckUrlsContainerScraper
 from mtg.deck.scrapers.topdeck import DECK_SCRAPERS as TOPDECK_SCRAPERS, check_unexpected_urls
-from mtg.utils.scrape import getsoup
 
 _log = logging.getLogger(__name__)
 
@@ -25,7 +24,7 @@ class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
     """Scraper of EDHTop 16 tournament page.
     """
     CONTAINER_NAME = "EDHTop16 tournament"  # override
-    _DECK_SCRAPERS = TOPDECK_SCRAPERS  # override
+    DECK_SCRAPERS = TOPDECK_SCRAPERS  # override
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -36,7 +35,7 @@ class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
         return "edhtop16.com/tournament/" in url.lower()
 
     @staticmethod
-    def _parse_decklist(decklist: str) -> str:
+    def _resolve_decklist(decklist: str) -> str:
         tokens = decklist.split("1 ")[1:]
         commander, *playsets = [f"1 {t}" for t in tokens if t]
         return "\n".join(["Commander", commander, "", "Deck"] + [*playsets])
@@ -48,7 +47,7 @@ class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
                 urls.append(decklist)
             else:
                 try:
-                    self._arena_decklists.append(self._parse_decklist(decklist))
+                    self._arena_decklists.append(self._resolve_decklist(decklist))
                 except ValueError:
                     pass
 
@@ -76,11 +75,6 @@ class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
         return urls
 
     def _collect(self) -> list[str]:  # override
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            _log.warning(self._error_msg)
-            return []
-
         script_tag = self._soup.find("script", id="__NEXT_DATA__")
         if not script_tag:
             _log.warning(self._error_msg)
@@ -88,11 +82,11 @@ class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
 
         data = json.loads(script_tag.text)
         deck_urls = self._process_data(data)
-        check_unexpected_urls(deck_urls, *self._DECK_SCRAPERS)
+        check_unexpected_urls(deck_urls, *self.DECK_SCRAPERS)
 
         return deck_urls
 
-    def scrape(self) -> list[Deck]:
+    def scrape(self) -> list[Deck]:  # override
         decks = super().scrape()
         if self._arena_decklists:
             _log.info(

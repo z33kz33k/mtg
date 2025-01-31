@@ -51,7 +51,7 @@ class InternationalHareruyaDeckScraper(DeckScraper):
             elif cat_tag.text.strip() == "Tournament":
                 self._metadata["event"] = value_tag.text.strip()
             elif cat_tag.text.strip() == "Format":
-                self.update_fmt(value_tag.text.strip())
+                self._update_fmt(value_tag.text.strip())
             elif cat_tag.text.strip() == "Archetype":
                 self._metadata["hareruya_archetype"] = value_tag.text.strip()
             elif cat_tag.text.strip() == "Player":
@@ -133,7 +133,7 @@ class JapaneseHareruyaDeckScraper(DeckScraper):
 
     def _parse_metadata(self) -> None:  # override
         fmt = self._json_data["format_name_en"]
-        self.update_fmt(fmt)
+        self._update_fmt(fmt)
         self._metadata["name"] = self._json_data["deck_name"]
         self._metadata["author"] = self._json_data["nickname"]
         if arch := self._json_data.get("archetype_name_en"):
@@ -173,42 +173,40 @@ class JapaneseHareruyaDeckScraper(DeckScraper):
             self._process_card(card)
 
 
+HEADERS = {
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,"
+              "image/png,image/svg+xml,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.5",
+    "Accept-Encoding": "gzip, deflate, br, zstd",
+    "Connection": "keep-alive",
+    "Cookie": SECRETS["hareruya"]["cookie"],
+    "DNT": "1",
+    "Host": "www.hareruyamtg.com",
+    "Priority": "u=0, i",
+    "Sec-Fetch-Dest": "document",
+    "Sec-Fetch-Mode": "navigate",
+    "Sec-Fetch-Site": "cross-site",
+    "Sec-GPC": "1",
+    "TE": "trailers",
+    "Upgrade-Insecure-Requests": "1",
+    "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:131.0) Gecko/20100101 "
+                  "Firefox/131.0",
+}
+
+
 @DeckUrlsContainerScraper.registered
 class HareruyaEventScraper(DeckUrlsContainerScraper):
     """Scraper of Hareruya event decks search page.
     """
     CONTAINER_NAME = "Hareruya event"  # override
-    HEADERS = {
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,"
-                  "image/png,image/svg+xml,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.5",
-        "Accept-Encoding": "gzip, deflate, br, zstd",
-        "Connection": "keep-alive",
-        "Cookie": SECRETS["hareruya"]["cookie"],
-        "DNT": "1",
-        "Host": "www.hareruyamtg.com",
-        "Priority": "u=0, i",
-        "Sec-Fetch-Dest": "document",
-        "Sec-Fetch-Mode": "navigate",
-        "Sec-Fetch-Site": "cross-site",
-        "Sec-GPC": "1",
-        "TE": "trailers",
-        "Upgrade-Insecure-Requests": "1",
-        "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:131.0) Gecko/20100101 "
-                      "Firefox/131.0",
-    }
-    _DECK_SCRAPERS = InternationalHareruyaDeckScraper, JapaneseHareruyaDeckScraper  # override
+    DECK_SCRAPERS = InternationalHareruyaDeckScraper, JapaneseHareruyaDeckScraper  # override
+    HEADERS = HEADERS  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
         return all(t in url for t in {"hareruyamtg.com", "/deck", "/result?", "eventName="})
 
     def _collect(self) -> list[str]:  # override
-        self._soup = getsoup(self.url, headers=self.HEADERS)
-        if not self._soup:
-            _log.warning(self._error_msg)
-            return []
-
         return [a_tag.attrs["href"] for a_tag in self._soup.find_all(
             "a", class_="deckSearch-searchResult__itemWrapper")]
 
@@ -218,7 +216,8 @@ class HareruyaPlayerScraper(DeckUrlsContainerScraper):
     """Scraper of Hareruya player decks search page.
     """
     CONTAINER_NAME = "Hareruya player"  # override
-    _DECK_SCRAPERS = InternationalHareruyaDeckScraper, JapaneseHareruyaDeckScraper  # override
+    DECK_SCRAPERS = InternationalHareruyaDeckScraper, JapaneseHareruyaDeckScraper  # override
+    HEADERS = HEADERS  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -226,10 +225,5 @@ class HareruyaPlayerScraper(DeckUrlsContainerScraper):
         return all(t in url for t in {"hareruyamtg.com", "/deck", "/result?", "player="})
 
     def _collect(self) -> list[str]:  # override
-        self._soup = getsoup(self.url, headers=HareruyaEventScraper.HEADERS)
-        if not self._soup:
-            _log.warning(self._error_msg)
-            return []
-
         return [a_tag.attrs["href"] for a_tag in self._soup.find_all(
             "a", class_="deckSearch-searchResult__itemWrapper")]

@@ -58,7 +58,7 @@ class MtgaZoneDeckTagParser(TagBasedDeckParser):
                 "Format tag not found. The deck you're trying to scrape has been most probably "
                 "paywalled by MTGAZone")
         fmt = fmt_tag.text.strip().lower()
-        self.update_fmt(fmt)
+        self._update_fmt(fmt)
         if time_tag := self._deck_tag.find("time", class_="ct-meta-element-date"):
             self._metadata["date"] = datetime.fromisoformat(time_tag.attrs["datetime"]).date()
 
@@ -135,7 +135,7 @@ class MtgaZoneArticleScraper(DeckTagsContainerScraper):
     """Scraper of MTG Arena Zone article page.
     """
     CONTAINER_NAME = "MTGAZone article"
-    _DECK_PARSER = MtgaZoneDeckTagParser
+    DECK_PARSER = MtgaZoneDeckTagParser
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -148,17 +148,11 @@ class MtgaZoneArticleScraper(DeckTagsContainerScraper):
         return strip_url_query(url)
 
     def _collect(self) -> list[Tag]:  # override
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            _log.warning(self._error_msg)
-            return []
-
         deck_tags = [*self._soup.find_all("div", class_="deck-block")]
         if not deck_tags:
             if not deck_tags:
                 _log.warning(self._error_msg)
                 return []
-
         return deck_tags
 
 
@@ -167,8 +161,8 @@ class MtgaZoneAuthorScraper(HybridContainerScraper):
     """Scraper of MTG Arena Zone author page.
     """
     CONTAINER_NAME = "MTGAZone author"  # override
-    _DECK_SCRAPERS = MtgaZoneDeckScraper,  # override
-    _CONTAINER_SCRAPERS = MtgaZoneArticleScraper,  # override
+    DECK_SCRAPERS = MtgaZoneDeckScraper,  # override
+    CONTAINER_SCRAPERS = MtgaZoneArticleScraper,  # override
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -179,16 +173,10 @@ class MtgaZoneAuthorScraper(HybridContainerScraper):
         return strip_url_query(url)
 
     def _collect(self) -> tuple[list[str], list[str]]:  # override
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            _log.warning(self._error_msg)
-            return [], []
-
         links = [
             t.attrs["href"].removesuffix("/") for t in self._soup.select("article > h2 > a")]
         deck_urls = [l for l in links if MtgaZoneDeckScraper.is_deck_url(l)]
         article_urls = [l for l in links if MtgaZoneArticleScraper.is_container_url(l)]
-
         return deck_urls, article_urls
 
 
