@@ -15,12 +15,13 @@ import re
 import time
 import urllib.parse
 from collections import namedtuple
+from datetime import date, datetime
 from functools import wraps
-from typing import Callable
+from typing import Callable, Generator
 
 import brotli
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, NavigableString, Tag
 from bs4.dammit import EncodingDetector
 from requests import Response
 from requests.adapters import HTTPAdapter
@@ -334,3 +335,42 @@ def url_decode(encoded: str) -> str:
     return urllib.parse.unquote(encoded.replace('+', ' '))
 
 
+MONTHS = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+]
+
+
+def parse_non_english_month_date(date_text: str, *months: str) -> date:
+    """Parse a datetime.date object from a date text containing a non-English month.
+
+    Args:
+        date_text: date text to be parsed
+        months: non-English month names (from January to December)
+    """
+    if not len(months) == 12:
+        raise ValueError(f"Expected 12 months, got {len(months)}")
+    month_smap = {m1.title(): m2 for m1, m2 in zip(months, MONTHS)}
+    day, month, year = date_text.split()
+    day = day.strip('.')
+    if month in MONTHS:
+        english_month = month
+    else:
+        # convert month to English
+        english_month = month_smap.get(month)
+        if not english_month:
+            raise ValueError(f"Unknown month: {month}")
+    # create a date string in a format that can be parsed by strptime
+    english_date_string = f"{day} {english_month} {year}"
+    # parse the date
+    return datetime.strptime(english_date_string, "%d %B %Y").date()

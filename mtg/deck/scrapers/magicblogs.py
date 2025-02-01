@@ -13,7 +13,7 @@ from datetime import datetime
 from bs4 import Tag
 
 from mtg.deck.scrapers import DeckTagsContainerScraper, TagBasedDeckParser
-from mtg.utils.scrape import ScrapingError, strip_url_query
+from mtg.utils.scrape import ScrapingError, parse_non_english_month_date, strip_url_query
 
 _log = logging.getLogger(__name__)
 
@@ -71,20 +71,20 @@ class MagicBlogsArticleScraper(DeckTagsContainerScraper):
     """
     CONTAINER_NAME = "MagicBlogs.de article"
     DECK_PARSER = MagicBlogsDeckTagParser
-    _MONTHS = {
-        'Januar': 'January',
-        'Februar': 'February',
-        'März': 'March',
-        'April': 'April',
-        'Mai': 'May',
-        'Juni': 'June',
-        'Juli': 'July',
-        'August': 'August',
-        'September': 'September',
-        'Oktober': 'October',
-        'November': 'November',
-        'Dezember': 'December'
-    }
+    _MONTHS = [
+        'Januar',
+        'Februar',
+        'März',
+        'April',
+        'Mai',
+        'Juni',
+        'Juli',
+        'August',
+        'September',
+        'Oktober',
+        'November',
+        'Dezember',
+    ]
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
@@ -94,19 +94,6 @@ class MagicBlogsArticleScraper(DeckTagsContainerScraper):
     def sanitize_url(url: str) -> str:  # override
         return strip_url_query(url)
 
-    @classmethod
-    def _parse_date(cls, date_text: str) -> datetime.date:
-        day, month, year = date_text.split()
-        day = day.strip('.')
-        # convert German month to English
-        english_month = cls._MONTHS.get(month)
-        if not english_month:
-            raise ScrapingError(f"Unknown month: {month}")
-        # create a date string in a format that can be parsed by strptime
-        english_date_string = f"{day} {english_month} {year}"
-        # parse the date
-        return datetime.strptime(english_date_string, "%d %B %Y").date()
-
     def _parse_metadata(self) -> None:  # override
         if fmt_tag := self._soup.find("a", rel="category tag"):
             self._update_fmt(fmt_tag.text)
@@ -114,7 +101,10 @@ class MagicBlogsArticleScraper(DeckTagsContainerScraper):
         if author_tag := self._soup.find("a", rel="author"):
             self._metadata["author"] = author_tag.text
         if time_tag := self._soup.find("time", class_="published"):
-            self._metadata["date"] = self._parse_date(time_tag.text)
+            try:
+                self._metadata["date"] = parse_non_english_month_date(time_tag.text, *self._MONTHS)
+            except ValueError:
+                pass
 
     def _collect(self) -> list[Tag]:  # override
         deck_tags = [*self._soup.find_all("div", class_="mtgh")]

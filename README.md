@@ -109,6 +109,7 @@ descriptions).
         * MTGO events
         * MTGStocks articles
         * MTGTop8 events
+        * [Pauperwave](https://www.pauperwave.com) articles
         * PennyDreadfulMagic competitions and users
         * StarCityGames events, players, articles and author's decks databases
         * Streamdecker users
@@ -136,15 +137,15 @@ descriptions).
 ### Scraped decks breakdown
 | No | Format | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | commander       | 35990 |    39.00 % |
-| 2  | standard        | 20324 |    22.03 % |
-| 3  | modern          |  7457 |     8.08 % |
-| 4  | pauper          |  5747 |     6.23 % |
+| 1  | commander       | 35990 |    38.94 % |
+| 2  | standard        | 20324 |    21.99 % |
+| 3  | modern          |  7457 |     8.07 % |
+| 4  | pauper          |  5901 |     6.38 % |
 | 5  | pioneer         |  5255 |     5.69 % |
-| 6  | legacy          |  3310 |     3.59 % |
-| 7  | brawl           |  1963 |     2.13 % |
-| 8  | historic        |  1841 |     2.00 % |
-| 9  | explorer        |  1675 |     1.82 % |
+| 6  | legacy          |  3310 |     3.58 % |
+| 7  | brawl           |  1963 |     2.12 % |
+| 8  | historic        |  1841 |     1.99 % |
+| 9  | explorer        |  1675 |     1.81 % |
 | 10 | undefined       |  1469 |     1.59 % |
 | 11 | duel            |  1367 |     1.48 % |
 | 12 | timeless        |  1358 |     1.47 % |
@@ -160,24 +161,24 @@ descriptions).
 | 22 | oldschool       |    33 |     0.04 % |
 | 23 | future          |    20 |     0.02 % |
 | 24 | predh           |     1 |     0.00 % |
-|  | TOTAL           | 92275 | 100.00 %|
+|  | TOTAL           | 92429 | 100.00 %|
 
 | No | Source | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | moxfield.com           | 43096 |    46.70 % |
-| 2  | arena.decklist         |  8674 |     9.40 % |
-| 3  | aetherhub.com          |  7463 |     8.09 % |
-| 4  | mtggoldfish.com        |  7136 |     7.73 % |
-| 5  | mtgo.com               |  5719 |     6.20 % |
-| 6  | archidekt.com          |  3827 |     4.15 % |
-| 7  | tcgplayer.com          |  2158 |     2.34 % |
+| 1  | moxfield.com           | 43096 |    46.63 % |
+| 2  | arena.decklist         |  8675 |     9.39 % |
+| 3  | aetherhub.com          |  7463 |     8.07 % |
+| 4  | mtggoldfish.com        |  7136 |     7.72 % |
+| 5  | mtgo.com               |  5719 |     6.19 % |
+| 6  | archidekt.com          |  3827 |     4.14 % |
+| 7  | tcgplayer.com          |  2158 |     2.33 % |
 | 8  | mtga.untapped.gg       |  1766 |     1.91 % |
 | 9  | melee.gg               |  1678 |     1.82 % |
 | 10 | mtgdecks.net           |  1641 |     1.78 % |
 | 11 | tappedout.net          |  1543 |     1.67 % |
 | 12 | streamdecker.com       |  1129 |     1.22 % |
 | 13 | mtg.cardsrealm.com     |  1125 |     1.22 % |
-| 14 | mtgtop8.com            |  1114 |     1.21 % |
+| 14 | mtgtop8.com            |  1112 |     1.20 % |
 | 15 | magic.gg               |  1010 |     1.09 % |
 | 16 | deckstats.net          |   529 |     0.57 % |
 | 17 | mtgazone.com           |   429 |     0.46 % |
@@ -187,20 +188,21 @@ descriptions).
 | 21 | scryfall.com           |   243 |     0.26 % |
 | 22 | magic-ville.com        |   213 |     0.23 % |
 | 23 | channelfireball.com    |   170 |     0.18 % |
-| 24 | topdecked.com          |   151 |     0.16 % |
-| 25 | old.starcitygames.com  |   151 |     0.16 % |
-| 26 | manabox.app            |   119 |     0.13 % |
-| 27 | manatraders.com        |    56 |     0.06 % |
-| 28 | tcdecks.net            |    55 |     0.06 % |
-| 29 | mtgstocks.com          |    43 |     0.05 % |
-| 30 | manastack.com          |    39 |     0.04 % |
-| 31 | mtgsearch.it           |    37 |     0.04 % |
-| 32 | deckbox.org            |    28 |     0.03 % |
-| 33 | paupermtg.com          |    26 |     0.03 % |
-| 34 | cardhoarder.com        |    23 |     0.02 % |
-| 35 | mtgarena.pro           |    22 |     0.02 % |
-| 36 | app.cardboard.live     |    16 |     0.02 % |
-| 37 | 17lands.com            |    11 |     0.01 % |
-| 38 | magicblogs.de          |     4 |     0.00 % |
-| 39 | mtgotraders.com        |     1 |     0.00 % |
-|  | TOTAL                  | 92275 | 100.00 %|
+| 24 | pauperwave.com         |   155 |     0.17 % |
+| 25 | topdecked.com          |   151 |     0.16 % |
+| 26 | old.starcitygames.com  |   151 |     0.16 % |
+| 27 | manabox.app            |   119 |     0.13 % |
+| 28 | manatraders.com        |    56 |     0.06 % |
+| 29 | tcdecks.net            |    55 |     0.06 % |
+| 30 | mtgstocks.com          |    43 |     0.05 % |
+| 31 | manastack.com          |    39 |     0.04 % |
+| 32 | mtgsearch.it           |    37 |     0.04 % |
+| 33 | deckbox.org            |    28 |     0.03 % |
+| 34 | paupermtg.com          |    26 |     0.03 % |
+| 35 | cardhoarder.com        |    23 |     0.02 % |
+| 36 | mtgarena.pro           |    22 |     0.02 % |
+| 37 | app.cardboard.live     |    16 |     0.02 % |
+| 38 | 17lands.com            |    11 |     0.01 % |
+| 39 | magicblogs.de          |     4 |     0.00 % |
+| 40 | mtgotraders.com        |     1 |     0.00 % |
+|  | TOTAL                  | 92429 | 100.00 %|

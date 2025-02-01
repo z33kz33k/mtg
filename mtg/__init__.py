@@ -103,6 +103,7 @@ from mtg.deck.scrapers.mtgstocks import DeckScraper
 from mtg.deck.scrapers.mtgotraders import DeckScraper
 from mtg.deck.scrapers.mtgtop8 import DeckScraper
 from mtg.deck.scrapers.paupermtg import DeckScraper
+from mtg.deck.scrapers.pauperwave import DeckTagsContainerScraper
 from mtg.deck.scrapers.penny import DeckScraper
 from mtg.deck.scrapers.searchit import DeckScraper
 from mtg.deck.scrapers.seventeen import DeckScraper
