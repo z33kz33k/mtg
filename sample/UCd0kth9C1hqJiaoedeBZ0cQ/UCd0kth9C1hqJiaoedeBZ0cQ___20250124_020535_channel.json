@@ -1,0 +1,96 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 134000,
+    "scrape_time": "2025-01-24 02:05:35",
+    "videos": [
+        {
+            "id": "3OM7GXpB68s",
+            "url": "https://www.youtube.com/watch?v=3OM7GXpB68s",
+            "author": "LegenVD",
+            "title": "The ultimate lifegain commander.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a monowhite lifegain deck, featuring Ajani, Strength of the Pride as commander in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro \n01:35 - Deck Tech\n07:21 - vs Marchesa, Dealer of Death\n16:58 - vs Amalia Benavides Aguirre\n26:20 - vs Nicol Bolas, God-Pharaoh\n31:38 - vs Klothys, God of Destiny\n36:29 - vs Tinybones, the Pickpocket\n41:29 - vs Rowan, Scion of War\n44:05 - vs Gornog, the Red Reaper\n\nDecklist: \nhttps://aetherhub.com/Deck/ajani-strength-of-the-pride-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtg  #mtgarena #magicthegathering",
+            "keywords": [
+                "aggro",
+                "ajani",
+                "ajani commander",
+                "ajani edh",
+                "brawl deck",
+                "cat",
+                "commander",
+                "deck",
+                "decks",
+                "edh",
+                "gameplay",
+                "guide",
+                "historic brawl",
+                "legend",
+                "lifegain",
+                "lifegain deck",
+                "lvd",
+                "magic the gathering",
+                "monowhite",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "pride",
+                "pridemate",
+                "strength of the pride",
+                "white"
+            ],
+            "publish_time": "2025-01-23 09:00:04",
+            "views": 11218,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-01-23",
+                        "exports": 163,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Ajani, Strength of the Pride Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/ajani-strength-of-the-pride-brawl",
+                        "views": 224
+                    },
+                    "decklist_id": "0cda7efc-8685-4bf8-1ddc-91077fa976ea",
+                    "decklist_extended_id": "01113a72-ff7c-186d-a604-81207ce1ec9a"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,82 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 336000,
+    "scrape_time": "2025-01-25 02:23:41",
+    "videos": [
+        {
+            "id": "JNWlAt0xpbg",
+            "url": "https://www.youtube.com/watch?v=JNWlAt0xpbg",
+            "author": "MTGGoldfish",
+            "title": "Affinity Vehicle, Mu Yanling and...Sexy Mummies?  Aetherdrift MTG Spoilers",
+            "description": "We've reached the end of week one of Aetherdrift spoilers, and today we get some wild removal for artifact decks, a vehicle for Modern Affinity, a new Mu Yangling and...sexy mummies? Let's discuss!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\nMore spoilers: https://www.mtgpreviews.com\n\n#MTG #magicthegathering #mtgspoilers #aetherdrift \n\n0:00 Start\n0:55 Cursecloth Wrappings\n4:32 Mu Yanling, Wind Rider\n8:11 Explosive Getaway\n11:17 District Mascot\n13:45 Demonic Junker\n17:45 Perilous Snare\n20:50 Stock Up\n21:47 Nesting Bot",
+            "keywords": [
+                "MTG",
+                "MTG Arena",
+                "MTGGoldfish",
+                "Magic: the Gathering"
+            ],
+            "publish_time": "2025-01-24 09:37:52",
+            "views": 15456,
+            "sources": [
+                "www.cardkingdom.com",
+                "www.mtgpreviews.com"
+            ],
+            "decks": []
+        },
+        {
+            "id": "yO4FveJyt1c",
+            "url": "https://www.youtube.com/watch?v=yO4FveJyt1c",
+            "author": "MTGGoldfish",
+            "title": "Oops, All 2-Cost Cards",
+            "description": "Everything in this deck costs two mana and maybe that's all you need!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-oops-all-2-cost-cards\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6877500#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/sLcGp\n◼ Purchase this deck (Magic Online): \n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-01-23 19:00:04",
+            "views": 22678,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-01-21",
+                        "format": "standard",
+                        "name": "2Fast2Furious",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6877500"
+                    },
+                    "decklist_id": "0bd08479-efaf-f16c-6131-7d3ade5989ad",
+                    "decklist_extended_id": "a775a0b9-9812-6885-8e46-44ba8d696e18"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-oops-all-2-cost-cards",
+                        "date": "2025-01-21",
+                        "format": "standard",
+                        "name": "2Fast2Furious",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-oops-all-2-cost-cards"
+                    },
+                    "decklist_id": "0bd08479-efaf-f16c-6131-7d3ade5989ad",
+                    "decklist_extended_id": "a775a0b9-9812-6885-8e46-44ba8d696e18"
+                }
+            ]
+        }
+    ]
+}

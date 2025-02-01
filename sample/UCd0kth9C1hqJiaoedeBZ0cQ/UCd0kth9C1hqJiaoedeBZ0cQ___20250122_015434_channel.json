@@ -1,0 +1,99 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 134000,
+    "scrape_time": "2025-01-22 01:54:34",
+    "videos": [
+        {
+            "id": "qaFenO5MlJE",
+            "url": "https://www.youtube.com/watch?v=qaFenO5MlJE",
+            "author": "LegenVD",
+            "title": "Playing every classic Midrange card.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a Jund midrange Delirium deck, featuring Winter, Misanthropic Guide as commander in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro \n02:09 - Deck Tech\n08:09 - vs Keranos, God of Storms\n21:19 - vs Abuelo, Ancestral Echo\n25:21 - vs Nicol Bolas, God-Pharaoh\n29:10 - vs Jin-Gitaxias\n33:17 - vs Ruric Thar, the Unbowed\n38:59 - vs Huatli, Poet of Unity\n46:38 - vs Abomination of Llanowar\n52:25 - vs Muldrotha, the Gravetide\n56:50 - vs Purphoros, Bronze-Blooded\n\nDecklist: \nhttps://aetherhub.com/Deck/winter-misanthropic-guide-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtg  #mtgarena #magicthegathering",
+            "keywords": [
+                "black",
+                "brawl deck",
+                "cascade",
+                "commander",
+                "deck",
+                "decks",
+                "delirium",
+                "edh",
+                "gameplay",
+                "graveyard",
+                "green",
+                "guide",
+                "historic brawl",
+                "jund",
+                "legend",
+                "lhurgoyf",
+                "liliana",
+                "lvd",
+                "magic the gathering",
+                "midrange",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "red",
+                "tarmogoyf",
+                "winter",
+                "winter brawl",
+                "winter deck",
+                "winter edh"
+            ],
+            "publish_time": "2025-01-21 09:00:55",
+            "views": 12989,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-01-21",
+                        "exports": 128,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Winter, Misanthropic Guide Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/winter-misanthropic-guide-brawl",
+                        "views": 199
+                    },
+                    "decklist_id": "97498b85-4e4a-539f-e6a6-6dc514373931",
+                    "decklist_extended_id": "94f394cc-b40e-097f-9c9f-5833d9333610"
+                }
+            ]
+        }
+    ]
+}

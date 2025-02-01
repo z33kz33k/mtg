@@ -173,7 +173,7 @@ def scrape_channel_videos(channel_id: str, *video_ids: str) -> bool:
 def scrape_channels(
         *chids: str,
         videos=25,
-        only_earlier_than_last_scraped=True) -> None:
+        only_newer_than_last_scraped=True) -> None:
     """Scrape YouTube channels as specified in a session.
 
     Each scraped channel's data is saved in a .json file and session ensures decklists are saved
@@ -182,7 +182,7 @@ def scrape_channels(
     Args:
         chids: IDs of channels to scrape
         videos: number of videos to scrape per channel
-        only_earlier_than_last_scraped: if True, only scrape videos earlier than the last one scraped
+        only_newer_than_last_scraped: if True, only scrape videos newer than the last one scraped
     """
     with ScrapingSession() as session:
         for i, id_ in enumerate(chids, start=1):
@@ -190,7 +190,7 @@ def scrape_channels(
                 ch = Channel(id_)
                 text = Channel.get_url_and_title(ch.id, ch.title)
                 _log.info(f"Scraping channel {i}/{len(chids)}: {text}...")
-                ch.scrape(videos)
+                ch.scrape(videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
                 if ch.data:
                     dst = getdir(CHANNELS_DIR / id_)
                     ch.dump(dst)

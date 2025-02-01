@@ -1,0 +1,97 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 134000,
+    "scrape_time": "2025-01-25 02:19:35",
+    "videos": [
+        {
+            "id": "47POsHR9vx8",
+            "url": "https://www.youtube.com/watch?v=47POsHR9vx8",
+            "author": "LegenVD",
+            "title": "My commander has a thirst for blood.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a monored Madness vampire deck, featuring Ivora, Insatiable Heir as commander in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro \n01:44 - Deck Tech\n09:40 - vs The Gitrog Monster\n15:24 - vs Obosh, the Preypiercer\n22:42 - vs Baba Lysaga, Night Witch\n30:59 - vs Tatyova, Benthic Druid\n36:04 - vs Daxos, Blessed by the Sun\n40:37 - vs Krydle of Baldur's Gate\n45:54 - vs Athreos, God of Passage\n49:33 - vs Orvar, the All-Form\n\nDecklist: \nhttps://aetherhub.com/Deck/ivora-insatiable-heir-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtg  #mtgarena #magicthegathering",
+            "keywords": [
+                "aggro",
+                "blood token",
+                "brawl deck",
+                "commander",
+                "deck",
+                "decks",
+                "discard",
+                "edh",
+                "gameplay",
+                "guide",
+                "historic brawl",
+                "ivora",
+                "ivora brawl",
+                "ivora commander",
+                "ivora edh",
+                "legend",
+                "lvd",
+                "madness",
+                "madness deck",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "red",
+                "vampire",
+                "vampire deck",
+                "vampires"
+            ],
+            "publish_time": "2025-01-24 09:00:10",
+            "views": 11295,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-01-24",
+                        "exports": 68,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Ivora, Insatiable Heir Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/ivora-insatiable-heir-brawl",
+                        "views": 125
+                    },
+                    "decklist_id": "54ba7800-cfd8-b317-23dd-8219bf245737",
+                    "decklist_extended_id": "8a1d697b-b923-007b-f95f-22543d0f52e7"
+                }
+            ]
+        }
+    ]
+}

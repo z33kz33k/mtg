@@ -1,0 +1,94 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 134000,
+    "scrape_time": "2025-01-18 02:10:07",
+    "videos": [
+        {
+            "id": "VPUKyCsO2fo",
+            "url": "https://www.youtube.com/watch?v=VPUKyCsO2fo",
+            "author": "LegenVD",
+            "title": "Nobody can touch my commander.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a blue/white control deck, featuring Dragonlord Ojutai as commander in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro \n02:01 - Deck Tech\n07:36 - vs Urza, Lord Protector\n19:06 - vs Prosper, Tome-Bound\n30:52 - vs Goreclaw, Terror of Qal-Sisma\n37:15 - vs Atraxa, Praetors' Voice\n43:31 - vs Tasigur, the Golden Fang\n\nDecklist: \nhttps://aetherhub.com/Deck/dragonlord-ojutai-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtg  #mtgarena #magicthegathering",
+            "keywords": [
+                "azorius",
+                "blue",
+                "brawl deck",
+                "commander",
+                "control",
+                "deck",
+                "decks",
+                "dragonlord ojutai",
+                "edh",
+                "gameplay",
+                "guide",
+                "hexproof",
+                "historic brawl",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "ojutai",
+                "ojutai commander",
+                "ojutai edh",
+                "vigilance",
+                "white"
+            ],
+            "publish_time": "2025-01-17 09:00:29",
+            "views": 12899,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "control",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-01-17",
+                        "exports": 124,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Dragonlord Ojutai Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/dragonlord-ojutai-brawl",
+                        "views": 283
+                    },
+                    "decklist_id": "5441c3e9-3566-03c6-fc96-83d1cbc60801",
+                    "decklist_extended_id": "cf36a400-e68a-29b6-963c-e3ed276d79ca"
+                }
+            ]
+        }
+    ]
+}

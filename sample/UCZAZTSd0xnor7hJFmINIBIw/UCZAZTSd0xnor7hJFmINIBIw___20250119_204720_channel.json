@@ -1,0 +1,62 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 335000,
+    "scrape_time": "2025-01-19 20:47:20",
+    "videos": [
+        {
+            "id": "vqd1vrJVeh8",
+            "url": "https://www.youtube.com/watch?v=vqd1vrJVeh8",
+            "author": "MTGGoldfish",
+            "title": "Best of One Magic At It's Finest",
+            "description": "Best of One players aren't respecting graveyards enough and this deck definitely exploits that!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-best-of-one-magic-at-it-s-finest\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6867042#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/g7cqw\n◼ Purchase this deck (Magic Online): http://mtg.fish/HU0P2\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-01-18 08:00:05",
+            "views": 22985,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-best-of-one-magic-at-it-s-finest",
+                        "date": "2025-01-15",
+                        "format": "standard",
+                        "name": "azorius control",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-best-of-one-magic-at-it-s-finest"
+                    },
+                    "decklist_id": "e3d98940-34ab-09ab-de0f-43026460ff7c",
+                    "decklist_extended_id": "d2b45a90-353e-721e-edcb-47ba52ffd112"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-01-15",
+                        "format": "standard",
+                        "name": "azorius control",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6867042"
+                    },
+                    "decklist_id": "e3d98940-34ab-09ab-de0f-43026460ff7c",
+                    "decklist_extended_id": "d2b45a90-353e-721e-edcb-47ba52ffd112"
+                }
+            ]
+        }
+    ]
+}
