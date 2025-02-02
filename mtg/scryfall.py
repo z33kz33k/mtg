@@ -188,8 +188,8 @@ class TypeLine:
     """
     SEPARATOR = "—"
 
-    SUPERTYPES = {"Basic", "Elite", "Host", "Legendary", "Ongoing", "Snow", "Token", "Tribal",
-                  "World"}
+    SUPERTYPES = {"Basic", "Elite", "Host", "Kindred", "Legendary", "Ongoing", "Snow", "Token",
+                  "Tribal", "World"}
     PERMANENT_TYPES = {"Artifact", "Battle", "Creature", "Enchantment", "Land", "Planeswalker"}
     NONPERMANENT_TYPES = {"Sorcery", "Instant"}
 

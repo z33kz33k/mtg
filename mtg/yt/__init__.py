@@ -199,7 +199,7 @@ def scrape_channels(
 
 
 def scrape_fresh(
-        videos=25, only_earlier_than_last_scraped=True, only_deck_fresh=True) -> None:
+        videos=25, only_newer_than_last_scraped=True, only_deck_fresh=True) -> None:
     """Scrape those YouTube channels saved in a private Google Sheet that are not active,
     dormant nor abandoned.
     """
@@ -218,11 +218,11 @@ def scrape_fresh(
     text = "fresh and deck-fresh" if only_deck_fresh else "fresh"
     _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
-        *ids, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
+        *ids, videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
 
 
 def scrape_active(
-        videos=25, only_earlier_than_last_scraped=True, only_deck_fresh=True) -> None:
+        videos=25, only_newer_than_last_scraped=True, only_deck_fresh=True) -> None:
     """Scrape those YouTube channels saved in a private Google Sheet that are active.
     """
     ids = []
@@ -238,11 +238,11 @@ def scrape_active(
     text = "active and deck-fresh" if only_deck_fresh else "active"
     _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
-        *ids, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
+        *ids, videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
 
 
 def scrape_dormant(
-        videos=25, only_earlier_than_last_scraped=True, only_deck_fresh=True) -> None:
+        videos=25, only_newer_than_last_scraped=True, only_deck_fresh=True) -> None:
     """Scrape those YouTube channels saved in a private Google Sheet that are dormant.
     """
     ids = []
@@ -258,11 +258,11 @@ def scrape_dormant(
     text = "dormant and deck-fresh" if only_deck_fresh else "dormant"
     _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
-        *ids, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
+        *ids, videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
 
 
 def scrape_abandoned(
-        videos=25, only_earlier_than_last_scraped=True, only_deck_fresh=True) -> None:
+        videos=25, only_newer_than_last_scraped=True, only_deck_fresh=True) -> None:
     """Scrape those YouTube channels saved in a private Google Sheet that are abandoned.
     """
     ids = []
@@ -278,11 +278,11 @@ def scrape_abandoned(
     text = "abandoned and deck-fresh" if only_deck_fresh else "abandoned"
     _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
-        *ids, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
+        *ids, videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
 
 
 def scrape_deck_stale(
-        videos=25, only_earlier_than_last_scraped=True, only_fresh_or_active=True) -> None:
+        videos=25, only_newer_than_last_scraped=True, only_fresh_or_active=True) -> None:
     """Scrape those YouTube channels saved in a private Google Sheet that are considered
     deck-stale.
     """
@@ -299,11 +299,11 @@ def scrape_deck_stale(
     text = "deck-stale and fresh/active" if only_fresh_or_active else "deck-stale"
     _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
-        *ids, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
+        *ids, videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
 
 
 def scrape_very_deck_stale(
-        videos=25, only_earlier_than_last_scraped=True, only_fresh_or_active=True) -> None:
+        videos=25, only_newer_than_last_scraped=True, only_fresh_or_active=True) -> None:
     """Scrape those YouTube channels saved in a private Google Sheet that are considered
     very deck-stale.
     """
@@ -320,11 +320,11 @@ def scrape_very_deck_stale(
     text = "very deck-stale and fresh/active" if only_fresh_or_active else "very deck-stale"
     _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
-        *ids, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
+        *ids, videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
 
 
 def scrape_excessively_deck_stale(
-        videos=25, only_earlier_than_last_scraped=True, only_fresh_or_active=True) -> None:
+        videos=25, only_newer_than_last_scraped=True, only_fresh_or_active=True) -> None:
     """Scrape those YouTube channels saved in a private Google Sheet that are considered
     excessively deck-stale.
     """
@@ -342,7 +342,7 @@ def scrape_excessively_deck_stale(
         "excessively deck-stale")
     _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
-        *ids, videos=videos, only_earlier_than_last_scraped=only_earlier_than_last_scraped)
+        *ids, videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
 
 
 # TODO: async
