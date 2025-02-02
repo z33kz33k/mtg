@@ -89,7 +89,7 @@ class PauperwaveArticleScraper(DeckTagsContainerScraper):
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
-        return f"pauperwave.com/" in url.lower()
+        return "pauperwave.com/" in url.lower() and "pauperwave.com/." not in url.lower()
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override

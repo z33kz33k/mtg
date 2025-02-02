@@ -136,11 +136,11 @@ descriptions).
 ### Scraped decks breakdown
 | No | Format | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | commander       | 36511 |    39.02 % |
+| 1  | commander       | 36517 |    39.02 % |
 | 2  | standard        | 20375 |    21.77 % |
-| 3  | modern          |  7480 |     7.99 % |
+| 3  | modern          |  7487 |     8.00 % |
 | 4  | pauper          |  6401 |     6.84 % |
-| 5  | pioneer         |  5256 |     5.62 % |
+| 5  | pioneer         |  5263 |     5.62 % |
 | 6  | legacy          |  3328 |     3.56 % |
 | 7  | brawl           |  1966 |     2.10 % |
 | 8  | historic        |  1846 |     1.97 % |
@@ -148,7 +148,7 @@ descriptions).
 | 10 | undefined       |  1472 |     1.57 % |
 | 11 | duel            |  1367 |     1.46 % |
 | 12 | timeless        |  1364 |     1.46 % |
-| 13 | paupercommander |  1212 |     1.30 % |
+| 13 | paupercommander |  1212 |     1.29 % |
 | 14 | premodern       |   736 |     0.79 % |
 | 15 | irregular       |   685 |     0.73 % |
 | 16 | vintage         |   668 |     0.71 % |
@@ -160,11 +160,11 @@ descriptions).
 | 22 | oldschool       |    33 |     0.04 % |
 | 23 | future          |    21 |     0.02 % |
 | 24 | predh           |     1 |     0.00 % |
-|  | TOTAL           | 93573 | 100.00 %|
+|  | TOTAL           | 93593 | 100.00 %|
 
 | No | Source | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | moxfield.com           | 43553 |    46.54 % |
+| 1  | moxfield.com           | 43553 |    46.53 % |
 | 2  | arena.decklist         |  8732 |     9.33 % |
 | 3  | aetherhub.com          |  7483 |     8.00 % |
 | 4  | mtggoldfish.com        |  7263 |     7.76 % |
@@ -200,8 +200,9 @@ descriptions).
 | 34 | paupermtg.com          |    26 |     0.03 % |
 | 35 | cardhoarder.com        |    23 |     0.02 % |
 | 36 | mtgarena.pro           |    22 |     0.02 % |
-| 37 | app.cardboard.live     |    16 |     0.02 % |
-| 38 | 17lands.com            |    11 |     0.01 % |
-| 39 | magicblogs.de          |     4 |     0.00 % |
-| 40 | mtgotraders.com        |     1 |     0.00 % |
-|  | TOTAL                  | 93573 | 100.00 %|
+| 37 | cyclesgaming.com       |    20 |     0.02 % |
+| 38 | app.cardboard.live     |    16 |     0.02 % |
+| 39 | 17lands.com            |    11 |     0.01 % |
+| 40 | magicblogs.de          |     4 |     0.00 % |
+| 41 | mtgotraders.com        |     1 |     0.00 % |
+|  | TOTAL                  | 93593 | 100.00 %|

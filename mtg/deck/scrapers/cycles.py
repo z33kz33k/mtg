@@ -47,6 +47,8 @@ class CyclesGamingDeckTagParser(TagBasedDeckParser):
     def _parse_table(self, table: Tag) -> None:
         for row in table.find_all("tr"):
             td_tag, *_ = row.find_all("td")
+            if not td_tag.text:
+                continue
             a_tag = td_tag.find("a")
             name = a_tag.text.strip()
             qty = self._parse_quantity(td_tag.text.strip())
@@ -100,22 +102,25 @@ class CyclesGamingArticleScraper(DeckTagsContainerScraper):
 
     @staticmethod
     def is_container_url(url: str) -> bool:  # override
-        return f"cyclesgaming.com/" in url.lower()
+        return f"cyclesgaming.com/" in url.lower() and "cyclesgaming.com/." not in url.lower()
 
     @staticmethod
     def sanitize_url(url: str) -> str:  # override
         return strip_url_query(url)
 
     def _parse_metadata(self) -> None:
-        info_tag = self._soup.find("p", string=lambda s: s and "by " in s and ", " in s)
-        author, date = info_tag.text.split(", ", maxsplit=1)
-        self._metadata["author"] = author.strip().removeprefix("by ")
-        self._metadata["date"] = dateutil.parser.parse(date.strip()).date()
+        if info_tag := self._soup.find(
+                "p", string=lambda s: s and "cycles" in s.lower() and ", " in s):
+            author, date = info_tag.text.split(", ", maxsplit=1)
+            self._metadata["author"] = author.strip().removeprefix("by ")
+            try:
+                self._metadata["date"] = dateutil.parser.parse(date.strip()).date()
+            except dateutil.parser.ParserError:
+                pass
 
     def _collect(self) -> list[Tag]:  # override
         self._parse_metadata()
-        deck_tags = [
-            *self._soup.find_all("h2", string=lambda s: s and s.strip().startswith("Decklist – "))]
+        deck_tags = [tag for tag in self._soup.find_all("h2") if "list – " in tag.text.lower()]
         if not deck_tags:
             _log.warning(self._error_msg)
             return []
