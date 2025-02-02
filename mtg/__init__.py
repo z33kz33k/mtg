@@ -82,6 +82,7 @@ from mtg.deck.scrapers.archidekt import DeckScraper
 from mtg.deck.scrapers.cardboardlive import DeckScraper
 from mtg.deck.scrapers.cardhoarder import DeckScraper
 from mtg.deck.scrapers.cardsrealm import DeckScraper
+from mtg.deck.scrapers.cycles import DeckTagsContainerScraper
 from mtg.deck.scrapers.deckbox import DeckScraper
 from mtg.deck.scrapers.deckstats import DeckScraper
 from mtg.deck.scrapers.flexslot import DeckScraper

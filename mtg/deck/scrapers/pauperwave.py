@@ -9,7 +9,6 @@
 """
 import logging
 
-import dateutil.parser
 from bs4 import Tag
 
 from mtg.deck.scrapers import DeckTagsContainerScraper, TagBasedDeckParser

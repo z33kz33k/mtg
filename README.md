@@ -88,6 +88,7 @@ descriptions).
         * Archidekt folders and users
         * Cardsrealm profiles, folders, tournaments and articles
         * ChannelFireball players, articles and authors
+        * [CyclesGaming](https://cyclesgaming.com) articles
         * Deckbox users and events
         * Deckstats users
         * [EDHTop16](https://edhtop16.com) tournaments and commanders
