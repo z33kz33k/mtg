@@ -106,7 +106,7 @@ class PlaysetLine:
 
     @property
     def name(self) -> str:
-        return self._name
+        return self._name.strip()
 
     @property
     def set_code(self) -> str:
@@ -155,8 +155,8 @@ class PlaysetLine:
         return getrepr(self.__class__, *pairs)
 
     def _handle_foreign(self) -> list[Card] | None:
-        if is_foreign(self._name):
-            if card := query_api_for_card(self._name, foreign=True):
+        if is_foreign(self.name):
+            if card := query_api_for_card(self.name, foreign=True):
                 return ArenaParser.get_playset(card, self.quantity)
         return None
 
@@ -165,7 +165,7 @@ class PlaysetLine:
             self.set_code, self.collector_number) if self.is_extended else None
         try:
             return ArenaParser.get_playset(ArenaParser.find_card(
-                self._name, set_and_collector_number), self.quantity)
+                self.name, set_and_collector_number), self.quantity)
         except CardNotFound as cnf:
             if cards := self._handle_foreign():
                 return cards

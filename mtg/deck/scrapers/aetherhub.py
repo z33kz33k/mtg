@@ -256,8 +256,11 @@ class AetherhubUserScraper(DeckUrlsContainerScraper):
 
     def _collect(self) -> list[str]:  # override
         tbody = self._soup.find("tbody")
+        if not tbody:
+            _log.warning(self._error_msg)
+            return []
         return [URL_TEMPLATE.format(row.find("a")["href"])
-                for row in tbody.find_all("tr")]
+                for row in tbody.find_all("tr") if row.find("a")]
 
 
 @DeckUrlsContainerScraper.registered
