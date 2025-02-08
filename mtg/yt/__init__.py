@@ -28,6 +28,7 @@ import httpx
 import pytubefix
 import pytubefix.exceptions
 import scrapetube
+from bs4 import Tag
 from requests import HTTPError, ReadTimeout, Timeout
 from selenium.common.exceptions import TimeoutException
 from youtube_comment_downloader import SORT_BY_POPULAR, YoutubeCommentDownloader
@@ -418,8 +419,8 @@ class LinksExpander:
         "www.paste4btc.com/",
         "www.pastebin.pt/",
     }
-
     _PATREON_XPATH = "//div[contains(@class, 'sc-dtMgUX') and contains(@class, 'IEufa')]"
+    _PATREON_XPATH2 = "//div[contains(@class, 'sc-b20d4e5f-0') and contains(@class, 'fbPSoT')]"
     _GOOGLE_DOC_XPATH = ("//div[contains(@class, 'kix-scrollareadocumentplugin') and "
                          "contains(@class, 'docs-ui-hit-region-surface') and "
                          "contains(@class, 'enable-next-chapter-bottom-fab')]")
@@ -488,19 +489,32 @@ class LinksExpander:
     def is_patreon_url(url: str) -> bool:
         return "patreon.com/posts/" in url.lower()
 
-    def _expand_patreon(self, link: str) -> None:
+    def _get_patreon_text_tag(self, link: str) -> Tag | None:
         try:
-            soup, _, _ = get_dynamic_soup(link, self._PATREON_XPATH)
+            soup, _, _ = get_dynamic_soup(link, self._PATREON_XPATH, timeout=10)
             if not soup:
                 _log.warning("Patreon post data not available")
                 self._urls_manager.add_failed(link)
                 return
+            return soup.find("div", class_=lambda c: c and "sc-dtMgUX" in c and 'IEufa' in c)
         except TimeoutException:
-            _log.warning("Patreon post data not available")
-            self._urls_manager.add_failed(link)
-            return
+            try:
+                soup, _, _ = get_dynamic_soup(link, self._PATREON_XPATH2)
+                if not soup:
+                    _log.warning("Patreon post data not available")
+                    self._urls_manager.add_failed(link)
+                    return
+                return soup.find(
+                    "div", class_=lambda c: c and "sc-b20d4e5f-0" in c and 'fbPSoT' in c)
+            except TimeoutException:
+                _log.warning("Patreon post data not available")
+                self._urls_manager.add_failed(link)
+                return
 
-        text_tag = soup.find("div", class_=lambda c: c and "sc-dtMgUX" in c and 'IEufa' in c)
+    def _expand_patreon(self, link: str) -> None:
+        text_tag = self._get_patreon_text_tag(link)
+        if not text_tag:
+            return
         lines = [p_tag.text.strip() for p_tag in text_tag.find_all("p")]
         self._lines += lines
         _log.info(f"Expanded {len(lines)} Patreon line(s)")

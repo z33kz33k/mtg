@@ -28,7 +28,7 @@ from mtg.gstate import CHANNELS_DIR, CoolOffManager, DecklistsStateManager, Urls
 from mtg.utils import Counter, breadcrumbs, deserialize_dates, serialize_dates
 from mtg.utils.files import getdir, getfile
 from mtg.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
-from mtg.utils.scrape import extract_url, getsoup, throttle_with_countdown
+from mtg.utils.scrape import extract_url, getsoup
 
 _log = logging.getLogger(__name__)
 VIDEO_URL_TEMPLATE = "https://www.youtube.com/watch?v={}"
@@ -42,7 +42,7 @@ EXCESSIVELY_DECK_STALE_THRESHOLD = 150  # videos
 
 
 def sanitize_source(src: str) -> str:
-    src = src.removeprefix("www.") if src.startswith("www.") else src
+    src = src.removeprefix("www.")
     if new_src := cardsrealm_get_source(src):
         src = new_src
     elif new_src := melee_get_source(src):

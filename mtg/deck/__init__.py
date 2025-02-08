@@ -787,7 +787,7 @@ class Deck:
     def to_json(self, dstdir: PathLike = "", filename="") -> None:
         """Export to a .json file.
 
-        JSON exported to file holds the whole decklist (in extended format) on not only IDs.
+        JSON exported to file holds the whole decklist (in extended format) and not only IDs.
 
         Args:
             dstdir: optionally, the destination directory (if not provided CWD is used)
