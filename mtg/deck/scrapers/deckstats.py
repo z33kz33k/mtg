@@ -103,6 +103,8 @@ class DeckstatsDeckScraper(DeckScraper):
         if error_tag := self._soup.find("div", class_="ui-state-error"):
             if "This deck does not exist." in error_tag.text:
                 raise ScrapingError("Deck does not exist")
+            elif "You do not have access to this page." in error_tag.text:
+                raise ScrapingError("Access to deck page denied (is the deck private perhaps?)")
         self._json_data = self._get_json()
 
     def _parse_metadata(self) -> None:  # override

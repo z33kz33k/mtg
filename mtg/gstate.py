@@ -177,7 +177,7 @@ class UrlsStateManager(_Singleton):
 
 
 class DecklistsStateManager(_Singleton):
-    """State manager for decklists stored in separately from deck data.
+    """State manager for decklists stored separately from deck data.
 
     MTGO/Arena text format decklists mapped to their hash digest IDs are stored in two files: one
     for regular decklists and the second for decklists in 'extended' form (i.e. where each line

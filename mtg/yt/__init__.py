@@ -968,9 +968,9 @@ class Video:
                     self._urls_manager.add_failed(link)
 
         for deck in decks:
-                self._decklists_manager.add_regular(deck.decklist_id, deck.decklist)
-                self._decklists_manager.add_extended(
-                    deck.decklist_extended_id, deck.decklist_extended)
+            self._decklists_manager.add_regular(deck.decklist_id, deck.decklist)
+            self._decklists_manager.add_extended(
+                deck.decklist_extended_id, deck.decklist_extended)
 
         return sorted(decks)
 
