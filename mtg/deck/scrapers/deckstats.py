@@ -150,7 +150,7 @@ class DeckstatsDeckScraper(DeckScraper):
 class DeckstatsUserScraper(DeckUrlsContainerScraper):
     """Scraper of Deckstats user page.
     """
-    THROTTLING = Throttling(0.8, 0.15)
+    THROTTLING = DeckUrlsContainerScraper.THROTTLING * 1.33
     CONTAINER_NAME = "Deckstats user"  # override
     API_URL_TEMPLATE = ("https://deckstats.net/api.php?action=user_folder_get&result_type="
                         "folder%3Bdecks%3Bparent_tree%3Bsubfolders&owner_id={}&folder_id=0&"

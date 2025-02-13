@@ -14,14 +14,14 @@ import random
 import re
 import time
 import urllib.parse
-from collections import namedtuple
 from datetime import date, datetime
+from dataclasses import dataclass
 from functools import wraps
-from typing import Callable, Generator
+from typing import Callable, Iterator, Self
 
 import brotli
 import requests
-from bs4 import BeautifulSoup, NavigableString, Tag
+from bs4 import BeautifulSoup
 from bs4.dammit import EncodingDetector
 from requests import Response
 from requests.adapters import HTTPAdapter
@@ -112,7 +112,19 @@ def getsoup(
     return BeautifulSoup(response.content, "lxml", from_encoding=encoding)
 
 
-Throttling = namedtuple("Throttling", "delay offset")
+@dataclass
+class Throttling:
+    delay: float
+    offset: float
+
+    def __mul__(self, factor: float) -> Self:
+        return Throttling(self.delay * factor, self.offset * factor)
+
+    def __imul__(self, factor) -> Self:
+        return Throttling(self.delay * factor, self.offset * factor)
+
+    def __iter__(self) -> Iterator[float]:
+        return iter((self.delay, self.offset))
 
 
 def throttle(delay: float, offset=0.0) -> None:

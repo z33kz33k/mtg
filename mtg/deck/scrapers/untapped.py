@@ -171,6 +171,7 @@ class UntappedMetaDeckScraper(DeckScraper):
 class UntappedProfileScraper(DeckUrlsContainerScraper):
     """Scraper of Untapped.gg user profile page.
     """
+    THROTTLING = DeckUrlsContainerScraper.THROTTLING * 1.4
     CONTAINER_NAME = "Untapped profile"  # override
     URL_TEMPLATE = "https://mtga.untapped.gg{}"
     DECK_SCRAPERS = UntappedProfileDeckScraper,  # override

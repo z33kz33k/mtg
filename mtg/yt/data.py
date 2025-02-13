@@ -20,10 +20,7 @@ from typing import Callable, Generator, Iterator, Literal, Type
 import scrapetube
 
 from mtg import FILENAME_TIMESTAMP_FORMAT, PathLike, READABLE_TIMESTAMP_FORMAT, README
-from mtg.deck.scrapers.cardsrealm import get_source as cardsrealm_get_source
-from mtg.deck.scrapers.melee import get_source as melee_get_source
-from mtg.deck.scrapers.mtgarenapro import get_source as mtgarenapro_get_source
-from mtg.deck.scrapers.tcgplayer import get_source as tcgplayer_get_source
+from mtg.deck.export import sanitize_source
 from mtg.gstate import CHANNELS_DIR, CoolOffManager, DecklistsStateManager, UrlsStateManager
 from mtg.utils import Counter, breadcrumbs, deserialize_dates, serialize_dates
 from mtg.utils.files import getdir, getfile
@@ -39,19 +36,6 @@ ABANDONED_THRESHOLD = 30 * 12  # days (ca. 1 yr)
 DECK_STALE_THRESHOLD = 50  # videos
 VERY_DECK_STALE_THRESHOLD = 100  # videos
 EXCESSIVELY_DECK_STALE_THRESHOLD = 150  # videos
-
-
-def sanitize_source(src: str) -> str:
-    src = src.removeprefix("www.")
-    if new_src := cardsrealm_get_source(src):
-        src = new_src
-    elif new_src := melee_get_source(src):
-        src = new_src
-    elif new_src := mtgarenapro_get_source(src):
-        src = new_src
-    elif new_src := tcgplayer_get_source(src):
-        src = new_src
-    return src
 
 
 # TODO: formalize video data structure (#231)
