@@ -9,7 +9,7 @@
 import json
 import logging
 
-from mtg import Json, OUTPUT_DIR, PathLike
+from mtg import OUTPUT_DIR, PathLike
 from mtg.deck import Deck, DeckParser, Mode
 from mtg.deck.arena import ArenaParser, is_arena_line, is_empty
 from mtg.deck.scrapers.cardsrealm import get_source as cardsrealm_get_source
@@ -17,7 +17,7 @@ from mtg.deck.scrapers.melee import get_source as melee_get_source
 from mtg.deck.scrapers.mtgarenapro import get_source as mtgarenapro_get_source
 from mtg.deck.scrapers.tcgplayer import get_source as tcgplayer_get_source
 from mtg.scryfall import Card, aggregate
-from mtg.utils import ParsingError, extract_int, from_iterable, serialize_dates
+from mtg.utils import ParsingError, serialize_dates
 from mtg.utils.files import getdir, getfile
 
 _log = logging.getLogger(__name__)
@@ -49,10 +49,16 @@ Name={}
 [Sideboard]
 {}
 """
-    XMAGE_DCK_TEMPLATE = """NAME:{}
-{}
-{}
-"""
+    FORGE_LINE_TEMPLATE = "{} {}|{}|1"
+    FORGE_SIDEBOARD_LINE_TEMPLATE = "SB: {} [{}:{}] {}"
+    XMAGE_LINE_TEMPLATE = "{} [{}:{}] {}"
+    XMAGE_SIDEBOARD_LINE_TEMPLATE = "SB: {} [{}:{}] {}"
+
+    @property
+    def name(self) -> str:
+        if self._deck.name:
+            return self._normalize_name(self._deck.name).replace(self.NAME_SEP, " ")
+        return self._filename_core.replace(self.NAME_SEP, " ")
 
     def __init__(self, deck: Deck, filename="") -> None:
         """Initialize.
@@ -73,7 +79,13 @@ Name={}
             f"4c{cls.NAME_SEP}", f"4C{cls.NAME_SEP}")
         name = name.replace(f"Five{cls.NAME_SEP}Color{cls.NAME_SEP}", f"5C{cls.NAME_SEP}").replace(
             f"Four{cls.NAME_SEP}Color{cls.NAME_SEP}", f"4C{cls.NAME_SEP}")
-        return name
+        return name.replace("?", "")
+
+    @classmethod
+    def _remove_trailing_name_sep(cls, text: str) -> str:
+        if text.endswith(cls.NAME_SEP):
+            return text[:-len(cls.NAME_SEP)]
+        return text
 
     def _build_filename_core(self) -> str:
         core = ""
@@ -91,7 +103,7 @@ Name={}
             core += f"{self._deck.theme}{self.NAME_SEP}"
         # archetype
         core += f"{self._deck.archetype.name.title()}{self.NAME_SEP}"
-        return core
+        return self._remove_trailing_name_sep(core)
 
     def _build_filename(self) -> str:
         # prefix (source/author)
@@ -130,45 +142,7 @@ Name={}
             "event", {}).get("name", "")
         if event_name and not self._deck.is_meta_deck:
             name += f"{event_name}{self.NAME_SEP}"
-        if name.endswith(self.NAME_SEP):  # remove trailing separator
-            name = name[:-len(self.NAME_SEP)]
-        return name
-
-    @staticmethod
-    def _to_forge_line(playset: list[Card]) -> str:
-        card = playset[0]
-        return f"{len(playset)} {card.first_face_name}|{card.set.upper()}|1"
-
-    def _build_forge(self) -> str:
-        commander = [
-            self._to_forge_line(playset) for playset in
-            aggregate(self._deck.commander).values()] if self._deck.commander else []
-        if self._deck.partner_commander:
-            commander += [self._to_forge_line(playset) for playset in aggregate(
-                self._deck.partner_commander).values()]
-        maindeck = [
-            self._to_forge_line(playset) for playset in aggregate(*self._deck.maindeck).values()]
-        sideboard = [
-            self._to_forge_line(playset) for playset in
-            aggregate(*self._deck.sideboard).values()] if self._deck.sideboard else []
-        if self._deck.name:
-            name = self._normalize_name(self._deck.name).replace(self.NAME_SEP, " ")
-        else:
-            name = self._filename_core.replace(self.NAME_SEP, " ")
-        return self.FORGE_DCK_TEMPLATE.format(
-            name, "\n".join(commander), "\n".join(maindeck), "\n".join(sideboard))
-
-    def to_forge(self, dstdir: PathLike = "") -> None:
-        """Export deck to a Forge MTG deckfile format (.dck).
-
-        Args:
-            dstdir: optionally, the destination directory (if not provided CWD is used)
-        """
-        dstdir = dstdir or OUTPUT_DIR / "dck"
-        dstdir = getdir(dstdir)
-        dst = dstdir / f"{self._filename}.dck"
-        _log.info(f"Exporting deck to: '{dst}'...")
-        dst.write_text(self._build_forge(), encoding="utf-8")
+        return self._remove_trailing_name_sep(name)
 
     def to_arena(self, dstdir: PathLike = "", extended=True) -> None:
         """Export deck to a MTGA deckfile text format (as a .txt file).
@@ -204,6 +178,87 @@ Name={}
         dst = dstdir / f"{self._filename}.json"
         _log.info(f"Exporting deck to: '{dst}'...")
         dst.write_text(data, encoding="utf-8")
+
+    @classmethod
+    def _to_forge_line(cls, playset: list[Card]) -> str:
+        card = playset[0]
+        return cls.FORGE_DCK_TEMPLATE.format(len(playset), card.first_face_name, card.set.upper())
+
+    def _build_forge(self) -> str:
+        commander = [
+            self._to_forge_line(playset) for playset in
+            aggregate(self._deck.commander).values()] if self._deck.commander else []
+        if self._deck.partner_commander:
+            commander += [self._to_forge_line(playset) for playset in aggregate(
+                self._deck.partner_commander).values()]
+        maindeck = [
+            self._to_forge_line(playset) for playset in aggregate(*self._deck.maindeck).values()]
+        sideboard = [
+            self._to_forge_line(playset) for playset in
+            aggregate(*self._deck.sideboard).values()] if self._deck.sideboard else []
+        return self.FORGE_DCK_TEMPLATE.format(
+            self.name, "\n".join(commander), "\n".join(maindeck), "\n".join(sideboard))
+
+    def to_forge(self, dstdir: PathLike = "") -> None:
+        """Export deck to a Forge MTG deckfile format (.dck).
+
+        Args:
+            dstdir: optionally, the destination directory (if not provided CWD is used)
+        """
+        dstdir = dstdir or OUTPUT_DIR / "dck"
+        dstdir = getdir(dstdir)
+        dst = dstdir / f"{self._filename}.dck"
+        _log.info(f"Exporting deck to: '{dst}'...")
+        dst.write_text(self._build_forge(), encoding="utf-8")
+
+    @classmethod
+    def _to_xmage_line(cls, playset: list[Card], sideboard=False) -> str:
+        card = playset[0]
+        template = cls.XMAGE_SIDEBOARD_LINE_TEMPLATE if sideboard else cls.XMAGE_LINE_TEMPLATE
+        return template.format(
+            len(playset), card.set.upper(), card.collector_number, card.first_face_name)
+
+    def _get_xmage_metadata_lines(self) -> list[str]:
+        lines = [f"NAME:{self.name}"]
+        if self._deck.format:
+            lines += [f"FORMAT:{self._deck.format}"]
+        if author :=self._deck.metadata.get("author"):
+            lines += [f"AUTHOR:{author}"]
+        if date := self._deck.metadata.get("date"):
+            lines += [f"DATE:{date}"]
+        if url := self._deck.metadata.get("url"):
+            lines += [f"URL:{url}"]
+        return lines
+
+    def _build_xmage(self) -> str:
+        lines = self._get_xmage_metadata_lines()
+        lines += [
+            self._to_xmage_line(playset) for playset in aggregate(*self._deck.maindeck).values()]
+        commander = [
+            self._to_xmage_line(playset, sideboard=True) for playset in
+            aggregate(self._deck.commander).values()] if self._deck.commander else []
+        if self._deck.partner_commander:
+            commander += [self._to_xmage_line(playset, sideboard=True) for playset in aggregate(
+                self._deck.partner_commander).values()]
+        if commander:
+            lines += commander
+        else:
+            lines = [
+                self._to_xmage_line(playset, sideboard=True) for playset in
+                aggregate(*self._deck.sideboard).values()] if self._deck.sideboard else []
+        return "\n".join(lines)
+
+    def to_xmage(self, dstdir: PathLike = "") -> None:
+        """Export deck to a XMage deckfile format (.dck).
+
+        Args:
+            dstdir: optionally, the destination directory (if not provided CWD is used)
+        """
+        dstdir = dstdir or OUTPUT_DIR / "dck"
+        dstdir = getdir(dstdir)
+        dst = dstdir / f"{self._filename}.dck"
+        _log.info(f"Exporting deck to: '{dst}'...")
+        dst.write_text(self._build_xmage(), encoding="utf-8")
 
 
 def from_arena(path: PathLike) -> Deck:
