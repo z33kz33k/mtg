@@ -7,6 +7,7 @@
 
 """
 import os
+import re
 import shutil
 from logging import getLogger
 from pathlib import Path
@@ -130,3 +131,69 @@ def download_file(url: str, file_name="", dst_dir="") -> None:
             f.write(chunk)
             # update the progress bar manually
             progress.update(len(chunk))
+
+
+def sanitize_filename(text: str, replacement="_", remove_illegal=True) -> str:  # perplexity
+    """Sanitize a string to make it suitable for use as a filename.
+
+    Args:
+        text: the string to be sanitized.
+        replacement: the character to replace whitespace (and, optionally, illegal characters) with (default is underscore)
+        remove_illegal: whether to remove illegal characters from the string (default is True)
+
+    Returns:
+        a sanitized string suitable for a filename.
+    """
+    # remove leading and trailing whitespace
+    sanitized = text.strip()
+
+    # replace illegal characters with the replacement character
+    sanitized = re.sub(r'[<>:"/\\|?*]', "" if remove_illegal else replacement, sanitized)
+
+    # replace any sequence of whitespace with a single underscore
+    sanitized = re.sub(r'\s+', replacement, sanitized)
+
+    # ensure the filename is not too long (most file systems have a limit of 255 characters)
+    max_length = 255
+    if len(sanitized) > max_length:
+        sanitized = sanitized[:max_length]
+
+    # ensure the filename does not end with a dot or space
+    sanitized = sanitized.rstrip('. ')
+
+    return sanitized
+
+
+def truncate_path(path_str: str, max_bytes=4096, min_file_stem_length=5) -> str:
+    """Truncates a path string to fit within the specified byte limit while preserving the
+    folders' part.
+
+    Args:
+        path_str: the full path string to truncate
+        max_bytes: maximum allowed bytes for the path
+        min_file_stem_length: minimum length of the file stem to preserve
+
+    Raises:
+        ValueError: if the path is too long even after truncating the filename
+
+    Returns:
+        truncated path string
+    """
+    # convert to Path object for easier manipulation
+    path = Path(path_str).resolve()
+    path_str = str(path)
+
+    # if path is already short enough, return original
+    if len(path_str.encode()) <= max_bytes:
+        return path_str
+
+    overhead, stem = len(path_str.encode()) - max_bytes, path.stem
+    while overhead >= 0 or len(stem) > min_file_stem_length:
+        stem = stem[:-1]
+        path = path.parent / f"{stem}{path.suffix}"
+        overhead = len(str(path).encode()) - max_bytes
+
+    if overhead:
+        raise ValueError(f"Path '{path}' is still too long and cannot be further truncated")
+
+    return str(path)

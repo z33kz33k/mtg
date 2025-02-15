@@ -8,6 +8,7 @@
 """
 import json
 import logging
+from pathlib import Path
 
 from mtg import OUTPUT_DIR, PathLike
 from mtg.deck import Deck, DeckParser, Mode
@@ -18,7 +19,7 @@ from mtg.deck.scrapers.mtgarenapro import get_source as mtgarenapro_get_source
 from mtg.deck.scrapers.tcgplayer import get_source as tcgplayer_get_source
 from mtg.scryfall import Card, aggregate
 from mtg.utils import ParsingError, serialize_dates
-from mtg.utils.files import getdir, getfile
+from mtg.utils.files import getdir, getfile, sanitize_filename, truncate_path
 
 _log = logging.getLogger(__name__)
 
@@ -79,7 +80,7 @@ Name={}
             f"4c{cls.NAME_SEP}", f"4C{cls.NAME_SEP}")
         name = name.replace(f"Five{cls.NAME_SEP}Color{cls.NAME_SEP}", f"5C{cls.NAME_SEP}").replace(
             f"Four{cls.NAME_SEP}Color{cls.NAME_SEP}", f"4C{cls.NAME_SEP}")
-        return name.replace("?", "")
+        return name
 
     @classmethod
     def _remove_trailing_name_sep(cls, text: str) -> str:
@@ -103,23 +104,28 @@ Name={}
             core += f"{self._deck.theme}{self.NAME_SEP}"
         # archetype
         core += f"{self._deck.archetype.name.title()}{self.NAME_SEP}"
+        # set
+        if set_code := self._deck.latest_set:
+            core += f"{set_code.upper()}{self.NAME_SEP}"
         return self._remove_trailing_name_sep(core)
 
     def _build_filename(self) -> str:
-        # prefix (source/author)
-        source = sanitize_source(self._deck.source) if self._deck.source else ""
-        source = source.replace(".", self.NAME_SEP)
-        if (self._deck.is_meta_deck or self._deck.is_event_deck) and source:
-            prefix = source
-        else:
-            prefix = self._deck.metadata.get("author", "")
-        name = f"{prefix}{self.NAME_SEP}" if prefix else ""
+        name = ""
         # format
         if self._deck.format:
             name += f"{self._deck.format}{self.NAME_SEP}"
-        # set
-        if set_code := self._deck.latest_set:
-            name += f"{set_code.upper()}{self.NAME_SEP}"
+        # date
+        if date := self._deck.metadata.get("date"):
+            date = date.strftime("%Y%m%d")
+            name += f"{date}{self.NAME_SEP}{self.NAME_SEP}"
+        # prefix (source/author)
+        source = sanitize_source(self._deck.source) if self._deck.source else ""
+        source = source.replace(".", self.NAME_SEP)
+        if self._deck.is_meta_deck and source:
+            prefix = source
+        else:
+            prefix = self._deck.metadata.get("author", "")
+        name += f"{prefix}{self.NAME_SEP}" if prefix else ""
         # actual name
         if self._deck.name:
             name += f"{self._normalize_name(self._deck.name)}{self.NAME_SEP}"
@@ -139,10 +145,12 @@ Name={}
                 name += f"#{str(meta_place).zfill(2)}{self.NAME_SEP}"
         # event
         event_name = self._deck.metadata.get("event_name", "") or self._deck.metadata.get(
-            "event", {}).get("name", "")
+            "event", {})
+        if event_name and isinstance(event_name, dict):
+            event_name = event_name.get("name", "")
         if event_name and not self._deck.is_meta_deck:
-            name += f"{event_name}{self.NAME_SEP}"
-        return self._remove_trailing_name_sep(name)
+            name += f"Event{self.NAME_SEP}{event_name}{self.NAME_SEP}"
+        return sanitize_filename(self._remove_trailing_name_sep(name))
 
     def to_arena(self, dstdir: PathLike = "", extended=True) -> None:
         """Export deck to a MTGA deckfile text format (as a .txt file).
@@ -154,6 +162,7 @@ Name={}
         dstdir = dstdir or OUTPUT_DIR / "arena"
         dstdir = getdir(dstdir)
         dst = dstdir / f"{self._filename}.txt"
+        dst = Path(truncate_path(str(dst)))
         _log.info(f"Exporting deck to: '{dst}'...")
         dst.write_text(
             self._deck.decklist_extended if extended else self._deck.decklist, encoding="utf-8")
@@ -176,6 +185,7 @@ Name={}
         dstdir = dstdir or OUTPUT_DIR / "json"
         dstdir = getdir(dstdir)
         dst = dstdir / f"{self._filename}.json"
+        dst = Path(truncate_path(str(dst)))
         _log.info(f"Exporting deck to: '{dst}'...")
         dst.write_text(data, encoding="utf-8")
 
@@ -208,6 +218,7 @@ Name={}
         dstdir = dstdir or OUTPUT_DIR / "dck"
         dstdir = getdir(dstdir)
         dst = dstdir / f"{self._filename}.dck"
+        dst = Path(truncate_path(str(dst)))
         _log.info(f"Exporting deck to: '{dst}'...")
         dst.write_text(self._build_forge(), encoding="utf-8")
 
@@ -226,7 +237,7 @@ Name={}
             lines += [f"AUTHOR:{author}"]
         if date := self._deck.metadata.get("date"):
             lines += [f"DATE:{date}"]
-        if url := self._deck.metadata.get("url"):
+        if url := self._deck.metadata.get("video_url") or self._deck.metadata.get("url"):
             lines += [f"URL:{url}"]
         return lines
 
@@ -243,7 +254,7 @@ Name={}
         if commander:
             lines += commander
         else:
-            lines = [
+            lines += [
                 self._to_xmage_line(playset, sideboard=True) for playset in
                 aggregate(*self._deck.sideboard).values()] if self._deck.sideboard else []
         return "\n".join(lines)
@@ -257,6 +268,7 @@ Name={}
         dstdir = dstdir or OUTPUT_DIR / "dck"
         dstdir = getdir(dstdir)
         dst = dstdir / f"{self._filename}.dck"
+        dst = Path(truncate_path(str(dst)))
         _log.info(f"Exporting deck to: '{dst}'...")
         dst.write_text(self._build_xmage(), encoding="utf-8")
 
@@ -271,7 +283,6 @@ def from_arena(path: PathLike) -> Deck:
     lines = file.read_text(encoding="utf-8").splitlines()
     if not all(is_arena_line(l) or is_empty(l) for l in lines):
         raise ValueError(f"Not an MTG Arena deck file: '{file}'")
-    # TODO: parse name from About line
     deck = ArenaParser(lines).parse(
         suppress_parsing_errors=False, suppress_invalid_deck=False)
     if not deck:
@@ -321,4 +332,3 @@ def from_forge(path: PathLike) -> Deck:
     if not deck:
         raise ParsingError(f"Unable to parse '{path}' into a deck")
     return deck
-

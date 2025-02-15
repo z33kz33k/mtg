@@ -15,7 +15,7 @@ import re
 from collections import Counter as PyCounter
 from datetime import datetime
 from functools import wraps
-from typing import Any, Callable, Iterable, Optional, Protocol, Sequence, Type
+from typing import Any, Callable, Generator, Iterable, Optional, Protocol, Sequence, Type
 from datetime import date, timedelta
 
 import dateutil.parser
@@ -328,36 +328,6 @@ def multiply_by_symbol(number: float, symbol: str) -> int:
     return int(number)
 
 
-def sanitize_filename(text: str, replacement="_") -> str:  # perplexity
-    """Sanitize a string to make it suitable for use as a filename.
-
-    Args:
-        text: The string to be sanitized.
-        replacement: The character to replace invalid characters with (default is underscore).
-
-    Returns:
-        a sanitized string suitable for a filename.
-    """
-    # remove leading and trailing whitespace
-    sanitized = text.strip()
-
-    # replace invalid characters with the replacement character
-    sanitized = re.sub(r'[<>:"/\\|?*]', replacement, sanitized)
-
-    # replace any sequence of whitespace with a single underscore
-    sanitized = re.sub(r'\s+', replacement, sanitized)
-
-    # ensure the filename is not too long (most file systems have a limit of 255 characters)
-    max_length = 255
-    if len(sanitized) > max_length:
-        sanitized = sanitized[:max_length]
-
-    # ensure the filename does not end with a dot or space
-    sanitized = sanitized.rstrip('. ')
-
-    return sanitized
-
-
 def sanitize_whitespace(text: str) -> str:
     """Replace whitespace sequences longer than one space in ``text`` with a single space.
     Replace non-breaking space with a regular one.
@@ -523,3 +493,13 @@ def get_ordinal_suffix(num: int) -> str:
     """Return the ordinal suffix of ``num``.
     """
     return "th" if 11 <= num % 100 <= 13 else {1: "st", 2: "nd", 3: "rd"}.get(num % 10, "th")
+
+
+@contextlib.contextmanager
+def logging_disabled(level: int = logging.CRITICAL) -> Generator[None, None, None]:
+    previous_level = logging.root.manager.disable
+    logging.disable(level)
+    try:
+        yield
+    finally:
+        logging.disable(previous_level)

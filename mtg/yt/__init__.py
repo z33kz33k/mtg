@@ -42,8 +42,8 @@ from mtg.deck.scrapers import DeckScraper, DeckTagsContainerScraper, DeckUrlsCon
 from mtg.gstate import CoolOffManager, DecklistsStateManager, UrlsStateManager
 from mtg.scryfall import all_formats
 from mtg.utils import Counter, deserialize_dates, extract_float, find_longest_seqs, \
-    from_iterable, getrepr, multiply_by_symbol, sanitize_filename, serialize_dates, timed
-from mtg.utils.files import getdir
+    from_iterable, getrepr, multiply_by_symbol, serialize_dates, timed
+from mtg.utils.files import getdir, sanitize_filename
 from mtg.utils.scrape import ScrapingError, dissect_js, extract_source, extract_url, \
     http_requests_counted, throttled, timed_request, unshorten
 from mtg.utils.scrape.dynamic import get_dynamic_soup

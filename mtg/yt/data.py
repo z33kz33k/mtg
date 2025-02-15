@@ -14,16 +14,19 @@ from collections import defaultdict
 from dataclasses import astuple, dataclass
 from datetime import date, datetime
 from operator import attrgetter, itemgetter
+from pathlib import Path
 from types import TracebackType
 from typing import Callable, Generator, Iterator, Literal, Type
 
 import scrapetube
+from tqdm import tqdm
 
-from mtg import FILENAME_TIMESTAMP_FORMAT, PathLike, READABLE_TIMESTAMP_FORMAT, README
-from mtg.deck.export import sanitize_source
+from mtg import FILENAME_TIMESTAMP_FORMAT, OUTPUT_DIR, PathLike, READABLE_TIMESTAMP_FORMAT, README
+from mtg.deck.arena import ArenaParser
+from mtg.deck.export import Exporter, sanitize_source
 from mtg.gstate import CHANNELS_DIR, CoolOffManager, DecklistsStateManager, UrlsStateManager
-from mtg.utils import Counter, breadcrumbs, deserialize_dates, serialize_dates
-from mtg.utils.files import getdir, getfile
+from mtg.utils import Counter, breadcrumbs, deserialize_dates, logging_disabled, serialize_dates
+from mtg.utils.files import getdir, getfile, sanitize_filename
 from mtg.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
 from mtg.utils.scrape import extract_url, getsoup
 
@@ -603,3 +606,55 @@ def retrieve_video_data(
         if vids:
             channels[chid].extend(vids)
     return channels
+
+
+def _dump_data_gen(
+        channels: list[ChannelData], dstdir: Path) -> Generator[tuple[Exporter, Path], None, None]:
+    manager = DecklistsStateManager()
+    manager.load()
+    for channel_data in channels:
+        if title := channel_data.title:
+            channel_dir = dstdir / f"{sanitize_filename(title)}_({channel_data.id})"
+        else:
+            channel_dir = dstdir /channel_data.id
+        for video_data in channel_data.videos:
+            for deck_data in video_data["decks"]:
+                decklist = manager.extended[deck_data["decklist_extended_id"]]
+                metadata = dict(**deck_data["metadata"])
+                metadata["video_url"] = video_data["url"]
+                deck = ArenaParser(decklist.splitlines(), metadata=metadata).parse(
+                    suppress_invalid_deck=True, suppress_parsing_errors=True)
+                if deck:
+                    yield Exporter(deck), channel_dir
+                else:
+                    yield None, channel_dir
+
+
+def dump_decks(
+        dstdir: PathLike = "", fmt: Literal["arena", "forge", "json", "xmage"] = "xmage") -> None:
+    """Export all decks from all channels to ```dstdir``` in the format provided.
+    """
+    timestamp = datetime.now().strftime(FILENAME_TIMESTAMP_FORMAT)
+    dstdir = dstdir or OUTPUT_DIR / "decks" / timestamp
+    dstdir = getdir(dstdir)
+    channels = [*load_channels()]
+    total = sum(len(ch.decks) for ch in channels)
+    with logging_disabled():
+        for exporter, channel_dir in tqdm(
+                _dump_data_gen(channels, dstdir), total=total, desc="Exporting decks..."):
+            if exporter:
+                try:
+                    match fmt:
+                        case "arena":
+                            exporter.to_arena(channel_dir)
+                        case "forge":
+                            exporter.to_forge(channel_dir)
+                        case "json":
+                            exporter.to_json(channel_dir)
+                        case "xmage":
+                            exporter.to_xmage(channel_dir)
+                except OSError as err:
+                    if "File name too long" in str(err):
+                        pass
+                    else:
+                        raise
