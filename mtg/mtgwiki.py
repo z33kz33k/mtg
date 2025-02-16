@@ -1,7 +1,7 @@
 """
 
     mtg.mtgwiki.py
-    ~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~
     Handle MTG Wiki data.
 
     @author: z33k

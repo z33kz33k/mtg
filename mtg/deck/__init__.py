@@ -859,6 +859,7 @@ class CardNotFound(ParsingError):
     """Raised on card not being found.
     """
 
+
 SANITIZED_FORMATS = {
     "1v1 commander": "commander",
     "archon": "commander",

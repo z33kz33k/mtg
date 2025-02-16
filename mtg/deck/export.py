@@ -1,7 +1,7 @@
 """
     mtg.deck.export.py
     ~~~~~~~~~~~~~~~~~~~~
-    Export deck data to various formats (and import it back).
+    Export deck data to various file formats (and import it back).
 
     @author: z33k
 
@@ -237,6 +237,8 @@ Name={}
             lines += [f"AUTHOR:{author}"]
         if date := self._deck.metadata.get("date"):
             lines += [f"DATE:{date}"]
+        if source := sanitize_source(self._deck.source) if self._deck.source else "":
+            lines += [f"SOURCE:{source}"]
         if url := self._deck.metadata.get("video_url") or self._deck.metadata.get("url"):
             lines += [f"URL:{url}"]
         return lines

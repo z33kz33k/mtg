@@ -589,7 +589,7 @@ def retrieve_video_data(
     """Retrieve video data for specified channels. Optionally, define a video-filtering
     predicate.
 
-    The default for retrieving all videos of all channels.
+    The default is retrieving all videos of all channels.
 
     Args:
         *chids: channel IDs
@@ -609,7 +609,8 @@ def retrieve_video_data(
 
 
 def _dump_data_gen(
-        channels: list[ChannelData], dstdir: Path) -> Generator[tuple[Exporter, Path], None, None]:
+        channels: list[ChannelData],
+        dstdir: Path) -> Generator[tuple[Exporter | None, Path], None, None]:
     manager = DecklistsStateManager()
     manager.load()
     for channel_data in channels:

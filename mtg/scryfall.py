@@ -1,7 +1,7 @@
 """
 
     mtg.scryfall.py
-    ~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~
     Handle Scryfall data.
 
     @author: z33k
