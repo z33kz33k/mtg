@@ -45,7 +45,7 @@ class ArchidektDeckScraper(DeckScraper):
         fmt_tag = self._soup.find("div", class_=lambda c: c and "deckHeader_format" in c)
         if fmt_tag:
             fmt_text = fmt_tag.text
-            suffix = fmt_tag.find("div").text
+            suffix = fmt_tag.find("div").text if fmt_tag.find("div") else ""
             fmt = fmt_text.removesuffix(suffix).strip().lower()
             if "/" in fmt:
                 fmt, *_ = fmt.split("/")

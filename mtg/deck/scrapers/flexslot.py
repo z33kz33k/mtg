@@ -10,30 +10,43 @@
 import logging
 
 import dateutil.parser
-from selenium.common.exceptions import TimeoutException
 
-from mtg import Json
-from mtg.deck import Deck
-from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
-from mtg.utils.scrape import strip_url_query
-from mtg.utils.scrape.dynamic import get_dynamic_soup
+from mtg import Json, SECRETS
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.utils.scrape import ScrapingError
+from mtg.utils.scrape import strip_url_query, timed_request
 
 _log = logging.getLogger(__name__)
 CONSENT_XPATH = "//p[text()='Consent']"
+
+
+HEADERS = {
+    "Host": "api.flexslot.gg",
+    "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0",
+    "Accept": "application/json, text/plain, */*",
+    "Accept-Language": "en-US,en;q=0.5",
+    "Accept-Encoding": "gzip, deflate, br, zstd",
+    "X-Cookie-Consent": "true",
+    "X-API-Key": SECRETS["flexslot"]["api_key"],
+    "X-CSRFToken" : "",
+    "Origin": "https://flexslot.gg",
+    "Connection": "keep-alive",
+    "Referer": "https://flexslot.gg/",
+    "Cookie": SECRETS["flexslot"]["cookie"],
+    "Sec-Fetch-Dest": "empty",
+    "Sec-Fetch-Mode": "cors",
+    "Sec-Fetch-Site": "same-site",
+    "TE": "trailers",
+}
 
 
 @DeckScraper.registered
 class FlexslotDeckScraper(DeckScraper):
     """Scraper of Flexslot.gg decklist page.
     """
-    XPATH = "//h3[@class='text-center']"
-    CLIPBOARD_XPATH = "//button[contains(text(), 'Copy to Clipboard')]"
-
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        self._clipboard, self._arena_decklist = "", []
+        self._deck_data: Json | None = None
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -44,32 +57,48 @@ class FlexslotDeckScraper(DeckScraper):
         return strip_url_query(url).removesuffix("/view")
 
     def _pre_parse(self) -> None:  # override
-        try:
-            self._soup, _, self._clipboard = get_dynamic_soup(
-                self.url, self.XPATH, consent_xpath=CONSENT_XPATH,
-                clipboard_xpath=self.CLIPBOARD_XPATH)
-        except TimeoutException:
-            raise ScrapingError(f"Scraping failed due to Selenium timing out")
+        json_data = timed_request(
+            self.url.replace("https://flexslot.gg", "https://api.flexslot.gg"),
+            headers=HEADERS).json()
+        if not json_data or not json_data.get("data"):
+            raise ScrapingError("Data not available")
+        self._deck_data = json_data["data"]
 
     def _parse_metadata(self) -> None:  # override
-        if name_tag := self._soup.select_one("div.sideboardtitle.my-2.text-center"):
-            self._metadata["name"] = name_tag.text.strip()
-        elif name_tag := self._soup.find("title"):
-            self._metadata["name"] = name_tag.text.strip().removeprefix("Flexslot - ")
-        info_text = self._soup.find("h3", class_="text-center").text.strip()
-        fmt_part, author_part = info_text.split("|", maxsplit=1)
-        self._update_fmt(fmt_part.strip().removeprefix("Format: ").lower())
-        self._metadata["author"] = author_part.strip().removeprefix("Author: ")
-        if date_tag := self._soup.find("i", string=lambda s: s and "Last Updated" in s):
-            self._metadata["date"] = dateutil.parser.parse(
-                date_tag.text.strip().removeprefix("Last Updated ")).date()
+        self._metadata["name"] = self._deck_data["name"]
+        self._metadata["author"] = self._deck_data["creator"]
+        self._update_fmt(self._deck_data["format"].lower())
+        self._metadata["date"] = dateutil.parser.parse(self._deck_data["date_updated"]).date()
+        self._metadata["likes"] = self._deck_data["likes"]
+        self._metadata["views"] = self._deck_data["pageviews"]
+        if event_name := self._deck_data.get("event_name"):
+            self._metadata["event"] = {"name": event_name}
+            if event_date := self._deck_data.get("event_date"):
+                self._metadata["event"]["date"] = dateutil.parser.parse(event_date).date()
+            if player := self._deck_data.get("player"):
+                self._metadata["event"]["player"] = player
+            if rank := self._deck_data.get("rank"):
+                self._metadata["event"]["rank"] = rank
+        if archetype := self._deck_data.get("archetype"):
+            self._update_archetype(archetype)
+            self._update_custom_theme("flexslot", archetype)
 
-    def _build_deck(self) -> Deck:  # override
-        return ArenaParser(self._arena_decklist, metadata=self._metadata).parse(
-            suppress_invalid_deck=False)
+    def _parse_card_json(self, card_json: Json) -> None:
+        quantity = card_json["quantity"]
+        name = card_json["card"]["name"]
+        scryfall_id = card_json["card"]["id"]
+        card = self.find_card(name, scryfall_id=scryfall_id)
+        playset = self.get_playset(card, quantity)
+        portion = card_json["deck_portion"]
+        if portion == "side":
+            self._sideboard.extend(playset)
+        elif portion == "main":
+            self._maindeck.extend(playset)
 
     def _parse_decklist(self) -> None:  # override
-        self._arena_decklist = [line.rstrip(":") for line in self._clipboard.splitlines()]
+        for card_json in self._deck_data["deck_card_maps"]:
+            self._parse_card_json(card_json)
+        self._derive_commander_from_sideboard()
 
 
 @DeckUrlsContainerScraper.registered
