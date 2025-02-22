@@ -994,7 +994,11 @@ class DeckParser(ABC):
         else:
             card = find_by_name(name)
         if not card:
-            raise CardNotFound(f"Unable to find card {name!r}")
+            if SCRYFALL_MULTIFACE_SEPARATOR in name:
+                truncated, *_ = name.split(SCRYFALL_MULTIFACE_SEPARATOR)
+                card = find_by_name(truncated.strip())
+            if not card:
+                raise CardNotFound(f"Unable to find card {name!r}")
         return card
 
     @staticmethod
