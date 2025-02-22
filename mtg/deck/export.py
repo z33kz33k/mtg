@@ -124,7 +124,7 @@ Name={}
         if self._deck.is_meta_deck and source:
             prefix = source
         else:
-            prefix = self._deck.metadata.get("author", "")
+            prefix = self._deck.metadata.get("author", "") or source
         name += f"{prefix}{self.NAME_SEP}" if prefix else ""
         # actual name
         if self._deck.name:

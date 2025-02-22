@@ -21,7 +21,8 @@ from typing import Callable, Generator, Iterator, Literal, Type
 import scrapetube
 from tqdm import tqdm
 
-from mtg import FILENAME_TIMESTAMP_FORMAT, OUTPUT_DIR, PathLike, READABLE_TIMESTAMP_FORMAT, README
+from mtg import DECKS_DIR, FILENAME_TIMESTAMP_FORMAT, PathLike, \
+    READABLE_TIMESTAMP_FORMAT, README
 from mtg.deck.arena import ArenaParser
 from mtg.deck.export import Exporter, sanitize_source
 from mtg.gstate import CHANNELS_DIR, CoolOffManager, DecklistsStateManager, UrlsStateManager
@@ -636,13 +637,13 @@ def dump_decks(
     """Export all decks from all channels to ```dstdir``` in the format provided.
     """
     timestamp = datetime.now().strftime(FILENAME_TIMESTAMP_FORMAT)
-    dstdir = dstdir or OUTPUT_DIR / "decks" / timestamp
+    dstdir = dstdir or DECKS_DIR / "yt" / timestamp
     dstdir = getdir(dstdir)
     channels = [*load_channels()]
     total = sum(len(ch.decks) for ch in channels)
     with logging_disabled():
         for exporter, channel_dir in tqdm(
-                _dump_data_gen(channels, dstdir), total=total, desc="Exporting decks..."):
+                _dump_data_gen(channels, dstdir), total=total, desc="Exporting YT decks..."):
             if exporter:
                 try:
                     match fmt:
