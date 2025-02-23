@@ -76,6 +76,15 @@ class ArchidektDeckScraper(DeckScraper):
             self._parse_card_json(v)
 
 
+@DeckScraper.registered
+class ArchidektSnapshotScraper(ArchidektDeckScraper):
+    """Scraper of Archidekt snapshot decklist page.
+    """
+    @staticmethod
+    def is_deck_url(url: str) -> bool:  # override
+        return "archidekt.com/snapshots/" in url.lower()
+
+
 @DeckUrlsContainerScraper.registered
 class ArchidektFolderScraper(DeckUrlsContainerScraper):
     """Scraper of Archidekt folder page.
