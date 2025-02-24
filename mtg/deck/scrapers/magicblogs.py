@@ -108,10 +108,5 @@ class MagicBlogsArticleScraper(DeckTagsContainerScraper):
 
     def _collect(self) -> list[Tag]:  # override
         deck_tags = [*self._soup.find_all("div", class_="mtgh")]
-        if not deck_tags:
-            _log.warning(self._error_msg)
-            return []
-
         self._parse_metadata()
-
         return deck_tags

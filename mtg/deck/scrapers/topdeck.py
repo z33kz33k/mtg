@@ -10,8 +10,6 @@
 import logging
 from typing import Type
 
-from selenium.common import TimeoutException
-
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.deck.scrapers.aetherhub import AetherhubDeckScraper
 from mtg.deck.scrapers.archidekt import ArchidektDeckScraper
@@ -35,7 +33,6 @@ from mtg.deck.scrapers.tcgplayer import TcgPlayerDeckScraper, TcgPlayerInfiniteD
 from mtg.deck.scrapers.topdecked import TopDeckedRegularDeckScraper
 from mtg.deck.scrapers.untapped import UntappedProfileDeckScraper, UntappedRegularDeckScraper
 from mtg.utils.scrape import strip_url_query
-from mtg.utils.scrape.dynamic import get_dynamic_soup
 
 _log = logging.getLogger(__name__)
 

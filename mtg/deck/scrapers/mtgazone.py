@@ -149,10 +149,6 @@ class MtgaZoneArticleScraper(DeckTagsContainerScraper):
 
     def _collect(self) -> list[Tag]:  # override
         deck_tags = [*self._soup.find_all("div", class_="deck-block")]
-        if not deck_tags:
-            if not deck_tags:
-                _log.warning(self._error_msg)
-                return []
         return deck_tags
 
 

@@ -123,10 +123,5 @@ class PauperwaveArticleScraper(DeckTagsContainerScraper):
     def _collect(self) -> list[Tag]:  # override
         deck_tags = [*self._soup.find_all(
             "table", class_=lambda c: c and "mtg_deck" in c and "mtg_deck_embedded" in c)]
-        if not deck_tags:
-            _log.warning(self._error_msg)
-            return []
-
         self._parse_metadata()
-
         return deck_tags

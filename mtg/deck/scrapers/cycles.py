@@ -121,7 +121,4 @@ class CyclesGamingArticleScraper(DeckTagsContainerScraper):
     def _collect(self) -> list[Tag]:  # override
         self._parse_metadata()
         deck_tags = [tag for tag in self._soup.find_all("h2") if "list – " in tag.text.lower()]
-        if not deck_tags:
-            _log.warning(self._error_msg)
-            return []
         return deck_tags

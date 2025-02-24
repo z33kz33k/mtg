@@ -563,7 +563,7 @@ def discover_new_channels(
 def get_channel_ids(*urls: str, only_new=True) -> list[str]:
     retrieved_ids = set(retrieve_ids())
     ids = []
-    for url in urls:
+    for url in sorted(set(urls)):
         soup = getsoup(url)
         prefix = CHANNEL_URL_TEMPLATE[:-2]
         tag = soup.find("link", rel="canonical")

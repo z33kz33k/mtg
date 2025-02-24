@@ -13,6 +13,7 @@ import re
 import dateutil.parser
 from bs4 import Tag
 
+from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckTagsContainerScraper, TagBasedDeckParser
@@ -25,6 +26,10 @@ _log = logging.getLogger(__name__)
 class WotCDeckTagParser(TagBasedDeckParser):
     """Parser of WotC decklist HTML tag.
     """
+    def __init__(self, deck_tag: Tag, metadata: Json | None = None) -> None:
+        super().__init__(deck_tag, metadata)
+        self._locally_derived_fmt = False
+
     def _parse_metadata(self) -> None:  # override
         if name := self._deck_tag.attrs.get("deck-title"):
             self._metadata["name"] = name
@@ -32,6 +37,7 @@ class WotCDeckTagParser(TagBasedDeckParser):
             if ", " in fmt:
                 fmt, *_ = fmt.split(", ")
             self._update_fmt(fmt)
+            self._locally_derived_fmt = True
 
     def _parse_decklist(self) -> None:  # override
         pass
@@ -50,7 +56,7 @@ class WotCDeckTagParser(TagBasedDeckParser):
             raise ScrapingError("No main deck data available")
 
         lines = [self._sanitize_line(l) for l in maindeck_tag.text.strip().splitlines()]
-        if self.fmt and self.fmt in COMMANDER_FORMATS:
+        if self.fmt and self._locally_derived_fmt and self.fmt in COMMANDER_FORMATS:
             lines.insert(0, "Commander")
             lines.insert(2, "")
             lines.insert(3, "Deck")
@@ -85,10 +91,5 @@ class WotCArticleScraper(DeckTagsContainerScraper):
 
     def _collect(self) -> list[Tag]:  # override
         deck_tags = [*self._soup.find_all("deck-list")]
-        if not deck_tags:
-            _log.warning(self._error_msg)
-            return []
-
         self._parse_metadata()
-
         return deck_tags
