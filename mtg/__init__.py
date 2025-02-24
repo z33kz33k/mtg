@@ -118,6 +118,7 @@ from mtg.deck.scrapers.tcdecks import DeckScraper
 from mtg.deck.scrapers.tcgplayer import DeckScraper
 from mtg.deck.scrapers.topdecked import DeckScraper
 from mtg.deck.scrapers.untapped import DeckScraper
+from mtg.deck.scrapers.wotc import DeckTagsContainerScraper
 # those should be last as they use statically some of those above
 from mtg.deck.scrapers.fireball import DeckScraper
 from mtg.deck.scrapers.edhtop16 import DeckUrlsContainerScraper

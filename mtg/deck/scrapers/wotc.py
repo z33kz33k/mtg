@@ -25,7 +25,6 @@ _log = logging.getLogger(__name__)
 class WotCDeckTagParser(TagBasedDeckParser):
     """Parser of WotC decklist HTML tag.
     """
-
     def _parse_metadata(self) -> None:  # override
         if name := self._deck_tag.attrs.get("deck-title"):
             self._metadata["name"] = name
@@ -42,6 +41,7 @@ class WotCDeckTagParser(TagBasedDeckParser):
         line = line.strip()
         if line and not line[0].isdigit():
             line = "1 " + line
+        # cleans gibberish in square brackets in lines like '1 Arcane Signet[45dhxuab676gfah]'
         return re.sub(r'\[[a-zA-Z0-9]+?\]', '', line).strip()
 
     def _build_deck(self) -> Deck:  # override
