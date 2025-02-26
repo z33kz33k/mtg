@@ -71,6 +71,7 @@ YT videos descriptions).
       possibilities already :))
     * Both Aetherhub decklist types featured in YT videos are supported: regular deck and write-up deck
     * Both Archidekt decklist types featured in YT videos are supported: regular deck and snapshot deck
+    * Both EDHREC decklist types featured in YT videos are supported: preview deck and average deck
     * Both Untapped decklist types featured in YT videos are supported: regular deck and profile deck
     * Both old TCGPlayer site and TCGPlayer Infinite are supported
     * Both international and native Hareruya sites are supported 
