@@ -36,8 +36,8 @@ def _get_deck_data(url: str) -> tuple[Json, BeautifulSoup]:
 
 
 @DeckScraper.registered
-class EdhRecDeckScraper(DeckScraper):
-    """Scraper of EDHREC decklist page.
+class EdhRecPreviewDeckScraper(DeckScraper):
+    """Scraper of EDHREC preview decklist page.
     """
     COLORS_TO_BASIC_LANDS = {
         "W": "Plains",
@@ -56,10 +56,6 @@ class EdhRecDeckScraper(DeckScraper):
             cards.append(self._partner_commander)
         cards += self._maindeck
         return cards
-
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        self._deck_data: Json | None = None
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -104,3 +100,42 @@ class EdhRecDeckScraper(DeckScraper):
             self._set_commander(card)
 
         self._add_basic_lands()
+
+
+# @DeckScraper.registered
+# class EdhRecAverageDeckScraper(DeckScraper):
+#     """Scraper of EDHREC average decklist page.
+#     """
+#     @staticmethod
+#     def is_deck_url(url: str) -> bool:  # override
+#         return "edhrec.com/" in url.lower() and "/average-decks/" in url.lower()
+#
+#     def _pre_parse(self) -> None:  # override
+#         self._deck_data, self._soup = _get_deck_data(self.url)
+#
+#     def _parse_metadata(self) -> None:  # override
+#         self._update_fmt("commander")
+#         self._metadata["date"] = datetime.fromisoformat(self._deck_data["savedate"]).date()
+#         if header := self._deck_data.get("header"):
+#             self._metadata["name"] = header
+#         self._metadata["is_cedh"] = self._deck_data["cedh"]
+#         if edhrec_tags := self._deck_data.get("edhrec_tags"):
+#             self._metadata["edhrec_tags"] = edhrec_tags
+#         if tags := self._deck_data.get("tags"):
+#             self._metadata["tags"] = tags
+#         if salt := self._deck_data.get("salt"):
+#             self._metadata["salt"] = salt
+#         if theme := self._deck_data.get("theme"):
+#             self._metadata["theme"] = theme
+#         if tribe := self._deck_data.get("tribe"):
+#             self._metadata["tribe"] = tribe
+#
+#     def _parse_decklist(self) -> None:  # override
+#         for card_name in self._deck_data["cards"]:
+#             self._maindeck += self.get_playset(self.find_card(card_name), 1)
+#
+#         for card_name in [c for c in self._deck_data["commanders"] if c]:
+#             card = self.find_card(card_name)
+#             self._set_commander(card)
+
+

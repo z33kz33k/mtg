@@ -9,16 +9,16 @@
 """
 import itertools
 import logging
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 
 import backoff
 from bs4 import BeautifulSoup
 from requests import Response
 
 from mtg import Json
-from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.scryfall import Card
-from mtg.utils.scrape import ScrapingError, Throttling, dissect_js, request_json, strip_url_query, \
+from mtg.utils.scrape import ScrapingError, dissect_js, request_json, strip_url_query, \
     throttle, timed_request
 
 _log = logging.getLogger(__name__)
@@ -60,10 +60,6 @@ def _backoff_handler(details: dict) -> None:
 class DeckstatsDeckScraper(DeckScraper):
     """Scraper of Deckstats decklist page.
     """
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        self._json_data: Json | None = None
-
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         if "deckstats.net/decks/" not in url.lower():
@@ -91,7 +87,7 @@ class DeckstatsDeckScraper(DeckScraper):
     def _get_response(self) -> Response | None:
         return timed_request(self.url, handle_http_errors=False)
 
-    def _get_json(self) -> Json:
+    def _get_deck_data(self) -> Json:
         return dissect_js(
             self._soup, "init_deck_data(", "deck_display();", lambda s: s.removesuffix(", false);"))
 
@@ -105,21 +101,21 @@ class DeckstatsDeckScraper(DeckScraper):
                 raise ScrapingError("Deck does not exist")
             elif "You do not have access to this page." in error_tag.text:
                 raise ScrapingError("Access to deck page denied (is the deck private perhaps?)")
-        self._json_data = self._get_json()
+        self._deck_data = self._get_deck_data()
 
     def _parse_metadata(self) -> None:  # override
         author_text = self._soup.find("div", id="deck_folder_subtitle").text.strip()
         self._metadata["author"] = author_text.removeprefix("in  ").removesuffix("'s Decks")
-        self._metadata["name"] = self._json_data["name"]
-        self._metadata["views"] = self._json_data["views"]
-        if self._json_data.get("format_id"):
-            fmt = _FORMATS.get(self._json_data["format_id"])
+        self._metadata["name"] = self._deck_data["name"]
+        self._metadata["views"] = self._deck_data["views"]
+        if self._deck_data.get("format_id"):
+            fmt = _FORMATS.get(self._deck_data["format_id"])
             if fmt:
                 self._update_fmt(fmt)
-        self._metadata["date"] = datetime.fromtimestamp(self._json_data["updated"], UTC).date()
-        if tags := self._json_data.get("tags"):
+        self._metadata["date"] = datetime.fromtimestamp(self._deck_data["updated"], UTC).date()
+        if tags := self._deck_data.get("tags"):
             self._metadata["tags"] = tags
-        if description := self._json_data.get("description"):
+        if description := self._deck_data.get("description"):
             self._metadata["description"] = description
 
     def _parse_card_json(self, card_json: Json) -> list[Card]:
@@ -138,10 +134,10 @@ class DeckstatsDeckScraper(DeckScraper):
 
     def _parse_decklist(self) -> None:  # override
         cards = itertools.chain(
-            *[section["cards"] for section in self._json_data["sections"]])
+            *[section["cards"] for section in self._deck_data["sections"]])
         for card_json in cards:
             self._maindeck.extend(self._parse_card_json(card_json))
-        if sideboard := self._json_data.get("sideboard"):
+        if sideboard := self._deck_data.get("sideboard"):
             for card_json in sideboard:
                 self._sideboard.extend(self._parse_card_json(card_json))
 

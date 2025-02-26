@@ -31,7 +31,6 @@ class MoxfieldDeckScraper(DeckScraper):
             self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
         *_, self._decklist_id = self.url.split("/")
-        self._json_data: Json | None = None
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -45,30 +44,33 @@ class MoxfieldDeckScraper(DeckScraper):
         return url.rstrip(".,")
 
     def _pre_parse(self) -> None:  # override
-        self._json_data = get_selenium_json(self.API_URL_TEMPLATE.format(self._decklist_id))
-        if not self._json_data or not self._json_data.get("boards"):
+        self._deck_data = get_selenium_json(self.API_URL_TEMPLATE.format(self._decklist_id))
+        if not self._deck_data or not self._deck_data.get("boards"):
             raise ScrapingError("Data not available")
 
     def _parse_metadata(self) -> None:  # override
-        fmt = self._json_data["format"].lower()
+        fmt = self._deck_data["format"].lower()
         self._update_fmt(fmt)
-        name = self._json_data["name"]
+        name = self._deck_data["name"]
         if " - " in name:
             *_, name = name.split(" - ")
         self._metadata["name"] = name
-        self._metadata["likes"] = self._json_data["likeCount"]
-        self._metadata["views"] = self._json_data["viewCount"]
-        self._metadata["comments"] = self._json_data["commentCount"]
-        self._metadata["author"] = self._json_data["createdByUser"]["displayName"]
+        self._metadata["likes"] = self._deck_data["likeCount"]
+        self._metadata["views"] = self._deck_data["viewCount"]
+        self._metadata["comments"] = self._deck_data["commentCount"]
+        self._metadata["author"] = self._deck_data["createdByUser"]["displayName"]
         try:
             self._metadata["date"] = datetime.strptime(
-                self._json_data["lastUpdatedAtUtc"], "%Y-%m-%dT%H:%M:%S.%fZ").date()
+                self._deck_data["lastUpdatedAtUtc"], "%Y-%m-%dT%H:%M:%S.%fZ").date()
         except ValueError:  # no fractional seconds part in the date string
             self._metadata["date"] = datetime.strptime(
-                self._json_data["lastUpdatedAtUtc"], "%Y-%m-%dT%H:%M:%SZ").date()
-
-        if desc := self._json_data["description"]:
+                self._deck_data["lastUpdatedAtUtc"], "%Y-%m-%dT%H:%M:%SZ").date()
+        if desc := self._deck_data["description"]:
             self._metadata["description"] = desc
+        if hubs := self._deck_data.get("hubs"):
+            self._metadata["hubs"] = hubs
+        if edh_bracket := self._deck_data.get("autoBracket"):
+            self._metadata["edh_bracket"] = edh_bracket
 
     @classmethod
     def _to_playset(cls, json_card: Json) -> list[Card]:
@@ -78,19 +80,19 @@ class MoxfieldDeckScraper(DeckScraper):
         return cls.get_playset(cls.find_card(name, scryfall_id=scryfall_id), quantity)
 
     def _parse_decklist(self) -> None:  # override
-        for card in self._json_data["boards"]["mainboard"]["cards"].values():
+        for card in self._deck_data["boards"]["mainboard"]["cards"].values():
             self._maindeck.extend(self._to_playset(card))
-        for card in self._json_data["boards"]["sideboard"]["cards"].values():
+        for card in self._deck_data["boards"]["sideboard"]["cards"].values():
             self._sideboard.extend(self._to_playset(card))
         # Oathbreaker is not fully supported by Deck objects
-        if signature_spells := self._json_data["boards"]["signatureSpells"]:
+        if signature_spells := self._deck_data["boards"]["signatureSpells"]:
             for card in signature_spells["cards"].values():
                 self._maindeck.extend(self._to_playset(card))
-        for card in self._json_data["boards"]["commanders"]["cards"].values():
+        for card in self._deck_data["boards"]["commanders"]["cards"].values():
             result = self._to_playset(card)
             self._set_commander(result[0])
-        if self._json_data["boards"]["companions"]["cards"]:
-            card = next(iter(self._json_data["boards"]["companions"]["cards"].items()))[1]
+        if self._deck_data["boards"]["companions"]["cards"]:
+            card = next(iter(self._deck_data["boards"]["companions"]["cards"].items()))[1]
             result = self._to_playset(card)
             self._companion = result[0]
 

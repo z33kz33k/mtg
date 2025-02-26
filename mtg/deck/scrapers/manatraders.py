@@ -21,10 +21,6 @@ _log = logging.getLogger(__name__)
 class ManatradersDeckScraper(DeckScraper):
     """Scraper of Manatraders decklist page.
     """
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        self._json_data: Json | None = None
-
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         if "manatraders.com/webshop/personal/" in url.lower():
@@ -37,7 +33,7 @@ class ManatradersDeckScraper(DeckScraper):
     def sanitize_url(url: str) -> str:  # override
         return strip_url_query(url)
 
-    def _get_json_data(self) -> Json:
+    def _get_deck_data(self) -> Json:
         json_data = self._soup.find(
             "div", {"data-react-class": "WebshopApp"}).attrs["data-react-props"]
         return json.loads(json_data)["deck"]
@@ -46,14 +42,14 @@ class ManatradersDeckScraper(DeckScraper):
         self._soup = getsoup(self.url)
         if not self._soup:
             raise ScrapingError("Page not available")
-        self._json_data = self._get_json_data()
+        self._deck_data = self._get_deck_data()
 
     def _parse_metadata(self) -> None:  # override
-        self._metadata["name"] = self._json_data["name"]
-        if author := self._json_data.get("playerName"):
+        self._metadata["name"] = self._deck_data["name"]
+        if author := self._deck_data.get("playerName"):
             self._metadata["author"] = author
-        self._update_fmt(self._json_data["format"])
-        self._metadata["archetype"] = self._json_data["archetype"]
+        self._update_fmt(self._deck_data["format"])
+        self._metadata["archetype"] = self._deck_data["archetype"]
 
     def _parse_card_json(self, card_json: Json) -> None:
         name = card_json["name"]
@@ -64,7 +60,7 @@ class ManatradersDeckScraper(DeckScraper):
             self._sideboard += self.get_playset(card, sideboard_qty)
 
     def _parse_decklist(self) -> None:  # override
-        for card_data in self._json_data["cards"].values():
+        for card_data in self._deck_data["cards"].values():
             self._parse_card_json(card_data)
         self._derive_commander_from_sideboard()
 

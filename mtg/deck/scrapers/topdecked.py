@@ -129,12 +129,12 @@ class TopDeckedRegularDeckScraper(DeckScraper):
             self._arena_decklist.insert(1, commander_line)
             self._arena_decklist.insert(2, "")
 
-    def _build_deck(self) -> Deck:  # override
-        return ArenaParser(self._arena_decklist, self._metadata).parse(suppress_invalid_deck=False)
-
     def _parse_decklist(self) -> None:  # override
         if self.fmt and self.fmt in COMMANDER_FORMATS:
             self._handle_commander()
+
+    def _build_deck(self) -> Deck:  # override
+        return ArenaParser(self._arena_decklist, self._metadata).parse(suppress_invalid_deck=False)
 
 
 @DeckScraper.registered

@@ -20,7 +20,7 @@ from mtg.deck.scrapers import DeckScraper
 from mtg.scryfall import Card
 from mtg.utils import logging_disabled, timed
 from mtg.utils.files import getdir
-from mtg.utils.scrape import ScrapingError, getsoup, throttle, timed_request
+from mtg.utils.scrape import ScrapingError, getsoup, request_json, throttle
 
 _log = logging.getLogger(__name__)
 URL = "https://mtgjson.com/api/v5/decks/"
@@ -39,7 +39,7 @@ class MtgJsonDeckScraper(DeckScraper):
         return "mtgjson.com/api/v5/decks/" in url.lower() and url.lower().endswith(".json")
 
     def _pre_parse(self) -> None:  # override
-        json_data = timed_request(self.url).json()
+        json_data = request_json(self.url)
         if not json_data or not json_data.get("data"):
             raise ScrapingError("Data not available")
         self._metadata["date"] = datetime.fromisoformat(json_data["meta"]["date"]).date()

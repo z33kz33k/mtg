@@ -29,7 +29,6 @@ class StreamdeckerDeckScraper(DeckScraper):
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
         *_, self._decklist_id = self.url.split("/")
-        self._json_data: Json | None = None
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -46,19 +45,19 @@ class StreamdeckerDeckScraper(DeckScraper):
             raise ScrapingError("Request timed out")
         if not json_data or not json_data.get("data") or json_data["data"] == {"deck": {}}:
             raise ScrapingError("Data not available")
-        self._json_data = json_data["data"]
+        self._deck_data = json_data["data"]
 
     def _parse_date(self) -> date | None:
-        date_text = self._json_data["updatedAt"]
+        date_text = self._deck_data["updatedAt"]
         return get_date_from_ago_text(date_text)
 
     def _parse_metadata(self) -> None:  # override
         self._metadata.update({
-            "name": self._json_data["name"],
-            "views": self._json_data["views"]["counter"]
+            "name": self._deck_data["name"],
+            "views": self._deck_data["views"]["counter"]
         })
-        self._metadata["author"] = self._json_data["userProfile"]["displayName"]
-        self._metadata["author_twitch_id"] = self._json_data["userProfile"]["twitchId"]
+        self._metadata["author"] = self._deck_data["userProfile"]["displayName"]
+        self._metadata["author_twitch_id"] = self._deck_data["userProfile"]["twitchId"]
         if dt := self._parse_date():
             self._metadata["date"] = dt
 
@@ -78,7 +77,7 @@ class StreamdeckerDeckScraper(DeckScraper):
             self._companion = card
 
     def _parse_decklist(self) -> None:
-        for json_card in self._json_data["cardList"]:
+        for json_card in self._deck_data["cardList"]:
             self._parse_json_card(json_card)
 
 

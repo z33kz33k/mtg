@@ -27,7 +27,6 @@ class MtgStocksDeckScraper(DeckScraper):
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        self._deck_data: Json | None = None
         self._deck_id = self._parse_deck_id()
 
     @staticmethod

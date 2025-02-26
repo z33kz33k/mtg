@@ -44,7 +44,7 @@ class MtgSearchItDeckScraper(DeckScraper):
 
     def _pre_parse(self) -> None:  # override
         try:
-            self._soup, _, self._clipboard = get_dynamic_soup(self.url, self.XPATH)
+            self._soup, _, _ = get_dynamic_soup(self.url, self.XPATH)
         except TimeoutException:
             raise ScrapingError(f"Scraping failed due to Selenium timing out")
 
@@ -61,12 +61,12 @@ class MtgSearchItDeckScraper(DeckScraper):
         img_tag = a_tag.find("img")
         self._metadata["author"] = img_tag.attrs["alt"].removesuffix(" | Icon")
 
-    def _build_deck(self) -> Deck:  # override
-        return ArenaParser(self._arena_decklist.splitlines(), metadata=self._metadata).parse(
-            suppress_invalid_deck=False)
-
     def _parse_decklist(self) -> None:  # override
         tokens = "container text hide".split()
         decklist_tag = self._soup.find(
             "section", class_=lambda c: c and all(t in c for t in tokens))
         self._arena_decklist = decklist_tag.text.strip()
+
+    def _build_deck(self) -> Deck:  # override
+        return ArenaParser(self._arena_decklist.splitlines(), metadata=self._metadata).parse(
+            suppress_invalid_deck=False)

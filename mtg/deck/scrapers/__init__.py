@@ -45,7 +45,8 @@ class DeckScraper(DeckParser):
         self._validate_url(url)
         super().__init__(metadata)
         self._url = self.sanitize_url(url)
-        self._soup: BeautifulSoup | None = None
+        self._soup: BeautifulSoup | None = None  # for HTML-based scraping
+        self._deck_data: Json | None = None  # for JSON-based scraping
         self._metadata["url"] = self.url
         self._metadata["source"] = extract_source(self.url)
 
@@ -177,7 +178,7 @@ class JsonBasedDeckParser(DeckParser):
         raise NotImplementedError
 
 
-_Collected = str | Tag | Json
+type _Collected = str | Tag | Json
 
 
 class ContainerScraper(DeckParser):
@@ -223,7 +224,8 @@ class ContainerScraper(DeckParser):
         if "container_url" in self._metadata:
             self._metadata["outer_container_url"] = self._metadata["container_url"]
         self._metadata["container_url"] = self.url
-        self._soup: BeautifulSoup | None = None
+        self._soup: BeautifulSoup | None = None  # for HTML-based scraping
+        self._deck_data: Json | None = None  # for JSON-based scraping
 
     @classmethod
     def _validate_url(cls, url):

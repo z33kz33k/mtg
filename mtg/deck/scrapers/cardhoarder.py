@@ -29,10 +29,6 @@ class CardhoarderDeckScraper(DeckScraper):
     """
     XPATH = "//div[contains(@id, 'deck-viewer')]"
 
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        self._deck_data: Json | None = None
-
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "cardhoarder.com/d/" in url.lower()

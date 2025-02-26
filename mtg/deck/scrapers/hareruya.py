@@ -111,7 +111,6 @@ class JapaneseHareruyaDeckScraper(DeckScraper):
         else:
             rest, self._display_token = self.url, ""
         *_, self._decklist_id = rest.split("/")
-        self._json_data: Json | None = None
 
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
@@ -126,37 +125,37 @@ class JapaneseHareruyaDeckScraper(DeckScraper):
         return url
 
     def _pre_parse(self) -> None:  # override
-        self._json_data = request_json(
+        self._deck_data = request_json(
             self.API_URL_TEMPLATE.format(self._decklist_id, self._display_token))
-        if not self._json_data:
+        if not self._deck_data:
             raise ScrapingError("Data not available")
 
     def _parse_metadata(self) -> None:  # override
-        fmt = self._json_data["format_name_en"]
+        fmt = self._deck_data["format_name_en"]
         self._update_fmt(fmt)
-        self._metadata["name"] = self._json_data["deck_name"]
-        self._metadata["author"] = self._json_data["nickname"]
-        if arch := self._json_data.get("archetype_name_en"):
+        self._metadata["name"] = self._deck_data["deck_name"]
+        self._metadata["author"] = self._deck_data["nickname"]
+        if arch := self._deck_data.get("archetype_name_en"):
             self._update_custom_theme("hareruya", arch)
-        self._metadata["deck_type"] = self._json_data["deck_type"]
-        if event_name := self._json_data.get("event_name_en"):
+        self._metadata["deck_type"] = self._deck_data["deck_type"]
+        if event_name := self._deck_data.get("event_name_en"):
             self._metadata.setdefault("event", {})
             self._metadata["event"]["name"] = event_name
-        if event_date := self._json_data.get("event_date"):
+        if event_date := self._deck_data.get("event_date"):
             self._metadata.setdefault("event", {})
             self._metadata["event"]["date"] = dateutil.parser.parse(event_date).date()
-        if event_player := self._json_data.get("player_name"):
+        if event_player := self._deck_data.get("player_name"):
             self._metadata.setdefault("event", {})
             self._metadata["event"]["player"] = event_player
-        if event_result := self._json_data.get("result"):
+        if event_result := self._deck_data.get("result"):
             self._metadata.setdefault("event", {})
             self._metadata["event"]["result"] = event_result
-        if event_ranking := self._json_data.get("ranking"):
+        if event_ranking := self._deck_data.get("ranking"):
             self._metadata.setdefault("event", {})
             self._metadata["event"]["ranking"] = event_ranking
-        if source_url := self._json_data.get("source_url"):
+        if source_url := self._deck_data.get("source_url"):
             self._metadata["original_source"] = source_url
-        self._metadata["date"] = dateutil.parser.parse(self._json_data["update_date"]).date()
+        self._metadata["date"] = dateutil.parser.parse(self._deck_data["update_date"]).date()
 
     def _process_card(self, json_card: Json) -> None:
         quantity = json_card["count"]
@@ -169,7 +168,7 @@ class JapaneseHareruyaDeckScraper(DeckScraper):
             self._set_commander(self.find_card(name))
 
     def _parse_decklist(self) -> None:  # override
-        for card in self._json_data["cards"]:
+        for card in self._deck_data["cards"]:
             self._process_card(card)
 
 

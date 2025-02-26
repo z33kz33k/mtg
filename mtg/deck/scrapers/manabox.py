@@ -12,7 +12,6 @@ import logging
 import dateutil.parser
 from bs4 import Tag
 
-from mtg import Json
 from mtg.deck.scrapers import DeckScraper
 from mtg.scryfall import Card
 from mtg.utils.scrape import ScrapingError
@@ -25,10 +24,6 @@ _log = logging.getLogger(__name__)
 class ManaBoxDeckScraper(DeckScraper):
     """Scraper of ManaBox decklist page.
     """
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        self._deck_tag: Tag | None = None
-
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "manabox.app/decks/" in url.lower()

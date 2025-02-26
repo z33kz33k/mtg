@@ -13,8 +13,7 @@ import dateutil.parser
 
 from mtg import Json, SECRETS
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
-from mtg.utils.scrape import ScrapingError
-from mtg.utils.scrape import strip_url_query, timed_request
+from mtg.utils.scrape import ScrapingError, request_json, strip_url_query
 
 _log = logging.getLogger(__name__)
 CONSENT_XPATH = "//p[text()='Consent']"
@@ -44,10 +43,6 @@ HEADERS = {
 class FlexslotDeckScraper(DeckScraper):
     """Scraper of Flexslot.gg decklist page.
     """
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        self._deck_data: Json | None = None
-
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "flexslot.gg/decks/" in url.lower()
@@ -57,9 +52,9 @@ class FlexslotDeckScraper(DeckScraper):
         return strip_url_query(url).removesuffix("/view")
 
     def _pre_parse(self) -> None:  # override
-        json_data = timed_request(
+        json_data = request_json(
             self.url.replace("https://flexslot.gg", "https://api.flexslot.gg"),
-            headers=HEADERS).json()
+            headers=HEADERS)
         if not json_data or not json_data.get("data"):
             raise ScrapingError("Data not available")
         self._deck_data = json_data["data"]

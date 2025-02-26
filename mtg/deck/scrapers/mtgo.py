@@ -133,9 +133,7 @@ class MtgoDeckScraper(DeckScraper):
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        self._json_data: Json | None = None
         self._player_name = self._parse_player_name()
-        self._decks_data = []
         self._deck_parser: MtgoDeckJsonParser | None = None
 
     @staticmethod
@@ -155,15 +153,15 @@ class MtgoDeckScraper(DeckScraper):
         self._soup = getsoup(self.url)
         if not self._soup:
             raise ScrapingError("Page not available")
-        self._json_data = _get_json(self._soup)
-        self._decks_data = _get_decks_data(self._json_data)
+        json_data = _get_json(self._soup)
+        decks_data = _get_decks_data(json_data)
         deck_data = from_iterable(
-            self._decks_data, lambda d: d["player"] == self._player_name)
+            decks_data, lambda d: d["player"] == self._player_name)
         if not deck_data:
             raise ScrapingError(f"Deck designated by {self._player_name!r} not found")
-        if rank_data := self._json_data.get("final_rank"):
+        if rank_data := json_data.get("final_rank"):
             _process_ranks(rank_data, deck_data)
-        self._metadata.update(_get_event_metadata(self._json_data))
+        self._metadata.update(_get_event_metadata(json_data))
         self._deck_parser = MtgoDeckJsonParser(deck_data, self._metadata)
 
     def _parse_metadata(self) -> None:  # override

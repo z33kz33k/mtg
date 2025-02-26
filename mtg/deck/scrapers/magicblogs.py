@@ -8,7 +8,6 @@
 
 """
 import logging
-from datetime import datetime
 
 from bs4 import Tag
 

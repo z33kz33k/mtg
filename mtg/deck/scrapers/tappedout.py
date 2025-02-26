@@ -98,14 +98,14 @@ class TappedoutDeckScraper(DeckScraper):
                 if views := value_col.text.strip():
                     self._metadata["views"] = extract_int(views)
 
-    def _build_deck(self) -> Deck:  # override
-        return ArenaParser(self._arena_decklist, self._metadata).parse(suppress_invalid_deck=False)
-
     def _parse_decklist(self) -> None:  # override
         lines = self._soup.find("textarea", id="mtga-textarea").text.strip().splitlines()
         _, name_line, _, _, *lines = lines
         self._arena_decklist = [*lines]
         self._metadata["name"] = name_line.removeprefix("Name ")
+
+    def _build_deck(self) -> Deck:  # override
+        return ArenaParser(self._arena_decklist, self._metadata).parse(suppress_invalid_deck=False)
 
 
 @DeckUrlsContainerScraper.registered

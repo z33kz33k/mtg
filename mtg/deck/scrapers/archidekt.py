@@ -22,10 +22,6 @@ _log = logging.getLogger(__name__)
 class ArchidektDeckScraper(DeckScraper):
     """Scraper of Archidekt decklist page.
     """
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        self._deck_data: Json | None = None
-
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return "archidekt.com/decks/" in url.lower()
@@ -55,6 +51,10 @@ class ArchidektDeckScraper(DeckScraper):
         self._metadata["views"] = self._deck_data["viewCount"]
         date_text = self._deck_data["updatedAt"].replace("Z", "+00:00")
         self._metadata["date"] = datetime.fromisoformat(date_text).date()
+        if edh_bracket := self._deck_data.get("edhBracket"):
+            self._metadata["edh_bracket"] = edh_bracket
+        if tags := self._deck_data.get("deckTags"):
+            self._metadata["tags"] = tags
 
     def _parse_card_json(self, card_json: Json) -> None:
         name = card_json["name"]

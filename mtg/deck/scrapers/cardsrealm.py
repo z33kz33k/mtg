@@ -51,10 +51,6 @@ def to_eng_url(url: str, lang_code_delimiter: str) -> str:
 class CardsrealmDeckScraper(DeckScraper):
     """Scraper of Cardsrealm decklist page.
     """
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        self._json_data: Json | None = None
-
     @staticmethod
     def is_deck_url(url: str) -> bool:  # override
         return f"{BASIC_DOMAIN}/" in url.lower() and "/decks/" in url.lower()
@@ -64,7 +60,7 @@ class CardsrealmDeckScraper(DeckScraper):
         url = strip_url_query(url)
         return to_eng_url(url, "/decks/")
 
-    def _get_json(self) -> Json:
+    def _get_deck_data(self) -> Json:
         def process(text: str) -> str:
             obj, _ = text.rsplit("]", maxsplit=1)
             return obj + "]"
@@ -75,10 +71,10 @@ class CardsrealmDeckScraper(DeckScraper):
         self._soup = getsoup(self.url)
         if not self._soup:
             raise ScrapingError("Page not available")
-        self._json_data = self._get_json()
+        self._deck_data = self._get_deck_data()
 
     def _parse_metadata(self) -> None:  # override
-        card_data = self._json_data[0]
+        card_data = self._deck_data[0]
         self._metadata["name"] = card_data["deck_title"]
         self._metadata["date"] = dateutil.parser.parse(card_data["deck_lastchange"]).date()
         self._metadata["author"] = card_data["givenNameUser"]
@@ -96,7 +92,7 @@ class CardsrealmDeckScraper(DeckScraper):
             self._maindeck += self.get_playset(card, quantity)
 
     def _parse_decklist(self) -> None:  # override
-        for card_data in self._json_data:
+        for card_data in self._deck_data:
             self._parse_card_json(card_data)
         self._derive_commander_from_sideboard()
 
