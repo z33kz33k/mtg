@@ -65,7 +65,7 @@ class WotCDeckTagParser(TagBasedDeckParser):
         if sideboard_tag := self._deck_tag.find("sideboard") or self._deck_tag.find(
                 "side-board") or self._deck_tag.find("side") or self._deck_tag.find("side-deck"):
             lines += ["", "Sideboard"]
-            lines += [self._sanitize_line(l) for l in sideboard_tag.text.splitlines()]
+            lines += [self._sanitize_line(l) for l in sideboard_tag.text.strip().splitlines()]
 
         return ArenaParser(lines, dict(self._metadata)).parse(suppress_invalid_deck=False)
 
