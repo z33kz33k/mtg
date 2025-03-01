@@ -9,12 +9,16 @@
 """
 import json
 import logging
+import re
 from datetime import datetime
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
+import dateutil.parser
 
-from mtg import Json
-from mtg.deck.scrapers import DeckScraper
+from mtg import DeckTagsContainerScraper, Json
+from mtg.deck import Deck
+from mtg.deck.arena import ArenaParser
+from mtg.deck.scrapers import DeckScraper, TagBasedDeckParser
 from mtg.scryfall import Card
 from mtg.utils.scrape import ScrapingError
 from mtg.utils.scrape import getsoup
@@ -22,21 +26,21 @@ from mtg.utils.scrape import getsoup
 _log = logging.getLogger(__name__)
 
 
-def _get_deck_data(url: str) -> tuple[Json, BeautifulSoup]:
+def _get_data(url: str, data_key="data") -> tuple[Json, BeautifulSoup]:
     soup = getsoup(url)
     if not soup:
         raise ScrapingError("Page not available")
     script_tag = soup.find("script", id="__NEXT_DATA__")
     try:
         data = json.loads(script_tag.text)
-        deck_data = data["props"]["pageProps"]["data"]
+        deck_data = data["props"]["pageProps"][data_key]
     except (AttributeError, KeyError):
         raise ScrapingError("Deck data not available")
     return deck_data, soup
 
 
 @DeckScraper.registered
-class EdhRecPreviewDeckScraper(DeckScraper):
+class EdhrecPreviewDeckScraper(DeckScraper):
     """Scraper of EDHREC preview decklist page.
     """
     COLORS_TO_BASIC_LANDS = {
@@ -62,7 +66,7 @@ class EdhRecPreviewDeckScraper(DeckScraper):
         return "edhrec.com/" in url.lower() and "/deckpreview/" in url.lower()
 
     def _pre_parse(self) -> None:  # override
-        self._deck_data, self._soup = _get_deck_data(self.url)
+        self._deck_data, self._soup = _get_data(self.url)
 
     def _parse_metadata(self) -> None:  # override
         self._update_fmt("commander")
@@ -103,7 +107,7 @@ class EdhRecPreviewDeckScraper(DeckScraper):
 
 
 @DeckScraper.registered
-class EdhRecAverageDeckScraper(DeckScraper):
+class EdhrecAverageDeckScraper(DeckScraper):
     """Scraper of EDHREC average decklist page.
     """
     @staticmethod
@@ -111,7 +115,7 @@ class EdhRecAverageDeckScraper(DeckScraper):
         return "edhrec.com/" in url.lower() and "/average-decks/" in url.lower()
 
     def _pre_parse(self) -> None:  # override
-        self._deck_data, self._soup = _get_deck_data(self.url)
+        self._deck_data, self._soup = _get_data(self.url)
 
     def _parse_metadata(self) -> None:  # override
         self._update_fmt("commander")
@@ -130,3 +134,77 @@ class EdhRecAverageDeckScraper(DeckScraper):
                     self._set_commander(card)
                 else:
                     self._maindeck += self.get_playset(card, int(qty))
+
+
+class EdhrecArticleDeckParser(TagBasedDeckParser):
+    """Parser of an EDHREC decklist HTML tag (that lives inside <script> JSON data).
+    """
+    def __init__(self, deck_tag: Tag, metadata: Json | None = None) -> None:
+        super().__init__(deck_tag, metadata)
+        self._arena_decklist = ""
+
+    def _parse_metadata(self) -> None:
+        if name := self._deck_tag.attrs.get("name"):
+            self._metadata["name"] = name
+
+    @staticmethod
+    def _clean_decklist(decklist: str) -> str:
+        # remove category tags and keep content between them
+        # matches patterns like [Category]content[/Category]
+        cleaned = re.sub(r'\[/?\w+\]\n?', '', decklist)
+        # remove leading/trailing whitespace and asterisks
+        return '\n'.join(line.strip().lstrip('*') for line in cleaned.splitlines())
+
+    @staticmethod
+    def _handle_commander(decklist: str) -> str:
+        if "[/Commander]\n" in decklist:
+            prefix, decklist = decklist.split("[/Commander]\n", maxsplit=1)
+            return "Commander" + prefix.removeprefix("[Commander]") + f"\nDeck\n{decklist}"
+        return decklist
+
+    def _parse_decklist(self) -> None:
+        cards_text = self._deck_tag.attrs.get("cards")
+        if not cards_text:
+            raise ScrapingError("Cards data not found")
+        decklist = self._handle_commander(cards_text)
+        self._arena_decklist = self._clean_decklist(decklist)
+
+    def _build_deck(self) -> Deck:
+        return ArenaParser(
+            self._arena_decklist.splitlines(), self._metadata).parse(suppress_invalid_deck=False)
+
+
+# TODO: scraping contained Archidekt links, like here:
+#  https://edhrec.com/articles/edhrecast-our-decks - this calls for refactoring of
+#  HybridContainerScraper so it covers all hybrid cases
+@DeckTagsContainerScraper.registered
+class EdhrecArticleScraper(DeckTagsContainerScraper):
+    """Scraper of EDHREC article page.
+    """
+    CONTAINER_NAME = "EDHREC article"  # override
+    DECK_PARSER = EdhrecArticleDeckParser  # override
+
+    @staticmethod
+    def is_container_url(url: str) -> bool:
+        return "edhrec.com/articles/" in url.lower() and "author" not in url.lower()
+
+    def _pre_parse(self) -> None:  # override
+        self._decks_data, self._soup = _get_data(self.url, data_key="post")
+
+    def _parse_metadata(self) -> None:  # override
+        self._update_fmt("commander")
+        if author := self._decks_data.get("author", {}).get("name"):
+            self._metadata["author"] = author
+        if date := self._decks_data.get("date"):
+            self._metadata["date"] = dateutil.parser.parse(date).date()
+        if excerpt := self._decks_data.get("excerpt"):
+            self._metadata.setdefault("article", {})["excerpt"] = excerpt
+        if title := self._decks_data.get("title"):
+            self._metadata.setdefault("article", {})["title"] = title
+        if tags := self._decks_data.get("tags"):
+            self._metadata["tags"] = tags
+
+    def _collect(self) -> list[Tag]:  # override
+        self._parse_metadata()
+        content_soup = BeautifulSoup(self._decks_data["content"], "lxml")
+        return [*content_soup.find_all("span", class_="edhrecp__deck-s")]

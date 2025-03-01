@@ -225,7 +225,7 @@ class ContainerScraper(DeckParser):
             self._metadata["outer_container_url"] = self._metadata["container_url"]
         self._metadata["container_url"] = self.url
         self._soup: BeautifulSoup | None = None  # for HTML-based scraping
-        self._deck_data: Json | None = None  # for JSON-based scraping
+        self._decks_data: Json | None = None  # for JSON-based scraping
 
     @classmethod
     def _validate_url(cls, url):
@@ -256,10 +256,10 @@ class ContainerScraper(DeckParser):
             raise ScrapingError(self._error_msg)
 
     def _parse_metadata(self) -> None:  # override
-        pass
+        pass  # utilized only on per-case basis in subclasses
 
     def _parse_decklist(self) -> None:  # override
-        pass
+        raise NotImplementedError  # not utilized
 
     def _gather(self) -> list[_Collected] | tuple[list[str], list[str]]:
         try:
