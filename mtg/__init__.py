@@ -16,7 +16,7 @@ from typing import Any, Callable
 
 
 __appname__ = __name__
-__version__ = "0.6"
+__version__ = "0.7"
 __description__ = "Scrape data on MtG decks."
 __author__ = "z33k"
 __license__ = "MIT License"

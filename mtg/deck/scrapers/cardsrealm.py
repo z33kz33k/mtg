@@ -91,7 +91,6 @@ class CardsrealmDeckScraper(DeckScraper):
         name = card_json["name_of_card"]
         quantity = card_json["deck_quantity"]
         card = self.find_card(name)
-        # filter out tokens and maybe-boards
         if card_json["deck_sideboard"] == 1:
             self._sideboard += self.get_playset(card, quantity)
         elif card_json["deck_sideboard"] == 0:
@@ -99,7 +98,8 @@ class CardsrealmDeckScraper(DeckScraper):
 
     @override
     def _parse_decklist(self) -> None:
-        for card_data in self._deck_data:
+        # filter out tokens and maybe-boards
+        for card_data in [cd for cd  in self._deck_data if cd["deck_sideboard"] in (0, 1)]:
             self._parse_card_json(card_data)
         self._derive_commander_from_sideboard()
 
