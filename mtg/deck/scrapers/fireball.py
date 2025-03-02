@@ -11,6 +11,7 @@
 
 """
 import logging
+from typing import override
 
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, DecksJsonContainerScraper, \
     HybridContainerScraper
@@ -19,7 +20,7 @@ from mtg.deck.scrapers.tcgplayer import (
     TcgPlayerInfinitePlayerScraper, TcgPlayerInfiniteAuthorScraper)
 
 _log = logging.getLogger(__name__)
-FIREBALL_URL_TEMPLATE = "https://www.channelfireball.com{}"
+FIREBALL_URL_PREFIX = "https://www.channelfireball.com"
 
 
 # NOTE: As of Feb 25th, TCGPlayer seems to have recently withdrawn special ChannelFireball-specific
@@ -36,7 +37,8 @@ class ChannelFireballDeckScraper(TcgPlayerInfiniteDeckScraper):
     # API_URL_TEMPLATE = ("https://cfb-infinite-api.tcgplayer.com/deck/magic/{}"
     #                     "/?source=cfb-infinite-content&subDecks=true&cards=true&stats=true")
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         return "channelfireball.com/magic-the-gathering/deck/" in url.lower()
 
 
@@ -51,10 +53,11 @@ class ChannelFireballPlayerScraper(TcgPlayerInfinitePlayerScraper):
     #                     "cfb-infinite-content&rows=100&format=&playerName={}&latest=true"
     #                     "&sort=created&order=desc")
     DECK_SCRAPERS = ChannelFireballDeckScraper,  # override
-    DECK_URL_TEMPLATE = FIREBALL_URL_TEMPLATE  # override
+    DECK_URL_PREFIX = FIREBALL_URL_PREFIX  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return "channelfireball.com/magic-the-gathering/decks/player/" in url.lower()
 
 
@@ -66,7 +69,8 @@ class ChannelFireballArticleScraper(TcgPlayerInfiniteArticleScraper):
     # API_URL_TEMPLATE = ChannelFireballDeckScraper.API_URL_TEMPLATE
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return f"channelfireball.com/article/" in url.lower()
 
 
@@ -75,11 +79,12 @@ class ChannelFireballAuthorScraper(TcgPlayerInfiniteAuthorScraper):
     """Scraper of ChannelFireball author page.
     """
     CONTAINER_NAME = "ChannelFireball author"  # override
-    CONTAINER_SCRAPERS = ChannelFireballArticleScraper,  # override
     # AUTHOR_API_URL_TEMPLATE =  ("https://cfb-infinite-api.tcgplayer.com/content/author/{}/?source="
     #                             "cfb-infinite-content&rows=48&game=&format=")
-    DECK_URL_TEMPLATE = FIREBALL_URL_TEMPLATE  # override
+    CONTAINER_SCRAPERS = ChannelFireballArticleScraper,  # override
+    CONTAINER_URL_PREFIX = FIREBALL_URL_PREFIX  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return "channelfireball.com/author/" in url.lower() and not url.lower().endswith("/decks")

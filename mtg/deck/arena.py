@@ -9,7 +9,7 @@
 """
 import logging
 import re
-from typing import Generator
+from typing import Generator, override
 
 from mtg import Json
 from mtg.deck import ARENA_MULTIFACE_SEPARATOR, CardNotFound, DeckParser
@@ -336,14 +336,16 @@ class ArenaParser(DeckParser):
             if idx in (1, 2) and all(_is_playset_line(l) for l in self._lines[:idx]):
                 self._lines.insert(0, "Commander")
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         self._lines = get_arena_lines(*self._lines)
         if not self._lines:
             raise ValueError("No Arena lines found")
 
         self._handle_missing_commander_line()
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         if not self._metadata.get("source"):
             self._metadata["source"] = "arena.decklist"
 
@@ -362,7 +364,8 @@ class ArenaParser(DeckParser):
             return True
         return False
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         for line in self._lines:
             if _is_maindeck_line(line):
                 self._state.shift_to_maindeck()

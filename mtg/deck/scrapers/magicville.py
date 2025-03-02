@@ -8,12 +8,14 @@
 
 """
 import logging
+from typing import override
 
-from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.utils import get_date_from_french_ago_text
 from mtg.utils.scrape import ScrapingError, getsoup
 
 _log = logging.getLogger(__name__)
+URL_PREFIX = "https://www.magic-ville.com/fr/decks/"
 
 
 @DeckScraper.registered
@@ -21,20 +23,24 @@ class MagicVilleDeckScraper(DeckScraper):
     """Scraper of MagicVille decklist page.
     """
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         url = url.lower()
         return "magic-ville.com/" in url and "decks/showdeck" in url
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return f"{url}&decklanglocal=eng"
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         self._soup = getsoup(self.url)
         if not self._soup or self._soup.text == "Ce deck n'existe pas.":
             raise ScrapingError("Page not available")
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         fmt_tag = self._soup.find("div", class_="lil_menu", string=lambda s: s and "Appr" in s)
         fmt_text = fmt_tag.find("a")["href"]
         _, fmt_text = fmt_text.split("&f=", maxsplit=1)
@@ -75,7 +81,8 @@ class MagicVilleDeckScraper(DeckScraper):
             if date := get_date_from_french_ago_text(date_text):
                 self._metadata["date"] = date
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         main_tag = self._soup.find("div", id="aff_graphique")
         for tag in main_tag.descendants:
             if (tag.name in ("div", "span")
@@ -109,16 +116,18 @@ class MagicVilleEventScraper(DeckUrlsContainerScraper):
     """Scraper of MagicVille event page.
     """
     CONTAINER_NAME = "MagicVille event"  # override
-    DECK_URL_TEMPLATE = "https://www.magic-ville.com/fr/decks/{}"
     DECK_SCRAPERS = MagicVilleDeckScraper,  # override
+    DECK_URL_PREFIX = URL_PREFIX  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return all(t in url.lower() for t in ("magic-ville.com/", "decks/decklists?", "event="))
 
-    def _collect(self) -> list[str]:  # override
+    @override
+    def _collect(self) -> list[str]:
         deck_tags = self._soup.find_all("a", href=lambda h: h and "showdeck?ref=" in h)
-        return [self.DECK_URL_TEMPLATE.format(deck_tag.attrs["href"]) for deck_tag in deck_tags]
+        return [deck_tag.attrs["href"] for deck_tag in deck_tags]
 
 
 @DeckUrlsContainerScraper.registered
@@ -126,15 +135,15 @@ class MagicVilleUserScraper(DeckUrlsContainerScraper):
     """Scraper of MagicVille user page.
     """
     CONTAINER_NAME = "MagicVille user"  # override
-    DECK_URL_TEMPLATE = "https://www.magic-ville.com/fr/{}"
     DECK_SCRAPERS = MagicVilleDeckScraper,  # override
+    DECK_URL_PREFIX = URL_PREFIX  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return all(t in url.lower() for t in ("magic-ville.com/", "register/perso?", "user="))
 
-    def _collect(self) -> list[str]:  # override
+    @override
+    def _collect(self) -> list[str]:
         deck_tags = self._soup.find_all("a", href=lambda h: h and "/decks/showdeck.php?ref=" in h)
-        return [
-            self.DECK_URL_TEMPLATE.format(deck_tag.attrs["href"].removeprefix("../"))
-            for deck_tag in deck_tags]
+        return [deck_tag.attrs["href"].removeprefix("../") for deck_tag in deck_tags]

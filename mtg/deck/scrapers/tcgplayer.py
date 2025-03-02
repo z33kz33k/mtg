@@ -1,7 +1,7 @@
 """
 
     mtg.deck.scrapers.tcgplayer.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape TCG Player decklists.
 
     @author: z33k
@@ -10,6 +10,7 @@
 import json
 import logging
 from datetime import datetime
+from typing import override
 
 import dateutil.parser
 from bs4 import BeautifulSoup, Tag
@@ -19,8 +20,8 @@ from selenium.common import TimeoutException
 
 from mtg import Json
 from mtg.deck import Deck
-from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper, DecksJsonContainerScraper, \
-    HybridContainerScraper, JsonBasedDeckParser
+from mtg.deck.scrapers import Collected, DeckUrlsContainerScraper, DeckScraper, \
+    DecksJsonContainerScraper, HybridContainerScraper, JsonBasedDeckParser
 from mtg.scryfall import Card
 from mtg.utils import extract_int
 from mtg.utils.scrape import ScrapingError, getsoup, request_json, strip_url_query, throttle
@@ -30,10 +31,9 @@ _log = logging.getLogger(__name__)
 
 
 def get_source(src: str) -> str | None:
-    if "tcgplayer" in src:
-        if "." in src:
-            _, *parts = src.split(".")
-            return ".".join(parts)
+    if ".tcgplayer.com" in src:
+        _, *parts = src.split(".")
+        return ".".join(parts)
     return None
 
 
@@ -42,19 +42,23 @@ class TcgPlayerDeckScraper(DeckScraper):
     """Scraper of TCG Player (old-site) decklist page.
     """
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         return "decks.tcgplayer.com/" in url.lower() and "/search" not in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         self._soup = getsoup(self.url)
         if not self._soup:
             raise ScrapingError("Page not available")
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         info_tag = self._soup.find("div", class_="viewDeckHeader")
         h1_tag = info_tag.find("h1")
         self._metadata["name"] = h1_tag.find("a").text.strip()
@@ -78,7 +82,8 @@ class TcgPlayerDeckScraper(DeckScraper):
             cards += cls.get_playset(cls.find_card(name_tag.text.strip()), quantity)
         return cards
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         deck_tags = self._soup.find_all("div", class_="subdeck")
         for deck_tag in deck_tags:
             if deck_tag.find("h3").text.lower().startswith("command"):
@@ -96,28 +101,31 @@ class TcgPlayerPlayerScraper(DeckUrlsContainerScraper):
     """Scraper of TCG Player (old-site) player search page.
     """
     CONTAINER_NAME = "TCGPlayer (old-site) player"  # override
-    DECK_URL_TEMPLATE = "https://decks.tcgplayer.com{}"
     DECK_SCRAPERS = TcgPlayerDeckScraper,  # override
+    DECK_URL_PREFIX = "https://decks.tcgplayer.com"  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return ("decks.tcgplayer.com/magic/deck/search?" in url.lower()
                 and"player=" in url)
 
-    def _collect(self) -> list[str]:  # override
+    @override
+    def _collect(self) -> Collected:
         deck_tags = self._soup.find_all(
             "a", href=lambda h: h and "/magic/" in h and "/magic/deck" not in h)
-        return [self.DECK_URL_TEMPLATE.format(deck_tag.attrs["href"]) for deck_tag in deck_tags]
+        return [deck_tag.attrs["href"] for deck_tag in deck_tags]
 
 
 # INFINITE ########################################################################################
-INFINITE_URL_TEMPLATE = "https://infinite.tcgplayer.com{}"
+INFINITE_URL_PREFIX = "https://infinite.tcgplayer.com"
 
 
 class TcgPlyerInfiniteDeckJsonParser(JsonBasedDeckParser):
     """Parser of an TCG Player Infinite deck JSON.
     """
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         self._metadata["name"] = self._deck_data["deck"]["name"]
         self._update_fmt(self._deck_data["deck"]["format"])
         self._metadata["author"] = self._deck_data["deck"]["playerName"]
@@ -151,7 +159,8 @@ class TcgPlyerInfiniteDeckJsonParser(JsonBasedDeckParser):
             cardmap[int(card_id)] = card
         return cardmap
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         cardmap = self._get_cardmap()
         sub_decks = self._deck_data["deck"]["subDecks"]
         if command_zone := sub_decks.get("commandzone"):
@@ -215,24 +224,30 @@ class TcgPlayerInfiniteDeckScraper(DeckScraper):
         self._deck_parser: TcgPlyerInfiniteDeckJsonParser | None = None
 
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         return "infinite.tcgplayer.com/magic-the-gathering/deck/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         deck_data = _get_deck_data_from_api(self.url, self.API_URL_TEMPLATE)
         self._deck_parser = TcgPlyerInfiniteDeckJsonParser(deck_data, self._metadata)
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         pass
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         pass
 
-    def _build_deck(self) -> Deck:  # override
+    @override
+    def _build_deck(self) -> Deck:
         return self._deck_parser.parse()
 
 
@@ -246,13 +261,15 @@ class TcgPlayerInfinitePlayerScraper(DeckUrlsContainerScraper):
                         "-content&rows=100&format=&playerName"
                         "={}&latest=true&sort=created&order=desc")
     DECK_SCRAPERS = TcgPlayerInfiniteDeckScraper,  # override
-    DECK_URL_TEMPLATE = INFINITE_URL_TEMPLATE
+    DECK_URL_PREFIX = INFINITE_URL_PREFIX  # override
 
     @staticmethod
+    @override
     def is_container_url(url: str) -> bool:  # override
         return "infinite.tcgplayer.com/magic-the-gathering/decks/player/" in url.lower()
 
     @staticmethod
+    @override
     def sanitize_url(url: str) -> str:  # override
         return strip_url_query(url)
 
@@ -260,12 +277,13 @@ class TcgPlayerInfinitePlayerScraper(DeckUrlsContainerScraper):
         *_, last = self.url.split("/")
         return last
 
-    def _collect(self) -> list[str]:  # override
+    @override
+    def _collect(self) -> Collected:  # override
         json_data = request_json(self.API_URL_TEMPLATE.format(self._get_player_name()))
         if not json_data or not json_data.get("result"):
             _log.warning(self._error_msg)
             return []
-        return [self.DECK_URL_TEMPLATE.format(d["canonicalURL"]) for d in json_data["result"]]
+        return [d["canonicalURL"] for d in json_data["result"]]
 
 
 @DeckUrlsContainerScraper.registered
@@ -275,15 +293,18 @@ class TcgPlayerInfiniteAuthorSearchScraper(TcgPlayerInfinitePlayerScraper):
     CONTAINER_NAME = "TCGPlayer Infinite author search"  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return ("infinite.tcgplayer.com/magic-the-gathering/decks/advanced-search" in url.lower()
                 and "author=" in url.lower())
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return url.removesuffix("/")
 
-    def _get_player_name(self) -> str:  # override
+    @override
+    def _get_player_name(self) -> str:
         *_, author = self.url.split("author=")
         if "&" in author:
             author, *_ = author.split("&")
@@ -297,27 +318,31 @@ class TcgPlayerInfiniteEventScraper(DeckUrlsContainerScraper):
     CONTAINER_NAME = "TCGPlayer Infinite event"  # override
     # 200 rows is pretty arbitrary but tested to work (even though usually events have fewer rows)
     API_URL_TEMPLATE = ("https://infinite-api.tcgplayer.com/content/decks/magic?source="
-                        "infinite-content&rows=200&eventNames={}")
+                        "infinite-content&rows=200&eventNames={}")  # override
     DECK_SCRAPERS = TcgPlayerInfiniteDeckScraper,  # override
+    DECK_URL_PREFIX = INFINITE_URL_PREFIX  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return "infinite.tcgplayer.com/magic-the-gathering/events/event/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
     def _get_event_name(self) -> str:
         *_, last = self.url.split("/")
         return last
 
-    def _collect(self) -> list[str]:  # override
+    @override
+    def _collect(self) -> Collected:
         json_data = request_json(self.API_URL_TEMPLATE.format(self._get_event_name()))
         if not json_data or not json_data.get("result"):
             _log.warning(self._error_msg)
             return []
-        return [INFINITE_URL_TEMPLATE.format( d["canonicalURL"]) for d in json_data["result"]]
+        return [d["canonicalURL"] for d in json_data["result"]]
 
 
 @DecksJsonContainerScraper.registered
@@ -325,12 +350,12 @@ class TcgPlayerInfiniteArticleScraper(DecksJsonContainerScraper):
     """Scraper of TCG Player Infinite article page.
     """
     CONTAINER_NAME = "TCGPlayer Infinite article"  # override
-    DECK_PARSER = TcgPlyerInfiniteDeckJsonParser
     _HOOK = "/magic-the-gathering/deck/"
-    XPATH = f"//a[contains(@href, '{_HOOK}')]"
+    XPATH = f"//a[contains(@href, '{_HOOK}')]"  # override
     CONSENT_XPATH = ("//button[contains(@class, 'martech-button') and contains(@class, "
-                     "'martech-medium') and contains(@class, 'martech-primary')]")
+                     "'martech-medium') and contains(@class, 'martech-primary')]")  # override
     API_URL_TEMPLATE = TcgPlayerInfiniteDeckScraper.API_URL_TEMPLATE  # override
+    JSON_BASED_DECK_PARSER = TcgPlyerInfiniteDeckJsonParser  # override
 
     @property
     def _scroll_down_times(self) -> int:
@@ -343,14 +368,17 @@ class TcgPlayerInfiniteArticleScraper(DecksJsonContainerScraper):
         return 3 * SCROLL_DOWN_TIMES if doubled else SCROLL_DOWN_TIMES
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return f"infinite.tcgplayer.com/article/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _collect(self) -> list[Json]:  # override
+    @override
+    def _collect(self) -> Collected:
         try:
             self._soup, _, _ = get_dynamic_soup(
                 self.url, self.XPATH, consent_xpath=self.CONSENT_XPATH, scroll_down=True,
@@ -384,24 +412,26 @@ class TcgPlayerInfiniteAuthorScraper(HybridContainerScraper):
     """Scraper of TCG Player Infinite author page.
     """
     CONTAINER_NAME = "TCGPlayer Infinite author"  # override
-    CONTAINER_SCRAPERS = TcgPlayerInfiniteArticleScraper,  # override
-    XPATH = "//div[@class='grid']"
-    CONSENT_XPATH = TcgPlayerInfiniteArticleScraper.CONSENT_XPATH
+    XPATH = "//div[@class='grid']"  # override
+    CONSENT_XPATH = TcgPlayerInfiniteArticleScraper.CONSENT_XPATH  # override
     AUTHOR_API_URL_TEMPLATE = ("https://infinite-api.tcgplayer.com/content/author/{}/?source="
                                "infinite-content&rows=48&game=&format=")
-    DECK_URL_TEMPLATE = INFINITE_URL_TEMPLATE
+    CONTAINER_SCRAPERS = TcgPlayerInfiniteArticleScraper,  # override
+    CONTAINER_URL_PREFIX = INFINITE_URL_PREFIX
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
         self._author_id = None
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return "infinite.tcgplayer.com/author/" in url.lower() and not url.lower().endswith(
             "/decks")
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
     @staticmethod
@@ -420,17 +450,16 @@ class TcgPlayerInfiniteAuthorScraper(HybridContainerScraper):
         json_data = request_json(self.AUTHOR_API_URL_TEMPLATE.format(self._author_id))
         if not json_data or not json_data.get("result"):
             return []
-        return [
-            self.DECK_URL_TEMPLATE.format(d["canonicalURL"])
-            for d in json_data["result"]["articles"]]
+        return [d["canonicalURL"] for d in json_data["result"]["articles"]]
 
-    def _collect(self) -> tuple[list[str], list[str]]:  # override
+    @override
+    def _collect(self) -> Collected:
         self._author_id = self.get_author_id(self._soup)
         if self._author_id is None:
             _log.warning("Author ID not available")
-            return [], []
+            return [], [], [], []
 
-        return [], self._get_links_from_json()
+        return [], [], [], self._get_links_from_json()
 
 
 @DeckUrlsContainerScraper.registered
@@ -445,16 +474,20 @@ class TcgPlayerInfiniteAuthorDecksPaneScraper(DeckUrlsContainerScraper):
                                    "=infinite-content&rows=2008&authorID={}&latest=true&sort="
                                    "created&order=desc")
     DECK_SCRAPERS = TcgPlayerInfiniteDeckScraper,  # override
+    DECK_URL_PREFIX = INFINITE_URL_PREFIX  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return "infinite.tcgplayer.com/author/" in url.lower() and url.lower().endswith("/decks")
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _collect(self) -> list[str]:  # override
+    @override
+    def _collect(self) -> Collected:
         author_id = TcgPlayerInfiniteAuthorScraper.get_author_id(self._soup)
         if author_id is None:
             _log.warning("Author ID not available")
@@ -463,4 +496,4 @@ class TcgPlayerInfiniteAuthorDecksPaneScraper(DeckUrlsContainerScraper):
         if not json_data or not json_data.get("result"):
             _log.warning(self._error_msg)
             return []
-        return [INFINITE_URL_TEMPLATE.format( d["canonicalURL"]) for d in json_data["result"]]
+        return [d["canonicalURL"] for d in json_data["result"]]

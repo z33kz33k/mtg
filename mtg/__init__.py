@@ -12,7 +12,7 @@ import logging
 import os
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
-from typing import Any, Callable, TypeVar
+from typing import Any, Callable
 
 
 __appname__ = __name__
@@ -21,12 +21,10 @@ __description__ = "Scrape data on MtG decks."
 __author__ = "z33k"
 __license__ = "MIT License"
 
-# type hints
-T = TypeVar("T")
-Json = dict[str, Any]
-PathLike = str | Path
-Method = Callable[[Any, tuple[Any, ...]], Any]  # method with signature def methodname(self, *args)
-Function = Callable[[tuple[Any, ...]], Any]  # function with signature def funcname(*args)
+# type aliases
+type Json = dict[str, Any] | list[dict[str, Any]]
+type PathLike = str | Path
+
 
 FILENAME_TIMESTAMP_FORMAT = "%Y%m%d_%H%M%S"
 READABLE_TIMESTAMP_FORMAT = "%Y-%m-%d %H:%M:%S"
@@ -86,7 +84,6 @@ from mtg.deck.scrapers.cardsrealm import DeckScraper
 from mtg.deck.scrapers.cycles import DeckTagsContainerScraper
 from mtg.deck.scrapers.deckbox import DeckScraper
 from mtg.deck.scrapers.deckstats import DeckScraper
-from mtg.deck.scrapers.edhrec import DeckScraper
 from mtg.deck.scrapers.flexslot import DeckScraper
 from mtg.deck.scrapers.goldfish import DeckScraper
 from mtg.deck.scrapers.hareruya import DeckScraper
@@ -121,6 +118,7 @@ from mtg.deck.scrapers.topdecked import DeckScraper
 from mtg.deck.scrapers.untapped import DeckScraper
 from mtg.deck.scrapers.wotc import DeckTagsContainerScraper
 # those should be last as they use statically some of those above
+from mtg.deck.scrapers.edhrec import DeckScraper
 from mtg.deck.scrapers.fireball import DeckScraper
 from mtg.deck.scrapers.edhtop16 import DeckUrlsContainerScraper
 from mtg.deck.scrapers.topdeck import DeckUrlsContainerScraper

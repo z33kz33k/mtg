@@ -9,6 +9,7 @@
 """
 import logging
 from datetime import datetime
+from typing import override
 
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper
@@ -29,15 +30,18 @@ class MtgoTradersDeckScraper(DeckScraper):
         *_, self._decklist_id = self.url.split("?deck=")
 
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         return "www.mtgotraders.com/deck/" in url.lower() and "?deck=" in url.lower()
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         self._deck_data = request_json(self.REQUEST_URL_TEMPLATE.format(self._decklist_id))
         if not self._deck_data:
             raise ScrapingError("Data not available")
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         self._metadata["name"] = self._deck_data["Name"]
         if desc :=self._deck_data.get("Description"):
             self._metadata["description"] = desc
@@ -55,6 +59,7 @@ class MtgoTradersDeckScraper(DeckScraper):
         quantity = json_card["qty"]
         return self.get_playset(self.find_card(name), quantity)
 
+    @override
     def _parse_decklist(self) -> None:
         for json_card in self._deck_data["main"]:
             self._maindeck += self._parse_json_card(json_card)

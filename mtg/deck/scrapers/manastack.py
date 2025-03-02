@@ -8,10 +8,11 @@
 
 """
 import logging
+from typing import override
 
 from selenium.common.exceptions import TimeoutException
 
-from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.utils import get_date_from_ago_text
 from mtg.utils.scrape import ScrapingError, strip_url_query
 from mtg.utils.scrape.dynamic import get_dynamic_soup
@@ -26,20 +27,24 @@ class ManaStackDeckScraper(DeckScraper):
     XPATH = "//div[@class='deck-list-container']"
 
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         return "manastack.com/deck/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         try:
             self._soup, _, _ = get_dynamic_soup(self.url, self.XPATH)
         except TimeoutException:
             raise ScrapingError(f"Scraping failed due to Selenium timing out")
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         self._metadata["name"] = self._soup.find("h3", class_="deck-name").text.strip()
         self._update_fmt(self._soup.find("div", class_="format-listing").text.strip().lower())
         if desc_tag := self._soup.select_one("div.deck-description.text"):
@@ -49,7 +54,8 @@ class ManaStackDeckScraper(DeckScraper):
         *_, date_text = author_tag.text.strip().split("Last updated")
         self._metadata["date"] = get_date_from_ago_text(date_text.strip())
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         deck_tag = self._soup.find("div", class_="deck-list-container")
         for tag in deck_tag.descendants:
             if tag.name == "h4":
@@ -82,22 +88,25 @@ class ManaStackUserScraper(DeckUrlsContainerScraper):
     """Scraper of ManaStack user page.
     """
     CONTAINER_NAME = "ManaStack user"  # override
-    URL_TEMPLATE = "https://manastack.com{}"
+    XPATH = '//div[@class="deck-listing-container"]'  # override
     DECK_SCRAPERS = ManaStackDeckScraper,  # override
-    XPATH = '//div[@class="deck-listing-container"]'
+    DECK_URL_PREFIX = "https://manastack.com"  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return "manastack.com/user/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _collect(self) -> list[str]:  # override
+    @override
+    def _collect(self) -> list[str]:
         rows = self._soup.find_all("div", class_="deck-listing-container")
         deck_tags = [
             tag for tag in
             [row.find("a", href=lambda h: h and h.lower().startswith("/deck/")) for row in rows]
             if tag is not None]
-        return [self.URL_TEMPLATE.format(deck_tag["href"]) for deck_tag in deck_tags]
+        return [deck_tag["href"] for deck_tag in deck_tags]

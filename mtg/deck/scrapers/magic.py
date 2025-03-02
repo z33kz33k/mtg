@@ -10,6 +10,7 @@
 
 """
 import logging
+from typing import override
 
 import dateutil.parser
 from bs4 import BeautifulSoup, Comment, NavigableString, Tag
@@ -37,7 +38,8 @@ def _get_deck_name(author: str, subtitle: str) -> str:
 class MagicGgNewDeckTagParser(TagBasedDeckParser):
     """Parser of Magic.gg (new-type) decklist HTML tag.
     """
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         attrs = self._deck_tag.attrs
         self._metadata["author"] = attrs["deck-title"]
         if name := _get_deck_name(attrs["deck-title"], attrs["subtitle"]):
@@ -70,9 +72,11 @@ class MagicGgNewDeckTagParser(TagBasedDeckParser):
             lines += sideboard.text.lstrip().splitlines()
         return lines
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         pass
 
+    @override
     def _build_deck(self) -> Deck:
         return ArenaParser(self._build_arena(), self._metadata).parse(suppress_invalid_deck=False)
 
@@ -80,7 +84,8 @@ class MagicGgNewDeckTagParser(TagBasedDeckParser):
 class MagicGgOldDeckTagParser(TagBasedDeckParser):
     """Parser of Magic.gg (old-type) decklist HTML tag.
     """
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         author = self._deck_tag.select_one("div.css-2vNWs > span.css-3LH7E").text.strip()
         self._metadata["author"] = author
         subtitle = self._deck_tag.find(
@@ -106,7 +111,8 @@ class MagicGgOldDeckTagParser(TagBasedDeckParser):
                 "name": event_tag.text.strip(),
             }
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         first_card_name = None
 
         for tag in [
@@ -165,14 +171,16 @@ class MagicGgDeckScraper(DeckScraper):
         self._deck_parser: MagicGgOldDeckTagParser | None = None
 
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         return f"magic.gg/decklists/" in url.lower() and "?decklist=" in url.lower()
 
     def _parse_decklist_id(self) -> str:
         *_, id_ = self.url.split("?decklist=")
         return id_
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         try:
             self._soup, _, _ = get_dynamic_soup(
                 self.url, self.XPATH, consent_xpath=self.CONSENT_XPATH)
@@ -187,13 +195,16 @@ class MagicGgDeckScraper(DeckScraper):
         self._metadata["event"] = {"name": _get_event_name(self._soup)}
         self._deck_parser = MagicGgOldDeckTagParser(deck_tag, self._metadata)
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         pass
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         pass
 
-    def _build_deck(self) -> Deck:  # override
+    @override
+    def _build_deck(self) -> Deck:
         return self._deck_parser.parse()
 
 
@@ -201,24 +212,28 @@ class MagicGgDeckScraper(DeckScraper):
 class MagicGgEventScraper(DeckTagsContainerScraper):
     """Scraper of Magic.gg event page.
     """
-    CONTAINER_NAME = "Magic.gg event"
-    DECK_PARSER = MagicGgNewDeckTagParser
+    CONTAINER_NAME = "Magic.gg event"  # override
+    TAG_BASED_DECK_PARSER = MagicGgNewDeckTagParser  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return f"magic.gg/decklists/" in url.lower() and "?decklist=" not in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         self._metadata["event"] = {"name": _get_event_name(self._soup)}
 
-    def _collect(self) -> list[Tag]:  # override
+    @override
+    def _collect(self) -> list[Tag]:
         deck_tags = [*self._soup.find_all("deck-list")]
         if not deck_tags:
-            self.__class__._DECK_PARSER = MagicGgOldDeckTagParser
+            self.__class__.TAG_BASED_DECK_PARSER = MagicGgOldDeckTagParser
             try:
                 self._soup, _, _ = get_dynamic_soup(
                     self.url, MagicGgDeckScraper.XPATH,
@@ -232,6 +247,6 @@ class MagicGgEventScraper(DeckTagsContainerScraper):
                 return []
             self._parse_metadata()
         else:
-            self.__class__._DECK_PARSER = MagicGgNewDeckTagParser
+            self.__class__.TAG_BASED_DECK_PARSER = MagicGgNewDeckTagParser
 
         return deck_tags

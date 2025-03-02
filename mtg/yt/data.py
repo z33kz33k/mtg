@@ -16,7 +16,7 @@ from datetime import date, datetime
 from operator import attrgetter, itemgetter
 from pathlib import Path
 from types import TracebackType
-from typing import Callable, Generator, Iterator, Literal, Type
+from typing import Callable, Generator, Iterator, Literal, Self, Type
 
 import scrapetube
 from tqdm import tqdm
@@ -268,7 +268,7 @@ class ScrapingSession:
         self._urls_manager, self._decklists_manager = UrlsStateManager(), DecklistsStateManager()
         self._cooloff_manager = CoolOffManager()
 
-    def __enter__(self) -> "ScrapingSession":
+    def __enter__(self) -> Self:
         self._decklists_manager.load()
         self._urls_manager.load_failed()
         return self
@@ -298,10 +298,10 @@ class DataPath:
     def __str__(self) -> str:
         return breadcrumbs(*[crumb for crumb in astuple(self) if crumb])
 
-    @staticmethod
-    def from_path(path: str) -> "DataPath":
+    @classmethod
+    def from_path(cls, path: str) -> Self:
         parts = path.strip("/").split("/", maxsplit=2)
-        return DataPath(*parts)
+        return cls(*parts)
 
 
 def find_orphans() -> dict[str, list[str]]:

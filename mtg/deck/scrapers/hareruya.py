@@ -8,12 +8,13 @@
 
 """
 import logging
+from typing import override
 
 import dateutil.parser
 from bs4 import NavigableString
 
 from mtg import Json, SECRETS
-from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.deck.scrapers.goldfish import HEADERS as GOLDFISH_HEADERS
 from mtg.utils.scrape import ScrapingError, getsoup, request_json
 
@@ -25,21 +26,25 @@ class InternationalHareruyaDeckScraper(DeckScraper):
     """Scraper of international Hareruya decklist page.
     """
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         url = url.lower()
         return ("hareruyamtg.com" in url and "/deck/" in url
                 and "deck.hareruyamtg.com/deck/" not in url and "/result?" not in url)
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return url.replace("/ja/","/en/")
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         self._soup = getsoup(self.url, headers=GOLDFISH_HEADERS)
         if not self._soup:
             raise ScrapingError("Page not available")
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         info_tag = self._soup.find("div", class_="deckSearch-deckList__information__flex")
         for ul_tag in info_tag.find_all("ul"):
             li_tags = ul_tag.find_all("li")
@@ -64,7 +69,8 @@ class InternationalHareruyaDeckScraper(DeckScraper):
         if not self._metadata.get("name") and self._metadata.get("hareruya_archetype"):
             self._metadata["name"] = self._metadata["hareruya_archetype"]
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         main_tag = self._soup.find("div", class_="deckSearch-deckList__deckList__wrapper")
 
         for sub_tag in main_tag.descendants:
@@ -113,24 +119,28 @@ class JapaneseHareruyaDeckScraper(DeckScraper):
         *_, self._decklist_id = rest.split("/")
 
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         url = url.lower()
         return ("hareruyamtg.com/decks/list/" in url or "hareruyamtg.com/decks/" in url
                 or "deck.hareruyamtg.com/deck/" in url) and "/user/" not in url
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         if "deck.hareruyamtg.com/deck/" in url:
             return url.replace("deck.hareruyamtg.com/deck/", "www.hareruyamtg.com/decks/")
         return url
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         self._deck_data = request_json(
             self.API_URL_TEMPLATE.format(self._decklist_id, self._display_token))
         if not self._deck_data:
             raise ScrapingError("Data not available")
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         fmt = self._deck_data["format_name_en"]
         self._update_fmt(fmt)
         self._metadata["name"] = self._deck_data["deck_name"]
@@ -167,7 +177,8 @@ class JapaneseHareruyaDeckScraper(DeckScraper):
         elif json_card["board_id"] == 3:
             self._set_commander(self.find_card(name))
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         for card in self._deck_data["cards"]:
             self._process_card(card)
 
@@ -198,14 +209,16 @@ class HareruyaEventScraper(DeckUrlsContainerScraper):
     """Scraper of Hareruya event decks search page.
     """
     CONTAINER_NAME = "Hareruya event"  # override
-    DECK_SCRAPERS = InternationalHareruyaDeckScraper, JapaneseHareruyaDeckScraper  # override
     HEADERS = HEADERS  # override
+    DECK_SCRAPERS = InternationalHareruyaDeckScraper, JapaneseHareruyaDeckScraper  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return all(t in url for t in {"hareruyamtg.com", "/deck", "/result?", "eventName="})
 
-    def _collect(self) -> list[str]:  # override
+    @override
+    def _collect(self) -> list[str]:
         return [a_tag.attrs["href"] for a_tag in self._soup.find_all(
             "a", class_="deckSearch-searchResult__itemWrapper")]
 
@@ -215,14 +228,16 @@ class HareruyaPlayerScraper(DeckUrlsContainerScraper):
     """Scraper of Hareruya player decks search page.
     """
     CONTAINER_NAME = "Hareruya player"  # override
-    DECK_SCRAPERS = InternationalHareruyaDeckScraper, JapaneseHareruyaDeckScraper  # override
     HEADERS = HEADERS  # override
+    DECK_SCRAPERS = InternationalHareruyaDeckScraper, JapaneseHareruyaDeckScraper  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         url = url.lower()
         return all(t in url for t in {"hareruyamtg.com", "/deck", "/result?", "player="})
 
-    def _collect(self) -> list[str]:  # override
+    @override
+    def _collect(self) -> list[str]:
         return [a_tag.attrs["href"] for a_tag in self._soup.find_all(
             "a", class_="deckSearch-searchResult__itemWrapper")]

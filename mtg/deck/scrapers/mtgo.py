@@ -8,13 +8,14 @@
 
 """
 import logging
+from typing import override
 
 import dateutil.parser
 from bs4 import BeautifulSoup
 
 from mtg import Json, SECRETS
 from mtg.deck import Deck
-from mtg.deck.scrapers import DecksJsonContainerScraper, JsonBasedDeckParser, DeckScraper
+from mtg.deck.scrapers import DeckScraper, DecksJsonContainerScraper, JsonBasedDeckParser
 from mtg.scryfall import all_formats
 from mtg.utils import from_iterable, get_ordinal_suffix
 from mtg.utils.scrape import ScrapingError, dissect_js, getsoup, strip_url_query
@@ -49,11 +50,11 @@ def _get_json(soup: BeautifulSoup) -> Json:
     return data
 
 
-def _get_decks_data(json_data: Json) -> list[Json]:
+def _get_decks_data(json_data: Json) -> Json:
     return json_data["decklists"]
 
 
-def _process_ranks(rank_data: list[Json], *decks_data: Json) -> None:
+def _process_ranks(rank_data: Json, *decks_data: Json) -> None:
     for deck_data in decks_data:
         deck_rank_data = from_iterable(
                     rank_data, lambda d: d["loginid"] == deck_data["loginid"])
@@ -107,7 +108,8 @@ class MtgoDeckJsonParser(JsonBasedDeckParser):
             name += f" ({rank}{get_ordinal_suffix(rank)} place)"
         return name
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         self._metadata["author"] = self._deck_data["player"]
         self._metadata["name"] = self._derive_name()
         if fmt := self._metadata.get("event", {}).get("format"):
@@ -121,7 +123,8 @@ class MtgoDeckJsonParser(JsonBasedDeckParser):
         card = self.find_card(name, mtgo_id=mtgo_id)
         decklist += self.get_playset(card, qty)
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         for card in [*self._deck_data["main_deck"], *self._deck_data.get("sideboard_deck", [])]:
             self._parse_card(card)
         self._derive_commander_from_sideboard()
@@ -137,11 +140,13 @@ class MtgoDeckScraper(DeckScraper):
         self._deck_parser: MtgoDeckJsonParser | None = None
 
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         return f"mtgo.com/decklist/" in url.lower() and "#deck_" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url, keep_fragment=True)
 
     def _parse_player_name(self) -> str:
@@ -149,7 +154,8 @@ class MtgoDeckScraper(DeckScraper):
         _, rest = rest.split("#")
         return rest.removeprefix("deck_")
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         self._soup = getsoup(self.url)
         if not self._soup:
             raise ScrapingError("Page not available")
@@ -164,13 +170,16 @@ class MtgoDeckScraper(DeckScraper):
         self._metadata.update(_get_event_metadata(json_data))
         self._deck_parser = MtgoDeckJsonParser(deck_data, self._metadata)
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         pass
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         pass
 
-    def _build_deck(self) -> Deck:  # override
+    @override
+    def _build_deck(self) -> Deck:
         return self._deck_parser.parse()
 
 
@@ -178,19 +187,22 @@ class MtgoDeckScraper(DeckScraper):
 class MtgoEventScraper(DecksJsonContainerScraper):
     """Scraper of MTGO event page.
     """
-    CONTAINER_NAME = "MTGO event"
-    DECK_PARSER = MtgoDeckJsonParser
+    CONTAINER_NAME = "MTGO event"  # override
     HEADERS = HEADERS  # override
+    JSON_BASED_DECK_PARSER = MtgoDeckJsonParser  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return f"mtgo.com/decklist/" in url.lower() and "#deck_" not in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _collect(self) -> list[Json]:  # override
+    @override
+    def _collect(self) -> list[Json]:
         try:
             json_data = _get_json(self._soup)
         except ScrapingError:

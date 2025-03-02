@@ -8,6 +8,7 @@
 
 """
 import logging
+from typing import override
 
 from bs4 import Tag
 
@@ -37,14 +38,17 @@ class PauperMtgDeckScraper(DeckScraper):
         self._is_edh = "/edhdeck/" in self.url
 
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         return "paupermtg.com/deck/" in url.lower() or "paupermtg.com/edhdeck/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         self._soup = getsoup(self.url)
         if not self._soup:
             raise ScrapingError("Page not available")
@@ -56,7 +60,8 @@ class PauperMtgDeckScraper(DeckScraper):
             elif tag.name == "ul" and state:
                 self._tags[state] = tag
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         self._update_fmt("paupercommander") if self._is_edh else self._update_fmt("pauper")
         self._metadata["name"] = self._soup.find(
             "h1", class_=lambda c: c and "deckTitle" in c).text.strip()
@@ -76,7 +81,8 @@ class PauperMtgDeckScraper(DeckScraper):
             cards += cls.get_playset(card, quantity)
         return cards
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         if self._is_edh:
             commander, *maindeck = self._parse_container(self._tags["maindeck"])
             self._set_commander(commander)

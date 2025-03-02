@@ -9,6 +9,7 @@
 """
 import logging
 from datetime import date
+from typing import override
 
 from bs4 import Tag
 
@@ -25,20 +26,24 @@ class ScryfallDeckScraper(DeckScraper):
     """Scraper of Scryfall decklist page.
     """
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         return "scryfall.com/@" in url.lower() and "/decks/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         url = strip_url_query(url)
         return f"{url}?as=list&with=usd"
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         self._soup = getsoup(self.url)
         if not self._soup:
             raise ScrapingError("Page not available")
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         *_, author_part = self.url.split("@")
         author, *_ = author_part.split("/")
         self._metadata["author"] = author
@@ -69,7 +74,8 @@ class ScryfallDeckScraper(DeckScraper):
             cards += cls.get_playset(card, quantity)
         return cards
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         for section_tag in self._soup.find_all("div", class_="deck-list-section"):
             title = section_tag.find("h6").text
             cards = self._parse_section(section_tag)

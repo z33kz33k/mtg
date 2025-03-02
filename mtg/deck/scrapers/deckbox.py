@@ -8,14 +8,16 @@
 
 """
 import logging
+from typing import override
 
 from bs4 import Tag
 
-from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.scryfall import COMMANDER_FORMATS, Card
 from mtg.utils.scrape import ScrapingError, getsoup, strip_url_query
 
 _log = logging.getLogger(__name__)
+URL_PREFIX = "https://deckbox.org"
 
 
 @DeckScraper.registered
@@ -23,19 +25,23 @@ class DeckboxDeckScraper(DeckScraper):
     """Scraper of Deckbox decklist page.
     """
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         return "deckbox.org/sets/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         self._soup = getsoup(self.url)
         if not self._soup:
             raise ScrapingError("Page not available")
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         page_header_tag = self._soup.find("div", class_=lambda c: c and "page_header" in c)
         self._metadata["author"] = page_header_tag.find("a").text.strip()
         self._metadata["name"] = page_header_tag.find("span").text.strip()
@@ -61,7 +67,8 @@ class DeckboxDeckScraper(DeckScraper):
         name = name_tag.text.strip()
         return cls.get_playset(cls.find_card(name), quantity)
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         maindeck_table = self._soup.find("table", class_=lambda c: c and "main" in c)
         if not maindeck_table:
             raise ScrapingError(
@@ -89,22 +96,24 @@ class DeckboxUserScraper(DeckUrlsContainerScraper):
     """Scraper of Deckbox user page.
     """
     CONTAINER_NAME = "Deckbox user"  # override
-    DECK_URL_TEMPLATE = "https://deckbox.org{}"
     DECK_SCRAPERS = DeckboxDeckScraper,  # override
+    DECK_URL_PREFIX = URL_PREFIX  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return "deckbox.org/users/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _collect(self) -> list[str]:  # override
+    @override
+    def _collect(self) -> list[str]:
         deck_tags = [
             tag for tag in self._soup.find_all("a", href=lambda h: h and "/sets/" in h)]
-        urls = {tag.attrs["href"] for tag in deck_tags}
-        return [self.DECK_URL_TEMPLATE.format(url) for url in sorted(urls)]
+        return sorted({tag.attrs["href"] for tag in deck_tags})
 
 
 @DeckUrlsContainerScraper.registered
@@ -112,20 +121,22 @@ class DeckboxEventScraper(DeckUrlsContainerScraper):
     """Scraper of Deckbox community event page.
     """
     CONTAINER_NAME = "Deckbox event"  # override
-    DECK_URL_TEMPLATE = "https://deckbox.org{}"
     DECK_SCRAPERS = DeckboxDeckScraper,  # override
+    DECK_URL_PREFIX = URL_PREFIX  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return "deckbox.org/communities/" in url.lower() and "/events/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _collect(self) -> list[str]:  # override
+    @override
+    def _collect(self) -> list[str]:
         table_tag = self._soup.find("table", class_="simple_table")
         deck_tags = [
             tag for tag in table_tag.find_all("a", href=lambda h: h and "/sets/" in h)]
-        urls = [tag.attrs["href"] for tag in deck_tags]
-        return [self.DECK_URL_TEMPLATE.format(url) for url in urls]
+        return [tag.attrs["href"] for tag in deck_tags]

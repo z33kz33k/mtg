@@ -9,6 +9,7 @@
 """
 import logging
 import re
+from typing import override
 
 import dateutil.parser
 from bs4 import Tag
@@ -30,7 +31,8 @@ class WotCDeckTagParser(TagBasedDeckParser):
         super().__init__(deck_tag, metadata)
         self._locally_derived_fmt = False
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         if name := self._deck_tag.attrs.get("deck-title"):
             self._metadata["name"] = name
         if fmt := self._deck_tag.attrs.get("format"):
@@ -39,7 +41,8 @@ class WotCDeckTagParser(TagBasedDeckParser):
             self._update_fmt(fmt)
             self._locally_derived_fmt = True
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         pass
 
     @staticmethod
@@ -50,7 +53,8 @@ class WotCDeckTagParser(TagBasedDeckParser):
         # cleans gibberish in square brackets in lines like '1 Arcane Signet[45dhxuab676gfah]'
         return re.sub(r'\[[a-zA-Z0-9]+?\]', '', line).strip()
 
-    def _build_deck(self) -> Deck:  # override
+    @override
+    def _build_deck(self) -> Deck:
         maindeck_tag = self._deck_tag.find("main-deck")
         if not maindeck_tag:
             raise ScrapingError("No main deck data available")
@@ -67,29 +71,33 @@ class WotCDeckTagParser(TagBasedDeckParser):
             lines += ["", "Sideboard"]
             lines += [self._sanitize_line(l) for l in sideboard_tag.text.strip().splitlines()]
 
-        return ArenaParser(lines, dict(self._metadata)).parse(suppress_invalid_deck=False)
+        return ArenaParser(lines, self._metadata).parse(suppress_invalid_deck=False)
 
 
 @DeckTagsContainerScraper.registered
 class WotCArticleScraper(DeckTagsContainerScraper):
     """Scraper of WotC article page.
     """
-    CONTAINER_NAME = "WotC article"
-    DECK_PARSER = WotCDeckTagParser
+    CONTAINER_NAME = "WotC article"  # override
+    TAG_BASED_DECK_PARSER = WotCDeckTagParser  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return "magic.wizards.com/" in url.lower() and "/news/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         if time_tag := self._soup.select_one("div > time"):
             self._metadata["date"] = dateutil.parser.parse(time_tag.text.strip()).date()
 
-    def _collect(self) -> list[Tag]:  # override
+    @override
+    def _collect(self) -> list[Tag]:
         deck_tags = [*self._soup.find_all("deck-list")]
         self._parse_metadata()
         return deck_tags

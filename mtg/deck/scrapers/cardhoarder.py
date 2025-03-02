@@ -12,6 +12,7 @@ import logging
 
 import dateutil.parser
 from selenium.common.exceptions import TimeoutException
+from typing import override
 
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper
@@ -30,11 +31,13 @@ class CardhoarderDeckScraper(DeckScraper):
     XPATH = "//div[contains(@id, 'deck-viewer')]"
 
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         return "cardhoarder.com/d/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
     def _get_deck_data(self) -> Json:
@@ -47,18 +50,21 @@ class CardhoarderDeckScraper(DeckScraper):
         # ...that needs to be reparsed
         return json.loads(deck_data)
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         try:
             self._soup, _, _ = get_dynamic_soup(self.url, self.XPATH)
         except TimeoutException:
             raise ScrapingError(f"Scraping failed due to Selenium timing out")
         self._deck_data = self._get_deck_data()
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         self._metadata["name"] = self._deck_data["deck"]["name"]
         self._metadata["date"] = dateutil.parser.parse(self._deck_data["deck"]["updated_at"]).date()
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         maindeck, sideboard = [], []
         for item in self._deck_data["items"]:
             card_data = item["card"]["card_data"]

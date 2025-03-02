@@ -8,6 +8,7 @@
 
 """
 import logging
+from typing import override
 
 from selenium.common import TimeoutException
 
@@ -19,7 +20,6 @@ from mtg.utils.scrape import ScrapingError, strip_url_query
 from mtg.utils.scrape.dynamic import get_dynamic_soup
 
 _log = logging.getLogger(__name__)
-
 
 
 @DeckScraper.registered
@@ -35,20 +35,24 @@ class MtgSearchItDeckScraper(DeckScraper):
         self._arena_decklist = ""
 
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         return "mtgsearch.it/decks/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         try:
             self._soup, _, _ = get_dynamic_soup(self.url, self.XPATH)
         except TimeoutException:
             raise ScrapingError(f"Scraping failed due to Selenium timing out")
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         tags = self._soup.select_one("div.tags.mt10").text.strip()
         try:
             fmt, arch = tags.splitlines()
@@ -61,12 +65,14 @@ class MtgSearchItDeckScraper(DeckScraper):
         img_tag = a_tag.find("img")
         self._metadata["author"] = img_tag.attrs["alt"].removesuffix(" | Icon")
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         tokens = "container text hide".split()
         decklist_tag = self._soup.find(
             "section", class_=lambda c: c and all(t in c for t in tokens))
         self._arena_decklist = decklist_tag.text.strip()
 
-    def _build_deck(self) -> Deck:  # override
+    @override
+    def _build_deck(self) -> Deck:
         return ArenaParser(self._arena_decklist.splitlines(), metadata=self._metadata).parse(
             suppress_invalid_deck=False)

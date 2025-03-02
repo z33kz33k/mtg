@@ -8,9 +8,10 @@
 
 """
 import logging
+from typing import override
 
-from bs4 import NavigableString, Tag
 import dateutil.parser
+from bs4 import NavigableString, Tag
 
 from mtg import Json
 from mtg.deck.scrapers import DeckTagsContainerScraper, TagBasedDeckParser
@@ -22,12 +23,12 @@ _log = logging.getLogger(__name__)
 class CyclesGamingDeckTagParser(TagBasedDeckParser):
     """Parser of Cycles Gaming decklist HTML tag.
     """
-
     def __init__(self, deck_tag: Tag, metadata: Json | None = None) -> None:
         super().__init__(deck_tag, metadata)
         self._parsed_multifaced = set()
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         self._metadata["name"] = self._deck_tag.text.strip().removeprefix("Decklist – ")
 
     @staticmethod
@@ -66,7 +67,8 @@ class CyclesGamingDeckTagParser(TagBasedDeckParser):
             elif self._state.is_sideboard:
                 self._sideboard += playset
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         current = self._deck_tag.next_sibling
         while current:
             if current.name == "p" and "Format: " in current.text and current.text.strip(
@@ -97,17 +99,20 @@ class CyclesGamingDeckTagParser(TagBasedDeckParser):
 class CyclesGamingArticleScraper(DeckTagsContainerScraper):
     """Scraper of Cycles Gaming article page.
     """
-    CONTAINER_NAME = "CyclesGaming article"
-    DECK_PARSER = CyclesGamingDeckTagParser
+    CONTAINER_NAME = "CyclesGaming article"  # override
+    TAG_BASED_DECK_PARSER = CyclesGamingDeckTagParser  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return f"cyclesgaming.com/" in url.lower() and "cyclesgaming.com/." not in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
+    @override
     def _parse_metadata(self) -> None:
         if info_tag := self._soup.find(
                 "p", string=lambda s: s and "cycles" in s.lower() and ", " in s):
@@ -118,7 +123,7 @@ class CyclesGamingArticleScraper(DeckTagsContainerScraper):
             except dateutil.parser.ParserError:
                 pass
 
-    def _collect(self) -> list[Tag]:  # override
+    @override
+    def _collect(self) -> list[Tag]:
         self._parse_metadata()
-        deck_tags = [tag for tag in self._soup.find_all("h2") if "list – " in tag.text.lower()]
-        return deck_tags
+        return [tag for tag in self._soup.find_all("h2") if "list – " in tag.text.lower()]

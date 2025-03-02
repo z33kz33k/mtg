@@ -8,15 +8,17 @@
 
 """
 import logging
+from typing import override
 
 from bs4 import Tag
 
-from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.scryfall import Card
 from mtg.utils import from_iterable, get_date_from_ago_text, get_date_from_month_text
 from mtg.utils.scrape import ScrapingError, getsoup, request_json, strip_url_query
 
 _log = logging.getLogger(__name__)
+URL_PREFIX = "https://pennydreadfulmagic.com"
 
 
 @DeckScraper.registered
@@ -24,19 +26,23 @@ class PennyDreadfulMagicDeckScraper(DeckScraper):
     """Scraper of PennyDreadfulMagic decklist page.
     """
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         return "pennydreadfulmagic.com/decks/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         self._soup = getsoup(self.url)
         if not self._soup:
             raise ScrapingError("Page not available")
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         self._update_fmt("penny")
         self._metadata["name"] = self._soup.find("h1", class_="deck-name").text.strip()
         info_tag = self._soup.find("div", class_="title")
@@ -61,7 +67,8 @@ class PennyDreadfulMagicDeckScraper(DeckScraper):
         quantity = int(qty_text)
         return cls.get_playset(cls.find_card(name), quantity)
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         for section_tag in self._soup.find_all("section"):
             if section_tag.find("section"):  # skip higher-order sections
                 continue
@@ -87,28 +94,31 @@ class PennyDreadfulMagicCompetitionScraper(DeckUrlsContainerScraper):
     CONTAINER_NAME = "PennyDreadfulMagic competition"  # override
     API_URL_TEMPLATE = ("https://pennydreadfulmagic.com/api/decks/?achievementKey=&archetypeId=&"
                         "cardName=&competitionId={}&competitionFlagId=&deckType=&page=0&page"
-                        "Size=200&personId=&q=&seasonId=")
-    DECK_URL_TEMPLATE = "https://pennydreadfulmagic.com{}"
+                        "Size=200&personId=&q=&seasonId=")  # override
     DECK_SCRAPERS = PennyDreadfulMagicDeckScraper,  # override
+    DECK_URL_PREFIX = URL_PREFIX  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return "pennydreadfulmagic.com/competitions/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
     def _get_competition_id(self) -> str:
         *_, last = self.url.split("/")
         return last
 
-    def _collect(self) -> list[str]:  # override
+    @override
+    def _collect(self) -> list[str]:
         json_data = request_json(self.API_URL_TEMPLATE.format(self._get_competition_id()))
         if not json_data or not json_data.get("objects"):
             _log.warning(self._error_msg)
             return []
-        return [self.DECK_URL_TEMPLATE.format(d["url"]) for d in json_data["objects"]]
+        return [d["url"] for d in json_data["objects"]]
 
 
 @DeckUrlsContainerScraper.registered
@@ -118,20 +128,22 @@ class PennyDreadfulMagicUserScraper(DeckUrlsContainerScraper):
     CONTAINER_NAME = "PennyDreadfulMagic user"  # override
     API_URL_TEMPLATE = ("https://pennydreadfulmagic.com/api/decks/?achievementKey=&archetypeId="
                         "&cardName=&competitionId=&competitionFlagId=&deckType=all&page=0&page"
-                        "Size=200&personId={}&q=&seasonId={}")
-    DECK_URL_TEMPLATE = "https://pennydreadfulmagic.com{}"
+                        "Size=200&personId={}&q=&seasonId={}")  # override
     DECK_SCRAPERS = PennyDreadfulMagicDeckScraper,  # override
+    DECK_URL_PREFIX = URL_PREFIX  # override
 
     @property
     def _ids_in_url(self) -> bool:
         return "/seasons/" in self.url.lower() and "/id/" in self.url.lower()
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return "pennydreadfulmagic.com" in url.lower() and "/people/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
     @staticmethod
@@ -160,7 +172,8 @@ class PennyDreadfulMagicUserScraper(DeckUrlsContainerScraper):
             return self._parse_url_for_ids(self.url)
         return self._find_ids()
 
-    def _collect(self) -> list[str]:  # override
+    @override
+    def _collect(self) -> list[str]:
         if ids := self._get_ids():
             season_id, user_id = ids
         else:
@@ -170,4 +183,4 @@ class PennyDreadfulMagicUserScraper(DeckUrlsContainerScraper):
         if not json_data or not json_data.get("objects"):
             _log.warning(self._error_msg)
             return []
-        return [self.DECK_URL_TEMPLATE.format(d["url"]) for d in json_data["objects"]]
+        return [d["url"] for d in json_data["objects"]]

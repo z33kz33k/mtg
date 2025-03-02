@@ -8,6 +8,7 @@
 
 """
 import logging
+from typing import override
 
 from selenium.common.exceptions import TimeoutException
 
@@ -32,21 +33,25 @@ class CardBoardLiveDeckScraper(DeckScraper):
         self._clipboard = ""
 
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         return "app.cardboard.live/shared-deck/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         try:
             self._soup, _, self._clipboard = get_dynamic_soup(
                 self.url, CLIPBOARD_XPATH, clipboard_xpath=CLIPBOARD_XPATH)
         except TimeoutException:
             raise ScrapingError(f"Scraping failed due to Selenium timing out")
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         self._metadata["name"] = self._soup.find("h3", class_="shared-deck__title").text.strip()
         for tag in self._soup.find_all("p", class_="shared-deck__describe"):
             if "Played by: " in tag.text:
@@ -56,10 +61,12 @@ class CardBoardLiveDeckScraper(DeckScraper):
             elif "Tournament: " in tag.text:
                 self._metadata["event"] = tag.text.strip().removeprefix("Tournament: ")
 
-    def _build_deck(self) -> Deck:  # override
+    @override
+    def _parse_decklist(self) -> None:
+        pass
+
+    @override
+    def _build_deck(self) -> Deck:
         return ArenaParser(self._clipboard.splitlines(), metadata=self._metadata).parse(
             suppress_invalid_deck=False)
-
-    def _parse_decklist(self) -> None:  # override
-        pass
 

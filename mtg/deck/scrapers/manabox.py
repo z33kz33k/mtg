@@ -8,6 +8,7 @@
 
 """
 import logging
+from typing import override
 
 import dateutil.parser
 from bs4 import Tag
@@ -25,15 +26,18 @@ class ManaBoxDeckScraper(DeckScraper):
     """Scraper of ManaBox decklist page.
     """
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         return "manabox.app/decks/" in url.lower()
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         self._soup = getsoup(self.url)
         if not self._soup:
             raise ScrapingError("Page not available")
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         info_tag = self._soup.find("div", class_="w-full").find("div", class_="mb-2")
         name_tag, _, fmt_tag, date_tag, *_ = info_tag.find_all("div")
         self._metadata["name"] = name_tag.text.strip()
@@ -50,7 +54,8 @@ class ManaBoxDeckScraper(DeckScraper):
             cards += cls.get_playset(cls.find_card(name), qty)
         return cards
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         for container_div in self._soup.find_all("div", class_="mb-3"):
             header_tag = container_div.find(
                 "div", class_=["flex", "whitespace-nowrap", "overflow-hidden", "text-ellipsis"])

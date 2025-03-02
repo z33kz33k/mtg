@@ -9,6 +9,7 @@
 """
 import logging
 from datetime import datetime
+from typing import override
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 
@@ -39,14 +40,17 @@ class UntappedProfileDeckScraper(DeckScraper):
         self._clipboard = ""
 
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         return "mtga.untapped.gg/profile/" in url.lower() and "/deck/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         try:
             self._soup, _, self._clipboard = get_dynamic_soup(
                 self.url, CLIPBOARD_XPATH, self.NO_GAMES_XPATH, self.PRIVATE_XPATH,
@@ -56,19 +60,22 @@ class UntappedProfileDeckScraper(DeckScraper):
         except TimeoutException:
             raise ScrapingError(f"Scraping failed due to Selenium timing out")
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         name_tag = self._soup.select_one('span[class*="DeckListContainer__Title"]')
         strong_tag = name_tag.find("strong")
         self._metadata["name"] = strong_tag.text.strip()
         author_tag = self._soup.find("h1", string=lambda s: s and s.endswith("'s Profile"))
         self._metadata["author"] = author_tag.text.strip().removesuffix("'s Profile")
 
+    @override
+    def _parse_decklist(self) -> None:
+        pass
+
+    @override
     def _build_deck(self) -> Deck:
         return ArenaParser(self._clipboard.splitlines(), metadata=self._metadata).parse(
             suppress_invalid_deck=False)
-
-    def _parse_decklist(self) -> None:  # override
-        pass
 
 
 @DeckScraper.registered
@@ -80,15 +87,18 @@ class UntappedRegularDeckScraper(DeckScraper):
         self._clipboard = ""
 
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         return "mtga.untapped.gg/decks/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         url = strip_url_query(url)
         return url.replace("input/", "") if "/input/" in url else url
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         try:
             self._soup, _, self._clipboard = get_dynamic_soup(
                 self.url, CLIPBOARD_XPATH, consent_xpath=CONSENT_XPATH,
@@ -96,19 +106,22 @@ class UntappedRegularDeckScraper(DeckScraper):
         except TimeoutException:
             raise ScrapingError(f"Scraping failed due to Selenium timing out")
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         name_tag = self._soup.select("h1[class*='styles__H1']")[-1]
         name = name_tag.text.strip()
         if " (" in name:
             name, *_ = name.split(" (")
         self._metadata["name"] = name
 
-    def _build_deck(self) -> Deck:  # override
+    @override
+    def _parse_decklist(self) -> None:
+        pass
+
+    @override
+    def _build_deck(self) -> Deck:
         return ArenaParser(self._clipboard.splitlines(), metadata=self._metadata).parse(
             suppress_invalid_deck=False)
-
-    def _parse_decklist(self) -> None:  # override
-        pass
 
 
 @DeckScraper.registered
@@ -120,14 +133,17 @@ class UntappedMetaDeckScraper(DeckScraper):
         self._clipboard = ""
 
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         return "mtga.untapped.gg/meta/decks/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         try:
             self._soup, _, self._clipboard = get_dynamic_soup(
                 self.url, CLIPBOARD_XPATH, consent_xpath=CONSENT_XPATH,
@@ -135,7 +151,8 @@ class UntappedMetaDeckScraper(DeckScraper):
         except TimeoutException:
             raise ScrapingError(f"Scraping failed due to Selenium timing out")
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         name_tag = self._soup.select_one("h1[class*='layouts__MetaPageHeaderTitle']")
         if not name_tag:
             name_tag = self._soup.select_one("span[class*='DeckViewHeader__ArchetypeName']")
@@ -159,34 +176,39 @@ class UntappedMetaDeckScraper(DeckScraper):
         time_range_tag = self._soup.select_one("div[class*='TimeRangeFilter__DateText']")
         self._metadata["meta"]["time_range_since"] = time_range_tag.text.removesuffix("Now")
 
-    def _build_deck(self) -> Deck:  # override
+    @override
+    def _parse_decklist(self) -> None:
+        pass
+
+    @override
+    def _build_deck(self) -> Deck:
         return ArenaParser(self._clipboard.splitlines(), metadata=self._metadata).parse(
             suppress_invalid_deck=False)
-
-    def _parse_decklist(self) -> None:  # override
-        pass
 
 
 @DeckUrlsContainerScraper.registered
 class UntappedProfileScraper(DeckUrlsContainerScraper):
     """Scraper of Untapped.gg user profile page.
     """
-    THROTTLING = DeckUrlsContainerScraper.THROTTLING * 1.4
+    THROTTLING = DeckUrlsContainerScraper.THROTTLING * 1.4  # override
     CONTAINER_NAME = "Untapped profile"  # override
-    URL_TEMPLATE = "https://mtga.untapped.gg{}"
-    DECK_SCRAPERS = UntappedProfileDeckScraper,  # override
     XPATH = "//a[contains(@href, '/profile/') and contains(@class, 'deckbox')]"
     CONSENT_XPATH = CONSENT_XPATH
+    DECK_SCRAPERS = UntappedProfileDeckScraper,  # override
+    DECK_URL_PREFIX = "https://mtga.untapped.gg"  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return "mtga.untapped.gg/profile/" in url.lower() and "/deck/" not in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _collect(self) -> list[str]:  # override
+    @override
+    def _collect(self) -> list[str]:
         a_tags = self._soup.find_all("a", href=lambda h: h and "/profile/" in h)
         a_tags = [a_tag for a_tag in a_tags if "deckbox" in a_tag.attrs["class"]]
-        return [self.URL_TEMPLATE.format(a_tag["href"]) for a_tag in a_tags]
+        return [a_tag["href"] for a_tag in a_tags]

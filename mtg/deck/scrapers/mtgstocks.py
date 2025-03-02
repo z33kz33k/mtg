@@ -9,6 +9,7 @@
 """
 import json
 import logging
+from typing import override
 
 import dateutil.parser
 
@@ -30,11 +31,13 @@ class MtgStocksDeckScraper(DeckScraper):
         self._deck_id = self._parse_deck_id()
 
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         return "mtgstocks.com/decks/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         url = strip_url_query(url)
         return url.replace("/visual/", "/")
 
@@ -60,13 +63,15 @@ class MtgStocksDeckScraper(DeckScraper):
             raise ScrapingError("Deck data not found")
         return deck_data["b"]
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         self._soup = getsoup(self.url)
         if not self._soup:
             raise ScrapingError("Page not available")
         self._deck_data = self._get_deck_data()
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         self._metadata["name"] = self._deck_data["name"]
         if date := self._deck_data.get("lastUpdated"):
             self._metadata["date"] = dateutil.parser.parse(date).date()
@@ -79,7 +84,8 @@ class MtgStocksDeckScraper(DeckScraper):
         name = card["card"]["name"]
         return self.get_playset(self.find_card(name), qty)
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         for card in self._deck_data["boards"]["mainboard"]["cards"]:
             self._maindeck.extend(self._parse_playset(card))
         if sideboard := self._deck_data["boards"].get("sideboard"):
@@ -93,17 +99,20 @@ class MtgStocksArticleScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "MTGStocks article"  # override
     DECK_SCRAPERS = MtgStocksDeckScraper,  # override
-    URL_TEMPLATE = "https://mtgstocks.com{}"
+    DECK_URL_PREFIX = "https://mtgstocks.com"  # override
 
     @staticmethod
+    @override
     def is_container_url(url: str) -> bool:  # override
         return "mtgstocks.com/news/" in url.lower()
 
     @staticmethod
+    @override
     def sanitize_url(url: str) -> str:  # override
         return strip_url_query(url)
 
+    @override
     def _collect(self) -> list[str]:  # override
         deck_tags = self._soup.find_all("news-deck")
         a_tags = [tag.find("a", href=lambda h: h and "/decks/" in h) for tag in deck_tags]
-        return [self.URL_TEMPLATE.format(t.attrs["href"]) for t in a_tags if t is not None]
+        return [t.attrs["href"] for t in a_tags if t is not None]

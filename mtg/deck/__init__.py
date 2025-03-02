@@ -17,7 +17,7 @@ from collections import Counter, OrderedDict
 from enum import Enum, auto
 from functools import cached_property
 from operator import attrgetter
-from typing import Any, Iterable, Iterator
+from typing import Any, Iterable, Iterator, Self
 
 from mtg import Json
 from mtg.scryfall import (
@@ -700,7 +700,7 @@ class Deck:
             reprs.append(("companion", str(self.companion)))
         return getrepr(self.__class__, *reprs)
 
-    def __eq__(self, other: "Deck") -> bool:
+    def __eq__(self, other: Self) -> bool:
         if not isinstance(other, Deck):
             return False
         return self.json == other.json
@@ -708,7 +708,7 @@ class Deck:
     def __hash__(self) -> int:
         return hash(self.json)
 
-    def __lt__(self, other: "Deck") -> bool:
+    def __lt__(self, other: Self) -> bool:
         if not isinstance(other, Deck):
             return NotImplemented
         return self.avg_cmc < other.avg_cmc
@@ -929,7 +929,7 @@ class DeckParser(ABC):
         return self._metadata.get("format", "")
 
     def __init__(self, metadata: Json | None = None) -> None:
-        self._metadata = metadata or {}
+        self._metadata = dict(metadata) if metadata else {}
         self._state = _ParsingState()
         self._maindeck, self._sideboard = [], []
         self._commander, self._partner_commander, self._companion = None, None, None
@@ -951,7 +951,7 @@ class DeckParser(ABC):
         else:
             self._commander = card
 
-    def _derive_commander_from_sideboard(self):
+    def _derive_commander_from_sideboard(self) -> None:
         if self.fmt in COMMANDER_FORMATS and len(self._sideboard) in (1, 2) and all(
                 c.commander_suitable for c in self._sideboard):
             for c in self._sideboard:

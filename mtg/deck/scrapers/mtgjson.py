@@ -9,7 +9,7 @@
 """
 import logging
 from datetime import datetime
-from typing import Generator, Literal
+from typing import Generator, Literal, override
 
 from tqdm import tqdm
 
@@ -35,10 +35,12 @@ class MtgJsonDeckScraper(DeckScraper):
         self._deck_data: Json | None = None
 
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         return "mtgjson.com/api/v5/decks/" in url.lower() and url.lower().endswith(".json")
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         json_data = request_json(self.url)
         if not json_data or not json_data.get("data"):
             raise ScrapingError("Data not available")
@@ -46,7 +48,8 @@ class MtgJsonDeckScraper(DeckScraper):
         self._metadata["version"] = json_data["meta"]["version"]
         self._deck_data = json_data["data"]
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         self._metadata["name"] = self._deck_data["name"]
         self._metadata["release_date"] = datetime.fromisoformat(
             self._deck_data["releaseDate"]).date()
@@ -62,7 +65,8 @@ class MtgJsonDeckScraper(DeckScraper):
             name, set_and_collector_number=(setcode, collector_number), scryfall_id=scryfall_id)
         return self.get_playset(card, qty)
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         for card_json in self._deck_data["commander"]:
             for card in self._parse_card_json(card_json):
                 self._set_commander(card)
@@ -79,10 +83,9 @@ def _get_links():
     tbody = soup.find("tbody")
     link_tags = [t.find("a") for t in tbody.find_all("td", class_="link")]
     link_tags = [t for t in link_tags if t is not None]
-    links = [
+    return [
         f"{URL}{t['href']}" for t in link_tags
         if MtgJsonDeckScraper.is_deck_url(f"{URL}{t['href']}")]
-    return links
 
 
 @timed("scraping MTGJSON API deck page")

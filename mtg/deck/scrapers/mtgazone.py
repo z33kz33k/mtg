@@ -10,13 +10,14 @@
 import contextlib
 import logging
 from datetime import datetime
+from typing import override
 
 from bs4 import Tag
 
 from mtg import Json
 from mtg.deck import Deck, Mode
-from mtg.deck.scrapers import DeckScraper, DeckTagsContainerScraper, HybridContainerScraper, \
-    TagBasedDeckParser
+from mtg.deck.scrapers import DeckScraper, DeckTagsContainerScraper, \
+    HybridContainerScraper, TagBasedDeckParser
 from mtg.scryfall import ARENA_FORMATS, Card
 from mtg.utils import extract_int, from_iterable, timed
 from mtg.utils.scrape import ScrapingError, getsoup, strip_url_query
@@ -30,7 +31,8 @@ _log = logging.getLogger(__name__)
 class MtgaZoneDeckTagParser(TagBasedDeckParser):
     """Parser of an MTG Arena Zone decklist HTML tag.
     """
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         name_author_tag = self._deck_tag.find("div", class_="name-container")
         if not name_author_tag:
             raise ScrapingError(
@@ -78,7 +80,8 @@ class MtgaZoneDeckTagParser(TagBasedDeckParser):
             decklist.extend(self._to_playset(card_tag))
         return decklist
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         if commander_tag := self._deck_tag.select_one("div.decklist.short.commander"):
             for card in self._process_decklist(commander_tag):
                 self._set_commander(card)
@@ -104,14 +107,17 @@ class MtgaZoneDeckScraper(DeckScraper):
         self._deck_parser: MtgaZoneDeckTagParser | None = None
 
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         return "mtgazone.com/user-decks/" in url.lower() or "mtgazone.com/deck/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         self._soup = getsoup(self.url)
         if not self._soup:
             raise ScrapingError("Page not available")
@@ -120,13 +126,16 @@ class MtgaZoneDeckScraper(DeckScraper):
             raise ScrapingError("Deck data not found (probably paywalled)")
         self._deck_parser = MtgaZoneDeckTagParser(deck_tag, self._metadata)
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         pass
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         pass
 
-    def _build_deck(self) -> Deck:  # override
+    @override
+    def _build_deck(self) -> Deck:
         return self._deck_parser.parse()
 
 
@@ -135,21 +144,23 @@ class MtgaZoneArticleScraper(DeckTagsContainerScraper):
     """Scraper of MTG Arena Zone article page.
     """
     CONTAINER_NAME = "MTGAZone article"
-    DECK_PARSER = MtgaZoneDeckTagParser
+    TAG_BASED_DECK_PARSER = MtgaZoneDeckTagParser  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return f"mtgazone.com/" in url.lower() and not any(
             t in url.lower() for t in ("/user-decks", "/deck/", "/plans/premium",
                                        "/mtg-arena-codes", "/author/", "jump-in"))
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _collect(self) -> list[Tag]:  # override
-        deck_tags = [*self._soup.find_all("div", class_="deck-block")]
-        return deck_tags
+    @override
+    def _collect(self) -> list[Tag]:
+        return [*self._soup.find_all("div", class_="deck-block")]
 
 
 @HybridContainerScraper.registered
@@ -161,19 +172,19 @@ class MtgaZoneAuthorScraper(HybridContainerScraper):
     CONTAINER_SCRAPERS = MtgaZoneArticleScraper,  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return "mtgazone.com/author/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _collect(self) -> tuple[list[str], list[str]]:  # override
-        links = [
-            t.attrs["href"].removesuffix("/") for t in self._soup.select("article > h2 > a")]
-        deck_urls = [l for l in links if MtgaZoneDeckScraper.is_deck_url(l)]
-        article_urls = [l for l in links if MtgaZoneArticleScraper.is_container_url(l)]
-        return deck_urls, article_urls
+    @override
+    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
+        deck_urls, article_urls = self._get_links_from_tag(css_selector="article > h2 > a")
+        return deck_urls, [], [], article_urls
 
 
 def _parse_tiers(table: Tag) -> dict[str, int]:

@@ -8,6 +8,7 @@
 
 """
 import logging
+from typing import override
 
 import dateutil.parser
 
@@ -44,14 +45,17 @@ class FlexslotDeckScraper(DeckScraper):
     """Scraper of Flexslot.gg decklist page.
     """
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         return "flexslot.gg/decks/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url).removesuffix("/view")
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         json_data = request_json(
             self.url.replace("https://flexslot.gg", "https://api.flexslot.gg"),
             headers=HEADERS)
@@ -59,7 +63,8 @@ class FlexslotDeckScraper(DeckScraper):
             raise ScrapingError("Data not available")
         self._deck_data = json_data["data"]
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         self._metadata["name"] = self._deck_data["name"]
         self._metadata["author"] = self._deck_data["creator"]
         self._update_fmt(self._deck_data["format"].lower())
@@ -90,7 +95,8 @@ class FlexslotDeckScraper(DeckScraper):
         elif portion == "main":
             self._maindeck.extend(playset)
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         for card_json in self._deck_data["deck_card_maps"]:
             self._parse_card_json(card_json)
         self._derive_commander_from_sideboard()
@@ -101,19 +107,21 @@ class FlexslotUserScraper(DeckUrlsContainerScraper):
     """Scraper of Flexslot user page.
     """
     CONTAINER_NAME = "Flexslot user"  # override
-    URL_TEMPLATE = "https://flexslot.gg{}"
     DECK_SCRAPERS = FlexslotDeckScraper,  # override
     XPATH = '//a[contains(@href, "/decks/")]'  # override
     CONSENT_XPATH = CONSENT_XPATH  # override
+    DECK_URL_PREFIX = "https://flexslot.gg"  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return "flexslot.gg/u/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _collect(self) -> list[str]:  # override
-        deck_tags = self._soup.find_all("a", href=lambda h: h and "/decks/" in h)
-        return [self.URL_TEMPLATE.format(tag["href"]) for tag in deck_tags]
+    @override
+    def _collect(self) -> list[str]:
+        return [t["href"] for t in self._soup.find_all("a", href=lambda h: h and "/decks/" in h)]

@@ -9,6 +9,7 @@
 """
 import json
 import logging
+from typing import override
 
 from mtg import Json
 from mtg.deck import Deck
@@ -31,7 +32,8 @@ class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
         self._arena_decklists = []
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return "edhtop16.com/tournament/" in url.lower()
 
     @staticmethod
@@ -74,7 +76,8 @@ class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
                 pass
         return urls
 
-    def _collect(self) -> list[str]:  # override
+    @override
+    def _collect(self) -> list[str]:
         script_tag = self._soup.find("script", id="__NEXT_DATA__")
         if not script_tag:
             _log.warning(self._error_msg)
@@ -86,7 +89,8 @@ class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
 
         return deck_urls
 
-    def scrape(self) -> list[Deck]:  # override
+    @override
+    def scrape(self) -> list[Deck]:
         decks = super().scrape()
         if self._arena_decklists:
             _log.info(
@@ -106,7 +110,8 @@ class EdhTop16CommanderScraper(EdhTop16TournamentScraper):
     CONTAINER_NAME = "EDHTop16 commander"  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return "edhtop16.com/commander/" in url.lower()
 
     def _process_data(self, data: Json) -> list[str]:  # override

@@ -9,6 +9,7 @@
 """
 import contextlib
 import logging
+from typing import override
 
 import dateutil.parser
 from selenium import webdriver
@@ -56,11 +57,13 @@ class TopDeckedRegularDeckScraper(DeckScraper):
         self._arena_decklist = []
 
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         return "www.topdecked.com/decks/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
     def _process_metadata_with_selenium(self, driver: webdriver.Chrome) -> None:
@@ -100,8 +103,9 @@ class TopDeckedRegularDeckScraper(DeckScraper):
             arena = click_for_clipboard(driver, self.ARENA_XPATH, self.ARENA_DELAY)
             return arena.splitlines()
 
-    # pre-process does all the work here
-    def _pre_parse(self) -> None:  # override
+    # _get_data() does all the work here
+    @override
+    def _pre_parse(self) -> None:
         try:
             self._arena_decklist = self._get_data()
         except NoSuchElementException as err:
@@ -110,7 +114,8 @@ class TopDeckedRegularDeckScraper(DeckScraper):
         except TimeoutException:
             raise ScrapingError(f"Scraping failed due to Selenium timing out")
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         pass
 
     def _handle_commander(self) -> None:
@@ -129,11 +134,13 @@ class TopDeckedRegularDeckScraper(DeckScraper):
             self._arena_decklist.insert(1, commander_line)
             self._arena_decklist.insert(2, "")
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         if self.fmt and self.fmt in COMMANDER_FORMATS:
             self._handle_commander()
 
-    def _build_deck(self) -> Deck:  # override
+    @override
+    def _build_deck(self) -> Deck:
         return ArenaParser(self._arena_decklist, self._metadata).parse(suppress_invalid_deck=False)
 
 
@@ -141,16 +148,18 @@ class TopDeckedRegularDeckScraper(DeckScraper):
 class TopDeckedMetaDeckScraper(TopDeckedRegularDeckScraper):
     """Scarper of TopDecked meta-deck decklist page.
     """
-    SHARE_XPATH = "//ion-button[contains(text(), 'Share')]"
+    SHARE_XPATH = "//ion-button[contains(text(), 'Share')]"  # override
     _META_SHARE_XPATH = (
         "//span[contains(@class, 'text-medium') and contains(@class, 'subtext') "
         "and contains(text(), 'of meta')]")
 
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         return "www.topdecked.com/metagame/" in url.lower() and "/decks/" in url.lower()
 
-    def _process_metadata_with_selenium(self, driver: webdriver.Chrome) -> None:  # override
+    @override
+    def _process_metadata_with_selenium(self, driver: webdriver.Chrome) -> None:
         super()._process_metadata_with_selenium(driver)
         meta_share_el = driver.find_element(By.XPATH, self._META_SHARE_XPATH)
         self._metadata["meta_share"] = extract_float(_sanitize_element_text(meta_share_el.text))

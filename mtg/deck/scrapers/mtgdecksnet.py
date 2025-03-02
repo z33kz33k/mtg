@@ -8,6 +8,7 @@
 
 """
 import logging
+from typing import override
 
 import dateutil.parser
 from selenium.common.exceptions import TimeoutException
@@ -29,7 +30,6 @@ class MtgDecksNetDeckScraper(DeckScraper):
     """Scraper of MTGDecks.net decklist page.
     """
     XPATH = "//textarea[@id='arena_deck']"
-
     _FORMATS = {
         "brawl": "standardbrawl",
         "historic-brawl": "brawl",
@@ -40,21 +40,25 @@ class MtgDecksNetDeckScraper(DeckScraper):
         self._arena_decklist = []
 
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         return "mtgdecks.net/" in url.lower() and "-decklist-" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         url = strip_url_query(url)
         return url.removesuffix("/visual")
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         try:
             self._soup, _, _ = get_dynamic_soup(self.url, self.XPATH)
         except TimeoutException:
             raise ScrapingError(f"Scraping failed due to Selenium timing out")
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         info_tag = self._soup.find("div", class_="col-md-6")
         info = info_tag.text.strip()
         name_author_part, *event_parts, date_part = info.split("—")
@@ -71,12 +75,14 @@ class MtgDecksNetDeckScraper(DeckScraper):
             fmt = found
         self._update_fmt(fmt)
 
-    def _build_deck(self) -> Deck:  # override
-        return ArenaParser(self._arena_decklist, self._metadata).parse(suppress_invalid_deck=False)
-
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         deck_tag = self._soup.find("textarea", id="arena_deck")
         self._arena_decklist = deck_tag.text.strip().splitlines()
+
+    @override
+    def _build_deck(self) -> Deck:  # override
+        return ArenaParser(self._arena_decklist, self._metadata).parse(suppress_invalid_deck=False)
 
 
 @DeckUrlsContainerScraper.registered
@@ -84,19 +90,22 @@ class MtgDecksNetTournamentScraper(DeckUrlsContainerScraper):
     """Scraper of MTGDecks.net tournament page.
     """
     CONTAINER_NAME = "MTGDecks.net tournament"  # override
-    DECK_URL_TEMPLATE = "https://mtgdecks.net{}"
+    XPATH = '//a[contains(@href, "-decklist-")]'  # override
     DECK_SCRAPERS = MtgDecksNetDeckScraper,  # override
-    XPATH = '//a[contains(@href, "-decklist-")]'
+    DECK_URL_PREFIX = "https://mtgdecks.net"  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return "mtgdecks.net/" in url.lower() and "-tournament-" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return url.removesuffix("/").removesuffix("/winrates")
 
-    def _collect(self) -> list[str]:  # override
+    @override
+    def _collect(self) -> list[str]:
         deck_tags = [
             tag for tag in self._soup.find_all("a", href=lambda h: h and "-decklist-" in h)]
-        return [self.DECK_URL_TEMPLATE.format(deck_tag.attrs["href"]) for deck_tag in deck_tags]
+        return [deck_tag.attrs["href"] for deck_tag in deck_tags]

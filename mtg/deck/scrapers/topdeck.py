@@ -8,7 +8,7 @@
 
 """
 import logging
-from typing import Type
+from typing import Type, override
 
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.deck.scrapers.aetherhub import AetherhubDeckScraper
@@ -77,18 +77,21 @@ class TopDeckBracketScraper(DeckUrlsContainerScraper):
     """Scraper of TopDeck.gg bracket page.
     """
     CONTAINER_NAME = "TopDeck.gg bracket"  # override
+    XPATH = "//table[contains(@class, 'table') and contains(@class, 'dataTable')]"  # override
     DECK_SCRAPERS = DECK_SCRAPERS # override
-    XPATH = "//table[contains(@class, 'table') and contains(@class, 'dataTable')]"
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return "topdeck.gg/bracket/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _collect(self) -> list[str]:  # override
+    @override
+    def _collect(self) -> list[str]:
         deck_tags = self._soup.find_all("a", string="Decklist")
         deck_urls = [t["href"] for t in deck_tags]
         check_unexpected_urls(deck_urls, *self.DECK_SCRAPERS)
@@ -100,19 +103,22 @@ class TopDeckProfileScraper(DeckUrlsContainerScraper):
     """Scraper of TopDeck.gg profile page.
     """
     CONTAINER_NAME = "TopDeck.gg profile"  # override
-    DECK_SCRAPERS = DECK_SCRAPERS  # override
     XPATH = ("//a[contains(@class, 'btn') and contains(@class, 'btn-sm') "
-             "and not(contains(@href, 'topdeck.gg'))]")
+             "and not(contains(@href, 'topdeck.gg'))]")  # override
+    DECK_SCRAPERS = DECK_SCRAPERS  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return "topdeck.gg/profile/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _collect(self) -> list[str]:  # override
+    @override
+    def _collect(self) -> list[str]:
         deck_tags = self._soup.find_all(
             "a", class_=lambda c: c and "btn" in c and "btn-sm" in c,
             href=lambda h: h and "topdeck.gg" not in h)

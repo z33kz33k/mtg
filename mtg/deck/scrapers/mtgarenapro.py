@@ -8,6 +8,7 @@
 
 """
 import logging
+from typing import override
 
 import dateutil.parser
 
@@ -31,18 +32,21 @@ class MtgArenaProDeckScraper(DeckScraper):
     """Scraper of MTGArena.Pro decklist page.
     """
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         return "mtgarena.pro/decks/" in url.lower() or f"{ALT_DOMAIN}/decks/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return url.replace(ALT_DOMAIN, "mtgarena.pro")
 
     def _get_deck_data(self) -> Json:
         return dissect_js(
         self._soup, "var precachedDeck=", '"card_ids":', lambda s: s + '"card_ids":[]}')
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         self._soup = getsoup(self.url)
         if not self._soup:
             raise ScrapingError("Page not available")
@@ -67,7 +71,8 @@ class MtgArenaProDeckScraper(DeckScraper):
             return "standard"
         return ""
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         self._metadata["author"] = self._deck_data["author"]
         self._metadata["name"] = self._deck_data["humanname"]
         if fmt := self._parse_fmt():
@@ -81,7 +86,8 @@ class MtgArenaProDeckScraper(DeckScraper):
         card = cls.find_card(name)
         return cls.get_playset(card, quantity)
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         for card_json in self._deck_data["deck_order"]:
             self._maindeck.extend(self._parse_card_json(card_json))
         for card_json in self._deck_data["sidedeck_order"]:

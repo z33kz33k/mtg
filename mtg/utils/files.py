@@ -22,9 +22,10 @@ from mtg.utils.check_type import type_checker
 _log = getLogger(__name__)
 
 
-@type_checker(PathLike)
 def getdir(path: PathLike, create_missing=True) -> Path:
-    """Return a directory at ``path`` creating it (and all its needed parents) if missing.
+    """Return a directory path at ``path``.
+
+    Optionally, create the directory (and all its needed parents) if it's missing.
     """
     dir_ = Path(path)
     if not dir_.exists() and create_missing:
@@ -36,9 +37,8 @@ def getdir(path: PathLike, create_missing=True) -> Path:
     return dir_
 
 
-@type_checker(PathLike)
 def getfile(path: PathLike, ext="") -> Path:
-    """Return an existing file at ``path``.
+    """Return a path to existing file at ``path``.
     """
     f = Path(path)
     if not f.is_file():

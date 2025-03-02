@@ -9,20 +9,22 @@
 """
 import logging
 from datetime import datetime
+from typing import override
 
 import dateutil.parser
+from bs4 import Tag
 from selenium.common.exceptions import TimeoutException
 
 from mtg import Json
 from mtg.deck import Archetype, Deck, Mode
-from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper, HybridContainerScraper, \
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
     TagBasedDeckParser
 from mtg.utils import extract_float, extract_int, from_iterable
 from mtg.utils.scrape import ScrapingError, getsoup, strip_url_query
 from mtg.utils.scrape.dynamic import get_dynamic_soup
 
 _log = logging.getLogger(__name__)
-URL_TEMPLATE = "https://aetherhub.com{}"
+URL_PREFIX = "https://aetherhub.com"
 
 
 # TODO: scrape the meta
@@ -31,10 +33,12 @@ URL_TEMPLATE = "https://aetherhub.com{}"
 class AetherhubDeckTagParser(TagBasedDeckParser):
     """Parser of an Aetherhub decklist HTML tag.
     """
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         pass
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         for tag in self._deck_tag.descendants:
             if tag.name in ("h4", "h5"):
                 if "Side" in tag.text:
@@ -101,14 +105,16 @@ class AetherhubDeckScraper(DeckScraper):
         self._deck_parser: AetherhubDeckTagParser | None = None
 
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         url = url.lower()
         tokens = "export/", "/mydecks", "/builder"
         return ("aetherhub.com/" in url and "/deck/" in url
                 and not any(t in url.lower() for t in tokens))
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         url = strip_url_query(url)
         if "/gallery/" in url.lower():
             url = url.replace("/Gallery/", "/Public/").replace("/gallery/", "/public/")
@@ -116,7 +122,7 @@ class AetherhubDeckScraper(DeckScraper):
             url = url.removesuffix("/Gallery").removesuffix("/gallery")
         return url.removesuffix("/")
 
-    def _get_deck_tag(self):
+    def _get_deck_tag(self) -> Tag:
         deck_tags = self._soup.find_all("div", class_="row")
         deck_tag = from_iterable(
             deck_tags, lambda t: t.text.strip().startswith(("Main", "Commander", "Companion")))
@@ -124,14 +130,16 @@ class AetherhubDeckScraper(DeckScraper):
             raise ScrapingError("Deck tag not found")
         return deck_tag
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         self._soup = getsoup(self.url)
         if not self._soup or "404 Page Not Found" in self._soup.text:
             raise ScrapingError("Page not available")
         deck_tag = self._get_deck_tag()
         self._deck_parser = AetherhubDeckTagParser(deck_tag)
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         # name and format
         if title_tag := self._soup.find(["h2", "h3"], class_="text-header-gold"):
             fmt_part, name_part = title_tag.text.strip().split("-", maxsplit=1)
@@ -195,10 +203,12 @@ class AetherhubDeckScraper(DeckScraper):
 
         self._deck_parser.update_metadata(**self._metadata)
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         pass
 
-    def _build_deck(self) -> Deck:  # override
+    @override
+    def _build_deck(self) -> Deck:
         return self._deck_parser.parse()
 
 
@@ -207,14 +217,17 @@ class AetherhubWriteupDeckScraper(AetherhubDeckScraper):
     """Scraper of Aetherhub deck write-up page.
     """
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         return "aetherhub.com/decks/writeups/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _get_deck_tag(self):  # override
+    @override
+    def _get_deck_tag(self) -> Tag:
         deck_tag = self._soup.find("div", id="tab_deck")
         if deck_tag is None:
             raise ScrapingError("Deck tag not found")
@@ -230,21 +243,25 @@ class AetherhubUserScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Aetherhub user"  # override
     DECK_SCRAPERS = AetherhubDeckScraper,  # override
-    XPATH = '//table[@id="metaHubTable"]'
-    CONSENT_XPATH = CONSENT_XPATH
+    XPATH = '//table[@id="metaHubTable"]'  # override
+    CONSENT_XPATH = CONSENT_XPATH  # override
+    DECK_URL_PREFIX = URL_PREFIX
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return "aetherhub.com/user/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         url = strip_url_query(url)
         if not url.lower().endswith("/decks"):
             return f"{url}/decks"
         return url
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         try:
             self._soup, _, _ = get_dynamic_soup(
                 self.url, self.XPATH, consent_xpath=self.CONSENT_XPATH,
@@ -254,13 +271,13 @@ class AetherhubUserScraper(DeckUrlsContainerScraper):
         except TimeoutException:
             raise ScrapingError(self._error_msg)
 
-    def _collect(self) -> list[str]:  # override
+    @override
+    def _collect(self) -> list[str]:
         tbody = self._soup.find("tbody")
         if not tbody:
             _log.warning(self._error_msg)
             return []
-        return [URL_TEMPLATE.format(row.find("a")["href"])
-                for row in tbody.find_all("tr") if row.find("a")]
+        return [row.find("a")["href"] for row in tbody.find_all("tr") if row.find("a")]
 
 
 @DeckUrlsContainerScraper.registered
@@ -269,18 +286,22 @@ class AetherhubEventScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Aetherhub event"  # override
     DECK_SCRAPERS = AetherhubDeckScraper,  # override
-    XPATH = '//tr[@class="deckdata"]'
-    CONSENT_XPATH = CONSENT_XPATH
+    XPATH = '//tr[@class="deckdata"]'  # override
+    CONSENT_XPATH = CONSENT_XPATH   # override
+    DECK_URL_PREFIX = URL_PREFIX
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return "aetherhub.com/events/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         try:
             self._soup, _, _ = get_dynamic_soup(
                 self.url, self.XPATH, consent_xpath=self.CONSENT_XPATH,
@@ -290,14 +311,15 @@ class AetherhubEventScraper(DeckUrlsContainerScraper):
         except TimeoutException:
             raise ScrapingError(self._error_msg)
 
-    def _collect(self) -> list[str]:  # override
+    @override
+    def _collect(self) -> list[str]:
         rows = self._soup.find_all("tr", class_="deckdata")
         deck_tags = []
         for row in rows:
             _, deck_tag, *_ = row.find_all("td")
             deck_tags.append(deck_tag.find("a", href=lambda h: h and "/deck/" in h.lower()))
         deck_tags = [d for d in deck_tags if d is not None]
-        return [URL_TEMPLATE.format(deck_tag["href"]) for deck_tag in deck_tags]
+        return [deck_tag["href"] for deck_tag in deck_tags]
 
 
 @HybridContainerScraper.registered
@@ -309,16 +331,20 @@ class AetherhubArticleScraper(HybridContainerScraper):
     CONTAINER_SCRAPERS = AetherhubUserScraper, AetherhubEventScraper  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return "aetherhub.com/article/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _collect(self) -> tuple[list[str], list[str]]:  # override
+    @override
+    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
         article_tag = self._soup.find("div", id="article-text")
         if article_tag is None:
             _log.warning(self._error_msg)
-            return [], []
-        return self._get_links_from_tag(article_tag, URL_TEMPLATE)
+            return [], [], [], []
+        deck_links, container_links = self._get_links_from_tag(article_tag, url_prefix=URL_PREFIX)
+        return deck_links, [], [], container_links

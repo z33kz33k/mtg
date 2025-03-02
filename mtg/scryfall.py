@@ -19,7 +19,7 @@ from enum import Enum
 from functools import cached_property, lru_cache
 from pprint import pprint
 from types import EllipsisType
-from typing import Callable, Iterable, Optional
+from typing import Callable, Iterable, Optional, Self
 
 import scrython
 from tqdm import tqdm
@@ -320,7 +320,7 @@ class CardFace:
     """
     json: Json
 
-    def __eq__(self, other: "CardFace") -> bool:
+    def __eq__(self, other: Self) -> bool:
         if not isinstance(other, CardFace):
             return False
         left = self.name, self.mana_cost, self.type_line, self.oracle_text
@@ -431,7 +431,7 @@ class Card:
     """
     json: Json
 
-    def __eq__(self, other: "Card") -> bool:
+    def __eq__(self, other: Self) -> bool:
         if not isinstance(other, Card):
             return False
         return self.id == other.id
@@ -439,7 +439,7 @@ class Card:
     def __hash__(self) -> int:
         return hash(self.id)
 
-    def __lt__(self, other: "Card") -> bool:
+    def __lt__(self, other: Self) -> bool:
         if not isinstance(other, Card):
             return NotImplemented
         return self.name < other.name
@@ -866,14 +866,14 @@ class Card:
         return self.name.startswith(ALCHEMY_REBALANCE_INDICATOR)
 
     @cached_property
-    def alchemy_rebalance(self) -> Optional["Card"]:
+    def alchemy_rebalance(self) -> Self | None:
         """Find Alchemy rebalanced version of this card and return it, or 'None' if there's no
         such card.
         """
         return find_by_name(f"{ALCHEMY_REBALANCE_INDICATOR}{self.name}")
 
     @property
-    def alchemy_rebalance_original(self) -> Optional["Card"]:
+    def alchemy_rebalance_original(self) -> Self | None:
         """If this card is Alchemy rebalance, return the original card. Return 'None' otherwise.
         """
         if not self.is_alchemy_rebalance:
@@ -963,7 +963,7 @@ class SetData:
     """
     json: Json
 
-    def __eq__(self, other: "SetData") -> bool:
+    def __eq__(self, other: Self) -> bool:
         if not isinstance(other, SetData):
             return False
         return self.id == other.id

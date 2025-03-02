@@ -9,6 +9,7 @@
 """
 import logging
 from datetime import date
+from typing import override
 
 from requests import ReadTimeout
 
@@ -31,14 +32,17 @@ class StreamdeckerDeckScraper(DeckScraper):
         *_, self._decklist_id = self.url.split("/")
 
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         return "www.streamdecker.com/deck/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         try:
             json_data = request_json(self.API_URL_TEMPLATE.format(self._decklist_id))
         except ReadTimeout:
@@ -51,7 +55,8 @@ class StreamdeckerDeckScraper(DeckScraper):
         date_text = self._deck_data["updatedAt"]
         return get_date_from_ago_text(date_text)
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         self._metadata.update({
             "name": self._deck_data["name"],
             "views": self._deck_data["views"]["counter"]
@@ -76,6 +81,7 @@ class StreamdeckerDeckScraper(DeckScraper):
         if json_card.get("companion"):
             self._companion = card
 
+    @override
     def _parse_decklist(self) -> None:
         for json_card in self._deck_data["cardList"]:
             self._parse_json_card(json_card)
@@ -87,24 +93,27 @@ class StreamdeckerUserScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Streamdecker user"  # override
     API_URL_TEMPLATE = "https://www.streamdecker.com/api/userdecks/{}"
-    DECK_URL_TEMPLATE = "https://www.streamdecker.com/deck/{}"
     DECK_SCRAPERS = StreamdeckerDeckScraper,  # override
+    DECK_URL_PREFIX = "https://www.streamdecker.com/deck/"  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return "streamdecker.com/decks/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
     def _get_user_name(self) -> str:
         *_, last = self.url.split("/")
         return last
 
-    def _collect(self) -> list[str]:  # override
+    @override
+    def _collect(self) -> list[str]:
         json_data = request_json(self.API_URL_TEMPLATE.format(self._get_user_name()))
         if not json_data or not json_data.get("data") or not json_data["data"].get("decks"):
             _log.warning(self._error_msg)
             return []
-        return [self.DECK_URL_TEMPLATE.format(d["deckLink"]) for d in json_data["data"]["decks"]]
+        return [d["deckLink"] for d in json_data["data"]["decks"]]

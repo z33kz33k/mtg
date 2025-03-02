@@ -10,6 +10,7 @@
 import itertools
 import logging
 from datetime import UTC, datetime
+from typing import override
 
 import backoff
 from bs4 import BeautifulSoup
@@ -61,7 +62,8 @@ class DeckstatsDeckScraper(DeckScraper):
     """Scraper of Deckstats decklist page.
     """
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         if "deckstats.net/decks/" not in url.lower():
             return False
         url = strip_url_query(url)
@@ -73,7 +75,8 @@ class DeckstatsDeckScraper(DeckScraper):
         return False
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
     @backoff.on_predicate(
@@ -91,7 +94,8 @@ class DeckstatsDeckScraper(DeckScraper):
         return dissect_js(
             self._soup, "init_deck_data(", "deck_display();", lambda s: s.removesuffix(", false);"))
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         response = self._get_response()
         if response.status_code == 429:
             raise ScrapingError(f"Page still not available after {_MAX_TRIES} backoff tries")
@@ -103,7 +107,8 @@ class DeckstatsDeckScraper(DeckScraper):
                 raise ScrapingError("Access to deck page denied (is the deck private perhaps?)")
         self._deck_data = self._get_deck_data()
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         author_text = self._soup.find("div", id="deck_folder_subtitle").text.strip()
         self._metadata["author"] = author_text.removeprefix("in  ").removesuffix("'s Decks")
         self._metadata["name"] = self._deck_data["name"]
@@ -132,7 +137,8 @@ class DeckstatsDeckScraper(DeckScraper):
             self._set_commander(card)
         return self.get_playset(card, quantity)
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         cards = itertools.chain(
             *[section["cards"] for section in self._deck_data["sections"]])
         for card_json in cards:
@@ -146,15 +152,16 @@ class DeckstatsDeckScraper(DeckScraper):
 class DeckstatsUserScraper(DeckUrlsContainerScraper):
     """Scraper of Deckstats user page.
     """
-    THROTTLING = DeckUrlsContainerScraper.THROTTLING * 1.33
+    THROTTLING = DeckUrlsContainerScraper.THROTTLING * 1.33  # override
     CONTAINER_NAME = "Deckstats user"  # override
     API_URL_TEMPLATE = ("https://deckstats.net/api.php?action=user_folder_get&result_type="
                         "folder%3Bdecks%3Bparent_tree%3Bsubfolders&owner_id={}&folder_id=0&"
-                        "decks_page={}")
+                        "decks_page={}")  # override
     DECK_SCRAPERS = DeckstatsDeckScraper,  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         if "deckstats.net/decks/" not in url.lower():
             return False
         url = strip_url_query(url)
@@ -167,7 +174,8 @@ class DeckstatsUserScraper(DeckUrlsContainerScraper):
         return False
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
     def _get_user_id(self) -> str:
@@ -175,7 +183,8 @@ class DeckstatsUserScraper(DeckUrlsContainerScraper):
         *_, user_id = url.split("/")
         return user_id
 
-    def _collect(self) -> list[str]:  # override
+    @override
+    def _collect(self) -> list[str]:
         user_id = self._get_user_id()
         collected, total, page = [], 1, 1
         last_seen = None

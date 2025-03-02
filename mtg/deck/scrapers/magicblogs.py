@@ -8,6 +8,7 @@
 
 """
 import logging
+from typing import override
 
 from bs4 import Tag
 
@@ -20,7 +21,8 @@ _log = logging.getLogger(__name__)
 class MagicBlogsDeckTagParser(TagBasedDeckParser):
     """Parser of MagicBlogs.de decklist HTML tag.
     """
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         pass
 
     def _sift(self) -> list[Tag]:
@@ -53,7 +55,8 @@ class MagicBlogsDeckTagParser(TagBasedDeckParser):
             elif self._state.is_sideboard:
                 self._sideboard += self.get_playset(self.find_card(name), qty)
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         main_td, *side_td = self._sift()
 
         self._state.shift_to_maindeck()
@@ -68,8 +71,8 @@ class MagicBlogsDeckTagParser(TagBasedDeckParser):
 class MagicBlogsArticleScraper(DeckTagsContainerScraper):
     """Scraper of MagicBlogs.de article page.
     """
-    CONTAINER_NAME = "MagicBlogs.de article"
-    DECK_PARSER = MagicBlogsDeckTagParser
+    CONTAINER_NAME = "MagicBlogs.de article"  # override
+    TAG_BASED_DECK_PARSER = MagicBlogsDeckTagParser  # override
     _MONTHS = [
         'Januar',
         'Februar',
@@ -86,14 +89,17 @@ class MagicBlogsArticleScraper(DeckTagsContainerScraper):
     ]
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return f"magicblogs.de/blog/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         if fmt_tag := self._soup.find("a", rel="category tag"):
             self._update_fmt(fmt_tag.text)
         self._metadata["name"] = self._soup.find("title").text
@@ -105,7 +111,8 @@ class MagicBlogsArticleScraper(DeckTagsContainerScraper):
             except ValueError:
                 pass
 
-    def _collect(self) -> list[Tag]:  # override
+    @override
+    def _collect(self) -> list[Tag]:
         deck_tags = [*self._soup.find_all("div", class_="mtgh")]
         self._parse_metadata()
         return deck_tags

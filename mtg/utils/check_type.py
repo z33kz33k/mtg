@@ -11,9 +11,14 @@
 
 """
 from functools import wraps
-from typing import Any, Iterable, Type
+from typing import Any, Callable, Iterable, Type
 
-from mtg import Function, Method
+
+# type aliases
+# method with signature def methodname(self, # *args)
+type Method = Callable[[Any, tuple[Any, ...]], Any]
+# function with signature def funcname(*args)
+type Function = Callable[[tuple[Any, ...]], Any]
 
 
 def fullqualname(class_: Type) -> str:

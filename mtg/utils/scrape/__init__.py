@@ -21,7 +21,7 @@ from typing import Callable, Iterator, Self
 
 import brotli
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 from bs4.dammit import EncodingDetector
 from requests import Response
 from requests.adapters import HTTPAdapter
@@ -29,7 +29,7 @@ from requests.exceptions import HTTPError
 from urllib3 import Retry
 
 from mtg import Json
-from mtg.utils import ParsingError, timed
+from mtg.utils import ParsingError, prepend, timed
 from mtg.utils.check_type import type_checker
 
 _log = logging.getLogger(__name__)
@@ -45,7 +45,7 @@ class ScrapingError(ParsingError):
 http_requests_count = 0
 
 
-def handle_brotli(response: Response, return_json: bool = False) -> str | Json | list[Json]:
+def handle_brotli(response: Response, return_json: bool = False) -> str | Json:
     if response.headers.get("Content-Encoding") == "br":
         with contextlib.suppress(brotli.error):
             decompressed = brotli.decompress(response.content)
@@ -79,7 +79,7 @@ def timed_request(
     return response
 
 
-def request_json(url: str, handle_http_errors=True, **requests_kwargs) -> Json | list[Json]:
+def request_json(url: str, handle_http_errors=True, **requests_kwargs) -> Json:
     response = timed_request(url, handle_http_errors=handle_http_errors, **requests_kwargs)
     if not response:
         return {}
@@ -386,3 +386,21 @@ def parse_non_english_month_date(date_text: str, *months: str) -> date:
     english_date_string = f"{day} {english_month} {year}"
     # parse the date
     return datetime.strptime(english_date_string, "%d %B %Y").date()
+
+
+def get_links(tag: Tag, css_selector="", url_prefix="", query_stripped=False) -> list[str]:
+    """Get all links from the container tag.
+
+        Args:
+            tag: a BeautifulSoup tag containing links
+            css_selector: CSS selector to obtain links from the tag
+            url_prefix: prefix to add to relative URLs
+            query_stripped: whether to strip the query part of the URL
+        """
+    if css_selector:
+        links = {t.attrs["href"].removesuffix("/") for t in tag.select(css_selector)}
+    else:
+        links = {t.attrs["href"].removesuffix("/") for t in tag.find_all("a", href=lambda h: h)}
+    links = {prepend(l, url_prefix) for l in links} if url_prefix else links
+    links = {strip_url_query(l) for l in links} if query_stripped else links
+    return sorted(links)

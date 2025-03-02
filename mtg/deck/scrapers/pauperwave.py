@@ -8,6 +8,7 @@
 
 """
 import logging
+from typing import override
 
 from bs4 import Tag
 
@@ -20,7 +21,8 @@ _log = logging.getLogger(__name__)
 class PauperwaveDeckTagParser(TagBasedDeckParser):
     """Parser of Pauperwave decklist HTML tag.
     """
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         title_tag = self._deck_tag.previous_sibling
         name, author, place = None, None, None
         if " by " in title_tag.text:
@@ -35,7 +37,8 @@ class PauperwaveDeckTagParser(TagBasedDeckParser):
         if place:
             self._metadata.setdefault("event", {})["place"] = place
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         qty = None
         for tag in self._deck_tag.descendants:
             if tag.name == "span":
@@ -70,8 +73,8 @@ class PauperwaveDeckTagParser(TagBasedDeckParser):
 class PauperwaveArticleScraper(DeckTagsContainerScraper):
     """Scraper of Pauperwave article page.
     """
-    CONTAINER_NAME = "Pauperwave article"
-    DECK_PARSER = PauperwaveDeckTagParser
+    CONTAINER_NAME = "Pauperwave article"  # override
+    TAG_BASED_DECK_PARSER = PauperwaveDeckTagParser  # override
     _MONTHS = [
         "Gennaio",
         "Febbraio",
@@ -88,14 +91,17 @@ class PauperwaveArticleScraper(DeckTagsContainerScraper):
     ]
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return "pauperwave.com/" in url.lower() and "pauperwave.com/." not in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         if event_tag := self._soup.find("p", class_="has-medium-font-size"):
             self._metadata["event"] = {}
             seen, key = set(), ""
@@ -120,7 +126,8 @@ class PauperwaveArticleScraper(DeckTagsContainerScraper):
                         case _:
                             self._metadata["event"][key] = el.text
 
-    def _collect(self) -> list[Tag]:  # override
+    @override
+    def _collect(self) -> list[Tag]:
         deck_tags = [*self._soup.find_all(
             "table", class_=lambda c: c and "mtg_deck" in c and "mtg_deck_embedded" in c)]
         self._parse_metadata()

@@ -8,6 +8,7 @@
 
 """
 import logging
+from typing import override
 
 from requests import ReadTimeout
 
@@ -33,15 +34,18 @@ class SeventeenLandsDeckScraper(DeckScraper):
         self._sharing_token, self._deck_id, self._timestamp = rest.split("/")
 
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         return "17lands.com/user/deck/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         url = strip_url_query(url).removesuffix("/primer").removesuffix("/history")
         return url.rstrip(".,")
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         try:
             self._deck_data = request_json(
                 self.API_URL_TEMPLATE.format(self._sharing_token, self._deck_id, self._timestamp))
@@ -51,7 +55,8 @@ class SeventeenLandsDeckScraper(DeckScraper):
                 "cards"):
             raise ScrapingError("Data not available")
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         pass
 
     def _parse_card(self, card_data: Json) -> Card:
@@ -61,7 +66,8 @@ class SeventeenLandsDeckScraper(DeckScraper):
         *_, scryfall_id = scryfall_id.split("/")
         return self.find_card(name, scryfall_id=scryfall_id)
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         maindeck_card_ids = self._deck_data["groups"][0]["cards"]
         try:
             sideboard_card_ids = self._deck_data["groups"][1]["cards"]

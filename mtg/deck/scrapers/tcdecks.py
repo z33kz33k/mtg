@@ -9,6 +9,7 @@
 """
 import logging
 from datetime import datetime
+from typing import override
 
 from bs4 import NavigableString, Tag
 
@@ -31,15 +32,18 @@ class TCDecksDeckScraper(DeckScraper):
         self._deck_tag: Tag | None = None
 
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         return "tcdecks.net/deck.php?id=" in url.lower() and "&iddeck=" in url.lower()
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         self._soup = getsoup(self.url)
         if not self._soup:
             raise ScrapingError("Page not available")
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         title_tag = self._soup.select_one('div article fieldset legend')
         self._metadata["event"] = {}
         name = title_tag.find("h3").text.strip()
@@ -77,7 +81,8 @@ class TCDecksDeckScraper(DeckScraper):
                 qty, name = None, None
         return cards
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         for td_tag in self._deck_tag.find_all("td", valign="top"):
             if td_tag.attrs.get("id") == "sideboard":
                 self._sideboard += self._parse_td(td_tag)
@@ -90,14 +95,16 @@ class TCDecksEventScraper(DeckUrlsContainerScraper):
     """Scraper of TCDecks event page.
     """
     CONTAINER_NAME = "TCDecks event"  # override
-    DECK_URL_TEMPLATE = "https://www.tcdecks.net/{}"
     DECK_SCRAPERS = TCDecksDeckScraper,  # override
+    DECK_URL_PREFIX = "https://www.tcdecks.net/"  # override
 
     @staticmethod
+    @override
     def is_container_url(url: str) -> bool:  # override
         return "tcdecks.net/deck.php?id=" in url.lower() and "&iddeck=" not in url.lower()
 
+    @override
     def _collect(self) -> list[str]:  # override
         table_tag = self._soup.find("table", class_="tourney_list")
         a_tags = table_tag.find_all("a", href=lambda h: h and "deck.php?id=" in h)
-        return sorted(set(self.DECK_URL_TEMPLATE.format(a_tag.attrs["href"]) for a_tag in a_tags))
+        return sorted(set(a_tag.attrs["href"] for a_tag in a_tags))

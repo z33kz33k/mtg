@@ -10,8 +10,9 @@
 import contextlib
 import logging
 from datetime import datetime
+from typing import override
 
-from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.utils import extract_int
 from mtg.utils.scrape import ScrapingError
 from mtg.utils.scrape import getsoup
@@ -28,22 +29,26 @@ class MtgTop8DeckScraper(DeckScraper):
     """Scraper of MTGTop8 decklist page.
     """
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         return "mtgtop8.com/event?e=" in url.lower() and "&d=" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return url.removesuffix("/").replace("&switch=visual", "").replace(
             "&switch=text", "") + "&switch=text"
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         self._soup = getsoup(self.url)
         if not self._soup:
             raise ScrapingError("Page not available")
         if _ := self._soup.find("div", string="No event could be found."):
             raise ScrapingError("No event could be found")
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         event_tag, name_tag = [tag for tag in self._soup.find_all("div", class_="event_title")
                                if tag.find("a", class_="arrow") is None]
         self._metadata["event"] = {}
@@ -70,7 +75,8 @@ class MtgTop8DeckScraper(DeckScraper):
         if source_tag := self._soup.find("a", target="_blank"):
             self._metadata["event"]["source"] = source_tag.text.strip()
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         deck_tag = self._soup.find("div", style="display:flex;align-content:stretch;")
         cards, commander_on = self._maindeck, False
         for block_tag in deck_tag:
@@ -98,22 +104,25 @@ class MtgTop8EventScraper(DeckUrlsContainerScraper):
     """Scraper of MTGTop8 event page.
     """
     CONTAINER_NAME = "MTGTop8 event"  # override
-    DECK_URL_TEMPLATE = "https://www.mtgtop8.com/event{}"
     DECK_SCRAPERS = MtgTop8DeckScraper,  # override
+    DECK_URL_PREFIX = "https://www.mtgtop8.com/event"  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return "mtgtop8.com/event?e=" in url.lower() and "&d=" not in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return MtgTop8DeckScraper.sanitize_url(url)
 
-    def _collect(self) -> list[str]:  # override
+    @override
+    def _collect(self) -> list[str]:
         a_tags = [tag for tag in self._soup.find_all(
             "a", href=lambda h: h and "e=" in h and "&d="in h) if not tag.find("img")
                   and tag.text not in ('Switch to Visual', '→')]
         deck_urls = {}
         for a_tag in a_tags:
             deck_urls[a_tag.text] = a_tag.attrs["href"]
-        return [self.DECK_URL_TEMPLATE.format(url) for url in deck_urls.values()]
+        return [*deck_urls.values()]

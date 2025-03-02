@@ -8,6 +8,7 @@
 
 """
 import logging
+from typing import override
 
 import dateutil.parser
 
@@ -48,25 +49,28 @@ def get_source(src: str) -> str | None:
 class MeleeGgDeckScraper(DeckScraper):
     """Scraper of Melee.gg decklist page.
     """
-
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
         self._arena_decklist = []
 
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         return "melee.gg/decklist/" in url.lower() or f"{ALT_DOMAIN}/decklist/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return url.replace(ALT_DOMAIN, "melee.gg")
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         self._soup = getsoup(self.url, headers=HEADERS)
         if not self._soup:
             raise ScrapingError("Page not available")
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         self._metadata["name"] = self._soup.select_one("a.decklist-card-title").text.strip()
         if author_tag := self._soup.select_one("span.decklist-card-title-author"):
             self._metadata["author"] = author_tag.text.strip().removeprefix("by ")
@@ -80,13 +84,15 @@ class MeleeGgDeckScraper(DeckScraper):
             else:
                 self._update_fmt(tag.text.strip())
 
-    def _build_deck(self) -> Deck:  # override
-        return ArenaParser(self._arena_decklist, metadata=self._metadata).parse(
-            suppress_invalid_deck=False)
-
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         self._arena_decklist = self._soup.select_one(
             "textarea.decklist-builder-paste-field").text.strip().splitlines()
+
+    @override
+    def _build_deck(self) -> Deck:
+        return ArenaParser(self._arena_decklist, metadata=self._metadata).parse(
+            suppress_invalid_deck=False)
 
 
 @DeckUrlsContainerScraper.registered
@@ -94,18 +100,20 @@ class MeleeGgTournamentScraper(DeckUrlsContainerScraper):
     """Scraper of Melee.gg tournament page.
     """
     CONTAINER_NAME = "Melee.gg tournament"  # override
-    DECK_URL_TEMPLATE = "https://melee.gg{}"
+    XPATH = '//a[@data-type="decklist"]'  # override
     DECK_SCRAPERS = MeleeGgDeckScraper,  # override
-    XPATH = '//a[@data-type="decklist"]'
+    DECK_URL_PREFIX = "https://melee.gg"  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return "melee.gg/tournament/" in url.lower()
 
-    def _collect(self) -> list[str]:  # override
+    @override
+    def _collect(self) -> list[str]:
         game_tag = self._soup.find("p", id="tournament-headline-game")
         if not game_tag.text.strip() == "Game: Magic: The Gathering":
             _log.warning("Not a MtG tournament")
             return []
         deck_tags = self._soup.find_all("a", href=lambda h: h and "/Decklist/View/" in h)
-        return [self.DECK_URL_TEMPLATE.format(deck_tag.attrs["href"]) for deck_tag in deck_tags]
+        return [deck_tag.attrs["href"] for deck_tag in deck_tags]

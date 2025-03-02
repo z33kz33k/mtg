@@ -13,17 +13,17 @@ import itertools
 import logging
 import re
 from collections import Counter as PyCounter
+from datetime import date, timedelta
 from datetime import datetime
 from functools import wraps
-from typing import Any, Callable, Generator, Iterable, Optional, Protocol, Sequence, Type
-from datetime import date, timedelta
+from typing import Any, Callable, Generator, Iterable, Protocol, Sequence, Type
 
 import dateutil.parser
-from dateutil.relativedelta import relativedelta
 from contexttimer import Timer
+from dateutil.relativedelta import relativedelta
 from lingua import Language, LanguageDetectorBuilder
 
-from mtg import FILENAME_TIMESTAMP_FORMAT, READABLE_TIMESTAMP_FORMAT, T
+from mtg import FILENAME_TIMESTAMP_FORMAT, READABLE_TIMESTAMP_FORMAT
 from mtg.utils.check_type import type_checker, uniform_type_checker
 
 _log = logging.getLogger(__name__)
@@ -255,7 +255,7 @@ def cleardir(obj: object) -> list[str]:
     return [attr for attr in dir(obj) if not attr.startswith("_")]
 
 
-def from_iterable(iterable: Iterable[T], predicate: Callable[[T], bool]) -> Optional[T]:
+def from_iterable[T](iterable: Iterable[T], predicate: Callable[[T], bool]) -> T | None:
     """Return item from ``iterable`` based on ``predicate`` or ``None``, if it cannot be found.
     """
     return next((item for item in iterable if predicate(item)), None)
@@ -503,3 +503,11 @@ def logging_disabled(level: int = logging.CRITICAL) -> Generator[None, None, Non
         yield
     finally:
         logging.disable(previous_level)
+
+
+def prepend(text: str, prefix="") -> str:
+    """Prepend text with prefix provided if it doesn't already start with that prefix.
+    """
+    if prefix:
+        return f"{prefix}{text}" if not text.startswith(prefix) else text
+    return text

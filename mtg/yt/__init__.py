@@ -133,7 +133,7 @@ def rescrape_videos(
         _log.info("No videos found that needed re-scraping")
         return
 
-    with ScrapingSession() as session:
+    with ScrapingSession():
         manager = UrlsStateManager()
         manager.ignore_scraped_within_current_video, manager.ignore_failed = True, True
         for i, (channel_id, video_ids) in enumerate(channels.items(), start=1):
@@ -958,14 +958,7 @@ class Video:
                         f"Skipping already failed {scraper.short_name()} URL: "
                         f"{sanitized_link!r}...")
                     continue
-                container_decks = scraper.scrape()
-                # URLs state management is better here than in scrapers as it avoids duplication
-                if container_decks:
-                    if deck_url := container_decks[0].metadata.get("url"):
-                        self._urls_manager.add_scraped(deck_url)
-                    decks.update(container_decks)
-                else:
-                    self._urls_manager.add_failed(link)
+                decks.update(scraper.scrape())
 
         for deck in decks:
             self._decklists_manager.add_regular(deck.decklist_id, deck.decklist)

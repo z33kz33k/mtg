@@ -9,11 +9,12 @@
 """
 import logging
 from datetime import datetime
+from typing import override
 
 from selenium.common import TimeoutException
 
 from mtg import Json
-from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.scryfall import Card
 from mtg.utils.scrape import ScrapingError, strip_url_query
 from mtg.utils.scrape.dynamic import get_dynamic_soup, get_selenium_json
@@ -33,22 +34,26 @@ class MoxfieldDeckScraper(DeckScraper):
         *_, self._decklist_id = self.url.split("/")
 
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         url = url.lower()
         tokens = "public?q=", "/personal"
         return "moxfield.com/decks/" in url and all(t not in url for t in tokens)
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         url = strip_url_query(url).removesuffix("/primer").removesuffix("/history")
         return url.rstrip(".,")
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         self._deck_data = get_selenium_json(self.API_URL_TEMPLATE.format(self._decklist_id))
         if not self._deck_data or not self._deck_data.get("boards"):
             raise ScrapingError("Data not available")
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         fmt = self._deck_data["format"].lower()
         self._update_fmt(fmt)
         name = self._deck_data["name"]
@@ -79,7 +84,8 @@ class MoxfieldDeckScraper(DeckScraper):
         name = json_card["card"]["name"]
         return cls.get_playset(cls.find_card(name, scryfall_id=scryfall_id), quantity)
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         for card in self._deck_data["boards"]["mainboard"]["cards"].values():
             self._maindeck.extend(self._to_playset(card))
         for card in self._deck_data["boards"]["sideboard"]["cards"].values():
@@ -102,11 +108,12 @@ class MoxfieldBookmarkScraper(DeckUrlsContainerScraper):
     """Scraper of Moxfield bookmark page.
     """
     CONTAINER_NAME = "Moxfield bookmark"  # override
-    API_URL_TEMPLATE = "https://api2.moxfield.com/v1/bookmarks/{}"
+    API_URL_TEMPLATE = "https://api2.moxfield.com/v1/bookmarks/{}"  # override
     DECK_SCRAPERS = MoxfieldDeckScraper,  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return "moxfield.com/bookmarks/" in url.lower()
 
     def _get_bookmark_id(self) -> str:
@@ -116,7 +123,8 @@ class MoxfieldBookmarkScraper(DeckUrlsContainerScraper):
             return id_
         return last
 
-    def _collect(self) -> list[str]:  # override
+    @override
+    def _collect(self) -> list[str]:
         json_data = get_selenium_json(
             self.API_URL_TEMPLATE.format(self._get_bookmark_id()))
         if not json_data or not json_data.get("decks") or not json_data["decks"].get("data"):
@@ -133,22 +141,25 @@ class MoxfieldUserScraper(DeckUrlsContainerScraper):
     # 100 page size is pretty arbitrary but tested to work
     API_URL_TEMPLATE = ("https://api2.moxfield.com/v2/decks/search?includePinned=true&showIllegal"
                         "=true&authorUserNames={}&pageNumber=1&pageSize=100&sortType="
-                        "updated&sortDirection=descending&board=mainboard")
+                        "updated&sortDirection=descending&board=mainboard")  # override
     DECK_SCRAPERS = MoxfieldDeckScraper,  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return "moxfield.com/users/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
     def _get_user_name(self) -> str:
         *_, last = self.url.split("/")
         return last
 
-    def _collect(self) -> list[str]:  # override
+    @override
+    def _collect(self) -> list[str]:
         json_data = get_selenium_json(self.API_URL_TEMPLATE.format(self._get_user_name()))
         if not json_data or not json_data.get("data"):
             _log.warning(self._error_msg)
@@ -161,14 +172,15 @@ class MoxfieldSearchScraper(DeckUrlsContainerScraper):
     """Scraper of Moxfield search results page.
     """
     CONTAINER_NAME = "Moxfield search results"  # override
+    XPATH = "//input[@id='filter']"  # override
     # 100 page size is pretty arbitrary but tested to work
     API_URL_TEMPLATE = ("https://api2.moxfield.com/v2/decks/search?pageNumber=1&pageSize=100&sort"
-                        "Type=updated&sortDirection=descending&filter={}")
+                        "Type=updated&sortDirection=descending&filter={}")  # override
     DECK_SCRAPERS = MoxfieldDeckScraper,  # override
-    XPATH = "//input[@id='filter']"
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return "moxfield.com/decks/public?q=" in url.lower()
 
     def _get_filter(self) -> str | None:
@@ -188,7 +200,8 @@ class MoxfieldSearchScraper(DeckUrlsContainerScraper):
 
         return input_tag.attrs["value"]
 
-    def _collect(self) -> list[str]:  # override
+    @override
+    def _collect(self) -> list[str]:
         filter_ = self._get_filter()
         if not filter_:
             _log.warning(self._error_msg)

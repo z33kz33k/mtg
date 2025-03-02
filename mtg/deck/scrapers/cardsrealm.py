@@ -9,9 +9,10 @@
 """
 import logging
 import time
+from typing import override
 
 import dateutil.parser
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 from selenium import webdriver
 from selenium.common import ElementClickInterceptedException, TimeoutException
 from selenium.webdriver.common.by import By
@@ -19,14 +20,15 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from mtg import Json
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, \
+    HybridContainerScraper
 from mtg.utils import timed
 from mtg.utils.scrape import ScrapingError, dissect_js, getsoup, strip_url_query
 from mtg.utils.scrape.dynamic import SELENIUM_TIMEOUT, accept_consent
 
 _log = logging.getLogger(__name__)
 BASIC_DOMAIN = "cardsrealm.com"
-URL_TEMPLATE = "https://mtg.cardsrealm.com{}"
+URL_PREFIX = "https://mtg.cardsrealm.com"
 
 
 def get_source(src: str) -> str | None:
@@ -52,11 +54,13 @@ class CardsrealmDeckScraper(DeckScraper):
     """Scraper of Cardsrealm decklist page.
     """
     @staticmethod
-    def is_deck_url(url: str) -> bool:  # override
+    @override
+    def is_deck_url(url: str) -> bool:
         return f"{BASIC_DOMAIN}/" in url.lower() and "/decks/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         url = strip_url_query(url)
         return to_eng_url(url, "/decks/")
 
@@ -67,13 +71,15 @@ class CardsrealmDeckScraper(DeckScraper):
         return dissect_js(
             self._soup, "var deck_cards = ", 'var torneio_type =', end_processor=process)
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         self._soup = getsoup(self.url)
         if not self._soup:
             raise ScrapingError("Page not available")
         self._deck_data = self._get_deck_data()
 
-    def _parse_metadata(self) -> None:  # override
+    @override
+    def _parse_metadata(self) -> None:
         card_data = self._deck_data[0]
         self._metadata["name"] = card_data["deck_title"]
         self._metadata["date"] = dateutil.parser.parse(card_data["deck_lastchange"]).date()
@@ -91,7 +97,8 @@ class CardsrealmDeckScraper(DeckScraper):
         elif card_json["deck_sideboard"] == 0:
             self._maindeck += self.get_playset(card, quantity)
 
-    def _parse_decklist(self) -> None:  # override
+    @override
+    def _parse_decklist(self) -> None:
         for card_data in self._deck_data:
             self._parse_card_json(card_data)
         self._derive_commander_from_sideboard()
@@ -103,22 +110,25 @@ class CardsrealmProfileScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Cardsrealm profile"  # override
     DECK_SCRAPERS = CardsrealmDeckScraper,  # override
+    DECK_URL_PREFIX = URL_PREFIX  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return all(t in url.lower() for t in (f"{BASIC_DOMAIN}/", "/profile/", "/decks"))
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         url = strip_url_query(url)
         return to_eng_url(url, "/profile/")
 
-    def _collect(self) -> list[str]:  # override
+    @override
+    def _collect(self) -> list[str]:
         deck_divs = [
             div for div in self._soup.find_all("div", class_=lambda c: c and "deck_div_all" in c)]
         deck_tags = [d.find("a", href=lambda h: h and "/decks/" in h) for d in deck_divs]
-        urls = [tag.attrs["href"] for tag in deck_tags]
-        return [URL_TEMPLATE.format(url) for url in urls]
+        return [tag.attrs["href"] for tag in deck_tags]
 
 
 @DeckUrlsContainerScraper.registered
@@ -128,11 +138,13 @@ class CardsrealmFolderScraper(CardsrealmProfileScraper):
     CONTAINER_NAME = "Cardsrealm folder"  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return all(t in url.lower() for t in (f"{BASIC_DOMAIN}/", "/decks/folder/"))
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         url = strip_url_query(url)
         return to_eng_url(url, "/decks/")
 
@@ -154,25 +166,28 @@ class CardsrealmMetaTournamentScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Cardsrealm meta-deck tournament"  # override
     DECK_SCRAPERS = CardsrealmDeckScraper,  # override
+    DECK_URL_PREFIX = URL_PREFIX  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return _is_meta_tournament_url(url)
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         url = strip_url_query(url)
         return to_eng_url(url, "/meta-decks/")
 
-    def _collect(self) -> list[str]:  # override
+    @override
+    def _collect(self) -> list[str]:
         deck_tags = [
             tag for tag in
             self._soup.find_all(
                 lambda t: t.name == "a"
                           and t.text.strip() == "Decklist"
                           and t.parent.name == "span")]
-        urls = {tag.attrs["href"] for tag in deck_tags}
-        return [URL_TEMPLATE.format(url) for url in sorted(urls)]
+        return sorted({tag.attrs["href"] for tag in deck_tags})
 
 
 @DeckUrlsContainerScraper.registered
@@ -181,15 +196,17 @@ class CardsrealmRegularTournamentScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Cardsrealm regular tournament"  # override
     DECK_SCRAPERS = CardsrealmDeckScraper,  # override
-    CONSENT_XPATH = '//button[@id="ez-accept-all"]'
-    XPATH = "//button[text()='show deck']"
+    CONSENT_XPATH = '//button[@id="ez-accept-all"]'  # override
+    XPATH = "//button[text()='show deck']"  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return _is_regular_tournament_url(url)
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         url = strip_url_query(url)
         return to_eng_url(url, "/tournament/")
 
@@ -222,12 +239,14 @@ class CardsrealmRegularTournamentScraper(DeckUrlsContainerScraper):
                 _log.warning(f"Selenium timed out during tournament scraping")
                 return BeautifulSoup(driver.page_source, "lxml")
 
-    def _pre_parse(self) -> None:  # override
+    @override
+    def _pre_parse(self) -> None:
         self._soup = self._get_dynamic_soup()
         if not self._soup:
             raise ScrapingError(self._error_msg)
 
-    def _collect(self) -> list[str]:  # override
+    @override
+    def _collect(self) -> list[str]:
         deck_divs = [
             div for div in self._soup.find_all("div", class_=lambda c: c and "mainDeck" in c)]
         deck_tags = [d.find("a", href=lambda h: h and "/decks/" in h) for d in deck_divs]
@@ -241,23 +260,28 @@ class CardsrealmArticleScraper(HybridContainerScraper):
     CONTAINER_NAME = "Cardsrealm article"  # override
     DECK_SCRAPERS = CardsrealmDeckScraper,  # override
     # override
-    CONTAINER_SCRAPERS = (CardsrealmProfileScraper, CardsrealmFolderScraper,
-                          CardsrealmRegularTournamentScraper, CardsrealmMetaTournamentScraper)
+    CONTAINER_SCRAPERS = (
+        CardsrealmProfileScraper, CardsrealmFolderScraper, CardsrealmRegularTournamentScraper,
+        CardsrealmMetaTournamentScraper)
 
     @staticmethod
-    def is_container_url(url: str) -> bool:  # override
+    @override
+    def is_container_url(url: str) -> bool:
         return (all(
             t in url.lower() for t in (f"{BASIC_DOMAIN}/", "/articles/"))
                 and "/search/" not in url.lower())
 
     @staticmethod
-    def sanitize_url(url: str) -> str:  # override
+    @override
+    def sanitize_url(url: str) -> str:
         url = strip_url_query(url)
         return to_eng_url(url, "/articles/")
 
-    def _collect(self) -> tuple[list[str], list[str]]:  # override
+    @override
+    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
         article_tag = self._soup.find("div", id="article_div_all")
         if article_tag is None:
             _log.warning(self._error_msg)
-            return [], []
-        return self._get_links_from_tag(article_tag, URL_TEMPLATE)
+            return [], [], [], []
+        deck_links, container_links = self._get_links_from_tag(article_tag, url_prefix=URL_PREFIX)
+        return deck_links, [], [], container_links
