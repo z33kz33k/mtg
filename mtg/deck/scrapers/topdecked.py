@@ -141,7 +141,8 @@ class TopDeckedRegularDeckScraper(DeckScraper):
 
     @override
     def _build_deck(self) -> Deck:
-        return ArenaParser(self._arena_decklist, self._metadata).parse(suppress_invalid_deck=False)
+        return ArenaParser(self._arena_decklist, self._metadata).parse(
+            suppress_parsing_errors=False, suppress_invalid_deck=False)
 
 
 @DeckScraper.registered

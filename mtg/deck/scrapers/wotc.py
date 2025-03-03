@@ -71,7 +71,8 @@ class WotCDeckTagParser(TagBasedDeckParser):
             lines += ["", "Sideboard"]
             lines += [self._sanitize_line(l) for l in sideboard_tag.text.strip().splitlines()]
 
-        return ArenaParser(lines, self._metadata).parse(suppress_invalid_deck=False)
+        return ArenaParser(lines, self._metadata).parse(
+            suppress_parsing_errors=False, suppress_invalid_deck=False)
 
 
 @DeckTagsContainerScraper.registered

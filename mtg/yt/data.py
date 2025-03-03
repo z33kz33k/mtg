@@ -624,8 +624,7 @@ def _dump_data_gen(
                 decklist = manager.extended[deck_data["decklist_extended_id"]]
                 metadata = dict(**deck_data["metadata"])
                 metadata["video_url"] = video_data["url"]
-                deck = ArenaParser(decklist.splitlines(), metadata=metadata).parse(
-                    suppress_invalid_deck=True, suppress_parsing_errors=True)
+                deck = ArenaParser(decklist.splitlines(), metadata=metadata).parse()
                 if deck:
                     yield Exporter(deck), channel_dir
                 else:

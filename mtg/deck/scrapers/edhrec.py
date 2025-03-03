@@ -26,7 +26,7 @@ from mtg.deck.scrapers.moxfield import MoxfieldBookmarkScraper
 from mtg.deck.scrapers.tappedout import TappedoutFolderScraper
 from mtg.deck.scrapers.topdeck import DECK_SCRAPERS as TOPDECK_SCRAPERS
 from mtg.scryfall import Card
-from mtg.utils import prepend
+from mtg.utils import ParsingError, prepend
 from mtg.utils.scrape import ScrapingError, get_links, strip_url_query
 from mtg.utils.scrape import getsoup
 
@@ -188,9 +188,10 @@ class EdhrecArticleDeckParser(TagBasedDeckParser):
     def _clean_decklist(decklist: str) -> str:
         # remove category tags and keep content between them
         # matches patterns like [Category]content[/Category]
-        cleaned = re.sub(r'\[/?\w+\]\n?', '', decklist)
+        cleaned = re.sub(r'\[/?[\w\s!]+\]\n?', '', decklist)
         # remove leading/trailing whitespace and asterisks
-        return '\n'.join(line.strip().lstrip('*') for line in cleaned.splitlines())
+        lines = [line.strip().lstrip('*') for line in cleaned.splitlines()]
+        return '\n'.join([f"1{l}" if l.startswith(" ") else l for l in lines])
 
     @staticmethod
     def _handle_commander(decklist: str) -> str:
@@ -209,8 +210,14 @@ class EdhrecArticleDeckParser(TagBasedDeckParser):
 
     @override
     def _build_deck(self) -> Deck:
-        return ArenaParser(
-            self._arena_decklist.splitlines(), self._metadata).parse(suppress_invalid_deck=False)
+        try:
+            return ArenaParser(
+                self._arena_decklist.splitlines(), self._metadata).parse(
+                suppress_parsing_errors=False, suppress_invalid_deck=False)
+        except ValueError as err:
+            if "No Arena lines" in str(err):
+                raise ParsingError("Ill-formed Arena decklist")
+            raise
 
 
 @HybridContainerScraper.registered
@@ -278,7 +285,6 @@ class EdhrecAuthorScraper(HybridContainerScraper):
     """Scraper of EDHREC author page.
     """
     CONTAINER_NAME = "EDHREC author"  # override
-    # override
     CONTAINER_SCRAPERS = EdhrecArticleScraper,  # override
 
     @staticmethod

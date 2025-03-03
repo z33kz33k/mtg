@@ -100,7 +100,7 @@ def scrape(*mtgjson_deck_links: str) -> Generator[Deck | None, None, None]:
         throttle(0.15)
         _log.info(f"Scraping deck {i}/{len(links)}: {link!r}...")
         try:
-            deck = MtgJsonDeckScraper(link).scrape()
+            deck = MtgJsonDeckScraper(link).scrape(suppress_invalid_deck=False)
         except InvalidDeck as err:
             _log.warning(f"{link!r} yielded invalid deck: {err}")
             pass

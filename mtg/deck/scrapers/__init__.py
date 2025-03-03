@@ -83,10 +83,7 @@ class DeckScraper(DeckParser):
     @override
     def parse(
             self, suppress_parsing_errors=True, suppress_invalid_deck=True) -> Deck | None:
-        return self.scrape(
-            suppress_scraping_errors=suppress_parsing_errors,
-            suppress_invalid_deck=suppress_invalid_deck
-        )
+        raise NotImplementedError  # not utilized
 
     @backoff.on_exception(
         backoff.expo, (ConnectionError, HTTPError, ReadTimeout), max_time=60)
@@ -99,26 +96,25 @@ class DeckScraper(DeckParser):
             self._pre_parse()
             self._parse_metadata()
             self._parse_decklist()
-        except ScrapingError as se:
-            if not suppress_scraping_errors:
-                _log.error(f"Scraping failed with: {se}")
-                raise se
-            _log.error(f"Scraping failed with: {se}")
-            return None
-        except ParsingError as pe:
-            if not suppress_parsing_errors:
-                _log.error(f"Scraping failed with: {pe}")
-                raise pe
-            _log.error(f"Scraping failed with: {pe}")
-            return None
-        try:
             return self._build_deck()
+        except ScrapingError as se:
+            if suppress_scraping_errors:
+                _log.warning(f"Scraping failed with: {se}")
+                return None
+            _log.error(f"Scraping failed with: {se}")
+            raise se
+        except ParsingError as pe:
+            if suppress_parsing_errors:
+                _log.warning(f"Scraping failed with: {pe}")
+                return None
+            _log.error(f"Scraping failed with: {pe}")
+            raise pe
         except InvalidDeck as err:
-            if not suppress_invalid_deck:
-                _log.error(f"Scraping failed with: {err}")
-                raise err
+            if suppress_invalid_deck:
+                _log.warning(f"Scraping failed with: {err}")
+                return None
             _log.error(f"Scraping failed with: {err}")
-            return None
+            raise err
 
     @classmethod
     def registered(cls, scraper_type: Type[Self]) -> Type[Self]:
@@ -150,7 +146,7 @@ class TagBasedDeckParser(DeckParser):
 
     @override
     def _pre_parse(self) -> None:
-        pass
+        pass  # not utilized
 
     @abstractmethod
     @override
@@ -176,7 +172,7 @@ class JsonBasedDeckParser(DeckParser):
 
     @override
     def _pre_parse(self) -> None:
-        pass
+        pass  # not utilized
 
     @abstractmethod
     @override
@@ -422,13 +418,15 @@ class DeckTagsContainerScraper(ContainerScraper):
         decks = []
         for i, deck_tag in enumerate(self._deck_tags, start=1):
             try:
-                d = self.TAG_BASED_DECK_PARSER(deck_tag, self._metadata).parse(
-                    suppress_invalid_deck=False, suppress_parsing_errors=False)
-                if d:
-                    decks.append(d)
-                    _log.info(f"Parsed deck {i}/{len(self._deck_tags)}: {d.name!r}")
-            except (AttributeError, ParsingError, InvalidDeck) as err:
-                _log.warning(f"Failed to parse deck {i}/{len(self._deck_tags)}: {err}. Skipping...")
+                deck = self.TAG_BASED_DECK_PARSER(deck_tag, self._metadata).parse()
+            except AttributeError as err:
+                _log.warning(f"Tag-based deck parsing failed: {err}")
+                deck = None
+            if deck:
+                decks.append(deck)
+                _log.info(f"Parsed deck {i}/{len(self._deck_tags)}: {deck.name!r}")
+            else:
+                _log.warning(f"Failed to parse deck {i}/{len(self._deck_tags)}. Skipping...")
                 continue
 
         if decks:
@@ -478,14 +476,15 @@ class DecksJsonContainerScraper(ContainerScraper):
         decks = []
         for i, deck_data in enumerate(self._decks_data, start=1):
             try:
-                d = self.JSON_BASED_DECK_PARSER(deck_data, self._metadata).parse(
-                    suppress_invalid_deck=False, suppress_parsing_errors=False)
-                if d:
-                    decks.append(d)
-                    _log.info(f"Parsed deck {i}/{len(self._decks_data)}: {d.name!r}")
-            except (AttributeError, ParsingError, InvalidDeck) as err:
-                _log.warning(
-                    f"Failed to parse deck {i}/{len(self._decks_data)}: {err}. Skipping...")
+                deck = self.JSON_BASED_DECK_PARSER(deck_data, self._metadata).parse()
+            except AttributeError as err:
+                _log.warning(f"JSON-based deck parsing failed: {err}")
+                deck = None
+            if deck:
+                decks.append(deck)
+                _log.info(f"Parsed deck {i}/{len(self._decks_data)}: {deck.name!r}")
+            else:
+                _log.warning(f"Failed to parse deck {i}/{len(self._decks_data)}. Skipping...")
                 continue
 
         if decks:
