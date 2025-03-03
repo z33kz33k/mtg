@@ -1080,3 +1080,30 @@ class DeckParser(ABC):
         return Deck(
             self._maindeck, self._sideboard, self._commander, self._partner_commander,
             self._companion, self._metadata)
+
+    @staticmethod
+    def process_metadata_deck_tags(deck_tags: list[str | Json]) -> list[str]:
+        processed = []
+        match deck_tags:
+            case [*tags] if all(isinstance(t, str) for t in tags):
+                return [t.lower() for t in tags]
+            case [*tags] if all(isinstance(t, dict) for t in tags):
+                for tag in tags:
+                    match tag:
+                        case {"name": name} if isinstance(name, str):
+                            processed.append(name.lower())
+                        case {"Name": name} if isinstance(name, str):
+                            processed.append(name.lower())
+                        case {"tag": name} if isinstance(name, str):
+                            processed.append(name.lower())
+                        case {"Tag": name} if isinstance(name, str):
+                            processed.append(name.lower())
+                        case {"deck_tag": name} if isinstance(name, str):
+                            processed.append(name.lower())
+                        case {"deckTag": name} if isinstance(name, str):
+                            processed.append(name.lower())
+                        case {"Deck Tag": name} if isinstance(name, str):
+                            processed.append(name.lower())
+                        case _:
+                            pass
+        return processed

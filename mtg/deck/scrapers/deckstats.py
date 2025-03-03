@@ -119,7 +119,7 @@ class DeckstatsDeckScraper(DeckScraper):
                 self._update_fmt(fmt)
         self._metadata["date"] = datetime.fromtimestamp(self._deck_data["updated"], UTC).date()
         if tags := self._deck_data.get("tags"):
-            self._metadata["tags"] = tags
+            self._metadata["tags"] = self.process_metadata_deck_tags(tags)
         if description := self._deck_data.get("description"):
             self._metadata["description"] = description
 

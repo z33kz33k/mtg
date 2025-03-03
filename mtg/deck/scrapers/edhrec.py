@@ -81,6 +81,11 @@ class EdhrecPreviewDeckScraper(DeckScraper):
     def is_deck_url(url: str) -> bool:
         return "edhrec.com/" in url.lower() and "/deckpreview/" in url.lower()
 
+    @staticmethod
+    @override
+    def sanitize_url(url: str) -> str:
+        return strip_url_query(url)
+
     @override
     def _pre_parse(self) -> None:
         self._deck_data, self._soup = _get_data(self.url)
@@ -95,7 +100,7 @@ class EdhrecPreviewDeckScraper(DeckScraper):
         if edhrec_tags := self._deck_data.get("edhrec_tags"):
             self._metadata["edhrec_tags"] = edhrec_tags
         if tags := self._deck_data.get("tags"):
-            self._metadata["tags"] = tags
+            self._metadata["tags"] = self.process_metadata_deck_tags(tags)
         if salt := self._deck_data.get("salt"):
             self._metadata["salt"] = salt
         if theme := self._deck_data.get("theme"):
@@ -227,6 +232,11 @@ class EdhrecArticleScraper(HybridContainerScraper):
         return (("edhrec.com/articles/" in url.lower()
                  or "articles.edhrec.com/" in url.lower()) and "/author/" not in url.lower())
 
+    @staticmethod
+    @override
+    def sanitize_url(url: str) -> str:
+        return strip_url_query(url)
+
     @override
     def _pre_parse(self) -> None:
         self._decks_data, self._soup = _get_data(self.url, data_key="post")
@@ -243,10 +253,9 @@ class EdhrecArticleScraper(HybridContainerScraper):
         if title := self._decks_data.get("title"):
             self._metadata.setdefault("article", {})["title"] = title
         if tags := self._decks_data.get("tags"):
-            self._metadata["tags"] = tags
+            self._metadata["tags"] = self.process_metadata_deck_tags(tags)
 
     def _collect_tags(self) -> list[Tag]:
-        self._parse_metadata()
         content_soup = BeautifulSoup(self._decks_data["content"], "lxml")
         return [*content_soup.find_all("span", class_="edhrecp__deck-s")]
 
@@ -259,5 +268,41 @@ class EdhrecArticleScraper(HybridContainerScraper):
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
+        self._parse_metadata()
         deck_urls, container_urls = self._collect_urls()
         return deck_urls, self._collect_tags(), [], container_urls
+
+
+@HybridContainerScraper.registered
+class EdhrecAuthorScraper(HybridContainerScraper):
+    """Scraper of EDHREC author page.
+    """
+    CONTAINER_NAME = "EDHREC author"  # override
+    # override
+    CONTAINER_SCRAPERS = EdhrecArticleScraper,  # override
+
+    @staticmethod
+    @override
+    def is_container_url(url: str) -> bool:
+        return (("edhrec.com/articles/" in url.lower()
+                 or "articles.edhrec.com/" in url.lower()) and "/author/" in url.lower())
+
+    @staticmethod
+    @override
+    def sanitize_url(url: str) -> str:
+        return strip_url_query(url)
+
+    @override
+    def _pre_parse(self) -> None:
+        self._decks_data, self._soup = _get_data(self.url, data_key="posts")
+
+    @override
+    def _parse_metadata(self) -> None:
+        pass
+
+    @override
+    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
+        prefix = f'{URL_PREFIX}/articles/'
+        return [], [], [], [prepend(d["slug"], prefix) for d in self._decks_data]
+
+

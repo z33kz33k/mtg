@@ -73,7 +73,7 @@ class MoxfieldDeckScraper(DeckScraper):
         if desc := self._deck_data["description"]:
             self._metadata["description"] = desc
         if hubs := self._deck_data.get("hubs"):
-            self._metadata["hubs"] = hubs
+            self._metadata["hubs"] = self.process_metadata_deck_tags(hubs)
         if edh_bracket := self._deck_data.get("autoBracket"):
             self._metadata["edh_bracket"] = edh_bracket
 

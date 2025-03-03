@@ -582,7 +582,7 @@ class HybridContainerScraper(
         links = get_links(links_tag or self._soup, css_selector, url_prefix, query_stripped)
         return self._sift_links(*links)
 
-    def process_container_urls(self) -> list[Deck]:
+    def _process_container_urls(self) -> list[Deck]:
         decks = []
         for i, url in enumerate(self._container_urls, start=1):
             if scraper := self._dispatch_container_scraper(url, self._metadata):
@@ -637,7 +637,7 @@ class HybridContainerScraper(
             _log.info(
                 f"Gathered {len(self._container_urls)} container URL(s) from a "
                 f"{self.CONTAINER_NAME} at: {self.url!r}")
-            decks += self.process_container_urls()
+            decks += self._process_container_urls()
         if not decks:
             # outer container URLs are not ever skipped
             # to allow for potential scraping of their content changes

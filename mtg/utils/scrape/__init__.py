@@ -404,3 +404,4 @@ def get_links(tag: Tag, css_selector="", url_prefix="", query_stripped=False) ->
     links = {prepend(l, url_prefix) for l in links} if url_prefix else links
     links = {strip_url_query(l) for l in links} if query_stripped else links
     return sorted(links)
+
