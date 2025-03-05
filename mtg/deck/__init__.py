@@ -1104,5 +1104,8 @@ class DeckParser(ABC):
                         case {"Deck Tag": name} if isinstance(name, str):
                             processed.append(name.lower())
                         case _:
-                            pass
+                            _log.warning(f"Unexpected format of deck metadata tag: {tag!r}")
+            case _:
+                _log.warning(f"Unexpected format of deck metadata tags: {deck_tags!r}")
+
         return processed

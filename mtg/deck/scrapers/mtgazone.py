@@ -123,7 +123,7 @@ class MtgaZoneDeckScraper(DeckScraper):
             raise ScrapingError("Page not available")
         deck_tag = self._soup.find("div", class_="deck-block")
         if deck_tag is None:
-            raise ScrapingError("Deck data not found (probably paywalled)")
+            raise ScrapingError("Deck tag not found (page probably paywalled)")
         self._deck_parser = MtgaZoneDeckTagParser(deck_tag, self._metadata)
 
     @override

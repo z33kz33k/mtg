@@ -935,7 +935,7 @@ class Video:
             self._sources.add("arena.decklist")
             for decklist in group_arena_lines(*arena_lines):
                 if len(decklist) > 2:
-                    if deck := ArenaParser(decklist, self.metadata).parse():
+                    if deck := ArenaParser("\n".join(decklist), self.metadata).parse():
                         deck_name = f"{deck.name!r} deck" if deck.name else "Deck"
                         _log.info(f"{deck_name} scraped successfully")
                         decks.add(deck)

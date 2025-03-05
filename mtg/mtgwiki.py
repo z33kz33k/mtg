@@ -16,6 +16,9 @@ from mtg.utils.files import download_file
 FILENAME = "creature_type.html"
 
 
+# TODO: move to scraping https://mtg.wiki/page/Creature_type instead
+
+
 def download_creature_type_page() -> None:
     """Download MGT Wiki page on creature types.
     """
