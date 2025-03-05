@@ -212,7 +212,7 @@ class EdhrecArticleDeckParser(TagBasedDeckParser):
     def _build_deck(self) -> Deck:
         try:
             return ArenaParser(
-                self._arena_decklist.splitlines(), self._metadata).parse(
+                self._arena_decklist, self._metadata).parse(
                 suppress_parsing_errors=False, suppress_invalid_deck=False)
         except ValueError as err:
             if "No Arena lines" in str(err):

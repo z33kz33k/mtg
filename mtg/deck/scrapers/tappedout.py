@@ -46,7 +46,7 @@ class TappedoutDeckScraper(DeckScraper):
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        self._arena_decklist = []
+        self._arena_decklist = ""
 
     @staticmethod
     @override
@@ -104,9 +104,12 @@ class TappedoutDeckScraper(DeckScraper):
 
     @override
     def _parse_decklist(self) -> None:
-        lines = self._soup.find("textarea", id="mtga-textarea").text.strip().splitlines()
+        decklist_tag = self._soup.find("textarea", id="mtga-textarea")
+        if not decklist_tag:
+            raise ScrapingError("Decklist tag not found")
+        lines = decklist_tag.text.strip().splitlines()
         _, name_line, _, _, *lines = lines
-        self._arena_decklist = [*lines]
+        self._arena_decklist = "\n".join(lines)
         self._metadata["name"] = name_line.removeprefix("Name ")
 
     @override

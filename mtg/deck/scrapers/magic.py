@@ -51,7 +51,7 @@ class MagicGgNewDeckTagParser(TagBasedDeckParser):
         }
         self._metadata["date"] = self._metadata["event"]["date"]
 
-    def _build_arena(self) -> list[str]:
+    def _build_arena(self) -> str:
         lines = []
         # <commander-card> tag is only derived based on seen companion treatment
         if commander := self._deck_tag.find("commander-card"):
@@ -70,7 +70,7 @@ class MagicGgNewDeckTagParser(TagBasedDeckParser):
         lines += ["", "Sideboard"]
         if sideboard := self._deck_tag.find("side-board"):
             lines += sideboard.text.lstrip().splitlines()
-        return lines
+        return "\n".join(lines)
 
     @override
     def _parse_decklist(self) -> None:

@@ -97,8 +97,7 @@ class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
                 f"Gathered {len(self._arena_decklists)} text decklists from a {self.CONTAINER_NAME}"
                 f" at: {self.url!r}")
             for arena_decklist in self._arena_decklists:
-                if deck := ArenaParser(
-                        arena_decklist.splitlines(), metadata=self._metadata).parse():
+                if deck := ArenaParser(arena_decklist, metadata=self._metadata).parse():
                     decks.append(deck)
         return decks
 

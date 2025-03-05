@@ -98,7 +98,7 @@ class StarCityGamesDeckTagParser(TagBasedDeckParser):
     def _parse_decklist(self) -> None:
         decklist_tag = self._deck_tag.find("div", class_="deck_card_wrapper")
         if decklist_tag is None:
-            raise ScrapingError("Decklist not found (probably paywalled)")
+            raise ScrapingError("Decklist tag not found (page is probably paywalled)")
         self._parse_decklist_tag(decklist_tag)
 
 

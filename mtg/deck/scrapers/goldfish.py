@@ -111,7 +111,7 @@ class GoldfishDeckTagParser(TagBasedDeckParser):
     def _parse_decklist(self) -> None:
         decklist_tag = self._deck_tag.find("table", class_="deck-view-deck-table")
         if decklist_tag is None:
-            raise ScrapingError("Decklist data not found")
+            raise ScrapingError("Decklist tag not found")
         self._parse_decklist_tag(decklist_tag)
 
 

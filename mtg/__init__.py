@@ -84,6 +84,7 @@ from mtg.deck.scrapers.cardsrealm import DeckScraper
 from mtg.deck.scrapers.cycles import DeckTagsContainerScraper
 from mtg.deck.scrapers.deckbox import DeckScraper
 from mtg.deck.scrapers.deckstats import DeckScraper
+from mtg.deck.scrapers.draftsim import DeckScraper
 from mtg.deck.scrapers.flexslot import DeckScraper
 from mtg.deck.scrapers.goldfish import DeckScraper
 from mtg.deck.scrapers.hareruya import DeckScraper

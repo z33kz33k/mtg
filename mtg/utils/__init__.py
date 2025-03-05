@@ -332,7 +332,8 @@ def sanitize_whitespace(text: str) -> str:
     """Replace whitespace sequences longer than one space in ``text`` with a single space.
     Replace non-breaking space with a regular one.
     """
-    return re.sub(r'\s+', ' ', text).replace(' ', " ")
+    text = text.replace(' ', " ")
+    return re.sub(r'\s+', ' ', text)
 
 
 # list of languages Magic: The Gathering cards have been printed in

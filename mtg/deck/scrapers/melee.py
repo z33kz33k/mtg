@@ -49,10 +49,6 @@ def get_source(src: str) -> str | None:
 class MeleeGgDeckScraper(DeckScraper):
     """Scraper of Melee.gg decklist page.
     """
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        self._arena_decklist = []
-
     @staticmethod
     @override
     def is_deck_url(url: str) -> bool:
@@ -86,12 +82,15 @@ class MeleeGgDeckScraper(DeckScraper):
 
     @override
     def _parse_decklist(self) -> None:
-        self._arena_decklist = self._soup.select_one(
-            "textarea.decklist-builder-paste-field").text.strip().splitlines()
+        pass
 
     @override
     def _build_deck(self) -> Deck:
-        return ArenaParser(self._arena_decklist, metadata=self._metadata).parse(
+        decklist_tag = self._soup.select_one("textarea.decklist-builder-paste-field")
+        if not decklist_tag:
+            raise ScrapingError("Decklist tag not found")
+        decklist = decklist_tag.text.strip()
+        return ArenaParser(decklist, metadata=self._metadata).parse(
             suppress_parsing_errors=False, suppress_invalid_deck=False)
 
 

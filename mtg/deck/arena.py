@@ -15,8 +15,7 @@ from mtg import Json
 from mtg.deck import ARENA_MULTIFACE_SEPARATOR, CardNotFound, DeckParser
 from mtg.scryfall import Card, MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, \
     query_api_for_card
-from mtg.utils import extract_int, getrepr
-from mtg.utils import is_foreign
+from mtg.utils import extract_int, getrepr, sanitize_whitespace, is_foreign
 
 _log = logging.getLogger(__name__)
 
@@ -322,9 +321,9 @@ class ArenaParser(DeckParser):
     """
     MAX_CARD_QUANTITY = 50
 
-    def __init__(self, lines: list[str], metadata: Json | None = None) -> None:
+    def __init__(self, decklist: str, metadata: Json | None = None) -> None:
         super().__init__(metadata)
-        self._lines = lines
+        self._lines = [sanitize_whitespace(l) for l in decklist.splitlines()]
 
     def _handle_missing_commander_line(self):
         if not any(_is_commander_line(l) for l in self._lines):

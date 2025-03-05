@@ -70,9 +70,11 @@ class MtgSearchItDeckScraper(DeckScraper):
         tokens = "container text hide".split()
         decklist_tag = self._soup.find(
             "section", class_=lambda c: c and all(t in c for t in tokens))
+        if not decklist_tag:
+            raise ScrapingError("Decklist tag not found")
         self._arena_decklist = decklist_tag.text.strip()
 
     @override
     def _build_deck(self) -> Deck:
-        return ArenaParser(self._arena_decklist.splitlines(), metadata=self._metadata).parse(
+        return ArenaParser(self._arena_decklist, metadata=self._metadata).parse(
             suppress_parsing_errors=False, suppress_invalid_deck=False)

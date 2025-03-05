@@ -35,10 +35,6 @@ class MtgDecksNetDeckScraper(DeckScraper):
         "historic-brawl": "brawl",
     }
 
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        self._arena_decklist = []
-
     @staticmethod
     @override
     def is_deck_url(url: str) -> bool:
@@ -77,12 +73,15 @@ class MtgDecksNetDeckScraper(DeckScraper):
 
     @override
     def _parse_decklist(self) -> None:
-        deck_tag = self._soup.find("textarea", id="arena_deck")
-        self._arena_decklist = deck_tag.text.strip().splitlines()
+        pass
 
     @override
     def _build_deck(self) -> Deck:  # override
-        return ArenaParser(self._arena_decklist, self._metadata).parse(
+        decklist_tag = self._soup.find("textarea", id="arena_deck")
+        if not decklist_tag:
+            raise ScrapingError("Decklist tag not found")
+        decklist = decklist_tag.text.strip()
+        return ArenaParser(decklist, self._metadata).parse(
             suppress_parsing_errors=False, suppress_invalid_deck=False)
 
 
