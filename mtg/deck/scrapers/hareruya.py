@@ -241,3 +241,6 @@ class HareruyaPlayerScraper(DeckUrlsContainerScraper):
     def _collect(self) -> list[str]:
         return [a_tag.attrs["href"] for a_tag in self._soup.find_all(
             "a", class_="deckSearch-searchResult__itemWrapper")]
+
+
+# TODO: articles

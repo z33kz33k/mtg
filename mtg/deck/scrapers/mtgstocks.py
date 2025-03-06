@@ -16,10 +16,11 @@ import dateutil.parser
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.scryfall import Card
-from mtg.utils import from_iterable
-from mtg.utils.scrape import ScrapingError, getsoup, strip_url_query
+from mtg.utils import from_iterable, prepend
+from mtg.utils.scrape import ScrapingError, get_links, getsoup, strip_url_query
 
 _log = logging.getLogger(__name__)
+URL_PREFIX = "https://mtgstocks.com"
 
 
 @DeckScraper.registered
@@ -98,21 +99,30 @@ class MtgStocksArticleScraper(DeckUrlsContainerScraper):
     """Scraper of MTGStocks article page.
     """
     CONTAINER_NAME = "MTGStocks article"  # override
-    DECK_SCRAPERS = MtgStocksDeckScraper,  # override
-    DECK_URL_PREFIX = "https://mtgstocks.com"  # override
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:  # override
+    def is_container_url(url: str) -> bool:
         return "mtgstocks.com/news/" in url.lower()
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:  # override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    @override
-    def _collect(self) -> list[str]:  # override
+    def _collect_other_urls(self) -> list[str]:
+        article_tag = self._soup.find("article")
+        if not article_tag:
+            _log.warning("Article tag not found")
+            return []
+        links = get_links(article_tag, query_stripped=True)
+        return [l for l in links if any(ds.is_deck_url(l) for ds in self._get_deck_scrapers())]
+
+    def _collect_own_urls(self) -> list[str]:
         deck_tags = self._soup.find_all("news-deck")
         a_tags = [tag.find("a", href=lambda h: h and "/decks/" in h) for tag in deck_tags]
-        return [t.attrs["href"] for t in a_tags if t is not None]
+        return [prepend(t.attrs["href"], URL_PREFIX) for t in a_tags if t is not None]
+
+    def _collect(self) -> list[str]:
+        return sorted({*self._collect_other_urls(), *self._collect_own_urls()})
+

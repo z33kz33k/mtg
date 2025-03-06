@@ -133,6 +133,10 @@ class DeckScraper(DeckParser):
                 return scraper_type(url, metadata)
         return None
 
+    @classmethod
+    def get_registered_scrapers(cls) -> set[Type[Self]]:
+        return set(cls._REGISTRY)
+
 
 class TagBasedDeckParser(DeckParser):
     """Abstract HTML tag based deck parser.
@@ -306,6 +310,10 @@ class ContainerScraper(DeckParser):
 
 class DeckUrlsContainerScraper(ContainerScraper):
     """Abstract scraper of deck-links-containing pages.
+
+    Subclasses that don't define DECK_SCRAPERS use all deck scrapers registered in DeckScraper
+    class by default. Defining DECK_URL_PREFIX causes prepending of that prefix to each collected
+    deck URL before processing (useful for relative links).
     """
     THROTTLING = DeckScraper.THROTTLING
     _REGISTRY: set[Type[Self]] = set()  # override
@@ -340,9 +348,13 @@ class DeckUrlsContainerScraper(ContainerScraper):
         return deck_urls
 
     @classmethod
+    def _get_deck_scrapers(cls) -> set[Type[DeckScraper]]:
+        return cls.DECK_SCRAPERS or DeckScraper.get_registered_scrapers()
+
+    @classmethod
     def _dispatch_deck_scraper(
             cls, url: str, metadata: Json | None = None) -> DeckScraper | None:
-        for scraper_type in cls.DECK_SCRAPERS:
+        for scraper_type in cls._get_deck_scrapers():
             if scraper_type.is_deck_url(url):
                 return scraper_type(url, metadata)
         return None
@@ -556,11 +568,12 @@ class HybridContainerScraper(
                 return scraper_type(url, metadata)
         return None
 
-    def _sift_links(self, *links: str) -> tuple[list[str], list[str]]:
-        deck_urls = [l for l in links if any(ds.is_deck_url(l) for ds in self.DECK_SCRAPERS)]
+    @classmethod
+    def _sift_links(cls, *links: str) -> tuple[list[str], list[str]]:
+        deck_urls = [l for l in links if any(ds.is_deck_url(l) for ds in cls._get_deck_scrapers())]
         container_urls = [
             l for l in links if any(
-                cs.is_container_url(l) for cs in self.CONTAINER_SCRAPERS)]
+                cs.is_container_url(l) for cs in cls.CONTAINER_SCRAPERS)]
         return deck_urls, container_urls
 
     def _get_links_from_tag(

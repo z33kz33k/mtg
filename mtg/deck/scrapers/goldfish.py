@@ -17,7 +17,7 @@ from selenium.common import TimeoutException
 from mtg import Json
 from mtg.deck import Deck, Mode
 from mtg.deck.scrapers import DeckScraper, DeckTagsContainerScraper, \
-    DeckUrlsContainerScraper, TagBasedDeckParser
+    DeckUrlsContainerScraper, HybridContainerScraper, TagBasedDeckParser
 from mtg.scryfall import all_formats
 from mtg.utils import extract_int, timed
 from mtg.utils.scrape import ScrapingError, http_requests_counted, strip_url_query, \
@@ -219,8 +219,8 @@ class GoldfishPlayerScraper(DeckUrlsContainerScraper):
         return [deck_tag.attrs["href"] for deck_tag in deck_tags]
 
 
-@DeckTagsContainerScraper.registered
-class GoldfishArticleScraper(DeckTagsContainerScraper):
+@HybridContainerScraper.registered
+class GoldfishArticleScraper(HybridContainerScraper):
     """Scraper of MTG Goldfish article page.
     """
     CONTAINER_NAME = "Goldfish article"  # override
@@ -228,6 +228,7 @@ class GoldfishArticleScraper(DeckTagsContainerScraper):
     CONSENT_XPATH = CONSENT_XPATH  # override
     HEADERS = HEADERS  # override
     TAG_BASED_DECK_PARSER = GoldfishDeckTagParser  # override
+    CONTAINER_SCRAPERS = GoldfishTournamentScraper,  # override
 
     @staticmethod
     @override
@@ -239,9 +240,28 @@ class GoldfishArticleScraper(DeckTagsContainerScraper):
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
+    def _collect_urls(self) -> tuple[list[str], list[str]]:
+        main_tag = self._soup.find("div", class_="article-contents")
+        if not main_tag:
+            _log.warning("Article tag not found")
+            return [], []
+
+        # filter out paragraphs that are covered by tag-based deck parser
+        p_tags = [t for t in main_tag.find_all("p") if not t.find("div", class_="deck-container")]
+
+        deck_urls, container_urls = [], []
+        for p_tag in p_tags:
+            p_deck_urls, p_container_urls = self._get_links_from_tag(p_tag, query_stripped=True)
+            deck_urls += p_deck_urls
+            container_urls += p_container_urls
+
+        return deck_urls, container_urls
+
     @override
-    def _collect(self) -> list[Tag]:
-        return [*self._soup.find_all("div", class_="deck-container")]
+    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
+        deck_tags = [*self._soup.find_all("div", class_="deck-container")]
+        deck_urls, container_urls = self._collect_urls()
+        return deck_urls, deck_tags, [], container_urls
 
 
 @http_requests_counted("scraping meta decks")

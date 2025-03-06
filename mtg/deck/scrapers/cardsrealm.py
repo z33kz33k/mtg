@@ -258,7 +258,6 @@ class CardsrealmArticleScraper(HybridContainerScraper):
     """Scraper of Cardsrealm decks article page.
     """
     CONTAINER_NAME = "Cardsrealm article"  # override
-    DECK_SCRAPERS = CardsrealmDeckScraper,  # override
     # override
     CONTAINER_SCRAPERS = (
         CardsrealmProfileScraper, CardsrealmFolderScraper, CardsrealmRegularTournamentScraper,

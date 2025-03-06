@@ -15,7 +15,7 @@ from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckUrlsContainerScraper
-from mtg.deck.scrapers.topdeck import DECK_SCRAPERS as TOPDECK_SCRAPERS, check_unexpected_urls
+from mtg.deck.scrapers.topdeck import check_unexpected_urls
 
 _log = logging.getLogger(__name__)
 
@@ -25,7 +25,6 @@ class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
     """Scraper of EDHTop 16 tournament page.
     """
     CONTAINER_NAME = "EDHTop16 tournament"  # override
-    DECK_SCRAPERS = TOPDECK_SCRAPERS  # override
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -85,7 +84,7 @@ class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
 
         data = json.loads(script_tag.text)
         deck_urls = self._process_data(data)
-        check_unexpected_urls(deck_urls, *self.DECK_SCRAPERS)
+        check_unexpected_urls(deck_urls, *self._get_deck_scrapers())
 
         return deck_urls
 

@@ -75,7 +75,8 @@ def init_log() -> None:
 init_log()
 
 
-# import scraper modules so they get registered for the factory method
+# import scraper modules
+# so all their scraper classes get registered in the superclasses' they derive from on time
 from mtg.deck.scrapers.aetherhub import DeckScraper
 from mtg.deck.scrapers.archidekt import DeckScraper
 from mtg.deck.scrapers.cardboardlive import DeckScraper
@@ -85,6 +86,9 @@ from mtg.deck.scrapers.cycles import DeckTagsContainerScraper
 from mtg.deck.scrapers.deckbox import DeckScraper
 from mtg.deck.scrapers.deckstats import DeckScraper
 from mtg.deck.scrapers.draftsim import DeckScraper
+from mtg.deck.scrapers.edhrec import DeckScraper
+from mtg.deck.scrapers.edhtop16 import DeckUrlsContainerScraper
+from mtg.deck.scrapers.fireball import DeckScraper
 from mtg.deck.scrapers.flexslot import DeckScraper
 from mtg.deck.scrapers.goldfish import DeckScraper
 from mtg.deck.scrapers.hareruya import DeckScraper
@@ -115,11 +119,7 @@ from mtg.deck.scrapers.streamdecker import DeckScraper
 from mtg.deck.scrapers.tappedout import DeckScraper
 from mtg.deck.scrapers.tcdecks import DeckScraper
 from mtg.deck.scrapers.tcgplayer import DeckScraper
+from mtg.deck.scrapers.topdeck import DeckUrlsContainerScraper
 from mtg.deck.scrapers.topdecked import DeckScraper
 from mtg.deck.scrapers.untapped import DeckScraper
 from mtg.deck.scrapers.wotc import DeckTagsContainerScraper
-# those should be last as they use statically some of those above
-from mtg.deck.scrapers.edhrec import DeckScraper
-from mtg.deck.scrapers.fireball import DeckScraper
-from mtg.deck.scrapers.edhtop16 import DeckUrlsContainerScraper
-from mtg.deck.scrapers.topdeck import DeckUrlsContainerScraper

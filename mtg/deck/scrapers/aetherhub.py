@@ -327,7 +327,6 @@ class AetherhubArticleScraper(HybridContainerScraper):
     """Scraper of Aetherhub article page.
     """
     CONTAINER_NAME = "Aetherhub article"  # override
-    DECK_SCRAPERS = AetherhubDeckScraper, AetherhubWriteupDeckScraper  # override
     CONTAINER_SCRAPERS = AetherhubUserScraper, AetherhubEventScraper  # override
 
     @staticmethod

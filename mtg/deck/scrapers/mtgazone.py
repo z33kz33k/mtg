@@ -139,8 +139,8 @@ class MtgaZoneDeckScraper(DeckScraper):
         return self._deck_parser.parse()
 
 
-@DeckTagsContainerScraper.registered
-class MtgaZoneArticleScraper(DeckTagsContainerScraper):
+@HybridContainerScraper.registered
+class MtgaZoneArticleScraper(HybridContainerScraper):
     """Scraper of MTG Arena Zone article page.
     """
     CONTAINER_NAME = "MTGAZone article"
@@ -158,9 +158,28 @@ class MtgaZoneArticleScraper(DeckTagsContainerScraper):
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
+    def _collect_urls(self) -> tuple[list[str], list[str]]:
+        article_tag = self._soup.find("article")
+        if not article_tag:
+            _log.warning("Article tag not found")
+            return [], []
+
+        # filter out paragraphs that are covered by tag-based deck parser
+        p_tags = [
+            t for t in article_tag.find_all("p") if not t.find("div", class_="deck-block")]
+
+        deck_urls, container_urls = [], []
+        for p_tag in p_tags:
+            p_deck_urls, p_container_urls = self._get_links_from_tag(p_tag, query_stripped=True)
+            deck_urls += p_deck_urls
+            container_urls += p_container_urls
+
+        return deck_urls, container_urls
+
     @override
-    def _collect(self) -> list[Tag]:
-        return [*self._soup.find_all("div", class_="deck-block")]
+    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
+        deck_urls, container_urls = self._collect_urls()
+        return deck_urls, [*self._soup.find_all("div", class_="deck-block")], [], container_urls
 
 
 @HybridContainerScraper.registered

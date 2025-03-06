@@ -24,7 +24,6 @@ from mtg.deck.scrapers.archidekt import ArchidektFolderScraper
 from mtg.deck.scrapers.cardsrealm import CardsrealmFolderScraper
 from mtg.deck.scrapers.moxfield import MoxfieldBookmarkScraper
 from mtg.deck.scrapers.tappedout import TappedoutFolderScraper
-from mtg.deck.scrapers.topdeck import DECK_SCRAPERS as TOPDECK_SCRAPERS
 from mtg.scryfall import Card
 from mtg.utils import ParsingError, prepend
 from mtg.utils.scrape import ScrapingError, get_links, strip_url_query
@@ -225,8 +224,6 @@ class EdhrecArticleScraper(HybridContainerScraper):
     """Scraper of EDHREC article page.
     """
     CONTAINER_NAME = "EDHREC article"  # override
-    # override
-    DECK_SCRAPERS = tuple([EdhrecPreviewDeckScraper, EdhrecAverageDeckScraper, *TOPDECK_SCRAPERS])
     TAG_BASED_DECK_PARSER = EdhrecArticleDeckParser  # override
     # override
     CONTAINER_SCRAPERS = (
