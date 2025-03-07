@@ -171,8 +171,8 @@ class EdhrecAverageDeckScraper(DeckScraper):
                     self._maindeck += self.get_playset(card, int(qty))
 
 
-class EdhrecArticleDeckParser(TagBasedDeckParser):
-    """Parser of an EDHREC decklist HTML tag (that lives inside <script> JSON data).
+class EdhrecDeckTagParser(TagBasedDeckParser):
+    """Parser of an EDHREC decklist HTML tag (that lives inside an article's <script> JSON data).
     """
     def __init__(self, deck_tag: Tag, metadata: Json | None = None) -> None:
         super().__init__(deck_tag, metadata)
@@ -224,7 +224,7 @@ class EdhrecArticleScraper(HybridContainerScraper):
     """Scraper of EDHREC article page.
     """
     CONTAINER_NAME = "EDHREC article"  # override
-    TAG_BASED_DECK_PARSER = EdhrecArticleDeckParser  # override
+    TAG_BASED_DECK_PARSER = EdhrecDeckTagParser  # override
     # override
     CONTAINER_SCRAPERS = (
         ArchidektFolderScraper, MoxfieldBookmarkScraper, CardsrealmFolderScraper,
@@ -264,7 +264,7 @@ class EdhrecArticleScraper(HybridContainerScraper):
         return [*content_soup.find_all("span", class_="edhrecp__deck-s")]
 
     def _collect_urls(self) -> tuple[list[str], list[str]]:
-        links = get_links(self._soup, query_stripped=True)
+        links = get_links(self._soup)
         tokens = "/deckpreview/", "/average-decks/", "/commanders/"
         links = [
             prepend(l, URL_PREFIX) if any(l.startswith(t) for t in tokens) else l for l in links]

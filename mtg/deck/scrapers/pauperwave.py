@@ -12,7 +12,8 @@ from typing import override
 
 from bs4 import Tag
 
-from mtg.deck.scrapers import DeckTagsContainerScraper, TagBasedDeckParser
+from mtg import Json
+from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser
 from mtg.utils.scrape import parse_non_english_month_date, strip_url_query
 
 _log = logging.getLogger(__name__)
@@ -69,8 +70,8 @@ class PauperwaveDeckTagParser(TagBasedDeckParser):
         self._metadata["format"] = "paupercommander" if self._commander else "pauper"
 
 
-@DeckTagsContainerScraper.registered
-class PauperwaveArticleScraper(DeckTagsContainerScraper):
+@HybridContainerScraper.registered
+class PauperwaveArticleScraper(HybridContainerScraper):
     """Scraper of Pauperwave article page.
     """
     CONTAINER_NAME = "Pauperwave article"  # override
@@ -127,8 +128,13 @@ class PauperwaveArticleScraper(DeckTagsContainerScraper):
                             self._metadata["event"][key] = el.text
 
     @override
-    def _collect(self) -> list[Tag]:
+    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
         deck_tags = [*self._soup.find_all(
             "table", class_=lambda c: c and "mtg_deck" in c and "mtg_deck_embedded" in c)]
         self._parse_metadata()
-        return deck_tags
+        article_tag = self._soup.find("article")
+        if not article_tag:
+            _log.warning("Article tag not found")
+            return [], deck_tags, [], []
+        deck_urls, _ = self._get_links_from_tags(*article_tag.find_all("p"))
+        return deck_urls, deck_tags, [], []

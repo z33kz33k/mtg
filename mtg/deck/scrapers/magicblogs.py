@@ -12,7 +12,8 @@ from typing import override
 
 from bs4 import Tag
 
-from mtg.deck.scrapers import DeckTagsContainerScraper, TagBasedDeckParser
+from mtg import Json
+from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser
 from mtg.utils.scrape import ScrapingError, parse_non_english_month_date, strip_url_query
 
 _log = logging.getLogger(__name__)
@@ -67,8 +68,8 @@ class MagicBlogsDeckTagParser(TagBasedDeckParser):
         self._derive_commander_from_sideboard()
 
 
-@DeckTagsContainerScraper.registered
-class MagicBlogsArticleScraper(DeckTagsContainerScraper):
+@HybridContainerScraper.registered
+class MagicBlogsArticleScraper(HybridContainerScraper):
     """Scraper of MagicBlogs.de article page.
     """
     CONTAINER_NAME = "MagicBlogs.de article"  # override
@@ -112,7 +113,12 @@ class MagicBlogsArticleScraper(DeckTagsContainerScraper):
                 pass
 
     @override
-    def _collect(self) -> list[Tag]:
+    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
         deck_tags = [*self._soup.find_all("div", class_="mtgh")]
         self._parse_metadata()
-        return deck_tags
+        main_tag = self._soup.find("section", class_="content")
+        if not main_tag:
+            _log.warning("Article tag not found")
+            return [], deck_tags, [], []
+        deck_urls, _ = self._get_links_from_tags(*main_tag.find_all("p"))
+        return deck_urls, deck_tags, [], []

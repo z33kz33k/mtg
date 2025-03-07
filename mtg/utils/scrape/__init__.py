@@ -388,20 +388,22 @@ def parse_non_english_month_date(date_text: str, *months: str) -> date:
     return datetime.strptime(english_date_string, "%d %B %Y").date()
 
 
-def get_links(tag: Tag, css_selector="", url_prefix="", query_stripped=False) -> list[str]:
-    """Get all links from the container tag.
+def get_links(*tags: Tag, css_selector="", url_prefix="", query_stripped=False) -> list[str]:
+    """Get all links from provided tags.
 
         Args:
-            tag: a BeautifulSoup tag containing links
-            css_selector: CSS selector to obtain links from the tag
+            *tags: variable number of BeautifulSoup tags containing links
+            css_selector: CSS selector to obtain links from a tag
             url_prefix: prefix to add to relative URLs
             query_stripped: whether to strip the query part of the URL
         """
-    if css_selector:
-        links = {t.attrs["href"].removesuffix("/") for t in tag.select(css_selector)}
-    else:
-        links = {t.attrs["href"].removesuffix("/") for t in tag.find_all("a", href=lambda h: h)}
+    links = set()
+    for tag in tags:
+        if css_selector:
+            links |= {t.attrs["href"].removesuffix("/") for t in tag.select(css_selector)}
+        else:
+            links |= {t.attrs["href"].removesuffix("/") for t in tag.find_all(
+                "a", href=lambda h: h)}
     links = {prepend(l, url_prefix) for l in links} if url_prefix else links
     links = {strip_url_query(l) for l in links} if query_stripped else links
     return sorted(links)
-

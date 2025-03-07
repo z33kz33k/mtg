@@ -249,13 +249,7 @@ class GoldfishArticleScraper(HybridContainerScraper):
         # filter out paragraphs that are covered by tag-based deck parser
         p_tags = [t for t in main_tag.find_all("p") if not t.find("div", class_="deck-container")]
 
-        deck_urls, container_urls = [], []
-        for p_tag in p_tags:
-            p_deck_urls, p_container_urls = self._get_links_from_tag(p_tag, query_stripped=True)
-            deck_urls += p_deck_urls
-            container_urls += p_container_urls
-
-        return deck_urls, container_urls
+        return self._get_links_from_tags(*p_tags)
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:

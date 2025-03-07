@@ -1,12 +1,13 @@
 """
 
-    mtg.deck.scrapers.starcitygames.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.scg.py
+    ~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape StarCityGames decklists.
 
     @author: z33k
 
 """
+import json
 import logging
 from typing import override
 
@@ -14,10 +15,12 @@ import dateutil.parser
 from bs4 import Tag
 
 from mtg import Json
+from mtg.scryfall import COMMANDER_FORMATS
 from mtg.deck import Deck
+from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckUrlsContainerScraper, HybridContainerScraper, TagBasedDeckParser, \
     DeckScraper
-from mtg.utils import extract_int, from_iterable, sanitize_whitespace
+from mtg.utils import ParsingError, extract_int, from_iterable, sanitize_whitespace
 from mtg.utils.scrape import ScrapingError, getsoup, strip_url_query
 
 _log = logging.getLogger(__name__)
@@ -39,8 +42,8 @@ def get_source(src: str) -> str | None:
     return None
 
 
-class StarCityGamesDeckTagParser(TagBasedDeckParser):
-    """Parser of a StarCityGames decklist HTML tag.
+class ScgDeckTagParser(TagBasedDeckParser):
+    """Parser of a StarCityGames decklist page's HTML tag.
     """
     @staticmethod
     def _parse_event_line(line: str) -> Json | str:
@@ -89,7 +92,7 @@ class StarCityGamesDeckTagParser(TagBasedDeckParser):
                     self._set_commander(cards[0])
                 elif self._state.is_companion:
                     self._companion = cards[0]
-        if self.fmt == "commander":
+        if self.fmt in COMMANDER_FORMATS:
             deck_name = self._metadata["name"]
             if commander := from_iterable(self._maindeck, lambda c: c.name == deck_name):
                 self._set_commander(commander)
@@ -103,12 +106,12 @@ class StarCityGamesDeckTagParser(TagBasedDeckParser):
 
 
 @DeckScraper.registered
-class StarCityGamesDeckScraper(DeckScraper):
+class ScgDeckScraper(DeckScraper):
     """Scraper of StarCityGames decklist page.
     """
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        self._deck_parser: StarCityGamesDeckTagParser | None = None
+        self._deck_parser: ScgDeckTagParser | None = None
 
     @staticmethod
     @override
@@ -136,7 +139,7 @@ class StarCityGamesDeckScraper(DeckScraper):
             deck_tag = self._soup.find("div", class_="deck_listing2")
             if deck_tag is None:
                 raise ScrapingError("Deck data not found")
-        self._deck_parser = StarCityGamesDeckTagParser(deck_tag, self._metadata)
+        self._deck_parser = ScgDeckTagParser(deck_tag, self._metadata)
 
     @override
     def _parse_metadata(self) -> None:
@@ -158,11 +161,11 @@ def _is_player_url(url: str) -> bool:
 
 
 @DeckUrlsContainerScraper.registered
-class StarCityGamesEventScraper(DeckUrlsContainerScraper):
+class ScgEventScraper(DeckUrlsContainerScraper):
     """Scraper of StarCityGames event page (or non-player deck search page).
     """
     CONTAINER_NAME = "StarCityGames event"  # override
-    DECK_SCRAPERS = StarCityGamesDeckScraper,  # override
+    DECK_SCRAPERS = ScgDeckScraper,  # override
 
     @staticmethod
     @override
@@ -192,12 +195,12 @@ class StarCityGamesEventScraper(DeckUrlsContainerScraper):
             return []
         deck_tags = [
             a_tag for a_tag in section_tag.find_all(
-                "a", href=lambda h: h and StarCityGamesDeckScraper.is_deck_url(h))]
+                "a", href=lambda h: h and ScgDeckScraper.is_deck_url(h))]
         return [tag.attrs["href"] for tag in deck_tags if tag is not None]
 
 
 @DeckUrlsContainerScraper.registered
-class StarCityGamesPlayerScraper(StarCityGamesEventScraper):
+class ScgPlayerScraper(ScgEventScraper):
     """Scraper of StarCityGames player search page.
     """
     CONTAINER_NAME = "StarCityGames player"  # override
@@ -208,11 +211,11 @@ class StarCityGamesPlayerScraper(StarCityGamesEventScraper):
 
 
 @DeckUrlsContainerScraper.registered
-class StarCityGamesDatabaseScraper(DeckUrlsContainerScraper):
+class ScgDatabaseScraper(DeckUrlsContainerScraper):
     """Scraper of StarCityGames author's decks database page.
     """
     CONTAINER_NAME = "StarCityGames author's deck database"  # override
-    DECK_SCRAPERS = StarCityGamesDeckScraper,  # override
+    DECK_SCRAPERS = ScgDeckScraper,  # override
 
     @staticmethod
     @override
@@ -234,13 +237,49 @@ class StarCityGamesDatabaseScraper(DeckUrlsContainerScraper):
         return [tag.attrs["href"].strip() for tag in a_tags]
 
 
+class ScgArticleDeckTagParser(ScgDeckTagParser):
+    """Parser of a StarCityGames article page's decklist HTML tag.
+    """
+    @override
+    def _parse_decklist(self) -> None:
+        pass
+
+    @override
+    def _parse_decklist_tag(self, decklist_tag: Tag) -> str:
+        decklist_text = decklist_tag.attrs.get("onclick")
+        if not decklist_text:
+            raise ParsingError("Decklist data not found")
+        decklist_text = decklist_text.removeprefix("arenaExport(").removesuffix(")")
+        decklist_data = json.loads(decklist_text)
+        decklist = ["Deck", *[l for l in decklist_data["Maindeck"]]]
+        if sideboard := decklist_data.get("Sideboard"):
+            decklist += ["", "Sideboard", *[l for l in sideboard]]
+
+        if self.fmt in COMMANDER_FORMATS:
+            deck_name = self._metadata["name"]
+            if commander_line := from_iterable(decklist, lambda l: deck_name in l):
+                decklist.remove(commander_line)
+                decklist = ["Commander", commander_line, "", *decklist]
+
+        return "\n".join(decklist)
+
+    @override
+    def _build_deck(self) -> Deck:
+        css = "div[title='Export Decklist for Magic Arena'] > div"
+        decklist_tag = self._deck_tag.select_one(css)
+        if not decklist_tag:
+            raise ParsingError("Decklist tag not found")
+        return ArenaParser(self._parse_decklist_tag(decklist_tag), self._metadata).parse(
+            suppress_parsing_errors=False, suppress_invalid_deck=False)
+
+
 @HybridContainerScraper.registered
-class StarCityGamesArticleScraper(HybridContainerScraper):
+class ScgArticleScraper(HybridContainerScraper):
     """Scraper of StarCityGames decks article page.
     """
     CONTAINER_NAME = "StarCityGames article"  # override
-    DECK_SCRAPERS = StarCityGamesDeckScraper,  # override
-    CONTAINER_SCRAPERS = StarCityGamesEventScraper,  # override
+    TAG_BASED_DECK_PARSER = ScgArticleDeckTagParser  # override
+    CONTAINER_SCRAPERS = ScgEventScraper,  # override
 
     @staticmethod
     @override
@@ -254,10 +293,11 @@ class StarCityGamesArticleScraper(HybridContainerScraper):
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
+        deck_tags = self._soup.find_all("div", class_="deck_listing")
         article_tag = self._soup.find("article", {"data-template": "post-content"})
         if article_tag is None:
-            _log.warning(self._error_msg)
-            return [], [], [], []
-
-        deck_urls, article_urls = self._get_links_from_tag(article_tag)
-        return deck_urls, [], [], article_urls
+            _log.warning("Article tag not found")
+            return [], deck_tags, [], []
+        p_tags = [t for t in article_tag.find_all("p") if not t.find("div", class_="deck_listing")]
+        deck_urls, article_urls = self._get_links_from_tags(*p_tags)
+        return deck_urls, deck_tags, [], article_urls

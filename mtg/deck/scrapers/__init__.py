@@ -576,22 +576,24 @@ class HybridContainerScraper(
                 cs.is_container_url(l) for cs in cls.CONTAINER_SCRAPERS)]
         return deck_urls, container_urls
 
-    def _get_links_from_tag(
-            self, links_tag: Tag | None = None, css_selector="",
-            url_prefix="", query_stripped=False) -> tuple[list[str], list[str]]:
-        """Get all links from the container tag or the soup.
+    def _get_links_from_tags(
+            self, *tags: Tag, css_selector="", url_prefix="",
+            query_stripped=True) -> tuple[list[str], list[str]]:
+        """Get all links from the provided tags. If no tags are provided, the soup is assumed.
 
         Note: this assumes the same URL prefix both for deck URLs and container URLs (which ought
         to be most of the time as multi-domain relative URLs on the same page don't make much
         sense).
 
         Args:
-            links_tag: a BeautifulSoup tag containing links (or the whole soup if not provided)
+            *tags: BeautifulSoup tags containing links (or the whole soup if not provided)
             css_selector: CSS selector to obtain links from the tag
             url_prefix: prefix to add to relative URLs
             query_stripped: whether to strip the query part of the URL
         """
-        links = get_links(links_tag or self._soup, css_selector, url_prefix, query_stripped)
+        tags = tags or [self._soup]
+        links = get_links(
+            *tags, css_selector=css_selector, url_prefix=url_prefix, query_stripped=query_stripped)
         return self._sift_links(*links)
 
     def _process_container_urls(self) -> list[Deck]:

@@ -17,7 +17,7 @@ from mtg.deck.scrapers.cardsrealm import get_source as cardsrealm_get_source
 from mtg.deck.scrapers.edhrec import get_source as edhrec_get_source
 from mtg.deck.scrapers.melee import get_source as melee_get_source
 from mtg.deck.scrapers.mtgarenapro import get_source as mtgarenapro_get_source
-from mtg.deck.scrapers.starcitygames import get_source as starcitygames_get_source
+from mtg.deck.scrapers.scg import get_source as scg_get_source
 from mtg.deck.scrapers.tcgplayer import get_source as tcgplayer_get_source
 from mtg.scryfall import Card, aggregate
 from mtg.utils import ParsingError, serialize_dates
@@ -36,7 +36,7 @@ def sanitize_source(src: str) -> str:
         src = new_src
     elif new_src := mtgarenapro_get_source(src):
         src = new_src
-    elif new_src := starcitygames_get_source(src):
+    elif new_src := scg_get_source(src):
         src = new_src
     elif new_src := tcgplayer_get_source(src):
         src = new_src

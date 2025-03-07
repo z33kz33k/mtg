@@ -14,7 +14,7 @@ import dateutil.parser
 from bs4 import NavigableString, Tag
 
 from mtg import Json
-from mtg.deck.scrapers import DeckTagsContainerScraper, TagBasedDeckParser
+from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser
 from mtg.utils.scrape import strip_url_query
 
 _log = logging.getLogger(__name__)
@@ -95,8 +95,8 @@ class CyclesGamingDeckTagParser(TagBasedDeckParser):
             self._update_fmt("commander")
 
 
-@DeckTagsContainerScraper.registered
-class CyclesGamingArticleScraper(DeckTagsContainerScraper):
+@HybridContainerScraper.registered
+class CyclesGamingArticleScraper(HybridContainerScraper):
     """Scraper of Cycles Gaming article page.
     """
     CONTAINER_NAME = "CyclesGaming article"  # override
@@ -124,6 +124,8 @@ class CyclesGamingArticleScraper(DeckTagsContainerScraper):
                 pass
 
     @override
-    def _collect(self) -> list[Tag]:
+    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
         self._parse_metadata()
-        return [tag for tag in self._soup.find_all("h2") if "list – " in tag.text.lower()]
+        deck_tags = [tag for tag in self._soup.find_all("h2") if "list – " in tag.text.lower()]
+        deck_urls, _ = self._get_links_from_tags(*self._soup.find_all("p"))
+        return deck_urls, deck_tags, [], []

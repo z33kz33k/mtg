@@ -282,5 +282,5 @@ class CardsrealmArticleScraper(HybridContainerScraper):
         if article_tag is None:
             _log.warning(self._error_msg)
             return [], [], [], []
-        deck_links, container_links = self._get_links_from_tag(article_tag, url_prefix=URL_PREFIX)
+        deck_links, container_links = self._get_links_from_tags(article_tag, url_prefix=URL_PREFIX)
         return deck_links, [], [], container_links
