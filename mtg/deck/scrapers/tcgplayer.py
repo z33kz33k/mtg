@@ -20,12 +20,12 @@ from selenium.common import TimeoutException
 
 from mtg import Json
 from mtg.deck import Deck
-from mtg.deck.scrapers import Collected, DeckUrlsContainerScraper, DeckScraper, \
-    DecksJsonContainerScraper, HybridContainerScraper, JsonBasedDeckParser
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, DecksJsonContainerScraper, \
+    HybridContainerScraper, JsonBasedDeckParser
 from mtg.scryfall import Card
 from mtg.utils import extract_int
 from mtg.utils.scrape import ScrapingError, getsoup, request_json, strip_url_query, throttle
-from mtg.utils.scrape.dynamic import get_dynamic_soup, SCROLL_DOWN_TIMES
+from mtg.utils.scrape.dynamic import SCROLL_DOWN_TIMES, get_dynamic_soup
 
 _log = logging.getLogger(__name__)
 
@@ -111,7 +111,7 @@ class TcgPlayerPlayerScraper(DeckUrlsContainerScraper):
                 and"player=" in url)
 
     @override
-    def _collect(self) -> Collected:
+    def _collect(self) -> list[str]:
         deck_tags = self._soup.find_all(
             "a", href=lambda h: h and "/magic/" in h and "/magic/deck" not in h)
         return [deck_tag.attrs["href"] for deck_tag in deck_tags]
@@ -265,12 +265,12 @@ class TcgPlayerInfinitePlayerScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:  # override
+    def is_container_url(url: str) -> bool:
         return "infinite.tcgplayer.com/magic-the-gathering/decks/player/" in url.lower()
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:  # override
+    def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
     def _get_player_name(self) -> str:
@@ -278,7 +278,7 @@ class TcgPlayerInfinitePlayerScraper(DeckUrlsContainerScraper):
         return last
 
     @override
-    def _collect(self) -> Collected:  # override
+    def _collect(self) -> list[str]:
         json_data = request_json(self.API_URL_TEMPLATE.format(self._get_player_name()))
         if not json_data or not json_data.get("result"):
             _log.warning(self._error_msg)
@@ -337,7 +337,7 @@ class TcgPlayerInfiniteEventScraper(DeckUrlsContainerScraper):
         return last
 
     @override
-    def _collect(self) -> Collected:
+    def _collect(self) -> list[str]:
         json_data = request_json(self.API_URL_TEMPLATE.format(self._get_event_name()))
         if not json_data or not json_data.get("result"):
             _log.warning(self._error_msg)
@@ -378,7 +378,7 @@ class TcgPlayerInfiniteArticleScraper(DecksJsonContainerScraper):
         return strip_url_query(url)
 
     @override
-    def _collect(self) -> Collected:
+    def _collect(self) -> list[Json]:
         try:
             self._soup, _, _ = get_dynamic_soup(
                 self.url, self.XPATH, consent_xpath=self.CONSENT_XPATH, scroll_down=True,
@@ -453,7 +453,7 @@ class TcgPlayerInfiniteAuthorScraper(HybridContainerScraper):
         return [d["canonicalURL"] for d in json_data["result"]["articles"]]
 
     @override
-    def _collect(self) -> Collected:
+    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
         self._author_id = self.get_author_id(self._soup)
         if self._author_id is None:
             _log.warning("Author ID not available")
@@ -487,7 +487,7 @@ class TcgPlayerInfiniteAuthorDecksPaneScraper(DeckUrlsContainerScraper):
         return strip_url_query(url)
 
     @override
-    def _collect(self) -> Collected:
+    def _collect(self) -> list[str]:
         author_id = TcgPlayerInfiniteAuthorScraper.get_author_id(self._soup)
         if author_id is None:
             _log.warning("Author ID not available")

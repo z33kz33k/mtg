@@ -17,7 +17,7 @@ from bs4 import Tag
 from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import DeckTagsContainerScraper, TagBasedDeckParser
+from mtg.deck.scrapers import TagBasedDeckParser, HybridContainerScraper
 from mtg.scryfall import COMMANDER_FORMATS
 from mtg.utils.scrape import ScrapingError, strip_url_query
 
@@ -76,8 +76,8 @@ class WotCDeckTagParser(TagBasedDeckParser):
             suppress_parsing_errors=False, suppress_invalid_deck=False)
 
 
-@DeckTagsContainerScraper.registered
-class WotCArticleScraper(DeckTagsContainerScraper):
+@HybridContainerScraper.registered
+class WotCArticleScraper(HybridContainerScraper):
     """Scraper of WotC article page.
     """
     CONTAINER_NAME = "WotC article"  # override
@@ -99,7 +99,13 @@ class WotCArticleScraper(DeckTagsContainerScraper):
             self._metadata["date"] = dateutil.parser.parse(time_tag.text.strip()).date()
 
     @override
-    def _collect(self) -> list[Tag]:
+    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
         deck_tags = [*self._soup.find_all("deck-list")]
         self._parse_metadata()
-        return deck_tags
+        article_tag = self._soup.find("article")
+        if not article_tag:
+            _log.warning("Article tag not found")
+            return [], deck_tags, [], []
+        p_tags = [t for t in article_tag.find_all("p") if not t.find("deck-list")]
+        deck_urls, _ = self._get_links_from_tags(*p_tags)
+        return deck_urls, deck_tags, [], []

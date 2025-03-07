@@ -122,4 +122,4 @@ from mtg.deck.scrapers.tcgplayer import DeckScraper
 from mtg.deck.scrapers.topdeck import DeckUrlsContainerScraper
 from mtg.deck.scrapers.topdecked import DeckScraper
 from mtg.deck.scrapers.untapped import DeckScraper
-from mtg.deck.scrapers.wotc import DeckTagsContainerScraper
+from mtg.deck.scrapers.wotc import HybridContainerScraper
