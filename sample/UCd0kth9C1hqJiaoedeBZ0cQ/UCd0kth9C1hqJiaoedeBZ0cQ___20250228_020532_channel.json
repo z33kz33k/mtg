@@ -1,0 +1,95 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "aetherdrift",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 135000,
+    "scrape_time": "2025-02-28 02:05:32",
+    "videos": [
+        {
+            "id": "1-OhnTt5OqE",
+            "url": "https://www.youtube.com/watch?v=1-OhnTt5OqE",
+            "author": "LegenVD",
+            "title": "Borrowing my opponent's cards.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with Gonti, Night Minister as commander in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro \n02:18 - Deck Tech\n07:54 - vs Ketramose, the New Dawn\n17:57 - vs Harbin, Vanguard Aviator\n27:28 - vs Captain Howler, Sea Scourge\n34:54 - vs Vendilion Clique\n36:06 - vs Sab-Sunen, Luxa Embodied\n41:23 - vs Davriel, Soul Broker\n44:02 - vs Ral, Crackling Wit\n51:13 - vs Bonny Pall, Clearcutter\n53:01 - vs Emmara, Soul of the Accord\n55:40 - vs Anzrag, the Quake-Mole\n\nDecklist: \nhttps://aetherhub.com/Deck/gonti-night-minister-brawl-1152250\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtg  #mtgarena #magicthegathering #mtgaetherdrift #aetherdrift",
+            "keywords": [
+                "aetherdrift",
+                "black",
+                "borrow",
+                "brawl deck",
+                "commander",
+                "deck",
+                "decks",
+                "dft",
+                "edh",
+                "gameplay",
+                "gonti",
+                "gonti commander",
+                "gonti edh",
+                "guide",
+                "historic brawl",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "minister",
+                "monoblack",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "steal"
+            ],
+            "publish_time": "2025-02-27 09:00:02",
+            "views": 13385,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-02-27",
+                        "exports": 171,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Gonti, Night Minister Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/gonti-night-minister-brawl-1152250",
+                        "views": 424
+                    },
+                    "decklist_id": "a63cf35e-5f76-3b33-ffe5-408ea9a5f98d",
+                    "decklist_extended_id": "f2ed7da3-2dcf-4a19-e62b-1975183bb0ed"
+                }
+            ]
+        }
+    ]
+}

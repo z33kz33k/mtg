@@ -1,0 +1,82 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 337000,
+    "scrape_time": "2025-02-19 02:12:48",
+    "videos": [
+        {
+            "id": "9qai66-Zpxw",
+            "url": "https://www.youtube.com/watch?v=9qai66-Zpxw",
+            "author": "MTGGoldfish",
+            "title": "First Look Final Fantasy MTG Spoilers   Moogles, Chocobos and a 10,000 Power Cactaur!",
+            "description": "Final Fantasy is coming to Magic: the Gathering. Today we got a first look at the set, and it's awesome! Let's talk some spoilers!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\nMore spoilers: https://www.mtgpreviews.com\n\n#MTG #magicthegathering #finalfantasy #mtgspoilers \n\n0:00 Start\n1:40 Emet-Selch, Unsundered\n6:31 Cecil, Dark Knight\n10:38 Sin, Spira's Punishment\n14:45 Jumbo Cactaur\n19:22 Stiltzkin, Moogle Merchant\n21:08 Starter Kit Cards\n21:37 Through the Ages Cards\n22:19 Summon: Shiva\n23:40 Sidequest: Catch a Fish\n25:04 Sazh's Chocobo and Garland",
+            "keywords": [
+                "MTG",
+                "MTG Arena",
+                "MTGGoldfish",
+                "Magic: the Gathering"
+            ],
+            "publish_time": "2025-02-18 13:21:10",
+            "views": 11439,
+            "sources": [
+                "www.cardkingdom.com",
+                "www.mtgpreviews.com"
+            ],
+            "decks": []
+        },
+        {
+            "id": "5S1OeQmGDKY",
+            "url": "https://www.youtube.com/watch?v=5S1OeQmGDKY",
+            "author": "MTGGoldfish",
+            "title": "How Many Times Can We Blink Riptide Gearhulk?",
+            "description": "Riptide is such a juicy target to blink so naturally we're going to have to try. \n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-how-many-times-can-we-blink-riptide-gearhulk\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6920341#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/TRuGP\n◼ Purchase this deck (Magic Online): http://mtg.fish/KdshH\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-02-18 08:00:06",
+            "views": 12851,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-how-many-times-can-we-blink-riptide-gearhulk",
+                        "date": "2025-02-12",
+                        "format": "standard",
+                        "name": "Blink",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-how-many-times-can-we-blink-riptide-gearhulk"
+                    },
+                    "decklist_id": "3a1933c3-0190-ad8b-fd1d-c4153e3e2e11",
+                    "decklist_extended_id": "d675cfbd-58d2-27ae-6532-10bffa958c7c"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-02-12",
+                        "format": "standard",
+                        "name": "Blink",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6920341"
+                    },
+                    "decklist_id": "3a1933c3-0190-ad8b-fd1d-c4153e3e2e11",
+                    "decklist_extended_id": "d675cfbd-58d2-27ae-6532-10bffa958c7c"
+                }
+            ]
+        }
+    ]
+}

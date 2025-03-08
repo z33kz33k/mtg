@@ -1,0 +1,62 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 338000,
+    "scrape_time": "2025-03-06 01:53:04",
+    "videos": [
+        {
+            "id": "wRm-QXD8178",
+            "url": "https://www.youtube.com/watch?v=wRm-QXD8178",
+            "author": "MTGGoldfish",
+            "title": "Just How Good Is The Aetherspark, Actually?  Against the Odds",
+            "description": "The Aetherspark hasn't been great in Standard, but what are the odds of winning with it in Brawl where it can be our commander so we always have access to it on turn four? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the gathering cards (and helps support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/against-the-odds-just-how-good-is-the-aetherspark-actually\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6957476#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/W8f0Y\n◼ Purchase this deck (Magic Online): http://mtg.fish/ByvaI\n\n#MTG\n#MagicTheGathering\n#MTGO\n#MTGBrawl",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-03-05 08:00:05",
+            "views": 22847,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-03-02",
+                        "format": "brawl",
+                        "name": "The Aetherspark",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6957476"
+                    },
+                    "decklist_id": "980cd0f2-7914-c131-72ed-588667daa541",
+                    "decklist_extended_id": "79411783-6a28-7622-2d40-c58a93d546ff"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/against-the-odds-just-how-good-is-the-aetherspark-actually",
+                        "date": "2025-03-02",
+                        "format": "brawl",
+                        "name": "The Aetherspark",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/against-the-odds-just-how-good-is-the-aetherspark-actually"
+                    },
+                    "decklist_id": "980cd0f2-7914-c131-72ed-588667daa541",
+                    "decklist_extended_id": "79411783-6a28-7622-2d40-c58a93d546ff"
+                }
+            ]
+        }
+    ]
+}

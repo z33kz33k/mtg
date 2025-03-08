@@ -1,0 +1,99 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "aetherdrift",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 134000,
+    "scrape_time": "2025-02-18 02:29:33",
+    "videos": [
+        {
+            "id": "p5LukwhT2a8",
+            "url": "https://www.youtube.com/watch?v=p5LukwhT2a8",
+            "author": "LegenVD",
+            "title": "Committing a hit-and-run in Standard.",
+            "description": "Magic: The Gathering Arena gameplay with a Push the Limit vehicle reanimator combo deck in Aetherdrift Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n03:32 - Match 1\n07:52 - Match 2\n13:27 - Match 3\n18:43 - Match 4\n22:41 - Match 5\n26:20 - Match 6\n28:20 - Match 7\n\nDecklist:\nhttps://aetherhub.com/Deck/push-the-limit-vehicles\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #aetherdrift #mtgaetherdrift #mtgdft #mtg #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "aetherdrift",
+                "aetherdrift standard",
+                "blue",
+                "combo",
+                "control",
+                "deck",
+                "decks",
+                "dft",
+                "gameplay",
+                "guide",
+                "hippo",
+                "jeskai",
+                "legend",
+                "limit",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg aetherdrift",
+                "mtg arena",
+                "mtga",
+                "new standard",
+                "push",
+                "push the limit",
+                "red",
+                "standard",
+                "standard deck",
+                "vehicle",
+                "white"
+            ],
+            "publish_time": "2025-02-17 09:01:07",
+            "views": 13876,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-02-15",
+                        "exports": 231,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Push the Limit Vehicles",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/push-the-limit-vehicles",
+                        "views": 624
+                    },
+                    "decklist_id": "a4439a6e-d365-2fb5-0850-6f1ed4aa0990",
+                    "decklist_extended_id": "b8e1e4dc-6e8e-6991-a19e-b7b39f68a5c6"
+                }
+            ]
+        }
+    ]
+}

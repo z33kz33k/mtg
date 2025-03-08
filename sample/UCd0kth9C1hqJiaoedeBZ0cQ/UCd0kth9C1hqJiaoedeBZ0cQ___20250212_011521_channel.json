@@ -1,0 +1,102 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "aetherdrift",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 134000,
+    "scrape_time": "2025-02-12 01:15:21",
+    "videos": [
+        {
+            "id": "L1dh1Jjfw_w",
+            "url": "https://www.youtube.com/watch?v=L1dh1Jjfw_w",
+            "author": "LegenVD",
+            "title": "This new corgi goes crazy.",
+            "description": "Magic: The Gathering Arena gameplay with a green/white saddle +1/+1 counter deck, ft. District Mascot in Aetherdrift Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n03:48 - Match 1\n07:25 - Match 2\n17:32 - Match 3\n21:12 - Match 4\n25:35 - Match 5\n27:11 - Match 6\n32:42 - Match 7\n38:03 - Match 8\n\nDecklist:\nhttps://aetherhub.com/Deck/aetherdrift-saddle-counters\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #aetherdrift #mtgaetherdrift #mtgdft #mtg #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "aetherdrift",
+                "aetherdrift standard",
+                "bulwark ox",
+                "caradora",
+                "counter deck",
+                "counters",
+                "deck",
+                "decks",
+                "dft",
+                "gameplay",
+                "green",
+                "guide",
+                "lagorin",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mount",
+                "mount deck",
+                "mtg",
+                "mtg aetherdrift",
+                "mtg arena",
+                "mtga",
+                "new standard",
+                "role model",
+                "saddle",
+                "selesnya",
+                "standard",
+                "standard deck",
+                "survival",
+                "white"
+            ],
+            "publish_time": "2025-02-11 09:00:32",
+            "views": 13026,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-02-11",
+                        "exports": 158,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Aetherdrift Saddle Counters",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/aetherdrift-saddle-counters",
+                        "views": 298
+                    },
+                    "decklist_id": "2817c20d-2bbd-6296-74de-c79873a67372",
+                    "decklist_extended_id": "36c7451f-a252-860a-e1f9-f5f524934277"
+                }
+            ]
+        }
+    ]
+}

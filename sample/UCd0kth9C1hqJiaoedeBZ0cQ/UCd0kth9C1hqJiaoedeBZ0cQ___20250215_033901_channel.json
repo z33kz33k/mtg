@@ -1,0 +1,101 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "aetherdrift",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 134000,
+    "scrape_time": "2025-02-15 03:39:01",
+    "videos": [
+        {
+            "id": "kNcLj4TCIXw",
+            "url": "https://www.youtube.com/watch?v=kNcLj4TCIXw",
+            "author": "LegenVD",
+            "title": "How to go Max Speed in Standard.",
+            "description": "Magic: The Gathering Arena gameplay with a red/black Max Speed Lizard aggro deck in Aetherdrift Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:57 - Match 1\n10:35 - Match 2\n21:59 - Match 3\n27:06 - Match 4\n30:03 - Match 5\n36:55 - Match 6\n39:11 - Match 7\n\nDecklist:\nhttps://aetherhub.com/Deck/max-speed-lizards\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #aetherdrift #mtgaetherdrift #mtgdft #mtg #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "aetherdrift",
+                "aetherdrift standard",
+                "black",
+                "deck",
+                "decks",
+                "dft",
+                "gameplay",
+                "god",
+                "guide",
+                "haste",
+                "hazoret",
+                "legend",
+                "lizards",
+                "lvd",
+                "magic the gathering",
+                "max speed",
+                "mtg",
+                "mtg aetherdrift",
+                "mtg arena",
+                "mtga",
+                "new standard",
+                "rakdos",
+                "rakdos lizards",
+                "red",
+                "speed",
+                "standard",
+                "standard deck",
+                "start your engines",
+                "thrillseeker"
+            ],
+            "publish_time": "2025-02-14 09:00:57",
+            "views": 15093,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-02-14",
+                        "exports": 465,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Max Speed Lizards",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/max-speed-lizards",
+                        "views": 892
+                    },
+                    "decklist_id": "cd84ce03-5c18-f91f-cc09-178414f5d5eb",
+                    "decklist_extended_id": "99c3af75-b9d8-7de1-e11c-eb57c1432274"
+                }
+            ]
+        }
+    ]
+}

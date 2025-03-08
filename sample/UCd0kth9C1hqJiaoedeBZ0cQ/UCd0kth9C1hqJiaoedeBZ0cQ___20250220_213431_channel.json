@@ -1,0 +1,99 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "aetherdrift",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 134000,
+    "scrape_time": "2025-02-20 21:34:31",
+    "videos": [
+        {
+            "id": "dsFFqH7gnL4",
+            "url": "https://www.youtube.com/watch?v=dsFFqH7gnL4",
+            "author": "LegenVD",
+            "title": "This was a bloodbath...",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a blue/red discard deck, ft. Captain Howler as commander in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro \n01:56 - Deck Tech\n10:31 - vs Juri, Master of the Revue\n15:55 - vs Dina, Soul Steeper\n21:42 - vs Marina Vendrell\n25:45 - vs Mendicant Core, Guidelight\n29:56 - vs Loot, the Pathfinder\n35:47 - vs Urza, Lord Protector\n39:00 - vs Kellan, Inquisitive Prodigy\n41:21 - vs Kenrith, the Returned King\n45:54 - vs Annie Flash, the Veteran\n48:03 - vs Smeagol, Helpful Guide\n52:15 - vs Lagomos, Hand of Hatred\n\nDecklist: \nhttps://aetherhub.com/Deck/captain-howler-sea-scourge-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtg  #mtgarena #magicthegathering #mtgaetherdrift #aetherdrift",
+            "keywords": [
+                "aetherdrift",
+                "blue",
+                "brawl deck",
+                "captain",
+                "captain howler",
+                "commander",
+                "deck",
+                "decks",
+                "dft",
+                "discard",
+                "edh",
+                "gameplay",
+                "guide",
+                "historic brawl",
+                "howler",
+                "howler brawl",
+                "howler commander",
+                "howler edh",
+                "izzet",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "phoenix",
+                "red",
+                "shark"
+            ],
+            "publish_time": "2025-02-20 09:00:59",
+            "views": 3563,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-02-20",
+                        "exports": 71,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Captain Howler, Sea Scourge Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/captain-howler-sea-scourge-brawl",
+                        "views": 219
+                    },
+                    "decklist_id": "32fa3d18-af58-a667-0d61-1be175799621",
+                    "decklist_extended_id": "edd5ffd9-ddfd-7871-f125-69e0ffcfe980"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,75 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 336000,
+    "scrape_time": "2025-02-04 02:13:43",
+    "videos": [
+        {
+            "id": "a2YSCRVWevE",
+            "url": "https://www.youtube.com/watch?v=a2YSCRVWevE",
+            "author": "MTGGoldfish",
+            "title": "I Love Hydras, Maybe a Little Too Much  Meme or Dream?",
+            "description": "Hydras are good, but are they competitive? Let's take this wild Platinum-Mythic Ranked Player deck out for a spin and find out of they are a Meme or Dream!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/meme-or-dream-i-love-hydras-maybe-a-little-too-much-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6891914#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/7Z9OB\n◼ Purchase this deck (Magic Online): http://mtg.fish/aJoMd\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#mtgstandard \n\n0:00 Start\n3:44 Games",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-02-03 13:50:27",
+            "views": 11207,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "Platinum Mythic Ranked Player",
+                        "container_url": "https://www.mtggoldfish.com/articles/meme-or-dream-i-love-hydras-maybe-a-little-too-much-standard",
+                        "date": "2025-01-28",
+                        "format": "standard",
+                        "name": "Jund Hydras",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/meme-or-dream-i-love-hydras-maybe-a-little-too-much-standard"
+                    },
+                    "decklist_id": "d796e2ee-5686-97a0-0fbc-ce88ffe033b2",
+                    "decklist_extended_id": "53cd928f-393e-7fb9-16ec-1d80febbdec3"
+                },
+                {
+                    "metadata": {
+                        "author": "Platinum Mythic Ranked Player",
+                        "date": "2025-01-28",
+                        "format": "standard",
+                        "name": "Jund Hydras",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6891914"
+                    },
+                    "decklist_id": "d796e2ee-5686-97a0-0fbc-ce88ffe033b2",
+                    "decklist_extended_id": "53cd928f-393e-7fb9-16ec-1d80febbdec3"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/meme-or-dream-i-love-hydras-maybe-a-little-too-much-standard",
+                        "date": "2025-01-31",
+                        "format": "standard",
+                        "name": "Gruul Hydras",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/meme-or-dream-i-love-hydras-maybe-a-little-too-much-standard"
+                    },
+                    "decklist_id": "4f27e784-6591-9ae1-1c25-820141862a5c",
+                    "decklist_extended_id": "88e866ab-4a4b-0c64-17bb-bc5e05dc1a57"
+                }
+            ]
+        }
+    ]
+}

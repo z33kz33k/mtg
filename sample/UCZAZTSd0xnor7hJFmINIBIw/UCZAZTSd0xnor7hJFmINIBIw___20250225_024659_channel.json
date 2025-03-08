@@ -1,0 +1,62 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 338000,
+    "scrape_time": "2025-02-25 02:46:59",
+    "videos": [
+        {
+            "id": "WG5KEvB8ziE",
+            "url": "https://www.youtube.com/watch?v=WG5KEvB8ziE",
+            "author": "MTGGoldfish",
+            "title": "$69 Max Speed Aristocrats  Budget Magic",
+            "description": "Can the max speed mechanic bring sacrifice back to Standard all on just a $69 budget? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/budget-magic-69-max-speed-aristocrats-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6929489#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/9jM7V\n◼ Purchase this deck (Magic Online): http://mtg.fish/5PqoZ\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-02-24 08:00:07",
+            "views": 24426,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "arturetges",
+                        "container_url": "https://www.mtggoldfish.com/articles/budget-magic-69-max-speed-aristocrats-standard",
+                        "date": "2025-02-17",
+                        "format": "standard",
+                        "name": "Max Speed Aristocrats",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/budget-magic-69-max-speed-aristocrats-standard"
+                    },
+                    "decklist_id": "486b644e-fbf8-38f3-42cd-8fed19a3f1fb",
+                    "decklist_extended_id": "f2bee88e-e805-811f-4d26-afcde1de394a"
+                },
+                {
+                    "metadata": {
+                        "author": "arturetges",
+                        "date": "2025-02-17",
+                        "format": "standard",
+                        "name": "Max Speed Aristocrats",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6929489"
+                    },
+                    "decklist_id": "486b644e-fbf8-38f3-42cd-8fed19a3f1fb",
+                    "decklist_extended_id": "f2bee88e-e805-811f-4d26-afcde1de394a"
+                }
+            ]
+        }
+    ]
+}

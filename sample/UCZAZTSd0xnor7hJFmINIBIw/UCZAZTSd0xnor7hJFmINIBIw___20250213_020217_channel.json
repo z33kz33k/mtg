@@ -1,0 +1,62 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 337000,
+    "scrape_time": "2025-02-13 02:02:17",
+    "videos": [
+        {
+            "id": "25N5jJm6nHk",
+            "url": "https://www.youtube.com/watch?v=25N5jJm6nHk",
+            "author": "MTGGoldfish",
+            "title": "Just How Busted is Radiant Lotus, Actually?  Against the Odds",
+            "description": "Is Radiant Lotus busted? What are the odd of winning with it (and Boommobile) in Aetherdrift Standard? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some  Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/against-the-odds-haunted-lotus-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6905391#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/3PtIp\n◼ Purchase this deck (Magic Online): http://mtg.fish/mUKys\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard\n\n0:00 Start\n4:23 Games",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-02-12 08:00:08",
+            "views": 29784,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-02-05",
+                        "format": "standard",
+                        "name": "Haunted Lotus",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6905391"
+                    },
+                    "decklist_id": "291aa917-837b-bbdd-ee94-379093c3f596",
+                    "decklist_extended_id": "4e546a7e-444f-43c7-b082-c396658375f1"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/against-the-odds-haunted-lotus-standard",
+                        "date": "2025-02-05",
+                        "format": "standard",
+                        "name": "Haunted Lotus",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/against-the-odds-haunted-lotus-standard"
+                    },
+                    "decklist_id": "291aa917-837b-bbdd-ee94-379093c3f596",
+                    "decklist_extended_id": "4e546a7e-444f-43c7-b082-c396658375f1"
+                }
+            ]
+        }
+    ]
+}

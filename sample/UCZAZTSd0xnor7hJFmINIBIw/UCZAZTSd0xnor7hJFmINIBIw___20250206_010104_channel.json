@@ -1,0 +1,62 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 336000,
+    "scrape_time": "2025-02-06 01:01:04",
+    "videos": [
+        {
+            "id": "eN5_nKGP6m4",
+            "url": "https://www.youtube.com/watch?v=eN5_nKGP6m4",
+            "author": "MTGGoldfish",
+            "title": "I Can't Lose the Game, and You Can't Win!  Against the Odds",
+            "description": "What are the odds of making a game state where we can never lose and our opponent can never win with the help of our new Platinum Angel Herald of the Eternal Dawn? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/against-the-odds-i-can-t-lose-the-game-and-you-can-t-win-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6884688#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/5Srkg\n◼ Purchase this deck (Magic Online): http://mtg.fish/dDk0P\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#mtgstandard \n\n0:00 Start\n3:14 Games",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-02-05 08:00:06",
+            "views": 19859,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-01-25",
+                        "format": "standard",
+                        "name": "Herald of Eternal Dawn",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6884688"
+                    },
+                    "decklist_id": "e9f90659-2f60-5bfb-482b-0dcb85aeb68d",
+                    "decklist_extended_id": "1698b222-fb97-95ec-0e3e-541f5c097e8f"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/against-the-odds-i-can-t-lose-the-game-and-you-can-t-win-standard",
+                        "date": "2025-01-25",
+                        "format": "standard",
+                        "name": "Herald of Eternal Dawn",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/against-the-odds-i-can-t-lose-the-game-and-you-can-t-win-standard"
+                    },
+                    "decklist_id": "e9f90659-2f60-5bfb-482b-0dcb85aeb68d",
+                    "decklist_extended_id": "1698b222-fb97-95ec-0e3e-541f5c097e8f"
+                }
+            ]
+        }
+    ]
+}

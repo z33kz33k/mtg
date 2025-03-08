@@ -1,0 +1,62 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 336000,
+    "scrape_time": "2025-02-07 01:16:50",
+    "videos": [
+        {
+            "id": "uQ0Y36tbrCY",
+            "url": "https://www.youtube.com/watch?v=uQ0Y36tbrCY",
+            "author": "MTGGoldfish",
+            "title": "We Still Respect Savannah Lions!",
+            "description": "Savannah Lions was once a King in the aggro world and it's time to make people fear it!... or read the flavor text of a vanilla 2/1!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-we-still-respect-savannah-lions\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6902740#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/IYmJO\n◼ Purchase this deck (Magic Online): http://mtg.fish/7XERU\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-02-06 08:00:07",
+            "views": 10631,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-02-03",
+                        "format": "standard",
+                        "name": "HEAR ME ROAR",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6902740"
+                    },
+                    "decklist_id": "7aded9d5-8832-7c49-d608-137a9d45a76d",
+                    "decklist_extended_id": "3ad838fc-a834-d098-b444-ffcca1b694d7"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-we-still-respect-savannah-lions",
+                        "date": "2025-02-03",
+                        "format": "standard",
+                        "name": "HEAR ME ROAR",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-we-still-respect-savannah-lions"
+                    },
+                    "decklist_id": "7aded9d5-8832-7c49-d608-137a9d45a76d",
+                    "decklist_extended_id": "3ad838fc-a834-d098-b444-ffcca1b694d7"
+                }
+            ]
+        }
+    ]
+}

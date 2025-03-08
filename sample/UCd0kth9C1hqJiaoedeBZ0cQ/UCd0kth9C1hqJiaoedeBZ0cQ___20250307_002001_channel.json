@@ -1,0 +1,100 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "aetherdrift",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 135000,
+    "scrape_time": "2025-03-07 00:20:01",
+    "videos": [
+        {
+            "id": "dRtWwwWvS8A",
+            "url": "https://www.youtube.com/watch?v=dRtWwwWvS8A",
+            "author": "LegenVD",
+            "title": "Perfecting the best Standard deck.",
+            "description": "Magic: The Gathering Arena gameplay with an Omniscience combo deck in Aetherdrift Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n06:11 - Match 1\n12:00 - Match 2\n17:30 - Match 3\n22:24 - Match 4\n24:14 - Match 5\n26:46 - Match 6\n\nDecklist:\nhttps://aetherhub.com/Deck/perfect-omniscience-combo\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #aetherdrift #mtgaetherdrift #mtgdft #mtg #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "abuelo",
+                "aetherdrift",
+                "aetherdrift standard",
+                "best deck",
+                "best standard deck",
+                "blue",
+                "combo",
+                "deck",
+                "decks",
+                "dft",
+                "gameplay",
+                "guide",
+                "invasion",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg aetherdrift",
+                "mtg arena",
+                "mtga",
+                "mythic",
+                "new standard",
+                "omniscience",
+                "perfecting",
+                "standard",
+                "standard deck",
+                "stock up",
+                "white"
+            ],
+            "publish_time": "2025-03-06 09:00:46",
+            "views": 10597,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-03-06",
+                        "exports": 251,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Perfect Omniscience Combo",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/perfect-omniscience-combo",
+                        "views": 642
+                    },
+                    "decklist_id": "9300f5d5-8cff-c2c4-b19a-5633dc5f4871",
+                    "decklist_extended_id": "1d05ff2c-10d4-5e19-cdc7-145c72d8f57a"
+                }
+            ]
+        }
+    ]
+}

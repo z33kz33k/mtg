@@ -1,0 +1,100 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "aetherdrift",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 134000,
+    "scrape_time": "2025-02-07 01:12:23",
+    "videos": [
+        {
+            "id": "F_vgJ3H3ntQ",
+            "url": "https://www.youtube.com/watch?v=F_vgJ3H3ntQ",
+            "author": "LegenVD",
+            "title": "Playing the scariest 1-drop in Standard.",
+            "description": "Magic: The Gathering Arena gameplay with a blue/red Pirate discard deck in Aetherdrift Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n03:57 - Match 1\n08:16 - Match 2\n14:01 - Match 3\n25:43 - Match 4\n32:40 - Match 5\n42:45 - Match 6\n\nDecklist:\nhttps://aetherhub.com/Deck/aetherdrift-pirate-discard\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #aetherdrift #mtgaetherdrift #mtgdft #mtg #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "aetherdrift",
+                "aetherdrift standard",
+                "artifact",
+                "blue",
+                "deck",
+                "decks",
+                "dft",
+                "discard",
+                "discard deck",
+                "gameplay",
+                "guide",
+                "izzet",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "monument",
+                "mtg",
+                "mtg aetherdrift",
+                "mtg arena",
+                "mtga",
+                "new",
+                "new standard",
+                "pirate",
+                "pirate deck",
+                "red",
+                "shark",
+                "standard",
+                "standard deck"
+            ],
+            "publish_time": "2025-02-06 08:00:14",
+            "views": 17542,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-02-06",
+                        "exports": 19,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Aetherdrift Pirate Discard",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/aetherdrift-pirate-discard",
+                        "views": 140
+                    },
+                    "decklist_id": "deb9c500-3fb0-4699-0308-88dc520d96d7",
+                    "decklist_extended_id": "0e89054c-d56a-ff2d-e25e-1ed0a4953610"
+                }
+            ]
+        }
+    ]
+}

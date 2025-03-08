@@ -1,0 +1,101 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "aetherdrift",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 134000,
+    "scrape_time": "2025-02-14 02:36:13",
+    "videos": [
+        {
+            "id": "FigsLaa_yfI",
+            "url": "https://www.youtube.com/watch?v=FigsLaa_yfI",
+            "author": "LegenVD",
+            "title": "Aetherdrift's best Commander.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a black/white exile deck, ft. Ketramose, the New Dawn in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro \n02:18 - Deck Tech\n09:09 - vs Phelia, Exuberant Shepherd\n39:55 - vs The Jolly Balloon Man\n53:08 - vs Gretchen Titchwillow\n01:03:53 - vs Amalia Benavides Aguirre\n01:09:14 - vs Urza, Lord Protector\n01:14:52 - vs Dionus, Elvish Archdruid\n01:19:48 - vs Karametra, God of Harvests\n\nDecklist: \nhttps://aetherhub.com/Deck/ketramose-the-new-dawn-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtg  #mtgarena #magicthegathering",
+            "keywords": [
+                "aetherdrift",
+                "black",
+                "blink",
+                "brawl deck",
+                "commander",
+                "control",
+                "deck",
+                "decks",
+                "dft",
+                "edh",
+                "exile",
+                "exile deck",
+                "exile god",
+                "flicker",
+                "gameplay",
+                "god",
+                "guide",
+                "historic brawl",
+                "ketramose",
+                "ketramose commander",
+                "ketramose deck",
+                "ketramose edh",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "orzhov",
+                "white"
+            ],
+            "publish_time": "2025-02-13 09:00:17",
+            "views": 16608,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "control",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-02-13",
+                        "exports": 331,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Ketramose, the New Dawn Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/ketramose-the-new-dawn-brawl",
+                        "views": 537
+                    },
+                    "decklist_id": "0e82526a-b2e8-720e-6496-e840f02de5d4",
+                    "decklist_extended_id": "ac613d3c-7ad8-fa20-3cb3-1ae7c6ba4359"
+                }
+            ]
+        }
+    ]
+}

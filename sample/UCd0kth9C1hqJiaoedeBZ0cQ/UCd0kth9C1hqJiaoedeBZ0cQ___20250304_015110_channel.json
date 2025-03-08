@@ -1,0 +1,95 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "aetherdrift",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 135000,
+    "scrape_time": "2025-03-04 01:51:10",
+    "videos": [
+        {
+            "id": "hx3DrGeyQR4",
+            "url": "https://www.youtube.com/watch?v=hx3DrGeyQR4",
+            "author": "LegenVD",
+            "title": "Going back to Standard Brawl !",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a Room deck ft. Marina Vendrell in Standard Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro \n02:59 - Deck Tech\n09:10 - vs Elas il-Kor, Sadistic Pilgrim\n20:28 - vs The Gitrog, Ravenous Ride\n28:04 - vs Glarb, Calamity's Augur\n39:33 - vs Gonti, Night Minister\n45:47 - vs Alesha, Who Laughs at Fate\n49:41 - vs Liliana of the Veil\n55:08 - vs Goddric, Cloaked Reveler\n\nDecklist: \nhttps://aetherhub.com/Deck/marina-vendrell-standard-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtg  #mtgarena #magicthegathering #mtgaetherdrift #aetherdrift",
+            "keywords": [
+                "aetherdrift",
+                "brawl deck",
+                "commander",
+                "deck",
+                "decks",
+                "duskmourn",
+                "edh",
+                "five color",
+                "gameplay",
+                "guide",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "marina",
+                "marina brawl",
+                "marina commander",
+                "marina edh",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "room deck",
+                "rooms",
+                "standard",
+                "standard brawl"
+            ],
+            "publish_time": "2025-03-03 10:06:23",
+            "views": 11345,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "control",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-03-03",
+                        "exports": 153,
+                        "format": "standardbrawl",
+                        "mode": "Bo3",
+                        "name": "Marina Vendrell Standard Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/marina-vendrell-standard-brawl",
+                        "views": 348
+                    },
+                    "decklist_id": "5a0a09cf-a597-a2ba-ac1d-0fe78fc5ae0b",
+                    "decklist_extended_id": "269a929f-91e2-4a73-cc20-edaf265ef834"
+                }
+            ]
+        }
+    ]
+}

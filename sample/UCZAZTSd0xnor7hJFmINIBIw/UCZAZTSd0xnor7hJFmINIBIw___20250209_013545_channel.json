@@ -1,0 +1,62 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 336000,
+    "scrape_time": "2025-02-09 01:35:45",
+    "videos": [
+        {
+            "id": "39nZcFuAcpI",
+            "url": "https://www.youtube.com/watch?v=39nZcFuAcpI",
+            "author": "MTGGoldfish",
+            "title": "Can A Corgi Drive?",
+            "description": "District Mascot is here and we're looking to saddle and crew vehicles with all of the new Aetherdrift cards!!! Also, District Mascot is super cute.\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-can-a-corgi-drive\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6906756#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/iGbmS\n◼ Purchase this deck (Magic Online): http://mtg.fish/j4z0x\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-02-08 08:00:05",
+            "views": 11187,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-02-05",
+                        "format": "standard",
+                        "name": "Doggo Drives Car",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6906756"
+                    },
+                    "decklist_id": "c78b9432-177b-fc8c-a652-4f5dd70d0e21",
+                    "decklist_extended_id": "6b7a3292-4a8e-7219-64c0-c88639e03431"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-can-a-corgi-drive",
+                        "date": "2025-02-05",
+                        "format": "standard",
+                        "name": "Doggo Drives Car",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-can-a-corgi-drive"
+                    },
+                    "decklist_id": "c78b9432-177b-fc8c-a652-4f5dd70d0e21",
+                    "decklist_extended_id": "6b7a3292-4a8e-7219-64c0-c88639e03431"
+                }
+            ]
+        }
+    ]
+}

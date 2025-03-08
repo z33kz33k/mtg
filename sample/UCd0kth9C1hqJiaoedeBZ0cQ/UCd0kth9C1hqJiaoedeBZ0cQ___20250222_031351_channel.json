@@ -1,0 +1,100 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "aetherdrift",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 135000,
+    "scrape_time": "2025-02-22 03:13:51",
+    "videos": [
+        {
+            "id": "0OIBHO1V4zo",
+            "url": "https://www.youtube.com/watch?v=0OIBHO1V4zo",
+            "author": "LegenVD",
+            "title": "This deck is impossible to play.",
+            "description": "Magic: The Gathering Arena gameplay with a golgari Roots deck, ft. Loot, the Pathfinder in Aetherdrift Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n06:17 - Match 1\n10:03 - Match 2\n30:48 - Match 3\n35:55 - Match 4\n40:01 - Match 5\n\nDecklist:\nhttps://aetherhub.com/Deck/loot-cauldron-roots\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #aetherdrift #mtgaetherdrift #mtgdft #mtg #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "aetherdrift",
+                "aetherdrift standard",
+                "black",
+                "cauldron",
+                "combo",
+                "deck",
+                "decks",
+                "dft",
+                "gameplay",
+                "golgari",
+                "graveyard",
+                "green",
+                "guide",
+                "legend",
+                "loot",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg aetherdrift",
+                "mtg arena",
+                "mtga",
+                "new standard",
+                "plants",
+                "roots",
+                "selfmill",
+                "standard",
+                "standard deck",
+                "tyvar"
+            ],
+            "publish_time": "2025-02-21 09:00:00",
+            "views": 16103,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-02-21",
+                        "exports": 181,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Loot Cauldron Roots",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/loot-cauldron-roots",
+                        "views": 512
+                    },
+                    "decklist_id": "0cd0fc9b-e4a7-36eb-14ca-5a0a8e0973f1",
+                    "decklist_extended_id": "e6aa99a9-860b-9b6b-85f3-7980afb78fd2"
+                }
+            ]
+        }
+    ]
+}

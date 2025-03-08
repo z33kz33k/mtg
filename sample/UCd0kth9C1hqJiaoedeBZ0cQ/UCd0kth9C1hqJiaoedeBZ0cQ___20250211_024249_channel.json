@@ -1,0 +1,101 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "aetherdrift",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 134000,
+    "scrape_time": "2025-02-11 02:42:49",
+    "videos": [
+        {
+            "id": "l2gZYtHqlfQ",
+            "url": "https://www.youtube.com/watch?v=l2gZYtHqlfQ",
+            "author": "LegenVD",
+            "title": "Engineering the best Standard deck.",
+            "description": "Magic: The Gathering Arena gameplay with a white/red artifact reanimator deck, ft. Daretti, Rocketeer Engineer in Aetherdrift Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n05:32 - Match 1\n15:09 - Match 2\n20:29 - Match 3\n30:52 - Match 4\n35:17 - Match 5\n40:59 - Match 6\n45:22 - Match 7\n51:31 - Match 8\n\nDecklist:\nhttps://aetherhub.com/Deck/daretti-artifact-reanimator\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #aetherdrift #mtgaetherdrift #mtgdft #mtg #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "aetherdrift",
+                "aetherdrift standard",
+                "artifact",
+                "boros",
+                "daretti",
+                "deck",
+                "decks",
+                "dft",
+                "discard",
+                "engineer",
+                "gameplay",
+                "guide",
+                "hulk",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg aetherdrift",
+                "mtg arena",
+                "mtga",
+                "new standard",
+                "portal",
+                "reanimator",
+                "red",
+                "standard",
+                "standard deck",
+                "tune up",
+                "vehicle",
+                "white"
+            ],
+            "publish_time": "2025-02-10 09:00:53",
+            "views": 14601,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "control",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-02-10",
+                        "exports": 23,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Daretti Artifact Reanimator",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/daretti-artifact-reanimator",
+                        "views": 155
+                    },
+                    "decklist_id": "722f3c80-c422-ef40-c7cc-e5372381afda",
+                    "decklist_extended_id": "1c252ad3-8802-4a2d-9176-deff2688aea2"
+                }
+            ]
+        }
+    ]
+}

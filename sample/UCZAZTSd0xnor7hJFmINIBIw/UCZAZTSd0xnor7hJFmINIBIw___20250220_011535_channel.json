@@ -1,0 +1,62 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 337000,
+    "scrape_time": "2025-02-20 01:15:35",
+    "videos": [
+        {
+            "id": "EU6x68Uzq7M",
+            "url": "https://www.youtube.com/watch?v=EU6x68Uzq7M",
+            "author": "MTGGoldfish",
+            "title": "Teaching Arena Zoomers About Chrome Mox and Blood Moon  Against the Odds",
+            "description": "What are the odds of wrecking some Arena zoomers with turn one Chalice of the Void and turn two Blood Moon thanks to Chrome Mox in Timeless? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/against-the-odds-teaching-arena-zoomers-about-chrome-mox-and-also-blood-moon\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6928346#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/UvH3T\n◼ Purchase this deck (Magic Online): http://mtg.fish/7lQ98\n\n#MTG\n#MagicTheGathering\n#MTGO\n#mtgtimeless \n\n0:00 Start\n4:56 Games",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-02-19 07:53:42",
+            "views": 20744,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/against-the-odds-teaching-arena-zoomers-about-chrome-mox-and-also-blood-moon",
+                        "date": "2025-02-16",
+                        "format": "timeless",
+                        "name": "Mono-Red Prison",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/against-the-odds-teaching-arena-zoomers-about-chrome-mox-and-also-blood-moon"
+                    },
+                    "decklist_id": "b0c07037-c754-3307-a401-048a47c21b7a",
+                    "decklist_extended_id": "c27ef10d-837b-54ad-ce27-757ba833b8f9"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-02-16",
+                        "format": "timeless",
+                        "name": "Mono-Red Prison",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6928346"
+                    },
+                    "decklist_id": "b0c07037-c754-3307-a401-048a47c21b7a",
+                    "decklist_extended_id": "c27ef10d-837b-54ad-ce27-757ba833b8f9"
+                }
+            ]
+        }
+    ]
+}

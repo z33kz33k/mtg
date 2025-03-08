@@ -1,0 +1,62 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 337000,
+    "scrape_time": "2025-02-23 01:22:58",
+    "videos": [
+        {
+            "id": "agfDLazGp9I",
+            "url": "https://www.youtube.com/watch?v=agfDLazGp9I",
+            "author": "MTGGoldfish",
+            "title": "Crock-Pot Goblins",
+            "description": "Goblins have so many good activated abilities in Standard so let's teach them how to cook with a Crock-Pot!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards and help support the show at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-crock-pot-goblins\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6931922#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/vdZjn\n◼ Purchase this deck (Magic Online): http://mtg.fish/mRMxq\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-02-22 08:00:08",
+            "views": 7815,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-crock-pot-goblins",
+                        "date": "2025-02-19",
+                        "format": "standard",
+                        "name": "Goblin Cauldron",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-crock-pot-goblins"
+                    },
+                    "decklist_id": "ded87bb0-2f05-f74a-5265-2a46d603cf0c",
+                    "decklist_extended_id": "f8dc87e8-9f8c-5b44-dd7a-730e39577595"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-02-19",
+                        "format": "standard",
+                        "name": "Goblin Cauldron",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6931922"
+                    },
+                    "decklist_id": "ded87bb0-2f05-f74a-5265-2a46d603cf0c",
+                    "decklist_extended_id": "f8dc87e8-9f8c-5b44-dd7a-730e39577595"
+                }
+            ]
+        }
+    ]
+}

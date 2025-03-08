@@ -1,0 +1,62 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 336000,
+    "scrape_time": "2025-02-05 02:06:24",
+    "videos": [
+        {
+            "id": "NxOUtp-PCkE",
+            "url": "https://www.youtube.com/watch?v=NxOUtp-PCkE",
+            "author": "MTGGoldfish",
+            "title": "Dragonball D",
+            "description": "Capricious Hellraiser and Hidetsugu and Kairi bring chaos into battle!! Can Crim win with it or will he lose to the interface of stacking triggers?! Find out this week on Dragonball D..........\n\nToday's video is brought top you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-dragonball-d\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6897384#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/axVBM\n◼ Purchase this deck (Magic Online): http://mtg.fish/6xpD4\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-02-04 10:00:04",
+            "views": 9643,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-01-31",
+                        "format": "standard",
+                        "name": "Dragon Ball D",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6897384"
+                    },
+                    "decklist_id": "e208d1a1-0541-57bd-cacf-2e4338835614",
+                    "decklist_extended_id": "f2c05a19-59a6-170f-8acf-15464f1c5b53"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-dragonball-d",
+                        "date": "2025-01-31",
+                        "format": "standard",
+                        "name": "Dragon Ball D",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-dragonball-d"
+                    },
+                    "decklist_id": "e208d1a1-0541-57bd-cacf-2e4338835614",
+                    "decklist_extended_id": "f2c05a19-59a6-170f-8acf-15464f1c5b53"
+                }
+            ]
+        }
+    ]
+}

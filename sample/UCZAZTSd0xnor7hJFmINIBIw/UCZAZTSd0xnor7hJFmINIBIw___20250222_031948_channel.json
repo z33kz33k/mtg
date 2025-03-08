@@ -1,0 +1,82 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 337000,
+    "scrape_time": "2025-02-22 03:19:48",
+    "videos": [
+        {
+            "id": "zTiSI3gzDf0",
+            "url": "https://www.youtube.com/watch?v=zTiSI3gzDf0",
+            "author": "MTGGoldfish",
+            "title": "Baby Siege Rhino, New Mox and Spirits Dragons  Tarkir Dragonstorm MTG Spoilers",
+            "description": "We got an early look at Khans: Dragonstorm today and the set looks amazing! There's a baby Siege Rhino, a new Mox, a bunch of cool callbacks to original Khans of Tarkir and, of course, a ton of Dragon stuff!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.carkdingdom.com/mtggoldfish\n\nMore spoilers: https://www.mtgpreviews.com\n\n0:00 Start\n1:22 Mox Jasper\n5:58 Sarkhan, Dragon Ascendant\n8:03 Shiko, Paragon of the Way\n11:33 Smile at Death\n15:27 Narset, Jeskai Waymaster\n18:19 Inevitable Defeat\n21:06 Barrensteppe Siege\n22:34 Skirmish Rhino\n24:11 Teval, the Balanced Scale\n\n#MTG #magicthegathering #mtgspoilers",
+            "keywords": [
+                "MTG",
+                "MTG Arena",
+                "MTGGoldfish",
+                "Magic: the Gathering"
+            ],
+            "publish_time": "2025-02-21 16:25:37",
+            "views": 7454,
+            "sources": [
+                "www.carkdingdom.com",
+                "www.mtgpreviews.com"
+            ],
+            "decks": []
+        },
+        {
+            "id": "dkAAnuU6ZvI",
+            "url": "https://www.youtube.com/watch?v=dkAAnuU6ZvI",
+            "author": "MTGGoldfish",
+            "title": "When Every Thing You Exile is Card Draw, Actually  Much Abrew",
+            "description": "How busted is Ketramose, the New Dawn in Aetherdrift Standard, backed by a massive pile of exile spells? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/much-abrew-ketramose-exile-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6922560#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/ypnUq\n◼ Purchase this deck (Magic Online): http://mtg.fish/Obkxg\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard\n\n0:00 Start\n5:41 Games",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-02-21 08:00:08",
+            "views": 20109,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-02-13",
+                        "format": "standard",
+                        "name": "Ketramose",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6922560"
+                    },
+                    "decklist_id": "18c82a93-3cf8-de03-0a94-d830a8dd425e",
+                    "decklist_extended_id": "195cae5a-c037-2e56-8e75-1a0a5f366020"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/much-abrew-ketramose-exile-standard",
+                        "date": "2025-02-13",
+                        "format": "standard",
+                        "name": "Ketramose",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/much-abrew-ketramose-exile-standard"
+                    },
+                    "decklist_id": "18c82a93-3cf8-de03-0a94-d830a8dd425e",
+                    "decklist_extended_id": "195cae5a-c037-2e56-8e75-1a0a5f366020"
+                }
+            ]
+        }
+    ]
+}

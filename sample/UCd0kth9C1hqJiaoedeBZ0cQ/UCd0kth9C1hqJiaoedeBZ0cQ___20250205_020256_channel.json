@@ -1,0 +1,94 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "aetherdrift",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 134000,
+    "scrape_time": "2025-02-05 02:02:56",
+    "videos": [
+        {
+            "id": "o3Zs0j67OTE",
+            "url": "https://www.youtube.com/watch?v=o3Zs0j67OTE",
+            "author": "LegenVD",
+            "title": "Discarding opponents while they're empty-handed.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a Monoblack discard deck in Explorer. \n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n03:00 - Match 1\n10:48 - Match 2\n18:32 - Match 3\n20:39 - Match 4\n23:55 - Match 5\n30:19 - Match 6\n35:28 - Match 7\n39:53 - Match 8\n\nDecklist:\nhttps://aetherhub.com/Deck/waste-not-discard-1144230\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtg #magicthegathering",
+            "keywords": [
+                "black",
+                "control",
+                "deck",
+                "decks",
+                "discard",
+                "discard deck",
+                "explorer",
+                "gameplay",
+                "guide",
+                "legend",
+                "liliana",
+                "lvd",
+                "magic the gathering",
+                "monoblack",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "pioneer",
+                "pioneer deck",
+                "pioneer masters",
+                "removal",
+                "swamp",
+                "waste not"
+            ],
+            "publish_time": "2025-02-04 09:00:54",
+            "views": 15575,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "control",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-02-04",
+                        "exports": 155,
+                        "format": "explorer",
+                        "mode": "Bo1",
+                        "name": "Waste Not Discard",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/waste-not-discard-1144230",
+                        "views": 245
+                    },
+                    "decklist_id": "8985b294-ec68-818f-f981-a9b6bcf48c82",
+                    "decklist_extended_id": "f89da362-7c71-00ea-2812-d1bed7089ed6"
+                }
+            ]
+        }
+    ]
+}

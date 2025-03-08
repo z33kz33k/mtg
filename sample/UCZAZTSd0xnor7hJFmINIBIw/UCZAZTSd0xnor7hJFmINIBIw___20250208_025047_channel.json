@@ -1,0 +1,62 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 336000,
+    "scrape_time": "2025-02-08 02:50:47",
+    "videos": [
+        {
+            "id": "t1ZJsmhU-v0",
+            "url": "https://www.youtube.com/watch?v=t1ZJsmhU-v0",
+            "author": "MTGGoldfish",
+            "title": "It's a Starfish Brawl!  Much Abrew",
+            "description": "Plagon, Lord of the Beach just might be the most broken new legend from 2024. Check out the absurd things it can do!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/much-abrew-starfish-brawl\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6876529#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/Una9s\n◼ Purchase this deck (Magic Online): http://mtg.fish/bAjBv\n\n#MTG\n#MagicTheGathering\n#MTGO\n#MTGBrawl\n\n0:00 Start\n4:30 Games",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-02-07 08:00:09",
+            "views": 16912,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/much-abrew-starfish-brawl",
+                        "date": "2025-01-20",
+                        "format": "brawl",
+                        "name": "Plagon, Lord of the Beach",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/much-abrew-starfish-brawl"
+                    },
+                    "decklist_id": "11671aab-c8b7-5568-8009-555af71f3bc1",
+                    "decklist_extended_id": "e254636c-671a-f038-6378-ce5a84088945"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-01-20",
+                        "format": "brawl",
+                        "name": "Plagon, Lord of the Beach",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6876529"
+                    },
+                    "decklist_id": "11671aab-c8b7-5568-8009-555af71f3bc1",
+                    "decklist_extended_id": "e254636c-671a-f038-6378-ce5a84088945"
+                }
+            ]
+        }
+    ]
+}

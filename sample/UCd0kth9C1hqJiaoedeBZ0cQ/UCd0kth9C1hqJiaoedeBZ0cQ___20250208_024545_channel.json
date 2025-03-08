@@ -1,0 +1,100 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "aetherdrift",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 134000,
+    "scrape_time": "2025-02-08 02:45:45",
+    "videos": [
+        {
+            "id": "XtUFcKwjzmk",
+            "url": "https://www.youtube.com/watch?v=XtUFcKwjzmk",
+            "author": "LegenVD",
+            "title": "Upgrading my artifacts in Standard.",
+            "description": "Magic: The Gathering Arena gameplay with a blue/black artifact deck ft. Repurposing Bay in Aetherdrift Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:27 - Match 1\n10:25 - Match 2\n20:00 - Match 3\n25:24 - Match 4\n32:12 - Match 5\n38:12 - Match 6\n43:40 - Match 7\n46:30 - Match 8\n\nDecklist:\nhttps://aetherhub.com/Deck/dimir-repurposing-bay-\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #aetherdrift #mtgaetherdrift #mtgdft #mtg #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "aetherdrift",
+                "aetherdrift standard",
+                "artifact",
+                "bay",
+                "black",
+                "blue",
+                "deck",
+                "decks",
+                "dft",
+                "dimir",
+                "discard deck",
+                "gameplay",
+                "gearhulk",
+                "guide",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg aetherdrift",
+                "mtg arena",
+                "mtga",
+                "new standard",
+                "oildeep",
+                "repurpose",
+                "repurposing",
+                "sacrifice",
+                "standard",
+                "standard deck"
+            ],
+            "publish_time": "2025-02-07 09:00:42",
+            "views": 14462,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-02-07",
+                        "exports": 15,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Dimir Repurposing Bay",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/dimir-repurposing-bay-",
+                        "views": 120
+                    },
+                    "decklist_id": "638d13a9-a0b1-4f56-6353-07ad163c60e8",
+                    "decklist_extended_id": "d09d89a9-3d42-6d9d-521f-40d8a80ac43d"
+                }
+            ]
+        }
+    ]
+}
