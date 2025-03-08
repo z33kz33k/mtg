@@ -85,7 +85,7 @@ class LigaMagicDeckScraper(DeckScraper):
         fmt_text = header_tag.find("div", class_="format").text.strip()
         if " - " in fmt_text:
             fmt_text, theme_text = fmt_text.split(" - ", maxsplit=1)
-            self._update_custom_theme("ligamagic", theme_text)
+            self._update_archetype_or_theme(theme_text)
         self._update_fmt(fmt_text)
         if author_tag := header_tag.find("div", class_="createdby"):
             self._metadata["author"] = author_tag.find("a").text.strip()

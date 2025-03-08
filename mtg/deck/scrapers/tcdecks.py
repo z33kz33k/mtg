@@ -62,7 +62,7 @@ class TCDecksDeckScraper(DeckScraper):
         author_theme_tag, pos_tag, name_tag = th_tags
         author, theme = author_theme_tag.text.strip().split(" playing ")
         self._metadata["author"] = author
-        self._update_custom_theme("tc_decks", theme)
+        self._update_archetype_or_theme(theme)
         self._metadata["event"]["position"] = extract_int(pos_tag.text.strip().removeprefix(
             "Position: "))
         self._metadata["name"] = name_tag.text.strip().removeprefix("Deck Name: ")

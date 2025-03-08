@@ -68,7 +68,7 @@ class GoldfishDeckTagParser(TagBasedDeckParser):
                 date_text = line.removeprefix("Deck Date:").strip()
                 self._metadata["date"] = dateutil.parser.parse(date_text).date()
             elif line.startswith("Archetype:"):
-                self._update_custom_theme("goldfish", line.removeprefix("Archetype:").strip())
+                self._update_archetype_or_theme(line.removeprefix("Archetype:").strip())
         if source_idx is not None:
             self._metadata["original_source"] = lines[source_idx].strip()
 

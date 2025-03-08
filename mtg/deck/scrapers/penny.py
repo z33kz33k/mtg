@@ -47,7 +47,7 @@ class PennyDreadfulMagicDeckScraper(DeckScraper):
         self._metadata["name"] = self._soup.find("h1", class_="deck-name").text.strip()
         info_tag = self._soup.find("div", class_="title")
         if archetype_tag := info_tag.find("a", href=lambda h: h and "/archetypes/" in h):
-            self._update_custom_theme("penny", archetype_tag.text.strip())
+            self._update_archetype_or_theme(archetype_tag.text.strip())
         author_tag = info_tag.find("a", href=lambda h: h and "/people/id/" in h)
         self._metadata["author"] = author_tag.text.strip()
         if date_tag := from_iterable(

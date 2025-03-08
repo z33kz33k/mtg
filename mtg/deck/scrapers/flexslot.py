@@ -80,8 +80,7 @@ class FlexslotDeckScraper(DeckScraper):
             if rank := self._deck_data.get("rank"):
                 self._metadata["event"]["rank"] = rank
         if archetype := self._deck_data.get("archetype"):
-            self._update_archetype(archetype)
-            self._update_custom_theme("flexslot", archetype)
+            self._update_archetype_or_theme(archetype)
 
     def _parse_card_json(self, card_json: Json) -> None:
         quantity = card_json["quantity"]

@@ -71,7 +71,7 @@ THEMES = {
     "Apes",  # tribal
     "Apostles",  # (Shadowborn Apostles)
     "Approach",  # (Dragon's Approach)
-    "Arcane,"
+    "Arcane",
     "Archers",  # tribal
     "Aristocrats",
     "Artifact",
@@ -513,7 +513,7 @@ class Deck:
         if not self.name:
             return None
         nameparts = [
-            p for p in self.name.split() if not p.title() in [c.name.title() for c in Color]]
+            p for p in self.name.split() if p.lower() not in [c.name.lower() for c in Color]]
         return from_iterable(
                 THEMES, lambda th: any(p.title() == th.title() for p in nameparts))
 
@@ -1066,14 +1066,13 @@ class DeckParser(ABC):
                     del self._metadata["format"]
                 self._metadata["irregular_format"] = fmt
 
-    def _update_custom_theme(self, prefix: str, custom_theme: str) -> None:
-        self._metadata[f"{prefix}_theme"] = custom_theme
-        if theme := from_iterable(THEMES, lambda t: t in custom_theme):
-            self._metadata["theme"] = theme
-
-    def _update_archetype(self, archetype: str) -> None:
-        if archetype.lower() in {a.value for a in Archetype}:
-            self._metadata["archetype"] = archetype
+    def _update_archetype_or_theme(self, name: str) -> None:
+        if name.lower() in {a.value for a in Archetype}:
+            self._metadata["archetype"] = name.lower()
+        elif name.replace(" ", "-").title() in THEMES:
+            self._metadata["theme"] = name.replace(" ", "-").title()
+        else:
+            self._metadata["custom_theme"] = name.replace(" ", "-").title()
 
     def _build_deck(self) -> Deck:
         return Deck(
