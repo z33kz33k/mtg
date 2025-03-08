@@ -96,6 +96,7 @@ YT videos descriptions).
         * [CyclesGaming](https://cyclesgaming.com) articles
         * Deckbox users and events
         * Deckstats users
+        * Draftsim articles
         * EDHREC articles and authors
         * [EDHTop16](https://edhtop16.com) tournaments and commanders
         * Flexslot users
