@@ -102,6 +102,7 @@ from mtg.deck.scrapers.melee import DeckScraper
 from mtg.deck.scrapers.moxfield import DeckScraper
 from mtg.deck.scrapers.mtgarenapro import DeckScraper
 from mtg.deck.scrapers.mtgazone import DeckScraper
+from mtg.deck.scrapers.mtgcircle import DeckScraper
 from mtg.deck.scrapers.mtgdecksnet import DeckScraper
 from mtg.deck.scrapers.mtgjson import DeckScraper
 from mtg.deck.scrapers.mtgo import DeckScraper

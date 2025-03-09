@@ -512,3 +512,32 @@ def prepend(text: str, prefix="") -> str:
     if prefix:
         return f"{prefix}{text}" if not text.startswith(prefix) else text
     return text
+
+
+# recursive
+def find_text_in_json(
+        data: dict | list, text: str, paths: list[str] | None = None, path="") -> list[str]:
+    """Find ``text`` in JSON ``data`` provided. Return a list of found paths rendered as Python
+    subscript strings.
+    """
+    paths = paths or []
+    if isinstance(data, dict):
+        for k, v in data.items():
+            suffix = f'["{k}"]'
+            path += suffix
+            if isinstance(v, str) and text in v:
+                paths.append(path)
+            elif isinstance(v, (dict, list)):
+                paths = find_text_in_json(v, text, paths, path)
+            path = path[:-len(suffix)]
+    elif isinstance(data, list):
+        for i, v in enumerate(data):
+            suffix = f"[{str(i)}]"
+            path += suffix
+            if isinstance(v, str) and text in v:
+                paths.append(path)
+            elif isinstance(v, (dict, list)):
+                paths = find_text_in_json(v, text, paths, path)
+            path = path[:-len(suffix)]
+    return paths
+

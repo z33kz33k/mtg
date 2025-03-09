@@ -267,12 +267,15 @@ def extract_source(url: str) -> str:
 
 
 def dissect_js(
-        soup: BeautifulSoup, start_hook: str, end_hook: str,
+        tag: Tag, start_hook: str, end_hook: str,
         end_processor: Callable[[str], str] | None = None,
         left_split_on_start_hook=False) -> Json | None:
     """Dissect JSON from JavaScript in ``soup``.
     """
-    script_tag = soup.find("script", string=lambda s: s and start_hook in s and end_hook in s)
+    if tag.name == "script":
+        script_tag = tag
+    else:
+        script_tag = tag.find("script", string=lambda s: s and start_hook in s and end_hook in s)
     if not script_tag:
         return None
     text = script_tag.text
