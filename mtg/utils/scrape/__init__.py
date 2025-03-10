@@ -270,7 +270,7 @@ def dissect_js(
         tag: Tag, start_hook: str, end_hook: str,
         end_processor: Callable[[str], str] | None = None,
         left_split_on_start_hook=False) -> Json | None:
-    """Dissect JSON from JavaScript in ``soup``.
+    """Dissect JSON from JavaScript in ``tag``.
     """
     if tag.name == "script":
         script_tag = tag
