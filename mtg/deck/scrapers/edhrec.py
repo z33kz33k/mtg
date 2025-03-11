@@ -25,8 +25,8 @@ from mtg.deck.scrapers.cardsrealm import CardsrealmFolderScraper
 from mtg.deck.scrapers.moxfield import MoxfieldBookmarkScraper
 from mtg.deck.scrapers.tappedout import TappedoutFolderScraper
 from mtg.scryfall import Card
-from mtg.utils import ParsingError, prepend
-from mtg.utils.scrape import ScrapingError, get_links, strip_url_query
+from mtg.utils import ParsingError
+from mtg.utils.scrape import ScrapingError, get_links, prepend_url, strip_url_query
 from mtg.utils.scrape import getsoup
 
 _log = logging.getLogger(__name__)
@@ -267,7 +267,7 @@ class EdhrecArticleScraper(HybridContainerScraper):
         links = get_links(self._soup)
         tokens = "/deckpreview/", "/average-decks/", "/commanders/"
         links = [
-            prepend(l, URL_PREFIX) if any(l.startswith(t) for t in tokens) else l for l in links]
+            prepend_url(l, URL_PREFIX) if any(l.startswith(t) for t in tokens) else l for l in links]
         return self._sift_links(*links)
 
     @override
@@ -306,6 +306,6 @@ class EdhrecAuthorScraper(HybridContainerScraper):
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
         prefix = f'{URL_PREFIX}/articles/'
-        return [], [], [], [prepend(d["slug"], prefix) for d in self._decks_data]
+        return [], [], [], [prepend_url(d["slug"], prefix) for d in self._decks_data]
 
 

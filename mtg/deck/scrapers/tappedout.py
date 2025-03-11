@@ -19,8 +19,8 @@ from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
-from mtg.utils import extract_int, get_date_from_ago_text, prepend
-from mtg.utils.scrape import ScrapingError, getsoup, request_json, strip_url_query, \
+from mtg.utils import extract_int, get_date_from_ago_text
+from mtg.utils.scrape import ScrapingError, getsoup, prepend_url, request_json, strip_url_query, \
     throttle, timed_request
 
 _log = logging.getLogger(__name__)
@@ -155,7 +155,7 @@ class TappedoutUserScraper(DeckUrlsContainerScraper):
                     _log.warning(self._error_msg)
                 break
             total = json_data["total_decks"]
-            collected += [prepend(result["url"], URL_PREFIX) for result in json_data["results"]]
+            collected += [prepend_url(result["url"], URL_PREFIX) for result in json_data["results"]]
             page += 1
         return collected
 
@@ -224,7 +224,7 @@ class TappedoutUserFolderScraper(TappedoutUserScraper):
                 break
             has_next = json_data.get("hasNext", False)
             collected += [
-                prepend(d["url"], URL_PREFIX) for folder in json_data["results"]
+                prepend_url(d["url"], URL_PREFIX) for folder in json_data["results"]
                 for d in folder["decks"]]
             page += 1
         return sorted(set(collected))

@@ -16,8 +16,8 @@ import dateutil.parser
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.scryfall import Card
-from mtg.utils import from_iterable, prepend
-from mtg.utils.scrape import ScrapingError, get_links, getsoup, strip_url_query
+from mtg.utils import from_iterable
+from mtg.utils.scrape import ScrapingError, get_links, getsoup, prepend_url, strip_url_query
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://mtgstocks.com"
@@ -121,7 +121,7 @@ class MtgStocksArticleScraper(DeckUrlsContainerScraper):
     def _collect_own_urls(self) -> list[str]:
         deck_tags = self._soup.find_all("news-deck")
         a_tags = [tag.find("a", href=lambda h: h and "/decks/" in h) for tag in deck_tags]
-        return [prepend(t.attrs["href"], URL_PREFIX) for t in a_tags if t is not None]
+        return [prepend_url(t.attrs["href"], URL_PREFIX) for t in a_tags if t is not None]
 
     def _collect(self) -> list[str]:
         return sorted({*self._collect_other_urls(), *self._collect_own_urls()})

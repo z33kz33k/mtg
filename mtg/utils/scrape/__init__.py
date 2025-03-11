@@ -29,7 +29,7 @@ from requests.exceptions import HTTPError
 from urllib3 import Retry
 
 from mtg import Json
-from mtg.utils import ParsingError, prepend, timed
+from mtg.utils import ParsingError, timed
 from mtg.utils.check_type import type_checker
 
 _log = logging.getLogger(__name__)
@@ -391,6 +391,14 @@ def parse_non_english_month_date(date_text: str, *months: str) -> date:
     return datetime.strptime(english_date_string, "%d %B %Y").date()
 
 
+def prepend_url(url: str, prefix="") -> str:
+    """Prepend ``url`` with prefix provided (only if needed).
+    """
+    if prefix:
+        return f"{prefix}{url}" if not (url.startswith(prefix) or url.startswith("http")) else url
+    return url
+
+
 def get_links(*tags: Tag, css_selector="", url_prefix="", query_stripped=False) -> list[str]:
     """Get all links from provided tags.
 
@@ -407,6 +415,8 @@ def get_links(*tags: Tag, css_selector="", url_prefix="", query_stripped=False) 
         else:
             links |= {t.attrs["href"].removesuffix("/") for t in tag.find_all(
                 "a", href=lambda h: h)}
-    links = {prepend(l, url_prefix) for l in links} if url_prefix else links
+    links = {prepend_url(l, url_prefix) for l in links} if url_prefix else links
     links = {strip_url_query(l) for l in links} if query_stripped else links
     return sorted(links)
+
+

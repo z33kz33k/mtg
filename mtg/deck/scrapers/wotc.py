@@ -19,6 +19,7 @@ from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import TagBasedDeckParser, HybridContainerScraper
 from mtg.scryfall import COMMANDER_FORMATS
+from mtg.utils import from_iterable
 from mtg.utils.scrape import ScrapingError, strip_url_query
 
 _log = logging.getLogger(__name__)
@@ -76,6 +77,9 @@ class WotCDeckTagParser(TagBasedDeckParser):
             suppress_parsing_errors=False, suppress_invalid_deck=False)
 
 
+_LOCALES = {"/ja/", "/fr/", "/it/", "/de/", "/es/", "/pt/", "/ko/"}
+
+
 @HybridContainerScraper.registered
 class WotCArticleScraper(HybridContainerScraper):
     """Scraper of WotC article page.
@@ -91,6 +95,8 @@ class WotCArticleScraper(HybridContainerScraper):
     @staticmethod
     @override
     def sanitize_url(url: str) -> str:
+        locale = from_iterable(_LOCALES, lambda l: l in url.lower())
+        url = url.replace(locale, "/en/") if locale else url
         return strip_url_query(url)
 
     @override

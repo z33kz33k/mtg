@@ -506,14 +506,6 @@ def logging_disabled(level: int = logging.CRITICAL) -> Generator[None, None, Non
         logging.disable(previous_level)
 
 
-def prepend(text: str, prefix="") -> str:
-    """Prepend text with prefix provided if it doesn't already start with that prefix.
-    """
-    if prefix:
-        return f"{prefix}{text}" if not text.startswith(prefix) else text
-    return text
-
-
 # recursive
 def find_text_in_json(
         data: dict | list, text: str, paths: list[str] | None = None, path="") -> list[str]:

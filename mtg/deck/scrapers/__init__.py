@@ -20,8 +20,8 @@ from selenium.common.exceptions import ElementClickInterceptedException, Timeout
 from mtg import Json
 from mtg.deck import Deck, DeckParser, InvalidDeck
 from mtg.gstate import UrlsStateManager
-from mtg.utils import ParsingError, prepend, timed
-from mtg.utils.scrape import ScrapingError, get_links, getsoup
+from mtg.utils import ParsingError, timed
+from mtg.utils.scrape import ScrapingError, get_links, getsoup, prepend_url
 from mtg.utils.scrape import Throttling, extract_source, throttle
 from mtg.utils.scrape.dynamic import get_dynamic_soup
 
@@ -344,7 +344,7 @@ class DeckUrlsContainerScraper(ContainerScraper):
             return []
         deck_urls = self._collect()
         if self.DECK_URL_PREFIX:
-            return [prepend(l, self.DECK_URL_PREFIX) for l in self._collect()]
+            return [prepend_url(l, self.DECK_URL_PREFIX) for l in self._collect()]
         return deck_urls
 
     @classmethod
@@ -555,9 +555,9 @@ class HybridContainerScraper(
             return [], [], [], []
         deck_urls, deck_tags, decks_data, container_urls = self._collect()
         if self.DECK_URL_PREFIX:
-            deck_urls = [prepend(l, self.DECK_URL_PREFIX) for l in deck_urls]
+            deck_urls = [prepend_url(l, self.DECK_URL_PREFIX) for l in deck_urls]
         if self.CONTAINER_URL_PREFIX:
-            container_urls = [prepend(l, self.CONTAINER_URL_PREFIX) for l in container_urls]
+            container_urls = [prepend_url(l, self.CONTAINER_URL_PREFIX) for l in container_urls]
         return deck_urls, deck_tags, decks_data, container_urls
 
     @classmethod

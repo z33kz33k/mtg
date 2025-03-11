@@ -13,8 +13,7 @@ from typing import override
 
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
-from mtg.utils import prepend
-from mtg.utils.scrape import ScrapingError, getsoup, strip_url_query
+from mtg.utils.scrape import ScrapingError, getsoup, prepend_url, strip_url_query
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://www.manatraders.com"
@@ -90,4 +89,4 @@ class ManatradersUserScraper(DeckUrlsContainerScraper):
         deck_tags = [
             tag for tag in self._soup.find_all("a", href=lambda h: h and "/webshop/deck/" in h)]
         urls = {tag.attrs["href"] for tag in deck_tags}
-        return [strip_url_query(prepend(url, URL_PREFIX)) for url in sorted(urls)]
+        return [strip_url_query(prepend_url(url, URL_PREFIX)) for url in sorted(urls)]
