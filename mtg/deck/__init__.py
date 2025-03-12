@@ -1069,6 +1069,10 @@ class DeckParser(ABC):
     def _update_archetype_or_theme(self, name: str) -> None:
         if name.lower() in {a.value for a in Archetype}:
             self._metadata["archetype"] = name.lower()
+        elif " " in name and any(t in {a.value for a in Archetype} for t in name.lower().split()):
+            arch = from_iterable(name.lower().split(), lambda t: t in {a.value for a in Archetype})
+            self._metadata["archetype"] = arch
+            self._metadata["custom_theme"] = name
         elif name.replace(" ", "-").title() in THEMES:
             self._metadata["theme"] = name.replace(" ", "-").title()
         else:

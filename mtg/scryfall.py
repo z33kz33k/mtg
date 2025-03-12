@@ -1314,7 +1314,7 @@ def query_api_for_card(card_name: str, foreign=False) -> Card | None:
     return Card(dict(result[0]))
 
 
-def find_by_name(card_name: str) -> Card | None:
+def find_by_name(card_name: str, query_api=True) -> Card | None:
     """Return a card designated by provided name or `None`.
 
     Case-insensitive. Calls Scryfall API on failure to find card in the bulk data.
@@ -1324,7 +1324,7 @@ def find_by_name(card_name: str) -> Card | None:
         _build_maps()
     if card := _NAME_MAP.get(unidecode(card_name).casefold()):
         return card
-    return query_api_for_card(card_name)
+    return query_api_for_card(card_name) if query_api else None
 
 
 def find_by_words(*words: str) -> set[Card]:
