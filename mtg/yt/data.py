@@ -20,6 +20,7 @@ from typing import Callable, Generator, Iterator, Literal, Self, Type
 
 import scrapetube
 from tqdm import tqdm
+from youtubesearchpython import CustomSearch, VideoUploadDateFilter, VideoSortOrder
 
 from mtg import DECKS_DIR, FILENAME_TIMESTAMP_FORMAT, PathLike, \
     READABLE_TIMESTAMP_FORMAT, README
@@ -513,48 +514,68 @@ def prune_dangling_decklists() -> None:
     _log.info(f"Pruning done")
 
 
-# TODO: results are underwhelming to say the least :/
+QUERY = 'mtg decklist -lorcana -"flesh and blood" -fab -"eternal card game" -snap -yugioh ' \
+        '-"altered Tcg" -"sorcery tcg" -msem -onepiece -pokemon -"fabrary.net"'
 def discover_new_channels(
-        query: str, limit=10,
-        sort_by: Literal["relevance", "upload_date", "view_count", "rating"] = "upload_date"
-    ) -> list[str]:
+        query: str = QUERY,
+        limit=20,
+        option: Literal[
+            "relevance",
+            "upload_date",
+            "view_count",
+            "rating",
+            "last_hour",
+            "today",
+            "this_week",
+            "this_month",
+            "this_year"] = "this_week") -> list[str]:
     """Discover channels that aren't yet included in the private Google Sheet.
 
     Args:
         query: YouTube search query (e.g. 'mtg' or 'mtg foo')
-        limit: maximum number of videos for 'scrapetube' to return
-        sort_by: sort order for 'scrapetube' results (see: https://scrapetube.readthedocs.io/en/latest/#scrapetube.get_search)
+        limit: maximum number of videos for 'youtubesearchpython' to return
+        option: search option (see: https://pypi.org/project/youtube-search-python/)
 
     Returns:
         list of channel IDs
     """
     retrieved_ids, chids = set(retrieve_ids()), set()
-    for video_data in scrapetube.get_search(query, limit=limit, sort_by=sort_by):
-        chid = None
-        video_url = VIDEO_URL_TEMPLATE.format(video_data['videoId'])
-        try:
-            chid = video_data["channelThumbnailSupportedRenderers"][
-                "channelThumbnailWithLinkRenderer"]["navigationEndpoint"]["browseEndpoint"][
-                "browseId"]
-        except (KeyError, IndexError):
-            try:
-                chid = video_data["longBylineText"]["runs"][0]["navigationEndpoint"][
-                    "browseEndpoint"]["browseId"]
-            except (KeyError, IndexError):
-                try:
-                    chid = video_data["ownerText"]["runs"][0]["navigationEndpoint"][
-                        "browseEndpoint"]["browseId"]
-                except (KeyError, IndexError):
-                    try:
-                        video_data["shortBylineText"]["runs"][0]["navigationEndpoint"][
-                    "browseEndpoint"]["browseId"]
-                    except (KeyError, IndexError):
-                        _log.warning(f"Failed to retrieve channel ID for video: {video_url!r}")
-                        continue
+    match option:
+        case "relevance":
+            pref = VideoSortOrder.relevance
+        case "upload_date":
+            pref = VideoSortOrder.uploadDate
+        case "view_count":
+            pref = VideoSortOrder.viewCount
+        case "rating":
+            pref = VideoSortOrder.rating
+        case "last_hour":
+            pref = VideoUploadDateFilter.lastHour
+        case "today":
+            pref = VideoUploadDateFilter.today
+        case "this_week":
+            pref = VideoUploadDateFilter.thisWeek
+        case "this_month":
+            pref = VideoUploadDateFilter.thisMonth
+        case "this_year":
+            pref = VideoUploadDateFilter.thisYear
+        case _:
+            raise ValueError(f"Unsupported search option: {option!r}")
 
-        if chid and chid not in retrieved_ids:
+    results = []
+    search = CustomSearch(query, pref)
+    while True:
+        results += search.result()["result"]
+        limit -= 20
+        if limit <= 0:
+            break
+        search.next()
+
+    for result in results:
+        chid = result["channel"]["id"]
+        if chid not in retrieved_ids:
             _log.info(
-                f"Found new channel: {chid!r} (video: {video_url!r})")
+                f"Found new channel: {chid!r} (video: {result['link']!r})")
             chids.add(chid)
 
     return sorted(chids)

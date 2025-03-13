@@ -81,6 +81,7 @@ def get_data(soup: BeautifulSoup, retriever: Callable[[Json], Json], start_pos=3
     except (AttributeError, KeyError):
         raise ScrapingError("Deck data not available")
 
+
 @DeckScraper.registered
 class MtgCircleVideoDeckScraper(DeckScraper):
     """Scraper of MTGCircle video decklist page.
@@ -97,7 +98,7 @@ class MtgCircleVideoDeckScraper(DeckScraper):
         if "mtgcircle.com/videos/" not in url.lower():
             return False
         *_, rest = url.lower().split("mtgcircle.com/videos/")
-        if not "/" in rest:
+        if "/" not in rest:
             return False
         return True
 
