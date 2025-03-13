@@ -533,3 +533,32 @@ def find_text_in_json(
             path = path[:-len(suffix)]
     return paths
 
+
+# recursive
+def find_num_in_json(
+        data: dict | list, num: int | float, paths: list[str] | None = None,
+        path="") -> list[str]:
+    """Find passed number in JSON ``data`` provided. Return a list of found paths rendered as Python
+    subscript strings.
+    """
+    paths = paths or []
+    if isinstance(data, dict):
+        for k, v in data.items():
+            suffix = f'["{k}"]'
+            path += suffix
+            if isinstance(v, (int, float)) and v == num:
+                paths.append(path)
+            elif isinstance(v, (dict, list)):
+                paths = find_num_in_json(v, num, paths, path)
+            path = path[:-len(suffix)]
+    elif isinstance(data, list):
+        for i, v in enumerate(data):
+            suffix = f"[{str(i)}]"
+            path += suffix
+            if isinstance(v, (int, float)) and v == num:
+                paths.append(path)
+            elif isinstance(v, (dict, list)):
+                paths = find_num_in_json(v, num, paths, path)
+            path = path[:-len(suffix)]
+    return paths
+

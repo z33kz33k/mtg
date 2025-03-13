@@ -1076,7 +1076,7 @@ class DeckParser(ABC):
         elif name.replace(" ", "-").title() in THEMES:
             self._metadata["theme"] = name.replace(" ", "-").title()
         else:
-            self._metadata["custom_theme"] = name.replace(" ", "-").title()
+            self._metadata["custom_theme"] = name
 
     def _build_deck(self) -> Deck:
         return Deck(
