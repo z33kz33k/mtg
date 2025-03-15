@@ -157,12 +157,12 @@ class ChannelData:
         return not (self.is_deck_stale or self.is_very_deck_stale or self.is_excessively_deck_stale)
 
 
-def retrieve_ids() -> list[str]:
+def retrieve_ids(sheet="channels") -> list[str]:
     """Retrieve channel IDs from a private Google Sheet spreadsheet.
 
     Mind that this operation takes about 4 seconds to complete.
     """
-    return retrieve_from_gsheets_cols("mtga_yt", "channels", (1, ), start_row=2)[0]
+    return retrieve_from_gsheets_cols("mtga_yt", sheet, (1, ), start_row=2)[0]
 
 
 def channels_batch(start_row=2, batch_size: int | None = None) -> Iterator[str]:
@@ -515,7 +515,7 @@ def prune_dangling_decklists() -> None:
 
 
 QUERY = 'mtg decklist -lorcana -"flesh and blood" -fab -"eternal card game" -snap -yugioh ' \
-        '-"altered Tcg" -"sorcery tcg" -msem -onepiece -pokemon -"fabrary.net"'
+        '-"altered tcg" -"sorcery tcg" -msem -onepiece -pokemon -"fabrary.net"'
 def discover_new_channels(
         query: str = QUERY,
         limit=20,
@@ -528,7 +528,7 @@ def discover_new_channels(
             "today",
             "this_week",
             "this_month",
-            "this_year"] = "this_week") -> list[str]:
+            "this_year"] = "this_week") -> tuple[list[str], list[str]]:
     """Discover channels that aren't yet included in the private Google Sheet.
 
     Args:
@@ -537,9 +537,9 @@ def discover_new_channels(
         option: search option (see: https://pypi.org/project/youtube-search-python/)
 
     Returns:
-        list of channel IDs
+        list of discovered channel IDs, list of all checked video links
     """
-    retrieved_ids, chids = set(retrieve_ids()), set()
+    retrieved_ids, chids = {*retrieve_ids(), *retrieve_ids("avoided")}, set()
     match option:
         case "relevance":
             pref = VideoSortOrder.relevance
@@ -578,7 +578,9 @@ def discover_new_channels(
                 f"Found new channel: {chid!r} (video: {result['link']!r})")
             chids.add(chid)
 
-    return sorted(chids)
+    _log.info(f"Found {len(chids)} new channel(s) among {len(results)} checked result(s)")
+
+    return sorted(chids), [r["link"] for r in results]
 
 
 def get_channel_ids(*urls: str, only_new=True) -> list[str]:
@@ -586,6 +588,9 @@ def get_channel_ids(*urls: str, only_new=True) -> list[str]:
     ids = []
     for url in sorted(set(urls)):
         soup = getsoup(url)
+        if not soup:
+            _log.warning(f"Skipping invalid channel URL: {url!r}...")
+            continue
         prefix = CHANNEL_URL_TEMPLATE[:-2]
         tag = soup.find("link", rel="canonical")
         chid = tag.attrs["href"].removeprefix(prefix)

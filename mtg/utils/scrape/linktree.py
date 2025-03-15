@@ -34,6 +34,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 
 import backoff
+from requests import ReadTimeout, HTTPError, ConnectionError
 
 from mtg import Json
 from mtg.utils.scrape import ScrapingError, getsoup, strip_url_query, timed_request
@@ -86,7 +87,7 @@ class Linktree:
     def is_linktree_url(url: str) -> bool:
         return "linktr.ee/" in url.lower()
 
-    @backoff.on_exception(backoff.expo, ScrapingError, max_time=60)
+    @backoff.on_exception(backoff.expo, (ConnectionError, HTTPError, ReadTimeout), max_time=60)
     def _get_json(self) -> Json:
         soup = getsoup(self.url, self.HEADERS)
         if not soup:

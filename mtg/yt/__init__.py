@@ -29,7 +29,7 @@ import pytubefix
 import pytubefix.exceptions
 import scrapetube
 from bs4 import Tag
-from requests import HTTPError, ReadTimeout, Timeout
+from requests import HTTPError, ReadTimeout, Timeout, ConnectionError
 from selenium.common.exceptions import TimeoutException
 from youtube_comment_downloader import SORT_BY_POPULAR, YoutubeCommentDownloader
 from youtubesearchpython import Channel as YtspChannel
@@ -862,8 +862,8 @@ class Video:
                         new_links = Linktree(url).data.links
                         _log.info(f"Parsed {len(new_links)} link(s) from: {url!r}")
                         links.update(new_links)
-                    except ScrapingError as se:
-                        _log.warning(f"Parsing '{url!r}' failed with: {se}")
+                    except (ConnectionError, HTTPError, ReadTimeout, ScrapingError) as err:
+                        _log.warning(f"Parsing '{url!r}' failed with: {err}")
                 else:
                     links.add(url)
             else:
