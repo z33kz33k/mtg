@@ -200,7 +200,7 @@ def scrape_channels(
 
 
 def scrape_fresh(
-        videos=25, only_newer_than_last_scraped=True, only_deck_fresh=True) -> None:
+        videos=50, only_newer_than_last_scraped=True, only_deck_fresh=True) -> None:
     """Scrape those YouTube channels saved in a private Google Sheet that are not active,
     dormant nor abandoned.
     """
@@ -223,7 +223,7 @@ def scrape_fresh(
 
 
 def scrape_active(
-        videos=25, only_newer_than_last_scraped=True, only_deck_fresh=True) -> None:
+        videos=50, only_newer_than_last_scraped=True, only_deck_fresh=True) -> None:
     """Scrape those YouTube channels saved in a private Google Sheet that are active.
     """
     ids = []
@@ -243,7 +243,7 @@ def scrape_active(
 
 
 def scrape_dormant(
-        videos=25, only_newer_than_last_scraped=True, only_deck_fresh=True) -> None:
+        videos=50, only_newer_than_last_scraped=True, only_deck_fresh=True) -> None:
     """Scrape those YouTube channels saved in a private Google Sheet that are dormant.
     """
     ids = []
@@ -263,7 +263,7 @@ def scrape_dormant(
 
 
 def scrape_abandoned(
-        videos=25, only_newer_than_last_scraped=True, only_deck_fresh=True) -> None:
+        videos=50, only_newer_than_last_scraped=True, only_deck_fresh=True) -> None:
     """Scrape those YouTube channels saved in a private Google Sheet that are abandoned.
     """
     ids = []
@@ -283,7 +283,7 @@ def scrape_abandoned(
 
 
 def scrape_deck_stale(
-        videos=25, only_newer_than_last_scraped=True, only_fresh_or_active=True) -> None:
+        videos=50, only_newer_than_last_scraped=True, only_fresh_or_active=True) -> None:
     """Scrape those YouTube channels saved in a private Google Sheet that are considered
     deck-stale.
     """
@@ -304,7 +304,7 @@ def scrape_deck_stale(
 
 
 def scrape_very_deck_stale(
-        videos=25, only_newer_than_last_scraped=True, only_fresh_or_active=True) -> None:
+        videos=50, only_newer_than_last_scraped=True, only_fresh_or_active=True) -> None:
     """Scrape those YouTube channels saved in a private Google Sheet that are considered
     very deck-stale.
     """
@@ -325,7 +325,7 @@ def scrape_very_deck_stale(
 
 
 def scrape_excessively_deck_stale(
-        videos=25, only_newer_than_last_scraped=True, only_fresh_or_active=True) -> None:
+        videos=50, only_newer_than_last_scraped=True, only_fresh_or_active=True) -> None:
     """Scrape those YouTube channels saved in a private Google Sheet that are considered
     excessively deck-stale.
     """
@@ -421,9 +421,7 @@ class LinksExpander:
     }
     _PATREON_XPATH = "//div[contains(@class, 'sc-dtMgUX') and contains(@class, 'IEufa')]"
     _PATREON_XPATH2 = "//div[contains(@class, 'sc-b20d4e5f-0') and contains(@class, 'fbPSoT')]"
-    _GOOGLE_DOC_XPATH = ("//div[contains(@class, 'kix-scrollareadocumentplugin') and "
-                         "contains(@class, 'docs-ui-hit-region-surface') and "
-                         "contains(@class, 'enable-next-chapter-bottom-fab')]")
+    _GOOGLE_DOC_XPATH = "//div[@id='docs-editor-container']"
 
     @property
     def expanded_links(self) -> list[str]:
@@ -495,7 +493,7 @@ class LinksExpander:
             if not soup:
                 _log.warning("Patreon post data not available")
                 self._urls_manager.add_failed(link)
-                return
+                return None
             return soup.find("div", class_=lambda c: c and "sc-dtMgUX" in c and 'IEufa' in c)
         except TimeoutException:
             try:
@@ -503,13 +501,13 @@ class LinksExpander:
                 if not soup:
                     _log.warning("Patreon post data not available")
                     self._urls_manager.add_failed(link)
-                    return
+                    return None
                 return soup.find(
                     "div", class_=lambda c: c and "sc-b20d4e5f-0" in c and 'fbPSoT' in c)
             except TimeoutException:
                 _log.warning("Patreon post data not available")
                 self._urls_manager.add_failed(link)
-                return
+                return None
 
     def _expand_patreon(self, link: str) -> None:
         text_tag = self._get_patreon_text_tag(link)

@@ -18,9 +18,8 @@ from pathlib import Path
 from types import TracebackType
 from typing import Callable, Generator, Iterator, Literal, Self, Type
 
-import scrapetube
 from tqdm import tqdm
-from youtubesearchpython import CustomSearch, VideoUploadDateFilter, VideoSortOrder
+from youtubesearchpython import CustomSearch, VideoSortOrder, VideoUploadDateFilter
 
 from mtg import DECKS_DIR, FILENAME_TIMESTAMP_FORMAT, PathLike, \
     READABLE_TIMESTAMP_FORMAT, README
