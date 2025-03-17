@@ -10,6 +10,7 @@
 import itertools
 import json
 import logging
+import shutil
 from collections import defaultdict
 from dataclasses import astuple, dataclass
 from datetime import date, datetime
@@ -21,7 +22,7 @@ from typing import Callable, Generator, Iterator, Literal, Self, Type
 from tqdm import tqdm
 from youtubesearchpython import CustomSearch, VideoSortOrder, VideoUploadDateFilter
 
-from mtg import DECKS_DIR, FILENAME_TIMESTAMP_FORMAT, PathLike, \
+from mtg import AVOIDED_DIR, DECKS_DIR, FILENAME_TIMESTAMP_FORMAT, PathLike, \
     READABLE_TIMESTAMP_FORMAT, README
 from mtg.deck.arena import ArenaParser
 from mtg.deck.export import Exporter, sanitize_source
@@ -684,3 +685,19 @@ def dump_decks(
                         pass
                     else:
                         raise
+
+
+def update_avoided() -> None:
+    """Update avoided channels.
+
+    Channels no longer valid for scraping are avoided. These include channels that:
+        * got abandoned
+        * got deck-stale
+        * got deleted entirely or deleted all their content or deleted only their Videos tab
+    """
+    ids = set(retrieve_ids())
+    for chdir in [d for d in CHANNELS_DIR.iterdir() if d.is_dir()]:
+        if chdir.name not in ids:
+            dst = AVOIDED_DIR /  chdir.name
+            _log.info(f"Moving channel data from '{chdir}' to '{dst}'...")
+            shutil.move(chdir, dst)

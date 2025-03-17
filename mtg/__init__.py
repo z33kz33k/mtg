@@ -33,6 +33,7 @@ VAR_DIR = Path(os.getcwd()) / "var"
 DATA_DIR = VAR_DIR / "data"
 OUTPUT_DIR = VAR_DIR / "output"
 DECKS_DIR = OUTPUT_DIR / "decks"
+AVOIDED_DIR = OUTPUT_DIR / "avoided"
 LOG_DIR = VAR_DIR / "logs" if VAR_DIR.exists() else Path(os.getcwd())
 README = Path(os.getcwd()) / "README.md"
 SECRETS = json.loads(Path("secrets.json").read_text(encoding="utf-8"))
