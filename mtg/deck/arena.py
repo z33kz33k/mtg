@@ -15,7 +15,7 @@ from mtg import Json
 from mtg.deck import ARENA_MULTIFACE_SEPARATOR, CardNotFound, DeckParser
 from mtg.scryfall import Card, MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, \
     query_api_for_card
-from mtg.utils import extract_int, getrepr, sanitize_whitespace, is_foreign
+from mtg.utils import ParsingError, extract_int, getrepr, sanitize_whitespace, is_foreign
 
 _log = logging.getLogger(__name__)
 
@@ -316,6 +316,11 @@ def group_arena_lines(*arena_lines: str) -> Generator[list[str], None, None]:
         yield current_group
 
 
+class IllFormedArenaDecklist(ParsingError):
+    """Raised on no ill-formed Arena decklists being parsed as one.
+    """
+
+
 class ArenaParser(DeckParser):
     """Parser of lines of text that denote a deck in Arena format.
     """
@@ -339,7 +344,7 @@ class ArenaParser(DeckParser):
     def _pre_parse(self) -> None:
         self._lines = get_arena_lines(*self._lines)
         if not self._lines:
-            raise ValueError("No Arena lines found")
+            raise IllFormedArenaDecklist("No Arena lines found")
 
         self._handle_missing_commander_line()
 

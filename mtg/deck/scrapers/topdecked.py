@@ -11,6 +11,7 @@ import contextlib
 import logging
 from typing import override
 
+import backoff
 import dateutil.parser
 from selenium import webdriver
 from selenium.common import NoSuchElementException
@@ -21,7 +22,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from mtg import Json
 from mtg.deck import Deck
-from mtg.deck.arena import ArenaParser, PlaysetLine
+from mtg.deck.arena import ArenaParser, IllFormedArenaDecklist, PlaysetLine
 from mtg.deck.scrapers import DeckScraper
 from mtg.scryfall import COMMANDER_FORMATS
 from mtg.utils import extract_float, get_date_from_ago_text
@@ -144,6 +145,15 @@ class TopDeckedRegularDeckScraper(DeckScraper):
         decklist = "\n".join(self._arena_decklist)
         return ArenaParser(decklist, self._metadata).parse(
             suppress_parsing_errors=False, suppress_invalid_deck=False)
+
+    @backoff.on_exception(
+        backoff.expo, IllFormedArenaDecklist, max_time=60)
+    @override
+    def scrape(
+            self, throttled=False, suppress_parsing_errors=True, suppress_scraping_errors=True,
+            suppress_invalid_deck=True) -> Deck | None:
+        return super().scrape(
+            throttled, suppress_parsing_errors, suppress_scraping_errors, suppress_invalid_deck)
 
 
 @DeckScraper.registered

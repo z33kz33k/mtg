@@ -449,6 +449,8 @@ class LinksExpander:
     def is_obscure_pastebin_like_url(cls, url: str) -> bool:
         return any(h in url for h in cls.OBSCURE_PASTEBIN_LIKE_HOOKS)
 
+    @backoff.on_exception(
+        backoff.expo, (ConnectionError, HTTPError, ReadTimeout), max_time=60)
     def _expand(self) -> None:
         for link in self._links:
             if self._urls_manager.is_failed(link):

@@ -12,10 +12,11 @@ from typing import override
 
 import dateutil.parser
 
-from mtg import Json, SECRETS
+from mtg import SECRETS
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
+from mtg.utils import from_iterable
 from mtg.utils.scrape import ScrapingError, getsoup
 
 _log = logging.getLogger(__name__)
@@ -67,18 +68,25 @@ class MeleeGgDeckScraper(DeckScraper):
 
     @override
     def _parse_metadata(self) -> None:
-        self._metadata["name"] = self._soup.select_one("a.decklist-card-title").text.strip()
-        if author_tag := self._soup.select_one("span.decklist-card-title-author"):
-            self._metadata["author"] = author_tag.text.strip().removeprefix("by ")
-        if event_tag := self._soup.select_one("div.decklist-card-info-tournament"):
+        self._metadata["name"] = self._soup.select_one("div.decklist-title").text.strip()
+        if author_tag := self._soup.find(
+                "a", class_=lambda c: c and "text-nowrap" in c and "text-muted" in c,
+                href=lambda h: h and h.startswith("/Profile/Index/")):
+            self._metadata["author"] = author_tag.attrs["href"].removeprefix("/Profile/Index/")
+        if event_tag := self._soup.find(
+                "a", class_=lambda c: c and "text-nowrap" in c,
+                href=lambda h: h and h.startswith("/Tournament/View/")):
             self._metadata["event"] = event_tag.text.strip()
-        info_tags = [
-            tag for tag in self._soup.select("div.decklist-card-info") if not "Deck" in tag.text]
-        for tag in info_tags:
-            if "/" in tag.text and any(ch.isdigit() for ch in tag.text):
-                self._metadata["date"] = dateutil.parser.parse(tag.text.strip()).date()
-            else:
-                self._update_fmt(tag.text.strip())
+        if date_tag := self._soup.find("span", {"data-toggle": "date"}):
+            self._metadata["date"] = dateutil.parser.parse(date_tag.attrs["data-value"]).date()
+        info_tag = self._soup.select_one("div.decklist-details-row")
+        info_text = info_tag.text.strip()
+        sep = "&bullet;"
+        parts = [p.strip() for p in info_text.split(sep)]
+        if fmt := from_iterable(
+                parts, lambda p: p != '-' and all(
+                    t not in p for t in ("Magic: ", "Deck: ", "Sideboard: "))):
+            self._update_fmt(fmt)
 
     @override
     def _parse_decklist(self) -> None:
@@ -86,7 +94,7 @@ class MeleeGgDeckScraper(DeckScraper):
 
     @override
     def _build_deck(self) -> Deck:
-        decklist_tag = self._soup.select_one("textarea.decklist-builder-paste-field")
+        decklist_tag = self._soup.select_one("pre#decklist-text")
         if not decklist_tag:
             raise ScrapingError("Decklist tag not found")
         decklist = decklist_tag.text.strip()
