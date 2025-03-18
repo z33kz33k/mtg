@@ -8,6 +8,7 @@
 
 """
 import contextlib
+import itertools
 import json
 import logging
 import random
@@ -27,6 +28,7 @@ from requests import Response
 from requests.adapters import HTTPAdapter
 from requests.exceptions import HTTPError
 from urllib3 import Retry
+from wayback import WaybackClient
 
 from mtg import Json
 from mtg.utils import ParsingError, timed
@@ -420,3 +422,12 @@ def get_links(*tags: Tag, css_selector="", url_prefix="", query_stripped=False) 
     return sorted(links)
 
 
+@timed("getting wayback soup")
+def get_wayback_soup(url: str) -> BeautifulSoup | None:
+    """Get BeautifulSoup object for a URL from Wayback Machine.
+    """
+    client = WaybackClient()
+    if results := [*itertools.islice(client.search(url, limit=-5, fast_latest=True), 1)]:
+        response = client.get_memento(results[-1])
+        return BeautifulSoup(response.text, "lxml")
+    return None

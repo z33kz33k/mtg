@@ -106,6 +106,7 @@ from mtg.deck.scrapers.mtgazone import DeckScraper
 from mtg.deck.scrapers.mtgcircle import DeckScraper
 from mtg.deck.scrapers.mtgdecksnet import DeckScraper
 from mtg.deck.scrapers.mtgjson import DeckScraper
+from mtg.deck.scrapers.mtgmeta import DeckScraper
 from mtg.deck.scrapers.mtgo import DeckScraper
 from mtg.deck.scrapers.mtgstocks import DeckScraper
 from mtg.deck.scrapers.mtgotraders import DeckScraper
