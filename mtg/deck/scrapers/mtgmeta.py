@@ -2,7 +2,7 @@
 
     mtg.deck.scrapers.mtgmeta.py
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Scrape MTGMeta.io decklists.
+    Scrape defunct MTGMeta.io decklists (using Wayback Machine).
 
     @author: z33k
 
@@ -25,10 +25,6 @@ _log = logging.getLogger(__name__)
 class MtgMetaIoDeckScraper(DeckScraper):
     """Scraper of MTGMeta.io decklist page.
     """
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        self._json_data: Json | None = None
-
     @staticmethod
     @override
     def is_deck_url(url: str) -> bool:
@@ -44,20 +40,20 @@ class MtgMetaIoDeckScraper(DeckScraper):
         self._soup = get_wayback_soup(self.url)
         if not self._soup:
             raise ScrapingError("Page not available")
-        self._json_data = dissect_js(self._soup, "const decklist = ", " ;\n  ")
+        self._deck_data = dissect_js(self._soup, "const decklist = ", " ;\n  ")
 
     @override
     def _parse_metadata(self) -> None:
         if fmt_tag := self._soup.find(
             "a", class_="crumb", string=lambda s: s and "Home" not in s and "Decks" not in s):
             self._update_fmt(fmt_tag.text.strip())
-        self._metadata["name"] = self._json_data["dname"]
-        if player := self._json_data.get("pname"):
+        self._metadata["name"] = self._deck_data["dname"]
+        if player := self._deck_data.get("pname"):
             self._metadata["author"] = player
-        if event := self._json_data.get("tname"):
+        if event := self._deck_data.get("tname"):
             self._metadata["event"] = {}
             self._metadata["event"]["name"] = event
-        if place := self._json_data.get("place"):
+        if place := self._deck_data.get("place"):
             self._metadata.setdefault("event", {})["place"] = int(place)
         if info_tag := self._soup.select_one("ul#deckstats"):
             li_tags = [*info_tag.find_all("li")]
@@ -81,9 +77,9 @@ class MtgMetaIoDeckScraper(DeckScraper):
 
     @override
     def _parse_decklist(self) -> None:
-        for card_json in self._json_data["main"]:
+        for card_json in self._deck_data["main"]:
             self._maindeck += self._parse_card_json(card_json)
 
-        if sideboard := self._json_data.get("side"):
+        if sideboard := self._deck_data.get("side"):
             for card_json in sideboard:
                 self._sideboard += self._parse_card_json(card_json)

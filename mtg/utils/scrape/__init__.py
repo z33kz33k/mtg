@@ -427,7 +427,7 @@ def get_wayback_soup(url: str) -> BeautifulSoup | None:
     """Get BeautifulSoup object for a URL from Wayback Machine.
     """
     client = WaybackClient()
-    if results := [*itertools.islice(client.search(url, limit=-5, fast_latest=True), 1)]:
-        response = client.get_memento(results[-1])
+    if memento := next(itertools.islice(client.search(url, limit=-1, fast_latest=True), 1), None):
+        response = client.get_memento(memento)
         return BeautifulSoup(response.text, "lxml")
     return None
