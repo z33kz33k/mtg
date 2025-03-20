@@ -8,7 +8,6 @@
 
 """
 import contextlib
-import itertools
 import json
 import logging
 import random
@@ -29,6 +28,7 @@ from requests.adapters import HTTPAdapter
 from requests.exceptions import HTTPError
 from urllib3 import Retry
 from wayback import WaybackClient
+from wayback.exceptions import MementoPlaybackError
 
 from mtg import Json
 from mtg.utils import ParsingError, timed
@@ -427,7 +427,11 @@ def get_wayback_soup(url: str) -> BeautifulSoup | None:
     """Get BeautifulSoup object for a URL from Wayback Machine.
     """
     client = WaybackClient()
-    if memento := next(itertools.islice(client.search(url, limit=-1, fast_latest=True), 1), None):
-        response = client.get_memento(memento)
+    if memento := next(client.search(url, limit=-1, fast_latest=True), None):
+        try:
+            response = client.get_memento(memento, exact=False)
+        except MementoPlaybackError:
+            _log.warning(f"Wayback Machine memento for {url!r} could not be retrieved")
+            return None
         return BeautifulSoup(response.text, "lxml")
     return None

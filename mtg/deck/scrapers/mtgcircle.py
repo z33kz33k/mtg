@@ -148,6 +148,7 @@ class MtgCircleVideoDeckScraper(DeckScraper):
     def _parse_decklist(self) -> None:
         self._deck_parser = MtgCircleDeckJsonParser(self._deck_data, self._metadata)
 
+    @override
     def _build_deck(self) -> Deck:
         return self._deck_parser.parse()
 

@@ -13,10 +13,10 @@ from typing import override
 import dateutil.parser
 
 from mtg import Json
-from mtg.deck.scrapers import DeckScraper
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.scryfall import Card
 from mtg.utils import extract_float
-from mtg.utils.scrape import ScrapingError, dissect_js, get_wayback_soup, strip_url_query
+from mtg.utils.scrape import ScrapingError, dissect_js, get_links, get_wayback_soup, strip_url_query
 
 _log = logging.getLogger(__name__)
 
@@ -83,3 +83,42 @@ class MtgMetaIoDeckScraper(DeckScraper):
         if sideboard := self._deck_data.get("side"):
             for card_json in sideboard:
                 self._sideboard += self._parse_card_json(card_json)
+
+
+@DeckUrlsContainerScraper.registered
+class MtgMetaIoTournamentScraper(DeckUrlsContainerScraper):
+    """Scraper of MTGMeta.io tournament page.
+    """
+    CONTAINER_NAME = "MTGMeta.io tournament"  # override
+    DECK_SCRAPERS = MtgMetaIoDeckScraper,  # override
+
+    @staticmethod
+    @override
+    def is_container_url(url: str) -> bool:
+        return "mtgmeta.io/tournaments/" in url.lower()
+
+    @staticmethod
+    @override
+    def sanitize_url(url: str) -> str:
+        return strip_url_query(url)
+
+    @override
+    def _pre_parse(self) -> None:
+        self._soup = get_wayback_soup(self.url)
+        if not self._soup:
+            raise ScrapingError(self._error_msg)
+
+    @override
+    def _collect(self) -> list[str]:
+        ul_tag = self._soup.select_one("ul.playerslist")
+        if not ul_tag:
+            raise ScrapingError(self._error_msg)
+        links = get_links(ul_tag)
+
+        # clean up WM part
+        deck_urls = []
+        for link in links:
+            *_, rest = link.split("https://mtgmeta.io/")
+            deck_urls.append("https://mtgmeta.io/" + rest)
+
+        return deck_urls
