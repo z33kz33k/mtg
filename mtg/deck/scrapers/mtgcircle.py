@@ -190,7 +190,7 @@ class MtgCircleArticleScraper(HybridContainerScraper):
     @override
     def _parse_metadata(self) -> None:
         headline_tag = self._soup.select_one("div.container-custom > div > h1")
-        self._metadata["headline"] = headline_tag.text.strip()
+        self._metadata["title"] = headline_tag.text.strip()
         css = "div.container-custom > div > span > a > li.items-center.bg-paper"
         fmt_tag, *info_tags = self._soup.select(css)
         self._update_fmt(fmt_tag.text.strip())

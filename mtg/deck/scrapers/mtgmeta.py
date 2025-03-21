@@ -11,9 +11,11 @@ import logging
 from typing import override
 
 import dateutil.parser
+from bs4 import Tag
 
 from mtg import Json
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
+    TagBasedDeckParser
 from mtg.scryfall import Card
 from mtg.utils import extract_float
 from mtg.utils.scrape import ScrapingError, dissect_js, get_links, get_wayback_soup, strip_url_query
@@ -85,6 +87,14 @@ class MtgMetaIoDeckScraper(DeckScraper):
                 self._sideboard += self._parse_card_json(card_json)
 
 
+def _strip_wm_part(*links: str) -> list[str]:
+    deck_urls = []
+    for link in links:
+        *_, rest = link.split("https://mtgmeta.io/")
+        deck_urls.append("https://mtgmeta.io/" + rest)
+    return deck_urls
+
+
 @DeckUrlsContainerScraper.registered
 class MtgMetaIoTournamentScraper(DeckUrlsContainerScraper):
     """Scraper of MTGMeta.io tournament page.
@@ -114,11 +124,75 @@ class MtgMetaIoTournamentScraper(DeckUrlsContainerScraper):
         if not ul_tag:
             raise ScrapingError(self._error_msg)
         links = get_links(ul_tag)
+        return _strip_wm_part(*links)
 
-        # clean up WM part
-        deck_urls = []
-        for link in links:
-            *_, rest = link.split("https://mtgmeta.io/")
-            deck_urls.append("https://mtgmeta.io/" + rest)
 
-        return deck_urls
+class MtgMetaIoDeckTagParser(TagBasedDeckParser):
+    """Parser of a MTGMeta.io article's decklist HTML tag.
+    """
+    @override
+    def _parse_metadata(self) -> None:
+        if info_tag := self._deck_tag.select_one("div.info-deck-block"):
+            if name_tag := info_tag.select_one("div.name"):
+                self._metadata["name"] = name_tag.text.strip()
+            if fmt_tag := info_tag.select_one("div.format"):
+                self._update_fmt(fmt_tag.text.strip())
+
+    @override
+    def _parse_decklist(self) -> None:
+        for card in self._deck_tag.select("div.card"):
+            qty = int(card.attrs["data-qt"])
+            name = card.attrs["data-name"]
+            playset = self.get_playset(self.find_card(name), qty)
+            if card.attrs["data-main"] == "1":
+                self._maindeck += playset
+            else:
+                self._sideboard += playset
+
+
+@HybridContainerScraper.registered
+class MtgMetaIoArticleScraper(HybridContainerScraper):
+    """Scraper of MTGMeta.io article page.
+    """
+    CONTAINER_NAME = "MTGMeta.io article"  # override
+    TAG_BASED_DECK_PARSER = MtgMetaIoDeckTagParser  # override
+
+    @staticmethod
+    @override
+    def is_container_url(url: str) -> bool:
+        return "mtgmeta.io/articles/" in url.lower()
+
+    @staticmethod
+    @override
+    def sanitize_url(url: str) -> str:
+        return strip_url_query(url)
+
+    @override
+    def _pre_parse(self) -> None:
+        self._soup = get_wayback_soup(self.url)
+        if not self._soup:
+            raise ScrapingError(self._error_msg)
+
+    @override
+    def _parse_metadata(self) -> None:
+        if title_tag := self._soup.select_one("h1.entry-title"):
+            self._metadata["title"] = title_tag.text.strip()
+        if time_tag := self._soup.select_one("time.published") or self._soup.select_one(
+                "time.updated"):
+            date_text = time_tag.attrs["datetime"][:10]
+            self._metadata["date"] = dateutil.parser.parse(date_text).date()
+        if author_tag := self._soup.select_one("span.author-name"):
+            self._metadata["author"] = author_tag.text.strip()
+        pass
+
+    @override
+    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
+        article_tag = self._soup.find("article")
+        if not article_tag:
+            _log.warning("Article tag not found")
+            return [], [], [], []
+        deck_tags = [*article_tag.find_all("div", class_="decklist-container")]
+        self._parse_metadata()
+        p_tags = [t for t in article_tag.find_all("p") if not t.find("div", class_="deck_list")]
+        deck_urls, _ = self._get_links_from_tags(*p_tags)
+        return _strip_wm_part(*deck_urls), deck_tags, [], []
