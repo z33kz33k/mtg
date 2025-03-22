@@ -133,7 +133,8 @@ class DraftsimArticleScraper(HybridContainerScraper):
     @staticmethod
     @override
     def is_container_url(url: str) -> bool:
-        return "draftsim.com/" in url.lower() and "/decks/" not in url.lower()
+        tokens = "/decks/", "/author/", "/blog", "/ratings/", "/all-sets", "/arenatutor"
+        return "draftsim.com/" in url.lower() and not any(t in url.lower() for t in tokens)
 
     @staticmethod
     @override

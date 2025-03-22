@@ -29,7 +29,7 @@ from requests.adapters import HTTPAdapter
 from requests.exceptions import HTTPError
 from urllib3 import Retry
 from wayback import WaybackClient
-from wayback.exceptions import MementoPlaybackError
+from wayback.exceptions import MementoPlaybackError, WaybackRetryError, WaybackException
 
 from mtg import Json
 from mtg.utils import ParsingError, timed
@@ -441,12 +441,17 @@ def _wayback_predicate(soup: BeautifulSoup | None) -> bool:
 def get_wayback_soup(url: str) -> BeautifulSoup | None:
     """Get BeautifulSoup object for a URL from Wayback Machine.
     """
-    client = WaybackClient()
-    if memento := next(client.search(url, limit=-1, fast_latest=True), None):
-        try:
-            response = client.get_memento(memento, exact=False)
-        except MementoPlaybackError:
-            _log.warning(f"Wayback Machine memento for {url!r} could not be retrieved")
-            return None
-        return BeautifulSoup(response.text, "lxml")
-    return None
+    try:
+        client = WaybackClient()
+        _log.info(f"Searching for {url!r} in Wayback Machine...")
+        if memento := next(client.search(url, limit=-1, fast_latest=True), None):
+            try:
+                response = client.get_memento(memento, exact=False)
+            except MementoPlaybackError:
+                _log.warning(f"Wayback Machine memento for {url!r} could not be retrieved")
+                return None
+            return BeautifulSoup(response.text, "lxml")
+        return None
+    except (WaybackException, WaybackRetryError) as e:
+        _log.warning(f"Wayback Machine failed with: {e}")
+        return None

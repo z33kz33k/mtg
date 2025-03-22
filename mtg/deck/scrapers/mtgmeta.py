@@ -104,6 +104,7 @@ def _strip_wm_part(*links: str) -> list[str]:
 class MtgMetaIoTournamentScraper(DeckUrlsContainerScraper):
     """Scraper of MTGMeta.io tournament page.
     """
+    THROTTLING = DeckUrlsContainerScraper.THROTTLING * 10  # override
     CONTAINER_NAME = "MTGMeta.io tournament"  # override
     DECK_SCRAPERS = MtgMetaIoDeckScraper,  # override
 
@@ -162,6 +163,7 @@ class MtgMetaIoArticleScraper(HybridContainerScraper):
     """Scraper of MTGMeta.io article page.
     """
     CONTAINER_NAME = "MTGMeta.io article"  # override
+    THROTTLING = MtgMetaIoTournamentScraper.THROTTLING  # override
     TAG_BASED_DECK_PARSER = MtgMetaIoDeckTagParser  # override
 
     @staticmethod
