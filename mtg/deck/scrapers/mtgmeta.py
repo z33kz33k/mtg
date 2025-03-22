@@ -42,14 +42,19 @@ class MtgMetaIoDeckScraper(DeckScraper):
         self._soup = get_wayback_soup(self.url)
         if not self._soup:
             raise ScrapingError("Page not available")
+        if "Error connecting to database" in str(self._soup):
+            raise ScrapingError("Page not available due to Internet Archive's database error")
         self._deck_data = dissect_js(self._soup, "const decklist = ", " ;\n  ")
+        if not self._deck_data:
+            raise ScrapingError("Deck data not available")
 
     @override
     def _parse_metadata(self) -> None:
         if fmt_tag := self._soup.find(
             "a", class_="crumb", string=lambda s: s and "Home" not in s and "Decks" not in s):
             self._update_fmt(fmt_tag.text.strip())
-        self._metadata["name"] = self._deck_data["dname"]
+        if name := self._deck_data.get("dname") or self._soup.select_one("h1.deckname"):
+            self._metadata["name"] = name
         if player := self._deck_data.get("pname"):
             self._metadata["author"] = player
         if event := self._deck_data.get("tname"):
@@ -117,6 +122,8 @@ class MtgMetaIoTournamentScraper(DeckUrlsContainerScraper):
         self._soup = get_wayback_soup(self.url)
         if not self._soup:
             raise ScrapingError(self._error_msg)
+        if "Error connecting to database" in str(self._soup):
+            raise ScrapingError("Page not available due to Internet Archive's database error")
 
     @override
     def _collect(self) -> list[str]:
@@ -172,6 +179,8 @@ class MtgMetaIoArticleScraper(HybridContainerScraper):
         self._soup = get_wayback_soup(self.url)
         if not self._soup:
             raise ScrapingError(self._error_msg)
+        if "Error connecting to database" in str(self._soup):
+            raise ScrapingError("Page not available due to Internet Archive's database error")
 
     @override
     def _parse_metadata(self) -> None:
@@ -183,7 +192,6 @@ class MtgMetaIoArticleScraper(HybridContainerScraper):
             self._metadata["date"] = dateutil.parser.parse(date_text).date()
         if author_tag := self._soup.select_one("span.author-name"):
             self._metadata["author"] = author_tag.text.strip()
-        pass
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:

@@ -19,6 +19,7 @@ from dataclasses import dataclass
 from functools import wraps
 from typing import Callable, Iterator, Self
 
+import backoff
 import brotli
 import requests
 from bs4 import BeautifulSoup, Tag
@@ -422,7 +423,21 @@ def get_links(*tags: Tag, css_selector="", url_prefix="", query_stripped=False) 
     return sorted(links)
 
 
+def _wayback_predicate(soup: BeautifulSoup | None) -> bool:
+    if soup and "Error connecting to database" in str(soup):
+        _log.warning(
+            "Problems with connecting to Internet Archive's database. Re-trying with backoff...")
+        return True
+    return False
+
+
 @timed("getting wayback soup")
+@backoff.on_predicate(
+    backoff.expo,
+    predicate=_wayback_predicate,
+    jitter=None,
+    max_tries=7
+)
 def get_wayback_soup(url: str) -> BeautifulSoup | None:
     """Get BeautifulSoup object for a URL from Wayback Machine.
     """
