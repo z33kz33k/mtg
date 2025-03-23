@@ -17,7 +17,7 @@ from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.utils import from_iterable
-from mtg.utils.scrape import ScrapingError, getsoup
+from mtg.utils.scrape import ScrapingError, get_links, getsoup
 
 _log = logging.getLogger(__name__)
 
@@ -114,7 +114,7 @@ class MeleeGgTournamentScraper(DeckUrlsContainerScraper):
     @staticmethod
     @override
     def is_container_url(url: str) -> bool:
-        return "melee.gg/tournament/" in url.lower()
+        return "melee.gg/tournament/" in url.lower() or f"{ALT_DOMAIN}/tournament/" in url.lower()
 
     @override
     def _collect(self) -> list[str]:
@@ -124,3 +124,23 @@ class MeleeGgTournamentScraper(DeckUrlsContainerScraper):
             return []
         deck_tags = self._soup.find_all("a", href=lambda h: h and "/Decklist/View/" in h)
         return [deck_tag.attrs["href"] for deck_tag in deck_tags]
+
+
+@DeckUrlsContainerScraper.registered
+class MeleeGgProfileScraper(DeckUrlsContainerScraper):
+    """Scraper of Melee.gg profile page.
+    """
+    CONTAINER_NAME = "Melee.gg profile"  # override
+    XPATH = '//tr[@role="row"]'  # override
+    DECK_SCRAPERS = MeleeGgDeckScraper,  # override
+    DECK_URL_PREFIX = "https://melee.gg"  # override
+
+    @staticmethod
+    @override
+    def is_container_url(url: str) -> bool:
+        return "melee.gg/profile/" in url.lower() or f"{ALT_DOMAIN}/profile/" in url.lower()
+
+    @override
+    def _collect(self) -> list[str]:
+        links = get_links(self._soup)
+        return [l for l in links if l.startswith('/Decklist/View/')]

@@ -110,7 +110,7 @@ YT videos descriptions).
         * Manatraders users
         * [Magic.gg](https://magic.gg) events
         * [MagicBlogs.de](https://magicblogs.de) articles
-        * Melee.gg tournaments
+        * Melee.gg profiles and tournaments
         * Moxfield bookmarks, users and search results
         * MTGAZone articles and authors
         * MTGCircle articles
@@ -130,7 +130,7 @@ YT videos descriptions).
         * [TopDeck.gg](https://topdeck.gg) brackets and profiles
         * Untapped profiles
         * [WotC (official MTG site)](https://magic.wizards.com/en) articles
-    * 20 more container pages in plans
+    * 19 more container pages in plans
 * Assessing the meta:
     * Scraping Goldfish and MGTAZone for meta-decks (others in plans)
     * Scraping a singular Untapped meta-deck decklist page
