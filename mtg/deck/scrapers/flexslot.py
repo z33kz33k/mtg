@@ -106,7 +106,7 @@ class FlexslotUserScraper(DeckUrlsContainerScraper):
     """Scraper of Flexslot user page.
     """
     CONTAINER_NAME = "Flexslot user"  # override
-    THROTTLING = DeckUrlsContainerScraper.THROTTLING * 2
+    THROTTLING = DeckUrlsContainerScraper.THROTTLING * 2  # override
     DECK_SCRAPERS = FlexslotDeckScraper,  # override
     XPATH = '//a[contains(@href, "/decks/")]'  # override
     CONSENT_XPATH = CONSENT_XPATH  # override

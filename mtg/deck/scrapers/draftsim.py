@@ -8,7 +8,7 @@
 
 """
 import logging
-from typing import override
+from typing import Type, override
 
 import dateutil.parser
 from bs4 import Tag
@@ -178,3 +178,36 @@ class DraftsimArticleScraper(HybridContainerScraper):
         p_tags = [t for t in article_tag.find_all("p") if not t.find("div", class_="deck_list")]
         deck_urls, _ = self._get_links_from_tags(*p_tags)
         return deck_urls, deck_tags, [], []
+
+
+@HybridContainerScraper.registered
+class DraftsimAuthorScraper(HybridContainerScraper):
+    """Scraper of Draftsim author page.
+    """
+    CONTAINER_NAME = "Draftsim author"  # override
+    CONTAINER_SCRAPERS = DraftsimArticleScraper,  # override
+
+    @staticmethod
+    @override
+    def is_container_url(url: str) -> bool:
+        return "draftsim.com/" in url.lower() and "/author/" in url.lower()
+
+    @staticmethod
+    @override
+    def sanitize_url(url: str) -> str:
+        return strip_url_query(url)
+
+    @classmethod
+    @override
+    def _get_deck_scrapers(cls) -> set[Type[DeckScraper]]:
+        return set()
+
+    @override
+    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
+        content_tag = self._soup.select_one("div.content")
+        if not content_tag:
+            _log.warning("Content tag not found")
+            return [], [], [], []
+        h3_tags = [t for t in content_tag.select("h3.post_title")]
+        _, container_urls = self._get_links_from_tags(*h3_tags)
+        return [], [], [], container_urls

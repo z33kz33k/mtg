@@ -349,7 +349,7 @@ class DeckUrlsContainerScraper(ContainerScraper):
 
     @classmethod
     def _get_deck_scrapers(cls) -> set[Type[DeckScraper]]:
-        return cls.DECK_SCRAPERS or DeckScraper.get_registered_scrapers()
+        return set(cls.DECK_SCRAPERS) or DeckScraper.get_registered_scrapers()
 
     @classmethod
     def _dispatch_deck_scraper(
