@@ -514,11 +514,25 @@ def prune_dangling_decklists() -> None:
     _log.info(f"Pruning done")
 
 
-QUERY = 'mtg decklist -lorcana -"flesh and blood" -fab -"eternal card game" -snap -yugioh ' \
-        '-"altered tcg" -"sorcery tcg" -msem -onepiece -pokemon -"fabrary.net"'
+_QUERY_EXCLUDES = (
+    '-"altered tcg"',
+    '-"eternal card game"',
+    '-fab',
+    '-"fabrary.net"',
+    '-"flesh and blood"',
+    '-lorcana',
+    '-lotr lcg',
+    '-msem',
+    '-onepiece',
+    '-pokemon',
+    '-ringsdb.com',
+    '-snap',
+    '-"sorcery tcg"',
+    '-yugioh',
+)
 def discover_new_channels(
-        query: str = QUERY,
-        limit=20,
+        query: str = "mtg decklist",
+        limit=200,
         option: Literal[
             "relevance",
             "upload_date",
@@ -528,7 +542,8 @@ def discover_new_channels(
             "today",
             "this_week",
             "this_month",
-            "this_year"] = "this_week") -> tuple[list[str], list[str]]:
+            "this_year"] = "this_week",
+        ) -> tuple[list[str], list[str]]:
     """Discover channels that aren't yet included in the private Google Sheet.
 
     Args:
@@ -539,6 +554,7 @@ def discover_new_channels(
     Returns:
         list of discovered channel IDs, list of all checked video links
     """
+    query += f' {" ".join(_QUERY_EXCLUDES)}'
     retrieved_ids, chids = {*retrieve_ids(), *retrieve_ids("avoided")}, set()
     match option:
         case "relevance":
