@@ -1,7 +1,7 @@
 """
 
     mtg.deck.scrapers.melee.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Melee.gg decklists.
 
     @author: z33k
@@ -38,6 +38,7 @@ HEADERS = {
     "TE": "trailers",
 }
 ALT_DOMAIN = "mtgmelee.com"
+URL_PREFIX = "https://melee.gg"
 
 
 def get_source(src: str) -> str | None:
@@ -109,7 +110,7 @@ class MeleeGgTournamentScraper(DeckUrlsContainerScraper):
     CONTAINER_NAME = "Melee.gg tournament"  # override
     XPATH = '//a[@data-type="decklist"]'  # override
     DECK_SCRAPERS = MeleeGgDeckScraper,  # override
-    DECK_URL_PREFIX = "https://melee.gg"  # override
+    DECK_URL_PREFIX = URL_PREFIX  # override
 
     @staticmethod
     @override
@@ -133,7 +134,7 @@ class MeleeGgProfileScraper(DeckUrlsContainerScraper):
     CONTAINER_NAME = "Melee.gg profile"  # override
     XPATH = '//tr[@role="row"]'  # override
     DECK_SCRAPERS = MeleeGgDeckScraper,  # override
-    DECK_URL_PREFIX = "https://melee.gg"  # override
+    DECK_URL_PREFIX = URL_PREFIX  # override
 
     @staticmethod
     @override

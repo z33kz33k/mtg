@@ -28,7 +28,7 @@ YT videos descriptions).
     * [youtube-comment-downloader](https://github.com/egbertbouman/youtube-comment-downloader) 
 * Scraping YT videos' descriptions (or comments) for decks:    
     * Text decklists in Arena/MTGO format pasted into video descriptions are parsed into Deck objects
-    * Links to decklist sites are scraped into Deck objects. 41 sites are supported so far:
+    * Links to decklist sites are scraped into Deck objects. 42 sites are supported so far:
         * [17Lands](https://www.17lands.com)
         * [Aetherhub](https://aetherhub.com)
         * [Archidekt](https://archidekt.com)
@@ -62,6 +62,7 @@ YT videos descriptions).
         * [MTGTop8](https://mtgtop8.com/index)
         * [PauperMTG](https://paupermtg.com)
         * [PennyDreadfulMagic](https://pennydreadfulmagic.com)
+        * [PlayingMTG](https://playingmtg.com)
         * [Scryfall](https://scryfall.com)
         * [StarCityGames](https://starcitygames.com)
         * [Streamdecker](https://www.streamdecker.com/landing)
@@ -70,7 +71,7 @@ YT videos descriptions).
         * [TCGPlayer](https://infinite.tcgplayer.com)
         * [TopDecked](https://www.topdecked.com)
         * [Untapped](https://mtga.untapped.gg) 
-    * 5 more decklist sites in plans 
+    * 4 more decklist sites in plans 
     * Both Aetherhub decklist types featured in YT videos are supported: regular deck and write-up deck
     * Both Archidekt decklist types featured in YT videos are supported: regular deck and snapshot deck
     * Both EDHREC decklist types featured in YT videos are supported: preview deck and average deck
@@ -130,7 +131,7 @@ YT videos descriptions).
         * [TopDeck.gg](https://topdeck.gg) brackets and profiles
         * Untapped profiles
         * [WotC (official MTG site)](https://magic.wizards.com/en) articles
-    * 19 more container pages in plans
+    * 20 more container pages in plans
 * Assessing the meta:
     * Scraping Goldfish and MGTAZone for meta-decks (others in plans)
     * Scraping a singular Untapped meta-deck decklist page
@@ -151,7 +152,7 @@ YT videos descriptions).
 | No | Format | Count | Percentage |
 |:---|:-----|------:|-----------:|
 | 1  | commander       | 49566 |    39.22 % |
-| 2  | standard        | 27053 |    21.41 % |
+| 2  | standard        | 27053 |    21.40 % |
 | 3  | modern          | 13071 |    10.34 % |
 | 4  | pauper          |  7545 |     5.97 % |
 | 5  | pioneer         |  7273 |     5.75 % |
@@ -159,7 +160,7 @@ YT videos descriptions).
 | 7  | brawl           |  2682 |     2.12 % |
 | 8  | historic        |  2286 |     1.81 % |
 | 9  | explorer        |  2091 |     1.65 % |
-| 10 | undefined       |  1835 |     1.45 % |
+| 10 | undefined       |  1837 |     1.45 % |
 | 11 | paupercommander |  1761 |     1.39 % |
 | 12 | duel            |  1586 |     1.25 % |
 | 13 | timeless        |  1527 |     1.21 % |
@@ -174,12 +175,12 @@ YT videos descriptions).
 | 22 | oldschool       |    40 |     0.03 % |
 | 23 | future          |    27 |     0.02 % |
 | 24 | predh           |     5 |     0.00 % |
-|  | TOTAL           | 126386 | 100.00 %|
+|  | TOTAL           | 126388 | 100.00 %|
 
 | No | Source | Count | Percentage |
 |:---|:-----|------:|-----------:|
 | 1  | moxfield.com           | 58214 |    46.06 % |
-| 2  | arena.decklist         | 11243 |     8.90 % |
+| 2  | arena.decklist         | 11245 |     8.90 % |
 | 3  | mtgo.com               |  9985 |     7.90 % |
 | 4  | mtggoldfish.com        |  9312 |     7.37 % |
 | 5  | aetherhub.com          |  8775 |     6.94 % |
@@ -224,4 +225,4 @@ YT videos descriptions).
 | 44 | draftsim.com           |    10 |     0.01 % |
 | 45 | magicblogs.de          |     4 |     0.00 % |
 | 46 | mtgotraders.com        |     1 |     0.00 % |
-|  | TOTAL                  | 126386 | 100.00 %|
+|  | TOTAL                  | 126388 | 100.00 %|
