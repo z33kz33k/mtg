@@ -655,6 +655,8 @@ class HybridContainerScraper(
         if not decks:
             # outer container URLs are not ever skipped
             # to allow for potential scraping of their content changes
+            # mind that this doesn't stop JSON/tag parsing parts of this scraper to potentially
+            # flag the same URL (but then treated as regular container URL) as scraped/failed
             _log.info(f"Nothing gathered from a {self.CONTAINER_NAME} at: {self.url!r}")
 
         return decks

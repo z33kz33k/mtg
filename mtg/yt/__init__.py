@@ -942,11 +942,16 @@ class Video:
 
         # 3rd stage: deck containers
         for link in links:
+            # skipping of already scraped/failed links for JSON, tag and hybrid scrapers happens
+            # here; the same skipping happens for deck URLs scrapers within them per each
+            # individual deck URL; skipping for hybrid scrapers happens ONLY if their JSON or tag
+            # parts flag the container URL as scraped/failed
             if scraper := DeckUrlsContainerScraper.from_url(
-                    link, self.metadata) or HybridContainerScraper.from_url(link, self.metadata):
+                    link, self.metadata):
                 decks.update(scraper.scrape())
             elif scraper := DecksJsonContainerScraper.from_url(
-                    link, self.metadata) or DeckTagsContainerScraper.from_url(link, self.metadata):
+                    link, self.metadata) or DeckTagsContainerScraper.from_url(
+                link, self.metadata) or HybridContainerScraper.from_url(link, self.metadata):
                 sanitized_link = scraper.sanitize_url(link)
                 if self._urls_manager.is_scraped(sanitized_link):
                     _log.info(
