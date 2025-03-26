@@ -42,8 +42,8 @@ class DeckScraper(DeckParser):
         return self._url
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
-        url = url.removesuffix("/")
         self._validate_url(url)
+        url = url.removesuffix("/")
         super().__init__(metadata)
         self._url = self.sanitize_url(url)
         self._soup: BeautifulSoup | None = None  # for HTML-based scraping
@@ -229,8 +229,8 @@ class ContainerScraper(DeckParser):
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(metadata)
-        url = url.removesuffix("/")
         self._validate_url(url)
+        url = url.removesuffix("/")
         self._url, self._metadata = self.sanitize_url(url), metadata or {}
         self._metadata["container_url"] = self.url
         self._urls_manager = UrlsStateManager()

@@ -520,14 +520,16 @@ _QUERY_EXCLUDES = (
     '-fab',
     '-"fabrary.net"',
     '-"flesh and blood"',
+    '-"grand archive tcg"',
     '-lorcana',
-    '-lotr lcg',
+    '-"lotr lcg"',
     '-msem',
     '-onepiece',
     '-pokemon',
-    '-ringsdb.com',
+    '-"ringsdb.com"',
     '-snap',
     '-"sorcery tcg"',
+    '-"swudb.com"',
     '-yugioh',
 )
 def discover_new_channels(
@@ -717,3 +719,7 @@ def update_avoided() -> None:
             dst = AVOIDED_DIR /  chdir.name
             _log.info(f"Moving channel data from '{chdir}' to '{dst}'...")
             shutil.move(chdir, dst)
+    manager = UrlsStateManager()
+    manager.load_failed()
+    manager.prune_failed(ids)
+    manager.dump_failed()

@@ -158,6 +158,22 @@ class UrlsStateManager(_Singleton):
     def add_failed(self, url: str) -> None:
         self._failed.setdefault(self.current_channel, set()).add(url.removesuffix("/").lower())
 
+    def prune_failed(self, keeper_chids: set[str]) -> None:
+        """Prune failed URLs in the global repository that are not in the specified channels.
+        """
+        channels_count, urls_count = 0, 0
+        new_failed = {}
+        for k in self._failed:
+            if k in keeper_chids:
+                new_failed[k] = self._failed[k]
+            else:
+                urls_count += len(self._failed[k])
+                channels_count += 1
+        self._failed = new_failed
+        _log.info(
+            f"Removed failed URLs data for {channels_count:,} channel(s) ({urls_count:,} URL(s) "
+            f"in total)")
+
     def _is_scraped_within(self, url: str, channel_id="", video_id="") -> bool:
         if self.ignore_scraped:
             return False

@@ -1064,7 +1064,7 @@ class Channel:
         self._ytsp_data, self._data = None, None
         self._handle_earlier_data()
 
-    def _handle_earlier_data(self):
+    def _handle_earlier_data(self) -> None:
         try:
             self._earlier_data = load_channel(self.id)
             self._title = self._earlier_data.title
