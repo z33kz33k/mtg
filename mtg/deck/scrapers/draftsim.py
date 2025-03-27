@@ -16,7 +16,8 @@ from bs4 import Tag
 from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import DeckScraper, HybridContainerScraper, TagBasedDeckParser
+from mtg.deck.scrapers import DeckScraper, HybridContainerScraper, TagBasedDeckParser, \
+    is_other_than_mainpage_url
 from mtg.scryfall import all_formats
 from mtg.utils import ParsingError, from_iterable, get_date_from_ago_text
 from mtg.utils.scrape import ScrapingError, getsoup, strip_url_query
@@ -134,7 +135,8 @@ class DraftsimArticleScraper(HybridContainerScraper):
     @override
     def is_container_url(url: str) -> bool:
         tokens = "/decks/", "/author/", "/blog", "/ratings/", "/all-sets", "/arenatutor"
-        return "draftsim.com/" in url.lower() and not any(t in url.lower() for t in tokens)
+        return is_other_than_mainpage_url(url, "draftsim.com") and not any(
+            t in url.lower() for t in tokens)
 
     @staticmethod
     @override

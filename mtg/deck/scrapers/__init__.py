@@ -28,6 +28,23 @@ from mtg.utils.scrape.dynamic import get_dynamic_soup
 _log = logging.getLogger(__name__)
 
 
+def is_other_than_mainpage_url(url: str, domain: str) -> bool:
+    """Check whether the passed URL is of the passed domain but other than a mainpage URL.
+
+    Args:
+        url: URL to check
+        domain: the end-part of URL's domain (e.g. "pauperwave.com")
+    """
+    if f"{domain}/" not in url.lower():
+        return False  # not in domain
+    if f"{domain}/." in url.lower():
+        return False
+    *_, rest = url.lower().split(f"{domain}/")
+    if not rest:
+        return False  # in domain but mainpage
+    return True
+
+
 class DeckScraper(DeckParser):
     """Abstract deck scraper.
 

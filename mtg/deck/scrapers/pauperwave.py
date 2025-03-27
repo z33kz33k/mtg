@@ -13,7 +13,7 @@ from typing import override
 from bs4 import Tag
 
 from mtg import Json
-from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser
+from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser, is_other_than_mainpage_url
 from mtg.utils.scrape import parse_non_english_month_date, strip_url_query
 
 _log = logging.getLogger(__name__)
@@ -94,7 +94,7 @@ class PauperwaveArticleScraper(HybridContainerScraper):
     @staticmethod
     @override
     def is_container_url(url: str) -> bool:
-        return "pauperwave.com/" in url.lower() and "pauperwave.com/." not in url.lower()
+        return is_other_than_mainpage_url(url, "pauperwave.com")
 
     @staticmethod
     @override
