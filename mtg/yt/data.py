@@ -516,6 +516,7 @@ def prune_dangling_decklists() -> None:
 
 _QUERY_EXCLUDES = (
     '-"altered tcg"',
+    '-dfiance',
     '-"eternal card game"',
     '-fab',
     '-"fabrary.net"',

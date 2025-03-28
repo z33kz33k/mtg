@@ -77,7 +77,7 @@ class WotCDeckTagParser(TagBasedDeckParser):
             suppress_parsing_errors=False, suppress_invalid_deck=False)
 
 
-_LOCALES = {"/ja/", "/fr/", "/it/", "/de/", "/es/", "/pt/", "/ko/"}
+_LOCALES = {"/ja/", "/fr/", "/it/", "/de/", "/es/", "/pt/", "pt-BR", "/ko/"}
 
 
 @HybridContainerScraper.registered
@@ -95,7 +95,7 @@ class WotCArticleScraper(HybridContainerScraper):
     @staticmethod
     @override
     def sanitize_url(url: str) -> str:
-        locale = from_iterable(_LOCALES, lambda l: l in url.lower())
+        locale = from_iterable(_LOCALES, lambda l: l in url)
         url = url.replace(locale, "/en/") if locale else url
         return strip_url_query(url)
 
