@@ -28,7 +28,6 @@ URL_PREFIX = "https://playingmtg.com"
 class PlayingMtgDeckScraper(DeckScraper):
     """Scraper of PlayingMTG decklist page.
     """
-    # XPATH = '//div[text()="Main Board"]'
     XPATH = '//a[contains(@href, "/playingmtg.com/cards/")]'
 
     @staticmethod
@@ -54,25 +53,26 @@ class PlayingMtgDeckScraper(DeckScraper):
     def _parse_metadata(self) -> None:
         if title_tag := self._soup.select_one("h1.page-title"):
             self._metadata["name"] = title_tag.attrs["title"]
-        # TODO
-        # if fmt_tag := self._soup.find("div", {"class": ["sc-eyqwws", "jUMbtV"], "title": ""}):
-        #     self._update_fmt(fmt_tag.find("a").text.strip().removeprefix("Format: "))
-        # info_tags = [*self._soup.select_one("ul.entry-meta").find_all("li")]
-        # if len(info_tags) == 2:
-        #     author_tag, date_tag = info_tags
-        #     theme_tag = None
-        # elif len(info_tags) == 3:
-        #     theme_tag, author_tag, date_tag = info_tags
-        # else:
-        #     theme_tag, author_tag, date_tag = None, None, None
-        # if theme_tag:
-        #     self._update_archetype_or_theme(theme_tag.text.strip())
-        # if author_tag:
-        #     self._metadata["author"] = author_tag.text.strip()
-        # if date_tag:
-        #     self._metadata["date"] = dateutil.parser.parse(date_tag.text.strip()).date()
-        # if desc_tag := self._soup.select_one("div.sc-jJZtqq.hdJLbY"):
-        #     self._metadata["description"] = desc_tag.text.strip().removeprefix("Deck Description")
+        if fmt_snap := self._soup.find("span", string=lambda s: s and "Format:" in s):
+            fmt_tag = fmt_snap.parent
+            self._update_fmt(fmt_tag.find("a").text.strip().removeprefix("Format: "))
+        info_tags = [*self._soup.select_one("ul.entry-meta").find_all("li")]
+        if len(info_tags) == 2:
+            author_tag, date_tag = info_tags
+            theme_tag = None
+        elif len(info_tags) == 3:
+            theme_tag, author_tag, date_tag = info_tags
+        else:
+            theme_tag, author_tag, date_tag = None, None, None
+        if theme_tag:
+            self._update_archetype_or_theme(theme_tag.text.strip())
+        if author_tag:
+            self._metadata["author"] = author_tag.text.strip()
+        if date_tag:
+            self._metadata["date"] = dateutil.parser.parse(date_tag.text.strip()).date()
+        if desc_h := self._soup.find("h2", string=lambda s: s and s == "Deck Description"):
+            desc_tag = desc_h.parent
+            self._metadata["description"] = desc_tag.text.strip().removeprefix("Deck Description")
 
     @classmethod
     def _parse_card(cls, card_tag: Tag) -> list[Card]:
