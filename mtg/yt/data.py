@@ -522,6 +522,7 @@ _QUERY_EXCLUDES = (
     '-"fabrary.net"',
     '-"flesh and blood"',
     '-"grand archive tcg"',
+    '-"lackeybot.com"',
     '-lorcana',
     '-"lotr lcg"',
     '-msem',
