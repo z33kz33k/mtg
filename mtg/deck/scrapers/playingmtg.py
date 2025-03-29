@@ -17,13 +17,14 @@ from selenium.common.exceptions import TimeoutException
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.scryfall import Card
 from mtg.utils import extract_float, extract_int
-from mtg.utils.scrape import ScrapingError, get_links, strip_url_query
+from mtg.utils.scrape import ScrapingError, get_links, get_next_sibling_tag, strip_url_query
 from mtg.utils.scrape.dynamic import get_dynamic_soup
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://playingmtg.com"
 
 
+# FIXME
 @DeckScraper.registered
 class PlayingMtgDeckScraper(DeckScraper):
     """Scraper of PlayingMTG decklist page.
@@ -89,6 +90,8 @@ class PlayingMtgDeckScraper(DeckScraper):
     @override
     def _parse_decklist(self) -> None:
         maindeck_hook = self._soup.find("div", string=lambda s: s and s == "Main Board")
+        if not maindeck_hook:
+            raise ScrapingError("Deck data not available")
         maindeck_tag = maindeck_hook.parent
         card_tags = [a_tag.parent for a_tag in maindeck_tag.find_all(
             "a", href=lambda h: h and "playingmtg.com/" in h)]
@@ -103,13 +106,13 @@ class PlayingMtgDeckScraper(DeckScraper):
                 self._sideboard += self._parse_card(card_tag)
 
 
-# FIXME
 @DeckUrlsContainerScraper.registered
 class PlayingMtgTournamentScraper(DeckUrlsContainerScraper):
     """Scraper of PlayingMTG tournament page.
     """
+    THROTTLING = DeckUrlsContainerScraper.THROTTLING * 2  # override
     CONTAINER_NAME = "PlayingMTG tournament"  # override
-    XPATH = '//a[@class="sc-eTNaoj aJnCl"]'  # override
+    XPATH = '//div[text()="Event Date"]'
     DECK_SCRAPERS = PlayingMtgDeckScraper,  # override
     DECK_URL_PREFIX = URL_PREFIX  # override
 
@@ -118,36 +121,64 @@ class PlayingMtgTournamentScraper(DeckUrlsContainerScraper):
     def is_container_url(url: str) -> bool:
         return "playingmtg.com/tournaments/" in url.lower()
 
+    @override
+    def _pre_parse(self) -> None:
+        try:
+            self._soup, _, _ = get_dynamic_soup(self.url, self.XPATH, wait_for_all=True)
+        except TimeoutException:
+            self._soup = None
+        if not self._soup:
+            raise ScrapingError(self._error_msg)
+
     def _parse_metadata(self) -> None:
-        if info_tag := self._soup.select_one("div.sc-cCUCJR.hDZsaq"):
+        if event_date_hook := self._soup.find("div", string=lambda s: s and s == "Event Date"):
             self._metadata["event"] = {}
-            if date_tag := info_tag.select_one("div.sc-gOJDFQ.cySNTC"):
-                date_text = date_tag.text.strip().removeprefix("Event Date").strip()
-                self._metadata["event"]["date"] = dateutil.parser.parse(date_text).date()
-            if name_tag := info_tag.select_one("a.sc-fhxlfq.cQfNNM"):
-                self._metadata["event"]["name"] = name_tag.text.strip()
-            if fmt_tag := info_tag.select_one("div.sc-cwxWdN.cOVKUM"):
-                self._metadata["event"]["format"] = fmt_tag.text.strip().lower()
-            if set_tag := info_tag.select_one("div.sc-fbaEzm.hIQPkW"):
-                self._metadata["event"]["latest_set"] = set_tag.text.strip().strip().removeprefix(
-                    "Latest set: ").strip().lower()
-            if theme_tags := [*info_tag.select("div.sc-euTIOJ.knuiml")]:
-                self._metadata["event"]["themes"] = []
-                for tag in theme_tags:
-                    data = {}
-                    if theme_name_tag := tag.find("small"):
-                        data["name"] = theme_name_tag.text.strip()
-                    if theme_share_tag := tag.find("div"):
-                        data["share"] = extract_float(theme_share_tag.text.strip())
-                    if data:
-                        self._metadata["event"]["themes"].append(data)
-            if players_tag := info_tag.select_one("div.sc-gVbcWm.ecZxVc"):
-                self._metadata["event"]["players"] = extract_int(players_tag.text.strip())
-            if winner_tag := info_tag.select_one("div.sc-eUmdFK.cLSdEr"):
-                self._metadata["event"]["winner"] = winner_tag.text.strip().removeprefix(
-                    "Winner").strip()
+            # date
+            date_tag = event_date_hook.parent
+            date_text = date_tag.text.strip().removeprefix("Event Date").strip()
+            self._metadata["event"]["date"] = dateutil.parser.parse(date_text).date()
+            # name
+            name_tag = get_next_sibling_tag(date_tag)
+            if not name_tag:
+                return
+            self._metadata["event"]["name"] = name_tag.text.strip()
+            # format and latest set
+            fmt_set_tag = get_next_sibling_tag(name_tag)
+            if not fmt_set_tag:
+                return
+            for tag in fmt_set_tag.find_all("div"):
+                if "Latest set: " in tag.text:
+                    self._metadata["event"]["latest_set"] = tag.text.strip().strip().removeprefix(
+                        "Latest set: ").strip().lower()
+                else:
+                    self._metadata["event"]["format"] = tag.text.strip().lower()
+            # themes
+            info_tag = get_next_sibling_tag(fmt_set_tag)
+            if not info_tag:
+                return
+            theme_tags = info_tag.find_all("div")
+            self._metadata["event"]["themes"] = []
+            for tag in theme_tags:
+                data = {}
+                if theme_name_tag := tag.find("small"):
+                    data["name"] = theme_name_tag.text.strip()
+                if theme_share_tag := tag.find("div"):
+                    data["share"] = extract_float(theme_share_tag.text.strip())
+                if data:
+                    self._metadata["event"]["themes"].append(data)
+            # players and winner
+            players_tag = get_next_sibling_tag(info_tag)
+            if not players_tag:
+                return
+            self._metadata["event"]["players"] = extract_int(players_tag.text.strip())
+            winner_tag = get_next_sibling_tag(players_tag)
+            if not winner_tag:
+                return
+            self._metadata["event"]["winner"] = winner_tag.text.strip().removeprefix(
+                "Winner").strip()
 
     @override
     def _collect(self) -> list[str]:
         self._parse_metadata()
-        return get_links(self._soup, css_selector="a.sc-eTNaoj.aJnCl")
+        return get_links(
+            self._soup, href=lambda h: h and "/decks/" in h and "playingmtg.com/" not in h)

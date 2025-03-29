@@ -115,6 +115,13 @@ def getsoup(
     return BeautifulSoup(response.content, "lxml", from_encoding=encoding)
 
 
+def get_next_sibling_tag(tag: Tag) -> Tag | None:
+    for sibling in tag.next_siblings:
+        if isinstance(sibling, Tag):
+            return sibling
+    return None
+
+
 @dataclass
 class Throttling:
     delay: float
@@ -402,7 +409,9 @@ def prepend_url(url: str, prefix="") -> str:
     return url
 
 
-def get_links(*tags: Tag, css_selector="", url_prefix="", query_stripped=False) -> list[str]:
+def get_links(
+        *tags: Tag, css_selector="", url_prefix="", query_stripped=False,
+        **bs_options) -> list[str]:
     """Get all links from provided tags.
 
         Args:
@@ -410,14 +419,15 @@ def get_links(*tags: Tag, css_selector="", url_prefix="", query_stripped=False) 
             css_selector: CSS selector to obtain links from a tag
             url_prefix: prefix to add to relative URLs
             query_stripped: whether to strip the query part of the URL
+            **bs_options: options to pass to BeautifulSoup's find_all() method for better filtering
         """
     links = set()
     for tag in tags:
         if css_selector:
             links |= {t.attrs["href"].removesuffix("/") for t in tag.select(css_selector)}
         else:
-            links |= {t.attrs["href"].removesuffix("/") for t in tag.find_all(
-                "a", href=lambda h: h)}
+            bs_options = bs_options or {"href": lambda h: h}
+            links |= {t.attrs["href"].removesuffix("/") for t in tag.find_all("a", **bs_options)}
     links = {prepend_url(l, url_prefix) for l in links} if url_prefix else links
     links = {strip_url_query(l) for l in links} if query_stripped else links
     return sorted(links)

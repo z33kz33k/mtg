@@ -277,7 +277,7 @@ class ContainerScraper(DeckParser):
                 self._soup, _, _ = get_dynamic_soup(
                     self.url, self.XPATH, consent_xpath=self.CONSENT_XPATH)
             except TimeoutException:
-                raise ScrapingError(self._error_msg)
+                self._soup = None
         else:
             self._soup = getsoup(self.url, self.HEADERS)
         if not self._soup:
