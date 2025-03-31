@@ -24,12 +24,11 @@ _log = logging.getLogger(__name__)
 URL_PREFIX = "https://playingmtg.com"
 
 
-# FIXME
 @DeckScraper.registered
 class PlayingMtgDeckScraper(DeckScraper):
     """Scraper of PlayingMTG decklist page.
     """
-    XPATH = '//a[contains(@href, "/playingmtg.com/cards/")]'
+    XPATH = '//article//div/a[contains(@href, "/playingmtg.com/cards/")]'
 
     @staticmethod
     @override
@@ -78,7 +77,8 @@ class PlayingMtgDeckScraper(DeckScraper):
     @classmethod
     def _parse_card(cls, card_tag: Tag) -> list[Card]:
         data_tags = [
-            t for t in card_tag.find_all("div") if t.has_attr("title") and "$" not in t.text]
+            tag for tag in card_tag.find_all("div")
+            if tag.has_attr("title") and all(t not in tag.text for t in ("$", "N/A"))]
         qty, name = None, None
         for tag in data_tags:
             if all(ch.isdigit() for ch in tag.text):
