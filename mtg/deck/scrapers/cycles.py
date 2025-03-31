@@ -14,7 +14,7 @@ import dateutil.parser
 from bs4 import NavigableString, Tag
 
 from mtg import Json
-from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser, is_other_than_mainpage_url
+from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser, is_in_domain_but_not_main
 from mtg.utils.scrape import strip_url_query
 
 _log = logging.getLogger(__name__)
@@ -105,7 +105,7 @@ class CyclesGamingArticleScraper(HybridContainerScraper):
     @staticmethod
     @override
     def is_container_url(url: str) -> bool:
-        return is_other_than_mainpage_url(url, "cyclesgaming.com")
+        return is_in_domain_but_not_main(url, "cyclesgaming.com")
 
     @staticmethod
     @override

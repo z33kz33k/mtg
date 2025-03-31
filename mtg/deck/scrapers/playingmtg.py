@@ -14,7 +14,9 @@ import dateutil.parser
 from bs4 import Tag
 from selenium.common.exceptions import TimeoutException
 
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
+from mtg import Json
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
+    is_in_domain_but_not_main
 from mtg.scryfall import Card
 from mtg.utils import extract_float, extract_int
 from mtg.utils.scrape import ScrapingError, get_links, get_next_sibling_tag, strip_url_query
@@ -33,7 +35,7 @@ class PlayingMtgDeckScraper(DeckScraper):
     @staticmethod
     @override
     def is_deck_url(url: str) -> bool:
-        return "playingmtg.com/decks/" in url.lower()
+        return is_in_domain_but_not_main(url, "playingmtg.com/decks")
 
     @staticmethod
     @override
@@ -105,6 +107,13 @@ class PlayingMtgDeckScraper(DeckScraper):
             for card_tag in card_tags:
                 self._sideboard += self._parse_card(card_tag)
 
+        if commander_hook := self._soup.find("div", string=lambda s: s and s == "Commander"):
+            commander_tag = commander_hook.parent
+            card_tags = [a_tag.parent for a_tag in commander_tag.find_all(
+                "a", href=lambda h: h and "playingmtg.com/" in h)]
+            for card_tag in card_tags:
+                self._set_commander(self._parse_card(card_tag)[0])
+
 
 @DeckUrlsContainerScraper.registered
 class PlayingMtgTournamentScraper(DeckUrlsContainerScraper):
@@ -119,7 +128,7 @@ class PlayingMtgTournamentScraper(DeckUrlsContainerScraper):
     @staticmethod
     @override
     def is_container_url(url: str) -> bool:
-        return "playingmtg.com/tournaments/" in url.lower()
+        return is_in_domain_but_not_main(url, "playingmtg.com/tournaments")
 
     @override
     def _pre_parse(self) -> None:
@@ -182,3 +191,47 @@ class PlayingMtgTournamentScraper(DeckUrlsContainerScraper):
         self._parse_metadata()
         return get_links(
             self._soup, href=lambda h: h and "/decks/" in h and "playingmtg.com/" not in h)
+
+
+@HybridContainerScraper.registered
+class PlayingMtgArticleScraper(HybridContainerScraper):
+    """Scraper of PlayingMTG article page.
+    """
+    THROTTLING = DeckUrlsContainerScraper.THROTTLING * 2  # override
+    CONTAINER_NAME = "PlayingMTG article"  # override
+    XPATH = '//div[@class="RootOfEmbeddedDeck"]//a[contains(@href, "/decks/")]'
+    DECK_URL_PREFIX = URL_PREFIX  # override
+
+    @staticmethod
+    @override
+    def is_container_url(url: str) -> bool:
+        tokens = (
+            "decks", "tournaments", "wp-content", "news", "mtg-arena", "spoilers", "commander",
+            "standard", "modern", "pioneer", "collection", "prices", "products", "schedule",
+            "builder", "meta", "tier-list")
+        if any(f"playingmtg.com/{t}" in url.lower() for t in tokens):
+            return False
+        return is_in_domain_but_not_main(url, "playingmtg.com")
+
+    @override
+    def _pre_parse(self) -> None:
+        try:
+            self._soup, _, _ = get_dynamic_soup(self.url, self.XPATH, wait_for_all=True)
+        except TimeoutException:
+            self._soup = None
+        if not self._soup:
+            raise ScrapingError(self._error_msg)
+
+    @override
+    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
+        deck_tags = [*self._soup.find_all("div", class_="RootOfEmbeddedDeck")]
+        a_tags = [t.find("a", href=lambda h: h and "/decks/" in h) for t in deck_tags]
+        deck_urls = [t["href"] for t in a_tags if t]
+
+        article_tag = self._soup.find("article")
+        if not article_tag:
+            _log.warning("Article tag not found")
+            return deck_urls, [], [], []
+
+        p_deck_urls, _ = self._get_links_from_tags(*article_tag.find_all("p"))
+        return deck_urls + [l for l in p_deck_urls if l not in deck_urls], [], [], []

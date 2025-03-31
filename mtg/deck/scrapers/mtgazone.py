@@ -17,7 +17,7 @@ from bs4 import Tag
 from mtg import Json
 from mtg.deck import Deck, Mode
 from mtg.deck.scrapers import DeckScraper, DeckTagsContainerScraper, \
-    HybridContainerScraper, TagBasedDeckParser, is_other_than_mainpage_url
+    HybridContainerScraper, TagBasedDeckParser, is_in_domain_but_not_main
 from mtg.scryfall import ARENA_FORMATS, Card
 from mtg.utils import extract_int, from_iterable, timed
 from mtg.utils.scrape import ScrapingError, getsoup, strip_url_query
@@ -149,7 +149,7 @@ class MtgaZoneArticleScraper(HybridContainerScraper):
     @staticmethod
     @override
     def is_container_url(url: str) -> bool:
-        return is_other_than_mainpage_url(url, "mtgazone.com") and not any(
+        return is_in_domain_but_not_main(url, "mtgazone.com") and not any(
             t in url.lower() for t in ("/user-decks", "/deck/", "/plans/premium",
                                        "/mtg-arena-codes", "/author/", "jump-in"))
 

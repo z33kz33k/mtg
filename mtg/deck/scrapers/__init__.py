@@ -28,12 +28,12 @@ from mtg.utils.scrape.dynamic import get_dynamic_soup
 _log = logging.getLogger(__name__)
 
 
-def is_other_than_mainpage_url(url: str, domain: str) -> bool:
-    """Check whether the passed URL is of the passed domain but other than a mainpage URL.
+def is_in_domain_but_not_main(url: str, domain: str) -> bool:
+    """Check whether the passed URL is of the passed domain but other than exactly this domain.
 
     Args:
         url: URL to check
-        domain: the end-part of URL's domain (e.g. "pauperwave.com")
+        domain: the end-part of URL's domain (including sub-folders, e.g. "pauperwave.com" or "playingmtg/tournaments)
     """
     if f"{domain}/" not in url.lower():
         return False  # not in domain
@@ -41,7 +41,7 @@ def is_other_than_mainpage_url(url: str, domain: str) -> bool:
         return False
     *_, rest = url.lower().split(f"{domain}/")
     if not rest:
-        return False  # in domain but mainpage
+        return False  # the domain exactly
     return True
 
 
