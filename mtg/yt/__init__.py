@@ -31,6 +31,7 @@ import scrapetube
 from bs4 import Tag
 from requests import HTTPError, ReadTimeout, Timeout, ConnectionError
 from selenium.common.exceptions import TimeoutException
+from tqdm import tqdm
 from youtube_comment_downloader import SORT_BY_POPULAR, YoutubeCommentDownloader
 from youtubesearchpython import Channel as YtspChannel
 
@@ -42,7 +43,7 @@ from mtg.deck.scrapers import DeckScraper, DeckTagsContainerScraper, DeckUrlsCon
 from mtg.gstate import CoolOffManager, DecklistsStateManager, UrlsStateManager
 from mtg.scryfall import all_formats
 from mtg.utils import Counter, deserialize_dates, extract_float, find_longest_seqs, \
-    from_iterable, getrepr, multiply_by_symbol, serialize_dates, timed
+    from_iterable, getrepr, logging_disabled, multiply_by_symbol, serialize_dates, timed
 from mtg.utils.files import getdir, sanitize_filename
 from mtg.utils.scrape import ScrapingError, dissect_js, extract_source, extract_url, \
     http_requests_counted, throttled, timed_request, unshorten
@@ -123,8 +124,9 @@ def rescrape_videos(
     """
     chids = chids or retrieve_ids()
     channels = defaultdict(list)
-    for chid in chids:
-        ch = load_channel(chid)
+    for chid in tqdm(chids, total=len(chids), desc="Retrieving video data per channel..."):
+        with logging_disabled():
+            ch = load_channel(chid)
         vids = [v["id"] for v in ch.videos if video_filter(v)]
         if vids:
             channels[chid].extend(vids)
@@ -204,18 +206,19 @@ def scrape_fresh(
     """Scrape those YouTube channels saved in a private Google Sheet that are not active,
     dormant nor abandoned.
     """
-    ids = []
-    for id_ in retrieve_ids():
+    ids, retrieved = [], retrieve_ids()
+    for chid in tqdm(retrieved, total=len(retrieved), desc="Loading channels data..."):
         try:
-            data = load_channel(id_)
+            with logging_disabled():
+                data = load_channel(chid)
         except FileNotFoundError:
             data = None
         if not data:
-            ids.append(id_)
+            ids.append(chid)
         elif data.is_fresh:
             if only_deck_fresh and not data.is_deck_fresh:
                 continue
-            ids.append(id_)
+            ids.append(chid)
     text = "fresh and deck-fresh" if only_deck_fresh else "fresh"
     _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
@@ -226,16 +229,17 @@ def scrape_active(
         videos=50, only_newer_than_last_scraped=True, only_deck_fresh=True) -> None:
     """Scrape those YouTube channels saved in a private Google Sheet that are active.
     """
-    ids = []
-    for id_ in retrieve_ids():
+    ids, retrieved = [], retrieve_ids()
+    for chid in tqdm(retrieved, total=len(retrieved), desc="Loading channels data..."):
         try:
-            data = load_channel(id_)
+            with logging_disabled():
+                data = load_channel(chid)
         except FileNotFoundError:
             data = None
         if data and data.is_active:
             if only_deck_fresh and not data.is_deck_fresh:
                 continue
-            ids.append(id_)
+            ids.append(chid)
     text = "active and deck-fresh" if only_deck_fresh else "active"
     _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
@@ -246,16 +250,17 @@ def scrape_dormant(
         videos=50, only_newer_than_last_scraped=True, only_deck_fresh=True) -> None:
     """Scrape those YouTube channels saved in a private Google Sheet that are dormant.
     """
-    ids = []
-    for id_ in retrieve_ids():
+    ids, retrieved = [], retrieve_ids()
+    for chid in tqdm(retrieved, total=len(retrieved), desc="Loading channels data..."):
         try:
-            data = load_channel(id_)
+            with logging_disabled():
+                data = load_channel(chid)
         except FileNotFoundError:
             data = None
         if data and data.is_dormant:
             if only_deck_fresh and not data.is_deck_fresh:
                 continue
-            ids.append(id_)
+            ids.append(chid)
     text = "dormant and deck-fresh" if only_deck_fresh else "dormant"
     _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
@@ -266,16 +271,17 @@ def scrape_abandoned(
         videos=50, only_newer_than_last_scraped=True, only_deck_fresh=True) -> None:
     """Scrape those YouTube channels saved in a private Google Sheet that are abandoned.
     """
-    ids = []
-    for id_ in retrieve_ids():
+    ids, retrieved = [], retrieve_ids()
+    for chid in tqdm(retrieved, total=len(retrieved), desc="Loading channels data..."):
         try:
-            data = load_channel(id_)
+            with logging_disabled():
+                data = load_channel(chid)
         except FileNotFoundError:
             data = None
         if data and data.is_abandoned:
             if only_deck_fresh and not data.is_deck_fresh:
                 continue
-            ids.append(id_)
+            ids.append(chid)
     text = "abandoned and deck-fresh" if only_deck_fresh else "abandoned"
     _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
@@ -287,16 +293,17 @@ def scrape_deck_stale(
     """Scrape those YouTube channels saved in a private Google Sheet that are considered
     deck-stale.
     """
-    ids = []
-    for id_ in retrieve_ids():
+    ids, retrieved = [], retrieve_ids()
+    for chid in tqdm(retrieved, total=len(retrieved), desc="Loading channels data..."):
         try:
-            data = load_channel(id_)
+            with logging_disabled():
+                data = load_channel(chid)
         except FileNotFoundError:
             data = None
         if data and data.is_deck_stale:
             if only_fresh_or_active and not (data.is_fresh or data.is_active):
                 continue
-            ids.append(id_)
+            ids.append(chid)
     text = "deck-stale and fresh/active" if only_fresh_or_active else "deck-stale"
     _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
@@ -308,16 +315,17 @@ def scrape_very_deck_stale(
     """Scrape those YouTube channels saved in a private Google Sheet that are considered
     very deck-stale.
     """
-    ids = []
-    for id_ in retrieve_ids():
+    ids, retrieved = [], retrieve_ids()
+    for chid in tqdm(retrieved, total=len(retrieved), desc="Loading channels data..."):
         try:
-            data = load_channel(id_)
+            with logging_disabled():
+                data = load_channel(chid)
         except FileNotFoundError:
             data = None
         if data and data.is_very_deck_stale:
             if only_fresh_or_active and not (data.is_fresh or data.is_active):
                 continue
-            ids.append(id_)
+            ids.append(chid)
     text = "very deck-stale and fresh/active" if only_fresh_or_active else "very deck-stale"
     _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
@@ -329,16 +337,17 @@ def scrape_excessively_deck_stale(
     """Scrape those YouTube channels saved in a private Google Sheet that are considered
     excessively deck-stale.
     """
-    ids = []
-    for id_ in retrieve_ids():
+    ids, retrieved = [], retrieve_ids()
+    for chid in tqdm(retrieved, total=len(retrieved), desc="Loading channels data..."):
         try:
-            data = load_channel(id_)
+            with logging_disabled():
+                data = load_channel(chid)
         except FileNotFoundError:
             data = None
         if data and data.is_excessively_deck_stale:
             if only_fresh_or_active and not (data.is_fresh or data.is_active):
                 continue
-            ids.append(id_)
+            ids.append(chid)
     text = "excessively deck-stale and fresh/active" if only_fresh_or_active else (
         "excessively deck-stale")
     _log.info(f"Scraping {len(ids)} {text} channel(s)...")

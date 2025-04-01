@@ -35,6 +35,7 @@ from mtg.utils.scrape import extract_url, getsoup
 _log = logging.getLogger(__name__)
 VIDEO_URL_TEMPLATE = "https://www.youtube.com/watch?v={}"
 CHANNEL_URL_TEMPLATE = "https://www.youtube.com/channel/{}"
+CHANNELS_COUNT = len([d for d in CHANNELS_DIR.iterdir() if d.is_dir()])
 ACTIVE_THRESHOLD = 14  # days (2 weeks)
 DORMANT_THRESHOLD = 30 * 3  # days (ca 3 months)
 ABANDONED_THRESHOLD = 30 * 12  # days (ca. 1 yr)
@@ -216,17 +217,19 @@ def load_channel(channel_id: str) -> ChannelData:
 def load_channels() -> Generator[ChannelData, None, None]:
     """Load channel data for all channels recorded in a private Google Sheet.
     """
-    for id_ in retrieve_ids():
-        yield load_channel(id_)
+    with logging_disabled():
+        for id_ in retrieve_ids():
+            yield load_channel(id_)
 
 
 def update_gsheet() -> None:
     """Update "channels" Google Sheets worksheet.
     """
-    data = []
-    for id_ in retrieve_ids():
+    data, ids = [], retrieve_ids()
+    for id_ in tqdm(ids, total=len(ids), desc="Loading channels data..."):
         try:
-            ch = load_channel(id_)
+            with logging_disabled():
+                ch = load_channel(id_)
             formats = sorted(ch.deck_formats.items(), key=itemgetter(1), reverse=True)
             formats = [pair[0] for pair in formats]
             deck_sources = sorted(ch.deck_sources.items(), key=itemgetter(1), reverse=True)
@@ -315,7 +318,7 @@ def find_orphans() -> dict[str, list[str]]:
 
     """
     regular_ids, extended_ids = {}, {}
-    for ch in load_channels():
+    for ch in tqdm(load_channels(), total=CHANNELS_COUNT, desc="Loading channels data..."):
         for v in ch.videos:
             for deck in v["decks"]:
                 path_regular = DataPath(ch.id, v["id"], deck["decklist_id"])
@@ -343,7 +346,9 @@ def find_orphans() -> dict[str, list[str]]:
 def get_aggregate_deck_data() -> tuple[Counter, Counter]:
     """Get aggregated deck data across all channels.
     """
-    decks = [d for ch in load_channels() for d in ch.decks]
+    decks = [
+        d for ch in tqdm(load_channels(), total=CHANNELS_COUNT, desc="Loading channels data...")
+        for d in ch.decks]
     fmts = []
     for d in decks:
         if fmt := d["metadata"].get("format"):
@@ -484,7 +489,9 @@ def find_dangling_decklists() -> dict[str, str]:
     manager.load()
     loaded_regular, loaded_extended = manager.regular, manager.extended
     dangling, scraped_regular, scraped_extended = {}, set(), set()
-    decks = [d for ch in load_channels() for d in ch.decks]
+    decks = [
+        d for ch in tqdm(load_channels(), total=CHANNELS_COUNT, desc="Loading channels data...")
+        for d in ch.decks]
     for d in decks:
         scraped_regular.add(d["decklist_id"])
         scraped_extended.add(d["decklist_extended_id"])
@@ -647,8 +654,9 @@ def retrieve_video_data(
     """
     chids = chids or retrieve_ids()
     channels = defaultdict(list)
-    for chid in chids:
-        ch = load_channel(chid)
+    for chid in tqdm(chids, total=len(chids), desc="Retrieving video data per channel..."):
+        with logging_disabled():
+            ch = load_channel(chid)
         vids = [v for v in ch.videos if video_filter(v)]
         if vids:
             channels[chid].extend(vids)
@@ -684,7 +692,7 @@ def dump_decks(
     timestamp = datetime.now().strftime(FILENAME_TIMESTAMP_FORMAT)
     dstdir = dstdir or DECKS_DIR / "yt" / timestamp
     dstdir = getdir(dstdir)
-    channels = [*load_channels()]
+    channels = [*tqdm(load_channels(), total=CHANNELS_COUNT, desc="Loading channels data...")]
     total = sum(len(ch.decks) for ch in channels)
     with logging_disabled():
         for exporter, channel_dir in tqdm(
