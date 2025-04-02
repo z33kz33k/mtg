@@ -25,7 +25,6 @@ from mtg.deck.scrapers.cardsrealm import CardsrealmFolderScraper
 from mtg.deck.scrapers.moxfield import MoxfieldBookmarkScraper
 from mtg.deck.scrapers.tappedout import TappedoutFolderScraper
 from mtg.scryfall import Card
-from mtg.utils import ParsingError
 from mtg.utils.scrape import ScrapingError, get_links, prepend_url, strip_url_query
 from mtg.utils.scrape import getsoup
 

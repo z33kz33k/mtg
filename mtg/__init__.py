@@ -12,8 +12,7 @@ import logging
 import os
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
-from typing import Any, Callable
-
+from typing import Any
 
 __appname__ = __name__
 __version__ = "0.7"
@@ -111,6 +110,7 @@ from mtg.deck.scrapers.mtgo import DeckScraper
 from mtg.deck.scrapers.mtgstocks import DeckScraper
 from mtg.deck.scrapers.mtgotraders import DeckScraper
 from mtg.deck.scrapers.mtgtop8 import DeckScraper
+from mtg.deck.scrapers.mtgvault import DeckScraper
 from mtg.deck.scrapers.paupermtg import DeckScraper
 from mtg.deck.scrapers.pauperwave import HybridContainerScraper
 from mtg.deck.scrapers.penny import DeckScraper

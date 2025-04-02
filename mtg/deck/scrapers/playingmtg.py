@@ -193,6 +193,8 @@ class PlayingMtgTournamentScraper(DeckUrlsContainerScraper):
             self._soup, href=lambda h: h and "/decks/" in h and "playingmtg.com/" not in h)
 
 
+# TODO: tags-based decklists scraping (only if PlayingMTG articles start to be regularly featured
+#  in YT videos)
 @HybridContainerScraper.registered
 class PlayingMtgArticleScraper(HybridContainerScraper):
     """Scraper of PlayingMTG article page.
