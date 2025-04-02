@@ -121,6 +121,7 @@ YT videos descriptions).
         * [MTGO](https://www.mtgo.com/en/mtgo) events
         * MTGStocks articles
         * MTGTop8 events
+        * MTGVault users
         * [Pauperwave](https://www.pauperwave.com) articles
         * PennyDreadfulMagic competitions and users
         * PlayingMTG articles and tournaments
@@ -133,7 +134,7 @@ YT videos descriptions).
         * [TopDeck.gg](https://topdeck.gg) brackets and profiles
         * Untapped profiles
         * [WotC (official MTG site)](https://magic.wizards.com/en) articles
-    * 77 container pages in total with 18 more in plans
+    * 78 container pages in total with 17 more in plans
 * Assessing the meta:
     * Scraping Goldfish and MGTAZone for meta-decks (others in plans)
     * Scraping a singular Untapped meta-deck decklist page

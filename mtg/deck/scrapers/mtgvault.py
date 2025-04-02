@@ -13,9 +13,9 @@ from typing import override
 import dateutil.parser
 from bs4 import Tag
 
-from mtg.deck.scrapers import DeckScraper
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.scryfall import Card
-from mtg.utils.scrape import ScrapingError, strip_url_query
+from mtg.utils.scrape import ScrapingError, get_links, strip_url_query
 from mtg.utils.scrape import getsoup
 
 _log = logging.getLogger(__name__)
@@ -82,3 +82,36 @@ class MtgVaultDeckScraper(DeckScraper):
         if commandzone_tag := self._soup.select_one("div#command-zone"):
             for card_tag in commandzone_tag.select("div.deck-card"):
                 self._set_commander(self._parse_card(card_tag)[0])
+
+
+@DeckUrlsContainerScraper.registered
+class MtgVaultUserScraper(DeckUrlsContainerScraper):
+    """Scraper of MTGVault user page.
+    """
+    CONTAINER_NAME = "MTGVault user"  # override
+    DECK_SCRAPERS = MtgVaultDeckScraper,  # override
+    DECK_URL_PREFIX = "https://www.mtgvault.com"  # override
+
+    @staticmethod
+    @override
+    def is_container_url(url: str) -> bool:
+        return "mtgvault.com/" in url.lower() and "/decks/" not in url.lower()
+
+    @override
+    def _collect(self) -> list[str]:
+        deck_urls = get_links(
+            self._soup, href=lambda h: h and "/decks/" in h and "/search/" not in h)
+
+        url_template = f"{self.url}/?p=" + "{}"
+        current_page = 1
+        if last_tag := self._soup.find("a", string=lambda s: s and s == "Last"):
+            *_, last_page = last_tag.attrs["href"].split("/?p=")
+            last_page = int(last_page)
+            while current_page < last_page:
+                current_page += 1
+                soup = getsoup(url_template.format(current_page))
+                if soup:
+                    deck_urls += get_links(
+                        soup, href=lambda h: h and "/decks/" in h and "/search/" not in h)
+
+        return deck_urls
