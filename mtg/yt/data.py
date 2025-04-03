@@ -715,10 +715,15 @@ def dump_decks(
                         raise
 
 
-def update_avoided() -> None:
-    """Update avoided channels.
+def clean_up(move=True) -> None:
+    """Clean up channels data.
 
-    Channels no longer valid for scraping are avoided. These include channels that:
+    Channels that are no longer present in the private Google Sheet are either removed or moved to
+    "avoided" directory.
+
+    Channels are removed from the sheet (or moved to another one) on a regular basis for variety of
+    reasons. Either they were scraped only temporarily or they enter state that warrants it.
+    This happens when they:
         * got abandoned
         * got deck-stale
         * got deleted entirely or deleted all their content or deleted only their Videos tab
@@ -726,9 +731,13 @@ def update_avoided() -> None:
     ids = set(retrieve_ids())
     for chdir in [d for d in CHANNELS_DIR.iterdir() if d.is_dir()]:
         if chdir.name not in ids:
-            dst = AVOIDED_DIR /  chdir.name
-            _log.info(f"Moving channel data from '{chdir}' to '{dst}'...")
-            shutil.move(chdir, dst)
+            if move:
+                dst = AVOIDED_DIR /  chdir.name
+                _log.info(f"Moving channel data from '{chdir}' to '{dst}'...")
+                shutil.move(chdir, dst)
+            else:
+                _log.info(f"Removing channel data from '{chdir}'...")
+                shutil.rmtree(chdir)
     manager = UrlsStateManager()
     manager.load_failed()
     manager.prune_failed(ids)

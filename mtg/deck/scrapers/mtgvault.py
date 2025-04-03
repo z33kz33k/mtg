@@ -95,7 +95,8 @@ class MtgVaultUserScraper(DeckUrlsContainerScraper):
     @staticmethod
     @override
     def is_container_url(url: str) -> bool:
-        return "mtgvault.com/" in url.lower() and "/decks/" not in url.lower()
+        return ("mtgvault.com/" in url.lower() and "/decks/" not in url.lower()
+                and "/ViewDeck.aspx" not in url)
 
     @override
     def _collect(self) -> list[str]:
