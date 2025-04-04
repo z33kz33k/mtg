@@ -379,6 +379,8 @@ class DeckUrlsContainerScraper(ContainerScraper):
     def _process_deck_urls(self) -> list[Deck]:
         decks = []
         for i, deck_url in enumerate(self._deck_urls, start=1):
+            if self.url in deck_url:
+                continue  # avoid scraping self in infinite loop
             scraper = self._dispatch_deck_scraper(deck_url, self._metadata)
             if not scraper:
                 continue
@@ -616,6 +618,8 @@ class HybridContainerScraper(
     def _process_container_urls(self) -> list[Deck]:
         decks = []
         for i, url in enumerate(self._container_urls, start=1):
+            if self.url in url:
+                continue  # avoid scraping self in infinite loop
             if scraper := self._dispatch_container_scraper(url, self._metadata):
                 sanitized_url = scraper.sanitize_url(url)
                 if self._urls_manager.is_scraped(sanitized_url):
