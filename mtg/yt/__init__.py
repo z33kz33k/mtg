@@ -585,6 +585,7 @@ class Video:
         "bli.nk/",
         "buff.ly/",
         "clicky.me/",
+        "cmkt.co/",  # Cardmarket link
         "cutt.ly/",
         "dub.co/",
         "dub.sh/",

@@ -145,7 +145,7 @@ class GoldfishDeckScraper(DeckScraper):
         try:
             self._soup, _, _ = get_dynamic_soup(
                 self.url, self.XPATH, consent_xpath=CONSENT_XPATH)
-            if not self._soup:
+            if not self._soup or "Oops... Page not found" in self._soup.text:
                 raise ScrapingError("Page not available")
         except TimeoutException:
             raise ScrapingError("Page not available")

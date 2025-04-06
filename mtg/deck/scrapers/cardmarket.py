@@ -31,8 +31,7 @@ class CardmarketDeckTagParser(TagBasedDeckParser):
     def _parse_metadata(self) -> None:
         title = self._deck_tag.select_one("thead").text.strip()
         if ", " in title:
-            name_part, *other_parts = title.split(", ")
-            tokens = [t.lower() for p in other_parts for t in p.split()]
+            tokens = [t.lower() for t in title.split()]
             if "duel" in tokens and "commander" in tokens:
                 self._update_fmt("duel")
             elif "pauper" in tokens and "commander" in tokens:
@@ -43,9 +42,12 @@ class CardmarketDeckTagParser(TagBasedDeckParser):
                 self._update_fmt("standardbrawl")
             elif fmt := from_iterable(tokens, lambda t: t in all_formats()):
                 self._update_fmt(fmt)
+            name_part, *other_parts = title.split(", ")
             self._metadata["details"] = [*other_parts]
-            if "by" in name_part:
+            if " by " in name_part:
                 name, author = name_part.split(" by ", maxsplit=1)
+            elif " – " in name_part:
+                name, author = name_part.split(" – ", maxsplit=1)
             else:
                 name = name_part
                 author = None
@@ -53,24 +55,61 @@ class CardmarketDeckTagParser(TagBasedDeckParser):
                 self._metadata["author"] = author
             self._metadata["name"] = name
         else:
-            self._metadata["name"] = title
-            if "commander" in self._metadata["article_tags"]:
-                self._update_fmt("commander")
+            self._metadata["name"] = title if title.lower() not in (
+                "main", "mainboard", "main board", "main deck", "maindeck", "decklist",
+                "deck") else self._metadata["title"]
+        if not self.fmt:
+            if fmt := from_iterable(self._metadata["article_tags"], lambda t: t in all_formats()):
+                self._update_fmt(fmt)
 
     @classmethod
-    def _parse_card(cls, card_tag: Tag) -> list[Card]:
-        qty, *_ = card_tag.text.strip().split()
-        name = card_tag.find("hoverable-card").attrs["name"]
-        return cls.get_playset(cls.find_card(name), int(qty))
+    def _parse_li_tag(cls, li_tag: Tag) -> list[Card]:
+        if len([*li_tag.select("hoverable-card")]) > 1:
+            return []
+        try:
+            qty, *_ = li_tag.text.strip().split()
+            qty = int(qty.strip())
+        except ValueError:
+            return []
+        name = li_tag.find("hoverable-card").attrs["name"]
+        return cls.get_playset(cls.find_card(name), qty)
+
+    def _parse_ul_tags(self, ul_tags: list[Tag], has_sideboard: bool) -> None:
+        for i, ul_tag in enumerate(ul_tags):
+            board = self._sideboard if has_sideboard and i == len(ul_tags) - 1 else self._maindeck
+            for li_tag in [t for t in ul_tag.select("li") if t.find("hoverable-card")]:
+                board += self._parse_li_tag(li_tag)
+
+    @classmethod
+    def _parse_card_tag(cls, card_tag: Tag) -> list[Card]:
+        name = card_tag.attrs["name"]
+        qty = card_tag.previous.text.strip()
+        try:
+            qty = int(qty)
+        except ValueError:
+            return []
+        return cls.get_playset(cls.find_card(name), qty)
+
+    def _parse_table_tags(self, has_sideboard: bool) -> None:
+        if has_sideboard:
+            maindeck_table, sideboards_table = self._deck_tag.find_all("table")
+        else:
+            maindeck_table = self._deck_tag.find("table")
+            sideboards_table = None
+        for card_tag in maindeck_table.find_all("hoverable-card"):
+            self._maindeck += self._parse_card_tag(card_tag)
+        if has_sideboard:
+            for card_tag in sideboards_table.find_all("hoverable-card"):
+                self._sideboard += self._parse_card_tag(card_tag)
 
     @override
     def _parse_decklist(self) -> None:
         has_sideboard = len([*self._deck_tag.find_all("thead")]) == 2
         ul_tags = [*self._deck_tag.select("ul")]
-        for i, ul_tag in enumerate(ul_tags):
-            board = self._sideboard if has_sideboard and i == len(ul_tags) - 1 else self._maindeck
-            for li_tag in [t for t in ul_tag.select("li") if t.text.strip()]:
-                board += self._parse_card(li_tag)
+        if ul_tags:
+            self._parse_ul_tags(ul_tags, has_sideboard)
+        else:
+            self._parse_table_tags(has_sideboard)
         has_commander = False
         if self.fmt and self.fmt in COMMANDER_FORMATS:
             has_commander = True
@@ -122,10 +161,14 @@ class CardmarketArticleScraper(HybridContainerScraper):
         if article_tags := [
             t.text.strip().lower() for t in self._soup.select("a.u-article-meta__tag")]:
             self._metadata["article_tags"] = article_tags
+        if title_tag := self._soup.select_one("h1.u-content__title"):
+            self._metadata["title"] = title_tag.text.strip()
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
-        deck_tags = [*self._soup.select("div.table-responsive.mb-4")]
+        deck_tags = [
+            t for t in self._soup.select("div.table-responsive.mb-4")
+            if t.find("hoverable-card")]
         self._parse_metadata()
         article_tag = self._soup.find("article")
         if not article_tag:
