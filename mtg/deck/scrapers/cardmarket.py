@@ -30,18 +30,20 @@ class CardmarketDeckTagParser(TagBasedDeckParser):
     @override
     def _parse_metadata(self) -> None:
         title = self._deck_tag.select_one("thead").text.strip()
+
+        tokens = [t.lower() for t in title.split()]
+        if "duel" in tokens and "commander" in tokens:
+            self._update_fmt("duel")
+        elif "pauper" in tokens and "commander" in tokens:
+            self._update_fmt("paupercommander")
+        elif "historic" in tokens and "brawl" in tokens:
+            self._update_fmt("brawl")
+        elif "standard" in tokens and "brawl" in tokens:
+            self._update_fmt("standardbrawl")
+        elif fmt := from_iterable(tokens, lambda t: t in all_formats()):
+            self._update_fmt(fmt)
+
         if ", " in title:
-            tokens = [t.lower() for t in title.split()]
-            if "duel" in tokens and "commander" in tokens:
-                self._update_fmt("duel")
-            elif "pauper" in tokens and "commander" in tokens:
-                self._update_fmt("paupercommander")
-            elif "historic" in tokens and "brawl" in tokens:
-                self._update_fmt("brawl")
-            elif "standard" in tokens and "brawl" in tokens:
-                self._update_fmt("standardbrawl")
-            elif fmt := from_iterable(tokens, lambda t: t in all_formats()):
-                self._update_fmt(fmt)
             name_part, *other_parts = title.split(", ")
             self._metadata["details"] = [*other_parts]
             if " by " in name_part:
@@ -58,6 +60,7 @@ class CardmarketDeckTagParser(TagBasedDeckParser):
             self._metadata["name"] = title if title.lower() not in (
                 "main", "mainboard", "main board", "main deck", "maindeck", "decklist",
                 "deck") else self._metadata["title"]
+
         if not self.fmt:
             if fmt := from_iterable(self._metadata["article_tags"], lambda t: t in all_formats()):
                 self._update_fmt(fmt)
@@ -141,6 +144,7 @@ class CardmarketArticleScraper(HybridContainerScraper):
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
+    @override
     def _pre_parse(self) -> None:
         try:
             self._soup, _, _ = get_dynamic_soup(self.url, self.XPATH, wait_for_all=True)
