@@ -44,12 +44,12 @@ _log = logging.getLogger(__name__)
 
 @dataclass
 class LinktreeData:
-    username : str
+    username : str | None
     url : str
     id : int
-    is_active : bool
-    created_at: datetime
-    updated_at: datetime
+    is_active : bool | None
+    created_at: datetime | None
+    updated_at: datetime | None
     avatar_image : str | None
     description : str | None
     links : list[str]
@@ -143,15 +143,16 @@ class Linktree:
 
     def _get_data(self)-> LinktreeData:
         data = self._json_data["account"]
+        created, updated = data.get("createdAt"), data.get("updatedAt")
 
         return LinktreeData(
-            data["username"],
+            data.get("username"),
             self.url,
             self._account_id,
-            data["isActive"],
-            datetime.fromtimestamp(data["createdAt"] / 1000, UTC),
-            datetime.fromtimestamp(data["updatedAt"] / 1000, UTC),
-            data["profilePictureUrl"],
-            data["description"],
+            data.get("isActive"),
+            datetime.fromtimestamp(created / 1000, UTC) if created else None,
+            datetime.fromtimestamp(updated / 1000, UTC) if updated else None,
+            data.get("profilePictureUrl"),
+            data.get("description"),
             self._links
         )

@@ -28,12 +28,13 @@ def getdir(path: PathLike, create_missing=True) -> Path:
     Optionally, create the directory (and all its needed parents) if it's missing.
     """
     dir_ = Path(path)
-    if not dir_.exists() and create_missing:
+    if dir_.is_file():
+        raise NotADirectoryError(f"Not a directory: '{dir_.resolve()}'")
+    if create_missing:
         _log.warning(f"Creating missing directory at: '{dir_.resolve()}'...")
         dir_.mkdir(parents=True, exist_ok=True)
-    else:
-        if dir_.is_file():
-            raise NotADirectoryError(f"Not a directory: '{dir_.resolve()}'")
+    elif not dir_.exists():
+        raise NotADirectoryError(f"Directory does not exist at: '{dir_.resolve()}'")
     return dir_
 
 

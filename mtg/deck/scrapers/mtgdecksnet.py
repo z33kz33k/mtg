@@ -13,7 +13,6 @@ from typing import override
 import dateutil.parser
 from selenium.common.exceptions import TimeoutException
 
-from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
