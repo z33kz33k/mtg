@@ -132,7 +132,8 @@ class CardmarketArticleScraper(HybridContainerScraper):
     """
     CONTAINER_NAME = "Cardmarket article"  # override
     TAG_BASED_DECK_PARSER = CardmarketDeckTagParser  # override
-    XPATH = "//div[@class='table-responsive mb-4']"
+    XPATH = "//div[@class='table-responsive mb-4']"  # override
+    WAIT_FOR_ALL = True  # override
 
     @staticmethod
     @override
@@ -147,12 +148,7 @@ class CardmarketArticleScraper(HybridContainerScraper):
 
     @override
     def _pre_parse(self) -> None:
-        try:
-            self._soup, _, _ = get_dynamic_soup(self.url, self.XPATH, wait_for_all=True)
-        except TimeoutException:
-            self._soup = None
-        if not self._soup:
-            raise ScrapingError(self._error_msg)
+        super()._pre_parse()
         cat_tag = self._soup.select_one("div.u-article-meta__category")
         if not cat_tag or cat_tag.text.strip().lower() != "magic":
             raise ScrapingError("Not a MtG article")

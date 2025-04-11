@@ -82,6 +82,7 @@ class DeckScraper(DeckParser):
     def sanitize_url(url: str) -> str:
         return url.removesuffix("/")
 
+  # TODO: make it concrete with a default implementation like in ContainerScraper
     @abstractmethod
     @override
     def _pre_parse(self) -> None:
@@ -221,6 +222,7 @@ class ContainerScraper(DeckParser):
     CONTAINER_NAME = None
     _REGISTRY: set[Type[Self]] | None = None
     XPATH, CONSENT_XPATH = "", ""
+    WAIT_FOR_ALL = False
     API_URL_TEMPLATE = ""
     HEADERS = None
 
@@ -275,7 +277,8 @@ class ContainerScraper(DeckParser):
         if self.XPATH:
             try:
                 self._soup, _, _ = get_dynamic_soup(
-                    self.url, self.XPATH, consent_xpath=self.CONSENT_XPATH)
+                    self.url, self.XPATH, consent_xpath=self.CONSENT_XPATH,
+                    wait_for_all=self.WAIT_FOR_ALL)
             except TimeoutException:
                 self._soup = None
         else:

@@ -30,7 +30,7 @@ URL_PREFIX = "https://playingmtg.com"
 class PlayingMtgDeckScraper(DeckScraper):
     """Scraper of PlayingMTG decklist page.
     """
-    XPATH = '//article//div/a[contains(@href, "/playingmtg.com/cards/")]'
+    XPATH = '//article//div/a[contains(@href, "/playingmtg.com/cards/")]'  # override
 
     @staticmethod
     @override
@@ -121,7 +121,8 @@ class PlayingMtgTournamentScraper(DeckUrlsContainerScraper):
     """
     THROTTLING = DeckUrlsContainerScraper.THROTTLING * 2  # override
     CONTAINER_NAME = "PlayingMTG tournament"  # override
-    XPATH = '//div[text()="Event Date"]'
+    XPATH = '//div[text()="Event Date"]'  # override
+    WAIT_FOR_ALL = True  # override
     DECK_SCRAPERS = PlayingMtgDeckScraper,  # override
     DECK_URL_PREFIX = URL_PREFIX  # override
 
@@ -129,15 +130,6 @@ class PlayingMtgTournamentScraper(DeckUrlsContainerScraper):
     @override
     def is_container_url(url: str) -> bool:
         return is_in_domain_but_not_main(url, "playingmtg.com/tournaments")
-
-    @override
-    def _pre_parse(self) -> None:
-        try:
-            self._soup, _, _ = get_dynamic_soup(self.url, self.XPATH, wait_for_all=True)
-        except TimeoutException:
-            self._soup = None
-        if not self._soup:
-            raise ScrapingError(self._error_msg)
 
     def _parse_metadata(self) -> None:
         if event_date_hook := self._soup.find("div", string=lambda s: s and s == "Event Date"):
@@ -201,7 +193,8 @@ class PlayingMtgArticleScraper(HybridContainerScraper):
     """
     THROTTLING = DeckUrlsContainerScraper.THROTTLING * 2  # override
     CONTAINER_NAME = "PlayingMTG article"  # override
-    XPATH = '//div[@class="RootOfEmbeddedDeck"]//a[contains(@href, "/decks/")]'
+    XPATH = '//div[@class="RootOfEmbeddedDeck"]//a[contains(@href, "/decks/")]'  # override
+    WAIT_FOR_ALL = True  # override
     DECK_URL_PREFIX = URL_PREFIX  # override
 
     @staticmethod
@@ -214,15 +207,6 @@ class PlayingMtgArticleScraper(HybridContainerScraper):
         if any(f"playingmtg.com/{t}" in url.lower() for t in tokens):
             return False
         return is_in_domain_but_not_main(url, "playingmtg.com")
-
-    @override
-    def _pre_parse(self) -> None:
-        try:
-            self._soup, _, _ = get_dynamic_soup(self.url, self.XPATH, wait_for_all=True)
-        except TimeoutException:
-            self._soup = None
-        if not self._soup:
-            raise ScrapingError(self._error_msg)
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
