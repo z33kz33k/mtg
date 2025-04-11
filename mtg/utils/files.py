@@ -30,7 +30,7 @@ def getdir(path: PathLike, create_missing=True) -> Path:
     dir_ = Path(path)
     if dir_.is_file():
         raise NotADirectoryError(f"Not a directory: '{dir_.resolve()}'")
-    if create_missing:
+    if not dir_.exists() and create_missing:
         _log.warning(f"Creating missing directory at: '{dir_.resolve()}'...")
         dir_.mkdir(parents=True, exist_ok=True)
     elif not dir_.exists():

@@ -137,7 +137,8 @@ class CardmarketArticleScraper(HybridContainerScraper):
     @staticmethod
     @override
     def is_container_url(url: str) -> bool:
-        return "cardmarket.com/" in url.lower() and "/insight/articles/" in url.lower()
+        return ("cardmarket.com/" in url.lower() and "/insight/articles/" in url.lower() and
+                "/yugioh/" not in url.lower())
 
     @staticmethod
     @override
