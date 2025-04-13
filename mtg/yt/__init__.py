@@ -39,7 +39,7 @@ from mtg import FILENAME_TIMESTAMP_FORMAT, Json, OUTPUT_DIR, PathLike, SECRETS
 from mtg.deck import Deck, SANITIZED_FORMATS
 from mtg.deck.arena import ArenaParser, get_arena_lines, group_arena_lines
 from mtg.deck.scrapers import DeckScraper, DeckTagsContainerScraper, DeckUrlsContainerScraper, \
-    DecksJsonContainerScraper, HybridContainerScraper
+    DecksJsonContainerScraper, HybridContainerScraper, DeckParser
 from mtg.gstate import CoolOffManager, DecklistsStateManager, UrlsStateManager
 from mtg.scryfall import all_formats
 from mtg.utils import Counter, deserialize_dates, extract_float, find_longest_seqs, \
@@ -734,7 +734,6 @@ class Video:
     @timed("gathering video data")
     def _scrape(self) -> None:
         self._get_pytube_data()
-        self._format_soup = self._get_format_soup()
         self._derived_format = self._derive_format()
         self._derived_name = self._derive_name()
         links, lines = self._parse_lines(*self._desc_lines)
@@ -807,20 +806,10 @@ class Video:
     def _derive_format(self) -> str | None:
         # first, check the keywords
         if self.keywords:
-            keywords = [kw.lower() for kw in self.keywords]
-            if sanitized_fmt := from_iterable(SANITIZED_FORMATS, lambda k: k in keywords):
-                return SANITIZED_FORMATS[sanitized_fmt]
-            if fmt := from_iterable(all_formats(), lambda k: k in keywords):
+            if fmt := DeckParser.derive_fmt_from_words(*self.keywords):
                 return fmt
-        # if format soup has been populated, take the most common item
-        if self._format_soup:
-            two_best = Counter(itertools.chain(*self._format_soup.values())).most_common(2)
-            two_best = [pair[0] for pair in two_best]
-            if len(two_best) == 2 and all(fmt in ("brawl", "standard") for fmt in two_best):
-                return "standardbrawl"
-            return two_best[0]
-        # if not, return None
-        return None
+        # then the title and description
+        return DeckParser.derive_fmt_from_text(self.title + self.description)
 
     def _derive_name(self) -> str | None:
         if not self.keywords:

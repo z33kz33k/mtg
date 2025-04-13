@@ -19,16 +19,29 @@ from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
     TagBasedDeckParser
-from mtg.utils.scrape import ScrapingError
+from mtg.utils.scrape import ScrapingError, get_previous_sibling_tag
 from mtg.utils.scrape import strip_url_query
 from mtg.utils.scrape.dynamic import get_dynamic_soup
 
 _log = logging.getLogger(__name__)
+URL_PREFIX = "https://mtgdecks.net"
 
 
 class MtgDecksNetDeckTagParser(TagBasedDeckParser):
     """Parser of MtgDecks.net decklist HTML tag.
     """
+    def _find_title_tag(self) -> Tag | None:
+        tries, tag = 3, self._deck_tag
+        while tries:
+            previous = get_previous_sibling_tag(tag)
+            if not previous:
+                return None
+            if previous.name.startswith("h"):
+                return previous
+            tries -= 1
+            tag = previous
+        return None
+
     @override
     def _parse_metadata(self) -> None:
         info_tag = self._deck_tag.find("div", class_=lambda c: c and "deckHeader" in c)
@@ -41,6 +54,13 @@ class MtgDecksNetDeckTagParser(TagBasedDeckParser):
         if date_part and "\n" in date_part:
             date_part, *_ = date_part.split("\n")
             self._metadata["date"] = dateutil.parser.parse(date_part.strip()).date()
+        # format
+        if title_tag := self._find_title_tag():
+            if fmt := self.derive_fmt_from_text(title_tag.text):
+                self._update_fmt(fmt)
+        if not self.fmt:
+            if fmt := self.derive_fmt_from_text(self._metadata["name"] + self._metadata["event"]):
+                self._update_fmt(fmt)
 
     @override
     def _parse_decklist(self) -> None:
@@ -121,7 +141,7 @@ class MtgDecksNetTournamentScraper(DeckUrlsContainerScraper):
     CONTAINER_NAME = "MTGDecks.net tournament"  # override
     XPATH = '//a[contains(@href, "-decklist-")]'  # override
     DECK_SCRAPERS = MtgDecksNetDeckScraper,  # override
-    DECK_URL_PREFIX = "https://mtgdecks.net"  # override
+    DECK_URL_PREFIX = URL_PREFIX  # override
 
     @staticmethod
     @override
@@ -142,12 +162,18 @@ class MtgDecksNetTournamentScraper(DeckUrlsContainerScraper):
 
 @HybridContainerScraper.registered
 class MtgDecksNetArticleScraper(HybridContainerScraper):
-    """Scraper of MtgDecksNet article page.
+    """Scraper of MtgDecks.net article page.
     """
-    CONTAINER_NAME = "MtgDecksNet article"  # override
+    CONTAINER_NAME = "MtgDecks.net article"  # override
     TAG_BASED_DECK_PARSER = MtgDecksNetDeckTagParser  # override
-    XPATH = "//div[@class='framed']"
-    WAIT_FOR_ALL = True
+    XPATH = "//div[@class='framed']"  # override
+    WAIT_FOR_ALL = True  # override
+    CONTAINER_SCRAPERS = MtgDecksNetTournamentScraper,  # override
+    CONTAINER_URL_PREFIX = URL_PREFIX  # override
+
+    def __init__(self, url: str, metadata: Json | None = None) -> None:
+        super().__init__(url, metadata)
+        self._article_tag: Tag | None = None
 
     @staticmethod
     @override
@@ -163,18 +189,25 @@ class MtgDecksNetArticleScraper(HybridContainerScraper):
 
     @override
     def _parse_metadata(self) -> None:
-        # TODO: derive format from article body (place this code in the parent class)
-        # TODO: derive format if possible from info tag in deck tag parser
-        pass
+        if title_tag := self._article_tag.find("h1"):
+            if fmt := self.derive_fmt_from_text(title_tag.text):
+                self._update_fmt(fmt)
+                return
+        tags = [
+            *self._article_tag.find_all("p"), *self._article_tag.find_all("h2"),
+            *self._article_tag.find_all("h3"), *self._article_tag.find_all("h4")]
+        text = "".join(tag.text for tag in tags)
+        if fmt := self.derive_fmt_from_text(text):
+            self._update_fmt(fmt)
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
         deck_tags = [
             t for t in self._soup.select("div.framed") if t.select_one("textarea#arena_deck")]
-        self._parse_metadata()
-        article_tag = self._soup.select_one("div#articleBody")
-        if not article_tag:
+        self._article_tag = self._soup.select_one("div#articleBody")
+        if not self._article_tag:
             _log.warning("Article tag not found")
             return [], deck_tags, [], []
-        deck_urls, _ = self._get_links_from_tags(*article_tag.find_all("p"))
-        return deck_urls, deck_tags, [], []
+        self._parse_metadata()
+        deck_urls, container_urls = self._get_links_from_tags(*self._article_tag.find_all("p"))
+        return deck_urls, deck_tags, [], container_urls

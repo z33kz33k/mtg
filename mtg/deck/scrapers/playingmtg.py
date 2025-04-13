@@ -19,7 +19,8 @@ from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridConta
     is_in_domain_but_not_main
 from mtg.scryfall import Card
 from mtg.utils import extract_float, extract_int
-from mtg.utils.scrape import ScrapingError, get_links, get_next_sibling_tag, strip_url_query
+from mtg.utils.scrape import ScrapingError, get_links, get_next_sibling_tag, prepend_url, \
+    strip_url_query
 from mtg.utils.scrape.dynamic import get_dynamic_soup
 
 _log = logging.getLogger(__name__)
@@ -195,7 +196,8 @@ class PlayingMtgArticleScraper(HybridContainerScraper):
     CONTAINER_NAME = "PlayingMTG article"  # override
     XPATH = '//div[@class="RootOfEmbeddedDeck"]//a[contains(@href, "/decks/")]'  # override
     WAIT_FOR_ALL = True  # override
-    DECK_URL_PREFIX = URL_PREFIX  # override
+    CONTAINER_SCRAPERS = PlayingMtgTournamentScraper,  # override
+    CONTAINER_URL_PREFIX = URL_PREFIX  # override
 
     @staticmethod
     @override
@@ -212,12 +214,12 @@ class PlayingMtgArticleScraper(HybridContainerScraper):
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
         deck_tags = [*self._soup.find_all("div", class_="RootOfEmbeddedDeck")]
         a_tags = [t.find("a", href=lambda h: h and "/decks/" in h) for t in deck_tags]
-        deck_urls = [t["href"] for t in a_tags if t]
+        deck_urls = [prepend_url(t["href"], URL_PREFIX) for t in a_tags if t]
 
         article_tag = self._soup.find("article")
         if not article_tag:
             _log.warning("Article tag not found")
             return deck_urls, [], [], []
 
-        p_deck_urls, _ = self._get_links_from_tags(*article_tag.find_all("p"))
-        return deck_urls + [l for l in p_deck_urls if l not in deck_urls], [], [], []
+        p_deck_urls, container_urls = self._get_links_from_tags(*article_tag.find_all("p"))
+        return deck_urls + [l for l in p_deck_urls if l not in deck_urls], [], [], container_urls

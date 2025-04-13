@@ -12,14 +12,12 @@ from typing import override
 
 import dateutil.parser
 from bs4 import Tag
-from selenium.common import TimeoutException
 
 from mtg import Json
 from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser
 from mtg.scryfall import COMMANDER_FORMATS, Card, all_formats
 from mtg.utils import from_iterable
 from mtg.utils.scrape import ScrapingError, strip_url_query
-from mtg.utils.scrape.dynamic import get_dynamic_soup
 
 _log = logging.getLogger(__name__)
 

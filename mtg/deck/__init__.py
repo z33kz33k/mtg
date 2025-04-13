@@ -16,7 +16,7 @@ from abc import ABC, abstractmethod
 from collections import Counter, OrderedDict
 from enum import Enum, auto
 from functools import cached_property
-from operator import attrgetter
+from operator import attrgetter, itemgetter
 from typing import Any, Iterable, Iterator, Self
 
 from mtg import Json
@@ -1112,3 +1112,25 @@ class DeckParser(ABC):
                 _log.warning(f"Unexpected format of deck metadata tags: {deck_tags!r}")
 
         return processed
+
+    @staticmethod
+    def derive_fmt_from_words(*words: str) -> str | None:
+        words = {w.lower() for w in words}
+        if sanitized_fmt := from_iterable(SANITIZED_FORMATS, lambda k: k in words):
+            return SANITIZED_FORMATS[sanitized_fmt]
+        return from_iterable(all_formats(), lambda w: w in words)
+
+    @staticmethod
+    def derive_fmt_from_text(text: str) -> str | None:
+        counts, text = [], text.lower()
+        for fmt_word in [*all_formats(), *SANITIZED_FORMATS]:
+            count = text.count(fmt_word)
+            if count:
+                counts.append((fmt_word, count))
+        if not counts:
+            return None
+        counts.sort(key=itemgetter(1), reverse=True)
+        fmt = counts[0][0]
+        if len(counts) >= 2 and counts[0][1] == counts[1][1]:
+            return None  # no clear winner
+        return SANITIZED_FORMATS.get(fmt, fmt)

@@ -122,6 +122,13 @@ def get_next_sibling_tag(tag: Tag) -> Tag | None:
     return None
 
 
+def get_previous_sibling_tag(tag: Tag) -> Tag | None:
+    for sibling in tag.previous_siblings:
+        if isinstance(sibling, Tag):
+            return sibling
+    return None
+
+
 @dataclass
 class Throttling:
     delay: float

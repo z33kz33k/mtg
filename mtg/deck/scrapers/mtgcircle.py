@@ -113,6 +113,9 @@ class MtgCircleVideoDeckScraper(DeckScraper):
             return False
         return True
 
+    # TODO: naive approach won't cut it as they change the structure all the time - a generic
+    #  retriever from structured data is needed that would accept the structure and a predicate
+    #  on item that is looked for (#328)
     @staticmethod
     def _retrieve_deck_data(data: Json) -> Json:
         return data[1][3]["children"][3]["children"][2][3]["children"][0][3]["deck"]
