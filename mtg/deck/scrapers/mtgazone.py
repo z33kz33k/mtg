@@ -108,7 +108,7 @@ class MtgaZoneDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "mtgazone.com/user-decks/" in url.lower() or "mtgazone.com/deck/" in url.lower()
 
     @staticmethod
@@ -148,7 +148,7 @@ class MtgaZoneArticleScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return is_in_domain_but_not_main(url, "mtgazone.com") and not any(
             t in url.lower() for t in ("/user-decks", "/deck/", "/plans/premium",
                                        "/mtg-arena-codes", "/author/", "jump-in"))
@@ -186,7 +186,7 @@ class MtgaZoneAuthorScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "mtgazone.com/author/" in url.lower()
 
     @staticmethod

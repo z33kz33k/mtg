@@ -35,7 +35,7 @@ class PlayingMtgDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return is_in_domain_but_not_main(url, "playingmtg.com/decks")
 
     @staticmethod
@@ -129,7 +129,7 @@ class PlayingMtgTournamentScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return is_in_domain_but_not_main(url, "playingmtg.com/tournaments")
 
     def _parse_metadata(self) -> None:
@@ -201,7 +201,7 @@ class PlayingMtgArticleScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         tokens = (
             "decks", "tournaments", "wp-content", "news", "mtg-arena", "spoilers", "commander",
             "standard", "modern", "pioneer", "collection", "prices", "products", "schedule",

@@ -30,7 +30,7 @@ class MtgTop8DeckScraper(DeckScraper):
     """
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "mtgtop8.com/event?e=" in url.lower() and "&d=" in url.lower()
 
     @staticmethod
@@ -109,7 +109,7 @@ class MtgTop8EventScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "mtgtop8.com/event?e=" in url.lower() and "&d=" not in url.lower()
 
     @staticmethod

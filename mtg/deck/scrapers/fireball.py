@@ -38,7 +38,7 @@ class ChannelFireballDeckScraper(TcgPlayerInfiniteDeckScraper):
     #                     "/?source=cfb-infinite-content&subDecks=true&cards=true&stats=true")
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "channelfireball.com/magic-the-gathering/deck/" in url.lower()
 
 
@@ -57,7 +57,7 @@ class ChannelFireballPlayerScraper(TcgPlayerInfinitePlayerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "channelfireball.com/magic-the-gathering/decks/player/" in url.lower()
 
 
@@ -70,7 +70,7 @@ class ChannelFireballArticleScraper(TcgPlayerInfiniteArticleScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return f"channelfireball.com/article/" in url.lower()
 
 
@@ -86,5 +86,5 @@ class ChannelFireballAuthorScraper(TcgPlayerInfiniteAuthorScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "channelfireball.com/author/" in url.lower() and not url.lower().endswith("/decks")

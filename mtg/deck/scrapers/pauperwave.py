@@ -93,7 +93,7 @@ class PauperwaveArticleScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return is_in_domain_but_not_main(url, "pauperwave.com")
 
     @staticmethod

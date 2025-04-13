@@ -24,7 +24,7 @@ class MagicVilleDeckScraper(DeckScraper):
     """
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         url = url.lower()
         return "magic-ville.com/" in url and "decks/showdeck" in url
 
@@ -121,7 +121,7 @@ class MagicVilleEventScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return all(t in url.lower() for t in ("magic-ville.com/", "decks/decklists?", "event="))
 
     @override
@@ -140,7 +140,7 @@ class MagicVilleUserScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return all(t in url.lower() for t in ("magic-ville.com/", "register/perso?", "user="))
 
     @override

@@ -28,7 +28,7 @@ class ManaStackDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "manastack.com/deck/" in url.lower()
 
     @staticmethod
@@ -94,7 +94,7 @@ class ManaStackUserScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "manastack.com/user/" in url.lower()
 
     @staticmethod

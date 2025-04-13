@@ -105,7 +105,7 @@ class MtgCircleVideoDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         if "mtgcircle.com/videos/" not in url.lower():
             return False
         *_, rest = url.lower().split("mtgcircle.com/videos/")
@@ -151,7 +151,7 @@ class MtgCircleRegularDeckScraper(MtgCircleVideoDeckScraper):
     """
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         if "mtgcircle.com/decks/" not in url.lower():
             return False
         *_, rest = url.lower().split("mtgcircle.com/decks/")
@@ -174,7 +174,7 @@ class MtgCircleArticleScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "mtgcircle.com/articles/" in url.lower()
 
     @staticmethod

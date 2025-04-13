@@ -50,7 +50,7 @@ class TappedoutDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "tappedout.net/mtg-decks/" in url.lower()
 
     @staticmethod
@@ -129,7 +129,7 @@ class TappedoutUserScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "tappedout.net/users/" in url.lower() and "/deck-folders" not in url.lower()
 
     @staticmethod
@@ -171,7 +171,7 @@ class TappedoutFolderScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "tappedout.net/mtg-deck-folders/" in url.lower()
 
     @staticmethod
@@ -207,7 +207,7 @@ class TappedoutUserFolderScraper(TappedoutUserScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "tappedout.net/users/" in url.lower() and "/deck-folders" in url.lower()
 
     @override

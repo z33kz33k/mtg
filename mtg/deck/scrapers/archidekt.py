@@ -14,7 +14,7 @@ from typing import override
 
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
-from mtg.utils.scrape import ScrapingError, get_links, getsoup, strip_url_query
+from mtg.utils.scrape import get_links, strip_url_query
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://archidekt.com"
@@ -24,9 +24,11 @@ URL_PREFIX = "https://archidekt.com"
 class ArchidektDeckScraper(DeckScraper):
     """Scraper of Archidekt decklist page.
     """
+    DATA_FROM_SOUP = True  # override
+
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "archidekt.com/decks/" in url.lower()
 
     @staticmethod
@@ -35,12 +37,9 @@ class ArchidektDeckScraper(DeckScraper):
         return strip_url_query(url)
 
     @override
-    def _pre_parse(self) -> None:
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            raise ScrapingError("Page not available")
+    def _get_data_from_soup(self) -> Json:
         json_data = json.loads(self._soup.find("script", id="__NEXT_DATA__").text)
-        self._deck_data = json_data["props"]["pageProps"]["redux"]["deck"]
+        return json_data["props"]["pageProps"]["redux"]["deck"]
 
     @override
     def _parse_metadata(self) -> None:
@@ -52,14 +51,14 @@ class ArchidektDeckScraper(DeckScraper):
             if "/" in fmt:
                 fmt, *_ = fmt.split("/")
             self._update_fmt(fmt.strip())
-        self._metadata["name"] = self._deck_data["name"]
-        self._metadata["author"] = self._deck_data["owner"]
-        self._metadata["views"] = self._deck_data["viewCount"]
-        date_text = self._deck_data["updatedAt"].replace("Z", "+00:00")
+        self._metadata["name"] = self._data["name"]
+        self._metadata["author"] = self._data["owner"]
+        self._metadata["views"] = self._data["viewCount"]
+        date_text = self._data["updatedAt"].replace("Z", "+00:00")
         self._metadata["date"] = datetime.fromisoformat(date_text).date()
-        if edh_bracket := self._deck_data.get("edhBracket"):
+        if edh_bracket := self._data.get("edhBracket"):
             self._metadata["edh_bracket"] = edh_bracket
-        if tags := self._deck_data.get("deckTags"):
+        if tags := self._data.get("deckTags"):
             self._metadata["tags"] = self.process_metadata_deck_tags(tags)
 
     def _parse_card_json(self, card_json: Json) -> None:
@@ -79,7 +78,7 @@ class ArchidektDeckScraper(DeckScraper):
 
     @override
     def _parse_decklist(self) -> None:
-        for v in self._deck_data["cardMap"].values():
+        for v in self._data["cardMap"].values():
             self._parse_card_json(v)
 
 
@@ -89,7 +88,7 @@ class ArchidektSnapshotScraper(ArchidektDeckScraper):
     """
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "archidekt.com/snapshots/" in url.lower()
 
 
@@ -102,7 +101,7 @@ class ArchidektFolderScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "archidekt.com/folders/" in url.lower()
 
     @staticmethod
@@ -125,7 +124,7 @@ class ArchidektUserScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         url = url.lower()
         return ("archidekt.com/u/" in url or "archidekt.com/user/" in url
                 or ("archidekt.com/search/decks?" in url and "owner=" in url))

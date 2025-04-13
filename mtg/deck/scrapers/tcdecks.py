@@ -33,7 +33,7 @@ class TCDecksDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "tcdecks.net/deck.php?id=" in url.lower() and "&iddeck=" in url.lower()
 
     @override
@@ -100,7 +100,7 @@ class TCDecksEventScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:  # override
+    def is_valid_url(url: str) -> bool:  # override
         return "tcdecks.net/deck.php?id=" in url.lower() and "&iddeck=" not in url.lower()
 
     @override

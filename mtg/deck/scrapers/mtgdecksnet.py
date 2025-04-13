@@ -93,7 +93,7 @@ class MtgDecksNetDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "mtgdecks.net/" in url.lower() and "-decklist-" in url.lower()
 
     @staticmethod
@@ -145,7 +145,7 @@ class MtgDecksNetTournamentScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "mtgdecks.net/" in url.lower() and "-tournament-" in url.lower()
 
     @staticmethod
@@ -177,7 +177,7 @@ class MtgDecksNetArticleScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         tokens = ("/guides/", "/meta/", "/spoilers/", "/theory/", "/news/", "/profiles/")
         tokens = {f"mtgdecks.net{t}" for t in tokens}
         return any(t in url.lower() for t in tokens)

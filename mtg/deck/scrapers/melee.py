@@ -53,7 +53,7 @@ class MeleeGgDeckScraper(DeckScraper):
     """
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "melee.gg/decklist/" in url.lower() or f"{ALT_DOMAIN}/decklist/" in url.lower()
 
     @staticmethod
@@ -114,7 +114,7 @@ class MeleeGgTournamentScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "melee.gg/tournament/" in url.lower() or f"{ALT_DOMAIN}/tournament/" in url.lower()
 
     @override
@@ -138,7 +138,7 @@ class MeleeGgProfileScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "melee.gg/profile/" in url.lower() or f"{ALT_DOMAIN}/profile/" in url.lower()
 
     @override

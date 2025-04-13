@@ -12,17 +12,15 @@ from typing import override
 
 import dateutil.parser
 from bs4 import Tag
-from selenium.common import TimeoutException
 
 from mtg import Json
 from mtg.deck import Deck, Mode
-from mtg.deck.scrapers import DeckScraper, DeckTagsContainerScraper, \
-    DeckUrlsContainerScraper, HybridContainerScraper, TagBasedDeckParser
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
+    TagBasedDeckParser
 from mtg.scryfall import all_formats
 from mtg.utils import extract_int, timed
 from mtg.utils.scrape import ScrapingError, http_requests_counted, strip_url_query, \
     throttled_soup
-from mtg.utils.scrape.dynamic import get_dynamic_soup
 
 _log = logging.getLogger(__name__)
 
@@ -119,15 +117,14 @@ class GoldfishDeckTagParser(TagBasedDeckParser):
 class GoldfishDeckScraper(DeckScraper):
     """Scraper of MtGGoldfish decklist page.
     """
-    XPATH = "//table[@class='deck-view-deck-table']"
-
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        self._deck_parser: GoldfishDeckTagParser | None = None
+    SELENIUM_PARAMS = {  # override
+        "xpath": "//table[@class='deck-view-deck-table']",
+        "consent_xpath": CONSENT_XPATH
+    }
 
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         url = url.lower()
         return (("mtggoldfish.com/deck/" in url or "mtggoldfish.com/archetype/" in url)
                 and "/custom/" not in url)
@@ -141,18 +138,17 @@ class GoldfishDeckScraper(DeckScraper):
         return url
 
     @override
+    def _validate_soup(self) -> None:
+        super()._validate_soup()
+        if "Oops... Page not found" in self._soup.text:
+            raise ScrapingError(self._error_msg)
+
+    @override
     def _pre_parse(self) -> None:
-        try:
-            self._soup, _, _ = get_dynamic_soup(
-                self.url, self.XPATH, consent_xpath=CONSENT_XPATH)
-            if not self._soup or "Oops... Page not found" in self._soup.text:
-                raise ScrapingError("Page not available")
-        except TimeoutException:
-            raise ScrapingError("Page not available")
+        super()._pre_parse()
         deck_tag = self._soup.find("div", class_="deck-container")
         if deck_tag is None:
             raise ScrapingError("Deck data not found")
-
         self._deck_parser = GoldfishDeckTagParser(deck_tag, self._metadata)
 
     @override
@@ -179,7 +175,7 @@ class GoldfishTournamentScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "mtggoldfish.com/tournament/" in url.lower()
 
     @staticmethod
@@ -208,7 +204,7 @@ class GoldfishPlayerScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return ("mtggoldfish.com/deck_searches/create?" in url.lower() and
                 "&deck_search%5Bplayer%5D=" in url)
 
@@ -223,16 +219,17 @@ class GoldfishPlayerScraper(DeckUrlsContainerScraper):
 class GoldfishArticleScraper(HybridContainerScraper):
     """Scraper of MTG Goldfish article page.
     """
+    SELENIUM_PARAMS = {  # override
+        "xpath": "//div[@class='deck-container']",
+        "consent_xpath": CONSENT_XPATH
+    }
     CONTAINER_NAME = "Goldfish article"  # override
-    XPATH = "//div[@class='deck-container']"  # override
-    CONSENT_XPATH = CONSENT_XPATH  # override
-    HEADERS = HEADERS  # override
     TAG_BASED_DECK_PARSER = GoldfishDeckTagParser  # override
     CONTAINER_SCRAPERS = GoldfishTournamentScraper,  # override
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return f"mtggoldfish.com/articles/" in url.lower() and "/search" not in url.lower()
 
     @staticmethod

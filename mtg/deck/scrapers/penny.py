@@ -27,7 +27,7 @@ class PennyDreadfulMagicDeckScraper(DeckScraper):
     """
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "pennydreadfulmagic.com/decks/" in url.lower()
 
     @staticmethod
@@ -100,7 +100,7 @@ class PennyDreadfulMagicCompetitionScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "pennydreadfulmagic.com/competitions/" in url.lower()
 
     @staticmethod
@@ -138,7 +138,7 @@ class PennyDreadfulMagicUserScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "pennydreadfulmagic.com" in url.lower() and "/people/" in url.lower()
 
     @staticmethod

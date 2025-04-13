@@ -33,7 +33,7 @@ class StreamdeckerDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "www.streamdecker.com/deck/" in url.lower()
 
     @staticmethod
@@ -98,7 +98,7 @@ class StreamdeckerUserScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "streamdecker.com/decks/" in url.lower()
 
     @staticmethod

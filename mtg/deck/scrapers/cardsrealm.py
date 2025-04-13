@@ -23,7 +23,7 @@ from mtg import Json
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, \
     HybridContainerScraper
 from mtg.utils import timed
-from mtg.utils.scrape import ScrapingError, dissect_js, getsoup, strip_url_query
+from mtg.utils.scrape import ScrapingError, dissect_js, strip_url_query
 from mtg.utils.scrape.dynamic import SELENIUM_TIMEOUT, accept_consent
 
 _log = logging.getLogger(__name__)
@@ -53,9 +53,11 @@ def to_eng_url(url: str, lang_code_delimiter: str) -> str:
 class CardsrealmDeckScraper(DeckScraper):
     """Scraper of Cardsrealm decklist page.
     """
+    DATA_FROM_SOUP = True  # override
+
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return f"{BASIC_DOMAIN}/" in url.lower() and "/decks/" in url.lower()
 
     @staticmethod
@@ -64,7 +66,8 @@ class CardsrealmDeckScraper(DeckScraper):
         url = strip_url_query(url)
         return to_eng_url(url, "/decks/")
 
-    def _get_deck_data(self) -> Json:
+    @override
+    def _get_data_from_soup(self) -> Json:
         def process(text: str) -> str:
             obj, _ = text.rsplit("]", maxsplit=1)
             return obj + "]"
@@ -72,15 +75,8 @@ class CardsrealmDeckScraper(DeckScraper):
             self._soup, "var deck_cards = ", 'var torneio_type =', end_processor=process)
 
     @override
-    def _pre_parse(self) -> None:
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            raise ScrapingError("Page not available")
-        self._deck_data = self._get_deck_data()
-
-    @override
     def _parse_metadata(self) -> None:
-        card_data = self._deck_data[0]
+        card_data = self._data[0]
         self._metadata["name"] = card_data["deck_title"]
         self._metadata["date"] = dateutil.parser.parse(card_data["deck_lastchange"]).date()
         self._metadata["author"] = card_data["givenNameUser"]
@@ -99,7 +95,7 @@ class CardsrealmDeckScraper(DeckScraper):
     @override
     def _parse_decklist(self) -> None:
         # filter out tokens and maybe-boards
-        for card_data in [cd for cd  in self._deck_data if cd["deck_sideboard"] in (0, 1)]:
+        for card_data in [cd for cd  in self._data if cd["deck_sideboard"] in (0, 1)]:
             self._parse_card_json(card_data)
         self._derive_commander_from_sideboard()
 
@@ -114,7 +110,7 @@ class CardsrealmProfileScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return all(t in url.lower() for t in (f"{BASIC_DOMAIN}/", "/profile/", "/decks"))
 
     @staticmethod
@@ -139,7 +135,7 @@ class CardsrealmFolderScraper(CardsrealmProfileScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return all(t in url.lower() for t in (f"{BASIC_DOMAIN}/", "/decks/folder/"))
 
     @staticmethod
@@ -170,7 +166,7 @@ class CardsrealmMetaTournamentScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return _is_meta_tournament_url(url)
 
     @staticmethod
@@ -196,12 +192,12 @@ class CardsrealmRegularTournamentScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Cardsrealm regular tournament"  # override
     DECK_SCRAPERS = CardsrealmDeckScraper,  # override
-    CONSENT_XPATH = '//button[@id="ez-accept-all"]'  # override
     XPATH = "//button[text()='show deck']"  # override
+    CONSENT_XPATH = '//button[@id="ez-accept-all"]'  # override
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return _is_regular_tournament_url(url)
 
     @staticmethod
@@ -265,7 +261,7 @@ class CardsrealmArticleScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return (all(
             t in url.lower() for t in (f"{BASIC_DOMAIN}/", "/articles/"))
                 and "/search/" not in url.lower())

@@ -20,7 +20,7 @@ from mtg.deck.scrapers import DeckScraper, HybridContainerScraper, TagBasedDeckP
     is_in_domain_but_not_main
 from mtg.scryfall import all_formats
 from mtg.utils import ParsingError, from_iterable, get_date_from_ago_text
-from mtg.utils.scrape import ScrapingError, getsoup, strip_url_query
+from mtg.utils.scrape import ScrapingError, strip_url_query
 
 _log = logging.getLogger(__name__)
 
@@ -31,19 +31,13 @@ class DraftsimDeckScraper(DeckScraper):
     """
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "draftsim.com/decks/" in url.lower()
 
     @staticmethod
     @override
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
-
-    @override
-    def _pre_parse(self) -> None:
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            raise ScrapingError("Page not available")
 
     @override
     def _parse_metadata(self) -> None:
@@ -133,7 +127,7 @@ class DraftsimArticleScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         tokens = "/decks/", "/author/", "/blog", "/ratings/", "/all-sets", "/arenatutor"
         return is_in_domain_but_not_main(url, "draftsim.com") and not any(
             t in url.lower() for t in tokens)
@@ -191,7 +185,7 @@ class DraftsimAuthorScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "draftsim.com/" in url.lower() and "/author/" in url.lower()
 
     @staticmethod

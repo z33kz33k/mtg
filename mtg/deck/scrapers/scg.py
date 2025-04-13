@@ -115,7 +115,7 @@ class ScgDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         if "old.starcitygames.com/decks/" not in url.lower():
             return False
         url = url.removesuffix("/")
@@ -169,7 +169,7 @@ class ScgEventScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         if "old.starcitygames.com/decks/" not in url.lower():
             return False
         url = url.removesuffix("/")
@@ -195,7 +195,7 @@ class ScgEventScraper(DeckUrlsContainerScraper):
             return []
         deck_tags = [
             a_tag for a_tag in section_tag.find_all(
-                "a", href=lambda h: h and ScgDeckScraper.is_deck_url(h))]
+                "a", href=lambda h: h and ScgDeckScraper.is_valid_url(h))]
         return [tag.attrs["href"] for tag in deck_tags if tag is not None]
 
 
@@ -206,7 +206,7 @@ class ScgPlayerScraper(ScgEventScraper):
     CONTAINER_NAME = "StarCityGames player"  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return _is_player_url(url)
 
 
@@ -219,7 +219,7 @@ class ScgDatabaseScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "starcitygames.com/content/" in url.lower() and "-decks" in url.lower()
 
     @staticmethod
@@ -283,7 +283,7 @@ class ScgArticleScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "articles.starcitygames.com/" in url.lower() and "/author/" not in url.lower()
 
     @staticmethod

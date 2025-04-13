@@ -43,7 +43,7 @@ class TcgPlayerDeckScraper(DeckScraper):
     """
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "decks.tcgplayer.com/" in url.lower() and "/search" not in url.lower()
 
     @staticmethod
@@ -106,7 +106,7 @@ class TcgPlayerPlayerScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return ("decks.tcgplayer.com/magic/deck/search?" in url.lower()
                 and"player=" in url)
 
@@ -225,7 +225,7 @@ class TcgPlayerInfiniteDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "infinite.tcgplayer.com/magic-the-gathering/deck/" in url.lower()
 
     @staticmethod
@@ -265,7 +265,7 @@ class TcgPlayerInfinitePlayerScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "infinite.tcgplayer.com/magic-the-gathering/decks/player/" in url.lower()
 
     @staticmethod
@@ -294,7 +294,7 @@ class TcgPlayerInfiniteAuthorSearchScraper(TcgPlayerInfinitePlayerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return ("infinite.tcgplayer.com/magic-the-gathering/decks/advanced-search" in url.lower()
                 and "author=" in url.lower())
 
@@ -324,7 +324,7 @@ class TcgPlayerInfiniteEventScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "infinite.tcgplayer.com/magic-the-gathering/events/event/" in url.lower()
 
     @staticmethod
@@ -369,7 +369,7 @@ class TcgPlayerInfiniteArticleScraper(DecksJsonContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return f"infinite.tcgplayer.com/article/" in url.lower()
 
     @staticmethod
@@ -425,7 +425,7 @@ class TcgPlayerInfiniteAuthorScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "infinite.tcgplayer.com/author/" in url.lower() and not url.lower().endswith(
             "/decks")
 
@@ -478,7 +478,7 @@ class TcgPlayerInfiniteAuthorDecksPaneScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "infinite.tcgplayer.com/author/" in url.lower() and url.lower().endswith("/decks")
 
     @staticmethod

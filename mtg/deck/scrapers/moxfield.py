@@ -35,7 +35,7 @@ class MoxfieldDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         url = url.lower()
         tokens = "public?q=", "/personal"
         return "moxfield.com/decks/" in url and all(t not in url for t in tokens)
@@ -113,7 +113,7 @@ class MoxfieldBookmarkScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "moxfield.com/bookmarks/" in url.lower()
 
     def _get_bookmark_id(self) -> str:
@@ -146,7 +146,7 @@ class MoxfieldUserScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "moxfield.com/users/" in url.lower()
 
     @staticmethod
@@ -180,7 +180,7 @@ class MoxfieldSearchScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "moxfield.com/decks/public?q=" in url.lower()
 
     def _get_filter(self) -> str | None:

@@ -27,7 +27,7 @@ class MtgVaultDeckScraper(DeckScraper):
     """
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "mtgvault.com/" in url.lower() and "/decks/" in url.lower()
 
     @staticmethod
@@ -94,7 +94,7 @@ class MtgVaultUserScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return ("mtgvault.com/" in url.lower() and "/decks/" not in url.lower()
                 and "/ViewDeck.aspx" not in url)
 

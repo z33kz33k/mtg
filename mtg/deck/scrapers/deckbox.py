@@ -14,7 +14,7 @@ from bs4 import Tag
 
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.scryfall import COMMANDER_FORMATS, Card
-from mtg.utils.scrape import ScrapingError, getsoup, strip_url_query
+from mtg.utils.scrape import ScrapingError, strip_url_query
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://deckbox.org"
@@ -26,19 +26,13 @@ class DeckboxDeckScraper(DeckScraper):
     """
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "deckbox.org/sets/" in url.lower()
 
     @staticmethod
     @override
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
-
-    @override
-    def _pre_parse(self) -> None:
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            raise ScrapingError("Page not available")
 
     @override
     def _parse_metadata(self) -> None:
@@ -101,7 +95,7 @@ class DeckboxUserScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "deckbox.org/users/" in url.lower()
 
     @staticmethod
@@ -126,7 +120,7 @@ class DeckboxEventScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "deckbox.org/communities/" in url.lower() and "/events/" in url.lower()
 
     @staticmethod

@@ -345,7 +345,6 @@ class ArenaParser(DeckParser):
         self._lines = get_arena_lines(*self._lines)
         if not self._lines:
             raise IllFormedArenaDecklist("No Arena lines found")
-
         self._handle_missing_commander_line()
 
     @override

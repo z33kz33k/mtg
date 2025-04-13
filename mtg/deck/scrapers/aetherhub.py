@@ -13,15 +13,13 @@ from typing import override
 
 import dateutil.parser
 from bs4 import Tag
-from selenium.common.exceptions import TimeoutException
 
 from mtg import Json
 from mtg.deck import Archetype, Deck, Mode
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
     TagBasedDeckParser
 from mtg.utils import extract_float, extract_int, from_iterable
-from mtg.utils.scrape import ScrapingError, getsoup, strip_url_query
-from mtg.utils.scrape.dynamic import get_dynamic_soup
+from mtg.utils.scrape import ScrapingError, strip_url_query
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://aetherhub.com"
@@ -100,13 +98,10 @@ class AetherhubDeckScraper(DeckScraper):
         "Commander": ("commander", Mode.BO3),
         "Oathbreaker": ("oathbreaker", Mode.BO3),
     }
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        self._deck_parser: AetherhubDeckTagParser | None = None
 
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         url = url.lower()
         tokens = "export/", "/mydecks", "/builder"
         return ("aetherhub.com/" in url and "/deck/" in url
@@ -131,10 +126,14 @@ class AetherhubDeckScraper(DeckScraper):
         return deck_tag
 
     @override
-    def _pre_parse(self) -> None:
-        self._soup = getsoup(self.url)
-        if not self._soup or "404 Page Not Found" in self._soup.text:
+    def _validate_soup(self) -> None:
+        super()._validate_soup()
+        if "404 Page Not Found" in self._soup.text:
             raise ScrapingError("Page not available")
+
+    @override
+    def _pre_parse(self) -> None:
+        super()._pre_parse()
         deck_tag = self._get_deck_tag()
         self._deck_parser = AetherhubDeckTagParser(deck_tag)
 
@@ -218,7 +217,7 @@ class AetherhubWriteupDeckScraper(AetherhubDeckScraper):
     """
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "aetherhub.com/decks/writeups/" in url.lower()
 
     @staticmethod
@@ -229,7 +228,7 @@ class AetherhubWriteupDeckScraper(AetherhubDeckScraper):
     @override
     def _get_deck_tag(self) -> Tag:
         deck_tag = self._soup.find("div", id="tab_deck")
-        if deck_tag is None:
+        if not deck_tag:
             raise ScrapingError("Deck tag not found")
         return deck_tag
 
@@ -241,15 +240,18 @@ CONSENT_XPATH = '//button[@class="ncmp__btn" and contains(text(), "Accept")]'
 class AetherhubUserScraper(DeckUrlsContainerScraper):
     """Scraper of Aetherhub user page.
     """
+    SELENIUM_PARAMS = {  # override
+        "xpath": '//table[@id="metaHubTable"]',
+        "consent_xpath": CONSENT_XPATH,
+        "wait_for_consent_disappearance": False
+    }
     CONTAINER_NAME = "Aetherhub user"  # override
     DECK_SCRAPERS = AetherhubDeckScraper,  # override
-    XPATH = '//table[@id="metaHubTable"]'  # override
-    CONSENT_XPATH = CONSENT_XPATH  # override
-    DECK_URL_PREFIX = URL_PREFIX
+    DECK_URL_PREFIX = URL_PREFIX  # override
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "aetherhub.com/user/" in url.lower()
 
     @staticmethod
@@ -259,17 +261,6 @@ class AetherhubUserScraper(DeckUrlsContainerScraper):
         if not url.lower().endswith("/decks"):
             return f"{url}/decks"
         return url
-
-    @override
-    def _pre_parse(self) -> None:
-        try:
-            self._soup, _, _ = get_dynamic_soup(
-                self.url, self.XPATH, consent_xpath=self.CONSENT_XPATH,
-                wait_for_consent_disappearance=False)
-            if not self._soup:
-                raise ScrapingError(self._error_msg)
-        except TimeoutException:
-            raise ScrapingError(self._error_msg)
 
     @override
     def _collect(self) -> list[str]:
@@ -284,32 +275,24 @@ class AetherhubUserScraper(DeckUrlsContainerScraper):
 class AetherhubEventScraper(DeckUrlsContainerScraper):
     """Scraper of Aetherhub event page.
     """
+    SELENIUM_PARAMS = {  # override
+        "xpath": '//tr[@class="deckdata"]',
+        "consent_xpath": CONSENT_XPATH,
+        "wait_for_consent_disappearance": False
+    }
     CONTAINER_NAME = "Aetherhub event"  # override
     DECK_SCRAPERS = AetherhubDeckScraper,  # override
-    XPATH = '//tr[@class="deckdata"]'  # override
-    CONSENT_XPATH = CONSENT_XPATH   # override
-    DECK_URL_PREFIX = URL_PREFIX
+    DECK_URL_PREFIX = URL_PREFIX  # override
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "aetherhub.com/events/" in url.lower()
 
     @staticmethod
     @override
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
-
-    @override
-    def _pre_parse(self) -> None:
-        try:
-            self._soup, _, _ = get_dynamic_soup(
-                self.url, self.XPATH, consent_xpath=self.CONSENT_XPATH,
-                wait_for_consent_disappearance=False)
-            if not self._soup:
-                raise ScrapingError(self._error_msg)
-        except TimeoutException:
-            raise ScrapingError(self._error_msg)
 
     @override
     def _collect(self) -> list[str]:
@@ -331,7 +314,7 @@ class AetherhubArticleScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "aetherhub.com/article/" in url.lower()
 
     @staticmethod

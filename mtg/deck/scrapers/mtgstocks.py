@@ -33,7 +33,7 @@ class MtgStocksDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "mtgstocks.com/decks/" in url.lower()
 
     @staticmethod
@@ -102,7 +102,7 @@ class MtgStocksArticleScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "mtgstocks.com/news/" in url.lower()
 
     @staticmethod
@@ -116,7 +116,7 @@ class MtgStocksArticleScraper(DeckUrlsContainerScraper):
             _log.warning("Article tag not found")
             return []
         links = get_links(article_tag)
-        return [l for l in links if any(ds.is_deck_url(l) for ds in self._get_deck_scrapers())]
+        return [l for l in links if any(ds.is_valid_url(l) for ds in self._get_deck_scrapers())]
 
     def _collect_own_urls(self) -> list[str]:
         deck_tags = self._soup.find_all("news-deck")

@@ -39,7 +39,7 @@ class PauperMtgDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "paupermtg.com/deck/" in url.lower() or "paupermtg.com/edhdeck/" in url.lower()
 
     @staticmethod

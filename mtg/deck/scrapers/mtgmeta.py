@@ -29,7 +29,7 @@ class MtgMetaIoDeckScraper(DeckScraper):
     """
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "mtgmeta.io/decks/" in url.lower()
 
     @staticmethod
@@ -110,7 +110,7 @@ class MtgMetaIoTournamentScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "mtgmeta.io/tournaments/" in url.lower()
 
     @staticmethod
@@ -168,7 +168,7 @@ class MtgMetaIoArticleScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "mtgmeta.io/articles/" in url.lower()
 
     @staticmethod

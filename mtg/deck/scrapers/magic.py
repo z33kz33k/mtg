@@ -174,7 +174,7 @@ class MagicGgDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return f"magic.gg/decklists/" in url.lower() and "?decklist=" in url.lower()
 
     def _parse_decklist_id(self) -> str:
@@ -219,7 +219,7 @@ class MagicGgEventScraper(DeckTagsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return f"magic.gg/decklists/" in url.lower() and "?decklist=" not in url.lower()
 
     @staticmethod

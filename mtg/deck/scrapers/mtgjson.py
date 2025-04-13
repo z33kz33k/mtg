@@ -36,7 +36,7 @@ class MtgJsonDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "mtgjson.com/api/v5/decks/" in url.lower() and url.lower().endswith(".json")
 
     @override
@@ -85,7 +85,7 @@ def _get_links():
     link_tags = [t for t in link_tags if t is not None]
     return [
         f"{URL}{t['href']}" for t in link_tags
-        if MtgJsonDeckScraper.is_deck_url(f"{URL}{t['href']}")]
+        if MtgJsonDeckScraper.is_valid_url(f"{URL}{t['href']}")]
 
 
 @timed("scraping MTGJSON API deck page")

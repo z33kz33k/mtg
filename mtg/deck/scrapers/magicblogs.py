@@ -91,7 +91,7 @@ class MagicBlogsArticleScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return f"magicblogs.de/blog/" in url.lower()
 
     @staticmethod

@@ -19,7 +19,7 @@ _log = logging.getLogger(__name__)
 def check_unexpected_urls(urls: list[str], *scrapers: Type[DeckScraper]) -> None:
     names = [scraper.__name__ for scraper in scrapers]
     if unexpected := [url for url in urls if url.startswith("http") and
-                      not any(s.is_deck_url(url) for s in scrapers)]:
+                      not any(s.is_valid_url(url) for s in scrapers)]:
         _log.warning(f"Non-{names} deck(s) found: {', '.join(unexpected)}")
 
 
@@ -43,7 +43,7 @@ class TopDeckBracketScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "topdeck.gg/bracket/" in url.lower()
 
     @staticmethod
@@ -69,7 +69,7 @@ class TopDeckProfileScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "topdeck.gg/profile/" in url.lower()
 
     @staticmethod

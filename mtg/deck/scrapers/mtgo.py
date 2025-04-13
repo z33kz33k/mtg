@@ -141,7 +141,7 @@ class MtgoDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return f"mtgo.com/decklist/" in url.lower() and "#deck_" in url.lower()
 
     @staticmethod
@@ -193,7 +193,7 @@ class MtgoEventScraper(DecksJsonContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return f"mtgo.com/decklist/" in url.lower() and "#deck_" not in url.lower()
 
     @staticmethod

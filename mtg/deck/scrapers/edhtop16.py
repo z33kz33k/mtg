@@ -32,7 +32,7 @@ class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "edhtop16.com/tournament/" in url.lower()
 
     @staticmethod
@@ -109,7 +109,7 @@ class EdhTop16CommanderScraper(EdhTop16TournamentScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "edhtop16.com/commander/" in url.lower()
 
     def _process_data(self, data: Json) -> list[str]:  # override
