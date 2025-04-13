@@ -1114,14 +1114,14 @@ class DeckParser(ABC):
         return processed
 
     @staticmethod
-    def derive_fmt_from_words(*words: str) -> str | None:
+    def derive_format_from_words(*words: str) -> str | None:
         words = {w.lower() for w in words}
         if sanitized_fmt := from_iterable(SANITIZED_FORMATS, lambda k: k in words):
             return SANITIZED_FORMATS[sanitized_fmt]
         return from_iterable(all_formats(), lambda w: w in words)
 
     @staticmethod
-    def derive_fmt_from_text(text: str) -> str | None:
+    def derive_format_from_text(text: str) -> str | None:
         counts, text = [], text.lower()
         for fmt_word in [*all_formats(), *SANITIZED_FORMATS]:
             count = text.count(fmt_word)

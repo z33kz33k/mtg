@@ -28,7 +28,7 @@ URL_PREFIX = "https://mtgdecks.net"
 
 
 class MtgDecksNetDeckTagParser(TagBasedDeckParser):
-    """Parser of MtgDecks.net decklist HTML tag.
+    """Parser of MTGDecks.net decklist HTML tag.
     """
     def _find_title_tag(self) -> Tag | None:
         tries, tag = 3, self._deck_tag
@@ -56,10 +56,10 @@ class MtgDecksNetDeckTagParser(TagBasedDeckParser):
             self._metadata["date"] = dateutil.parser.parse(date_part.strip()).date()
         # format
         if title_tag := self._find_title_tag():
-            if fmt := self.derive_fmt_from_text(title_tag.text):
+            if fmt := self.derive_format_from_text(title_tag.text):
                 self._update_fmt(fmt)
         if not self.fmt:
-            if fmt := self.derive_fmt_from_text(self._metadata["name"] + self._metadata["event"]):
+            if fmt := self.derive_format_from_text(self._metadata["name"] + self._metadata["event"]):
                 self._update_fmt(fmt)
 
     @override
@@ -162,9 +162,9 @@ class MtgDecksNetTournamentScraper(DeckUrlsContainerScraper):
 
 @HybridContainerScraper.registered
 class MtgDecksNetArticleScraper(HybridContainerScraper):
-    """Scraper of MtgDecks.net article page.
+    """Scraper of MTGDecks.net article page.
     """
-    CONTAINER_NAME = "MtgDecks.net article"  # override
+    CONTAINER_NAME = "MTGDecks.net article"  # override
     TAG_BASED_DECK_PARSER = MtgDecksNetDeckTagParser  # override
     XPATH = "//div[@class='framed']"  # override
     WAIT_FOR_ALL = True  # override
@@ -190,14 +190,14 @@ class MtgDecksNetArticleScraper(HybridContainerScraper):
     @override
     def _parse_metadata(self) -> None:
         if title_tag := self._article_tag.find("h1"):
-            if fmt := self.derive_fmt_from_text(title_tag.text):
+            if fmt := self.derive_format_from_text(title_tag.text):
                 self._update_fmt(fmt)
                 return
         tags = [
             *self._article_tag.find_all("p"), *self._article_tag.find_all("h2"),
             *self._article_tag.find_all("h3"), *self._article_tag.find_all("h4")]
         text = "".join(tag.text for tag in tags)
-        if fmt := self.derive_fmt_from_text(text):
+        if fmt := self.derive_format_from_text(text):
             self._update_fmt(fmt)
 
     @override

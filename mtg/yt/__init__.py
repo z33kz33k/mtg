@@ -806,10 +806,10 @@ class Video:
     def _derive_format(self) -> str | None:
         # first, check the keywords
         if self.keywords:
-            if fmt := DeckParser.derive_fmt_from_words(*self.keywords):
+            if fmt := DeckParser.derive_format_from_words(*self.keywords):
                 return fmt
         # then the title and description
-        return DeckParser.derive_fmt_from_text(self.title + self.description)
+        return DeckParser.derive_format_from_text(self.title + self.description)
 
     def _derive_name(self) -> str | None:
         if not self.keywords:
