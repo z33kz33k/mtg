@@ -10,12 +10,9 @@
 import logging
 from typing import override
 
-from selenium.common.exceptions import TimeoutException
-
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.utils import get_date_from_ago_text
-from mtg.utils.scrape import ScrapingError, strip_url_query
-from mtg.utils.scrape.dynamic import get_dynamic_soup
+from mtg.utils.scrape import strip_url_query
 
 _log = logging.getLogger(__name__)
 
@@ -24,7 +21,9 @@ _log = logging.getLogger(__name__)
 class ManaStackDeckScraper(DeckScraper):
     """Scraper of ManaStack decklist page.
     """
-    XPATH = "//div[@class='deck-list-container']"
+    SELENIUM_PARAMS = {  # override
+        "xpath": "//div[@class='deck-list-container']"
+    }
 
     @staticmethod
     @override
@@ -35,13 +34,6 @@ class ManaStackDeckScraper(DeckScraper):
     @override
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
-
-    @override
-    def _pre_parse(self) -> None:
-        try:
-            self._soup, _, _ = get_dynamic_soup(self.url, self.XPATH)
-        except TimeoutException:
-            raise ScrapingError(f"Scraping failed due to Selenium timing out")
 
     @override
     def _parse_metadata(self) -> None:
@@ -87,8 +79,10 @@ class ManaStackDeckScraper(DeckScraper):
 class ManaStackUserScraper(DeckUrlsContainerScraper):
     """Scraper of ManaStack user page.
     """
+    SELENIUM_PARAMS = {  # override
+        "xpath": '//div[@class="deck-listing-container"]'
+    }
     CONTAINER_NAME = "ManaStack user"  # override
-    XPATH = '//div[@class="deck-listing-container"]'  # override
     DECK_SCRAPERS = ManaStackDeckScraper,  # override
     DECK_URL_PREFIX = "https://manastack.com"  # override
 

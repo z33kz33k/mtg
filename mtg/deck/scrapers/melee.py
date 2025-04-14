@@ -51,6 +51,8 @@ def get_source(src: str) -> str | None:
 class MeleeGgDeckScraper(DeckScraper):
     """Scraper of Melee.gg decklist page.
     """
+    HEADERS = HEADERS
+
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
@@ -60,12 +62,6 @@ class MeleeGgDeckScraper(DeckScraper):
     @override
     def sanitize_url(url: str) -> str:
         return url.replace(ALT_DOMAIN, "melee.gg")
-
-    @override
-    def _pre_parse(self) -> None:
-        self._soup = getsoup(self.url, headers=HEADERS)
-        if not self._soup:
-            raise ScrapingError("Page not available")
 
     @override
     def _parse_metadata(self) -> None:
@@ -107,8 +103,10 @@ class MeleeGgDeckScraper(DeckScraper):
 class MeleeGgTournamentScraper(DeckUrlsContainerScraper):
     """Scraper of Melee.gg tournament page.
     """
+    SELENIUM_PARAMS = {  # override
+        "xpath": '//a[@data-type="decklist"]'
+    }
     CONTAINER_NAME = "Melee.gg tournament"  # override
-    XPATH = '//a[@data-type="decklist"]'  # override
     DECK_SCRAPERS = MeleeGgDeckScraper,  # override
     DECK_URL_PREFIX = URL_PREFIX  # override
 
@@ -131,8 +129,10 @@ class MeleeGgTournamentScraper(DeckUrlsContainerScraper):
 class MeleeGgProfileScraper(DeckUrlsContainerScraper):
     """Scraper of Melee.gg profile page.
     """
+    SELENIUM_PARAMS = {  # override
+        "xpath": '//tr[@role="row"]'
+    }
     CONTAINER_NAME = "Melee.gg profile"  # override
-    XPATH = '//tr[@role="row"]'  # override
     DECK_SCRAPERS = MeleeGgDeckScraper,  # override
     DECK_URL_PREFIX = URL_PREFIX  # override
 

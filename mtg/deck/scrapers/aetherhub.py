@@ -117,14 +117,6 @@ class AetherhubDeckScraper(DeckScraper):
             url = url.removesuffix("/Gallery").removesuffix("/gallery")
         return url.removesuffix("/")
 
-    def _get_deck_tag(self) -> Tag:
-        deck_tags = self._soup.find_all("div", class_="row")
-        deck_tag = from_iterable(
-            deck_tags, lambda t: t.text.strip().startswith(("Main", "Commander", "Companion")))
-        if deck_tag is None:
-            raise ScrapingError("Deck tag not found")
-        return deck_tag
-
     @override
     def _validate_soup(self) -> None:
         super()._validate_soup()
@@ -132,10 +124,13 @@ class AetherhubDeckScraper(DeckScraper):
             raise ScrapingError("Page not available")
 
     @override
-    def _pre_parse(self) -> None:
-        super()._pre_parse()
-        deck_tag = self._get_deck_tag()
-        self._deck_parser = AetherhubDeckTagParser(deck_tag)
+    def _get_deck_parser(self) -> AetherhubDeckTagParser:
+        deck_tags = self._soup.find_all("div", class_="row")
+        deck_tag = from_iterable(
+            deck_tags, lambda t: t.text.strip().startswith(("Main", "Commander", "Companion")))
+        if deck_tag is None:
+            raise ScrapingError("Deck tag not found")
+        return AetherhubDeckTagParser(deck_tag)
 
     @override
     def _parse_metadata(self) -> None:
@@ -156,8 +151,7 @@ class AetherhubDeckScraper(DeckScraper):
         # archetype
         if archetype_tag := self._soup.find(["div", "span"], class_="archetype-tag"):
             archetype = archetype_tag.text.strip().lower()
-            if archetype in {a.value for a in Archetype}:
-                self._metadata["archetype"] = archetype
+            self._update_archetype_or_theme(archetype)
 
         # date and other (only in user-submitted decklists)
         if date_tags := self._soup.select(
@@ -226,11 +220,11 @@ class AetherhubWriteupDeckScraper(AetherhubDeckScraper):
         return strip_url_query(url)
 
     @override
-    def _get_deck_tag(self) -> Tag:
+    def _get_deck_parser(self) -> AetherhubDeckTagParser:
         deck_tag = self._soup.find("div", id="tab_deck")
         if not deck_tag:
             raise ScrapingError("Deck tag not found")
-        return deck_tag
+        return AetherhubDeckTagParser(deck_tag)
 
 
 CONSENT_XPATH = '//button[@class="ncmp__btn" and contains(text(), "Accept")]'

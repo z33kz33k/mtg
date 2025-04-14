@@ -15,8 +15,6 @@ from bs4 import Tag
 
 from mtg.deck.scrapers import DeckScraper
 from mtg.scryfall import Card
-from mtg.utils.scrape import ScrapingError
-from mtg.utils.scrape import getsoup
 
 _log = logging.getLogger(__name__)
 
@@ -29,12 +27,6 @@ class ManaBoxDeckScraper(DeckScraper):
     @override
     def is_valid_url(url: str) -> bool:
         return "manabox.app/decks/" in url.lower()
-
-    @override
-    def _pre_parse(self) -> None:
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            raise ScrapingError("Page not available")
 
     @override
     def _parse_metadata(self) -> None:

@@ -12,7 +12,7 @@ from typing import override
 
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.utils import get_date_from_french_ago_text
-from mtg.utils.scrape import ScrapingError, getsoup
+from mtg.utils.scrape import ScrapingError
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://www.magic-ville.com/fr/decks/"
@@ -34,10 +34,9 @@ class MagicVilleDeckScraper(DeckScraper):
         return f"{url}&decklanglocal=eng"
 
     @override
-    def _pre_parse(self) -> None:
-        self._soup = getsoup(self.url)
+    def _validate_soup(self) -> None:
         if not self._soup or self._soup.text == "Ce deck n'existe pas.":
-            raise ScrapingError("Page not available")
+            raise ScrapingError(self._error_msg)
 
     @override
     def _parse_metadata(self) -> None:

@@ -40,8 +40,6 @@ _FORMATS = {
     21: "duel",
     22: "explorer",
 }
-
-
 _MAX_TRIES = 3
 
 
@@ -61,6 +59,7 @@ def _backoff_handler(details: dict) -> None:
 class DeckstatsDeckScraper(DeckScraper):
     """Scraper of Deckstats decklist page.
     """
+
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:

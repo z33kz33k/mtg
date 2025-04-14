@@ -152,6 +152,9 @@ class DeckScraper(DeckParser):
     def _get_data_from_soup(self) -> Json:
         raise NotImplementedError
 
+    def _get_deck_parser(self) -> TagBasedDeckParser | JsonBasedDeckParser | None:
+        return None
+
     def _validate_soup(self) -> None:
         if not self._soup:
             raise ScrapingError(self._error_msg)
@@ -178,6 +181,7 @@ class DeckScraper(DeckParser):
             if self.DATA_FROM_SOUP:
                 self._data = self._get_data_from_soup()
                 self._validate_data()
+        self._deck_parser = self._get_deck_parser()
 
     @abstractmethod
     @override

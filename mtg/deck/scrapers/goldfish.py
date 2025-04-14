@@ -144,12 +144,11 @@ class GoldfishDeckScraper(DeckScraper):
             raise ScrapingError(self._error_msg)
 
     @override
-    def _pre_parse(self) -> None:
-        super()._pre_parse()
+    def _get_deck_parser(self) -> GoldfishDeckTagParser:
         deck_tag = self._soup.find("div", class_="deck-container")
         if deck_tag is None:
             raise ScrapingError("Deck data not found")
-        self._deck_parser = GoldfishDeckTagParser(deck_tag, self._metadata)
+        return GoldfishDeckTagParser(deck_tag, self._metadata)
 
     @override
     def _parse_metadata(self) -> None:

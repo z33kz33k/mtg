@@ -37,7 +37,8 @@ class ManatradersDeckScraper(DeckScraper):
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _get_deck_data(self) -> Json:
+    @override
+    def _get_data_from_soup(self) -> Json:
         data_tag = self._soup.find("div", {"data-react-class": "WebshopApp"})
         if not data_tag:
             data_tag = self._soup.find("div", {"data-react-class": "DeckBuilder"})
@@ -51,19 +52,12 @@ class ManatradersDeckScraper(DeckScraper):
         raise ScrapingError("Deck data missing in extracted JSON")
 
     @override
-    def _pre_parse(self) -> None:
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            raise ScrapingError("Page not available")
-        self._deck_data = self._get_deck_data()
-
-    @override
     def _parse_metadata(self) -> None:
-        self._metadata["name"] = self._deck_data["name"]
-        if author := self._deck_data.get("playerName"):
+        self._metadata["name"] = self._data["name"]
+        if author := self._data.get("playerName"):
             self._metadata["author"] = author
-        self._update_fmt(self._deck_data["format"])
-        self._metadata["archetype"] = self._deck_data["archetype"]
+        self._update_fmt(self._data["format"])
+        self._update_archetype_or_theme(self._data["archetype"])
 
     def _parse_card_json(self, card_json: Json) -> None:
         name = card_json["name"]
@@ -75,7 +69,7 @@ class ManatradersDeckScraper(DeckScraper):
 
     @override
     def _parse_decklist(self) -> None:
-        for card_data in self._deck_data["cards"].values():
+        for card_data in self._data["cards"].values():
             self._parse_card_json(card_data)
         self._derive_commander_from_sideboard()
 

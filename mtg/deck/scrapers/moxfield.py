@@ -28,11 +28,6 @@ class MoxfieldDeckScraper(DeckScraper):
     """
     API_URL_TEMPLATE = "https://api2.moxfield.com/v3/decks/all/{}"
 
-    def __init__(
-            self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        *_, self._decklist_id = self.url.split("/")
-
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
@@ -47,34 +42,38 @@ class MoxfieldDeckScraper(DeckScraper):
         return url.rstrip(".,")
 
     @override
-    def _pre_parse(self) -> None:
-        self._deck_data = get_selenium_json(self.API_URL_TEMPLATE.format(self._decklist_id))
-        if not self._deck_data or not self._deck_data.get("boards"):
+    def _get_data_from_api(self) -> Json:
+        *_, self._decklist_id = self.url.split("/")
+        return get_selenium_json(self.API_URL_TEMPLATE.format(self._decklist_id))
+
+    @override
+    def _validate_data(self) -> None:
+        if not self._data or not self._data.get("boards"):
             raise ScrapingError("Data not available")
 
     @override
     def _parse_metadata(self) -> None:
-        fmt = self._deck_data["format"].lower()
+        fmt = self._data["format"].lower()
         self._update_fmt(fmt)
-        name = self._deck_data["name"]
+        name = self._data["name"]
         if " - " in name:
             *_, name = name.split(" - ")
         self._metadata["name"] = name
-        self._metadata["likes"] = self._deck_data["likeCount"]
-        self._metadata["views"] = self._deck_data["viewCount"]
-        self._metadata["comments"] = self._deck_data["commentCount"]
-        self._metadata["author"] = self._deck_data["createdByUser"]["displayName"]
+        self._metadata["likes"] = self._data["likeCount"]
+        self._metadata["views"] = self._data["viewCount"]
+        self._metadata["comments"] = self._data["commentCount"]
+        self._metadata["author"] = self._data["createdByUser"]["displayName"]
         try:
             self._metadata["date"] = datetime.strptime(
-                self._deck_data["lastUpdatedAtUtc"], "%Y-%m-%dT%H:%M:%S.%fZ").date()
+                self._data["lastUpdatedAtUtc"], "%Y-%m-%dT%H:%M:%S.%fZ").date()
         except ValueError:  # no fractional seconds part in the date string
             self._metadata["date"] = datetime.strptime(
-                self._deck_data["lastUpdatedAtUtc"], "%Y-%m-%dT%H:%M:%SZ").date()
-        if desc := self._deck_data["description"]:
+                self._data["lastUpdatedAtUtc"], "%Y-%m-%dT%H:%M:%SZ").date()
+        if desc := self._data["description"]:
             self._metadata["description"] = desc
-        if hubs := self._deck_data.get("hubs"):
+        if hubs := self._data.get("hubs"):
             self._metadata["hubs"] = self.process_metadata_deck_tags(hubs)
-        if edh_bracket := self._deck_data.get("autoBracket"):
+        if edh_bracket := self._data.get("autoBracket"):
             self._metadata["edh_bracket"] = edh_bracket
 
     @classmethod
@@ -86,19 +85,19 @@ class MoxfieldDeckScraper(DeckScraper):
 
     @override
     def _parse_decklist(self) -> None:
-        for card in self._deck_data["boards"]["mainboard"]["cards"].values():
+        for card in self._data["boards"]["mainboard"]["cards"].values():
             self._maindeck.extend(self._to_playset(card))
-        for card in self._deck_data["boards"]["sideboard"]["cards"].values():
+        for card in self._data["boards"]["sideboard"]["cards"].values():
             self._sideboard.extend(self._to_playset(card))
         # Oathbreaker is not fully supported by Deck objects
-        if signature_spells := self._deck_data["boards"]["signatureSpells"]:
+        if signature_spells := self._data["boards"]["signatureSpells"]:
             for card in signature_spells["cards"].values():
                 self._maindeck.extend(self._to_playset(card))
-        for card in self._deck_data["boards"]["commanders"]["cards"].values():
+        for card in self._data["boards"]["commanders"]["cards"].values():
             result = self._to_playset(card)
             self._set_commander(result[0])
-        if self._deck_data["boards"]["companions"]["cards"]:
-            card = next(iter(self._deck_data["boards"]["companions"]["cards"].items()))[1]
+        if self._data["boards"]["companions"]["cards"]:
+            card = next(iter(self._data["boards"]["companions"]["cards"].items()))[1]
             result = self._to_playset(card)
             self._companion = result[0]
 
@@ -171,8 +170,10 @@ class MoxfieldUserScraper(DeckUrlsContainerScraper):
 class MoxfieldSearchScraper(DeckUrlsContainerScraper):
     """Scraper of Moxfield search results page.
     """
+    SELENIUM_PARAMS = {  # override
+        "xpath": "//input[@id='filter']"
+    }
     CONTAINER_NAME = "Moxfield search results"  # override
-    XPATH = "//input[@id='filter']"  # override
     # 100 page size is pretty arbitrary but tested to work
     API_URL_TEMPLATE = ("https://api2.moxfield.com/v2/decks/search?pageNumber=1&pageSize=100&sort"
                         "Type=updated&sortDirection=descending&filter={}")  # override
@@ -185,7 +186,7 @@ class MoxfieldSearchScraper(DeckUrlsContainerScraper):
 
     def _get_filter(self) -> str | None:
         try:
-            soup, _, _ = get_dynamic_soup(self.url, self.XPATH)
+            soup, _, _ = get_dynamic_soup(self.url, self.SELENIUM_PARAMS["xpath"])
             if not soup:
                 _log.warning(self._error_msg)
                 return None
