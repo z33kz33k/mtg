@@ -165,7 +165,7 @@ def scrape_channel_videos(channel_id: str, *video_ids: str) -> bool:
             dst = getdir(CHANNELS_DIR / channel_id)
             ch.dump(dst)
     except Exception as err:
-        _log.exception(f"Scraping of channel {channel_id!r} failed with: '{err}'")
+        _log.exception(f"Scraping of channel {channel_id!r} failed with: {err!r}")
         return False
 
     return True
@@ -198,7 +198,7 @@ def scrape_channels(
                     dst = getdir(CHANNELS_DIR / id_)
                     ch.dump(dst)
             except Exception as err:
-                _log.exception(f"Scraping of channel {id_!r} failed with: '{err}'. Skipping...")
+                _log.exception(f"Scraping of channel {id_!r} failed with: {err!r}. Skipping...")
 
 
 def scrape_fresh(
@@ -757,7 +757,7 @@ class Video:
     def _get_pytube(self) -> pytubefix.YouTube:
         data = pytubefix.YouTube(self.url, use_oauth=True, allow_oauth_cache=True)
         if not data.publish_date:
-            raise ScrapingError("pytube data missing publish date")
+            raise ScrapingError("pytube data missing publish date", scraper=type(self))
         return data
 
     @backoff.on_exception(
@@ -862,7 +862,7 @@ class Video:
                         _log.info(f"Parsed {len(new_links)} link(s) from: {url!r}")
                         links.update(new_links)
                     except (ConnectionError, HTTPError, ReadTimeout, ScrapingError) as err:
-                        _log.warning(f"Parsing '{url!r}' failed with: {err}")
+                        _log.warning(f"Parsing '{url!r}' failed with: {err!r}")
                 else:
                     links.add(url)
             else:
@@ -1094,7 +1094,7 @@ class Channel:
         if not count:
             raise ScrapingError(
                 "scrapetube failed to yield any video IDs. Are you sure the channel has a 'Videos' "
-                "tab?")
+                "tab?", scraper=type(self))
 
         return video_ids
 
@@ -1107,7 +1107,7 @@ class Channel:
         except json.decoder.JSONDecodeError:
             raise ScrapingError(
                 "scrapetube failed with JSON error. This channel probably doesn't exist "
-                "anymore")
+                "anymore", scraper=type(self))
 
     @staticmethod
     def get_url_and_title(channel_id: str, title: str) -> str:

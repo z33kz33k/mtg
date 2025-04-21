@@ -11,7 +11,7 @@ import json
 import logging
 import re
 from datetime import datetime
-from typing import override
+from typing import Type, override
 
 import dateutil.parser
 from bs4 import BeautifulSoup, Tag
@@ -39,16 +39,19 @@ def get_source(src: str) -> str | None:
     return None
 
 
-def _get_data(url: str, data_key="data") -> tuple[Json, BeautifulSoup]:
+def _get_data(
+        url: str,
+        scraper: Type[DeckScraper] | Type[HybridContainerScraper],
+        data_key="data") -> tuple[Json, BeautifulSoup]:
     soup = getsoup(url)
     if not soup:
-        raise ScrapingError("Page not available")
+        raise ScrapingError("Page not available", scraper=scraper)
     script_tag = soup.find("script", id="__NEXT_DATA__")
     try:
         data = json.loads(script_tag.text)
         deck_data = data["props"]["pageProps"][data_key]
     except (AttributeError, KeyError):
-        raise ScrapingError("Deck data not available")
+        raise ScrapingError("Deck data not available", scraper=scraper)
     return deck_data, soup
 
 
@@ -86,7 +89,7 @@ class EdhrecPreviewDeckScraper(DeckScraper):
 
     @override
     def _pre_parse(self) -> None:
-        self._data, self._soup = _get_data(self.url)
+        self._data, self._soup = _get_data(self.url, type(self))
 
     @override
     def _parse_metadata(self) -> None:
@@ -147,7 +150,7 @@ class EdhrecAverageDeckScraper(DeckScraper):
 
     @override
     def _pre_parse(self) -> None:
-        self._data, self._soup = _get_data(self.url)
+        self._data, self._soup = _get_data(self.url, type(self))
 
     @override
     def _parse_metadata(self) -> None:
@@ -202,7 +205,7 @@ class EdhrecDeckTagParser(TagBasedDeckParser):
     def _parse_decklist(self) -> None:
         cards_text = self._deck_tag.attrs.get("cards")
         if not cards_text:
-            raise ScrapingError("Cards data not found")
+            raise ScrapingError("Cards data not found", scraper=type(self))
         decklist = self._handle_commander(cards_text)
         self._arena_decklist = self._clean_decklist(decklist)
 
@@ -237,7 +240,7 @@ class EdhrecArticleScraper(HybridContainerScraper):
 
     @override
     def _pre_parse(self) -> None:
-        self._decks_data, self._soup = _get_data(self.url, data_key="post")
+        self._decks_data, self._soup = _get_data(self.url, type(self), data_key="post")
 
     @override
     def _parse_metadata(self) -> None:
@@ -291,7 +294,7 @@ class EdhrecAuthorScraper(HybridContainerScraper):
 
     @override
     def _pre_parse(self) -> None:
-        self._decks_data, self._soup = _get_data(self.url, data_key="posts")
+        self._decks_data, self._soup = _get_data(self.url, type(self), data_key="posts")
 
     @override
     def _parse_metadata(self) -> None:

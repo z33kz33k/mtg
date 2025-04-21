@@ -40,7 +40,7 @@ class MtgVaultDeckScraper(DeckScraper):
     def _pre_parse(self) -> None:
         self._soup = getsoup(self.url, request_timeout=45)
         if not self._soup:
-            raise ScrapingError("Page not available")
+            raise ScrapingError("Page not available", scraper=type(self))
 
     @override
     def _parse_metadata(self) -> None:
@@ -70,7 +70,7 @@ class MtgVaultDeckScraper(DeckScraper):
     def _parse_decklist(self) -> None:
         maindeck_tag = self._soup.select_one("div#main-deck")
         if not maindeck_tag:
-            raise ScrapingError("Main deck tag not found")
+            raise ScrapingError("Main deck tag not found", scraper=type(self))
 
         for card_tag in maindeck_tag.select("div.deck-card"):
             self._maindeck += self._parse_card(card_tag)

@@ -41,7 +41,8 @@ class DeckboxDeckScraper(DeckScraper):
         self._metadata["name"] = page_header_tag.find("span").text.strip()
         info_tag = self._soup.find("div", class_="deck_info_widget")
         if not info_tag:
-            raise ScrapingError("Info tag missing. Probably not a decklist page")
+            raise ScrapingError(
+                "Info tag missing. Probably not a decklist page", scraper=type(self))
         likes_tag = info_tag.find("span", id="votes_count")
         self._metadata["likes"] = int(likes_tag.text)
         comments_tag = info_tag.find("a", string=lambda s: s and "Comments" in s)
@@ -66,7 +67,8 @@ class DeckboxDeckScraper(DeckScraper):
         maindeck_table = self._soup.find("table", class_=lambda c: c and "main" in c)
         if not maindeck_table:
             raise ScrapingError(
-                "Maindeck table tag missing. Probably not a Constructed decklist page")
+                "Maindeck table tag missing. Probably not a Constructed decklist page",
+                scraper=type(self))
 
         for row in maindeck_table.find_all("tr"):
             self._maindeck += self._parse_row(row)

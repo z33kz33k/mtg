@@ -79,7 +79,7 @@ class Linktree:
         try:
             self._account_id = self._json_data["account"]["id"]
         except KeyError:
-            raise ScrapingError("Account ID not available")
+            raise ScrapingError("Account ID not available", scraper=type(self))
         self._links = self._get_links()
         self._data = self._get_data()
 
@@ -91,7 +91,7 @@ class Linktree:
     def _get_json(self) -> Json:
         soup = getsoup(self.url, self.HEADERS)
         if not soup:
-            raise ScrapingError("Page not available")
+            raise ScrapingError("Page not available", scraper=type(self))
         user_info_tag = soup.find('script', id="__NEXT_DATA__")
         if user_info_tag is None:
             raise ScrapingError("Data not available")
@@ -115,7 +115,7 @@ class Linktree:
             resp = timed_request(url, postdata=data, headers=self.HEADERS)
             return [link["url"] for link in resp.json()["links"]]
         except Exception as e:
-            _log.warning(f"linktr.ee links uncensoring failed with: '{e}'")
+            _log.warning(f"linktr.ee links uncensoring failed with: {e!r}")
             return []
 
     def _get_links(self) -> list[str]:

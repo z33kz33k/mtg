@@ -57,7 +57,7 @@ class FlexslotDeckScraper(DeckScraper):
             self.url.replace("https://flexslot.gg", "https://api.flexslot.gg"),
             headers=HEADERS)
         if not json_data or not json_data.get("data"):
-            raise ScrapingError("Data not available")
+            raise ScrapingError("Data not available", scraper=type(self))
         self._data = json_data["data"]
 
     @override
@@ -105,6 +105,7 @@ class FlexslotUserScraper(DeckUrlsContainerScraper):
     SELENIUM_PARAMS = {  # override
         "xpath": '//a[contains(@href, "/decks/")]',
         "consent_xpath": "//p[text()='Consent']",
+        "wait_for_all": True
     }
     CONTAINER_NAME = "Flexslot user"  # override
     THROTTLING = DeckUrlsContainerScraper.THROTTLING * 2  # override

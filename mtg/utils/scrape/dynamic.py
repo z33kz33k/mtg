@@ -107,7 +107,7 @@ def get_dynamic_soup(
             if not element:
                 raise NoSuchElementException(
                     f"Element(s) specified by {xpath!r} {verb} not present")
-            _log.info(f"Page has been loaded and element(s) specified by {xpath!r} {verb} present")
+            _log.info(f"Page has been loaded and XPath-specified element(s) {verb} present")
 
             page_source, soup2 = driver.page_source, None
             if click:
@@ -123,7 +123,6 @@ def get_dynamic_soup(
             return soup, soup2, clipboard
 
         except TimeoutException:
-            _log.error(f"Timed out waiting for element specified by {xpath!r} to be present")
             raise
 
 
@@ -179,7 +178,6 @@ def accept_consent(driver: WebDriver, xpath: str, timeout=SELENIUM_TIMEOUT) -> N
         _log.info("Consent pop-up closed")
     except TimeoutException:
         driver.quit()
-        _log.error("Timed out waiting for consent pop-up to disappear")
         raise
 
 
@@ -240,7 +238,6 @@ def click_for_clipboard(
 
     except TimeoutException:
         driver.quit()
-        _log.error(f"Timed out waiting for element specified by {xpath!r} to be present")
         raise
 
 

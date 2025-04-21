@@ -24,8 +24,12 @@ from mtg.utils import ParsingError, timed
 from mtg.utils.scrape import ScrapingError, get_links, getsoup, prepend_url
 from mtg.utils.scrape import Throttling, extract_source, throttle
 from mtg.utils.scrape.dynamic import get_dynamic_soup
+from mtg.yt import scrape_abandoned
 
 _log = logging.getLogger(__name__)
+
+
+# TODO: more meaningful errors (#330)
 
 
 def is_in_domain_but_not_main(url: str, domain: str) -> bool:
@@ -157,11 +161,11 @@ class DeckScraper(DeckParser):
 
     def _validate_soup(self) -> None:
         if not self._soup:
-            raise ScrapingError(self._error_msg)
+            raise ScrapingError(self._error_msg, scraper=type(self))
 
     def _validate_data(self) -> None:
         if not self._data:
-            raise ScrapingError("Data not available")
+            raise ScrapingError("Data not available", scraper=type(self))
 
     @override
     def _pre_parse(self) -> None:
@@ -212,21 +216,21 @@ class DeckScraper(DeckParser):
             return self._build_deck()
         except ScrapingError as se:
             if suppress_scraping_errors:
-                _log.warning(f"Scraping failed with: {se}")
+                _log.warning(f"Scraping failed with: {se!r}")
                 return None
-            _log.error(f"Scraping failed with: {se}")
+            _log.error(f"Scraping failed with: {se!r}")
             raise se
         except ParsingError as pe:
             if suppress_parsing_errors:
-                _log.warning(f"Scraping failed with: {pe}")
+                _log.warning(f"Scraping failed with: {pe!r}")
                 return None
-            _log.error(f"Scraping failed with: {pe}")
+            _log.error(f"Scraping failed with: {pe!r}")
             raise pe
         except InvalidDeck as err:
             if suppress_invalid_deck:
-                _log.warning(f"Scraping failed with: {err}")
+                _log.warning(f"Scraping failed with: {err!r}")
                 return None
-            _log.error(f"Scraping failed with: {err}")
+            _log.error(f"Scraping failed with: {err!r}")
             raise err
 
     @classmethod

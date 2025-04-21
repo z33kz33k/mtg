@@ -91,7 +91,7 @@ def get_data(soup: BeautifulSoup, retriever: Callable[[Json], Json], start_pos=3
         data = json.loads(js_data[1][start_pos:])
         return retriever(data)
     except (AttributeError, KeyError):
-        raise ScrapingError("Deck data not available")
+        raise ScrapingError("Deck data not available", scraper=type(self))
 
 
 @DeckScraper.registered

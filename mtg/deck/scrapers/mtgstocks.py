@@ -50,25 +50,25 @@ class MtgStocksDeckScraper(DeckScraper):
                 return int(id_)
             return int(id_part)
         except ValueError:
-            raise ScrapingError(f"Deck ID not available: {self.url!r}")
+            raise ScrapingError(f"Deck ID not available: {self.url!r}", scraper=type(self))
 
     def _get_deck_data(self) -> Json:
         script_tag = self._soup.find("script", id="ng-state")
         if not script_tag:
-            raise ScrapingError("Data not available")
+            raise ScrapingError("Data not available", scraper=type(self))
         data = json.loads(script_tag.text)
         deck_data = from_iterable(
             [v for v in data.values() if isinstance(v, dict)],
             lambda v: v.get("b") and v["b"].get("id") and v["b"]["id"] == self._deck_id)
         if not deck_data:
-            raise ScrapingError("Deck data not found")
+            raise ScrapingError("Deck data not found", scraper=type(self))
         return deck_data["b"]
 
     @override
     def _pre_parse(self) -> None:
         self._soup = getsoup(self.url)
         if not self._soup:
-            raise ScrapingError("Page not available")
+            raise ScrapingError("Page not available", scraper=type(self))
         self._deck_data = self._get_deck_data()
 
     @override

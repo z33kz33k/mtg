@@ -239,7 +239,7 @@ class CardsrealmRegularTournamentScraper(DeckUrlsContainerScraper):
     def _pre_parse(self) -> None:
         self._soup = self._get_dynamic_soup()
         if not self._soup:
-            raise ScrapingError(self._error_msg)
+            raise ScrapingError(self._error_msg, scraper=type(self))
 
     @override
     def _collect(self) -> list[str]:

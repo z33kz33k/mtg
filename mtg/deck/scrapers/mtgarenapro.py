@@ -49,10 +49,10 @@ class MtgArenaProDeckScraper(DeckScraper):
     def _pre_parse(self) -> None:
         self._soup = getsoup(self.url)
         if not self._soup:
-            raise ScrapingError("Page not available")
+            raise ScrapingError("Page not available", scraper=type(self))
         self._deck_data = self._get_deck_data()
         if not self._deck_data or not self._deck_data.get("deck_order"):
-            raise ScrapingError("Data not available")
+            raise ScrapingError("Data not available", scraper=type(self))
 
     def _parse_fmt(self) -> str:
         if self._deck_data["explorer"]:

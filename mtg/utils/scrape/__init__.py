@@ -14,10 +14,10 @@ import random
 import re
 import time
 import urllib.parse
-from datetime import date, datetime
 from dataclasses import dataclass
+from datetime import date, datetime
 from functools import wraps
-from typing import Callable, Iterator, Self
+from typing import Callable, Iterator, Self, Type
 
 import backoff
 import brotli
@@ -29,10 +29,10 @@ from requests.adapters import HTTPAdapter
 from requests.exceptions import HTTPError
 from urllib3 import Retry
 from wayback import WaybackClient
-from wayback.exceptions import MementoPlaybackError, WaybackRetryError, WaybackException
+from wayback.exceptions import MementoPlaybackError, WaybackException, WaybackRetryError
 
 from mtg import Json
-from mtg.utils import ParsingError, timed
+from mtg.utils import timed
 from mtg.utils.check_type import type_checker
 
 _log = logging.getLogger(__name__)
@@ -40,9 +40,13 @@ REQUESTS_TIMEOUT = 15.0  # seconds
 DEFAULT_THROTTLING = 1.0  # seconds
 
 
-class ScrapingError(ParsingError):
+class ScrapingError(OSError):
     """Raised whenever scraping produces unexpected results.
     """
+    def __init__(self, message: str, scraper: Type | None = None) -> None:
+        if scraper:
+            message += f" [{scraper.__name__}]"
+        super().__init__(message)
 
 
 http_requests_count = 0
@@ -250,7 +254,7 @@ def unshorten(url: str) -> str | None:
         _log.warning(f"Unshortening of {url!r} failed due too many redirections")
         return None
     except requests.exceptions.RequestException as e:
-        _log.warning(f"Unshortening of {url!r} failed with : {str(e)}")
+        _log.warning(f"Unshortening of {url!r} failed with: {e!r}")
         return None
 
 
@@ -470,5 +474,5 @@ def get_wayback_soup(url: str) -> BeautifulSoup | None:
             return BeautifulSoup(response.text, "lxml")
         return None
     except (WaybackException, WaybackRetryError) as e:
-        _log.warning(f"Wayback Machine failed with: {e}")
+        _log.warning(f"Wayback Machine failed with: {e!r}")
         return None

@@ -1040,15 +1040,15 @@ class DeckParser(ABC):
             return self._build_deck()
         except ParsingError as pe:
             if suppress_parsing_errors:
-                _log.warning(f"Parsing failed with: {pe}")
+                _log.warning(f"Parsing failed with: {pe!r}")
                 return None
-            _log.error(f"Parsing failed with: {pe}")
+            _log.error(f"Parsing failed with: {pe!r}")
             raise pe
         except InvalidDeck as err:
             if suppress_invalid_deck:
-                _log.warning(f"Parsing failed with: {err}")
+                _log.warning(f"Parsing failed with: {err!r}")
                 return None
-            _log.error(f"Parsing failed with: {err}")
+            _log.error(f"Parsing failed with: {err!r}")
             raise err
 
     def update_metadata(self, **data: Any) -> None:

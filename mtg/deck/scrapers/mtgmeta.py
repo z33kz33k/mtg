@@ -41,12 +41,13 @@ class MtgMetaIoDeckScraper(DeckScraper):
     def _pre_parse(self) -> None:
         self._soup = get_wayback_soup(self.url)
         if not self._soup:
-            raise ScrapingError("Page not available")
+            raise ScrapingError("Page not available", scraper=type(self))
         if "Error connecting to database" in str(self._soup):
-            raise ScrapingError("Page not available due to Internet Archive's database error")
+            raise ScrapingError(
+                "Page not available due to Internet Archive's database error", scraper=type(self))
         self._deck_data = dissect_js(self._soup, "const decklist = ", " ;\n  ")
         if not self._deck_data:
-            raise ScrapingError("Deck data not available")
+            raise ScrapingError("Deck data not available", scraper=type(self))
 
     @override
     def _parse_metadata(self) -> None:
@@ -122,15 +123,16 @@ class MtgMetaIoTournamentScraper(DeckUrlsContainerScraper):
     def _pre_parse(self) -> None:
         self._soup = get_wayback_soup(self.url)
         if not self._soup:
-            raise ScrapingError(self._error_msg)
+            raise ScrapingError(self._error_msg, scraper=type(self))
         if "Error connecting to database" in str(self._soup):
-            raise ScrapingError("Page not available due to Internet Archive's database error")
+            raise ScrapingError(
+                "Page not available due to Internet Archive's database error", scraper=type(self))
 
     @override
     def _collect(self) -> list[str]:
         ul_tag = self._soup.select_one("ul.playerslist")
         if not ul_tag:
-            raise ScrapingError(self._error_msg)
+            raise ScrapingError(self._error_msg, scraper=type(self))
         links = get_links(ul_tag)
         return _strip_wm_part(*links)
 
@@ -180,9 +182,10 @@ class MtgMetaIoArticleScraper(HybridContainerScraper):
     def _pre_parse(self) -> None:
         self._soup = get_wayback_soup(self.url)
         if not self._soup:
-            raise ScrapingError(self._error_msg)
+            raise ScrapingError(self._error_msg, scraper=type(self))
         if "Error connecting to database" in str(self._soup):
-            raise ScrapingError("Page not available due to Internet Archive's database error")
+            raise ScrapingError(
+                "Page not available due to Internet Archive's database error", scraper=type(self))
 
     @override
     def _parse_metadata(self) -> None:

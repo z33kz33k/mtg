@@ -10,7 +10,7 @@
 import json
 import logging
 from datetime import datetime
-from typing import override
+from typing import Type, override
 
 import dateutil.parser
 from bs4 import BeautifulSoup, Tag
@@ -55,7 +55,7 @@ class TcgPlayerDeckScraper(DeckScraper):
     def _pre_parse(self) -> None:
         self._soup = getsoup(self.url)
         if not self._soup:
-            raise ScrapingError("Page not available")
+            raise ScrapingError("Page not available", scraper=type(self))
 
     @override
     def _parse_metadata(self) -> None:
@@ -187,7 +187,9 @@ class TcgPlyerInfiniteDeckJsonParser(JsonBasedDeckParser):
                     pass
 
 
-def _get_deck_data_from_api(url: str, api_url_template: str) -> Json:
+def _get_deck_data_from_api(
+        url: str, api_url_template: str,
+        scraper: Type[DeckScraper] | Type[DecksJsonContainerScraper]) -> Json:
     *_, decklist_id = url.split("/")
     json_data, tries = {}, 0
     try:
@@ -199,7 +201,7 @@ def _get_deck_data_from_api(url: str, api_url_template: str) -> Json:
             json_data = request_json(api_url_template.format(decklist_id))
             tries += 1
     except ReadTimeout:
-        raise ScrapingError("Request timed out")
+        raise ScrapingError("Request timed out", scraper=scraper)
 
     if not json_data and tries < 2:
         throttle(*DeckScraper.THROTTLING)
@@ -208,7 +210,7 @@ def _get_deck_data_from_api(url: str, api_url_template: str) -> Json:
 
     if not json_data or not json_data.get(
             "result") or json_data["result"].get("deck") == {"deck": {}}:
-        raise ScrapingError("Data not available")
+        raise ScrapingError("Data not available", scraper=scraper)
     return json_data["result"]
 
 
@@ -235,7 +237,7 @@ class TcgPlayerInfiniteDeckScraper(DeckScraper):
 
     @override
     def _pre_parse(self) -> None:
-        deck_data = _get_deck_data_from_api(self.url, self.API_URL_TEMPLATE)
+        deck_data = _get_deck_data_from_api(self.url, self.API_URL_TEMPLATE, scraper=type(self))
         self._deck_parser = TcgPlyerInfiniteDeckJsonParser(deck_data, self._metadata)
 
     @override
@@ -399,9 +401,9 @@ class TcgPlayerInfiniteArticleScraper(DecksJsonContainerScraper):
         for url in deck_urls:
             try:
                 decks_data.append(
-                    _get_deck_data_from_api(url, self.API_URL_TEMPLATE))
+                    _get_deck_data_from_api(url, self.API_URL_TEMPLATE, scraper=type(self)))
             except ScrapingError as err:
-                _log.warning(f"{url!r} failed with: '{err}'")
+                _log.warning(f"{url!r} failed with: {err!r}")
                 continue
             throttle(*DeckScraper.THROTTLING)
         return decks_data

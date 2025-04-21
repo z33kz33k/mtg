@@ -58,7 +58,7 @@ class WotCDeckTagParser(TagBasedDeckParser):
     def _build_deck(self) -> Deck:
         maindeck_tag = self._deck_tag.find("main-deck")
         if not maindeck_tag:
-            raise ScrapingError("No main deck data available")
+            raise ScrapingError("No main deck data available", scraper=type(self))
 
         lines = [self._sanitize_line(l) for l in maindeck_tag.text.strip().splitlines()]
         if self.fmt and self._locally_derived_fmt and self.fmt in COMMANDER_FORMATS:

@@ -101,7 +101,8 @@ class ScgDeckTagParser(TagBasedDeckParser):
     def _parse_decklist(self) -> None:
         decklist_tag = self._deck_tag.find("div", class_="deck_card_wrapper")
         if decklist_tag is None:
-            raise ScrapingError("Decklist tag not found (page is probably paywalled)")
+            raise ScrapingError(
+                "Decklist tag not found (page is probably paywalled)", scraper=type(self))
         self._parse_decklist_tag(decklist_tag)
 
 
@@ -133,12 +134,12 @@ class ScgDeckScraper(DeckScraper):
     def _pre_parse(self) -> None:
         self._soup = getsoup(self.url)
         if not self._soup:
-            raise ScrapingError("Page not available")
+            raise ScrapingError("Page not available", scraper=type(self))
         deck_tag = self._soup.find("div", class_="deck_listing")
         if deck_tag is None:
             deck_tag = self._soup.find("div", class_="deck_listing2")
             if deck_tag is None:
-                raise ScrapingError("Deck data not found")
+                raise ScrapingError("Deck data not found", scraper=type(self))
         self._deck_parser = ScgDeckTagParser(deck_tag, self._metadata)
 
     @override

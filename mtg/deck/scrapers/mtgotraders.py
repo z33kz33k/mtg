@@ -38,7 +38,7 @@ class MtgoTradersDeckScraper(DeckScraper):
     def _pre_parse(self) -> None:
         self._deck_data = request_json(self.REQUEST_URL_TEMPLATE.format(self._decklist_id))
         if not self._deck_data:
-            raise ScrapingError("Data not available")
+            raise ScrapingError("Data not available", scraper=type(self))
 
     @override
     def _parse_metadata(self) -> None:

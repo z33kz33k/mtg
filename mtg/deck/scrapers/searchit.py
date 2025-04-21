@@ -49,7 +49,7 @@ class MtgSearchItDeckScraper(DeckScraper):
         try:
             self._soup, _, _ = get_dynamic_soup(self.url, self.XPATH)
         except TimeoutException:
-            raise ScrapingError(f"Scraping failed due to Selenium timing out")
+            raise ScrapingError(f"Scraping failed due to Selenium timing out", scraper=type(self))
 
     @override
     def _parse_metadata(self) -> None:
@@ -70,7 +70,7 @@ class MtgSearchItDeckScraper(DeckScraper):
         decklist_tag = self._soup.find(
             "section", class_=lambda c: c and all(t in c for t in tokens))
         if not decklist_tag:
-            raise ScrapingError("Decklist tag not found")
+            raise ScrapingError("Decklist tag not found", scraper=type(self))
         self._arena_decklist = decklist_tag.text.strip()
 
     @override

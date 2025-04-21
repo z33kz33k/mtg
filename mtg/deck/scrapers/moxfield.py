@@ -49,7 +49,7 @@ class MoxfieldDeckScraper(DeckScraper):
     @override
     def _validate_data(self) -> None:
         if not self._data or not self._data.get("boards"):
-            raise ScrapingError("Data not available")
+            raise ScrapingError("Data not available", scraper=type(self))
 
     @override
     def _parse_metadata(self) -> None:

@@ -43,13 +43,13 @@ class ManatradersDeckScraper(DeckScraper):
         if not data_tag:
             data_tag = self._soup.find("div", {"data-react-class": "DeckBuilder"})
             if not data_tag:
-                raise ScrapingError("Deck data not available")
+                raise ScrapingError("Deck data not available", scraper=type(self))
         json_data = json.loads(data_tag.attrs["data-react-props"])
         if deck_data := json_data.get("deck"):
             return deck_data
         if deck_data := json_data.get("initialDeck"):
             return deck_data
-        raise ScrapingError("Deck data missing in extracted JSON")
+        raise ScrapingError("Deck data missing in extracted JSON", scraper=type(self))
 
     @override
     def _parse_metadata(self) -> None:

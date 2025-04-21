@@ -70,13 +70,14 @@ class MtgDecksNetDeckTagParser(TagBasedDeckParser):
     def _build_deck(self) -> Deck:  # override
         decklist_tag = self._deck_tag.find("textarea", id="arena_deck")
         if not decklist_tag:
-            raise ScrapingError("Decklist tag not found")
+            raise ScrapingError("Decklist tag not found", scraper=type(self))
         decklist = decklist_tag.text.strip()
         return ArenaParser(decklist, self._metadata).parse(
             suppress_parsing_errors=False, suppress_invalid_deck=False)
 
 
 # TODO: scrape the meta
+# TODO: log that the deck is probably hidden on Selenium timeout
 @DeckScraper.registered
 class MtgDecksNetDeckScraper(DeckScraper):
     """Scraper of MTGDecks.net decklist page.
@@ -107,10 +108,10 @@ class MtgDecksNetDeckScraper(DeckScraper):
         try:
             self._soup, _, _ = get_dynamic_soup(self.url, self.XPATH)
         except TimeoutException:
-            raise ScrapingError(f"Scraping failed due to Selenium timing out")
+            raise ScrapingError(f"Scraping failed due to Selenium timing out", scraper=type(self))
         deck_tag = self._soup.select_one("div.deck.shadow")
         if deck_tag is None:
-            raise ScrapingError("Deck data not found")
+            raise ScrapingError("Deck data not found", scraper=type(self))
 
         self._deck_parser = MtgDecksNetDeckTagParser(deck_tag, self._metadata)
 

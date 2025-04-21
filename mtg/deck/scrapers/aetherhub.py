@@ -15,7 +15,7 @@ import dateutil.parser
 from bs4 import Tag
 
 from mtg import Json
-from mtg.deck import Archetype, Deck, Mode
+from mtg.deck import Deck, Mode
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
     TagBasedDeckParser
 from mtg.utils import extract_float, extract_int, from_iterable
@@ -78,7 +78,7 @@ class AetherhubDeckScraper(DeckScraper):
     Note:
         Companions are part of a sideboard list and aren't listed separately.
     """
-    FORMATS = {
+    _FORMATS = {
         "Arena Standard": ("standard", Mode.BO1),
         "Standard": ("standard", Mode.BO3),
         "Alchemy": ("alchemy", Mode.BO1),
@@ -121,7 +121,7 @@ class AetherhubDeckScraper(DeckScraper):
     def _validate_soup(self) -> None:
         super()._validate_soup()
         if "404 Page Not Found" in self._soup.text:
-            raise ScrapingError("Page not available")
+            raise ScrapingError("Page not available", scraper=type(self))
 
     @override
     def _get_deck_parser(self) -> AetherhubDeckTagParser:
@@ -129,7 +129,7 @@ class AetherhubDeckScraper(DeckScraper):
         deck_tag = from_iterable(
             deck_tags, lambda t: t.text.strip().startswith(("Main", "Commander", "Companion")))
         if deck_tag is None:
-            raise ScrapingError("Deck tag not found")
+            raise ScrapingError("Deck tag not found", scraper=type(self))
         return AetherhubDeckTagParser(deck_tag)
 
     @override
@@ -138,7 +138,7 @@ class AetherhubDeckScraper(DeckScraper):
         if title_tag := self._soup.find(["h2", "h3"], class_="text-header-gold"):
             fmt_part, name_part = title_tag.text.strip().split("-", maxsplit=1)
             fmt_part = fmt_part.strip()
-            if fmt_pair := self.FORMATS.get(fmt_part):
+            if fmt_pair := self._FORMATS.get(fmt_part):
                 fmt, mode = fmt_pair
                 self._update_fmt(fmt)
                 self._metadata["mode"] = mode.value
@@ -223,7 +223,7 @@ class AetherhubWriteupDeckScraper(AetherhubDeckScraper):
     def _get_deck_parser(self) -> AetherhubDeckTagParser:
         deck_tag = self._soup.find("div", id="tab_deck")
         if not deck_tag:
-            raise ScrapingError("Deck tag not found")
+            raise ScrapingError("Deck tag not found", scraper=type(self))
         return AetherhubDeckTagParser(deck_tag)
 
 

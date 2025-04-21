@@ -48,7 +48,7 @@ class CardhoarderDeckScraper(DeckScraper):
         # in this case, it returns raw JSON string instead of dict...
         deck_data = dissect_js(self._soup, start, end)
         if not deck_data:
-            raise ScrapingError("Deck data not available")
+            raise ScrapingError("Deck data not available", scraper=type(self))
         # ...that needs to be reparsed
         return json.loads(deck_data)
 

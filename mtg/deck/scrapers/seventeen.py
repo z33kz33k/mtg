@@ -50,10 +50,10 @@ class SeventeenLandsDeckScraper(DeckScraper):
             self._deck_data = request_json(
                 self.API_URL_TEMPLATE.format(self._sharing_token, self._deck_id, self._timestamp))
         except ReadTimeout:
-            raise ScrapingError("Request timed out")
+            raise ScrapingError("Request timed out", scraper=type(self))
         if not self._deck_data or not self._deck_data.get("groups") or not self._deck_data.get(
                 "cards"):
-            raise ScrapingError("Data not available")
+            raise ScrapingError("Data not available", scraper=type(self))
 
     @override
     def _parse_metadata(self) -> None:

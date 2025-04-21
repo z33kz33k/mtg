@@ -50,7 +50,7 @@ class PlayingMtgDeckScraper(DeckScraper):
         except TimeoutException:
             self._soup = None
         if not self._soup:
-            raise ScrapingError("Page not available")
+            raise ScrapingError("Page not available", scraper=type(self))
 
     @override
     def _parse_metadata(self) -> None:

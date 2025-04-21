@@ -51,7 +51,7 @@ class PauperMtgDeckScraper(DeckScraper):
     def _pre_parse(self) -> None:
         self._soup = getsoup(self.url)
         if not self._soup:
-            raise ScrapingError("Page not available")
+            raise ScrapingError("Page not available", scraper=type(self))
         self._main_tag = self._soup.find("div", class_="deckDetailList")
         state = "maindeck"
         for tag in self._main_tag:

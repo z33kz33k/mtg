@@ -109,7 +109,7 @@ class GoldfishDeckTagParser(TagBasedDeckParser):
     def _parse_decklist(self) -> None:
         decklist_tag = self._deck_tag.find("table", class_="deck-view-deck-table")
         if decklist_tag is None:
-            raise ScrapingError("Decklist tag not found")
+            raise ScrapingError("Decklist tag not found", scraper=type(self))
         self._parse_decklist_tag(decklist_tag)
 
 
@@ -141,13 +141,13 @@ class GoldfishDeckScraper(DeckScraper):
     def _validate_soup(self) -> None:
         super()._validate_soup()
         if "Oops... Page not found" in self._soup.text:
-            raise ScrapingError(self._error_msg)
+            raise ScrapingError(self._error_msg, scraper=type(self))
 
     @override
     def _get_deck_parser(self) -> GoldfishDeckTagParser:
         deck_tag = self._soup.find("div", class_="deck-container")
         if deck_tag is None:
-            raise ScrapingError("Deck data not found")
+            raise ScrapingError("Deck data not found", scraper=type(self))
         return GoldfishDeckTagParser(deck_tag, self._metadata)
 
     @override
@@ -263,10 +263,10 @@ def scrape_meta(fmt="standard") -> list[Deck]:
     url = f"https://www.mtggoldfish.com/metagame/{fmt}/full"
     soup = throttled_soup(url, headers=HEADERS)
     if not soup:
-        raise ScrapingError("Page not available")
+        raise ScrapingError("Page not available", scraper=GoldfishDeckScraper)
     tiles = soup.find_all("div", class_="archetype-tile")
     if not tiles:
-        raise ScrapingError("No deck tiles tags found")
+        raise ScrapingError("No deck tiles tags found", scraper=GoldfishDeckScraper)
     decks, metas = [], []
     for i, tile in enumerate(tiles, start=1):
         link = tile.find("a").attrs["href"]

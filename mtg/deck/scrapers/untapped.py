@@ -56,9 +56,10 @@ class UntappedProfileDeckScraper(DeckScraper):
                 self.url, CLIPBOARD_XPATH, self.NO_GAMES_XPATH, self.PRIVATE_XPATH,
                 consent_xpath=CONSENT_XPATH, clipboard_xpath=CLIPBOARD_XPATH)
         except NoSuchElementException:
-            raise ScrapingError("Scraping failed due to absence of the looked for element")
+            raise ScrapingError(
+                "Scraping failed due to absence of the looked for element", scraper=type(self))
         except TimeoutException:
-            raise ScrapingError(f"Scraping failed due to Selenium timing out")
+            raise ScrapingError(f"Scraping failed due to Selenium timing out", scraper=type(self))
 
     @override
     def _parse_metadata(self) -> None:
@@ -104,7 +105,7 @@ class UntappedRegularDeckScraper(DeckScraper):
                 self.url, CLIPBOARD_XPATH, consent_xpath=CONSENT_XPATH,
                 clipboard_xpath=CLIPBOARD_XPATH)
         except TimeoutException:
-            raise ScrapingError(f"Scraping failed due to Selenium timing out")
+            raise ScrapingError(f"Scraping failed due to Selenium timing out", scraper=type(self))
 
     @override
     def _parse_metadata(self) -> None:
@@ -149,7 +150,7 @@ class UntappedMetaDeckScraper(DeckScraper):
                 self.url, CLIPBOARD_XPATH, consent_xpath=CONSENT_XPATH,
                 clipboard_xpath=CLIPBOARD_XPATH)
         except TimeoutException:
-            raise ScrapingError(f"Scraping failed due to Selenium timing out")
+            raise ScrapingError(f"Scraping failed due to Selenium timing out", scraper=type(self))
 
     @override
     def _parse_metadata(self) -> None:
@@ -157,7 +158,7 @@ class UntappedMetaDeckScraper(DeckScraper):
         if not name_tag:
             name_tag = self._soup.select_one("span[class*='DeckViewHeader__ArchetypeName']")
         if not name_tag:
-            raise ScrapingError("Page data not available")
+            raise ScrapingError("Page data not available", scraper=type(self))
         name = name_tag.text.strip().removesuffix(" Deck")
         self._metadata["name"] = name
         fmt_tag = self._soup.find("div", id="filter-format")

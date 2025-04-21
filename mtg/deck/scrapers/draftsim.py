@@ -58,7 +58,7 @@ class DraftsimDeckScraper(DeckScraper):
     def _build_deck(self) -> Deck:
         decklist_tag = self._soup.find("textarea", id="decktext")
         if not decklist_tag:
-            raise ScrapingError("Decklist tag not found")
+            raise ScrapingError("Decklist tag not found", scraper=type(self))
         decklist = decklist_tag.text.strip()
         return ArenaParser(decklist, self._metadata).parse(
             suppress_parsing_errors=False, suppress_invalid_deck=False)
