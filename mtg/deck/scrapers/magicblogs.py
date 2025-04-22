@@ -116,7 +116,6 @@ class MagicBlogsArticleScraper(HybridContainerScraper):
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
         deck_tags = [*self._soup.find_all("div", class_="mtgh")]
-        self._parse_metadata()
         main_tag = self._soup.find("section", class_="content")
         if not main_tag:
             _log.warning("Article tag not found")

@@ -1,7 +1,7 @@
 """
 
     mtg.deck.scrapers.mtgdecksnet.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape MTGDecks.net decklists.
 
     @author: z33k
@@ -12,7 +12,6 @@ from typing import override
 
 import dateutil.parser
 from bs4 import Tag
-from selenium.common.exceptions import TimeoutException
 
 from mtg import Json
 from mtg.deck import Deck
@@ -21,7 +20,6 @@ from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridConta
     TagBasedDeckParser
 from mtg.utils.scrape import ScrapingError, get_previous_sibling_tag
 from mtg.utils.scrape import strip_url_query
-from mtg.utils.scrape.dynamic import get_dynamic_soup
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://mtgdecks.net"
@@ -67,7 +65,7 @@ class MtgDecksNetDeckTagParser(TagBasedDeckParser):
         pass
 
     @override
-    def _build_deck(self) -> Deck:  # override
+    def _build_deck(self) -> Deck:
         decklist_tag = self._deck_tag.find("textarea", id="arena_deck")
         if not decklist_tag:
             raise ScrapingError("Decklist tag not found", scraper=type(self))
@@ -77,20 +75,22 @@ class MtgDecksNetDeckTagParser(TagBasedDeckParser):
 
 
 # TODO: scrape the meta
-# TODO: log that the deck is probably hidden on Selenium timeout
 @DeckScraper.registered
 class MtgDecksNetDeckScraper(DeckScraper):
     """Scraper of MTGDecks.net decklist page.
     """
-    XPATH = "//textarea[@id='arena_deck']"
+    SELENIUM_PARAMS = {  # override
+        "xpath": "//textarea[@id='arena_deck']"
+    }
     _FORMATS = {
         "brawl": "standardbrawl",
         "historic-brawl": "brawl",
     }
 
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        self._deck_parser: MtgDecksNetDeckTagParser | None = None
+    @property
+    @override
+    def _error_msg(self) -> str:
+        return super()._error_msg + " (deck probably hidden)"
 
     @staticmethod
     @override
@@ -103,17 +103,11 @@ class MtgDecksNetDeckScraper(DeckScraper):
         url = strip_url_query(url)
         return url.removesuffix("/visual")
 
-    @override
-    def _pre_parse(self) -> None:
-        try:
-            self._soup, _, _ = get_dynamic_soup(self.url, self.XPATH)
-        except TimeoutException:
-            raise ScrapingError(f"Scraping failed due to Selenium timing out", scraper=type(self))
+    def _get_deck_parser(self) -> MtgDecksNetDeckTagParser:
         deck_tag = self._soup.select_one("div.deck.shadow")
         if deck_tag is None:
             raise ScrapingError("Deck data not found", scraper=type(self))
-
-        self._deck_parser = MtgDecksNetDeckTagParser(deck_tag, self._metadata)
+        return MtgDecksNetDeckTagParser(deck_tag, self._metadata)
 
     @override
     def _parse_metadata(self) -> None:
@@ -139,8 +133,10 @@ class MtgDecksNetDeckScraper(DeckScraper):
 class MtgDecksNetTournamentScraper(DeckUrlsContainerScraper):
     """Scraper of MTGDecks.net tournament page.
     """
+    SELENIUM_PARAMS = {  # override
+        "xpath": '//a[contains(@href, "-decklist-")]'
+    }
     CONTAINER_NAME = "MTGDecks.net tournament"  # override
-    XPATH = '//a[contains(@href, "-decklist-")]'  # override
     DECK_SCRAPERS = MtgDecksNetDeckScraper,  # override
     DECK_URL_PREFIX = URL_PREFIX  # override
 
@@ -165,10 +161,12 @@ class MtgDecksNetTournamentScraper(DeckUrlsContainerScraper):
 class MtgDecksNetArticleScraper(HybridContainerScraper):
     """Scraper of MTGDecks.net article page.
     """
+    SELENIUM_PARAMS = {  # override
+        "xpath": "//div[@class='framed']",
+        "wait_for_all": True
+    }
     CONTAINER_NAME = "MTGDecks.net article"  # override
     TAG_BASED_DECK_PARSER = MtgDecksNetDeckTagParser  # override
-    XPATH = "//div[@class='framed']"  # override
-    WAIT_FOR_ALL = True  # override
     CONTAINER_SCRAPERS = MtgDecksNetTournamentScraper,  # override
     CONTAINER_URL_PREFIX = URL_PREFIX  # override
 

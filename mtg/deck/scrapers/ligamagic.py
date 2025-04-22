@@ -1,7 +1,7 @@
 """
 
     mtg.deck.scrapers.ligamagic.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape LigaMagic decklists.
 
     Note: experimental (requires use of scraping APIs to bypass CloudFlare).

@@ -170,7 +170,6 @@ class CardmarketArticleScraper(HybridContainerScraper):
         deck_tags = [
             t for t in self._soup.select("div.table-responsive.mb-4")
             if t.find("hoverable-card")]
-        self._parse_metadata()
         article_tag = self._soup.find("article")
         if not article_tag:
             _log.warning("Article tag not found")

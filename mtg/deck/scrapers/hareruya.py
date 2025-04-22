@@ -232,4 +232,4 @@ class HareruyaPlayerScraper(DeckUrlsContainerScraper):
             "a", class_="deckSearch-searchResult__itemWrapper")]
 
 
-# TODO: articles
+# TODO: articles (#304)

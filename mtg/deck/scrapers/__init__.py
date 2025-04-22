@@ -24,7 +24,6 @@ from mtg.utils import ParsingError, timed
 from mtg.utils.scrape import ScrapingError, get_links, getsoup, prepend_url
 from mtg.utils.scrape import Throttling, extract_source, throttle
 from mtg.utils.scrape.dynamic import get_dynamic_soup
-from mtg.yt import scrape_abandoned
 
 _log = logging.getLogger(__name__)
 
@@ -119,7 +118,7 @@ class DeckScraper(DeckParser):
 
     @property
     def _error_msg(self) -> str:
-        return "Page not available"
+        return f"Page not available"
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         self._validate_url(url)
@@ -150,6 +149,16 @@ class DeckScraper(DeckParser):
     def sanitize_url(url: str) -> str:
         return url.removesuffix("/")
 
+    def _fetch_soup(self) -> None:
+        if self.SELENIUM_PARAMS:
+            try:
+                self._soup, _, self._clipboard = get_dynamic_soup(
+                    self.url, **self.SELENIUM_PARAMS)
+            except TimeoutException:
+                self._soup = None
+        else:
+            self._soup = getsoup(self.url, self.HEADERS)
+
     def _get_data_from_api(self) -> Json:
         raise NotImplementedError
 
@@ -173,14 +182,7 @@ class DeckScraper(DeckParser):
             self._data = self._get_data_from_api()
             self._validate_data()
         else:
-            if self.SELENIUM_PARAMS:
-                try:
-                    self._soup, _, self._clipboard = get_dynamic_soup(
-                        self.url, **self.SELENIUM_PARAMS)
-                except TimeoutException:
-                    self._soup = None
-            else:
-                self._soup = getsoup(self.url, self.HEADERS)
+            self._fetch_soup()
             self._validate_soup()
             if self.DATA_FROM_SOUP:
                 self._data = self._get_data_from_soup()
@@ -323,6 +325,7 @@ class ContainerScraper(DeckScraper):
     def _gather(self) -> Collected:
         try:
             self._pre_parse()
+            self._parse_metadata()
         except ScrapingError:
             _log.warning(self._error_msg)
             return []
@@ -363,6 +366,7 @@ class DeckUrlsContainerScraper(ContainerScraper):
     def _gather(self) -> Collected:
         try:
             self._pre_parse()
+            self._parse_metadata()
         except ScrapingError:
             _log.warning(self._error_msg)
             return []
@@ -576,6 +580,7 @@ class HybridContainerScraper(
     def _gather(self) -> Collected:
         try:
             self._pre_parse()
+            self._parse_metadata()
         except ScrapingError:
             _log.warning(self._error_msg)
             return [], [], [], []

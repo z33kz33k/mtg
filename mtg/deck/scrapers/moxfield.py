@@ -123,13 +123,16 @@ class MoxfieldBookmarkScraper(DeckUrlsContainerScraper):
         return last
 
     @override
+    def _get_data_from_api(self) -> Json:
+        return get_selenium_json(self.API_URL_TEMPLATE.format(self._get_bookmark_id()))
+
+    def _validate_data(self) -> None:
+        if not self._data or not self._data.get("decks") or not self._data["decks"].get("data"):
+            raise ScrapingError("Data not available", scraper=type(self))
+
+    @override
     def _collect(self) -> list[str]:
-        json_data = get_selenium_json(
-            self.API_URL_TEMPLATE.format(self._get_bookmark_id()))
-        if not json_data or not json_data.get("decks") or not json_data["decks"].get("data"):
-            _log.warning(self._error_msg)
-            return []
-        return [d["deck"]["publicUrl"] for d in json_data["decks"]["data"]]
+        return [d["deck"]["publicUrl"] for d in self._data["decks"]["data"]]
 
 
 @DeckUrlsContainerScraper.registered
@@ -153,17 +156,18 @@ class MoxfieldUserScraper(DeckUrlsContainerScraper):
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _get_user_name(self) -> str:
+    @override
+    def _get_data_from_api(self) -> Json:
         *_, last = self.url.split("/")
-        return last
+        return get_selenium_json(self.API_URL_TEMPLATE.format(last))
+
+    def _validate_data(self) -> None:
+        if self._data or not self._data.get("data"):
+            raise ScrapingError("Data not available", scraper=type(self))
 
     @override
     def _collect(self) -> list[str]:
-        json_data = get_selenium_json(self.API_URL_TEMPLATE.format(self._get_user_name()))
-        if not json_data or not json_data.get("data"):
-            _log.warning(self._error_msg)
-            return []
-        return [d["publicUrl"] for d in json_data["data"]]
+        return [d["publicUrl"] for d in self._data["data"]]
 
 
 @DeckUrlsContainerScraper.registered
@@ -183,6 +187,10 @@ class MoxfieldSearchScraper(DeckUrlsContainerScraper):
     @override
     def is_valid_url(url: str) -> bool:
         return "moxfield.com/decks/public?q=" in url.lower()
+
+    @override
+    def _pre_parse(self) -> None:
+        pass
 
     def _get_filter(self) -> str | None:
         try:

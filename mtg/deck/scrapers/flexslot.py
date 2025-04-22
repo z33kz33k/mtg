@@ -1,7 +1,7 @@
 """
 
     mtg.deck.scrapers.flexslot.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Flexslot.gg decklists.
 
     @author: z33k

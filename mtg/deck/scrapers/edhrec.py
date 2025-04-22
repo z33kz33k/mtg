@@ -240,24 +240,24 @@ class EdhrecArticleScraper(HybridContainerScraper):
 
     @override
     def _pre_parse(self) -> None:
-        self._decks_data, self._soup = _get_data(self.url, type(self), data_key="post")
+        self._data, self._soup = _get_data(self.url, type(self), data_key="post")
 
     @override
     def _parse_metadata(self) -> None:
         self._update_fmt("commander")
-        if author := self._decks_data.get("author", {}).get("name"):
+        if author := self._data.get("author", {}).get("name"):
             self._metadata["author"] = author
-        if date := self._decks_data.get("date"):
+        if date := self._data.get("date"):
             self._metadata["date"] = dateutil.parser.parse(date).date()
-        if excerpt := self._decks_data.get("excerpt"):
+        if excerpt := self._data.get("excerpt"):
             self._metadata.setdefault("article", {})["excerpt"] = excerpt
-        if title := self._decks_data.get("title"):
+        if title := self._data.get("title"):
             self._metadata.setdefault("article", {})["title"] = title
-        if tags := self._decks_data.get("tags"):
+        if tags := self._data.get("tags"):
             self._metadata["tags"] = self.process_metadata_deck_tags(tags)
 
     def _collect_tags(self) -> list[Tag]:
-        content_soup = BeautifulSoup(self._decks_data["content"], "lxml")
+        content_soup = BeautifulSoup(self._data["content"], "lxml")
         return [*content_soup.find_all("span", class_="edhrecp__deck-s")]
 
     def _collect_urls(self) -> tuple[list[str], list[str]]:
@@ -269,7 +269,6 @@ class EdhrecArticleScraper(HybridContainerScraper):
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
-        self._parse_metadata()
         deck_urls, container_urls = self._collect_urls()
         return deck_urls, self._collect_tags(), [], container_urls
 
@@ -294,15 +293,11 @@ class EdhrecAuthorScraper(HybridContainerScraper):
 
     @override
     def _pre_parse(self) -> None:
-        self._decks_data, self._soup = _get_data(self.url, type(self), data_key="posts")
-
-    @override
-    def _parse_metadata(self) -> None:
-        pass
+        self._data, self._soup = _get_data(self.url, type(self), data_key="posts")
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
         prefix = f'{URL_PREFIX}/articles/'
-        return [], [], [], [prepend_url(d["slug"], prefix) for d in self._decks_data]
+        return [], [], [], [prepend_url(d["slug"], prefix) for d in self._data]
 
 

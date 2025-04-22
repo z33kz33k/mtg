@@ -19,7 +19,7 @@ from selenium.common import TimeoutException
 from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import DeckScraper, DeckTagsContainerScraper, TagBasedDeckParser
+from mtg.deck.scrapers import Collected, DeckScraper, DeckTagsContainerScraper, TagBasedDeckParser
 from mtg.utils import sanitize_whitespace
 from mtg.utils.scrape import ScrapingError, strip_url_query
 from mtg.utils.scrape.dynamic import get_dynamic_soup
@@ -221,6 +221,14 @@ class MagicGgEventScraper(DeckTagsContainerScraper):
     @override
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
+
+    @override
+    def _pre_parse(self) -> None:
+        pass
+
+    @override
+    def _gather(self) -> Collected:
+        return self._collect()
 
     @override
     def _parse_metadata(self) -> None:

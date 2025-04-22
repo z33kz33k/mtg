@@ -14,7 +14,7 @@ from typing import override
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper
 from mtg.scryfall import Card
-from mtg.utils.scrape import ScrapingError, request_json
+from mtg.utils.scrape import request_json
 
 _log = logging.getLogger(__name__)
 
@@ -23,11 +23,10 @@ _log = logging.getLogger(__name__)
 class MtgoTradersDeckScraper(DeckScraper):
     """Scraper of MTGO Traders deck page.
     """
-    REQUEST_URL_TEMPLATE = "https://www.mtgotraders.com/deck/data/getdeck.php?deck={}"
+    API_URL_TEMPLATE = "https://www.mtgotraders.com/deck/data/getdeck.php?deck={}"  # override
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        *_, self._decklist_id = self.url.split("?deck=")
 
     @staticmethod
     @override
@@ -35,24 +34,23 @@ class MtgoTradersDeckScraper(DeckScraper):
         return "www.mtgotraders.com/deck/" in url.lower() and "?deck=" in url.lower()
 
     @override
-    def _pre_parse(self) -> None:
-        self._deck_data = request_json(self.REQUEST_URL_TEMPLATE.format(self._decklist_id))
-        if not self._deck_data:
-            raise ScrapingError("Data not available", scraper=type(self))
+    def _get_data_from_api(self) -> Json:
+        *_, decklist_id = self.url.split("?deck=")
+        return request_json(self.API_URL_TEMPLATE.format(decklist_id))
 
     @override
     def _parse_metadata(self) -> None:
-        self._metadata["name"] = self._deck_data["Name"]
-        if desc :=self._deck_data.get("Description"):
+        self._metadata["name"] = self._data["Name"]
+        if desc :=self._data.get("Description"):
             self._metadata["description"] = desc
-        self._update_fmt(self._deck_data["Format"])
-        self._metadata["author"] = self._deck_data["User"]
+        self._update_fmt(self._data["Format"])
+        self._metadata["author"] = self._data["User"]
         self._metadata["date"] = datetime.strptime(
-            self._deck_data["Date"], "%Y-%m-%d %H:%M:%S").date()
-        self._metadata["views"] = self._deck_data["ViewCount"]
-        self._metadata["downloads"] = self._deck_data["DownloadCount"]
-        self._metadata["ratings"] = self._deck_data["TotalRatings"]
-        self._metadata["avg_rating"] = self._deck_data["RatingAvg"]
+            self._data["Date"], "%Y-%m-%d %H:%M:%S").date()
+        self._metadata["views"] = self._data["ViewCount"]
+        self._metadata["downloads"] = self._data["DownloadCount"]
+        self._metadata["ratings"] = self._data["TotalRatings"]
+        self._metadata["avg_rating"] = self._data["RatingAvg"]
 
     def _parse_json_card(self, json_card: Json) -> list[Card]:
         name = json_card["name"]
@@ -61,9 +59,9 @@ class MtgoTradersDeckScraper(DeckScraper):
 
     @override
     def _parse_decklist(self) -> None:
-        for json_card in self._deck_data["main"]:
+        for json_card in self._data["main"]:
             self._maindeck += self._parse_json_card(json_card)
-        if sideboard := self._deck_data.get("sideboard"):
+        if sideboard := self._data.get("sideboard"):
             for json_card in sideboard:
                 self._sideboard += self._parse_json_card(json_card)
         self._derive_commander_from_sideboard()

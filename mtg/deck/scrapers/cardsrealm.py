@@ -1,7 +1,7 @@
 """
 
     mtg.deck.scrapers.cardsrealm.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Cardsrealm decklists.
 
     @author: z33k
@@ -190,10 +190,12 @@ class CardsrealmMetaTournamentScraper(DeckUrlsContainerScraper):
 class CardsrealmRegularTournamentScraper(DeckUrlsContainerScraper):
     """Scraper of Cardsrealm regular tournaments page.
     """
+    SELENIUM_PARAMS = {  # override
+        "xpath": "//button[text()='show deck']",
+        "consent_xpath": '//button[@id="ez-accept-all"]'
+    }
     CONTAINER_NAME = "Cardsrealm regular tournament"  # override
     DECK_SCRAPERS = CardsrealmDeckScraper,  # override
-    XPATH = "//button[text()='show deck']"  # override
-    CONSENT_XPATH = '//button[@id="ez-accept-all"]'  # override
 
     @staticmethod
     @override
@@ -213,12 +215,11 @@ class CardsrealmRegularTournamentScraper(DeckUrlsContainerScraper):
                 _log.info(f"Webdriving using Chrome to: '{self.url}'...")
                 driver.get(self.url)
 
-                accept_consent(driver, self.CONSENT_XPATH)
+                accept_consent(driver, self.SELENIUM_PARAMS["consent_xpath"])
 
                 buttons = WebDriverWait(driver, SELENIUM_TIMEOUT).until(
-                    EC.presence_of_all_elements_located((By.XPATH, self.XPATH)))
-                _log.info(
-                    f"Page has been loaded and elements specified by {self.XPATH!r} are present")
+                    EC.presence_of_all_elements_located((By.XPATH, self.SELENIUM_PARAMS["xpath"])))
+                _log.info("Page has been loaded and XPath-specified elements are present")
 
                 for btn in buttons:
                     btn.click()
@@ -236,10 +237,8 @@ class CardsrealmRegularTournamentScraper(DeckUrlsContainerScraper):
                 return BeautifulSoup(driver.page_source, "lxml")
 
     @override
-    def _pre_parse(self) -> None:
+    def _fetch_soup(self) -> None:
         self._soup = self._get_dynamic_soup()
-        if not self._soup:
-            raise ScrapingError(self._error_msg, scraper=type(self))
 
     @override
     def _collect(self) -> list[str]:

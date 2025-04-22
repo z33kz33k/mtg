@@ -1,7 +1,7 @@
 """
 
     mtg.deck.scrapers.goldfish.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape MtGGoldfish decklists.
 
     @author: z33k

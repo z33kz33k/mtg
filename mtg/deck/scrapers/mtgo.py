@@ -8,7 +8,7 @@
 
 """
 import logging
-from typing import override
+from typing import Type, override
 
 import dateutil.parser
 from bs4 import BeautifulSoup
@@ -18,7 +18,7 @@ from mtg.deck import Deck
 from mtg.deck.scrapers import DeckScraper, DecksJsonContainerScraper, JsonBasedDeckParser
 from mtg.scryfall import all_formats
 from mtg.utils import from_iterable, get_ordinal_suffix
-from mtg.utils.scrape import ScrapingError, dissect_js, getsoup, strip_url_query
+from mtg.utils.scrape import ScrapingError, dissect_js, strip_url_query
 
 _log = logging.getLogger(__name__)
 
@@ -41,12 +41,13 @@ HEADERS = {
 }
 
 
-def _get_json(soup: BeautifulSoup) -> Json:
+def _get_json(
+        soup: BeautifulSoup, scraper: Type[DeckScraper] | Type[DecksJsonContainerScraper]) -> Json:
     data = dissect_js(
         soup, "window.MTGO.decklists.data = ", "window.MTGO.decklists.type",
         lambda s: s.rstrip().rstrip(";"))
     if data is None:
-        raise ScrapingError("Data not available", scraper=type(self))
+        raise ScrapingError("Data not available", scraper=scraper)
     return data
 
 
@@ -134,6 +135,8 @@ class MtgoDeckJsonParser(JsonBasedDeckParser):
 class MtgoDeckScraper(DeckScraper):
     """Scraper of MGTO event page that points to an individual deck.
     """
+    DATA_FROM_SOUP = True  # override
+
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
         self._player_name = self._parse_player_name()
@@ -155,25 +158,25 @@ class MtgoDeckScraper(DeckScraper):
         return rest.removeprefix("deck_")
 
     @override
-    def _pre_parse(self) -> None:
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            raise ScrapingError("Page not available", scraper=type(self))
-        json_data = _get_json(self._soup)
+    def _get_data_from_soup(self) -> Json:
+        json_data = _get_json(self._soup, type(self))
         decks_data = _get_decks_data(json_data)
-        deck_data = from_iterable(
-            decks_data, lambda d: d["player"] == self._player_name)
+        deck_data = from_iterable(decks_data, lambda d: d["player"] == self._player_name)
         if not deck_data:
             raise ScrapingError(
                 f"Deck designated by {self._player_name!r} not found", scraper=type(self))
         if rank_data := json_data.get("final_rank"):
             _process_ranks(rank_data, deck_data)
         self._metadata.update(_get_event_metadata(json_data))
-        self._deck_parser = MtgoDeckJsonParser(deck_data, self._metadata)
+        return decks_data
+
+    @override
+    def _get_deck_parser(self) -> MtgoDeckJsonParser:
+        return MtgoDeckJsonParser(self._data, self._metadata)
 
     @override
     def _parse_metadata(self) -> None:
-        pass
+        self._deck_parser.update_metadata(**self._metadata)
 
     @override
     def _parse_decklist(self) -> None:
@@ -205,7 +208,7 @@ class MtgoEventScraper(DecksJsonContainerScraper):
     @override
     def _collect(self) -> list[Json]:
         try:
-            json_data = _get_json(self._soup)
+            json_data = _get_json(self._soup, type(self))
         except ScrapingError:
             _log.warning(self._error_msg)
             return []

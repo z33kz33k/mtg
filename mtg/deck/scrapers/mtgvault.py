@@ -37,12 +37,6 @@ class MtgVaultDeckScraper(DeckScraper):
             url.removesuffix("/proxy/").removesuffix("/stats/").removesuffix("/sample-hand/"))
 
     @override
-    def _pre_parse(self) -> None:
-        self._soup = getsoup(self.url, request_timeout=45)
-        if not self._soup:
-            raise ScrapingError("Page not available", scraper=type(self))
-
-    @override
     def _parse_metadata(self) -> None:
         if name_tag := self._soup.select_one("h1.deck-name"):
             self._metadata["name"] = name_tag.text.strip()

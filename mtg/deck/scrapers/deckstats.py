@@ -1,7 +1,7 @@
 """
 
     mtg.deck.scrapers.deckstats.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Deckstats decklists.
 
     @author: z33k
@@ -194,6 +194,10 @@ class DeckstatsUserScraper(DeckUrlsContainerScraper):
     @override
     def _get_data_from_api(self) -> Json:
         return {}  # dummy
+
+    @override
+    def _validate_data(self) -> None:
+        pass
 
     @override
     def _collect(self) -> list[str]:

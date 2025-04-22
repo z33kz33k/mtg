@@ -15,7 +15,6 @@ from typing import override
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.utils import extract_int
 from mtg.utils.scrape import ScrapingError
-from mtg.utils.scrape import getsoup
 
 _log = logging.getLogger(__name__)
 
@@ -39,13 +38,10 @@ class MtgTop8DeckScraper(DeckScraper):
         return url.removesuffix("/").replace("&switch=visual", "").replace(
             "&switch=text", "") + "&switch=text"
 
-    @override
-    def _pre_parse(self) -> None:
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            raise ScrapingError("Page not available")
+    def _validate_soup(self) -> None:
+        super()._validate_soup()
         if _ := self._soup.find("div", string="No event could be found."):
-            raise ScrapingError("No event could be found")
+            raise ScrapingError("No event could be found", scraper=type(self))
 
     @override
     def _parse_metadata(self) -> None:
