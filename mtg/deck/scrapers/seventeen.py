@@ -25,13 +25,7 @@ class SeventeenLandsDeckScraper(DeckScraper):
     """Scraper of 17Lands decklist page.
     """
     API_URL_TEMPLATE = ("https://www.17lands.com/data/user_deck?sharing_token={}"
-                        "&deck={}&timestamp={}")
-
-    def __init__(
-            self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        _, rest = self.url.split("/user/deck/", maxsplit=1)
-        self._sharing_token, self._deck_id, self._timestamp = rest.split("/")
+                        "&deck={}&timestamp={}")  # override
 
     @staticmethod
     @override
@@ -45,14 +39,18 @@ class SeventeenLandsDeckScraper(DeckScraper):
         return url.rstrip(".,")
 
     @override
-    def _pre_parse(self) -> None:
+    def _get_data_from_api(self) -> Json:
+        _, rest = self.url.split("/user/deck/", maxsplit=1)
+        sharing_token, deck_id, timestamp = rest.split("/")
         try:
-            self._deck_data = request_json(
-                self.API_URL_TEMPLATE.format(self._sharing_token, self._deck_id, self._timestamp))
+            return request_json(self.API_URL_TEMPLATE.format(sharing_token, deck_id, timestamp))
         except ReadTimeout:
-            raise ScrapingError("Request timed out", scraper=type(self))
-        if not self._deck_data or not self._deck_data.get("groups") or not self._deck_data.get(
-                "cards"):
+            raise ScrapingError("API request timed out", scraper=type(self))
+
+    @override
+    def _validate_data(self) -> None:
+        super()._validate_data()
+        if not self._data.get("groups") or not self._data.get("cards"):
             raise ScrapingError("Data not available", scraper=type(self))
 
     @override
@@ -68,13 +66,13 @@ class SeventeenLandsDeckScraper(DeckScraper):
 
     @override
     def _parse_decklist(self) -> None:
-        maindeck_card_ids = self._deck_data["groups"][0]["cards"]
+        maindeck_card_ids = self._data["groups"][0]["cards"]
         try:
-            sideboard_card_ids = self._deck_data["groups"][1]["cards"]
+            sideboard_card_ids = self._data["groups"][1]["cards"]
         except IndexError:
             sideboard_card_ids = []
 
-        for card_data in self._deck_data["cards"].values():
+        for card_data in self._data["cards"].values():
             card = self._parse_card(card_data)
             self._maindeck += [card] * maindeck_card_ids.count(card_data["id"])
             if sideboard_card_ids:

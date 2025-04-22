@@ -14,11 +14,10 @@ from typing import override
 from bs4 import NavigableString, Tag
 
 from mtg import Json
-from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.scryfall import Card
 from mtg.utils import extract_int
 from mtg.utils.scrape import ScrapingError
-from mtg.utils.scrape import getsoup
 
 _log = logging.getLogger(__name__)
 
@@ -35,12 +34,6 @@ class TCDecksDeckScraper(DeckScraper):
     @override
     def is_valid_url(url: str) -> bool:
         return "tcdecks.net/deck.php?id=" in url.lower() and "&iddeck=" in url.lower()
-
-    @override
-    def _pre_parse(self) -> None:
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            raise ScrapingError("Page not available", scraper=type(self))
 
     @override
     def _parse_metadata(self) -> None:

@@ -1,7 +1,7 @@
 """
 
     mtg.deck.scrapers.penny.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape PennyDreadfulMagic decklists.
 
     @author: z33k
@@ -12,6 +12,7 @@ from typing import override
 
 from bs4 import Tag
 
+from mtg import Json
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.scryfall import Card
 from mtg.utils import from_iterable, get_date_from_ago_text, get_date_from_month_text
@@ -34,12 +35,6 @@ class PennyDreadfulMagicDeckScraper(DeckScraper):
     @override
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
-
-    @override
-    def _pre_parse(self) -> None:
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            raise ScrapingError("Page not available", scraper=type(self))
 
     @override
     def _parse_metadata(self) -> None:
@@ -108,17 +103,20 @@ class PennyDreadfulMagicCompetitionScraper(DeckUrlsContainerScraper):
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _get_competition_id(self) -> str:
-        *_, last = self.url.split("/")
-        return last
+    @override
+    def _get_data_from_api(self) -> Json:
+        *_, competition_id = self.url.split("/")
+        return request_json(self.API_URL_TEMPLATE.format(competition_id))
+
+    @override
+    def _validate_data(self) -> None:
+        super()._validate_data()
+        if not self._data.get("objects"):
+            raise ScrapingError(self._error_msg)
 
     @override
     def _collect(self) -> list[str]:
-        json_data = request_json(self.API_URL_TEMPLATE.format(self._get_competition_id()))
-        if not json_data or not json_data.get("objects"):
-            _log.warning(self._error_msg)
-            return []
-        return [d["url"] for d in json_data["objects"]]
+        return [d["url"] for d in self._data["objects"]]
 
 
 @DeckUrlsContainerScraper.registered
@@ -171,6 +169,14 @@ class PennyDreadfulMagicUserScraper(DeckUrlsContainerScraper):
         if self._ids_in_url:
             return self._parse_url_for_ids(self.url)
         return self._find_ids()
+
+    @override
+    def _get_data_from_api(self) -> Json:
+        return {}  # dummy
+
+    @override
+    def _validate_data(self) -> None:
+        pass
 
     @override
     def _collect(self) -> list[str]:

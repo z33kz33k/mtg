@@ -10,14 +10,11 @@
 import logging
 from typing import override
 
-from selenium.common import TimeoutException
-
 from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckScraper
 from mtg.utils.scrape import ScrapingError, strip_url_query
-from mtg.utils.scrape.dynamic import get_dynamic_soup
 
 _log = logging.getLogger(__name__)
 
@@ -26,9 +23,11 @@ _log = logging.getLogger(__name__)
 class MtgSearchItDeckScraper(DeckScraper):
     """Scraper of a MTGSearch.it decklist page.
     """
-    XPATH = "//div[contains(@class, 'tags') and contains(@class, 'mt10')]"
+    SELENIUM_PARAMS = {  # override
+        "xpath": "//div[contains(@class, 'tags') and contains(@class, 'mt10')]"
+    }
     # TODO: detect presence of this trolling and attempt to click with Selenium
-    XPATH_UNBLOCK = "//a[@href='/access/unblock']"
+    # XPATH_UNBLOCK = "//a[@href='/access/unblock']"
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -43,13 +42,6 @@ class MtgSearchItDeckScraper(DeckScraper):
     @override
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
-
-    @override
-    def _pre_parse(self) -> None:
-        try:
-            self._soup, _, _ = get_dynamic_soup(self.url, self.XPATH)
-        except TimeoutException:
-            raise ScrapingError(f"Scraping failed due to Selenium timing out", scraper=type(self))
 
     @override
     def _parse_metadata(self) -> None:

@@ -25,11 +25,7 @@ _log = logging.getLogger(__name__)
 class StreamdeckerDeckScraper(DeckScraper):
     """Scraper of Streamdecker deck page.
     """
-    API_URL_TEMPLATE = "https://www.streamdecker.com/api/deck/{}"
-
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        *_, self._decklist_id = self.url.split("/")
+    API_URL_TEMPLATE = "https://www.streamdecker.com/api/deck/{}"  # override
 
     @staticmethod
     @override
@@ -42,27 +38,30 @@ class StreamdeckerDeckScraper(DeckScraper):
         return strip_url_query(url)
 
     @override
-    def _pre_parse(self) -> None:
+    def _get_data_from_api(self) -> Json:
+        *_, decklist_id = self.url.split("/")
         try:
-            json_data = request_json(self.API_URL_TEMPLATE.format(self._decklist_id))
+            return request_json(self.API_URL_TEMPLATE.format(decklist_id))
         except ReadTimeout:
-            raise ScrapingError("Request timed out", scraper=type(self))
-        if not json_data or not json_data.get("data") or json_data["data"] == {"deck": {}}:
+            raise ScrapingError("API request timed out", scraper=type(self))
+    @override
+    def _validate_data(self) -> None:
+        super()._validate_data()
+        if not self._data.get("data") or self._data["data"] == {"deck": {}}:
             raise ScrapingError("Data not available", scraper=type(self))
-        self._deck_data = json_data["data"]
 
     def _parse_date(self) -> date | None:
-        date_text = self._deck_data["updatedAt"]
+        date_text = self._data["updatedAt"]
         return get_date_from_ago_text(date_text)
 
     @override
     def _parse_metadata(self) -> None:
         self._metadata.update({
-            "name": self._deck_data["name"],
-            "views": self._deck_data["views"]["counter"]
+            "name": self._data["name"],
+            "views": self._data["views"]["counter"]
         })
-        self._metadata["author"] = self._deck_data["userProfile"]["displayName"]
-        self._metadata["author_twitch_id"] = self._deck_data["userProfile"]["twitchId"]
+        self._metadata["author"] = self._data["userProfile"]["displayName"]
+        self._metadata["author_twitch_id"] = self._data["userProfile"]["twitchId"]
         if dt := self._parse_date():
             self._metadata["date"] = dt
 
@@ -83,7 +82,7 @@ class StreamdeckerDeckScraper(DeckScraper):
 
     @override
     def _parse_decklist(self) -> None:
-        for json_card in self._deck_data["cardList"]:
+        for json_card in self._data["cardList"]:
             self._parse_json_card(json_card)
 
 
@@ -92,7 +91,7 @@ class StreamdeckerUserScraper(DeckUrlsContainerScraper):
     """Scraper of Streamdecker user page.
     """
     CONTAINER_NAME = "Streamdecker user"  # override
-    API_URL_TEMPLATE = "https://www.streamdecker.com/api/userdecks/{}"
+    API_URL_TEMPLATE = "https://www.streamdecker.com/api/userdecks/{}"  # override
     DECK_SCRAPERS = StreamdeckerDeckScraper,  # override
     DECK_URL_PREFIX = "https://www.streamdecker.com/deck/"  # override
 
@@ -106,14 +105,17 @@ class StreamdeckerUserScraper(DeckUrlsContainerScraper):
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _get_user_name(self) -> str:
-        *_, last = self.url.split("/")
-        return last
+    @override
+    def _get_data_from_api(self) -> Json:
+        *_, user_name = self.url.split("/")
+        return request_json(self.API_URL_TEMPLATE.format(user_name))
+
+    @override
+    def _validate_data(self) -> None:
+        super()._validate_data()
+        if not self._data.get("data") or not self._data["data"].get("decks"):
+            raise ScrapingError("Data not available", scraper=type(self))
 
     @override
     def _collect(self) -> list[str]:
-        json_data = request_json(self.API_URL_TEMPLATE.format(self._get_user_name()))
-        if not json_data or not json_data.get("data") or not json_data["data"].get("decks"):
-            _log.warning(self._error_msg)
-            return []
-        return [d["deckLink"] for d in json_data["data"]["decks"]]
+        return [d["deckLink"] for d in self._data["data"]["decks"]]

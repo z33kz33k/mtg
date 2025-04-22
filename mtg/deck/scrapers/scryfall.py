@@ -1,7 +1,7 @@
 """
 
     mtg.deck.scrapers.scryfall.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Scryfall decklists.
 
     @author: z33k
@@ -16,7 +16,7 @@ from bs4 import Tag
 from mtg.deck.scrapers import DeckScraper
 from mtg.scryfall import Card
 from mtg.utils import extract_int, sanitize_whitespace
-from mtg.utils.scrape import ScrapingError, getsoup, strip_url_query
+from mtg.utils.scrape import strip_url_query
 
 _log = logging.getLogger(__name__)
 
@@ -35,12 +35,6 @@ class ScryfallDeckScraper(DeckScraper):
     def sanitize_url(url: str) -> str:
         url = strip_url_query(url)
         return f"{url}?as=list&with=usd"
-
-    @override
-    def _pre_parse(self) -> None:
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            raise ScrapingError("Page not available", scraper=type(self))
 
     @override
     def _parse_metadata(self) -> None:

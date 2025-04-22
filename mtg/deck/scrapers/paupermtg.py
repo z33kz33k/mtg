@@ -15,7 +15,7 @@ from bs4 import Tag
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper
 from mtg.scryfall import Card
-from mtg.utils.scrape import ScrapingError, getsoup, strip_url_query
+from mtg.utils.scrape import strip_url_query
 
 _log = logging.getLogger(__name__)
 
@@ -49,9 +49,7 @@ class PauperMtgDeckScraper(DeckScraper):
 
     @override
     def _pre_parse(self) -> None:
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            raise ScrapingError("Page not available", scraper=type(self))
+        super()._pre_parse()
         self._main_tag = self._soup.find("div", class_="deckDetailList")
         state = "maindeck"
         for tag in self._main_tag:

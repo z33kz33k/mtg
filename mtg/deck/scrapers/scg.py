@@ -15,13 +15,13 @@ import dateutil.parser
 from bs4 import Tag
 
 from mtg import Json
-from mtg.scryfall import COMMANDER_FORMATS
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import DeckUrlsContainerScraper, HybridContainerScraper, TagBasedDeckParser, \
-    DeckScraper
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
+    TagBasedDeckParser
+from mtg.scryfall import COMMANDER_FORMATS
 from mtg.utils import ParsingError, extract_int, from_iterable, sanitize_whitespace
-from mtg.utils.scrape import ScrapingError, getsoup, strip_url_query
+from mtg.utils.scrape import ScrapingError, strip_url_query
 
 _log = logging.getLogger(__name__)
 
@@ -110,10 +110,6 @@ class ScgDeckTagParser(TagBasedDeckParser):
 class ScgDeckScraper(DeckScraper):
     """Scraper of StarCityGames decklist page.
     """
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        self._deck_parser: ScgDeckTagParser | None = None
-
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
@@ -131,16 +127,13 @@ class ScgDeckScraper(DeckScraper):
         return strip_url_query(url)
 
     @override
-    def _pre_parse(self) -> None:
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            raise ScrapingError("Page not available", scraper=type(self))
+    def _get_deck_parser(self) -> ScgDeckTagParser:
         deck_tag = self._soup.find("div", class_="deck_listing")
         if deck_tag is None:
             deck_tag = self._soup.find("div", class_="deck_listing2")
             if deck_tag is None:
                 raise ScrapingError("Deck data not found", scraper=type(self))
-        self._deck_parser = ScgDeckTagParser(deck_tag, self._metadata)
+        return ScgDeckTagParser(deck_tag, self._metadata)
 
     @override
     def _parse_metadata(self) -> None:

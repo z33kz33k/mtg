@@ -105,8 +105,8 @@ class DeckScraper(DeckParser):
     Deck scrapers process a single, decklist and metadata holding, URL and return a Deck
     object (if able).
     """
-    THROTTLING = Throttling(0.6, 0.15)
     _REGISTRY: set[Type[Self]] = set()
+    THROTTLING = Throttling(0.6, 0.15)
     API_URL_TEMPLATE = ""
     SELENIUM_PARAMS = {}
     HEADERS = None
@@ -299,7 +299,7 @@ class ContainerScraper(DeckScraper):
     # DeckParser API
     @override
     def _parse_metadata(self) -> None:
-        pass  # utilized only on per-case basis in subclasses
+        pass
 
     @override
     def _parse_decklist(self) -> None:

@@ -70,12 +70,15 @@ class TappedoutDeckScraper(DeckScraper):
         return timed_request(self.url, handle_http_errors=False)
 
     @override
-    def _pre_parse(self) -> None:
+    def _fetch_soup(self) -> None:
         response = self._get_response()
         if response.status_code == 429:
             raise ScrapingError(
                 f"Page still not available after {_MAX_TRIES} backoff tries", scraper=type(self))
         self._soup = BeautifulSoup(response.text, "lxml")
+
+    @override
+    def _validate_soup(self) -> None:
         if "Page not found (404)" in self._soup.text:
             raise ScrapingError("Page not found (404)", scraper=type(self))
 
@@ -138,6 +141,14 @@ class TappedoutUserScraper(DeckUrlsContainerScraper):
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
+    @override
+    def _get_data_from_api(self) -> Json:
+        return {}  # dummy
+
+    @override
+    def _validate_data(self) -> None:
+        pass
+
     def _get_user_name(self) -> str:
         url = self.url.removeprefix("https://").removeprefix("http://")
         first, second, user, *_ = url.split("/")
@@ -191,12 +202,18 @@ class TappedoutFolderScraper(DeckUrlsContainerScraper):
         return extract_int(third)
 
     @override
+    def _get_data_from_api(self) -> Json:
+        return request_json(self.API_URL_TEMPLATE.format(self._get_folder_id()))
+
+    @override
+    def _validate_data(self) -> None:
+        super()._validate_data()
+        if not self._data.get("folder") or not self._data["folder"].get("decks"):
+            raise ScrapingError("Data not available", scraper=type(self))
+
+    @override
     def _collect(self) -> list[str]:
-        json_data = request_json(self.API_URL_TEMPLATE.format(self._get_folder_id()))
-        if not json_data or not json_data.get("folder") or not json_data["folder"].get("decks"):
-            _log.warning(self._error_msg)
-            return []
-        return [d["url"] for d in json_data["folder"]["decks"]]
+        return [d["url"] for d in self._data["folder"]["decks"]]
 
 
 @DeckUrlsContainerScraper.registered
