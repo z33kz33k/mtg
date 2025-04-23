@@ -1,7 +1,7 @@
 """
 
     mtg.deck.scrapers.topdeck.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape TopDeck.gg deck containers.
 
     @author: z33k
@@ -38,8 +38,10 @@ def check_unexpected_urls(urls: list[str], *scrapers: Type[DeckScraper]) -> None
 class TopDeckBracketScraper(DeckUrlsContainerScraper):
     """Scraper of TopDeck.gg bracket page.
     """
+    SELENIUM_PARAMS = {  # override
+        "xpath": "//table[contains(@class, 'table') and contains(@class, 'dataTable')]"
+    }
     CONTAINER_NAME = "TopDeck.gg bracket"  # override
-    XPATH = "//table[contains(@class, 'table') and contains(@class, 'dataTable')]"  # override
 
     @staticmethod
     @override
@@ -63,9 +65,11 @@ class TopDeckBracketScraper(DeckUrlsContainerScraper):
 class TopDeckProfileScraper(DeckUrlsContainerScraper):
     """Scraper of TopDeck.gg profile page.
     """
+    SELENIUM_PARAMS = {  # override
+        "xpath": ("//a[contains(@class, 'btn') and contains(@class, 'btn-sm') "
+                  "and not(contains(@href, 'topdeck.gg'))]")
+    }
     CONTAINER_NAME = "TopDeck.gg profile"  # override
-    XPATH = ("//a[contains(@class, 'btn') and contains(@class, 'btn-sm') "
-             "and not(contains(@href, 'topdeck.gg'))]")  # override
 
     @staticmethod
     @override

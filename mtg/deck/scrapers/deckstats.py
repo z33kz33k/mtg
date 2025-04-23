@@ -59,6 +59,7 @@ def _backoff_handler(details: dict) -> None:
 class DeckstatsDeckScraper(DeckScraper):
     """Scraper of Deckstats decklist page.
     """
+    DATA_FROM_SOUP = True  # override
 
     @staticmethod
     @override

@@ -1,7 +1,7 @@
 """
 
     mtg.deck.scrapers.untapped.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Untapped.gg decklists.
 
     @author: z33k
@@ -13,10 +13,9 @@ from typing import override
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 
-from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.utils import extract_float, extract_int
 from mtg.utils.scrape import ScrapingError
 from mtg.utils.scrape import strip_url_query
@@ -35,10 +34,6 @@ class UntappedProfileDeckScraper(DeckScraper):
                        "time frame']")
     PRIVATE_XPATH = "//div[text()='This profile is private']"
 
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        self._clipboard = ""
-
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
@@ -49,8 +44,7 @@ class UntappedProfileDeckScraper(DeckScraper):
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    @override
-    def _pre_parse(self) -> None:
+    def _fetch_soup(self) -> None:
         try:
             self._soup, _, self._clipboard = get_dynamic_soup(
                 self.url, CLIPBOARD_XPATH, self.NO_GAMES_XPATH, self.PRIVATE_XPATH,
@@ -83,9 +77,11 @@ class UntappedProfileDeckScraper(DeckScraper):
 class UntappedRegularDeckScraper(DeckScraper):
     """Scraper of a regular Untapped.gg decklist page.
     """
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        self._clipboard = ""
+    SELENIUM_PARAMS = {  # override
+        "xpath": CLIPBOARD_XPATH,
+        "consent_xpath": CONSENT_XPATH,
+        "clipboard_xpath": CLIPBOARD_XPATH
+    }
 
     @staticmethod
     @override
@@ -97,15 +93,6 @@ class UntappedRegularDeckScraper(DeckScraper):
     def sanitize_url(url: str) -> str:
         url = strip_url_query(url)
         return url.replace("input/", "") if "/input/" in url else url
-
-    @override
-    def _pre_parse(self) -> None:
-        try:
-            self._soup, _, self._clipboard = get_dynamic_soup(
-                self.url, CLIPBOARD_XPATH, consent_xpath=CONSENT_XPATH,
-                clipboard_xpath=CLIPBOARD_XPATH)
-        except TimeoutException:
-            raise ScrapingError(f"Scraping failed due to Selenium timing out", scraper=type(self))
 
     @override
     def _parse_metadata(self) -> None:
@@ -129,9 +116,11 @@ class UntappedRegularDeckScraper(DeckScraper):
 class UntappedMetaDeckScraper(DeckScraper):
     """Scraper of Untapped meta-decks page.
     """
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        self._clipboard = ""
+    SELENIUM_PARAMS = {  # override
+        "xpath": CLIPBOARD_XPATH,
+        "consent_xpath": CONSENT_XPATH,
+        "clipboard_xpath": CLIPBOARD_XPATH
+    }
 
     @staticmethod
     @override
@@ -142,15 +131,6 @@ class UntappedMetaDeckScraper(DeckScraper):
     @override
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
-
-    @override
-    def _pre_parse(self) -> None:
-        try:
-            self._soup, _, self._clipboard = get_dynamic_soup(
-                self.url, CLIPBOARD_XPATH, consent_xpath=CONSENT_XPATH,
-                clipboard_xpath=CLIPBOARD_XPATH)
-        except TimeoutException:
-            raise ScrapingError(f"Scraping failed due to Selenium timing out", scraper=type(self))
 
     @override
     def _parse_metadata(self) -> None:
@@ -191,10 +171,12 @@ class UntappedMetaDeckScraper(DeckScraper):
 class UntappedProfileScraper(DeckUrlsContainerScraper):
     """Scraper of Untapped.gg user profile page.
     """
+    SELENIUM_PARAMS = {  # override
+        "xpath": "//a[contains(@href, '/profile/') and contains(@class, 'deckbox')]",
+        "consent_xpath": CONSENT_XPATH
+    }
     THROTTLING = DeckUrlsContainerScraper.THROTTLING * 1.4  # override
     CONTAINER_NAME = "Untapped profile"  # override
-    XPATH = "//a[contains(@href, '/profile/') and contains(@class, 'deckbox')]"
-    CONSENT_XPATH = CONSENT_XPATH
     DECK_SCRAPERS = UntappedProfileDeckScraper,  # override
     DECK_URL_PREFIX = "https://mtga.untapped.gg"  # override
 

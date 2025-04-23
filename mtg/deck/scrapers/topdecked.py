@@ -1,7 +1,7 @@
 """
 
     mtg.deck.scrapers.topdecked.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape TopDecked decklists.
 
     @author: z33k

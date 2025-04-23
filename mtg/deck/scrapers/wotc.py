@@ -77,7 +77,7 @@ class WotCDeckTagParser(TagBasedDeckParser):
             suppress_parsing_errors=False, suppress_invalid_deck=False)
 
 
-_LOCALES = {"/ja/", "/fr/", "/it/", "/de/", "/es/", "/pt/", "pt-BR", "/ko/"}
+_LOCALES = {"/ja/", "/fr/", "/it/", "/de/", "/es/", "/pt/", "/pt-BR/", "/ko/"}
 
 
 @HybridContainerScraper.registered
@@ -107,7 +107,6 @@ class WotCArticleScraper(HybridContainerScraper):
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
         deck_tags = [*self._soup.find_all("deck-list")]
-        self._parse_metadata()
         article_tag = self._soup.find("article")
         if not article_tag:
             _log.warning("Article tag not found")

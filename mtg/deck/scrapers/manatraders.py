@@ -13,7 +13,7 @@ from typing import override
 
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
-from mtg.utils.scrape import ScrapingError, getsoup, prepend_url, strip_url_query
+from mtg.utils.scrape import ScrapingError, prepend_url, strip_url_query
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://www.manatraders.com"
@@ -23,6 +23,8 @@ URL_PREFIX = "https://www.manatraders.com"
 class ManatradersDeckScraper(DeckScraper):
     """Scraper of Manatraders decklist page.
     """
+    DATA_FROM_SOUP = True  # override
+
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:

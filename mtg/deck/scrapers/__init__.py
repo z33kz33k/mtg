@@ -28,9 +28,6 @@ from mtg.utils.scrape.dynamic import get_dynamic_soup
 _log = logging.getLogger(__name__)
 
 
-# TODO: more meaningful errors (#330)
-
-
 def is_in_domain_but_not_main(url: str, domain: str) -> bool:
     """Check whether the passed URL is of the passed domain but other than exactly this domain.
 
@@ -326,10 +323,10 @@ class ContainerScraper(DeckScraper):
         try:
             self._pre_parse()
             self._parse_metadata()
-        except ScrapingError:
-            _log.warning(self._error_msg)
+            return self._collect()
+        except ScrapingError as e:
+            _log.error(f"Scraping failed with: {e!r}")
             return []
-        return self._collect()
 
     @abstractmethod
     def _collect(self) -> Collected:
@@ -367,13 +364,13 @@ class DeckUrlsContainerScraper(ContainerScraper):
         try:
             self._pre_parse()
             self._parse_metadata()
-        except ScrapingError:
-            _log.warning(self._error_msg)
+            deck_urls = self._collect()
+            if self.DECK_URL_PREFIX:
+                return [prepend_url(l, self.DECK_URL_PREFIX) for l in self._collect()]
+            return deck_urls
+        except ScrapingError as e:
+            _log.error(f"Scraping failed with: {e!r}")
             return []
-        deck_urls = self._collect()
-        if self.DECK_URL_PREFIX:
-            return [prepend_url(l, self.DECK_URL_PREFIX) for l in self._collect()]
-        return deck_urls
 
     @classmethod
     def _get_deck_scrapers(cls) -> set[Type[DeckScraper]]:
@@ -581,15 +578,15 @@ class HybridContainerScraper(
         try:
             self._pre_parse()
             self._parse_metadata()
-        except ScrapingError:
-            _log.warning(self._error_msg)
+            deck_urls, deck_tags, decks_data, container_urls = self._collect()
+            if self.DECK_URL_PREFIX:
+                deck_urls = [prepend_url(l, self.DECK_URL_PREFIX) for l in deck_urls]
+            if self.CONTAINER_URL_PREFIX:
+                container_urls = [prepend_url(l, self.CONTAINER_URL_PREFIX) for l in container_urls]
+            return deck_urls, deck_tags, decks_data, container_urls
+        except ScrapingError as e:
+            _log.error(f"Scraping failed with: {e!r}")
             return [], [], [], []
-        deck_urls, deck_tags, decks_data, container_urls = self._collect()
-        if self.DECK_URL_PREFIX:
-            deck_urls = [prepend_url(l, self.DECK_URL_PREFIX) for l in deck_urls]
-        if self.CONTAINER_URL_PREFIX:
-            container_urls = [prepend_url(l, self.CONTAINER_URL_PREFIX) for l in container_urls]
-        return deck_urls, deck_tags, decks_data, container_urls
 
     @classmethod
     def _dispatch_container_scraper(

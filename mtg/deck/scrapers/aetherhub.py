@@ -260,8 +260,7 @@ class AetherhubUserScraper(DeckUrlsContainerScraper):
     def _collect(self) -> list[str]:
         tbody = self._soup.find("tbody")
         if not tbody:
-            _log.warning(self._error_msg)
-            return []
+            raise ScrapingError("<tbody> tag not found", scraper=type(self))
         return [row.find("a")["href"] for row in tbody.find_all("tr") if row.find("a")]
 
 
@@ -320,7 +319,7 @@ class AetherhubArticleScraper(HybridContainerScraper):
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
         article_tag = self._soup.find("div", id="article-text")
         if article_tag is None:
-            _log.warning(self._error_msg)
+            _log.error(self._error_msg)
             return [], [], [], []
         deck_links, container_links = self._get_links_from_tags(article_tag, url_prefix=URL_PREFIX)
         return deck_links, [], [], container_links
