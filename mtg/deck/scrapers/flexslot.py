@@ -57,7 +57,7 @@ class FlexslotDeckScraper(DeckScraper):
             self.url.replace("https://flexslot.gg", "https://api.flexslot.gg"),
             headers=HEADERS)
         if not json_data or not json_data.get("data"):
-            raise ScrapingError("Data not available", scraper=type(self))
+            raise ScrapingError("Data not available", scraper=type(self), url=self.url)
         self._data = json_data["data"]
 
     @override

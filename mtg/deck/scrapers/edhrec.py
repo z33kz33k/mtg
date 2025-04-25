@@ -45,13 +45,13 @@ def _get_data(
         data_key="data") -> tuple[Json, BeautifulSoup]:
     soup = getsoup(url)
     if not soup:
-        raise ScrapingError("Page not available", scraper=scraper)
+        raise ScrapingError("Page not available", scraper=scraper, url=url)
     script_tag = soup.find("script", id="__NEXT_DATA__")
     try:
         data = json.loads(script_tag.text)
         deck_data = data["props"]["pageProps"][data_key]
     except (AttributeError, KeyError):
-        raise ScrapingError("Deck data not available", scraper=scraper)
+        raise ScrapingError("Deck data not available", scraper=scraper, url=url)
     return deck_data, soup
 
 
@@ -205,7 +205,7 @@ class EdhrecDeckTagParser(TagBasedDeckParser):
     def _parse_decklist(self) -> None:
         cards_text = self._deck_tag.attrs.get("cards")
         if not cards_text:
-            raise ScrapingError("Cards data not found", scraper=type(self))
+            raise ScrapingError("Cards data not found", scraper=type(self), url=self.url)
         decklist = self._handle_commander(cards_text)
         self._arena_decklist = self._clean_decklist(decklist)
 

@@ -121,7 +121,7 @@ class AetherhubDeckScraper(DeckScraper):
     def _validate_soup(self) -> None:
         super()._validate_soup()
         if "404 Page Not Found" in self._soup.text:
-            raise ScrapingError("Page not available", scraper=type(self))
+            raise ScrapingError("Page not available", scraper=type(self), url=self.url)
 
     @override
     def _get_deck_parser(self) -> AetherhubDeckTagParser:
@@ -129,7 +129,7 @@ class AetherhubDeckScraper(DeckScraper):
         deck_tag = from_iterable(
             deck_tags, lambda t: t.text.strip().startswith(("Main", "Commander", "Companion")))
         if deck_tag is None:
-            raise ScrapingError("Deck tag not found", scraper=type(self))
+            raise ScrapingError("Deck tag not found", scraper=type(self), url=self.url)
         return AetherhubDeckTagParser(deck_tag)
 
     @override
@@ -223,7 +223,7 @@ class AetherhubWriteupDeckScraper(AetherhubDeckScraper):
     def _get_deck_parser(self) -> AetherhubDeckTagParser:
         deck_tag = self._soup.find("div", id="tab_deck")
         if not deck_tag:
-            raise ScrapingError("Deck tag not found", scraper=type(self))
+            raise ScrapingError("Deck tag not found", scraper=type(self), url=self.url)
         return AetherhubDeckTagParser(deck_tag)
 
 
@@ -260,7 +260,7 @@ class AetherhubUserScraper(DeckUrlsContainerScraper):
     def _collect(self) -> list[str]:
         tbody = self._soup.find("tbody")
         if not tbody:
-            raise ScrapingError("<tbody> tag not found", scraper=type(self))
+            raise ScrapingError("<tbody> tag not found", scraper=type(self), url=self.url)
         return [row.find("a")["href"] for row in tbody.find_all("tr") if row.find("a")]
 
 
@@ -291,7 +291,7 @@ class AetherhubEventScraper(DeckUrlsContainerScraper):
     def _collect(self) -> list[str]:
         rows = self._soup.find_all("tr", class_="deckdata")
         if not rows:
-            raise ScrapingError("Row tags not found", scraper=type(self))
+            raise ScrapingError("Row tags not found", scraper=type(self), url=self.url)
         deck_tags = []
         for row in rows:
             _, deck_tag, *_ = row.find_all("td")
@@ -321,6 +321,6 @@ class AetherhubArticleScraper(HybridContainerScraper):
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
         article_tag = self._soup.find("div", id="article-text")
         if article_tag is None:
-            raise ScrapingError("Article tag not found", scraper=type(self))
+            raise ScrapingError("Article tag not found", scraper=type(self), url=self.url)
         deck_links, container_links = self._get_links_from_tags(article_tag, url_prefix=URL_PREFIX)
         return deck_links, [], [], container_links

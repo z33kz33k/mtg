@@ -51,6 +51,10 @@ class TagBasedDeckParser(DeckParser):
     HTML tag based parsers process a single, decklist and metadata holding, HTML tag extracted
     from a webpage and return a Deck object (if able).
     """
+    @property
+    def url(self) -> str | None:  # useful for documenting scraping errors
+        return self._metadata.get("url")
+
     def __init__(self, deck_tag: Tag,  metadata: Json | None = None) -> None:
         super().__init__(metadata)
         self._deck_tag = deck_tag
@@ -77,6 +81,10 @@ class JsonBasedDeckParser(DeckParser):
     either dissected from a webpage's JavaScript code or obtained via a separate JSON API
     request and return a Deck object (if able).
     """
+    @property
+    def url(self) -> str | None:  # useful for documenting scraping errors
+        return self._metadata.get("url")
+
     def __init__(self,  deck_data: Json, metadata: Json | None = None) -> None:
         super().__init__(metadata)
         self._deck_data = deck_data
@@ -167,11 +175,11 @@ class DeckScraper(DeckParser):
 
     def _validate_soup(self) -> None:
         if not self._soup:
-            raise ScrapingError(self._error_msg, scraper=type(self))
+            raise ScrapingError(self._error_msg, scraper=type(self), url=self.url)
 
     def _validate_data(self) -> None:
         if not self._data:
-            raise ScrapingError("Data not available", scraper=type(self))
+            raise ScrapingError("Data not available", scraper=type(self), url=self.url)
 
     @override
     def _pre_parse(self) -> None:

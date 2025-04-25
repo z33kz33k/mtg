@@ -151,7 +151,7 @@ class CardmarketArticleScraper(HybridContainerScraper):
         super()._validate_soup()
         cat_tag = self._soup.select_one("div.u-article-meta__category")
         if not cat_tag or cat_tag.text.strip().lower() != "magic":
-            raise ScrapingError("Not a MtG article", scraper=type(self))
+            raise ScrapingError("Not a MtG article", scraper=type(self), url=self.url)
 
     @override
     def _parse_metadata(self) -> None:

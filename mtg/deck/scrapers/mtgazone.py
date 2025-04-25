@@ -34,7 +34,7 @@ class MtgaZoneDeckTagParser(TagBasedDeckParser):
         if not name_author_tag:
             raise ScrapingError(
                 "Name tag not found. The deck you're trying to scrape has been most probably "
-                "paywalled by MTGAZone", scraper=type(self))
+                "paywalled by MTGAZone", scraper=type(self), url=self.url)
         name_tag = name_author_tag.find("div", class_="name")
         name, author, event = name_tag.text.strip(), None, None
         if " by " in name:
@@ -46,7 +46,7 @@ class MtgaZoneDeckTagParser(TagBasedDeckParser):
         if not author_tag:
             raise ScrapingError(
                 "Author tag not found. The deck you're trying to scrape has been most "
-                "probably paywalled by MTGAZone", scraper=type(self))
+                "probably paywalled by MTGAZone", scraper=type(self), url=self.url)
         author = author_tag.text.strip().removeprefix("by ")
         self._metadata["author"] = author
         if event:
@@ -55,7 +55,7 @@ class MtgaZoneDeckTagParser(TagBasedDeckParser):
         if not fmt_tag:
             raise ScrapingError(
                 "Format tag not found. The deck you're trying to scrape has been most probably "
-                "paywalled by MTGAZone", scraper=type(self))
+                "paywalled by MTGAZone", scraper=type(self), url=self.url)
         fmt = fmt_tag.text.strip().lower()
         self._update_fmt(fmt)
         if time_tag := self._deck_tag.find("time", class_="ct-meta-element-date"):
@@ -113,7 +113,8 @@ class MtgaZoneDeckScraper(DeckScraper):
     def _get_deck_parser(self) -> MtgaZoneDeckTagParser:
         deck_tag = self._soup.find("div", class_="deck-block")
         if deck_tag is None:
-            raise ScrapingError("Deck tag not found (page probably paywalled)", scraper=type(self))
+            raise ScrapingError(
+                "Deck tag not found (page probably paywalled)", scraper=type(self), url=self.url)
         return MtgaZoneDeckTagParser(deck_tag, self._metadata)
 
     @override
@@ -151,7 +152,7 @@ class MtgaZoneArticleScraper(HybridContainerScraper):
     def _collect_urls(self) -> tuple[list[str], list[str]]:
         article_tag = self._soup.find("article")
         if not article_tag:
-            raise ScrapingError("Article tag not found", scraper=type(self))
+            raise ScrapingError("Article tag not found", scraper=type(self), url=self.url)
 
         # filter out paragraphs that are covered by tag-based deck parser
         p_tags = [
@@ -232,7 +233,7 @@ def scrape_meta(fmt="standard", bo3=True) -> list[Deck]:
 
     soup = getsoup(url)
     if not soup:
-        raise ScrapingError("Page not available", scraper=MtgaZoneDeckTagParser)
+        raise ScrapingError("Page not available", scraper=MtgaZoneDeckTagParser, url=url)
     time_tag = soup.find("time", class_="ct-meta-element-date")
     deck_date = datetime.fromisoformat(time_tag.attrs["datetime"]).date()
     tier_table = soup.find("figure", class_="wp-block-table")

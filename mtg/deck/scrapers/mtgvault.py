@@ -64,7 +64,7 @@ class MtgVaultDeckScraper(DeckScraper):
     def _parse_decklist(self) -> None:
         maindeck_tag = self._soup.select_one("div#main-deck")
         if not maindeck_tag:
-            raise ScrapingError("Main deck tag not found", scraper=type(self))
+            raise ScrapingError("Main deck tag not found", scraper=type(self), url=self.url)
 
         for card_tag in maindeck_tag.select("div.deck-card"):
             self._maindeck += self._parse_card(card_tag)
@@ -110,6 +110,6 @@ class MtgVaultUserScraper(DeckUrlsContainerScraper):
                         soup, href=lambda h: h and "/decks/" in h and "/search/" not in h)
 
         if not deck_urls:
-            raise ScrapingError("No decks found", scraper=type(self))
+            raise ScrapingError("No decks found", scraper=type(self), url=self.url)
 
         return deck_urls

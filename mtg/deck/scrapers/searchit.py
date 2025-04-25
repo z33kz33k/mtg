@@ -62,7 +62,7 @@ class MtgSearchItDeckScraper(DeckScraper):
         decklist_tag = self._soup.find(
             "section", class_=lambda c: c and all(t in c for t in tokens))
         if not decklist_tag:
-            raise ScrapingError("Decklist tag not found", scraper=type(self))
+            raise ScrapingError("Decklist tag not found", scraper=type(self), url=self.url)
         self._arena_decklist = decklist_tag.text.strip()
 
     @override

@@ -112,7 +112,7 @@ class PennyDreadfulMagicCompetitionScraper(DeckUrlsContainerScraper):
     def _validate_data(self) -> None:
         super()._validate_data()
         if not self._data.get("objects"):
-            raise ScrapingError(self._error_msg)
+            raise ScrapingError(self._error_msg, scraper=type(self), url=self.url)
 
     @override
     def _collect(self) -> list[str]:
@@ -183,8 +183,8 @@ class PennyDreadfulMagicUserScraper(DeckUrlsContainerScraper):
         if ids := self._get_ids():
             season_id, user_id = ids
         else:
-            raise ScrapingError("API URL params not found", scraper=type(self))
+            raise ScrapingError("API URL params not found", scraper=type(self), url=self.url)
         json_data = request_json(self.API_URL_TEMPLATE.format(user_id, season_id))
         if not json_data or not json_data.get("objects"):
-            raise ScrapingError("Data not available", scraper=type(self))
+            raise ScrapingError("Data not available", scraper=type(self), url=self.url)
         return [d["url"] for d in json_data["objects"]]

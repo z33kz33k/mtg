@@ -100,8 +100,8 @@ class TCDecksEventScraper(DeckUrlsContainerScraper):
     def _collect(self) -> list[str]:  # override
         table_tag = self._soup.find("table", class_="tourney_list")
         if not table_tag:
-            raise ScrapingError("Event table table not found", scraper=type(self))
+            raise ScrapingError("Event table table not found", scraper=type(self), url=self.url)
         a_tags = table_tag.find_all("a", href=lambda h: h and "deck.php?id=" in h)
         if not a_tags:
-            raise ScrapingError("Deck tags not found", scraper=type(self))
+            raise ScrapingError("Deck tags not found", scraper=type(self), url=self.url)
         return sorted(set(a_tag.attrs["href"] for a_tag in a_tags))

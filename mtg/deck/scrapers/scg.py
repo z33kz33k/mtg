@@ -102,7 +102,8 @@ class ScgDeckTagParser(TagBasedDeckParser):
         decklist_tag = self._deck_tag.find("div", class_="deck_card_wrapper")
         if decklist_tag is None:
             raise ScrapingError(
-                "Decklist tag not found (page is probably paywalled)", scraper=type(self))
+                "Decklist tag not found (page is probably paywalled)", scraper=type(self),
+                url=self.url)
         self._parse_decklist_tag(decklist_tag)
 
 
@@ -132,7 +133,7 @@ class ScgDeckScraper(DeckScraper):
         if deck_tag is None:
             deck_tag = self._soup.find("div", class_="deck_listing2")
             if deck_tag is None:
-                raise ScrapingError("Deck data not found", scraper=type(self))
+                raise ScrapingError("Deck data not found", scraper=type(self), url=self.url)
         return ScgDeckTagParser(deck_tag, self._metadata)
 
     @override
@@ -185,12 +186,12 @@ class ScgEventScraper(DeckUrlsContainerScraper):
     def _collect(self) -> list[str]:
         section_tag = self._soup.select_one("section#content")
         if not section_tag:
-            raise ScrapingError("Section tag not found", scraper=type(self))
+            raise ScrapingError("Section tag not found", scraper=type(self), url=self.url)
         deck_tags = [
             a_tag for a_tag in section_tag.find_all(
                 "a", href=lambda h: h and ScgDeckScraper.is_valid_url(h))]
         if not deck_tags:
-            raise ScrapingError("Deck tags not found", scraper=type(self))
+            raise ScrapingError("Deck tags not found", scraper=type(self), url=self.url)
         return [tag.attrs["href"] for tag in deck_tags if tag is not None]
 
 
@@ -226,10 +227,10 @@ class ScgDatabaseScraper(DeckUrlsContainerScraper):
     def _collect(self) -> list[str]:
         db_div = self._soup.find("div", id="deck-database")
         if db_div is None:
-            raise ScrapingError("Deck database tag not found", scraper=type(self))
+            raise ScrapingError("Deck database tag not found", scraper=type(self), url=self.url)
         a_tags = [tag for tag in db_div.find_all("a", class_="dd-deck-link")]
         if not a_tags:
-            raise ScrapingError("Deck tags not found", scraper=type(self))
+            raise ScrapingError("Deck tags not found", scraper=type(self), url=self.url)
         return [tag.attrs["href"].strip() for tag in a_tags]
 
 

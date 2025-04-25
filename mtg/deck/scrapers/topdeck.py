@@ -57,7 +57,7 @@ class TopDeckBracketScraper(DeckUrlsContainerScraper):
     def _collect(self) -> list[str]:
         deck_tags = self._soup.find_all("a", string="Decklist")
         if not deck_tags:
-            raise ScrapingError("Decklist tags not found", scraper=type(self))
+            raise ScrapingError("Decklist tags not found", scraper=type(self), url=self.url)
         deck_urls = [t["href"] for t in deck_tags]
         check_unexpected_urls(deck_urls, *self._get_deck_scrapers())
         return deck_urls
@@ -89,7 +89,7 @@ class TopDeckProfileScraper(DeckUrlsContainerScraper):
             "a", class_=lambda c: c and "btn" in c and "btn-sm" in c,
             href=lambda h: h and "topdeck.gg" not in h)
         if not deck_tags:
-            raise ScrapingError("Decklist tags not found", scraper=type(self))
+            raise ScrapingError("Decklist tags not found", scraper=type(self), url=self.url)
         deck_urls = [t["href"] for t in deck_tags]
         check_unexpected_urls(deck_urls, *self._get_deck_scrapers())
         return deck_urls

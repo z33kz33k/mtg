@@ -58,7 +58,7 @@ class DraftsimDeckScraper(DeckScraper):
     def _build_deck(self) -> Deck:
         decklist_tag = self._soup.find("textarea", id="decktext")
         if not decklist_tag:
-            raise ScrapingError("Decklist tag not found", scraper=type(self))
+            raise ScrapingError("Decklist tag not found", scraper=type(self), url=self.url)
         decklist = decklist_tag.text.strip()
         return ArenaParser(decklist, self._metadata).parse(
             suppress_parsing_errors=False, suppress_invalid_deck=False)
@@ -201,7 +201,7 @@ class DraftsimAuthorScraper(HybridContainerScraper):
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
         content_tag = self._soup.select_one("div.content")
         if not content_tag:
-            raise ScrapingError("Content tag not found", scraper=type(self))
+            raise ScrapingError("Content tag not found", scraper=type(self), url=self.url)
         h3_tags = [t for t in content_tag.select("h3.post_title")]
         _, container_urls = self._get_links_from_tags(*h3_tags)
         return [], [], [], container_urls

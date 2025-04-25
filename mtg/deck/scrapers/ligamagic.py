@@ -62,7 +62,7 @@ class LigaMagicDeckScraper(DeckScraper):
     def _pre_parse(self) -> None:
         self._soup = _get_soup_with_zenrows(self.url, self._CSS_SELECTOR)
         if not self._soup:
-            raise ScrapingError("Page not available", scraper=type(self))
+            raise ScrapingError("Page not available", scraper=type(self), url=self.url)
         main_tag = self._soup.select_one(self._CSS_SELECTOR)
         state = "maindeck"
         stoppers = "Branco", "Azul", "Preto", "Vermelho", "Verde", "Multi Colorida"  # color names
@@ -141,11 +141,11 @@ class LigaMagicEventScraper(DeckUrlsContainerScraper):
     def _pre_parse(self) -> None:
         self._soup = _get_soup_with_zenrows(self.url, self._CSS_SELECTOR)
         if not self._soup:
-            raise ScrapingError(self._error_msg, scraper=type(self))
+            raise ScrapingError(self._error_msg, scraper=type(self), url=self.url)
 
     @override
     def _collect(self) -> list[str]:
         deck_tags = [tag.find("a") for tag in self._soup.find_all("div", class_="deckname")]
         if not deck_tags:
-            raise ScrapingError("Deck tags not found", scraper=type(self))
+            raise ScrapingError("Deck tags not found", scraper=type(self), url=self.url)
         return [tag.attrs["href"].removeprefix(".") for tag in deck_tags]

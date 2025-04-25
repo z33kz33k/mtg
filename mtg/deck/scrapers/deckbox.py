@@ -42,7 +42,7 @@ class DeckboxDeckScraper(DeckScraper):
         info_tag = self._soup.find("div", class_="deck_info_widget")
         if not info_tag:
             raise ScrapingError(
-                "Info tag missing. Probably not a decklist page", scraper=type(self))
+                "Info tag missing. Probably not a decklist page", scraper=type(self), url=self.url)
         likes_tag = info_tag.find("span", id="votes_count")
         self._metadata["likes"] = int(likes_tag.text)
         comments_tag = info_tag.find("a", string=lambda s: s and "Comments" in s)
@@ -68,7 +68,7 @@ class DeckboxDeckScraper(DeckScraper):
         if not maindeck_table:
             raise ScrapingError(
                 "Maindeck table tag missing. Probably not a Constructed decklist page",
-                scraper=type(self))
+                scraper=type(self), url=self.url)
 
         for row in maindeck_table.find_all("tr"):
             self._maindeck += self._parse_row(row)
@@ -110,7 +110,7 @@ class DeckboxUserScraper(DeckUrlsContainerScraper):
         deck_tags = [
             tag for tag in self._soup.find_all("a", href=lambda h: h and "/sets/" in h)]
         if not deck_tags:
-            raise ScrapingError("Deck tags not found", scraper=type(self))
+            raise ScrapingError("Deck tags not found", scraper=type(self), url=self.url)
         return sorted({tag.attrs["href"] for tag in deck_tags})
 
 
@@ -138,5 +138,5 @@ class DeckboxEventScraper(DeckUrlsContainerScraper):
         deck_tags = [
             tag for tag in table_tag.find_all("a", href=lambda h: h and "/sets/" in h)]
         if not deck_tags:
-            raise ScrapingError("Deck tags not found", scraper=type(self))
+            raise ScrapingError("Deck tags not found", scraper=type(self), url=self.url)
         return [tag.attrs["href"] for tag in deck_tags]

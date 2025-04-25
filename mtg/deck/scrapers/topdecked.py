@@ -111,9 +111,11 @@ class TopDeckedRegularDeckScraper(DeckScraper):
             self._arena_decklist = self._get_data()
         except NoSuchElementException as err:
             err_text, *_ = str(err).split("(Session info")
-            raise ScrapingError(f"Scraping failed due to: '{err_text.strip()}'", scraper=type(self))
+            raise ScrapingError(
+                f"Scraping failed due to: '{err_text.strip()}'", scraper=type(self), url=self.url)
         except TimeoutException:
-            raise ScrapingError(f"Scraping failed due to Selenium timing out", scraper=type(self))
+            raise ScrapingError(
+                f"Scraping failed due to Selenium timing out", scraper=type(self), url=self.url)
 
     @override
     def _parse_metadata(self) -> None:

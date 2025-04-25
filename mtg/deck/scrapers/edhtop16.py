@@ -80,7 +80,7 @@ class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
     def _collect(self) -> list[str]:
         script_tag = self._soup.find("script", id="__NEXT_DATA__")
         if not script_tag:
-            raise ScrapingError("<script> tag not found", scraper=type(self))
+            raise ScrapingError("<script> tag not found", scraper=type(self), url=self.url)
 
         data = json.loads(script_tag.text)
         deck_urls = self._process_data(data)

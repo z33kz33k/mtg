@@ -74,19 +74,20 @@ class TappedoutDeckScraper(DeckScraper):
         response = self._get_response()
         if response.status_code == 429:
             raise ScrapingError(
-                f"Page still not available after {_MAX_TRIES} backoff tries", scraper=type(self))
+                f"Page still not available after {_MAX_TRIES} backoff tries", scraper=type(self),
+                url=self.url)
         self._soup = BeautifulSoup(response.text, "lxml")
 
     @override
     def _validate_soup(self) -> None:
         if "Page not found (404)" in self._soup.text:
-            raise ScrapingError("Page not found (404)", scraper=type(self))
+            raise ScrapingError("Page not found (404)", scraper=type(self), url=self.url)
 
     @override
     def _parse_metadata(self) -> None:
         fmt_tag = self._soup.select_one("a.btn.btn-success.btn-xs")
         if fmt_tag is None:
-            raise ScrapingError(f"Format tag not found: {self.url!r}", scraper=type(self))
+            raise ScrapingError(f"Format tag not found", scraper=type(self), url=self.url)
         fmt = fmt_tag.text.strip().removesuffix("*").lower()
         self._update_fmt(fmt)
         self._metadata["author"] = self._soup.select_one('a[href*="/users/"]').text.strip()
@@ -110,7 +111,7 @@ class TappedoutDeckScraper(DeckScraper):
     def _parse_decklist(self) -> None:
         decklist_tag = self._soup.find("textarea", id="mtga-textarea")
         if not decklist_tag:
-            raise ScrapingError("Decklist tag not found", scraper=type(self))
+            raise ScrapingError("Decklist tag not found", scraper=type(self), url=self.url)
         lines = decklist_tag.text.strip().splitlines()
         _, name_line, _, _, *lines = lines
         self._arena_decklist = "\n".join(lines)
@@ -170,7 +171,7 @@ class TappedoutUserScraper(DeckUrlsContainerScraper):
             collected += [prepend_url(result["url"], URL_PREFIX) for result in json_data["results"]]
             page += 1
         if not collected:
-            raise ScrapingError("Decks not found", scraper=type(self))
+            raise ScrapingError("Decks not found", scraper=type(self), url=self.url)
         return collected
 
 
@@ -211,7 +212,7 @@ class TappedoutFolderScraper(DeckUrlsContainerScraper):
     def _validate_data(self) -> None:
         super()._validate_data()
         if not self._data.get("folder") or not self._data["folder"].get("decks"):
-            raise ScrapingError("Data not available", scraper=type(self))
+            raise ScrapingError("Data not available", scraper=type(self), url=self.url)
 
     @override
     def _collect(self) -> list[str]:
@@ -248,5 +249,5 @@ class TappedoutUserFolderScraper(TappedoutUserScraper):
                 for d in folder["decks"]]
             page += 1
         if not collected:
-            raise ScrapingError("Decks not found", scraper=type(self))
+            raise ScrapingError("Decks not found", scraper=type(self), url=self.url)
         return sorted(set(collected))

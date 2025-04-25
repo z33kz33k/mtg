@@ -127,7 +127,7 @@ class CardsrealmProfileScraper(DeckUrlsContainerScraper):
             div for div in self._soup.find_all("div", class_=lambda c: c and "deck_div_all" in c)]
         deck_tags = [d.find("a", href=lambda h: h and "/decks/" in h) for d in deck_divs]
         if not deck_tags:
-            raise ScrapingError("Deck tags not found", scraper=type(self))
+            raise ScrapingError("Deck tags not found", scraper=type(self), url=self.url)
         return [tag.attrs["href"] for tag in deck_tags]
 
 
@@ -188,7 +188,7 @@ class CardsrealmMetaTournamentScraper(DeckUrlsContainerScraper):
                           and t.text.strip() == "Decklist"
                           and t.parent.name == "span")]
         if not deck_tags:
-            raise ScrapingError("Deck tags not found", scraper=type(self))
+            raise ScrapingError("Deck tags not found", scraper=type(self), url=self.url)
         return sorted({tag.attrs["href"] for tag in deck_tags})
 
 
@@ -252,7 +252,7 @@ class CardsrealmRegularTournamentScraper(DeckUrlsContainerScraper):
             div for div in self._soup.find_all("div", class_=lambda c: c and "mainDeck" in c)]
         deck_tags = [d.find("a", href=lambda h: h and "/decks/" in h) for d in deck_divs]
         if not deck_tags:
-            raise ScrapingError("Deck tags not found", scraper=type(self))
+            raise ScrapingError("Deck tags not found", scraper=type(self), url=self.url)
         return [tag.attrs["href"] for tag in deck_tags if tag is not None]
 
 
@@ -283,6 +283,6 @@ class CardsrealmArticleScraper(HybridContainerScraper):
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
         article_tag = self._soup.find("div", id="article_div_all")
         if article_tag is None:
-            raise ScrapingError("Article tag not found", scraper=type(self))
+            raise ScrapingError("Article tag not found", scraper=type(self), url=self.url)
         deck_links, container_links = self._get_links_from_tags(article_tag, url_prefix=URL_PREFIX)
         return deck_links, [], [], container_links

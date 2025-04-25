@@ -757,7 +757,8 @@ class Video:
     def _get_pytube(self) -> pytubefix.YouTube:
         data = pytubefix.YouTube(self.url, use_oauth=True, allow_oauth_cache=True)
         if not data.publish_date:
-            raise ScrapingError("pytube data missing publish date", scraper=type(self))
+            raise ScrapingError(
+                "pytube data missing publish date", scraper=type(self), url=self.url)
         return data
 
     @backoff.on_exception(
@@ -1094,7 +1095,7 @@ class Channel:
         if not count:
             raise ScrapingError(
                 "scrapetube failed to yield any video IDs. Are you sure the channel has a 'Videos' "
-                "tab?", scraper=type(self))
+                "tab?", scraper=type(self), url=self.url)
 
         return video_ids
 
@@ -1107,7 +1108,7 @@ class Channel:
         except json.decoder.JSONDecodeError:
             raise ScrapingError(
                 "scrapetube failed with JSON error. This channel probably doesn't exist "
-                "anymore", scraper=type(self))
+                "anymore", scraper=type(self), url=self.url)
 
     @staticmethod
     def get_url_and_title(channel_id: str, title: str) -> str:

@@ -68,7 +68,7 @@ class MtgDecksNetDeckTagParser(TagBasedDeckParser):
     def _build_deck(self) -> Deck:
         decklist_tag = self._deck_tag.find("textarea", id="arena_deck")
         if not decklist_tag:
-            raise ScrapingError("Decklist tag not found", scraper=type(self))
+            raise ScrapingError("Decklist tag not found", scraper=type(self), url=self.url)
         decklist = decklist_tag.text.strip()
         return ArenaParser(decklist, self._metadata).parse(
             suppress_parsing_errors=False, suppress_invalid_deck=False)
@@ -106,7 +106,7 @@ class MtgDecksNetDeckScraper(DeckScraper):
     def _get_deck_parser(self) -> MtgDecksNetDeckTagParser:
         deck_tag = self._soup.select_one("div.deck.shadow")
         if deck_tag is None:
-            raise ScrapingError("Deck tag not found", scraper=type(self))
+            raise ScrapingError("Deck tag not found", scraper=type(self), url=self.url)
         return MtgDecksNetDeckTagParser(deck_tag, self._metadata)
 
     @override
@@ -155,7 +155,7 @@ class MtgDecksNetTournamentScraper(DeckUrlsContainerScraper):
         deck_tags = [
             tag for tag in self._soup.find_all("a", href=lambda h: h and "-decklist-" in h)]
         if not deck_tags:
-            raise ScrapingError("Deck tags not found", scraper=type(self))
+            raise ScrapingError("Deck tags not found", scraper=type(self), url=self.url)
         return [deck_tag.attrs["href"] for deck_tag in deck_tags]
 
 

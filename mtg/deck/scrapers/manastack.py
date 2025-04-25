@@ -104,5 +104,5 @@ class ManaStackUserScraper(DeckUrlsContainerScraper):
             [row.find("a", href=lambda h: h and h.lower().startswith("/deck/")) for row in rows]
             if tag is not None]
         if not deck_tags:
-            raise ScrapingError("Deck tags not found", scraper=type(self))
+            raise ScrapingError("Deck tags not found", scraper=type(self), url=self.url)
         return [deck_tag["href"] for deck_tag in deck_tags]

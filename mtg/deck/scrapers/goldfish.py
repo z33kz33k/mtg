@@ -109,7 +109,7 @@ class GoldfishDeckTagParser(TagBasedDeckParser):
     def _parse_decklist(self) -> None:
         decklist_tag = self._deck_tag.find("table", class_="deck-view-deck-table")
         if decklist_tag is None:
-            raise ScrapingError("Decklist tag not found", scraper=type(self))
+            raise ScrapingError("Decklist tag not found", scraper=type(self), url=self.url)
         self._parse_decklist_tag(decklist_tag)
 
 
@@ -141,13 +141,13 @@ class GoldfishDeckScraper(DeckScraper):
     def _validate_soup(self) -> None:
         super()._validate_soup()
         if "Oops... Page not found" in self._soup.text:
-            raise ScrapingError(self._error_msg, scraper=type(self))
+            raise ScrapingError(self._error_msg, scraper=type(self), url=self.url)
 
     @override
     def _get_deck_parser(self) -> GoldfishDeckTagParser:
         deck_tag = self._soup.find("div", class_="deck-container")
         if deck_tag is None:
-            raise ScrapingError("Deck data not found", scraper=type(self))
+            raise ScrapingError("Deck data not found", scraper=type(self), url=self.url)
         return GoldfishDeckTagParser(deck_tag, self._metadata)
 
     @override
@@ -189,7 +189,7 @@ class GoldfishTournamentScraper(DeckUrlsContainerScraper):
     def _collect(self) -> list[str]:
         table_tag = self._soup.find("table", class_="table-tournament")
         if not table_tag:
-            raise ScrapingError("Tournament table tag not found", scraper=type(self))
+            raise ScrapingError("Tournament table tag not found", scraper=type(self), url=self.url)
         deck_tags = table_tag.find_all("a", href=lambda h: h and "/deck/" in h)
         return [deck_tag.attrs["href"] for deck_tag in deck_tags]
 
@@ -213,7 +213,7 @@ class GoldfishPlayerScraper(DeckUrlsContainerScraper):
     def _collect(self) -> list[str]:
         table_tag = self._soup.find("table", class_=lambda c: c and "table-striped" in c)
         if not table_tag:
-            raise ScrapingError("<table> tag not found", scraper=type(self))
+            raise ScrapingError("<table> tag not found", scraper=type(self), url=self.url)
         deck_tags = table_tag.find_all("a", href=lambda h: h and "/deck/" in h)
         return [deck_tag.attrs["href"] for deck_tag in deck_tags]
 
@@ -243,7 +243,7 @@ class GoldfishArticleScraper(HybridContainerScraper):
     def _collect_urls(self) -> tuple[list[str], list[str]]:
         main_tag = self._soup.find("div", class_="article-contents")
         if not main_tag:
-            raise ScrapingError("Article tag not found", scraper=type(self))
+            raise ScrapingError("Article tag not found", scraper=type(self), url=self.url)
 
         # filter out paragraphs that are covered by tag-based deck parser
         p_tags = [t for t in main_tag.find_all("p") if not t.find("div", class_="deck-container")]
@@ -266,10 +266,10 @@ def scrape_meta(fmt="standard") -> list[Deck]:
     url = f"https://www.mtggoldfish.com/metagame/{fmt}/full"
     soup = throttled_soup(url, headers=HEADERS)
     if not soup:
-        raise ScrapingError("Page not available", scraper=GoldfishDeckScraper)
+        raise ScrapingError("Page not available", scraper=GoldfishDeckScraper, url=url)
     tiles = soup.find_all("div", class_="archetype-tile")
     if not tiles:
-        raise ScrapingError("No deck tiles tags found", scraper=GoldfishDeckScraper)
+        raise ScrapingError("No deck tiles tags found", scraper=GoldfishDeckScraper, url=url)
     decks, metas = [], []
     for i, tile in enumerate(tiles, start=1):
         link = tile.find("a").attrs["href"]

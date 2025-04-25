@@ -52,7 +52,7 @@ class MtgArenaProDeckScraper(DeckScraper):
     def _validate_data(self) -> None:
         super()._validate_data()
         if not self._data.get("deck_order"):
-            raise ScrapingError("Data not available", scraper=type(self))
+            raise ScrapingError("Data not available", scraper=type(self), url=self.url)
 
     def _parse_fmt(self) -> str:
         if self._data["explorer"]:

@@ -48,7 +48,8 @@ class MtgMetaIoDeckScraper(DeckScraper):
         super()._validate_soup()
         if "Error connecting to database" in str(self._soup):
             raise ScrapingError(
-                "Page not available due to Internet Archive's database error", scraper=type(self))
+                "Page not available due to Internet Archive's database error", scraper=type(self),
+                url=self.url)
 
     def _get_data_from_soup(self) -> Json:
         return dissect_js(self._soup, "const decklist = ", " ;\n  ")
@@ -133,13 +134,14 @@ class MtgMetaIoTournamentScraper(DeckUrlsContainerScraper):
         super()._validate_soup()
         if "Error connecting to database" in str(self._soup):
             raise ScrapingError(
-                "Page not available due to Internet Archive's database error", scraper=type(self))
+                "Page not available due to Internet Archive's database error", scraper=type(self),
+                url=self.url)
 
     @override
     def _collect(self) -> list[str]:
         ul_tag = self._soup.select_one("ul.playerslist")
         if not ul_tag:
-            raise ScrapingError(self._error_msg, scraper=type(self))
+            raise ScrapingError(self._error_msg, scraper=type(self), url=self.url)
         links = get_links(ul_tag)
         return _strip_wm_part(*links)
 
@@ -192,7 +194,8 @@ class MtgMetaIoArticleScraper(HybridContainerScraper):
         super()._validate_soup()
         if "Error connecting to database" in str(self._soup):
             raise ScrapingError(
-                "Page not available due to Internet Archive's database error", scraper=type(self))
+                "Page not available due to Internet Archive's database error", scraper=type(self),
+                url=self.url)
 
     @override
     def _parse_metadata(self) -> None:
@@ -209,7 +212,7 @@ class MtgMetaIoArticleScraper(HybridContainerScraper):
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
         article_tag = self._soup.find("article")
         if not article_tag:
-            raise ScrapingError("Article tag not found", scraper=type(self))
+            raise ScrapingError("Article tag not found", scraper=type(self), url=self.url)
         deck_tags = [*article_tag.find_all("div", class_="decklist-container")]
         p_tags = [t for t in article_tag.find_all("p") if not t.find("div", class_="deck_list")]
         deck_urls, _ = self._get_links_from_tags(*p_tags)

@@ -164,7 +164,8 @@ class MtgoDeckScraper(DeckScraper):
         deck_data = from_iterable(decks_data, lambda d: d["player"] == self._player_name)
         if not deck_data:
             raise ScrapingError(
-                f"Deck designated by {self._player_name!r} not found", scraper=type(self))
+                f"Deck designated by {self._player_name!r} not found", scraper=type(self),
+                url=self.url)
         if rank_data := json_data.get("final_rank"):
             _process_ranks(rank_data, deck_data)
         self._metadata.update(_get_event_metadata(json_data))

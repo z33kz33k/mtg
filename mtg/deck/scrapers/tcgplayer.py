@@ -132,7 +132,7 @@ class TcgPlayerPlayerScraper(DeckUrlsContainerScraper):
         deck_tags = self._soup.find_all(
             "a", href=lambda h: h and "/magic/" in h and "/magic/deck" not in h)
         if not deck_tags:
-            raise ScrapingError("Deck tags not found", scraper=type(self))
+            raise ScrapingError("Deck tags not found", scraper=type(self), url=self.url)
         return [deck_tag.attrs["href"] for deck_tag in deck_tags]
 
 
@@ -220,7 +220,7 @@ def _get_deck_data_from_api(
             json_data = request_json(api_url_template.format(decklist_id))
             tries += 1
     except ReadTimeout:
-        raise ScrapingError("Request timed out", scraper=scraper)
+        raise ScrapingError("Request timed out", scraper=scraper, url=url)
 
     if not json_data and tries < 2:
         throttle(*DeckScraper.THROTTLING)
@@ -229,7 +229,7 @@ def _get_deck_data_from_api(
 
     if not json_data or not json_data.get(
             "result") or json_data["result"].get("deck") == {"deck": {}}:
-        raise ScrapingError("Data not available", scraper=scraper)
+        raise ScrapingError("Data not available", scraper=scraper, url=url)
     return json_data["result"]
 
 
@@ -302,7 +302,7 @@ class TcgPlayerInfinitePlayerScraper(DeckUrlsContainerScraper):
     def _validate_data(self) -> None:
         super()._validate_data()
         if not self._data.get("result"):
-            raise ScrapingError("Data not available", scraper=type(self))
+            raise ScrapingError("Data not available", scraper=type(self), url=self.url)
 
     @override
     def _collect(self) -> list[str]:
@@ -407,7 +407,7 @@ class TcgPlayerInfiniteArticleScraper(DecksJsonContainerScraper):
     def _collect(self) -> list[Json]:
         div_tag = self._soup.find("div", class_="article-body")
         if not div_tag:
-            raise ScrapingError("Article tag not found", scraper=type(self))
+            raise ScrapingError("Article tag not found", scraper=type(self), url=self.url)
         deck_urls = [
             strip_url_query(t.attrs["href"]) for t in div_tag.find_all(
                 "a", href=lambda h: h and h.startswith(self._HOOK))]
@@ -469,7 +469,7 @@ class TcgPlayerInfiniteAuthorScraper(HybridContainerScraper):
     def _validate_data(self) -> None:
         super()._validate_data()
         if not self._data.get("result") or not self._data["result"].get("articles"):
-            raise ScrapingError("Data not available", scraper=type(self))
+            raise ScrapingError("Data not available", scraper=type(self), url=self.url)
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
@@ -511,7 +511,7 @@ class TcgPlayerInfiniteAuthorDecksPaneScraper(DeckUrlsContainerScraper):
     def _validate_data(self) -> None:
         super()._validate_data()
         if not self._data.get("result"):
-            raise ScrapingError("Data not available", scraper=type(self))
+            raise ScrapingError("Data not available", scraper=type(self), url=self.url)
 
     @override
     def _collect(self) -> list[str]:

@@ -39,7 +39,7 @@ class MtgJsonDeckScraper(DeckScraper):
     def _pre_parse(self) -> None:
         json_data = request_json(self.url)
         if not json_data or not json_data.get("data"):
-            raise ScrapingError("Data not available", scraper=type(self))
+            raise ScrapingError("Data not available", scraper=type(self), url=self.url)
         self._metadata["date"] = datetime.fromisoformat(json_data["meta"]["date"]).date()
         self._metadata["version"] = json_data["meta"]["version"]
         self._data = json_data["data"]

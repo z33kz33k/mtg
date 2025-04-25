@@ -188,7 +188,8 @@ class MagicGgDeckScraper(DeckScraper):
         deck_tag = self._soup.find("div", id=self._decklist_id)
         if deck_tag is None:
             raise ScrapingError(
-                f"Deck designated by {self._decklist_id!r} data not found", scraper=type(self))
+                f"Deck designated by {self._decklist_id!r} data not found", scraper=type(self),
+                url=self.url)
         return MagicGgOldDeckTagParser(deck_tag)
 
     @override
@@ -249,9 +250,9 @@ class MagicGgEventScraper(DeckTagsContainerScraper):
                     consent_xpath=MagicGgDeckScraper.SELENIUM_PARAMS["consent_xpath"])
                 deck_tags = [*self._soup.find_all("div", class_="css-3X0PN")]
                 if not deck_tags:
-                    raise ScrapingError("Deck tags not found", scraper=type(self))
+                    raise ScrapingError("Deck tags not found", scraper=type(self), url=self.url)
             except TimeoutException:
-                raise ScrapingError(self._error_msg, scraper=type(self))
+                raise ScrapingError(self._error_msg, scraper=type(self), url=self.url)
             self._parse_metadata()
         else:
             self.__class__.TAG_BASED_DECK_PARSER = MagicGgNewDeckTagParser

@@ -35,7 +35,8 @@ class MagicBlogsDeckTagParser(TagBasedDeckParser):
                 matching_tds.append(td)
         if len(matching_tds) not in (1, 2):
             raise ScrapingError(
-                f"Unexpected number of <td> tags: {len(matching_tds)}", scraper=type(self))
+                f"Unexpected number of <td> tags: {len(matching_tds)}", scraper=type(self),
+                url=self.url)
         return matching_tds
 
     def _parse_td_tag(self, td_tag: Tag) -> None:
@@ -46,11 +47,11 @@ class MagicBlogsDeckTagParser(TagBasedDeckParser):
                 continue
             qty_tag = tag.find("span", class_="count")
             if qty_tag is None:
-                raise ScrapingError("Card quantity not available", scraper=type(self))
+                raise ScrapingError("Card quantity not available", scraper=type(self), url=self.url)
             qty = int(qty_tag.text)
             name_tag = tag.find("span", class_="cardname")
             if name_tag is None:
-                raise ScrapingError("Card name not available", scraper=type(self))
+                raise ScrapingError("Card name not available", scraper=type(self), url=self.url)
             name = name_tag.text
             if self._state.is_maindeck:
                 self._maindeck += self.get_playset(self.find_card(name), qty)

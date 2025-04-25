@@ -95,10 +95,11 @@ class DeckstatsDeckScraper(DeckScraper):
         super()._validate_soup()
         if error_tag := self._soup.find("div", class_="ui-state-error"):
             if "This deck does not exist." in error_tag.text:
-                raise ScrapingError("Deck does not exist", scraper=type(self))
+                raise ScrapingError("Deck does not exist", scraper=type(self), url=self.url)
             elif "You do not have access to this page." in error_tag.text:
                 raise ScrapingError(
-                    "Access to deck page denied (is the deck private perhaps?)", scraper=type(self))
+                    "Access to deck page denied (is the deck private perhaps?)",
+                    scraper=type(self), url=self.url)
 
     @override
     def _get_data_from_soup(self) -> Json:
@@ -110,7 +111,8 @@ class DeckstatsDeckScraper(DeckScraper):
         response = self._get_response()
         if response.status_code == 429:
             raise ScrapingError(
-                f"Page still not available after {_MAX_TRIES} backoff tries", scraper=type(self))
+                f"Page still not available after {_MAX_TRIES} backoff tries", scraper=type(self),
+                url=self.url)
         self._soup = BeautifulSoup(response.text, "lxml")
         self._validate_soup()
         self._data = self._get_data_from_soup()
@@ -136,7 +138,8 @@ class DeckstatsDeckScraper(DeckScraper):
         quantity = card_json["amount"]
         if not card_json.get("data"):
             raise ScrapingError(
-                f"No card data available for playset '{quantity} {name}'", scraper=type(self))
+                f"No card data available for playset '{quantity} {name}'", scraper=type(self),
+                url=self.url)
         if tcgplayer_id := card_json["data"].get("price_tcgplayer_id"):
             tcgplayer_id = int(tcgplayer_id)
         if mtgo_id := card_json["data"].get("price_cardhoarder_id"):

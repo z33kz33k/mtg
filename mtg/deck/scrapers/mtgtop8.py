@@ -41,7 +41,7 @@ class MtgTop8DeckScraper(DeckScraper):
     def _validate_soup(self) -> None:
         super()._validate_soup()
         if _ := self._soup.find("div", string="No event could be found."):
-            raise ScrapingError("No event could be found", scraper=type(self))
+            raise ScrapingError("No event could be found", scraper=type(self), url=self.url)
 
     @override
     def _parse_metadata(self) -> None:
@@ -122,5 +122,5 @@ class MtgTop8EventScraper(DeckUrlsContainerScraper):
         for a_tag in a_tags:
             deck_urls[a_tag.text] = a_tag.attrs["href"]
         if not deck_urls:
-            raise ScrapingError("No decks found", scraper=type(self))
+            raise ScrapingError("No decks found", scraper=type(self), url=self.url)
         return [*deck_urls.values()]

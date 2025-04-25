@@ -51,9 +51,11 @@ class UntappedProfileDeckScraper(DeckScraper):
                 consent_xpath=CONSENT_XPATH, clipboard_xpath=CLIPBOARD_XPATH)
         except NoSuchElementException:
             raise ScrapingError(
-                "Scraping failed due to absence of the looked for element", scraper=type(self))
+                "Scraping failed due to absence of the looked for element", scraper=type(self),
+                url=self.url)
         except TimeoutException:
-            raise ScrapingError(f"Scraping failed due to Selenium timing out", scraper=type(self))
+            raise ScrapingError(
+                f"Scraping failed due to Selenium timing out", scraper=type(self), url=self.url)
 
     @override
     def _parse_metadata(self) -> None:
@@ -138,7 +140,7 @@ class UntappedMetaDeckScraper(DeckScraper):
         if not name_tag:
             name_tag = self._soup.select_one("span[class*='DeckViewHeader__ArchetypeName']")
         if not name_tag:
-            raise ScrapingError("Page data not available", scraper=type(self))
+            raise ScrapingError("Page data not available", scraper=type(self), url=self.url)
         name = name_tag.text.strip().removesuffix(" Deck")
         self._metadata["name"] = name
         fmt_tag = self._soup.find("div", id="filter-format")
@@ -195,5 +197,5 @@ class UntappedProfileScraper(DeckUrlsContainerScraper):
         a_tags = self._soup.find_all("a", href=lambda h: h and "/profile/" in h)
         a_tags = [a_tag for a_tag in a_tags if "deckbox" in a_tag.attrs["class"]]
         if not a_tags:
-            raise ScrapingError("Deck tags not found", scraper=type(self))
+            raise ScrapingError("Deck tags not found", scraper=type(self), url=self.url)
         return [a_tag["href"] for a_tag in a_tags]
