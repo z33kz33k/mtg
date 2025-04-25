@@ -41,14 +41,12 @@ class StreamdeckerDeckScraper(DeckScraper):
     def _get_data_from_api(self) -> Json:
         *_, decklist_id = self.url.split("/")
         try:
-            return request_json(self.API_URL_TEMPLATE.format(decklist_id))
+            json_data = request_json(self.API_URL_TEMPLATE.format(decklist_id))
         except ReadTimeout:
             raise ScrapingError("API request timed out", scraper=type(self), url=self.url)
-    @override
-    def _validate_data(self) -> None:
-        super()._validate_data()
-        if not self._data.get("data") or self._data["data"] == {"deck": {}}:
+        if not json_data or not json_data.get("data") or json_data["data"] == {"deck": {}}:
             raise ScrapingError("Data not available", scraper=type(self), url=self.url)
+        return json_data["data"]
 
     def _parse_date(self) -> date | None:
         date_text = self._data["updatedAt"]
