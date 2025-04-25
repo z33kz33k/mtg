@@ -50,7 +50,7 @@ class TappedoutDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "tappedout.net/mtg-decks/" in url.lower()
 
     @staticmethod
@@ -70,19 +70,23 @@ class TappedoutDeckScraper(DeckScraper):
         return timed_request(self.url, handle_http_errors=False)
 
     @override
-    def _pre_parse(self) -> None:
+    def _fetch_soup(self) -> None:
         response = self._get_response()
         if response.status_code == 429:
-            raise ScrapingError(f"Page still not available after {_MAX_TRIES} backoff tries")
+            raise ScrapingError(
+                f"Page still not available after {_MAX_TRIES} backoff tries", scraper=type(self))
         self._soup = BeautifulSoup(response.text, "lxml")
+
+    @override
+    def _validate_soup(self) -> None:
         if "Page not found (404)" in self._soup.text:
-            raise ScrapingError("Page not found (404)")
+            raise ScrapingError("Page not found (404)", scraper=type(self))
 
     @override
     def _parse_metadata(self) -> None:
         fmt_tag = self._soup.select_one("a.btn.btn-success.btn-xs")
         if fmt_tag is None:
-            raise ScrapingError(f"Format tag not found: {self.url!r}")
+            raise ScrapingError(f"Format tag not found: {self.url!r}", scraper=type(self))
         fmt = fmt_tag.text.strip().removesuffix("*").lower()
         self._update_fmt(fmt)
         self._metadata["author"] = self._soup.select_one('a[href*="/users/"]').text.strip()
@@ -106,7 +110,7 @@ class TappedoutDeckScraper(DeckScraper):
     def _parse_decklist(self) -> None:
         decklist_tag = self._soup.find("textarea", id="mtga-textarea")
         if not decklist_tag:
-            raise ScrapingError("Decklist tag not found")
+            raise ScrapingError("Decklist tag not found", scraper=type(self))
         lines = decklist_tag.text.strip().splitlines()
         _, name_line, _, _, *lines = lines
         self._arena_decklist = "\n".join(lines)
@@ -129,13 +133,21 @@ class TappedoutUserScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "tappedout.net/users/" in url.lower() and "/deck-folders" not in url.lower()
 
     @staticmethod
     @override
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
+
+    @override
+    def _get_data_from_api(self) -> Json:
+        return {}  # dummy
+
+    @override
+    def _validate_data(self) -> None:
+        pass
 
     def _get_user_name(self) -> str:
         url = self.url.removeprefix("https://").removeprefix("http://")
@@ -157,6 +169,8 @@ class TappedoutUserScraper(DeckUrlsContainerScraper):
             total = json_data["total_decks"]
             collected += [prepend_url(result["url"], URL_PREFIX) for result in json_data["results"]]
             page += 1
+        if not collected:
+            raise ScrapingError("Decks not found", scraper=type(self))
         return collected
 
 
@@ -171,7 +185,7 @@ class TappedoutFolderScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "tappedout.net/mtg-deck-folders/" in url.lower()
 
     @staticmethod
@@ -190,12 +204,18 @@ class TappedoutFolderScraper(DeckUrlsContainerScraper):
         return extract_int(third)
 
     @override
+    def _get_data_from_api(self) -> Json:
+        return request_json(self.API_URL_TEMPLATE.format(self._get_folder_id()))
+
+    @override
+    def _validate_data(self) -> None:
+        super()._validate_data()
+        if not self._data.get("folder") or not self._data["folder"].get("decks"):
+            raise ScrapingError("Data not available", scraper=type(self))
+
+    @override
     def _collect(self) -> list[str]:
-        json_data = request_json(self.API_URL_TEMPLATE.format(self._get_folder_id()))
-        if not json_data or not json_data.get("folder") or not json_data["folder"].get("decks"):
-            _log.warning(self._error_msg)
-            return []
-        return [d["url"] for d in json_data["folder"]["decks"]]
+        return [d["url"] for d in self._data["folder"]["decks"]]
 
 
 @DeckUrlsContainerScraper.registered
@@ -207,7 +227,7 @@ class TappedoutUserFolderScraper(TappedoutUserScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "tappedout.net/users/" in url.lower() and "/deck-folders" in url.lower()
 
     @override
@@ -227,4 +247,6 @@ class TappedoutUserFolderScraper(TappedoutUserScraper):
                 prepend_url(d["url"], URL_PREFIX) for folder in json_data["results"]
                 for d in folder["decks"]]
             page += 1
+        if not collected:
+            raise ScrapingError("Decks not found", scraper=type(self))
         return sorted(set(collected))

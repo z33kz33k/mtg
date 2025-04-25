@@ -9,15 +9,13 @@
 """
 import json
 import logging
+from typing import override
 
 import dateutil.parser
-from selenium.common.exceptions import TimeoutException
-from typing import override
 
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper
 from mtg.utils.scrape import ScrapingError, dissect_js, strip_url_query
-from mtg.utils.scrape.dynamic import get_dynamic_soup
 
 _log = logging.getLogger(__name__)
 
@@ -28,11 +26,14 @@ _log = logging.getLogger(__name__)
 class CardhoarderDeckScraper(DeckScraper):
     """Scraper of Cardhoarder decklist page.
     """
-    XPATH = "//div[contains(@id, 'deck-viewer')]"
+    SELENIUM_PARAMS = {  # override
+        "xpath": "//div[contains(@id, 'deck-viewer')]"
+    }
+    DATA_FROM_SOUP = True  # override
 
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "cardhoarder.com/d/" in url.lower()
 
     @staticmethod
@@ -40,33 +41,26 @@ class CardhoarderDeckScraper(DeckScraper):
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    def _get_deck_data(self) -> Json:
+    @override
+    def _get_data_from_soup(self) -> Json:
         start = 'const props = JSON.parse('
         end = ');\n\t\t\twindow.Cardhoarder.helpers.addDeckViewer('
         # in this case, it returns raw JSON string instead of dict...
         deck_data = dissect_js(self._soup, start, end)
         if not deck_data:
-            raise ScrapingError("Deck data not available")
+            raise ScrapingError("Deck data not available", scraper=type(self))
         # ...that needs to be reparsed
         return json.loads(deck_data)
 
     @override
-    def _pre_parse(self) -> None:
-        try:
-            self._soup, _, _ = get_dynamic_soup(self.url, self.XPATH)
-        except TimeoutException:
-            raise ScrapingError(f"Scraping failed due to Selenium timing out")
-        self._deck_data = self._get_deck_data()
-
-    @override
     def _parse_metadata(self) -> None:
-        self._metadata["name"] = self._deck_data["deck"]["name"]
-        self._metadata["date"] = dateutil.parser.parse(self._deck_data["deck"]["updated_at"]).date()
+        self._metadata["name"] = self._data["deck"]["name"]
+        self._metadata["date"] = dateutil.parser.parse(self._data["deck"]["updated_at"]).date()
 
     @override
     def _parse_decklist(self) -> None:
         maindeck, sideboard = [], []
-        for item in self._deck_data["items"]:
+        for item in self._data["items"]:
             card_data = item["card"]["card_data"]
             name = card_data["name"]
             set_code = card_data["scryfall_set_code"]

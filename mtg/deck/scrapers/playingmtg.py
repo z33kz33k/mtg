@@ -12,7 +12,6 @@ from typing import override
 
 import dateutil.parser
 from bs4 import Tag
-from selenium.common.exceptions import TimeoutException
 
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
@@ -21,7 +20,6 @@ from mtg.scryfall import Card
 from mtg.utils import extract_float, extract_int
 from mtg.utils.scrape import ScrapingError, get_links, get_next_sibling_tag, prepend_url, \
     strip_url_query
-from mtg.utils.scrape.dynamic import get_dynamic_soup
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://playingmtg.com"
@@ -31,26 +29,19 @@ URL_PREFIX = "https://playingmtg.com"
 class PlayingMtgDeckScraper(DeckScraper):
     """Scraper of PlayingMTG decklist page.
     """
-    XPATH = '//article//div/a[contains(@href, "/playingmtg.com/cards/")]'  # override
+    SELENIUM_PARAMS = {  # override
+        "xpath": '//article//div/a[contains(@href, "/playingmtg.com/cards/")]'
+    }
 
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return is_in_domain_but_not_main(url, "playingmtg.com/decks")
 
     @staticmethod
     @override
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
-
-    @override
-    def _pre_parse(self) -> None:
-        try:
-            self._soup, _, _ = get_dynamic_soup(self.url, self.XPATH, wait_for_all=True)
-        except TimeoutException:
-            self._soup = None
-        if not self._soup:
-            raise ScrapingError("Page not available")
 
     @override
     def _parse_metadata(self) -> None:
@@ -120,16 +111,18 @@ class PlayingMtgDeckScraper(DeckScraper):
 class PlayingMtgTournamentScraper(DeckUrlsContainerScraper):
     """Scraper of PlayingMTG tournament page.
     """
+    SELENIUM_PARAMS = {  # override
+        "xpath": '//div[text()="Event Date"]',
+        "wait_for_all": True
+    }
     THROTTLING = DeckUrlsContainerScraper.THROTTLING * 2  # override
     CONTAINER_NAME = "PlayingMTG tournament"  # override
-    XPATH = '//div[text()="Event Date"]'  # override
-    WAIT_FOR_ALL = True  # override
     DECK_SCRAPERS = PlayingMtgDeckScraper,  # override
     DECK_URL_PREFIX = URL_PREFIX  # override
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return is_in_domain_but_not_main(url, "playingmtg.com/tournaments")
 
     def _parse_metadata(self) -> None:
@@ -181,7 +174,6 @@ class PlayingMtgTournamentScraper(DeckUrlsContainerScraper):
 
     @override
     def _collect(self) -> list[str]:
-        self._parse_metadata()
         return get_links(
             self._soup, href=lambda h: h and "/decks/" in h and "playingmtg.com/" not in h)
 
@@ -192,16 +184,18 @@ class PlayingMtgTournamentScraper(DeckUrlsContainerScraper):
 class PlayingMtgArticleScraper(HybridContainerScraper):
     """Scraper of PlayingMTG article page.
     """
+    SELENIUM_PARAMS = {  # override
+        "xpath": '//div[@class="RootOfEmbeddedDeck"]//a[contains(@href, "/decks/")]',
+        "wait_for_all": True
+    }
     THROTTLING = DeckUrlsContainerScraper.THROTTLING * 2  # override
     CONTAINER_NAME = "PlayingMTG article"  # override
-    XPATH = '//div[@class="RootOfEmbeddedDeck"]//a[contains(@href, "/decks/")]'  # override
-    WAIT_FOR_ALL = True  # override
     CONTAINER_SCRAPERS = PlayingMtgTournamentScraper,  # override
     CONTAINER_URL_PREFIX = URL_PREFIX  # override
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         tokens = (
             "decks", "tournaments", "wp-content", "news", "mtg-arena", "spoilers", "commander",
             "standard", "modern", "pioneer", "collection", "prices", "products", "schedule",

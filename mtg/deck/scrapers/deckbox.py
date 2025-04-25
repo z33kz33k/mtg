@@ -14,7 +14,7 @@ from bs4 import Tag
 
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.scryfall import COMMANDER_FORMATS, Card
-from mtg.utils.scrape import ScrapingError, getsoup, strip_url_query
+from mtg.utils.scrape import ScrapingError, strip_url_query
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://deckbox.org"
@@ -26,7 +26,7 @@ class DeckboxDeckScraper(DeckScraper):
     """
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "deckbox.org/sets/" in url.lower()
 
     @staticmethod
@@ -35,19 +35,14 @@ class DeckboxDeckScraper(DeckScraper):
         return strip_url_query(url)
 
     @override
-    def _pre_parse(self) -> None:
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            raise ScrapingError("Page not available")
-
-    @override
     def _parse_metadata(self) -> None:
         page_header_tag = self._soup.find("div", class_=lambda c: c and "page_header" in c)
         self._metadata["author"] = page_header_tag.find("a").text.strip()
         self._metadata["name"] = page_header_tag.find("span").text.strip()
         info_tag = self._soup.find("div", class_="deck_info_widget")
         if not info_tag:
-            raise ScrapingError("Info tag missing. Probably not a decklist page")
+            raise ScrapingError(
+                "Info tag missing. Probably not a decklist page", scraper=type(self))
         likes_tag = info_tag.find("span", id="votes_count")
         self._metadata["likes"] = int(likes_tag.text)
         comments_tag = info_tag.find("a", string=lambda s: s and "Comments" in s)
@@ -72,7 +67,8 @@ class DeckboxDeckScraper(DeckScraper):
         maindeck_table = self._soup.find("table", class_=lambda c: c and "main" in c)
         if not maindeck_table:
             raise ScrapingError(
-                "Maindeck table tag missing. Probably not a Constructed decklist page")
+                "Maindeck table tag missing. Probably not a Constructed decklist page",
+                scraper=type(self))
 
         for row in maindeck_table.find_all("tr"):
             self._maindeck += self._parse_row(row)
@@ -101,7 +97,7 @@ class DeckboxUserScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "deckbox.org/users/" in url.lower()
 
     @staticmethod
@@ -113,6 +109,8 @@ class DeckboxUserScraper(DeckUrlsContainerScraper):
     def _collect(self) -> list[str]:
         deck_tags = [
             tag for tag in self._soup.find_all("a", href=lambda h: h and "/sets/" in h)]
+        if not deck_tags:
+            raise ScrapingError("Deck tags not found", scraper=type(self))
         return sorted({tag.attrs["href"] for tag in deck_tags})
 
 
@@ -126,7 +124,7 @@ class DeckboxEventScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "deckbox.org/communities/" in url.lower() and "/events/" in url.lower()
 
     @staticmethod
@@ -139,4 +137,6 @@ class DeckboxEventScraper(DeckUrlsContainerScraper):
         table_tag = self._soup.find("table", class_="simple_table")
         deck_tags = [
             tag for tag in table_tag.find_all("a", href=lambda h: h and "/sets/" in h)]
+        if not deck_tags:
+            raise ScrapingError("Deck tags not found", scraper=type(self))
         return [tag.attrs["href"] for tag in deck_tags]

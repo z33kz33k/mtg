@@ -12,7 +12,7 @@ from typing import override
 
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.utils import get_date_from_french_ago_text
-from mtg.utils.scrape import ScrapingError, getsoup
+from mtg.utils.scrape import ScrapingError
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://www.magic-ville.com/fr/decks/"
@@ -24,7 +24,7 @@ class MagicVilleDeckScraper(DeckScraper):
     """
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         url = url.lower()
         return "magic-ville.com/" in url and "decks/showdeck" in url
 
@@ -34,10 +34,9 @@ class MagicVilleDeckScraper(DeckScraper):
         return f"{url}&decklanglocal=eng"
 
     @override
-    def _pre_parse(self) -> None:
-        self._soup = getsoup(self.url)
+    def _validate_soup(self) -> None:
         if not self._soup or self._soup.text == "Ce deck n'existe pas.":
-            raise ScrapingError("Page not available")
+            raise ScrapingError(self._error_msg, scraper=type(self))
 
     @override
     def _parse_metadata(self) -> None:
@@ -121,12 +120,14 @@ class MagicVilleEventScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return all(t in url.lower() for t in ("magic-ville.com/", "decks/decklists?", "event="))
 
     @override
     def _collect(self) -> list[str]:
         deck_tags = self._soup.find_all("a", href=lambda h: h and "showdeck?ref=" in h)
+        if not deck_tags:
+            raise ScrapingError("Deck tags not found", scraper=type(self))
         return [deck_tag.attrs["href"] for deck_tag in deck_tags]
 
 
@@ -140,10 +141,12 @@ class MagicVilleUserScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return all(t in url.lower() for t in ("magic-ville.com/", "register/perso?", "user="))
 
     @override
     def _collect(self) -> list[str]:
         deck_tags = self._soup.find_all("a", href=lambda h: h and "/decks/showdeck.php?ref=" in h)
+        if not deck_tags:
+            raise ScrapingError("Deck tags not found", scraper=type(self))
         return [deck_tag.attrs["href"].removeprefix("../") for deck_tag in deck_tags]

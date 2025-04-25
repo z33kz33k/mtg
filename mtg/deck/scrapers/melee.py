@@ -17,7 +17,7 @@ from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.utils import from_iterable
-from mtg.utils.scrape import ScrapingError, get_links, getsoup
+from mtg.utils.scrape import ScrapingError, get_links
 
 _log = logging.getLogger(__name__)
 
@@ -51,21 +51,17 @@ def get_source(src: str) -> str | None:
 class MeleeGgDeckScraper(DeckScraper):
     """Scraper of Melee.gg decklist page.
     """
+    HEADERS = HEADERS
+
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "melee.gg/decklist/" in url.lower() or f"{ALT_DOMAIN}/decklist/" in url.lower()
 
     @staticmethod
     @override
     def sanitize_url(url: str) -> str:
         return url.replace(ALT_DOMAIN, "melee.gg")
-
-    @override
-    def _pre_parse(self) -> None:
-        self._soup = getsoup(self.url, headers=HEADERS)
-        if not self._soup:
-            raise ScrapingError("Page not available")
 
     @override
     def _parse_metadata(self) -> None:
@@ -97,7 +93,7 @@ class MeleeGgDeckScraper(DeckScraper):
     def _build_deck(self) -> Deck:
         decklist_tag = self._soup.select_one("pre#decklist-text")
         if not decklist_tag:
-            raise ScrapingError("Decklist tag not found")
+            raise ScrapingError("Decklist tag not found", scraper=type(self))
         decklist = decklist_tag.text.strip()
         return ArenaParser(decklist, metadata=self._metadata).parse(
             suppress_parsing_errors=False, suppress_invalid_deck=False)
@@ -107,23 +103,26 @@ class MeleeGgDeckScraper(DeckScraper):
 class MeleeGgTournamentScraper(DeckUrlsContainerScraper):
     """Scraper of Melee.gg tournament page.
     """
+    SELENIUM_PARAMS = {  # override
+        "xpath": '//a[@data-type="decklist"]'
+    }
     CONTAINER_NAME = "Melee.gg tournament"  # override
-    XPATH = '//a[@data-type="decklist"]'  # override
     DECK_SCRAPERS = MeleeGgDeckScraper,  # override
     DECK_URL_PREFIX = URL_PREFIX  # override
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "melee.gg/tournament/" in url.lower() or f"{ALT_DOMAIN}/tournament/" in url.lower()
 
     @override
     def _collect(self) -> list[str]:
         game_tag = self._soup.find("p", id="tournament-headline-game")
         if not game_tag.text.strip() == "Game: Magic: The Gathering":
-            _log.warning("Not a MtG tournament")
-            return []
+            raise ScrapingError("Not a MtG tournament", scraper=type(self))
         deck_tags = self._soup.find_all("a", href=lambda h: h and "/Decklist/View/" in h)
+        if not deck_tags:
+            raise ScrapingError("Deck tags not found", scraper=type(self))
         return [deck_tag.attrs["href"] for deck_tag in deck_tags]
 
 
@@ -131,14 +130,16 @@ class MeleeGgTournamentScraper(DeckUrlsContainerScraper):
 class MeleeGgProfileScraper(DeckUrlsContainerScraper):
     """Scraper of Melee.gg profile page.
     """
+    SELENIUM_PARAMS = {  # override
+        "xpath": '//tr[@role="row"]'
+    }
     CONTAINER_NAME = "Melee.gg profile"  # override
-    XPATH = '//tr[@role="row"]'  # override
     DECK_SCRAPERS = MeleeGgDeckScraper,  # override
     DECK_URL_PREFIX = URL_PREFIX  # override
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "melee.gg/profile/" in url.lower() or f"{ALT_DOMAIN}/profile/" in url.lower()
 
     @override

@@ -20,7 +20,7 @@ from mtg.deck.scrapers import DeckScraper, HybridContainerScraper, TagBasedDeckP
     is_in_domain_but_not_main
 from mtg.scryfall import all_formats
 from mtg.utils import ParsingError, from_iterable, get_date_from_ago_text
-from mtg.utils.scrape import ScrapingError, getsoup, strip_url_query
+from mtg.utils.scrape import ScrapingError, strip_url_query
 
 _log = logging.getLogger(__name__)
 
@@ -31,19 +31,13 @@ class DraftsimDeckScraper(DeckScraper):
     """
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "draftsim.com/decks/" in url.lower()
 
     @staticmethod
     @override
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
-
-    @override
-    def _pre_parse(self) -> None:
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            raise ScrapingError("Page not available")
 
     @override
     def _parse_metadata(self) -> None:
@@ -64,7 +58,7 @@ class DraftsimDeckScraper(DeckScraper):
     def _build_deck(self) -> Deck:
         decklist_tag = self._soup.find("textarea", id="decktext")
         if not decklist_tag:
-            raise ScrapingError("Decklist tag not found")
+            raise ScrapingError("Decklist tag not found", scraper=type(self))
         decklist = decklist_tag.text.strip()
         return ArenaParser(decklist, self._metadata).parse(
             suppress_parsing_errors=False, suppress_invalid_deck=False)
@@ -133,7 +127,7 @@ class DraftsimArticleScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         tokens = "/decks/", "/author/", "/blog", "/ratings/", "/all-sets", "/arenatutor"
         return is_in_domain_but_not_main(url, "draftsim.com") and not any(
             t in url.lower() for t in tokens)
@@ -172,7 +166,6 @@ class DraftsimArticleScraper(HybridContainerScraper):
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
         deck_tags = [*self._soup.find_all("div", class_="deck_list")]
-        self._parse_metadata()
         article_tag = self._soup.find("article")
         if not article_tag:
             _log.warning("Article tag not found")
@@ -191,7 +184,7 @@ class DraftsimAuthorScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "draftsim.com/" in url.lower() and "/author/" in url.lower()
 
     @staticmethod
@@ -208,8 +201,7 @@ class DraftsimAuthorScraper(HybridContainerScraper):
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
         content_tag = self._soup.select_one("div.content")
         if not content_tag:
-            _log.warning("Content tag not found")
-            return [], [], [], []
+            raise ScrapingError("Content tag not found", scraper=type(self))
         h3_tags = [t for t in content_tag.select("h3.post_title")]
         _, container_urls = self._get_links_from_tags(*h3_tags)
         return [], [], [], container_urls

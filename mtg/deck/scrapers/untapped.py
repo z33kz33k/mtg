@@ -1,7 +1,7 @@
 """
 
     mtg.deck.scrapers.untapped.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Untapped.gg decklists.
 
     @author: z33k
@@ -13,10 +13,9 @@ from typing import override
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 
-from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.utils import extract_float, extract_int
 from mtg.utils.scrape import ScrapingError
 from mtg.utils.scrape import strip_url_query
@@ -35,13 +34,9 @@ class UntappedProfileDeckScraper(DeckScraper):
                        "time frame']")
     PRIVATE_XPATH = "//div[text()='This profile is private']"
 
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        self._clipboard = ""
-
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "mtga.untapped.gg/profile/" in url.lower() and "/deck/" in url.lower()
 
     @staticmethod
@@ -49,16 +44,16 @@ class UntappedProfileDeckScraper(DeckScraper):
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    @override
-    def _pre_parse(self) -> None:
+    def _fetch_soup(self) -> None:
         try:
             self._soup, _, self._clipboard = get_dynamic_soup(
                 self.url, CLIPBOARD_XPATH, self.NO_GAMES_XPATH, self.PRIVATE_XPATH,
                 consent_xpath=CONSENT_XPATH, clipboard_xpath=CLIPBOARD_XPATH)
         except NoSuchElementException:
-            raise ScrapingError("Scraping failed due to absence of the looked for element")
+            raise ScrapingError(
+                "Scraping failed due to absence of the looked for element", scraper=type(self))
         except TimeoutException:
-            raise ScrapingError(f"Scraping failed due to Selenium timing out")
+            raise ScrapingError(f"Scraping failed due to Selenium timing out", scraper=type(self))
 
     @override
     def _parse_metadata(self) -> None:
@@ -82,13 +77,15 @@ class UntappedProfileDeckScraper(DeckScraper):
 class UntappedRegularDeckScraper(DeckScraper):
     """Scraper of a regular Untapped.gg decklist page.
     """
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        self._clipboard = ""
+    SELENIUM_PARAMS = {  # override
+        "xpath": CLIPBOARD_XPATH,
+        "consent_xpath": CONSENT_XPATH,
+        "clipboard_xpath": CLIPBOARD_XPATH
+    }
 
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "mtga.untapped.gg/decks/" in url.lower()
 
     @staticmethod
@@ -96,15 +93,6 @@ class UntappedRegularDeckScraper(DeckScraper):
     def sanitize_url(url: str) -> str:
         url = strip_url_query(url)
         return url.replace("input/", "") if "/input/" in url else url
-
-    @override
-    def _pre_parse(self) -> None:
-        try:
-            self._soup, _, self._clipboard = get_dynamic_soup(
-                self.url, CLIPBOARD_XPATH, consent_xpath=CONSENT_XPATH,
-                clipboard_xpath=CLIPBOARD_XPATH)
-        except TimeoutException:
-            raise ScrapingError(f"Scraping failed due to Selenium timing out")
 
     @override
     def _parse_metadata(self) -> None:
@@ -128,13 +116,15 @@ class UntappedRegularDeckScraper(DeckScraper):
 class UntappedMetaDeckScraper(DeckScraper):
     """Scraper of Untapped meta-decks page.
     """
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        self._clipboard = ""
+    SELENIUM_PARAMS = {  # override
+        "xpath": CLIPBOARD_XPATH,
+        "consent_xpath": CONSENT_XPATH,
+        "clipboard_xpath": CLIPBOARD_XPATH
+    }
 
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "mtga.untapped.gg/meta/decks/" in url.lower()
 
     @staticmethod
@@ -143,21 +133,12 @@ class UntappedMetaDeckScraper(DeckScraper):
         return strip_url_query(url)
 
     @override
-    def _pre_parse(self) -> None:
-        try:
-            self._soup, _, self._clipboard = get_dynamic_soup(
-                self.url, CLIPBOARD_XPATH, consent_xpath=CONSENT_XPATH,
-                clipboard_xpath=CLIPBOARD_XPATH)
-        except TimeoutException:
-            raise ScrapingError(f"Scraping failed due to Selenium timing out")
-
-    @override
     def _parse_metadata(self) -> None:
         name_tag = self._soup.select_one("h1[class*='layouts__MetaPageHeaderTitle']")
         if not name_tag:
             name_tag = self._soup.select_one("span[class*='DeckViewHeader__ArchetypeName']")
         if not name_tag:
-            raise ScrapingError("Page data not available")
+            raise ScrapingError("Page data not available", scraper=type(self))
         name = name_tag.text.strip().removesuffix(" Deck")
         self._metadata["name"] = name
         fmt_tag = self._soup.find("div", id="filter-format")
@@ -190,16 +171,18 @@ class UntappedMetaDeckScraper(DeckScraper):
 class UntappedProfileScraper(DeckUrlsContainerScraper):
     """Scraper of Untapped.gg user profile page.
     """
+    SELENIUM_PARAMS = {  # override
+        "xpath": "//a[contains(@href, '/profile/') and contains(@class, 'deckbox')]",
+        "consent_xpath": CONSENT_XPATH
+    }
     THROTTLING = DeckUrlsContainerScraper.THROTTLING * 1.4  # override
     CONTAINER_NAME = "Untapped profile"  # override
-    XPATH = "//a[contains(@href, '/profile/') and contains(@class, 'deckbox')]"
-    CONSENT_XPATH = CONSENT_XPATH
     DECK_SCRAPERS = UntappedProfileDeckScraper,  # override
     DECK_URL_PREFIX = "https://mtga.untapped.gg"  # override
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "mtga.untapped.gg/profile/" in url.lower() and "/deck/" not in url.lower()
 
     @staticmethod
@@ -211,4 +194,6 @@ class UntappedProfileScraper(DeckUrlsContainerScraper):
     def _collect(self) -> list[str]:
         a_tags = self._soup.find_all("a", href=lambda h: h and "/profile/" in h)
         a_tags = [a_tag for a_tag in a_tags if "deckbox" in a_tag.attrs["class"]]
+        if not a_tags:
+            raise ScrapingError("Deck tags not found", scraper=type(self))
         return [a_tag["href"] for a_tag in a_tags]

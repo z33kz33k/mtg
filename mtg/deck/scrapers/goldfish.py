@@ -1,7 +1,7 @@
 """
 
     mtg.deck.scrapers.goldfish.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape MtGGoldfish decklists.
 
     @author: z33k
@@ -12,17 +12,15 @@ from typing import override
 
 import dateutil.parser
 from bs4 import Tag
-from selenium.common import TimeoutException
 
 from mtg import Json
 from mtg.deck import Deck, Mode
-from mtg.deck.scrapers import DeckScraper, DeckTagsContainerScraper, \
-    DeckUrlsContainerScraper, HybridContainerScraper, TagBasedDeckParser
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
+    TagBasedDeckParser
 from mtg.scryfall import all_formats
 from mtg.utils import extract_int, timed
 from mtg.utils.scrape import ScrapingError, http_requests_counted, strip_url_query, \
     throttled_soup
-from mtg.utils.scrape.dynamic import get_dynamic_soup
 
 _log = logging.getLogger(__name__)
 
@@ -111,7 +109,7 @@ class GoldfishDeckTagParser(TagBasedDeckParser):
     def _parse_decklist(self) -> None:
         decklist_tag = self._deck_tag.find("table", class_="deck-view-deck-table")
         if decklist_tag is None:
-            raise ScrapingError("Decklist tag not found")
+            raise ScrapingError("Decklist tag not found", scraper=type(self))
         self._parse_decklist_tag(decklist_tag)
 
 
@@ -119,15 +117,14 @@ class GoldfishDeckTagParser(TagBasedDeckParser):
 class GoldfishDeckScraper(DeckScraper):
     """Scraper of MtGGoldfish decklist page.
     """
-    XPATH = "//table[@class='deck-view-deck-table']"
-
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        self._deck_parser: GoldfishDeckTagParser | None = None
+    SELENIUM_PARAMS = {  # override
+        "xpath": "//table[@class='deck-view-deck-table']",
+        "consent_xpath": CONSENT_XPATH
+    }
 
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         url = url.lower()
         return (("mtggoldfish.com/deck/" in url or "mtggoldfish.com/archetype/" in url)
                 and "/custom/" not in url)
@@ -141,19 +138,17 @@ class GoldfishDeckScraper(DeckScraper):
         return url
 
     @override
-    def _pre_parse(self) -> None:
-        try:
-            self._soup, _, _ = get_dynamic_soup(
-                self.url, self.XPATH, consent_xpath=CONSENT_XPATH)
-            if not self._soup or "Oops... Page not found" in self._soup.text:
-                raise ScrapingError("Page not available")
-        except TimeoutException:
-            raise ScrapingError("Page not available")
+    def _validate_soup(self) -> None:
+        super()._validate_soup()
+        if "Oops... Page not found" in self._soup.text:
+            raise ScrapingError(self._error_msg, scraper=type(self))
+
+    @override
+    def _get_deck_parser(self) -> GoldfishDeckTagParser:
         deck_tag = self._soup.find("div", class_="deck-container")
         if deck_tag is None:
-            raise ScrapingError("Deck data not found")
-
-        self._deck_parser = GoldfishDeckTagParser(deck_tag, self._metadata)
+            raise ScrapingError("Deck data not found", scraper=type(self))
+        return GoldfishDeckTagParser(deck_tag, self._metadata)
 
     @override
     def _parse_metadata(self) -> None:
@@ -179,7 +174,7 @@ class GoldfishTournamentScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "mtggoldfish.com/tournament/" in url.lower()
 
     @staticmethod
@@ -193,6 +188,8 @@ class GoldfishTournamentScraper(DeckUrlsContainerScraper):
     @override
     def _collect(self) -> list[str]:
         table_tag = self._soup.find("table", class_="table-tournament")
+        if not table_tag:
+            raise ScrapingError("Tournament table tag not found", scraper=type(self))
         deck_tags = table_tag.find_all("a", href=lambda h: h and "/deck/" in h)
         return [deck_tag.attrs["href"] for deck_tag in deck_tags]
 
@@ -208,13 +205,15 @@ class GoldfishPlayerScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return ("mtggoldfish.com/deck_searches/create?" in url.lower() and
                 "&deck_search%5Bplayer%5D=" in url)
 
     @override
     def _collect(self) -> list[str]:
         table_tag = self._soup.find("table", class_=lambda c: c and "table-striped" in c)
+        if not table_tag:
+            raise ScrapingError("<table> tag not found", scraper=type(self))
         deck_tags = table_tag.find_all("a", href=lambda h: h and "/deck/" in h)
         return [deck_tag.attrs["href"] for deck_tag in deck_tags]
 
@@ -223,16 +222,17 @@ class GoldfishPlayerScraper(DeckUrlsContainerScraper):
 class GoldfishArticleScraper(HybridContainerScraper):
     """Scraper of MTG Goldfish article page.
     """
+    SELENIUM_PARAMS = {  # override
+        "xpath": "//div[@class='deck-container']",
+        "consent_xpath": CONSENT_XPATH
+    }
     CONTAINER_NAME = "Goldfish article"  # override
-    XPATH = "//div[@class='deck-container']"  # override
-    CONSENT_XPATH = CONSENT_XPATH  # override
-    HEADERS = HEADERS  # override
     TAG_BASED_DECK_PARSER = GoldfishDeckTagParser  # override
     CONTAINER_SCRAPERS = GoldfishTournamentScraper,  # override
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return f"mtggoldfish.com/articles/" in url.lower() and "/search" not in url.lower()
 
     @staticmethod
@@ -243,8 +243,7 @@ class GoldfishArticleScraper(HybridContainerScraper):
     def _collect_urls(self) -> tuple[list[str], list[str]]:
         main_tag = self._soup.find("div", class_="article-contents")
         if not main_tag:
-            _log.warning("Article tag not found")
-            return [], []
+            raise ScrapingError("Article tag not found", scraper=type(self))
 
         # filter out paragraphs that are covered by tag-based deck parser
         p_tags = [t for t in main_tag.find_all("p") if not t.find("div", class_="deck-container")]
@@ -267,10 +266,10 @@ def scrape_meta(fmt="standard") -> list[Deck]:
     url = f"https://www.mtggoldfish.com/metagame/{fmt}/full"
     soup = throttled_soup(url, headers=HEADERS)
     if not soup:
-        raise ScrapingError("Page not available")
+        raise ScrapingError("Page not available", scraper=GoldfishDeckScraper)
     tiles = soup.find_all("div", class_="archetype-tile")
     if not tiles:
-        raise ScrapingError("No deck tiles tags found")
+        raise ScrapingError("No deck tiles tags found", scraper=GoldfishDeckScraper)
     decks, metas = [], []
     for i, tile in enumerate(tiles, start=1):
         link = tile.find("a").attrs["href"]

@@ -34,7 +34,8 @@ class MagicBlogsDeckTagParser(TagBasedDeckParser):
             if divs and uls:
                 matching_tds.append(td)
         if len(matching_tds) not in (1, 2):
-            raise ScrapingError(f"Unexpected number of <td> tags: {len(matching_tds)}")
+            raise ScrapingError(
+                f"Unexpected number of <td> tags: {len(matching_tds)}", scraper=type(self))
         return matching_tds
 
     def _parse_td_tag(self, td_tag: Tag) -> None:
@@ -45,11 +46,11 @@ class MagicBlogsDeckTagParser(TagBasedDeckParser):
                 continue
             qty_tag = tag.find("span", class_="count")
             if qty_tag is None:
-                raise ScrapingError("Card quantity not available")
+                raise ScrapingError("Card quantity not available", scraper=type(self))
             qty = int(qty_tag.text)
             name_tag = tag.find("span", class_="cardname")
             if name_tag is None:
-                raise ScrapingError("Card name not available")
+                raise ScrapingError("Card name not available", scraper=type(self))
             name = name_tag.text
             if self._state.is_maindeck:
                 self._maindeck += self.get_playset(self.find_card(name), qty)
@@ -91,7 +92,7 @@ class MagicBlogsArticleScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return f"magicblogs.de/blog/" in url.lower()
 
     @staticmethod
@@ -115,7 +116,6 @@ class MagicBlogsArticleScraper(HybridContainerScraper):
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
         deck_tags = [*self._soup.find_all("div", class_="mtgh")]
-        self._parse_metadata()
         main_tag = self._soup.find("section", class_="content")
         if not main_tag:
             _log.warning("Article tag not found")

@@ -93,7 +93,7 @@ class PauperwaveArticleScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return is_in_domain_but_not_main(url, "pauperwave.com")
 
     @staticmethod
@@ -131,7 +131,6 @@ class PauperwaveArticleScraper(HybridContainerScraper):
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
         deck_tags = [*self._soup.find_all(
             "table", class_=lambda c: c and "mtg_deck" in c and "mtg_deck_embedded" in c)]
-        self._parse_metadata()
         article_tag = self._soup.find("article")
         if not article_tag:
             _log.warning("Article tag not found")

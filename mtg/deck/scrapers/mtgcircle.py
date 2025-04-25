@@ -10,7 +10,7 @@
 import json
 import logging
 from datetime import UTC, datetime
-from typing import Callable, override
+from typing import Callable, Type, override
 
 from bs4 import BeautifulSoup, Tag
 
@@ -20,7 +20,6 @@ from mtg.deck.scrapers import DeckScraper, HybridContainerScraper, JsonBasedDeck
 from mtg.scryfall import Card, all_formats
 from mtg.utils import from_iterable
 from mtg.utils.scrape import ScrapingError, dissect_js
-from mtg.utils.scrape import getsoup
 
 _log = logging.getLogger(__name__)
 
@@ -82,7 +81,9 @@ class MtgCircleDeckJsonParser(JsonBasedDeckParser):
                     pass
 
 
-def get_data(soup: BeautifulSoup, retriever: Callable[[Json], Json], start_pos=3) -> Json:
+def get_data(
+        soup: BeautifulSoup, scraper: Type[DeckScraper] | Type[HybridContainerScraper],
+        retriever: Callable[[Json], Json], start_pos=3) -> Json:
     try:
         tokens = "cards", "deckPos", "mainDeck", "name", "quantity"
         script_tag = soup.find("script", string=lambda s: s and all(t in s for t in tokens))
@@ -91,13 +92,14 @@ def get_data(soup: BeautifulSoup, retriever: Callable[[Json], Json], start_pos=3
         data = json.loads(js_data[1][start_pos:])
         return retriever(data)
     except (AttributeError, KeyError):
-        raise ScrapingError("Deck data not available")
+        raise ScrapingError("Deck data not available", scraper=scraper)
 
 
 @DeckScraper.registered
 class MtgCircleVideoDeckScraper(DeckScraper):
     """Scraper of MTGCircle video decklist page.
     """
+    DATA_FROM_SOUP = True  # override
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -105,7 +107,7 @@ class MtgCircleVideoDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         if "mtgcircle.com/videos/" not in url.lower():
             return False
         *_, rest = url.lower().split("mtgcircle.com/videos/")
@@ -121,11 +123,11 @@ class MtgCircleVideoDeckScraper(DeckScraper):
         return data[1][3]["children"][3]["children"][2][3]["children"][0][3]["deck"]
 
     @override
-    def _pre_parse(self) -> None:
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            raise ScrapingError("Page not available")
-        self._deck_data = get_data(self._soup, self._retrieve_deck_data)
+    def _get_data_from_soup(self) -> Json:
+        return get_data(self._soup, type(self), self._retrieve_deck_data)
+
+    def _get_deck_parser(self) -> MtgCircleDeckJsonParser:
+        return MtgCircleDeckJsonParser(self._data, self._metadata)
 
     @override
     def _parse_metadata(self) -> None:
@@ -136,9 +138,11 @@ class MtgCircleVideoDeckScraper(DeckScraper):
                           and t.text.lower() in all_formats()):
             self._update_fmt(fmt_tag.text)
 
+        self._deck_parser.update_metadata(**self._metadata)
+
     @override
     def _parse_decklist(self) -> None:
-        self._deck_parser = MtgCircleDeckJsonParser(self._deck_data, self._metadata)
+        pass
 
     @override
     def _build_deck(self) -> Deck:
@@ -151,7 +155,7 @@ class MtgCircleRegularDeckScraper(MtgCircleVideoDeckScraper):
     """
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         if "mtgcircle.com/decks/" not in url.lower():
             return False
         *_, rest = url.lower().split("mtgcircle.com/decks/")
@@ -174,7 +178,7 @@ class MtgCircleArticleScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "mtgcircle.com/articles/" in url.lower()
 
     @staticmethod
@@ -190,7 +194,8 @@ class MtgCircleArticleScraper(HybridContainerScraper):
         fmt_tag, *info_tags = self._soup.select(css)
         self._update_fmt(fmt_tag.text.strip())
         self._metadata["article_tags"] = [t.text.strip().lower() for t in info_tags]
-        date_data = get_data(self._soup, retriever=self._retrieve_date_data, start_pos=2)
+        date_data = get_data(
+            self._soup, type(self), retriever=self._retrieve_date_data, start_pos=2)
         self._metadata["date"] = datetime.fromtimestamp(date_data["date"] / 1000, UTC).date()
 
     @staticmethod
@@ -206,8 +211,8 @@ class MtgCircleArticleScraper(HybridContainerScraper):
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
-        self._parse_metadata()
-        decks_data = get_data(self._soup, retriever=self._retrieve_decks_data, start_pos=2)
+        decks_data = get_data(
+            self._soup, type(self), retriever=self._retrieve_decks_data, start_pos=2)
         article_tag = self._soup.find("article")
         if not article_tag:
             _log.warning("Article tag not found")

@@ -30,30 +30,26 @@ URL = "https://mtgjson.com/api/v5/decks/"
 class MtgJsonDeckScraper(DeckScraper):
     """Scraper of MTGJSON decks page.
     """
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        self._deck_data: Json | None = None
-
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "mtgjson.com/api/v5/decks/" in url.lower() and url.lower().endswith(".json")
 
     @override
     def _pre_parse(self) -> None:
         json_data = request_json(self.url)
         if not json_data or not json_data.get("data"):
-            raise ScrapingError("Data not available")
+            raise ScrapingError("Data not available", scraper=type(self))
         self._metadata["date"] = datetime.fromisoformat(json_data["meta"]["date"]).date()
         self._metadata["version"] = json_data["meta"]["version"]
-        self._deck_data = json_data["data"]
+        self._data = json_data["data"]
 
     @override
     def _parse_metadata(self) -> None:
-        self._metadata["name"] = self._deck_data["name"]
+        self._metadata["name"] = self._data["name"]
         self._metadata["release_date"] = datetime.fromisoformat(
-            self._deck_data["releaseDate"]).date()
-        self._metadata["type"] = self._deck_data["type"]
+            self._data["releaseDate"]).date()
+        self._metadata["type"] = self._data["type"]
 
     def _parse_card_json(self, card_json: Json) -> list[Card]:
         qty = card_json["count"]
@@ -67,25 +63,25 @@ class MtgJsonDeckScraper(DeckScraper):
 
     @override
     def _parse_decklist(self) -> None:
-        for card_json in self._deck_data["commander"]:
+        for card_json in self._data["commander"]:
             for card in self._parse_card_json(card_json):
                 self._set_commander(card)
-        for card_json in self._deck_data["mainBoard"]:
+        for card_json in self._data["mainBoard"]:
             self._maindeck += self._parse_card_json(card_json)
-        for card_json in self._deck_data["sideBoard"]:
+        for card_json in self._data["sideBoard"]:
             self._sideboard += self._parse_card_json(card_json)
 
 
 def _get_links():
     soup = getsoup(URL)
     if not soup:
-        raise ScrapingError("API page not available")
+        raise ScrapingError("API page not available", scraper=MtgJsonDeckScraper)
     tbody = soup.find("tbody")
     link_tags = [t.find("a") for t in tbody.find_all("td", class_="link")]
     link_tags = [t for t in link_tags if t is not None]
     return [
         f"{URL}{t['href']}" for t in link_tags
-        if MtgJsonDeckScraper.is_deck_url(f"{URL}{t['href']}")]
+        if MtgJsonDeckScraper.is_valid_url(f"{URL}{t['href']}")]
 
 
 @timed("scraping MTGJSON API deck page")

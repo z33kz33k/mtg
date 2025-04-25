@@ -58,7 +58,7 @@ class WotCDeckTagParser(TagBasedDeckParser):
     def _build_deck(self) -> Deck:
         maindeck_tag = self._deck_tag.find("main-deck")
         if not maindeck_tag:
-            raise ScrapingError("No main deck data available")
+            raise ScrapingError("No main deck data available", scraper=type(self))
 
         lines = [self._sanitize_line(l) for l in maindeck_tag.text.strip().splitlines()]
         if self.fmt and self._locally_derived_fmt and self.fmt in COMMANDER_FORMATS:
@@ -77,7 +77,7 @@ class WotCDeckTagParser(TagBasedDeckParser):
             suppress_parsing_errors=False, suppress_invalid_deck=False)
 
 
-_LOCALES = {"/ja/", "/fr/", "/it/", "/de/", "/es/", "/pt/", "pt-BR", "/ko/"}
+_LOCALES = {"/ja/", "/fr/", "/it/", "/de/", "/es/", "/pt/", "/pt-BR/", "/ko/"}
 
 
 @HybridContainerScraper.registered
@@ -89,7 +89,7 @@ class WotCArticleScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "magic.wizards.com/" in url.lower() and "/news/" in url.lower()
 
     @staticmethod
@@ -107,7 +107,6 @@ class WotCArticleScraper(HybridContainerScraper):
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
         deck_tags = [*self._soup.find_all("deck-list")]
-        self._parse_metadata()
         article_tag = self._soup.find("article")
         if not article_tag:
             _log.warning("Article tag not found")

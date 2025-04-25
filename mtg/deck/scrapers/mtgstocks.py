@@ -17,7 +17,7 @@ from mtg import Json
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.scryfall import Card
 from mtg.utils import from_iterable
-from mtg.utils.scrape import ScrapingError, get_links, getsoup, prepend_url, strip_url_query
+from mtg.utils.scrape import ScrapingError, get_links, prepend_url, strip_url_query
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://mtgstocks.com"
@@ -27,13 +27,15 @@ URL_PREFIX = "https://mtgstocks.com"
 class MtgStocksDeckScraper(DeckScraper):
     """Scraper of MTGStocks decklist page.
     """
+    DATA_FROM_SOUP = True  # override
+
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
         self._deck_id = self._parse_deck_id()
 
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "mtgstocks.com/decks/" in url.lower()
 
     @staticmethod
@@ -50,35 +52,28 @@ class MtgStocksDeckScraper(DeckScraper):
                 return int(id_)
             return int(id_part)
         except ValueError:
-            raise ScrapingError(f"Deck ID not available: {self.url!r}")
+            raise ScrapingError(f"Deck ID not available: {self.url!r}", scraper=type(self))
 
-    def _get_deck_data(self) -> Json:
+    def _get_data_from_soup(self) -> Json:
         script_tag = self._soup.find("script", id="ng-state")
         if not script_tag:
-            raise ScrapingError("Data not available")
+            raise ScrapingError("<script> not found", scraper=type(self))
         data = json.loads(script_tag.text)
         deck_data = from_iterable(
             [v for v in data.values() if isinstance(v, dict)],
             lambda v: v.get("b") and v["b"].get("id") and v["b"]["id"] == self._deck_id)
         if not deck_data:
-            raise ScrapingError("Deck data not found")
+            raise ScrapingError("Deck data not found", scraper=type(self))
         return deck_data["b"]
 
     @override
-    def _pre_parse(self) -> None:
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            raise ScrapingError("Page not available")
-        self._deck_data = self._get_deck_data()
-
-    @override
     def _parse_metadata(self) -> None:
-        self._metadata["name"] = self._deck_data["name"]
-        if date := self._deck_data.get("lastUpdated"):
+        self._metadata["name"] = self._data["name"]
+        if date := self._data.get("lastUpdated"):
             self._metadata["date"] = dateutil.parser.parse(date).date()
-        if player := self._deck_data.get("player"):
+        if player := self._data.get("player"):
             self._metadata["author"] = player
-        self._update_fmt(self._deck_data["format"]["name"])
+        self._update_fmt(self._data["format"]["name"])
 
     def _parse_playset(self, card: Json) -> list[Card]:
         qty = int(card["quantity"])
@@ -87,9 +82,9 @@ class MtgStocksDeckScraper(DeckScraper):
 
     @override
     def _parse_decklist(self) -> None:
-        for card in self._deck_data["boards"]["mainboard"]["cards"]:
+        for card in self._data["boards"]["mainboard"]["cards"]:
             self._maindeck.extend(self._parse_playset(card))
-        if sideboard := self._deck_data["boards"].get("sideboard"):
+        if sideboard := self._data["boards"].get("sideboard"):
             for card in sideboard["cards"]:
                 self._sideboard.extend(self._parse_playset(card))
 
@@ -102,7 +97,7 @@ class MtgStocksArticleScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "mtgstocks.com/news/" in url.lower()
 
     @staticmethod
@@ -116,7 +111,7 @@ class MtgStocksArticleScraper(DeckUrlsContainerScraper):
             _log.warning("Article tag not found")
             return []
         links = get_links(article_tag)
-        return [l for l in links if any(ds.is_deck_url(l) for ds in self._get_deck_scrapers())]
+        return [l for l in links if any(ds.is_valid_url(l) for ds in self._get_deck_scrapers())]
 
     def _collect_own_urls(self) -> list[str]:
         deck_tags = self._soup.find_all("news-deck")

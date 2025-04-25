@@ -128,14 +128,16 @@ class CardmarketDeckTagParser(TagBasedDeckParser):
 class CardmarketArticleScraper(HybridContainerScraper):
     """Scraper of Cardmarket article page.
     """
+    SELENIUM_PARAMS = {  # override
+        "xpath": "//div[@class='table-responsive mb-4']",
+        "wait_for_all": True
+    }
     CONTAINER_NAME = "Cardmarket article"  # override
     TAG_BASED_DECK_PARSER = CardmarketDeckTagParser  # override
-    XPATH = "//div[@class='table-responsive mb-4']"  # override
-    WAIT_FOR_ALL = True  # override
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return ("cardmarket.com/" in url.lower() and "/insight/articles/" in url.lower() and
                 "/yugioh/" not in url.lower())
 
@@ -145,11 +147,11 @@ class CardmarketArticleScraper(HybridContainerScraper):
         return strip_url_query(url)
 
     @override
-    def _pre_parse(self) -> None:
-        super()._pre_parse()
+    def _validate_soup(self) -> None:
+        super()._validate_soup()
         cat_tag = self._soup.select_one("div.u-article-meta__category")
         if not cat_tag or cat_tag.text.strip().lower() != "magic":
-            raise ScrapingError("Not a MtG article")
+            raise ScrapingError("Not a MtG article", scraper=type(self))
 
     @override
     def _parse_metadata(self) -> None:
@@ -168,7 +170,6 @@ class CardmarketArticleScraper(HybridContainerScraper):
         deck_tags = [
             t for t in self._soup.select("div.table-responsive.mb-4")
             if t.find("hoverable-card")]
-        self._parse_metadata()
         article_tag = self._soup.find("article")
         if not article_tag:
             _log.warning("Article tag not found")

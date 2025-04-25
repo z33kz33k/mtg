@@ -1,7 +1,7 @@
 """
 
     mtg.deck.scrapers.ligamagic.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape LigaMagic decklists.
 
     Note: experimental (requires use of scraping APIs to bypass CloudFlare).
@@ -55,13 +55,14 @@ class LigaMagicDeckScraper(DeckScraper):
     # TODO: take care of LigaMagic's own: `lig.ae` shortener URLs
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return all(t in url.lower() for t in ("ligamagic.com.br", "/deck", "&id="))
 
+    @override
     def _pre_parse(self) -> None:
         self._soup = _get_soup_with_zenrows(self.url, self._CSS_SELECTOR)
         if not self._soup:
-            raise ScrapingError("Page not available")
+            raise ScrapingError("Page not available", scraper=type(self))
         main_tag = self._soup.select_one(self._CSS_SELECTOR)
         state = "maindeck"
         stoppers = "Branco", "Azul", "Preto", "Vermelho", "Verde", "Multi Colorida"  # color names
@@ -133,16 +134,18 @@ class LigaMagicEventScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return all(t in url.lower() for t in ("ligamagic.com.br", "/evento", "&id="))
 
     @override
     def _pre_parse(self) -> None:
         self._soup = _get_soup_with_zenrows(self.url, self._CSS_SELECTOR)
         if not self._soup:
-            raise ScrapingError(self._error_msg)
+            raise ScrapingError(self._error_msg, scraper=type(self))
 
     @override
     def _collect(self) -> list[str]:
         deck_tags = [tag.find("a") for tag in self._soup.find_all("div", class_="deckname")]
+        if not deck_tags:
+            raise ScrapingError("Deck tags not found", scraper=type(self))
         return [tag.attrs["href"].removeprefix(".") for tag in deck_tags]

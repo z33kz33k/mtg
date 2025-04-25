@@ -1,7 +1,7 @@
 """
 
     mtg.deck.scrapers.topdecked.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape TopDecked decklists.
 
     @author: z33k
@@ -59,7 +59,7 @@ class TopDeckedRegularDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "www.topdecked.com/decks/" in url.lower()
 
     @staticmethod
@@ -111,9 +111,9 @@ class TopDeckedRegularDeckScraper(DeckScraper):
             self._arena_decklist = self._get_data()
         except NoSuchElementException as err:
             err_text, *_ = str(err).split("(Session info")
-            raise ScrapingError(f"Scraping failed due to: '{err_text.strip()}'")
+            raise ScrapingError(f"Scraping failed due to: '{err_text.strip()}'", scraper=type(self))
         except TimeoutException:
-            raise ScrapingError(f"Scraping failed due to Selenium timing out")
+            raise ScrapingError(f"Scraping failed due to Selenium timing out", scraper=type(self))
 
     @override
     def _parse_metadata(self) -> None:
@@ -167,7 +167,7 @@ class TopDeckedMetaDeckScraper(TopDeckedRegularDeckScraper):
 
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "www.topdecked.com/metagame/" in url.lower() and "/decks/" in url.lower()
 
     @override

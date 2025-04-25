@@ -1,7 +1,7 @@
 """
 
     mtg.deck.scrapers.mtgdecksnet.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape MTGDecks.net decklists.
 
     @author: z33k
@@ -12,7 +12,6 @@ from typing import override
 
 import dateutil.parser
 from bs4 import Tag
-from selenium.common.exceptions import TimeoutException
 
 from mtg import Json
 from mtg.deck import Deck
@@ -21,7 +20,6 @@ from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridConta
     TagBasedDeckParser
 from mtg.utils.scrape import ScrapingError, get_previous_sibling_tag
 from mtg.utils.scrape import strip_url_query
-from mtg.utils.scrape.dynamic import get_dynamic_soup
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://mtgdecks.net"
@@ -67,10 +65,10 @@ class MtgDecksNetDeckTagParser(TagBasedDeckParser):
         pass
 
     @override
-    def _build_deck(self) -> Deck:  # override
+    def _build_deck(self) -> Deck:
         decklist_tag = self._deck_tag.find("textarea", id="arena_deck")
         if not decklist_tag:
-            raise ScrapingError("Decklist tag not found")
+            raise ScrapingError("Decklist tag not found", scraper=type(self))
         decklist = decklist_tag.text.strip()
         return ArenaParser(decklist, self._metadata).parse(
             suppress_parsing_errors=False, suppress_invalid_deck=False)
@@ -81,19 +79,22 @@ class MtgDecksNetDeckTagParser(TagBasedDeckParser):
 class MtgDecksNetDeckScraper(DeckScraper):
     """Scraper of MTGDecks.net decklist page.
     """
-    XPATH = "//textarea[@id='arena_deck']"
+    SELENIUM_PARAMS = {  # override
+        "xpath": "//textarea[@id='arena_deck']"
+    }
     _FORMATS = {
         "brawl": "standardbrawl",
         "historic-brawl": "brawl",
     }
 
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        self._deck_parser: MtgDecksNetDeckTagParser | None = None
+    @property
+    @override
+    def _error_msg(self) -> str:
+        return super()._error_msg + " (deck probably hidden)"
 
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "mtgdecks.net/" in url.lower() and "-decklist-" in url.lower()
 
     @staticmethod
@@ -102,17 +103,11 @@ class MtgDecksNetDeckScraper(DeckScraper):
         url = strip_url_query(url)
         return url.removesuffix("/visual")
 
-    @override
-    def _pre_parse(self) -> None:
-        try:
-            self._soup, _, _ = get_dynamic_soup(self.url, self.XPATH)
-        except TimeoutException:
-            raise ScrapingError(f"Scraping failed due to Selenium timing out")
+    def _get_deck_parser(self) -> MtgDecksNetDeckTagParser:
         deck_tag = self._soup.select_one("div.deck.shadow")
         if deck_tag is None:
-            raise ScrapingError("Deck data not found")
-
-        self._deck_parser = MtgDecksNetDeckTagParser(deck_tag, self._metadata)
+            raise ScrapingError("Deck tag not found", scraper=type(self))
+        return MtgDecksNetDeckTagParser(deck_tag, self._metadata)
 
     @override
     def _parse_metadata(self) -> None:
@@ -138,14 +133,16 @@ class MtgDecksNetDeckScraper(DeckScraper):
 class MtgDecksNetTournamentScraper(DeckUrlsContainerScraper):
     """Scraper of MTGDecks.net tournament page.
     """
+    SELENIUM_PARAMS = {  # override
+        "xpath": '//a[contains(@href, "-decklist-")]'
+    }
     CONTAINER_NAME = "MTGDecks.net tournament"  # override
-    XPATH = '//a[contains(@href, "-decklist-")]'  # override
     DECK_SCRAPERS = MtgDecksNetDeckScraper,  # override
     DECK_URL_PREFIX = URL_PREFIX  # override
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "mtgdecks.net/" in url.lower() and "-tournament-" in url.lower()
 
     @staticmethod
@@ -157,6 +154,8 @@ class MtgDecksNetTournamentScraper(DeckUrlsContainerScraper):
     def _collect(self) -> list[str]:
         deck_tags = [
             tag for tag in self._soup.find_all("a", href=lambda h: h and "-decklist-" in h)]
+        if not deck_tags:
+            raise ScrapingError("Deck tags not found", scraper=type(self))
         return [deck_tag.attrs["href"] for deck_tag in deck_tags]
 
 
@@ -164,10 +163,12 @@ class MtgDecksNetTournamentScraper(DeckUrlsContainerScraper):
 class MtgDecksNetArticleScraper(HybridContainerScraper):
     """Scraper of MTGDecks.net article page.
     """
+    SELENIUM_PARAMS = {  # override
+        "xpath": "//div[@class='framed']",
+        "wait_for_all": True
+    }
     CONTAINER_NAME = "MTGDecks.net article"  # override
     TAG_BASED_DECK_PARSER = MtgDecksNetDeckTagParser  # override
-    XPATH = "//div[@class='framed']"  # override
-    WAIT_FOR_ALL = True  # override
     CONTAINER_SCRAPERS = MtgDecksNetTournamentScraper,  # override
     CONTAINER_URL_PREFIX = URL_PREFIX  # override
 
@@ -177,7 +178,7 @@ class MtgDecksNetArticleScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         tokens = ("/guides/", "/meta/", "/spoilers/", "/theory/", "/news/", "/profiles/")
         tokens = {f"mtgdecks.net{t}" for t in tokens}
         return any(t in url.lower() for t in tokens)
@@ -187,8 +188,7 @@ class MtgDecksNetArticleScraper(HybridContainerScraper):
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    @override
-    def _parse_metadata(self) -> None:
+    def _parse_article_metadata(self) -> None:
         if title_tag := self._article_tag.find("h1"):
             if fmt := self.derive_format_from_text(title_tag.text):
                 self._update_fmt(fmt)
@@ -208,6 +208,6 @@ class MtgDecksNetArticleScraper(HybridContainerScraper):
         if not self._article_tag:
             _log.warning("Article tag not found")
             return [], deck_tags, [], []
-        self._parse_metadata()
+        self._parse_article_metadata()
         deck_urls, container_urls = self._get_links_from_tags(*self._article_tag.find_all("p"))
         return deck_urls, deck_tags, [], container_urls

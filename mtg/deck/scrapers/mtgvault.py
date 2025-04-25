@@ -27,7 +27,7 @@ class MtgVaultDeckScraper(DeckScraper):
     """
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "mtgvault.com/" in url.lower() and "/decks/" in url.lower()
 
     @staticmethod
@@ -35,12 +35,6 @@ class MtgVaultDeckScraper(DeckScraper):
     def sanitize_url(url: str) -> str:
         return strip_url_query(
             url.removesuffix("/proxy/").removesuffix("/stats/").removesuffix("/sample-hand/"))
-
-    @override
-    def _pre_parse(self) -> None:
-        self._soup = getsoup(self.url, request_timeout=45)
-        if not self._soup:
-            raise ScrapingError("Page not available")
 
     @override
     def _parse_metadata(self) -> None:
@@ -70,7 +64,7 @@ class MtgVaultDeckScraper(DeckScraper):
     def _parse_decklist(self) -> None:
         maindeck_tag = self._soup.select_one("div#main-deck")
         if not maindeck_tag:
-            raise ScrapingError("Main deck tag not found")
+            raise ScrapingError("Main deck tag not found", scraper=type(self))
 
         for card_tag in maindeck_tag.select("div.deck-card"):
             self._maindeck += self._parse_card(card_tag)
@@ -94,7 +88,7 @@ class MtgVaultUserScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return ("mtgvault.com/" in url.lower() and "/decks/" not in url.lower()
                 and "/ViewDeck.aspx" not in url)
 
@@ -114,5 +108,8 @@ class MtgVaultUserScraper(DeckUrlsContainerScraper):
                 if soup:
                     deck_urls += get_links(
                         soup, href=lambda h: h and "/decks/" in h and "/search/" not in h)
+
+        if not deck_urls:
+            raise ScrapingError("No decks found", scraper=type(self))
 
         return deck_urls

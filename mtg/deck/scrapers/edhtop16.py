@@ -16,6 +16,7 @@ from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckUrlsContainerScraper
 from mtg.deck.scrapers.topdeck import check_unexpected_urls
+from mtg.utils.scrape import ScrapingError
 
 _log = logging.getLogger(__name__)
 
@@ -32,7 +33,7 @@ class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "edhtop16.com/tournament/" in url.lower()
 
     @staticmethod
@@ -79,8 +80,7 @@ class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
     def _collect(self) -> list[str]:
         script_tag = self._soup.find("script", id="__NEXT_DATA__")
         if not script_tag:
-            _log.warning(self._error_msg)
-            return []
+            raise ScrapingError("<script> tag not found", scraper=type(self))
 
         data = json.loads(script_tag.text)
         deck_urls = self._process_data(data)
@@ -109,7 +109,7 @@ class EdhTop16CommanderScraper(EdhTop16TournamentScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "edhtop16.com/commander/" in url.lower()
 
     def _process_data(self, data: Json) -> list[str]:  # override

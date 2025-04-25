@@ -16,7 +16,7 @@ from bs4 import NavigableString
 from mtg import Json, SECRETS
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.deck.scrapers.goldfish import HEADERS as GOLDFISH_HEADERS
-from mtg.utils.scrape import ScrapingError, getsoup, request_json
+from mtg.utils.scrape import request_json
 
 _log = logging.getLogger(__name__)
 
@@ -25,9 +25,11 @@ _log = logging.getLogger(__name__)
 class InternationalHareruyaDeckScraper(DeckScraper):
     """Scraper of international Hareruya decklist page.
     """
+    HEADERS = GOLDFISH_HEADERS  # override
+
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         url = url.lower()
         return ("hareruyamtg.com" in url and "/deck/" in url
                 and "deck.hareruyamtg.com/deck/" not in url and "/result?" not in url)
@@ -36,12 +38,6 @@ class InternationalHareruyaDeckScraper(DeckScraper):
     @override
     def sanitize_url(url: str) -> str:
         return url.replace("/ja/","/en/")
-
-    @override
-    def _pre_parse(self) -> None:
-        self._soup = getsoup(self.url, headers=GOLDFISH_HEADERS)
-        if not self._soup:
-            raise ScrapingError("Page not available")
 
     @override
     def _parse_metadata(self) -> None:
@@ -107,20 +103,11 @@ class InternationalHareruyaDeckScraper(DeckScraper):
 class JapaneseHareruyaDeckScraper(DeckScraper):
     """Scraper of Japanese Hareruya decklist page.
     """
-    API_URL_TEMPLATE = "https://api.deck.hareruyamtg.com/api/deck/{}?display_token={}"
-
-    def __init__(
-            self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        if "?display_token=" in self.url:
-            rest, self._display_token = self.url.rsplit("?display_token=", maxsplit=1)
-        else:
-            rest, self._display_token = self.url, ""
-        *_, self._decklist_id = rest.split("/")
+    API_URL_TEMPLATE = "https://api.deck.hareruyamtg.com/api/deck/{}?display_token={}"  # override
 
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         url = url.lower()
         return ("hareruyamtg.com/decks/list/" in url or "hareruyamtg.com/decks/" in url
                 or "deck.hareruyamtg.com/deck/" in url) and "/user/" not in url
@@ -132,40 +119,42 @@ class JapaneseHareruyaDeckScraper(DeckScraper):
             return url.replace("deck.hareruyamtg.com/deck/", "www.hareruyamtg.com/decks/")
         return url
 
-    @override
-    def _pre_parse(self) -> None:
-        self._deck_data = request_json(
+    def _get_data_from_api(self) -> Json:
+        if "?display_token=" in self.url:
+            rest, self._display_token = self.url.rsplit("?display_token=", maxsplit=1)
+        else:
+            rest, self._display_token = self.url, ""
+        *_, self._decklist_id = rest.split("/")
+        return request_json(
             self.API_URL_TEMPLATE.format(self._decklist_id, self._display_token))
-        if not self._deck_data:
-            raise ScrapingError("Data not available")
 
     @override
     def _parse_metadata(self) -> None:
-        fmt = self._deck_data["format_name_en"]
+        fmt = self._data["format_name_en"]
         self._update_fmt(fmt)
-        self._metadata["name"] = self._deck_data["deck_name"]
-        self._metadata["author"] = self._deck_data["nickname"]
-        if arch := self._deck_data.get("archetype_name_en"):
+        self._metadata["name"] = self._data["deck_name"]
+        self._metadata["author"] = self._data["nickname"]
+        if arch := self._data.get("archetype_name_en"):
             self._update_archetype_or_theme(arch)
-        self._metadata["deck_type"] = self._deck_data["deck_type"]
-        if event_name := self._deck_data.get("event_name_en"):
+        self._metadata["deck_type"] = self._data["deck_type"]
+        if event_name := self._data.get("event_name_en"):
             self._metadata.setdefault("event", {})
             self._metadata["event"]["name"] = event_name
-        if event_date := self._deck_data.get("event_date"):
+        if event_date := self._data.get("event_date"):
             self._metadata.setdefault("event", {})
             self._metadata["event"]["date"] = dateutil.parser.parse(event_date).date()
-        if event_player := self._deck_data.get("player_name"):
+        if event_player := self._data.get("player_name"):
             self._metadata.setdefault("event", {})
             self._metadata["event"]["player"] = event_player
-        if event_result := self._deck_data.get("result"):
+        if event_result := self._data.get("result"):
             self._metadata.setdefault("event", {})
             self._metadata["event"]["result"] = event_result
-        if event_ranking := self._deck_data.get("ranking"):
+        if event_ranking := self._data.get("ranking"):
             self._metadata.setdefault("event", {})
             self._metadata["event"]["ranking"] = event_ranking
-        if source_url := self._deck_data.get("source_url"):
+        if source_url := self._data.get("source_url"):
             self._metadata["original_source"] = source_url
-        self._metadata["date"] = dateutil.parser.parse(self._deck_data["update_date"]).date()
+        self._metadata["date"] = dateutil.parser.parse(self._data["update_date"]).date()
 
     def _process_card(self, json_card: Json) -> None:
         quantity = json_card["count"]
@@ -179,7 +168,7 @@ class JapaneseHareruyaDeckScraper(DeckScraper):
 
     @override
     def _parse_decklist(self) -> None:
-        for card in self._deck_data["cards"]:
+        for card in self._data["cards"]:
             self._process_card(card)
 
 
@@ -214,7 +203,7 @@ class HareruyaEventScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return all(t in url for t in {"hareruyamtg.com", "/deck", "/result?", "eventName="})
 
     @override
@@ -233,7 +222,7 @@ class HareruyaPlayerScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         url = url.lower()
         return all(t in url for t in {"hareruyamtg.com", "/deck", "/result?", "player="})
 
@@ -243,4 +232,4 @@ class HareruyaPlayerScraper(DeckUrlsContainerScraper):
             "a", class_="deckSearch-searchResult__itemWrapper")]
 
 
-# TODO: articles
+# TODO: articles (#304)

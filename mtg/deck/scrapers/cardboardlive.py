@@ -10,15 +10,10 @@
 import logging
 from typing import override
 
-from selenium.common.exceptions import TimeoutException
-
-from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckScraper
 from mtg.utils.scrape import strip_url_query
-from mtg.utils.scrape.dynamic import get_dynamic_soup
-from mtg.utils.scrape import ScrapingError
 
 _log = logging.getLogger(__name__)
 CLIPBOARD_XPATH = "//span[text()='Export to Arena']"
@@ -28,27 +23,20 @@ CLIPBOARD_XPATH = "//span[text()='Export to Arena']"
 class CardBoardLiveDeckScraper(DeckScraper):
     """Scraper of a CardBoard Live decklist page.
     """
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        self._clipboard = ""
+    SELENIUM_PARAMS = {  # override
+        "xpath": CLIPBOARD_XPATH,
+        "clipboard_xpath": CLIPBOARD_XPATH
+    }
 
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "app.cardboard.live/shared-deck/" in url.lower()
 
     @staticmethod
     @override
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
-
-    @override
-    def _pre_parse(self) -> None:
-        try:
-            self._soup, _, self._clipboard = get_dynamic_soup(
-                self.url, CLIPBOARD_XPATH, clipboard_xpath=CLIPBOARD_XPATH)
-        except TimeoutException:
-            raise ScrapingError(f"Scraping failed due to Selenium timing out")
 
     @override
     def _parse_metadata(self) -> None:

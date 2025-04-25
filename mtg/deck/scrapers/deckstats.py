@@ -1,7 +1,7 @@
 """
 
     mtg.deck.scrapers.deckstats.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Deckstats decklists.
 
     @author: z33k
@@ -40,8 +40,6 @@ _FORMATS = {
     21: "duel",
     22: "explorer",
 }
-
-
 _MAX_TRIES = 3
 
 
@@ -61,9 +59,11 @@ def _backoff_handler(details: dict) -> None:
 class DeckstatsDeckScraper(DeckScraper):
     """Scraper of Deckstats decklist page.
     """
+    DATA_FROM_SOUP = True  # override
+
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         if "deckstats.net/decks/" not in url.lower():
             return False
         url = strip_url_query(url)
@@ -90,7 +90,18 @@ class DeckstatsDeckScraper(DeckScraper):
     def _get_response(self) -> Response | None:
         return timed_request(self.url, handle_http_errors=False)
 
-    def _get_deck_data(self) -> Json:
+    @override
+    def _validate_soup(self) -> None:
+        super()._validate_soup()
+        if error_tag := self._soup.find("div", class_="ui-state-error"):
+            if "This deck does not exist." in error_tag.text:
+                raise ScrapingError("Deck does not exist", scraper=type(self))
+            elif "You do not have access to this page." in error_tag.text:
+                raise ScrapingError(
+                    "Access to deck page denied (is the deck private perhaps?)", scraper=type(self))
+
+    @override
+    def _get_data_from_soup(self) -> Json:
         return dissect_js(
             self._soup, "init_deck_data(", "deck_display();", lambda s: s.removesuffix(", false);"))
 
@@ -98,36 +109,34 @@ class DeckstatsDeckScraper(DeckScraper):
     def _pre_parse(self) -> None:
         response = self._get_response()
         if response.status_code == 429:
-            raise ScrapingError(f"Page still not available after {_MAX_TRIES} backoff tries")
+            raise ScrapingError(
+                f"Page still not available after {_MAX_TRIES} backoff tries", scraper=type(self))
         self._soup = BeautifulSoup(response.text, "lxml")
-        if error_tag := self._soup.find("div", class_="ui-state-error"):
-            if "This deck does not exist." in error_tag.text:
-                raise ScrapingError("Deck does not exist")
-            elif "You do not have access to this page." in error_tag.text:
-                raise ScrapingError("Access to deck page denied (is the deck private perhaps?)")
-        self._deck_data = self._get_deck_data()
+        self._validate_soup()
+        self._data = self._get_data_from_soup()
 
     @override
     def _parse_metadata(self) -> None:
         author_text = self._soup.find("div", id="deck_folder_subtitle").text.strip()
         self._metadata["author"] = author_text.removeprefix("in  ").removesuffix("'s Decks")
-        self._metadata["name"] = self._deck_data["name"]
-        self._metadata["views"] = self._deck_data["views"]
-        if self._deck_data.get("format_id"):
-            fmt = _FORMATS.get(self._deck_data["format_id"])
+        self._metadata["name"] = self._data["name"]
+        self._metadata["views"] = self._data["views"]
+        if self._data.get("format_id"):
+            fmt = _FORMATS.get(self._data["format_id"])
             if fmt:
                 self._update_fmt(fmt)
-        self._metadata["date"] = datetime.fromtimestamp(self._deck_data["updated"], UTC).date()
-        if tags := self._deck_data.get("tags"):
+        self._metadata["date"] = datetime.fromtimestamp(self._data["updated"], UTC).date()
+        if tags := self._data.get("tags"):
             self._metadata["tags"] = self.process_metadata_deck_tags(tags)
-        if description := self._deck_data.get("description"):
+        if description := self._data.get("description"):
             self._metadata["description"] = description
 
     def _parse_card_json(self, card_json: Json) -> list[Card]:
         name = card_json["name"]
         quantity = card_json["amount"]
         if not card_json.get("data"):
-            raise ScrapingError(f"No card data available for playset '{quantity} {name}'")
+            raise ScrapingError(
+                f"No card data available for playset '{quantity} {name}'", scraper=type(self))
         if tcgplayer_id := card_json["data"].get("price_tcgplayer_id"):
             tcgplayer_id = int(tcgplayer_id)
         if mtgo_id := card_json["data"].get("price_cardhoarder_id"):
@@ -140,10 +149,10 @@ class DeckstatsDeckScraper(DeckScraper):
     @override
     def _parse_decklist(self) -> None:
         cards = itertools.chain(
-            *[section["cards"] for section in self._deck_data["sections"]])
+            *[section["cards"] for section in self._data["sections"]])
         for card_json in cards:
             self._maindeck.extend(self._parse_card_json(card_json))
-        if sideboard := self._deck_data.get("sideboard"):
+        if sideboard := self._data.get("sideboard"):
             for card_json in sideboard:
                 self._sideboard.extend(self._parse_card_json(card_json))
 
@@ -161,7 +170,7 @@ class DeckstatsUserScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         if "deckstats.net/decks/" not in url.lower():
             return False
         url = strip_url_query(url)
@@ -182,6 +191,14 @@ class DeckstatsUserScraper(DeckUrlsContainerScraper):
         url = self.url.removeprefix("https://").removeprefix("http://")
         *_, user_id = url.split("/")
         return user_id
+
+    @override
+    def _get_data_from_api(self) -> Json:
+        return {}  # dummy
+
+    @override
+    def _validate_data(self) -> None:
+        pass
 
     @override
     def _collect(self) -> list[str]:

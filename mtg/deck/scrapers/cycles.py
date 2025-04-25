@@ -104,7 +104,7 @@ class CyclesGamingArticleScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return is_in_domain_but_not_main(url, "cyclesgaming.com")
 
     @staticmethod
@@ -125,7 +125,6 @@ class CyclesGamingArticleScraper(HybridContainerScraper):
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
-        self._parse_metadata()
         deck_tags = [tag for tag in self._soup.find_all("h2") if "list – " in tag.text.lower()]
         deck_urls, _ = self._get_links_from_tags(*self._soup.find_all("p"))
         return deck_urls, deck_tags, [], []

@@ -27,9 +27,11 @@ _log = logging.getLogger(__name__)
 class MtgMetaIoDeckScraper(DeckScraper):
     """Scraper of MTGMeta.io decklist page.
     """
+    DATA_FROM_SOUP = True  # override
+
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "mtgmeta.io/decks/" in url.lower()
 
     @staticmethod
@@ -38,29 +40,34 @@ class MtgMetaIoDeckScraper(DeckScraper):
         return strip_url_query(url)
 
     @override
-    def _pre_parse(self) -> None:
+    def _fetch_soup(self) -> None:
         self._soup = get_wayback_soup(self.url)
-        if not self._soup:
-            raise ScrapingError("Page not available")
+
+    @override
+    def _validate_soup(self) -> None:
+        super()._validate_soup()
         if "Error connecting to database" in str(self._soup):
-            raise ScrapingError("Page not available due to Internet Archive's database error")
-        self._deck_data = dissect_js(self._soup, "const decklist = ", " ;\n  ")
-        if not self._deck_data:
-            raise ScrapingError("Deck data not available")
+            raise ScrapingError(
+                "Page not available due to Internet Archive's database error", scraper=type(self))
+
+    def _get_data_from_soup(self) -> Json:
+        return dissect_js(self._soup, "const decklist = ", " ;\n  ")
 
     @override
     def _parse_metadata(self) -> None:
         if fmt_tag := self._soup.find(
             "a", class_="crumb", string=lambda s: s and "Home" not in s and "Decks" not in s):
             self._update_fmt(fmt_tag.text.strip())
-        if name := self._deck_data.get("dname") or self._soup.select_one("h1.deckname"):
+        if name := self._data.get("dname"):
             self._metadata["name"] = name
-        if player := self._deck_data.get("pname"):
+        elif name := self._soup.select_one("h1.deckname"):
+            self._metadata["name"] = name.text.strip()
+        if player := self._data.get("pname"):
             self._metadata["author"] = player
-        if event := self._deck_data.get("tname"):
+        if event := self._data.get("tname"):
             self._metadata["event"] = {}
             self._metadata["event"]["name"] = event
-        if place := self._deck_data.get("place"):
+        if place := self._data.get("place"):
             self._metadata.setdefault("event", {})["place"] = int(place)
         if info_tag := self._soup.select_one("ul#deckstats"):
             li_tags = [*info_tag.find_all("li")]
@@ -84,10 +91,10 @@ class MtgMetaIoDeckScraper(DeckScraper):
 
     @override
     def _parse_decklist(self) -> None:
-        for card_json in self._deck_data["main"]:
+        for card_json in self._data["main"]:
             self._maindeck += self._parse_card_json(card_json)
 
-        if sideboard := self._deck_data.get("side"):
+        if sideboard := self._data.get("side"):
             for card_json in sideboard:
                 self._sideboard += self._parse_card_json(card_json)
 
@@ -110,7 +117,7 @@ class MtgMetaIoTournamentScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "mtgmeta.io/tournaments/" in url.lower()
 
     @staticmethod
@@ -119,18 +126,20 @@ class MtgMetaIoTournamentScraper(DeckUrlsContainerScraper):
         return strip_url_query(url)
 
     @override
-    def _pre_parse(self) -> None:
+    def _fetch_soup(self) -> None:
         self._soup = get_wayback_soup(self.url)
-        if not self._soup:
-            raise ScrapingError(self._error_msg)
+
+    def _validate_soup(self) -> None:
+        super()._validate_soup()
         if "Error connecting to database" in str(self._soup):
-            raise ScrapingError("Page not available due to Internet Archive's database error")
+            raise ScrapingError(
+                "Page not available due to Internet Archive's database error", scraper=type(self))
 
     @override
     def _collect(self) -> list[str]:
         ul_tag = self._soup.select_one("ul.playerslist")
         if not ul_tag:
-            raise ScrapingError(self._error_msg)
+            raise ScrapingError(self._error_msg, scraper=type(self))
         links = get_links(ul_tag)
         return _strip_wm_part(*links)
 
@@ -168,7 +177,7 @@ class MtgMetaIoArticleScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "mtgmeta.io/articles/" in url.lower()
 
     @staticmethod
@@ -176,20 +185,21 @@ class MtgMetaIoArticleScraper(HybridContainerScraper):
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    @override
-    def _pre_parse(self) -> None:
+    def _fetch_soup(self) -> None:
         self._soup = get_wayback_soup(self.url)
-        if not self._soup:
-            raise ScrapingError(self._error_msg)
+
+    def _validate_soup(self) -> None:
+        super()._validate_soup()
         if "Error connecting to database" in str(self._soup):
-            raise ScrapingError("Page not available due to Internet Archive's database error")
+            raise ScrapingError(
+                "Page not available due to Internet Archive's database error", scraper=type(self))
 
     @override
     def _parse_metadata(self) -> None:
         if title_tag := self._soup.select_one("h1.entry-title"):
             self._metadata["title"] = title_tag.text.strip()
-        if time_tag := self._soup.select_one("time.published") or self._soup.select_one(
-                "time.updated"):
+        time_tag = self._soup.select_one("time.published") or self._soup.select_one("time.updated")
+        if time_tag:
             date_text = time_tag.attrs["datetime"][:10]
             self._metadata["date"] = dateutil.parser.parse(date_text).date()
         if author_tag := self._soup.select_one("span.author-name"):
@@ -199,10 +209,8 @@ class MtgMetaIoArticleScraper(HybridContainerScraper):
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
         article_tag = self._soup.find("article")
         if not article_tag:
-            _log.warning("Article tag not found")
-            return [], [], [], []
+            raise ScrapingError("Article tag not found", scraper=type(self))
         deck_tags = [*article_tag.find_all("div", class_="decklist-container")]
-        self._parse_metadata()
         p_tags = [t for t in article_tag.find_all("p") if not t.find("div", class_="deck_list")]
         deck_urls, _ = self._get_links_from_tags(*p_tags)
         return _strip_wm_part(*deck_urls), deck_tags, [], []

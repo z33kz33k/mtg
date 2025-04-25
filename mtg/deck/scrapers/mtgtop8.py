@@ -15,7 +15,6 @@ from typing import override
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.utils import extract_int
 from mtg.utils.scrape import ScrapingError
-from mtg.utils.scrape import getsoup
 
 _log = logging.getLogger(__name__)
 
@@ -30,7 +29,7 @@ class MtgTop8DeckScraper(DeckScraper):
     """
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "mtgtop8.com/event?e=" in url.lower() and "&d=" in url.lower()
 
     @staticmethod
@@ -39,13 +38,10 @@ class MtgTop8DeckScraper(DeckScraper):
         return url.removesuffix("/").replace("&switch=visual", "").replace(
             "&switch=text", "") + "&switch=text"
 
-    @override
-    def _pre_parse(self) -> None:
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            raise ScrapingError("Page not available")
+    def _validate_soup(self) -> None:
+        super()._validate_soup()
         if _ := self._soup.find("div", string="No event could be found."):
-            raise ScrapingError("No event could be found")
+            raise ScrapingError("No event could be found", scraper=type(self))
 
     @override
     def _parse_metadata(self) -> None:
@@ -109,7 +105,7 @@ class MtgTop8EventScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "mtgtop8.com/event?e=" in url.lower() and "&d=" not in url.lower()
 
     @staticmethod
@@ -125,4 +121,6 @@ class MtgTop8EventScraper(DeckUrlsContainerScraper):
         deck_urls = {}
         for a_tag in a_tags:
             deck_urls[a_tag.text] = a_tag.attrs["href"]
+        if not deck_urls:
+            raise ScrapingError("No decks found", scraper=type(self))
         return [*deck_urls.values()]

@@ -15,13 +15,13 @@ import dateutil.parser
 from bs4 import Tag
 
 from mtg import Json
-from mtg.scryfall import COMMANDER_FORMATS
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import DeckUrlsContainerScraper, HybridContainerScraper, TagBasedDeckParser, \
-    DeckScraper
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
+    TagBasedDeckParser
+from mtg.scryfall import COMMANDER_FORMATS
 from mtg.utils import ParsingError, extract_int, from_iterable, sanitize_whitespace
-from mtg.utils.scrape import ScrapingError, getsoup, strip_url_query
+from mtg.utils.scrape import ScrapingError, strip_url_query
 
 _log = logging.getLogger(__name__)
 
@@ -101,7 +101,8 @@ class ScgDeckTagParser(TagBasedDeckParser):
     def _parse_decklist(self) -> None:
         decklist_tag = self._deck_tag.find("div", class_="deck_card_wrapper")
         if decklist_tag is None:
-            raise ScrapingError("Decklist tag not found (page is probably paywalled)")
+            raise ScrapingError(
+                "Decklist tag not found (page is probably paywalled)", scraper=type(self))
         self._parse_decklist_tag(decklist_tag)
 
 
@@ -109,13 +110,9 @@ class ScgDeckTagParser(TagBasedDeckParser):
 class ScgDeckScraper(DeckScraper):
     """Scraper of StarCityGames decklist page.
     """
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        self._deck_parser: ScgDeckTagParser | None = None
-
     @staticmethod
     @override
-    def is_deck_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         if "old.starcitygames.com/decks/" not in url.lower():
             return False
         url = url.removesuffix("/")
@@ -130,16 +127,13 @@ class ScgDeckScraper(DeckScraper):
         return strip_url_query(url)
 
     @override
-    def _pre_parse(self) -> None:
-        self._soup = getsoup(self.url)
-        if not self._soup:
-            raise ScrapingError("Page not available")
+    def _get_deck_parser(self) -> ScgDeckTagParser:
         deck_tag = self._soup.find("div", class_="deck_listing")
         if deck_tag is None:
             deck_tag = self._soup.find("div", class_="deck_listing2")
             if deck_tag is None:
-                raise ScrapingError("Deck data not found")
-        self._deck_parser = ScgDeckTagParser(deck_tag, self._metadata)
+                raise ScrapingError("Deck data not found", scraper=type(self))
+        return ScgDeckTagParser(deck_tag, self._metadata)
 
     @override
     def _parse_metadata(self) -> None:
@@ -169,7 +163,7 @@ class ScgEventScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         if "old.starcitygames.com/decks/" not in url.lower():
             return False
         url = url.removesuffix("/")
@@ -191,11 +185,12 @@ class ScgEventScraper(DeckUrlsContainerScraper):
     def _collect(self) -> list[str]:
         section_tag = self._soup.select_one("section#content")
         if not section_tag:
-            _log.warning(self._error_msg)
-            return []
+            raise ScrapingError("Section tag not found", scraper=type(self))
         deck_tags = [
             a_tag for a_tag in section_tag.find_all(
-                "a", href=lambda h: h and ScgDeckScraper.is_deck_url(h))]
+                "a", href=lambda h: h and ScgDeckScraper.is_valid_url(h))]
+        if not deck_tags:
+            raise ScrapingError("Deck tags not found", scraper=type(self))
         return [tag.attrs["href"] for tag in deck_tags if tag is not None]
 
 
@@ -206,7 +201,7 @@ class ScgPlayerScraper(ScgEventScraper):
     CONTAINER_NAME = "StarCityGames player"  # override
 
     @staticmethod
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return _is_player_url(url)
 
 
@@ -219,7 +214,7 @@ class ScgDatabaseScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "starcitygames.com/content/" in url.lower() and "-decks" in url.lower()
 
     @staticmethod
@@ -231,9 +226,10 @@ class ScgDatabaseScraper(DeckUrlsContainerScraper):
     def _collect(self) -> list[str]:
         db_div = self._soup.find("div", id="deck-database")
         if db_div is None:
-            _log.warning(self._error_msg)
-            return []
+            raise ScrapingError("Deck database tag not found", scraper=type(self))
         a_tags = [tag for tag in db_div.find_all("a", class_="dd-deck-link")]
+        if not a_tags:
+            raise ScrapingError("Deck tags not found", scraper=type(self))
         return [tag.attrs["href"].strip() for tag in a_tags]
 
 
@@ -283,7 +279,7 @@ class ScgArticleScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def is_container_url(url: str) -> bool:
+    def is_valid_url(url: str) -> bool:
         return "articles.starcitygames.com/" in url.lower() and "/author/" not in url.lower()
 
     @staticmethod
