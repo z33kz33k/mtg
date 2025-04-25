@@ -185,11 +185,12 @@ class ScgEventScraper(DeckUrlsContainerScraper):
     def _collect(self) -> list[str]:
         section_tag = self._soup.select_one("section#content")
         if not section_tag:
-            _log.warning(self._error_msg)
-            return []
+            raise ScrapingError("Section tag not found", scraper=type(self))
         deck_tags = [
             a_tag for a_tag in section_tag.find_all(
                 "a", href=lambda h: h and ScgDeckScraper.is_valid_url(h))]
+        if not deck_tags:
+            raise ScrapingError("Deck tags not found", scraper=type(self))
         return [tag.attrs["href"] for tag in deck_tags if tag is not None]
 
 
@@ -225,9 +226,10 @@ class ScgDatabaseScraper(DeckUrlsContainerScraper):
     def _collect(self) -> list[str]:
         db_div = self._soup.find("div", id="deck-database")
         if db_div is None:
-            _log.warning(self._error_msg)
-            return []
+            raise ScrapingError("Deck database tag not found", scraper=type(self))
         a_tags = [tag for tag in db_div.find_all("a", class_="dd-deck-link")]
+        if not a_tags:
+            raise ScrapingError("Deck tags not found", scraper=type(self))
         return [tag.attrs["href"].strip() for tag in a_tags]
 
 

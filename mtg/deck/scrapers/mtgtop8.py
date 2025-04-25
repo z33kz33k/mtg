@@ -121,4 +121,6 @@ class MtgTop8EventScraper(DeckUrlsContainerScraper):
         deck_urls = {}
         for a_tag in a_tags:
             deck_urls[a_tag.text] = a_tag.attrs["href"]
+        if not deck_urls:
+            raise ScrapingError("No decks found", scraper=type(self))
         return [*deck_urls.values()]

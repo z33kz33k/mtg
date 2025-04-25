@@ -12,7 +12,7 @@ from typing import override
 
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.utils import get_date_from_ago_text
-from mtg.utils.scrape import strip_url_query
+from mtg.utils.scrape import ScrapingError, strip_url_query
 
 _log = logging.getLogger(__name__)
 
@@ -103,4 +103,6 @@ class ManaStackUserScraper(DeckUrlsContainerScraper):
             tag for tag in
             [row.find("a", href=lambda h: h and h.lower().startswith("/deck/")) for row in rows]
             if tag is not None]
+        if not deck_tags:
+            raise ScrapingError("Deck tags not found", scraper=type(self))
         return [deck_tag["href"] for deck_tag in deck_tags]

@@ -57,7 +57,7 @@ class MtgStocksDeckScraper(DeckScraper):
     def _get_data_from_soup(self) -> Json:
         script_tag = self._soup.find("script", id="ng-state")
         if not script_tag:
-            raise ScrapingError("Data not available", scraper=type(self))
+            raise ScrapingError("<script> not found", scraper=type(self))
         data = json.loads(script_tag.text)
         deck_data = from_iterable(
             [v for v in data.values() if isinstance(v, dict)],

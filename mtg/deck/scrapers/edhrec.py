@@ -264,7 +264,8 @@ class EdhrecArticleScraper(HybridContainerScraper):
         links = get_links(self._soup)
         tokens = "/deckpreview/", "/average-decks/", "/commanders/"
         links = [
-            prepend_url(l, URL_PREFIX) if any(l.startswith(t) for t in tokens) else l for l in links]
+            prepend_url(l, URL_PREFIX) if any(
+                l.startswith(t) for t in tokens) else l for l in links]
         return self._sift_links(*links)
 
     @override

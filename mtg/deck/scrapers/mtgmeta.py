@@ -209,8 +209,7 @@ class MtgMetaIoArticleScraper(HybridContainerScraper):
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
         article_tag = self._soup.find("article")
         if not article_tag:
-            _log.warning("Article tag not found")
-            return [], [], [], []
+            raise ScrapingError("Article tag not found", scraper=type(self))
         deck_tags = [*article_tag.find_all("div", class_="decklist-container")]
         p_tags = [t for t in article_tag.find_all("p") if not t.find("div", class_="deck_list")]
         deck_urls, _ = self._get_links_from_tags(*p_tags)

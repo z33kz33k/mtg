@@ -15,7 +15,7 @@ import dateutil.parser
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper
 from mtg.scryfall import Card
-from mtg.utils.scrape import ScrapingError, dissect_js, getsoup
+from mtg.utils.scrape import ScrapingError, dissect_js
 
 _log = logging.getLogger(__name__)
 ALT_DOMAIN = "mtga.cc"

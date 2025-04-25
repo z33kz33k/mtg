@@ -109,4 +109,7 @@ class MtgVaultUserScraper(DeckUrlsContainerScraper):
                     deck_urls += get_links(
                         soup, href=lambda h: h and "/decks/" in h and "/search/" not in h)
 
+        if not deck_urls:
+            raise ScrapingError("No decks found", scraper=type(self))
+
         return deck_urls

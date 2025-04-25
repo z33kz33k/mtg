@@ -188,6 +188,8 @@ class GoldfishTournamentScraper(DeckUrlsContainerScraper):
     @override
     def _collect(self) -> list[str]:
         table_tag = self._soup.find("table", class_="table-tournament")
+        if not table_tag:
+            raise ScrapingError("Tournament table tag not found", scraper=type(self))
         deck_tags = table_tag.find_all("a", href=lambda h: h and "/deck/" in h)
         return [deck_tag.attrs["href"] for deck_tag in deck_tags]
 
@@ -210,6 +212,8 @@ class GoldfishPlayerScraper(DeckUrlsContainerScraper):
     @override
     def _collect(self) -> list[str]:
         table_tag = self._soup.find("table", class_=lambda c: c and "table-striped" in c)
+        if not table_tag:
+            raise ScrapingError("<table> tag not found", scraper=type(self))
         deck_tags = table_tag.find_all("a", href=lambda h: h and "/deck/" in h)
         return [deck_tag.attrs["href"] for deck_tag in deck_tags]
 
@@ -239,8 +243,7 @@ class GoldfishArticleScraper(HybridContainerScraper):
     def _collect_urls(self) -> tuple[list[str], list[str]]:
         main_tag = self._soup.find("div", class_="article-contents")
         if not main_tag:
-            _log.warning("Article tag not found")
-            return [], []
+            raise ScrapingError("Article tag not found", scraper=type(self))
 
         # filter out paragraphs that are covered by tag-based deck parser
         p_tags = [t for t in main_tag.find_all("p") if not t.find("div", class_="deck-container")]

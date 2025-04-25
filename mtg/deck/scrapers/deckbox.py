@@ -109,6 +109,8 @@ class DeckboxUserScraper(DeckUrlsContainerScraper):
     def _collect(self) -> list[str]:
         deck_tags = [
             tag for tag in self._soup.find_all("a", href=lambda h: h and "/sets/" in h)]
+        if not deck_tags:
+            raise ScrapingError("Deck tags not found", scraper=type(self))
         return sorted({tag.attrs["href"] for tag in deck_tags})
 
 
@@ -135,4 +137,6 @@ class DeckboxEventScraper(DeckUrlsContainerScraper):
         table_tag = self._soup.find("table", class_="simple_table")
         deck_tags = [
             tag for tag in table_tag.find_all("a", href=lambda h: h and "/sets/" in h)]
+        if not deck_tags:
+            raise ScrapingError("Deck tags not found", scraper=type(self))
         return [tag.attrs["href"] for tag in deck_tags]

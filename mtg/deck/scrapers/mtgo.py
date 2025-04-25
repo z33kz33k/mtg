@@ -207,12 +207,7 @@ class MtgoEventScraper(DecksJsonContainerScraper):
 
     @override
     def _collect(self) -> list[Json]:
-        try:
-            json_data = _get_json(self._soup, type(self))
-        except ScrapingError:
-            _log.warning(self._error_msg)
-            return []
-
+        json_data = _get_json(self._soup, type(self))
         decks_data = _get_decks_data(json_data)
         if rank_data := json_data.get("final_rank"):
             _process_ranks(rank_data, *decks_data)

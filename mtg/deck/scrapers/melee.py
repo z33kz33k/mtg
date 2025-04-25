@@ -17,7 +17,7 @@ from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.utils import from_iterable
-from mtg.utils.scrape import ScrapingError, get_links, getsoup
+from mtg.utils.scrape import ScrapingError, get_links
 
 _log = logging.getLogger(__name__)
 
@@ -119,9 +119,10 @@ class MeleeGgTournamentScraper(DeckUrlsContainerScraper):
     def _collect(self) -> list[str]:
         game_tag = self._soup.find("p", id="tournament-headline-game")
         if not game_tag.text.strip() == "Game: Magic: The Gathering":
-            _log.warning("Not a MtG tournament")
-            return []
+            raise ScrapingError("Not a MtG tournament", scraper=type(self))
         deck_tags = self._soup.find_all("a", href=lambda h: h and "/Decklist/View/" in h)
+        if not deck_tags:
+            raise ScrapingError("Deck tags not found", scraper=type(self))
         return [deck_tag.attrs["href"] for deck_tag in deck_tags]
 
 

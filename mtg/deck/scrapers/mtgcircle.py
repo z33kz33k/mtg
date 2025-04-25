@@ -211,7 +211,6 @@ class MtgCircleArticleScraper(HybridContainerScraper):
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
-        self._parse_metadata()
         decks_data = get_data(
             self._soup, type(self), retriever=self._retrieve_decks_data, start_pos=2)
         article_tag = self._soup.find("article")

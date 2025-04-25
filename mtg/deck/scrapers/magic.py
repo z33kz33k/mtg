@@ -228,7 +228,11 @@ class MagicGgEventScraper(DeckTagsContainerScraper):
 
     @override
     def _gather(self) -> Collected:
-        return self._collect()
+        try:
+            return self._collect()
+        except ScrapingError as e:
+            _log.error(f"Scraping failed with: {e!r}")
+            return []
 
     @override
     def _parse_metadata(self) -> None:
@@ -245,11 +249,9 @@ class MagicGgEventScraper(DeckTagsContainerScraper):
                     consent_xpath=MagicGgDeckScraper.SELENIUM_PARAMS["consent_xpath"])
                 deck_tags = [*self._soup.find_all("div", class_="css-3X0PN")]
                 if not deck_tags:
-                    _log.warning(self._error_msg)
-                    return []
+                    raise ScrapingError("Deck tags not found", scraper=type(self))
             except TimeoutException:
-                _log.warning(self._error_msg)
-                return []
+                raise ScrapingError(self._error_msg, scraper=type(self))
             self._parse_metadata()
         else:
             self.__class__.TAG_BASED_DECK_PARSER = MagicGgNewDeckTagParser

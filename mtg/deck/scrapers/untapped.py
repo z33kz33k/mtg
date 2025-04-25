@@ -194,4 +194,6 @@ class UntappedProfileScraper(DeckUrlsContainerScraper):
     def _collect(self) -> list[str]:
         a_tags = self._soup.find_all("a", href=lambda h: h and "/profile/" in h)
         a_tags = [a_tag for a_tag in a_tags if "deckbox" in a_tag.attrs["class"]]
+        if not a_tags:
+            raise ScrapingError("Deck tags not found", scraper=type(self))
         return [a_tag["href"] for a_tag in a_tags]

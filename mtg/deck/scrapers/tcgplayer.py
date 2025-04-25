@@ -18,7 +18,7 @@ from httpcore import ReadTimeout
 from requests import HTTPError
 from selenium.common import TimeoutException
 
-from mtg import Json
+from mtg import Json, SECRETS
 from mtg.deck import Deck
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, DecksJsonContainerScraper, \
     HybridContainerScraper, JsonBasedDeckParser
@@ -37,10 +37,32 @@ def get_source(src: str) -> str | None:
     return None
 
 
+HEADERS = {
+    "Host": "decks.tcgplayer.com",
+    "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:137.0) Gecko/20100101 Firefox/137.0",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.5",
+    "Accept-Encoding": "gzip, deflate, br, zstd",
+    "DNT": "1",
+    "Sec-GPC": "1",
+    "Connection": "keep-alive",
+    "Cookie": SECRETS["tcgplayer"]["cookie"],
+    "Upgrade-Insecure-Requests": "1",
+    "Sec-Fetch-Dest": "document",
+    "Sec-Fetch-Mode": "navigate",
+    "Sec-Fetch-Site": "none",
+    "Sec-Fetch-User": "?1",
+    "Priority": "u=0, i",
+    "TE": "trailers",
+}
+
+
 @DeckScraper.registered
 class TcgPlayerDeckScraper(DeckScraper):
     """Scraper of TCG Player (old-site) decklist page.
     """
+    HEADERS = HEADERS
+
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
@@ -94,6 +116,7 @@ class TcgPlayerDeckScraper(DeckScraper):
 class TcgPlayerPlayerScraper(DeckUrlsContainerScraper):
     """Scraper of TCG Player (old-site) player search page.
     """
+    HEADERS = HEADERS  # override
     CONTAINER_NAME = "TCGPlayer (old-site) player"  # override
     DECK_SCRAPERS = TcgPlayerDeckScraper,  # override
     DECK_URL_PREFIX = "https://decks.tcgplayer.com"  # override
@@ -108,6 +131,8 @@ class TcgPlayerPlayerScraper(DeckUrlsContainerScraper):
     def _collect(self) -> list[str]:
         deck_tags = self._soup.find_all(
             "a", href=lambda h: h and "/magic/" in h and "/magic/deck" not in h)
+        if not deck_tags:
+            raise ScrapingError("Deck tags not found", scraper=type(self))
         return [deck_tag.attrs["href"] for deck_tag in deck_tags]
 
 
@@ -381,6 +406,8 @@ class TcgPlayerInfiniteArticleScraper(DecksJsonContainerScraper):
     @override
     def _collect(self) -> list[Json]:
         div_tag = self._soup.find("div", class_="article-body")
+        if not div_tag:
+            raise ScrapingError("Article tag not found", scraper=type(self))
         deck_urls = [
             strip_url_query(t.attrs["href"]) for t in div_tag.find_all(
                 "a", href=lambda h: h and h.startswith(self._HOOK))]

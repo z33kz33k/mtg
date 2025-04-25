@@ -169,6 +169,8 @@ class TappedoutUserScraper(DeckUrlsContainerScraper):
             total = json_data["total_decks"]
             collected += [prepend_url(result["url"], URL_PREFIX) for result in json_data["results"]]
             page += 1
+        if not collected:
+            raise ScrapingError("Decks not found", scraper=type(self))
         return collected
 
 
@@ -245,4 +247,6 @@ class TappedoutUserFolderScraper(TappedoutUserScraper):
                 prepend_url(d["url"], URL_PREFIX) for folder in json_data["results"]
                 for d in folder["decks"]]
             page += 1
+        if not collected:
+            raise ScrapingError("Decks not found", scraper=type(self))
         return sorted(set(collected))

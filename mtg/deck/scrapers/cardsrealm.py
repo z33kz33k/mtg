@@ -23,7 +23,7 @@ from mtg import Json
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, \
     HybridContainerScraper
 from mtg.utils import timed
-from mtg.utils.scrape import dissect_js, strip_url_query
+from mtg.utils.scrape import ScrapingError, dissect_js, strip_url_query
 from mtg.utils.scrape.dynamic import SELENIUM_TIMEOUT, accept_consent
 
 _log = logging.getLogger(__name__)
@@ -126,6 +126,8 @@ class CardsrealmProfileScraper(DeckUrlsContainerScraper):
         deck_divs = [
             div for div in self._soup.find_all("div", class_=lambda c: c and "deck_div_all" in c)]
         deck_tags = [d.find("a", href=lambda h: h and "/decks/" in h) for d in deck_divs]
+        if not deck_tags:
+            raise ScrapingError("Deck tags not found", scraper=type(self))
         return [tag.attrs["href"] for tag in deck_tags]
 
 
@@ -185,6 +187,8 @@ class CardsrealmMetaTournamentScraper(DeckUrlsContainerScraper):
                 lambda t: t.name == "a"
                           and t.text.strip() == "Decklist"
                           and t.parent.name == "span")]
+        if not deck_tags:
+            raise ScrapingError("Deck tags not found", scraper=type(self))
         return sorted({tag.attrs["href"] for tag in deck_tags})
 
 
@@ -247,6 +251,8 @@ class CardsrealmRegularTournamentScraper(DeckUrlsContainerScraper):
         deck_divs = [
             div for div in self._soup.find_all("div", class_=lambda c: c and "mainDeck" in c)]
         deck_tags = [d.find("a", href=lambda h: h and "/decks/" in h) for d in deck_divs]
+        if not deck_tags:
+            raise ScrapingError("Deck tags not found", scraper=type(self))
         return [tag.attrs["href"] for tag in deck_tags if tag is not None]
 
 
@@ -277,7 +283,6 @@ class CardsrealmArticleScraper(HybridContainerScraper):
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
         article_tag = self._soup.find("div", id="article_div_all")
         if article_tag is None:
-            _log.warning(self._error_msg)
-            return [], [], [], []
+            raise ScrapingError("Article tag not found", scraper=type(self))
         deck_links, container_links = self._get_links_from_tags(article_tag, url_prefix=URL_PREFIX)
         return deck_links, [], [], container_links

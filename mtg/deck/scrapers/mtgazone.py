@@ -151,8 +151,7 @@ class MtgaZoneArticleScraper(HybridContainerScraper):
     def _collect_urls(self) -> tuple[list[str], list[str]]:
         article_tag = self._soup.find("article")
         if not article_tag:
-            _log.warning("Article tag not found")
-            return [], []
+            raise ScrapingError("Article tag not found", scraper=type(self))
 
         # filter out paragraphs that are covered by tag-based deck parser
         p_tags = [

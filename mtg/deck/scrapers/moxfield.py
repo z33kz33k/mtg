@@ -162,7 +162,7 @@ class MoxfieldUserScraper(DeckUrlsContainerScraper):
         return get_selenium_json(self.API_URL_TEMPLATE.format(last))
 
     def _validate_data(self) -> None:
-        if self._data or not self._data.get("data"):
+        if not self._data or not self._data.get("data"):
             raise ScrapingError("Data not available", scraper=type(self))
 
     @override
@@ -213,11 +213,9 @@ class MoxfieldSearchScraper(DeckUrlsContainerScraper):
     def _collect(self) -> list[str]:
         filter_ = self._get_filter()
         if not filter_:
-            _log.warning(self._error_msg)
-            return []
+            raise ScrapingError("API URL 'filter' parameter not found", scraper=type(self))
         api_url = self.API_URL_TEMPLATE.format(filter_)
         json_data = get_selenium_json(api_url)
         if not json_data or not json_data.get("data"):
-            _log.warning(self._error_msg)
-            return []
+            raise ScrapingError("Data not available", scraper=type(self))
         return [d["publicUrl"] for d in json_data["data"]]

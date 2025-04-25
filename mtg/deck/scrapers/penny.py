@@ -183,10 +183,8 @@ class PennyDreadfulMagicUserScraper(DeckUrlsContainerScraper):
         if ids := self._get_ids():
             season_id, user_id = ids
         else:
-            _log.warning(self._error_msg)
-            return []
+            raise ScrapingError("API URL params not found", scraper=type(self))
         json_data = request_json(self.API_URL_TEMPLATE.format(user_id, season_id))
         if not json_data or not json_data.get("objects"):
-            _log.warning(self._error_msg)
-            return []
+            raise ScrapingError("Data not available", scraper=type(self))
         return [d["url"] for d in json_data["objects"]]

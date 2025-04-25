@@ -201,8 +201,7 @@ class DraftsimAuthorScraper(HybridContainerScraper):
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
         content_tag = self._soup.select_one("div.content")
         if not content_tag:
-            _log.warning("Content tag not found")
-            return [], [], [], []
+            raise ScrapingError("Content tag not found", scraper=type(self))
         h3_tags = [t for t in content_tag.select("h3.post_title")]
         _, container_urls = self._get_links_from_tags(*h3_tags)
         return [], [], [], container_urls

@@ -126,6 +126,8 @@ class MagicVilleEventScraper(DeckUrlsContainerScraper):
     @override
     def _collect(self) -> list[str]:
         deck_tags = self._soup.find_all("a", href=lambda h: h and "showdeck?ref=" in h)
+        if not deck_tags:
+            raise ScrapingError("Deck tags not found", scraper=type(self))
         return [deck_tag.attrs["href"] for deck_tag in deck_tags]
 
 
@@ -145,4 +147,6 @@ class MagicVilleUserScraper(DeckUrlsContainerScraper):
     @override
     def _collect(self) -> list[str]:
         deck_tags = self._soup.find_all("a", href=lambda h: h and "/decks/showdeck.php?ref=" in h)
+        if not deck_tags:
+            raise ScrapingError("Deck tags not found", scraper=type(self))
         return [deck_tag.attrs["href"].removeprefix("../") for deck_tag in deck_tags]

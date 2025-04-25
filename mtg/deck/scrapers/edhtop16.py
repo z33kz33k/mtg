@@ -16,6 +16,7 @@ from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckUrlsContainerScraper
 from mtg.deck.scrapers.topdeck import check_unexpected_urls
+from mtg.utils.scrape import ScrapingError
 
 _log = logging.getLogger(__name__)
 
@@ -79,8 +80,7 @@ class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
     def _collect(self) -> list[str]:
         script_tag = self._soup.find("script", id="__NEXT_DATA__")
         if not script_tag:
-            _log.warning(self._error_msg)
-            return []
+            raise ScrapingError("<script> tag not found", scraper=type(self))
 
         data = json.loads(script_tag.text)
         deck_urls = self._process_data(data)

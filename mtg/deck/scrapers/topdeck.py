@@ -11,7 +11,7 @@ import logging
 from typing import Type, override
 
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
-from mtg.utils.scrape import strip_url_query
+from mtg.utils.scrape import ScrapingError, strip_url_query
 
 _log = logging.getLogger(__name__)
 
@@ -56,6 +56,8 @@ class TopDeckBracketScraper(DeckUrlsContainerScraper):
     @override
     def _collect(self) -> list[str]:
         deck_tags = self._soup.find_all("a", string="Decklist")
+        if not deck_tags:
+            raise ScrapingError("Decklist tags not found", scraper=type(self))
         deck_urls = [t["href"] for t in deck_tags]
         check_unexpected_urls(deck_urls, *self._get_deck_scrapers())
         return deck_urls
@@ -86,6 +88,8 @@ class TopDeckProfileScraper(DeckUrlsContainerScraper):
         deck_tags = self._soup.find_all(
             "a", class_=lambda c: c and "btn" in c and "btn-sm" in c,
             href=lambda h: h and "topdeck.gg" not in h)
+        if not deck_tags:
+            raise ScrapingError("Decklist tags not found", scraper=type(self))
         deck_urls = [t["href"] for t in deck_tags]
         check_unexpected_urls(deck_urls, *self._get_deck_scrapers())
         return deck_urls

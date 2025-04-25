@@ -103,9 +103,9 @@ class DeckScraper(DeckParser):
     object (if able).
     """
     _REGISTRY: set[Type[Self]] = set()
+    SELENIUM_PARAMS = {}
     THROTTLING = Throttling(0.6, 0.15)
     API_URL_TEMPLATE = ""
-    SELENIUM_PARAMS = {}
     HEADERS = None
     DATA_FROM_SOUP = False
 
@@ -387,7 +387,8 @@ class DeckUrlsContainerScraper(ContainerScraper):
     def _process_deck_urls(self) -> list[Deck]:
         decks = []
         for i, deck_url in enumerate(self._deck_urls, start=1):
-            if self.url in deck_url:
+            if deck_url in (self.url, self.url + "/"):
+                _log.warning("Scraping container URL as deck URL detected. Skipping...")
                 continue  # avoid scraping self in infinite loop
             scraper = self._dispatch_deck_scraper(deck_url, self._metadata)
             if not scraper:

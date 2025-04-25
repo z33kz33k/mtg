@@ -92,5 +92,7 @@ class ManatradersUserScraper(DeckUrlsContainerScraper):
     def _collect(self) -> list[str]:
         deck_tags = [
             tag for tag in self._soup.find_all("a", href=lambda h: h and "/webshop/deck/" in h)]
+        if not deck_tags:
+            raise ScrapingError("Deck tags not found", scraper=type(self))
         urls = {tag.attrs["href"] for tag in deck_tags}
         return [strip_url_query(prepend_url(url, URL_PREFIX)) for url in sorted(urls)]

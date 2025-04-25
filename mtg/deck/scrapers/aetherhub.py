@@ -290,6 +290,8 @@ class AetherhubEventScraper(DeckUrlsContainerScraper):
     @override
     def _collect(self) -> list[str]:
         rows = self._soup.find_all("tr", class_="deckdata")
+        if not rows:
+            raise ScrapingError("Row tags not found", scraper=type(self))
         deck_tags = []
         for row in rows:
             _, deck_tag, *_ = row.find_all("td")
@@ -319,7 +321,6 @@ class AetherhubArticleScraper(HybridContainerScraper):
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
         article_tag = self._soup.find("div", id="article-text")
         if article_tag is None:
-            _log.error(self._error_msg)
-            return [], [], [], []
+            raise ScrapingError("Article tag not found", scraper=type(self))
         deck_links, container_links = self._get_links_from_tags(article_tag, url_prefix=URL_PREFIX)
         return deck_links, [], [], container_links

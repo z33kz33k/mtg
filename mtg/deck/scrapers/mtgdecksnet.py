@@ -106,7 +106,7 @@ class MtgDecksNetDeckScraper(DeckScraper):
     def _get_deck_parser(self) -> MtgDecksNetDeckTagParser:
         deck_tag = self._soup.select_one("div.deck.shadow")
         if deck_tag is None:
-            raise ScrapingError("Deck data not found", scraper=type(self))
+            raise ScrapingError("Deck tag not found", scraper=type(self))
         return MtgDecksNetDeckTagParser(deck_tag, self._metadata)
 
     @override
@@ -154,6 +154,8 @@ class MtgDecksNetTournamentScraper(DeckUrlsContainerScraper):
     def _collect(self) -> list[str]:
         deck_tags = [
             tag for tag in self._soup.find_all("a", href=lambda h: h and "-decklist-" in h)]
+        if not deck_tags:
+            raise ScrapingError("Deck tags not found", scraper=type(self))
         return [deck_tag.attrs["href"] for deck_tag in deck_tags]
 
 
@@ -186,8 +188,7 @@ class MtgDecksNetArticleScraper(HybridContainerScraper):
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
-    @override
-    def _parse_metadata(self) -> None:
+    def _parse_article_metadata(self) -> None:
         if title_tag := self._article_tag.find("h1"):
             if fmt := self.derive_format_from_text(title_tag.text):
                 self._update_fmt(fmt)
@@ -207,6 +208,6 @@ class MtgDecksNetArticleScraper(HybridContainerScraper):
         if not self._article_tag:
             _log.warning("Article tag not found")
             return [], deck_tags, [], []
-        self._parse_metadata()
+        self._parse_article_metadata()
         deck_urls, container_urls = self._get_links_from_tags(*self._article_tag.find_all("p"))
         return deck_urls, deck_tags, [], container_urls

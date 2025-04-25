@@ -146,4 +146,6 @@ class LigaMagicEventScraper(DeckUrlsContainerScraper):
     @override
     def _collect(self) -> list[str]:
         deck_tags = [tag.find("a") for tag in self._soup.find_all("div", class_="deckname")]
+        if not deck_tags:
+            raise ScrapingError("Deck tags not found", scraper=type(self))
         return [tag.attrs["href"].removeprefix(".") for tag in deck_tags]

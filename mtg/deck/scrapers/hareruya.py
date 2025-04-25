@@ -16,7 +16,7 @@ from bs4 import NavigableString
 from mtg import Json, SECRETS
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.deck.scrapers.goldfish import HEADERS as GOLDFISH_HEADERS
-from mtg.utils.scrape import ScrapingError, request_json
+from mtg.utils.scrape import request_json
 
 _log = logging.getLogger(__name__)
 
