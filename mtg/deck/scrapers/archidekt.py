@@ -111,7 +111,7 @@ class ArchidektFolderScraper(DeckUrlsContainerScraper):
 
     @override
     def _collect(self) -> list[str]:
-        return get_links(self._soup, css_selector="a[class*='deck_link__']", url_prefix=URL_PREFIX)
+        return get_links(self._soup, css_selector='a[href*="/decks/"]', url_prefix=URL_PREFIX)
 
 
 @DeckUrlsContainerScraper.registered
