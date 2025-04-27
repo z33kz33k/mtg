@@ -23,7 +23,7 @@ from contexttimer import Timer
 from dateutil.relativedelta import relativedelta
 from lingua import Language, LanguageDetectorBuilder
 
-from mtg import FILENAME_TIMESTAMP_FORMAT, READABLE_TIMESTAMP_FORMAT
+from mtg import FILENAME_TIMESTAMP_FORMAT
 from mtg.utils.check_type import type_checker, uniform_type_checker
 
 _log = logging.getLogger(__name__)
@@ -84,6 +84,7 @@ def getrepr(class_: Type, *name_value_pairs: tuple[str, Any]) -> str:
 def extract_float(text: str) -> float:
     """Extract floating point number from text.
     """
+
     num = "".join([char for char in text if char.isdigit() or char in ",."])
     if not num:
         raise ParsingError(f"No digits or decimal point in text: {text!r}")
@@ -282,36 +283,6 @@ class ParsingError(ValueError):
     """
 
 
-def serialize_dates(obj: Any) -> str:
-    """Custom serializer for dates.
-
-    To be used with json.dump() as ``default`` parameter.
-    """
-    if isinstance(obj, datetime):
-        return obj.strftime(READABLE_TIMESTAMP_FORMAT)
-    elif isinstance(obj, date):
-        return obj.isoformat()
-    raise TypeError(f"Type {type(obj)} not serializable")
-
-
-def deserialize_dates(dct: dict) -> dict:
-    """Custom deserializer for dates.
-
-    To be used with json.load() as ``object_hook`` parameter.
-    """
-    for key, value in dct.items():
-        if isinstance(value, str):
-            # try to parse as datetime
-            try:
-                dct[key] = datetime.strptime(value, READABLE_TIMESTAMP_FORMAT)
-            except ValueError:
-                # if it fails, try to parse as date
-                with contextlib.suppress(ValueError):
-                    # leave it as a string if both parsing attempts fail
-                    dct[key] = date.fromisoformat(value)
-    return dct
-
-
 def multiply_by_symbol(number: float, symbol: str) -> int:
     """Multiply ``number`` by ``symbol`` and return it.
     """
@@ -507,58 +478,7 @@ def logging_disabled(level: int = logging.CRITICAL) -> Generator[None, None, Non
 
 
 # recursive
-def find_text_in_json(
-        data: dict | list, text: str, paths: list[str] | None = None, path="") -> list[str]:
-    """Find ``text`` in JSON ``data`` provided. Return a list of found paths rendered as Python
-    subscript strings.
-    """
-    paths = paths or []
-    if isinstance(data, dict):
-        for k, v in data.items():
-            suffix = f'["{k}"]'
-            path += suffix
-            if isinstance(v, str) and text in v:
-                paths.append(path)
-            elif isinstance(v, (dict, list)):
-                paths = find_text_in_json(v, text, paths, path)
-            path = path[:-len(suffix)]
-    elif isinstance(data, list):
-        for i, v in enumerate(data):
-            suffix = f"[{str(i)}]"
-            path += suffix
-            if isinstance(v, str) and text in v:
-                paths.append(path)
-            elif isinstance(v, (dict, list)):
-                paths = find_text_in_json(v, text, paths, path)
-            path = path[:-len(suffix)]
-    return paths
 
 
 # recursive
-def find_num_in_json(
-        data: dict | list, num: int | float, paths: list[str] | None = None,
-        path="") -> list[str]:
-    """Find passed number in JSON ``data`` provided. Return a list of found paths rendered as Python
-    subscript strings.
-    """
-    paths = paths or []
-    if isinstance(data, dict):
-        for k, v in data.items():
-            suffix = f'["{k}"]'
-            path += suffix
-            if isinstance(v, (int, float)) and v == num:
-                paths.append(path)
-            elif isinstance(v, (dict, list)):
-                paths = find_num_in_json(v, num, paths, path)
-            path = path[:-len(suffix)]
-    elif isinstance(data, list):
-        for i, v in enumerate(data):
-            suffix = f"[{str(i)}]"
-            path += suffix
-            if isinstance(v, (int, float)) and v == num:
-                paths.append(path)
-            elif isinstance(v, (dict, list)):
-                paths = find_num_in_json(v, num, paths, path)
-            path = path[:-len(suffix)]
-    return paths
 

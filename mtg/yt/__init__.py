@@ -29,7 +29,7 @@ import pytubefix
 import pytubefix.exceptions
 import scrapetube
 from bs4 import Tag
-from requests import HTTPError, ReadTimeout, Timeout, ConnectionError
+from requests import ConnectionError, HTTPError, ReadTimeout, Timeout
 from selenium.common.exceptions import TimeoutException
 from tqdm import tqdm
 from youtube_comment_downloader import SORT_BY_POPULAR, YoutubeCommentDownloader
@@ -38,20 +38,21 @@ from youtubesearchpython import Channel as YtspChannel
 from mtg import FILENAME_TIMESTAMP_FORMAT, Json, OUTPUT_DIR, PathLike, SECRETS
 from mtg.deck import Deck, SANITIZED_FORMATS
 from mtg.deck.arena import ArenaParser, get_arena_lines, group_arena_lines
-from mtg.deck.scrapers import DeckScraper, DeckTagsContainerScraper, DeckUrlsContainerScraper, \
-    DecksJsonContainerScraper, HybridContainerScraper, DeckParser
+from mtg.deck.scrapers import DeckParser, DeckScraper, DeckTagsContainerScraper, \
+    DeckUrlsContainerScraper, DecksJsonContainerScraper, HybridContainerScraper
 from mtg.gstate import CoolOffManager, DecklistsStateManager, UrlsStateManager
 from mtg.scryfall import all_formats
-from mtg.utils import Counter, deserialize_dates, extract_float, find_longest_seqs, \
-    from_iterable, getrepr, logging_disabled, multiply_by_symbol, serialize_dates, timed
+from mtg.utils import extract_float, find_longest_seqs, \
+    from_iterable, getrepr, logging_disabled, multiply_by_symbol, timed
+from mtg.utils.json import deserialize_dates, serialize_dates
 from mtg.utils.files import getdir, sanitize_filename
 from mtg.utils.scrape import ScrapingError, dissect_js, extract_source, extract_url, \
     http_requests_counted, throttled, timed_request, unshorten
 from mtg.utils.scrape.dynamic import get_dynamic_soup
 from mtg.utils.scrape.linktree import Linktree
-from mtg.yt.data import CHANNELS_DIR, CHANNEL_URL_TEMPLATE, ChannelData, DataPath, \
-    ScrapingSession, VIDEO_URL_TEMPLATE, find_channel_files, find_orphans, retrieve_video_data, \
-    load_channel, load_channels, prune_channel_data_file, retrieve_ids, sanitize_source
+from mtg.yt.data import CHANNELS_DIR, CHANNEL_URL_TEMPLATE, ChannelData, DataPath, ScrapingSession, \
+    VIDEO_URL_TEMPLATE, find_channel_files, find_orphans, load_channel, load_channels, \
+    prune_channel_data_file, retrieve_ids, retrieve_video_data, sanitize_source
 
 _log = logging.getLogger(__name__)
 
@@ -165,7 +166,7 @@ def scrape_channel_videos(channel_id: str, *video_ids: str) -> bool:
             dst = getdir(CHANNELS_DIR / channel_id)
             ch.dump(dst)
     except Exception as err:
-        _log.exception(f"Scraping of channel {channel_id!r} failed with: {err!r}")
+        _log.error(f"Scraping of channel {channel_id!r} failed with: {err!r}")
         return False
 
     return True
@@ -198,7 +199,7 @@ def scrape_channels(
                     dst = getdir(CHANNELS_DIR / id_)
                     ch.dump(dst)
             except Exception as err:
-                _log.exception(f"Scraping of channel {id_!r} failed with: {err!r}. Skipping...")
+                _log.error(f"Scraping of channel {id_!r} failed with: {err!r}. Skipping...")
 
 
 def scrape_fresh(

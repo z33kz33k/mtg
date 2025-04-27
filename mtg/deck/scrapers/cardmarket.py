@@ -172,7 +172,8 @@ class CardmarketArticleScraper(HybridContainerScraper):
             if t.find("hoverable-card")]
         article_tag = self._soup.find("article")
         if not article_tag:
-            _log.warning("Article tag not found")
+            err = ScrapingError("Article tag not found", scraper=type(self), url=self.url)
+            _log.warning(f"Scraping failed with: {err!r}")
             return [], deck_tags, [], []
         deck_urls, _ = self._get_links_from_tags(*article_tag.find_all("p"))
         return deck_urls, deck_tags, [], []

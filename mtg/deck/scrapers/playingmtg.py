@@ -212,7 +212,8 @@ class PlayingMtgArticleScraper(HybridContainerScraper):
 
         article_tag = self._soup.find("article")
         if not article_tag:
-            _log.warning("Article tag not found")
+            err = ScrapingError("Article tag not found", scraper=type(self), url=self.url)
+            _log.warning(f"Scraping failed with: {err!r}")
             return deck_urls, [], [], []
 
         p_deck_urls, container_urls = self._get_links_from_tags(*article_tag.find_all("p"))

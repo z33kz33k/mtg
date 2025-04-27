@@ -232,7 +232,7 @@ class MagicGgEventScraper(DeckTagsContainerScraper):
         try:
             return self._collect()
         except ScrapingError as e:
-            _log.error(f"Scraping failed with: {e!r}")
+            _log.warning(f"Scraping failed with: {e!r}")
             return []
 
     @override

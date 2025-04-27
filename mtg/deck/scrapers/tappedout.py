@@ -165,7 +165,8 @@ class TappedoutUserScraper(DeckUrlsContainerScraper):
             json_data = request_json(self.API_URL_TEMPLATE.format(username, page))
             if not json_data or not json_data.get("results") or not json_data.get("total_decks"):
                 if not collected:
-                    _log.warning(self._error_msg)
+                    err = ScrapingError(self._error_msg, scraper=type(self), url=self.url)
+                    _log.warning(f"Scraping failed with: {err!r}")
                 break
             total = json_data["total_decks"]
             collected += [prepend_url(result["url"], URL_PREFIX) for result in json_data["results"]]
@@ -241,7 +242,8 @@ class TappedoutUserFolderScraper(TappedoutUserScraper):
             json_data = request_json(self.API_URL_TEMPLATE.format(username, page))
             if not json_data or not json_data.get("results"):
                 if not collected:
-                    _log.warning("User folder data not available")
+                    err = ScrapingError(self._error_msg, scraper=type(self), url=self.url)
+                    _log.warning(f"Scraping failed with: {err!r}")
                 break
             has_next = json_data.get("hasNext", False)
             collected += [

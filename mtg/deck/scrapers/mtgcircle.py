@@ -19,6 +19,7 @@ from mtg.deck import Deck
 from mtg.deck.scrapers import DeckScraper, HybridContainerScraper, JsonBasedDeckParser
 from mtg.scryfall import Card, all_formats
 from mtg.utils import from_iterable
+from mtg.utils.json import Node
 from mtg.utils.scrape import ScrapingError, dissect_js
 
 _log = logging.getLogger(__name__)
@@ -82,7 +83,7 @@ class MtgCircleDeckJsonParser(JsonBasedDeckParser):
 
 
 def get_data(
-        soup: BeautifulSoup, scraper: Type[DeckScraper] | Type[HybridContainerScraper],
+        soup: BeautifulSoup, scraper: Type[DeckScraper] | Type[HybridContainerScraper], url: str,
         retriever: Callable[[Json], Json], start_pos=3) -> Json:
     try:
         tokens = "cards", "deckPos", "mainDeck", "name", "quantity"
@@ -92,7 +93,7 @@ def get_data(
         data = json.loads(js_data[1][start_pos:])
         return retriever(data)
     except (AttributeError, KeyError):
-        raise ScrapingError("Deck data not available", scraper=scraper)
+        raise ScrapingError("Deck data not available", scraper=scraper, url=url)
 
 
 @DeckScraper.registered
@@ -115,16 +116,19 @@ class MtgCircleVideoDeckScraper(DeckScraper):
             return False
         return True
 
-    # TODO: naive approach won't cut it as they change the structure all the time - a generic
-    #  retriever from structured data is needed that would accept the structure and a predicate
-    #  on item that is looked for (#328)
-    @staticmethod
-    def _retrieve_deck_data(data: Json) -> Json:
-        return data[1][3]["children"][3]["children"][2][3]["children"][0][3]["deck"]
+    def _retrieve_deck_data(self, data: Json) -> Json:
+        node = Node(data)
+        decks = [*node.find_all(
+            lambda n: "deck" in n.name and isinstance(n.data, dict) and "cards" in n.data)]
+        if not decks:
+            raise ScrapingError("Deck data not available", scraper=type(self), url=self.url)
+        # sort to return the deck with the most cards (not an opponent's one)
+        decks.sort(key=lambda n: sum(card["quantity"] for card in n.data["cards"]))
+        return decks[-1].data
 
     @override
     def _get_data_from_soup(self) -> Json:
-        return get_data(self._soup, type(self), self._retrieve_deck_data)
+        return get_data(self._soup, type(self), self.url, self._retrieve_deck_data)
 
     def _get_deck_parser(self) -> MtgCircleDeckJsonParser:
         return MtgCircleDeckJsonParser(self._data, self._metadata)
@@ -163,10 +167,15 @@ class MtgCircleRegularDeckScraper(MtgCircleVideoDeckScraper):
             return False
         return True
 
-    @staticmethod
     @override
-    def _retrieve_deck_data(data) -> Json:
-        return data[1][3]["children"][3]["children"][1][3]["deck"]
+    def _retrieve_deck_data(self, data: Json) -> Json:
+        node = Node(data)
+        deck = node.find(
+            lambda n: isinstance(n.data, dict) and "cards" in n.data
+                      and "variations" in n.parent.name )
+        if deck is None:
+            raise ScrapingError("Deck data not available", scraper=type(self), url=self.url)
+        return deck.data
 
 
 @HybridContainerScraper.registered
@@ -181,10 +190,15 @@ class MtgCircleArticleScraper(HybridContainerScraper):
     def is_valid_url(url: str) -> bool:
         return "mtgcircle.com/articles/" in url.lower()
 
-    @staticmethod
-    def _retrieve_date_data(data: Json) -> Json:
-        return data[2][3]["children"][0][3]["children"][0][2][3]["children"][1][3]["children"][3][
-            "children"][3]["children"][3]
+    def _retrieve_date_data(self, data: Json) -> Json:
+        node = Node(data)
+        dates = [*node.find_all(
+            lambda n: isinstance(n.data, dict) and "date" in n.data and "userContent" in n.data)]
+        if not dates:
+            raise ScrapingError("Date data not available", scraper=type(self), url=self.url)
+        # sort to not return an update date (the most recent) instead of creation date
+        dates.sort(key=lambda n: n.data["date"])
+        return dates[0].data
 
     @override
     def _parse_metadata(self) -> None:
@@ -195,27 +209,23 @@ class MtgCircleArticleScraper(HybridContainerScraper):
         self._update_fmt(fmt_tag.text.strip())
         self._metadata["article_tags"] = [t.text.strip().lower() for t in info_tags]
         date_data = get_data(
-            self._soup, type(self), retriever=self._retrieve_date_data, start_pos=2)
+            self._soup, type(self), self.url, retriever=self._retrieve_date_data, start_pos=2)
         self._metadata["date"] = datetime.fromtimestamp(date_data["date"] / 1000, UTC).date()
 
     @staticmethod
     def _retrieve_decks_data(data: Json) -> list[Json]:
-        decks_data = []
-        lst = data[2][3]["children"][0][3]["children"][1][3]["children"][1]
-        for d in lst:
-            try:
-                decks_data.append(d[3]["children"][3]["children"][3]["deck"])
-            except (KeyError, IndexError, TypeError):
-                pass
-        return decks_data
+        node = Node(data)
+        return [d.data for d in node.find_all(
+            lambda n: isinstance(n.data, dict) and "cards" in n.data and "deckId" in n.data)]
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
         decks_data = get_data(
-            self._soup, type(self), retriever=self._retrieve_decks_data, start_pos=2)
+            self._soup, type(self), self.url, retriever=self._retrieve_decks_data, start_pos=2)
         article_tag = self._soup.find("article")
         if not article_tag:
-            _log.warning("Article tag not found")
+            err = ScrapingError("Article tag not found", scraper=type(self), url=self.url)
+            _log.warning(f"Scraping failed with: {err!r}")
             return [], [], decks_data, []
         deck_urls, _ = self._get_links_from_tags(*article_tag.find_all("p"))
         return deck_urls, [], decks_data, []

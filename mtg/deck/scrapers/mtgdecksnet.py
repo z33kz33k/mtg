@@ -206,7 +206,8 @@ class MtgDecksNetArticleScraper(HybridContainerScraper):
             t for t in self._soup.select("div.framed") if t.select_one("textarea#arena_deck")]
         self._article_tag = self._soup.select_one("div#articleBody")
         if not self._article_tag:
-            _log.warning("Article tag not found")
+            err = ScrapingError("Article tag not found", scraper=type(self), url=self.url)
+            _log.warning(f"Scraping failed with: {err!r}")
             return [], deck_tags, [], []
         self._parse_article_metadata()
         deck_urls, container_urls = self._get_links_from_tags(*self._article_tag.find_all("p"))

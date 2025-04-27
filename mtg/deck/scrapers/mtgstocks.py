@@ -108,7 +108,8 @@ class MtgStocksArticleScraper(DeckUrlsContainerScraper):
     def _collect_other_urls(self) -> list[str]:
         article_tag = self._soup.find("article")
         if not article_tag:
-            _log.warning("Article tag not found")
+            err = ScrapingError("Article tag not found", scraper=type(self), url=self.url)
+            _log.warning(f"Scraping failed with: {err!r}")
             return []
         links = get_links(article_tag)
         return [l for l in links if any(ds.is_valid_url(l) for ds in self._get_deck_scrapers())]

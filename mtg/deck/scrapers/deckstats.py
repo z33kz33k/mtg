@@ -216,7 +216,8 @@ class DeckstatsUserScraper(DeckUrlsContainerScraper):
                 break
             if not json_data or not json_data.get("folder") or not json_data["folder"].get("decks"):
                 if not collected:
-                    _log.warning(self._error_msg)
+                    err = ScrapingError(self._error_msg, scraper=type(self), url=self.url)
+                    _log.warning(f"Scraping failed with: {err!r}")
                 break
             total = json_data["folder"]["decks_total"]
             collected += [f'https:{d["url_neutral"]}' for d in json_data["folder"]["decks"]]

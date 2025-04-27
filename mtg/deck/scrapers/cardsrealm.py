@@ -234,12 +234,14 @@ class CardsrealmRegularTournamentScraper(DeckUrlsContainerScraper):
                 return BeautifulSoup(driver.page_source, "lxml")
 
             except ElementClickInterceptedException:
-                _log.warning(
-                    f"Selenium click intercepted by a pop-up. Not all decklists gathered")
+                msg = "Selenium click intercepted by a pop-up. Not all decklists gathered"
+                err = ScrapingError(msg, scraper=type(self), url=self.url)
+                _log.warning(f"Scraping failed with: {err!r}")
                 return BeautifulSoup(driver.page_source, "lxml")
 
             except TimeoutException:
-                _log.warning(f"Selenium timed out during tournament scraping")
+                err = ScrapingError(self._selenium_timeout_msg, scraper=type(self), url=self.url)
+                _log.warning(f"Scraping failed with: {err!r}")
                 return BeautifulSoup(driver.page_source, "lxml")
 
     @override

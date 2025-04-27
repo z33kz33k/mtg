@@ -196,15 +196,12 @@ class MoxfieldSearchScraper(DeckUrlsContainerScraper):
         try:
             soup, _, _ = get_dynamic_soup(self.url, self.SELENIUM_PARAMS["xpath"])
             if not soup:
-                _log.warning(self._error_msg)
                 return None
         except TimeoutException:
-            _log.warning(self._error_msg)
             return None
 
         input_tag = soup.find("input", id="filter")
         if not input_tag:
-            _log.warning(self._error_msg)
             return None
 
         return input_tag.attrs["value"]
@@ -213,7 +210,8 @@ class MoxfieldSearchScraper(DeckUrlsContainerScraper):
     def _collect(self) -> list[str]:
         filter_ = self._get_filter()
         if not filter_:
-            raise ScrapingError("API URL 'filter' parameter not found", scraper=type(self), url=self.url)
+            raise ScrapingError(
+                "API URL 'filter' parameter not found", scraper=type(self), url=self.url)
         api_url = self.API_URL_TEMPLATE.format(filter_)
         json_data = get_selenium_json(api_url)
         if not json_data or not json_data.get("data"):

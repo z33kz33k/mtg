@@ -293,7 +293,8 @@ class ScgArticleScraper(HybridContainerScraper):
         deck_tags = self._soup.find_all("div", class_="deck_listing")
         article_tag = self._soup.find("article", {"data-template": "post-content"})
         if article_tag is None:
-            _log.warning("Article tag not found")
+            err = ScrapingError("Article tag not found", scraper=type(self), url=self.url)
+            _log.warning(f"Scraping failed with: {err!r}")
             return [], deck_tags, [], []
         p_tags = [t for t in article_tag.find_all("p") if not t.find("div", class_="deck_listing")]
         deck_urls, article_urls = self._get_links_from_tags(*p_tags)

@@ -10,18 +10,19 @@
 import json
 import logging
 import os
+from datetime import date, datetime
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
-from typing import Any
+from typing import Dict, List, Union
 
 __appname__ = __name__
-__version__ = "0.7"
+__version__ = "0.8"
 __description__ = "Scrape data on MtG decks."
 __author__ = "z33k"
 __license__ = "MIT License"
 
 # type aliases
-type Json = dict[str, Any] | list[dict[str, Any]]
+type Json = Union[str, int, float, bool, datetime, date, None, Dict[str, "Json"], List["Json"]]
 type PathLike = str | Path
 
 

@@ -119,7 +119,8 @@ class MagicBlogsArticleScraper(HybridContainerScraper):
         deck_tags = [*self._soup.find_all("div", class_="mtgh")]
         main_tag = self._soup.find("section", class_="content")
         if not main_tag:
-            _log.warning("Article tag not found")
+            err = ScrapingError("Article tag not found", scraper=type(self), url=self.url)
+            _log.warning(f"Scraping failed with: {err!r}")
             return [], deck_tags, [], []
         deck_urls, _ = self._get_links_from_tags(*main_tag.find_all("p"))
         return deck_urls, deck_tags, [], []

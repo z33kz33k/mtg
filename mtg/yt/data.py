@@ -27,7 +27,8 @@ from mtg import AVOIDED_DIR, DECKS_DIR, FILENAME_TIMESTAMP_FORMAT, PathLike, \
 from mtg.deck.arena import ArenaParser
 from mtg.deck.export import Exporter, sanitize_source
 from mtg.gstate import CHANNELS_DIR, CoolOffManager, DecklistsStateManager, UrlsStateManager
-from mtg.utils import Counter, breadcrumbs, deserialize_dates, logging_disabled, serialize_dates
+from mtg.utils import Counter, breadcrumbs, logging_disabled
+from mtg.utils.json import deserialize_dates, serialize_dates
 from mtg.utils.files import getdir, getfile, sanitize_filename
 from mtg.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
 from mtg.utils.scrape import extract_url, getsoup

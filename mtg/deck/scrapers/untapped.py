@@ -54,8 +54,7 @@ class UntappedProfileDeckScraper(DeckScraper):
                 "Scraping failed due to absence of the looked for element", scraper=type(self),
                 url=self.url)
         except TimeoutException:
-            raise ScrapingError(
-                f"Scraping failed due to Selenium timing out", scraper=type(self), url=self.url)
+            raise ScrapingError(self._selenium_timeout_msg, scraper=type(self), url=self.url)
 
     @override
     def _parse_metadata(self) -> None:

@@ -27,8 +27,8 @@ from mtg.scryfall import (
     find_by_mtgo_id, find_by_name, find_by_oracle_id,
     find_by_scryfall_id, find_by_tcgplayer_id, find_sets,
     query_api_for_card)
-from mtg.utils import ParsingError, from_iterable, getid, getrepr, serialize_dates, \
-    type_checker
+from mtg.utils import ParsingError, from_iterable, getid, getrepr, type_checker
+from mtg.utils.json import serialize_dates
 
 _log = logging.getLogger(__name__)
 ARENA_MULTIFACE_SEPARATOR = "///"  # this is different from Scryfall data where they use: '//'
@@ -348,7 +348,7 @@ THEMES = {
 }
 
 
-class InvalidDeck(ValueError):
+class InvalidDeck(ParsingError):
     """Raised on invalid deck.
     """
 
@@ -1038,18 +1038,16 @@ class DeckParser(ABC):
             self._parse_metadata()
             self._parse_decklist()
             return self._build_deck()
-        except ParsingError as pe:
-            if suppress_parsing_errors:
-                _log.warning(f"Parsing failed with: {pe!r}")
-                return None
-            _log.error(f"Parsing failed with: {pe!r}")
-            raise pe
         except InvalidDeck as err:
             if suppress_invalid_deck:
                 _log.warning(f"Parsing failed with: {err!r}")
                 return None
-            _log.error(f"Parsing failed with: {err!r}")
             raise err
+        except ParsingError as pe:
+            if suppress_parsing_errors:
+                _log.warning(f"Parsing failed with: {pe!r}")
+                return None
+            raise pe
 
     def update_metadata(self, **data: Any) -> None:
         self._metadata.update(data)

@@ -123,7 +123,13 @@ class DeckScraper(DeckParser):
 
     @property
     def _error_msg(self) -> str:
-        return f"Page not available"
+        return "Page not available"
+
+    @property
+    def _selenium_timeout_msg(self) -> str:
+        word = self.SELENIUM_PARAMS.get("xpath")
+        word = f"'{word}'" if word else "XPath-defined"
+        return f"Selenium timed out looking for {word} element(s)"
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         self._validate_url(url)
@@ -160,7 +166,7 @@ class DeckScraper(DeckParser):
                 self._soup, _, self._clipboard = get_dynamic_soup(
                     self.url, **self.SELENIUM_PARAMS)
             except TimeoutException:
-                self._soup = None
+                raise ScrapingError(self._selenium_timeout_msg, scraper=type(self), url=self.url)
         else:
             self._soup = getsoup(self.url, self.HEADERS)
 
@@ -221,24 +227,21 @@ class DeckScraper(DeckParser):
             self._parse_metadata()
             self._parse_decklist()
             return self._build_deck()
-        except ScrapingError as se:
-            if suppress_scraping_errors:
-                _log.warning(f"Scraping failed with: {se!r}")
-                return None
-            _log.error(f"Scraping failed with: {se!r}")
-            raise se
-        except ParsingError as pe:
-            if suppress_parsing_errors:
-                _log.warning(f"Scraping failed with: {pe!r}")
-                return None
-            _log.error(f"Scraping failed with: {pe!r}")
-            raise pe
         except InvalidDeck as err:
             if suppress_invalid_deck:
                 _log.warning(f"Scraping failed with: {err!r}")
                 return None
-            _log.error(f"Scraping failed with: {err!r}")
             raise err
+        except ParsingError as pe:
+            if suppress_parsing_errors:
+                _log.warning(f"Scraping failed with: {pe!r}")
+                return None
+            raise pe
+        except ScrapingError as se:
+            if suppress_scraping_errors:
+                _log.warning(f"Scraping failed with: {se!r}")
+                return None
+            raise se
 
     @classmethod
     def registered(cls, scraper_type: Type[Self]) -> Type[Self]:
@@ -333,7 +336,7 @@ class ContainerScraper(DeckScraper):
             self._parse_metadata()
             return self._collect()
         except ScrapingError as e:
-            _log.error(f"Scraping failed with: {e!r}")
+            _log.warning(f"Scraping failed with: {e!r}")
             return []
 
     @abstractmethod
@@ -377,7 +380,7 @@ class DeckUrlsContainerScraper(ContainerScraper):
                 return [prepend_url(l, self.DECK_URL_PREFIX) for l in self._collect()]
             return deck_urls
         except ScrapingError as e:
-            _log.error(f"Scraping failed with: {e!r}")
+            _log.warning(f"Scraping failed with: {e!r}")
             return []
 
     @classmethod
@@ -594,7 +597,7 @@ class HybridContainerScraper(
                 container_urls = [prepend_url(l, self.CONTAINER_URL_PREFIX) for l in container_urls]
             return deck_urls, deck_tags, decks_data, container_urls
         except ScrapingError as e:
-            _log.error(f"Scraping failed with: {e!r}")
+            _log.warning(f"Scraping failed with: {e!r}")
             return [], [], [], []
 
     @classmethod

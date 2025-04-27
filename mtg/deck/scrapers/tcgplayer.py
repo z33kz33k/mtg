@@ -362,7 +362,6 @@ class TcgPlayerInfiniteArticleScraper(DecksJsonContainerScraper):
         "xpath": f"//a[contains(@href, '{_HOOK}')]",
         "consent_xpath": ("//button[contains(@class, 'martech-button') and contains(@class, "
                           "'martech-medium') and contains(@class, 'martech-primary')]"),
-        "wait_for_consent_disappearance": False,
         "wait_for_all": True,
         "scroll_down": True,
         "scroll_down_delay": 2.0,
@@ -400,7 +399,7 @@ class TcgPlayerInfiniteArticleScraper(DecksJsonContainerScraper):
             self._soup, _, _ = get_dynamic_soup(
                 self.url, **self.SELENIUM_PARAMS, scroll_down_times=self._scroll_down_times)
         except TimeoutException:
-            self._soup = None
+            raise ScrapingError(self._selenium_timeout_msg, scraper=type(self), url=self.url)
 
     @override
     def _collect(self) -> list[Json]:
@@ -417,7 +416,7 @@ class TcgPlayerInfiniteArticleScraper(DecksJsonContainerScraper):
                 decks_data.append(
                     _get_deck_data_from_api(url, self.ARTICLE_API_URL_TEMPLATE, scraper=type(self)))
             except ScrapingError as err:
-                _log.warning(f"{url!r} failed with: {err!r}")
+                _log.warning(f"Scraping failed with: {err!r}")
                 continue
             throttle(*DeckScraper.THROTTLING)
         return decks_data
@@ -430,7 +429,6 @@ class TcgPlayerInfiniteAuthorScraper(HybridContainerScraper):
     SELENIUM_PARAMS = {  # override
         "xpath": "//div[@class='grid']",
         "consent_xpath": TcgPlayerInfiniteArticleScraper.SELENIUM_PARAMS["consent_xpath"],
-        "wait_for_consent_disappearance": False
     }
     CONTAINER_NAME = "TCGPlayer Infinite author"  # override
     API_URL_TEMPLATE = ("https://infinite-api.tcgplayer.com/content/author/{}/?source="
@@ -491,7 +489,6 @@ class TcgPlayerInfiniteAuthorDecksPaneScraper(DeckUrlsContainerScraper):
     SELENIUM_PARAMS = {  # override
         "xpath": TcgPlayerInfiniteAuthorScraper.SELENIUM_PARAMS["xpath"],
         "consent_xpath": TcgPlayerInfiniteArticleScraper.SELENIUM_PARAMS["consent_xpath"],
-        "wait_for_consent_disappearance": False
     }
     CONTAINER_NAME = "TCGPlayer Infinite author decks pane"  # override
     # 200 rows is pretty arbitrary but tested to work (even though usually events have fewer rows)

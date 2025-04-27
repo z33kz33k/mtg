@@ -20,7 +20,8 @@ from mtg.deck.scrapers.mtgarenapro import get_source as mtgarenapro_get_source
 from mtg.deck.scrapers.scg import get_source as scg_get_source
 from mtg.deck.scrapers.tcgplayer import get_source as tcgplayer_get_source
 from mtg.scryfall import Card, aggregate
-from mtg.utils import ParsingError, serialize_dates
+from mtg.utils import ParsingError
+from mtg.utils.json import serialize_dates
 from mtg.utils.files import getdir, getfile, sanitize_filename, truncate_path
 
 _log = logging.getLogger(__name__)

@@ -14,7 +14,7 @@ from bs4 import Tag
 
 from mtg import Json
 from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser, is_in_domain_but_not_main
-from mtg.utils.scrape import parse_non_english_month_date, strip_url_query
+from mtg.utils.scrape import ScrapingError, parse_non_english_month_date, strip_url_query
 
 _log = logging.getLogger(__name__)
 
@@ -133,7 +133,8 @@ class PauperwaveArticleScraper(HybridContainerScraper):
             "table", class_=lambda c: c and "mtg_deck" in c and "mtg_deck_embedded" in c)]
         article_tag = self._soup.find("article")
         if not article_tag:
-            _log.warning("Article tag not found")
+            err = ScrapingError("Article tag not found", scraper=type(self), url=self.url)
+            _log.warning(f"Scraping failed with: {err!r}")
             return [], deck_tags, [], []
         deck_urls, _ = self._get_links_from_tags(*article_tag.find_all("p"))
         return deck_urls, deck_tags, [], []
