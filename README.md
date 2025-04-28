@@ -98,6 +98,7 @@ YT videos descriptions).
         * Cardsrealm profiles, folders, tournaments and articles
         * [Cardmarket](https://www.cardmarket.com/) articles 
         * ChannelFireball players, articles and authors
+        * [CoolStuffInc](https://www.coolstuffinc.com) articles 
         * [CyclesGaming](https://cyclesgaming.com) articles
         * Deckbox users and events
         * Deckstats users
@@ -135,7 +136,7 @@ YT videos descriptions).
         * [TopDeck.gg](https://topdeck.gg) brackets and profiles
         * Untapped profiles
         * [WotC (official MTG site)](https://magic.wizards.com/en) articles
-    * 81 container pages in total with 15 more in plans
+    * 82 container pages in total with 16 more in plans
 * Assessing the meta:
     * Scraping Goldfish and MGTAZone for meta-decks (others in plans)
     * Scraping a singular Untapped meta-deck decklist page
