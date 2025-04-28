@@ -231,7 +231,8 @@ class EdhrecArticleScraper(HybridContainerScraper):
     @override
     def is_valid_url(url: str) -> bool:
         return (("edhrec.com/articles/" in url.lower()
-                 or "articles.edhrec.com/" in url.lower()) and "/author/" not in url.lower())
+                 or "articles.edhrec.com/" in url.lower())
+                and "/author/" not in url.lower() and "/search/" not in url.lower())
 
     @staticmethod
     @override
@@ -302,3 +303,14 @@ class EdhrecAuthorScraper(HybridContainerScraper):
         return [], [], [], [prepend_url(d["slug"], prefix) for d in self._data]
 
 
+@HybridContainerScraper.registered
+class EdhrecArticleSearchScraper(EdhrecAuthorScraper):
+    """Scraper of EDHREC article search page.
+    """
+    CONTAINER_NAME = "EDHREC article search"  # override
+
+    @staticmethod
+    @override
+    def is_valid_url(url: str) -> bool:
+        return (("edhrec.com/articles/" in url.lower()
+                 or "articles.edhrec.com/" in url.lower()) and "/search/" in url.lower())
