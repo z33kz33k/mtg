@@ -90,13 +90,12 @@ class MeleeGgDeckScraper(DeckScraper):
         pass
 
     @override
-    def _build_deck(self) -> Deck:
+    def _build_deck(self) -> Deck | None:
         decklist_tag = self._soup.select_one("pre#decklist-text")
         if not decklist_tag:
             raise ScrapingError("Decklist tag not found", scraper=type(self), url=self.url)
         decklist = decklist_tag.text.strip()
-        return ArenaParser(decklist, metadata=self._metadata).parse(
-            suppress_parsing_errors=False, suppress_invalid_deck=False)
+        return ArenaParser(decklist, metadata=self._metadata).parse()
 
 
 @DeckUrlsContainerScraper.registered

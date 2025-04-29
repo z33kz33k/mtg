@@ -18,7 +18,7 @@ from mtg.deck import Deck, Mode
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
     TagBasedDeckParser
 from mtg.scryfall import all_formats
-from mtg.utils import extract_int, timed
+from mtg.utils import ParsingError, extract_int, timed
 from mtg.utils.scrape import ScrapingError, http_requests_counted, strip_url_query, \
     throttled_soup
 
@@ -109,7 +109,7 @@ class GoldfishDeckTagParser(TagBasedDeckParser):
     def _parse_decklist(self) -> None:
         decklist_tag = self._deck_tag.find("table", class_="deck-view-deck-table")
         if decklist_tag is None:
-            raise ScrapingError("Decklist tag not found", scraper=type(self), url=self.url)
+            raise ParsingError("Decklist tag not found")
         self._parse_decklist_tag(decklist_tag)
 
 
@@ -159,7 +159,7 @@ class GoldfishDeckScraper(DeckScraper):
         pass
 
     @override
-    def _build_deck(self) -> Deck:
+    def _build_deck(self) -> Deck | None:
         return self._deck_parser.parse()
 
 
@@ -224,7 +224,8 @@ class GoldfishArticleScraper(HybridContainerScraper):
     """
     SELENIUM_PARAMS = {  # override
         "xpath": "//div[@class='deck-container']",
-        "consent_xpath": CONSENT_XPATH
+        "consent_xpath": CONSENT_XPATH,
+        "wait_for_all": True
     }
     CONTAINER_NAME = "Goldfish article"  # override
     TAG_BASED_DECK_PARSER = GoldfishDeckTagParser  # override

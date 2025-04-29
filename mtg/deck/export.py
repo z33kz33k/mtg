@@ -292,7 +292,7 @@ def from_arena(path: PathLike) -> Deck:
     decklist = file.read_text(encoding="utf-8")
     if not all(is_arena_line(l) or is_empty(l) for l in decklist.splitlines()):
         raise ValueError(f"Not an MTG Arena deck file: '{file}'")
-    return ArenaParser(decklist).parse(suppress_parsing_errors=False, suppress_invalid_deck=False)
+    return ArenaParser(decklist).parse(suppress_invalid_deck=False, suppress_card_not_found=False)
 
 
 def _parse_forge_line(line: str) -> list[Card]:

@@ -101,9 +101,7 @@ class ScgDeckTagParser(TagBasedDeckParser):
     def _parse_decklist(self) -> None:
         decklist_tag = self._deck_tag.find("div", class_="deck_card_wrapper")
         if decklist_tag is None:
-            raise ScrapingError(
-                "Decklist tag not found (page is probably paywalled)", scraper=type(self),
-                url=self.url)
+            raise ParsingError("Decklist tag not found (page is probably paywalled)")
         self._parse_decklist_tag(decklist_tag)
 
 
@@ -145,7 +143,7 @@ class ScgDeckScraper(DeckScraper):
         pass
 
     @override
-    def _build_deck(self) -> Deck:
+    def _build_deck(self) -> Deck | None:
         return self._deck_parser.parse()
 
 
@@ -261,13 +259,12 @@ class ScgArticleDeckTagParser(ScgDeckTagParser):
         return "\n".join(decklist)
 
     @override
-    def _build_deck(self) -> Deck:
+    def _build_deck(self) -> Deck | None:
         css = "div[title='Export Decklist for Magic Arena'] > div"
         decklist_tag = self._deck_tag.select_one(css)
         if not decklist_tag:
             raise ParsingError("Decklist tag not found")
-        return ArenaParser(self._parse_decklist_tag(decklist_tag), self._metadata).parse(
-            suppress_parsing_errors=False, suppress_invalid_deck=False)
+        return ArenaParser(self._parse_decklist_tag(decklist_tag), self._metadata).parse()
 
 
 @HybridContainerScraper.registered

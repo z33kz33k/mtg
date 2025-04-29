@@ -149,7 +149,7 @@ class MtgCircleVideoDeckScraper(DeckScraper):
         pass
 
     @override
-    def _build_deck(self) -> Deck:
+    def _build_deck(self) -> Deck | None:
         return self._deck_parser.parse()
 
 

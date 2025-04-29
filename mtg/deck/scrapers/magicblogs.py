@@ -14,6 +14,7 @@ from bs4 import Tag
 
 from mtg import Json
 from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser
+from mtg.utils import ParsingError
 from mtg.utils.scrape import ScrapingError, parse_non_english_month_date, strip_url_query
 
 _log = logging.getLogger(__name__)
@@ -34,9 +35,7 @@ class MagicBlogsDeckTagParser(TagBasedDeckParser):
             if divs and uls:
                 matching_tds.append(td)
         if len(matching_tds) not in (1, 2):
-            raise ScrapingError(
-                f"Unexpected number of <td> tags: {len(matching_tds)}", scraper=type(self),
-                url=self.url)
+            raise ParsingError(f"Unexpected number of <td> tags: {len(matching_tds)}")
         return matching_tds
 
     def _parse_td_tag(self, td_tag: Tag) -> None:
@@ -47,11 +46,11 @@ class MagicBlogsDeckTagParser(TagBasedDeckParser):
                 continue
             qty_tag = tag.find("span", class_="count")
             if qty_tag is None:
-                raise ScrapingError("Card quantity not available", scraper=type(self), url=self.url)
+                raise ParsingError("Card quantity not available")
             qty = int(qty_tag.text)
             name_tag = tag.find("span", class_="cardname")
             if name_tag is None:
-                raise ScrapingError("Card name not available", scraper=type(self), url=self.url)
+                raise ParsingError("Card name not available")
             name = name_tag.text
             if self._state.is_maindeck:
                 self._maindeck += self.get_playset(self.find_card(name), qty)

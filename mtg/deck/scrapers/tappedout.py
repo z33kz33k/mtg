@@ -118,9 +118,8 @@ class TappedoutDeckScraper(DeckScraper):
         self._metadata["name"] = name_line.removeprefix("Name ")
 
     @override
-    def _build_deck(self) -> Deck:
-        return ArenaParser(self._arena_decklist, self._metadata).parse(
-            suppress_parsing_errors=False, suppress_invalid_deck=False)
+    def _build_deck(self) -> Deck | None:
+        return ArenaParser(self._arena_decklist, self._metadata).parse()
 
 
 @DeckUrlsContainerScraper.registered

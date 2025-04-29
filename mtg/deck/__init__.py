@@ -1031,8 +1031,8 @@ class DeckParser(ABC):
         raise NotImplementedError
 
     def parse(
-            self, suppress_parsing_errors=True,
-            suppress_invalid_deck=True) -> Deck | None:  # override
+            self, suppress_invalid_deck=True, suppress_card_not_found=True,
+            suppress_parsing_errors=False) -> Deck | None:  # override
         try:
             self._pre_parse()
             self._parse_metadata()
@@ -1043,6 +1043,11 @@ class DeckParser(ABC):
                 _log.warning(f"Parsing failed with: {err!r}")
                 return None
             raise err
+        except CardNotFound as cnf:
+            if suppress_card_not_found:
+                _log.warning(f"Parsing failed with: {cnf!r}")
+                return None
+            raise cnf
         except ParsingError as pe:
             if suppress_parsing_errors:
                 _log.warning(f"Parsing failed with: {pe!r}")
@@ -1076,7 +1081,7 @@ class DeckParser(ABC):
         else:
             self._metadata["custom_theme"] = name
 
-    def _build_deck(self) -> Deck:
+    def _build_deck(self) -> Deck | None:
         return Deck(
             self._maindeck, self._sideboard, self._commander, self._partner_commander,
             self._companion, self._metadata)

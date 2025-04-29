@@ -19,7 +19,7 @@ from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import TagBasedDeckParser, HybridContainerScraper
 from mtg.scryfall import COMMANDER_FORMATS
-from mtg.utils import from_iterable
+from mtg.utils import ParsingError, from_iterable
 from mtg.utils.scrape import ScrapingError, strip_url_query
 
 _log = logging.getLogger(__name__)
@@ -55,10 +55,10 @@ class WotCDeckTagParser(TagBasedDeckParser):
         return re.sub(r'\[[a-zA-Z0-9]+?\]', '', line).strip()
 
     @override
-    def _build_deck(self) -> Deck:
+    def _build_deck(self) -> Deck | None:
         maindeck_tag = self._deck_tag.find("main-deck")
         if not maindeck_tag:
-            raise ScrapingError("No main deck data available", scraper=type(self), url=self.url)
+            raise ParsingError("Decklist tag not available")
 
         lines = [self._sanitize_line(l) for l in maindeck_tag.text.strip().splitlines()]
         if self.fmt and self._locally_derived_fmt and self.fmt in COMMANDER_FORMATS:
@@ -73,8 +73,7 @@ class WotCDeckTagParser(TagBasedDeckParser):
             lines += [self._sanitize_line(l) for l in sideboard_tag.text.strip().splitlines()]
 
         decklist = "\n".join(lines)
-        return ArenaParser(decklist, self._metadata).parse(
-            suppress_parsing_errors=False, suppress_invalid_deck=False)
+        return ArenaParser(decklist, self._metadata).parse()
 
 
 _LOCALES = {"/ja/", "/fr/", "/it/", "/de/", "/es/", "/pt/", "/pt-BR/", "/ko/"}

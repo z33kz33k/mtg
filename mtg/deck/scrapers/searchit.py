@@ -66,6 +66,5 @@ class MtgSearchItDeckScraper(DeckScraper):
         self._arena_decklist = decklist_tag.text.strip()
 
     @override
-    def _build_deck(self) -> Deck:
-        return ArenaParser(self._arena_decklist, metadata=self._metadata).parse(
-            suppress_parsing_errors=False, suppress_invalid_deck=False)
+    def _build_deck(self) -> Deck | None:
+        return ArenaParser(self._arena_decklist, metadata=self._metadata).parse()

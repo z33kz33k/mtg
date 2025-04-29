@@ -19,7 +19,7 @@ from mtg.deck import Deck, Mode
 from mtg.deck.scrapers import DeckScraper, HybridContainerScraper, TagBasedDeckParser, \
     is_in_domain_but_not_main
 from mtg.scryfall import ARENA_FORMATS, Card
-from mtg.utils import extract_int, from_iterable, timed
+from mtg.utils import ParsingError, extract_int, from_iterable, timed
 from mtg.utils.scrape import ScrapingError, getsoup, strip_url_query
 
 _log = logging.getLogger(__name__)
@@ -32,9 +32,9 @@ class MtgaZoneDeckTagParser(TagBasedDeckParser):
     def _parse_metadata(self) -> None:
         name_author_tag = self._deck_tag.find("div", class_="name-container")
         if not name_author_tag:
-            raise ScrapingError(
+            raise ParsingError(
                 "Name tag not found. The deck you're trying to scrape has been most probably "
-                "paywalled by MTGAZone", scraper=type(self), url=self.url)
+                "paywalled by MTGAZone")
         name_tag = name_author_tag.find("div", class_="name")
         name, author, event = name_tag.text.strip(), None, None
         if " by " in name:
@@ -44,18 +44,18 @@ class MtgaZoneDeckTagParser(TagBasedDeckParser):
         self._metadata["name"] = name
         author_tag = name_author_tag.find("div", class_="by")
         if not author_tag:
-            raise ScrapingError(
+            raise ParsingError(
                 "Author tag not found. The deck you're trying to scrape has been most "
-                "probably paywalled by MTGAZone", scraper=type(self), url=self.url)
+                "probably paywalled by MTGAZone")
         author = author_tag.text.strip().removeprefix("by ")
         self._metadata["author"] = author
         if event:
             self._metadata["event"] = event
         fmt_tag = self._deck_tag.find("div", class_="format")
         if not fmt_tag:
-            raise ScrapingError(
+            raise ParsingError(
                 "Format tag not found. The deck you're trying to scrape has been most probably "
-                "paywalled by MTGAZone", scraper=type(self), url=self.url)
+                "paywalled by MTGAZone")
         fmt = fmt_tag.text.strip().lower()
         self._update_fmt(fmt)
         if time_tag := self._deck_tag.find("time", class_="ct-meta-element-date"):
@@ -126,7 +126,7 @@ class MtgaZoneDeckScraper(DeckScraper):
         pass
 
     @override
-    def _build_deck(self) -> Deck:
+    def _build_deck(self) -> Deck | None:
         return self._deck_parser.parse()
 
 
@@ -201,7 +201,8 @@ def _parse_tiers(table: Tag) -> dict[str, int]:
 
 
 def _parse_meta_deck(deck_tag: Tag, decks2tiers: dict[str, int], deck_place: int) -> Deck:
-    deck = MtgaZoneDeckTagParser(deck_tag).parse(suppress_invalid_deck=False)
+    deck = MtgaZoneDeckTagParser(deck_tag).parse(
+        suppress_invalid_deck=False, suppress_card_not_found=False)
     meta = {
         "meta": {
             "place": deck_place

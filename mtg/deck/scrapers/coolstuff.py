@@ -124,10 +124,9 @@ class CoolStuffIncDeckTagParser(TagBasedDeckParser):
         self._arena_decklist = "\n".join(arena_decklist)
 
     @override
-    def _build_deck(self) -> Deck:
+    def _build_deck(self) -> Deck | None:
         return ArenaParser(
-            self._arena_decklist, self._metadata).parse(
-            suppress_parsing_errors=False, suppress_invalid_deck=False)
+            self._arena_decklist, self._metadata).parse()
 
 
 @HybridContainerScraper.registered

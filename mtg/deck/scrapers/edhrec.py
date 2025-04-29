@@ -25,6 +25,7 @@ from mtg.deck.scrapers.cardsrealm import CardsrealmFolderScraper
 from mtg.deck.scrapers.moxfield import MoxfieldBookmarkScraper
 from mtg.deck.scrapers.tappedout import TappedoutFolderScraper
 from mtg.scryfall import Card
+from mtg.utils import ParsingError
 from mtg.utils.scrape import ScrapingError, get_links, prepend_url, strip_url_query
 from mtg.utils.scrape import getsoup
 
@@ -205,15 +206,14 @@ class EdhrecDeckTagParser(TagBasedDeckParser):
     def _parse_decklist(self) -> None:
         cards_text = self._deck_tag.attrs.get("cards")
         if not cards_text:
-            raise ScrapingError("Cards data not found", scraper=type(self), url=self.url)
+            raise ParsingError("Cards data not found")
         decklist = self._handle_commander(cards_text)
         self._arena_decklist = self._clean_decklist(decklist)
 
     @override
-    def _build_deck(self) -> Deck:
+    def _build_deck(self) -> Deck | None:
         return ArenaParser(
-            self._arena_decklist, self._metadata).parse(
-            suppress_parsing_errors=False, suppress_invalid_deck=False)
+            self._arena_decklist, self._metadata).parse()
 
 
 @HybridContainerScraper.registered

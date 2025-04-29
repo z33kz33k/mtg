@@ -69,9 +69,8 @@ class UntappedProfileDeckScraper(DeckScraper):
         pass
 
     @override
-    def _build_deck(self) -> Deck:
-        return ArenaParser(self._clipboard, metadata=self._metadata).parse(
-            suppress_parsing_errors=False, suppress_invalid_deck=False)
+    def _build_deck(self) -> Deck | None:
+        return ArenaParser(self._clipboard, metadata=self._metadata).parse()
 
 
 @DeckScraper.registered
@@ -108,9 +107,8 @@ class UntappedRegularDeckScraper(DeckScraper):
         pass
 
     @override
-    def _build_deck(self) -> Deck:
-        return ArenaParser(self._clipboard, metadata=self._metadata).parse(
-            suppress_parsing_errors=False, suppress_invalid_deck=False)
+    def _build_deck(self) -> Deck | None:
+        return ArenaParser(self._clipboard, metadata=self._metadata).parse()
 
 
 @DeckScraper.registered
@@ -163,9 +161,8 @@ class UntappedMetaDeckScraper(DeckScraper):
         pass
 
     @override
-    def _build_deck(self) -> Deck:
-        return ArenaParser(self._clipboard, metadata=self._metadata).parse(
-            suppress_parsing_errors=False, suppress_invalid_deck=False)
+    def _build_deck(self) -> Deck | None:
+        return ArenaParser(self._clipboard, metadata=self._metadata).parse()
 
 
 @DeckUrlsContainerScraper.registered

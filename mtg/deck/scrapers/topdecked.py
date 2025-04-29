@@ -143,10 +143,9 @@ class TopDeckedRegularDeckScraper(DeckScraper):
             self._handle_commander()
 
     @override
-    def _build_deck(self) -> Deck:
+    def _build_deck(self) -> Deck | None:
         decklist = "\n".join(self._arena_decklist)
-        return ArenaParser(decklist, self._metadata).parse(
-            suppress_parsing_errors=False, suppress_invalid_deck=False)
+        return ArenaParser(decklist, self._metadata).parse()
 
     @backoff.on_exception(
         backoff.expo, IllFormedArenaDecklist, max_time=60)

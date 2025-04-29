@@ -127,7 +127,8 @@ class ArchidektUserScraper(DeckUrlsContainerScraper):
     def is_valid_url(url: str) -> bool:
         url = url.lower()
         return ("archidekt.com/u/" in url or "archidekt.com/user/" in url
-                or ("archidekt.com/search/decks?" in url and "owner=" in url))
+                or ("archidekt.com/search/decks?" in url
+                    and ("owner=" in url or "ownerUsername=" in url)))
 
     @override
     def _collect(self) -> list[str]:

@@ -55,13 +55,12 @@ class DraftsimDeckScraper(DeckScraper):
         pass
 
     @override
-    def _build_deck(self) -> Deck:
+    def _build_deck(self) -> Deck | None:
         decklist_tag = self._soup.find("textarea", id="decktext")
         if not decklist_tag:
             raise ScrapingError("Decklist tag not found", scraper=type(self), url=self.url)
         decklist = decklist_tag.text.strip()
-        return ArenaParser(decklist, self._metadata).parse(
-            suppress_parsing_errors=False, suppress_invalid_deck=False)
+        return ArenaParser(decklist, self._metadata).parse()
 
 
 class DraftsimDeckTagParser(TagBasedDeckParser):
@@ -111,11 +110,10 @@ class DraftsimDeckTagParser(TagBasedDeckParser):
             raise ParsingError("Unexpected decklist format")
 
     @override
-    def _build_deck(self) -> Deck:
+    def _build_deck(self) -> Deck | None:
         decklist = [l.strip() for l in self._deck_tag.text.strip().split("\n")]
         decklist.insert(self._derive_deck_pos(decklist), "Deck")
-        return ArenaParser("\n".join(decklist), self._metadata).parse(
-            suppress_parsing_errors=False, suppress_invalid_deck=False)
+        return ArenaParser("\n".join(decklist), self._metadata).parse()
 
 
 @HybridContainerScraper.registered

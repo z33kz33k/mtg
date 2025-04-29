@@ -18,7 +18,7 @@ from requests import ConnectionError, HTTPError, ReadTimeout
 from selenium.common.exceptions import ElementClickInterceptedException, TimeoutException
 
 from mtg import Json
-from mtg.deck import Deck, DeckParser, InvalidDeck
+from mtg.deck import CardNotFound, Deck, DeckParser, InvalidDeck
 from mtg.gstate import UrlsStateManager
 from mtg.utils import ParsingError, timed
 from mtg.utils.scrape import ScrapingError, get_links, getsoup, prepend_url
@@ -51,10 +51,6 @@ class TagBasedDeckParser(DeckParser):
     HTML tag based parsers process a single, decklist and metadata holding, HTML tag extracted
     from a webpage and return a Deck object (if able).
     """
-    @property
-    def url(self) -> str | None:  # useful for documenting scraping errors
-        return self._metadata.get("url")
-
     def __init__(self, deck_tag: Tag,  metadata: Json | None = None) -> None:
         super().__init__(metadata)
         self._deck_tag = deck_tag
@@ -81,10 +77,6 @@ class JsonBasedDeckParser(DeckParser):
     either dissected from a webpage's JavaScript code or obtained via a separate JSON API
     request and return a Deck object (if able).
     """
-    @property
-    def url(self) -> str | None:  # useful for documenting scraping errors
-        return self._metadata.get("url")
-
     def __init__(self,  deck_data: Json, metadata: Json | None = None) -> None:
         super().__init__(metadata)
         self._deck_data = deck_data
@@ -212,14 +204,15 @@ class DeckScraper(DeckParser):
 
     @override
     def parse(
-            self, suppress_parsing_errors=True, suppress_invalid_deck=True) -> Deck | None:
+            self, suppress_invalid_deck=True, suppress_card_not_found=True,
+            suppress_parsing_errors=False) -> Deck | None:
         raise NotImplementedError  # not utilized
 
     @backoff.on_exception(
         backoff.expo, (ConnectionError, HTTPError, ReadTimeout), max_time=60)
     def scrape(
-            self, throttled=False, suppress_parsing_errors=True, suppress_scraping_errors=True,
-            suppress_invalid_deck=True) -> Deck | None:
+            self, throttled=False, suppress_parsing_errors=True,
+            suppress_scraping_errors=True) -> Deck | None:
         if throttled:
             throttle(*self.THROTTLING)
         try:
@@ -228,13 +221,15 @@ class DeckScraper(DeckParser):
             self._parse_decklist()
             return self._build_deck()
         except InvalidDeck as err:
-            if suppress_invalid_deck:
-                _log.warning(f"Scraping failed with: {err!r}")
-                return None
-            raise err
+            _log.warning(f"Parsing failed with: {err!r}")
+            return None
+        except CardNotFound as cnf:
+            _log.warning(f"Parsing failed with: {cnf!r}")
+            return None
         except ParsingError as pe:
             if suppress_parsing_errors:
-                _log.warning(f"Scraping failed with: {pe!r}")
+                se = ScrapingError(str(pe), type(self), self.url)
+                _log.warning(f"Scraping failed with: {se!r}")
                 return None
             raise pe
         except ScrapingError as se:
@@ -263,6 +258,7 @@ class DeckScraper(DeckParser):
     @classmethod
     def get_registered_scrapers(cls) -> set[Type[Self]]:
         return set(cls._REGISTRY)
+
 
 type Collected = list[str | Tag | Json] | tuple[list[str], list[Tag], list[Json], list[str]]
 
@@ -314,7 +310,7 @@ class ContainerScraper(DeckScraper):
         raise NotImplementedError  # not utilized
 
     @override
-    def _build_deck(self) -> Deck:
+    def _build_deck(self) -> Deck | None:
         raise NotImplementedError  # not utilized
 
     # partly redefined DeckScraper API
@@ -335,6 +331,10 @@ class ContainerScraper(DeckScraper):
             self._pre_parse()
             self._parse_metadata()
             return self._collect()
+        except ParsingError as pe:
+            err = ScrapingError(str(pe), type(self), self.url)
+            _log.warning(f"Scraping failed with: {err!r}")
+            return []
         except ScrapingError as e:
             _log.warning(f"Scraping failed with: {e!r}")
             return []
@@ -379,6 +379,10 @@ class DeckUrlsContainerScraper(ContainerScraper):
             if self.DECK_URL_PREFIX:
                 return [prepend_url(l, self.DECK_URL_PREFIX) for l in self._collect()]
             return deck_urls
+        except ParsingError as pe:
+            err = ScrapingError(str(pe), type(self), self.url)
+            _log.warning(f"Scraping failed with: {err!r}")
+            return []
         except ScrapingError as e:
             _log.warning(f"Scraping failed with: {e!r}")
             return []
@@ -470,8 +474,9 @@ class DeckTagsContainerScraper(ContainerScraper):
         for i, deck_tag in enumerate(self._deck_tags, start=1):
             try:
                 deck = self.TAG_BASED_DECK_PARSER(deck_tag, self._metadata).parse()
-            except AttributeError as err:
-                _log.warning(f"Tag-based deck parsing failed: {err}")
+            except (AttributeError, ParsingError) as e:
+                err = ScrapingError(str(e), type(self), self.url)
+                _log.warning(f"Tag-based deck parsing failed with: {err!r}")
                 deck = None
             if deck:
                 decks.append(deck)
@@ -528,8 +533,9 @@ class DecksJsonContainerScraper(ContainerScraper):
         for i, deck_data in enumerate(self._decks_data, start=1):
             try:
                 deck = self.JSON_BASED_DECK_PARSER(deck_data, self._metadata).parse()
-            except AttributeError as err:
-                _log.warning(f"JSON-based deck parsing failed: {err}")
+            except (AttributeError, ParsingError) as e:
+                err = ScrapingError(str(e), type(self), self.url)
+                _log.warning(f"JSON-based deck parsing failed with: {err!r}")
                 deck = None
             if deck:
                 decks.append(deck)

@@ -20,7 +20,7 @@ from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import Collected, DeckScraper, DeckTagsContainerScraper, TagBasedDeckParser
-from mtg.utils import sanitize_whitespace
+from mtg.utils import ParsingError, sanitize_whitespace
 from mtg.utils.scrape import ScrapingError, strip_url_query
 from mtg.utils.scrape.dynamic import get_dynamic_soup
 
@@ -77,10 +77,9 @@ class MagicGgNewDeckTagParser(TagBasedDeckParser):
         pass
 
     @override
-    def _build_deck(self) -> Deck:
+    def _build_deck(self) -> Deck | None:
         return ArenaParser(
-            self._build_arena(), self._metadata).parse(
-            suppress_parsing_errors=False, suppress_invalid_deck=False)
+            self._build_arena(), self._metadata).parse()
 
 
 class MagicGgOldDeckTagParser(TagBasedDeckParser):
@@ -202,7 +201,7 @@ class MagicGgDeckScraper(DeckScraper):
         pass
 
     @override
-    def _build_deck(self) -> Deck:
+    def _build_deck(self) -> Deck | None:
         return self._deck_parser.parse()
 
 
@@ -231,6 +230,10 @@ class MagicGgEventScraper(DeckTagsContainerScraper):
     def _gather(self) -> Collected:
         try:
             return self._collect()
+        except ParsingError as pe:
+            err = ScrapingError(str(pe), type(self), self.url)
+            _log.warning(f"Scraping failed with: {err!r}")
+            return []
         except ScrapingError as e:
             _log.warning(f"Scraping failed with: {e!r}")
             return []

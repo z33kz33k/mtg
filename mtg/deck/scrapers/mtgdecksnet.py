@@ -18,6 +18,7 @@ from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
     TagBasedDeckParser
+from mtg.utils import ParsingError
 from mtg.utils.scrape import ScrapingError, get_previous_sibling_tag
 from mtg.utils.scrape import strip_url_query
 
@@ -65,13 +66,12 @@ class MtgDecksNetDeckTagParser(TagBasedDeckParser):
         pass
 
     @override
-    def _build_deck(self) -> Deck:
+    def _build_deck(self) -> Deck | None:
         decklist_tag = self._deck_tag.find("textarea", id="arena_deck")
         if not decklist_tag:
-            raise ScrapingError("Decklist tag not found", scraper=type(self), url=self.url)
+            raise ParsingError("Decklist tag not found")
         decklist = decklist_tag.text.strip()
-        return ArenaParser(decklist, self._metadata).parse(
-            suppress_parsing_errors=False, suppress_invalid_deck=False)
+        return ArenaParser(decklist, self._metadata).parse()
 
 
 # TODO: scrape the meta
@@ -125,7 +125,7 @@ class MtgDecksNetDeckScraper(DeckScraper):
         pass
 
     @override
-    def _build_deck(self) -> Deck:
+    def _build_deck(self) -> Deck | None:
         return self._deck_parser.parse()
 
 
