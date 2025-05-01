@@ -211,8 +211,7 @@ class DeckScraper(DeckParser):
     @backoff.on_exception(
         backoff.expo, (ConnectionError, HTTPError, ReadTimeout), max_time=60)
     def scrape(
-            self, throttled=False, suppress_parsing_errors=True,
-            suppress_scraping_errors=True) -> Deck | None:
+            self, throttled=False, suppressed_errors=(ParsingError, ScrapingError)) -> Deck | None:
         if throttled:
             throttle(*self.THROTTLING)
         try:
@@ -220,23 +219,15 @@ class DeckScraper(DeckParser):
             self._parse_metadata()
             self._parse_decklist()
             return self._build_deck()
-        except InvalidDeck as err:
-            _log.warning(f"Parsing failed with: {err!r}")
+        except (InvalidDeck, CardNotFound) as err:
+            _log.warning(f"Scraping failed with: {err!r}")
             return None
-        except CardNotFound as cnf:
-            _log.warning(f"Parsing failed with: {cnf!r}")
+        except suppressed_errors as err:
+            if isinstance(err, ParsingError) and not isinstance(err, (InvalidDeck, CardNotFound)):
+                err = ScrapingError(str(err), type(self), self.url)
+            _log.warning(f"Scraping failed with: {err!r}")
             return None
-        except ParsingError as pe:
-            if suppress_parsing_errors:
-                se = ScrapingError(str(pe), type(self), self.url)
-                _log.warning(f"Scraping failed with: {se!r}")
-                return None
-            raise pe
-        except ScrapingError as se:
-            if suppress_scraping_errors:
-                _log.warning(f"Scraping failed with: {se!r}")
-                return None
-            raise se
+
 
     @classmethod
     def registered(cls, scraper_type: Type[Self]) -> Type[Self]:
@@ -602,6 +593,10 @@ class HybridContainerScraper(
             if self.CONTAINER_URL_PREFIX:
                 container_urls = [prepend_url(l, self.CONTAINER_URL_PREFIX) for l in container_urls]
             return deck_urls, deck_tags, decks_data, container_urls
+        except ParsingError as pe:
+            err = ScrapingError(str(pe), type(self), self.url)
+            _log.warning(f"Scraping failed with: {err!r}")
+            return [], [], [], []
         except ScrapingError as e:
             _log.warning(f"Scraping failed with: {e!r}")
             return [], [], [], []

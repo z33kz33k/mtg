@@ -401,13 +401,19 @@ class TcgPlayerInfiniteArticleScraper(DecksJsonContainerScraper):
         except TimeoutException:
             raise ScrapingError(self._selenium_timeout_msg, scraper=type(self), url=self.url)
 
+    @staticmethod
+    def _naive_strip_url_query(url: str) -> str:
+        if "?" in url:
+            return url.split("?", maxsplit=1)[0]
+        return url
+
     @override
     def _collect(self) -> list[Json]:
         article_tag = self._soup.find("div", class_="article-body")
         if not article_tag:
             raise ScrapingError("Article tag not found", scraper=type(self), url=self.url)
         deck_urls = [
-            strip_url_query(t.attrs["href"]) for t in article_tag.find_all(
+            self._naive_strip_url_query(t.attrs["href"]) for t in article_tag.find_all(
                 "a", href=lambda h: h and self._HOOK in h)]
 
         decks_data = []

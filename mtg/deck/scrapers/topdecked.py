@@ -21,11 +21,11 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from mtg import Json
-from mtg.deck import Deck
+from mtg.deck import CardNotFound, Deck, InvalidDeck
 from mtg.deck.arena import ArenaParser, IllFormedArenaDecklist, PlaysetLine
 from mtg.deck.scrapers import DeckScraper
 from mtg.scryfall import COMMANDER_FORMATS
-from mtg.utils import extract_float, get_date_from_ago_text
+from mtg.utils import ParsingError, extract_float, get_date_from_ago_text
 from mtg.utils.scrape import ScrapingError, strip_url_query
 from mtg.utils.scrape.dynamic import SELENIUM_TIMEOUT, click_for_clipboard
 
@@ -151,10 +151,16 @@ class TopDeckedRegularDeckScraper(DeckScraper):
         backoff.expo, IllFormedArenaDecklist, max_time=60)
     @override
     def scrape(
-            self, throttled=False, suppress_parsing_errors=True, suppress_scraping_errors=True,
-            suppress_invalid_deck=True) -> Deck | None:
-        return super().scrape(
-            throttled, suppress_parsing_errors, suppress_scraping_errors, suppress_invalid_deck)
+            self, throttled=False, suppressed_errors=(ParsingError, ScrapingError)) -> Deck | None:
+        try:
+            return super().scrape(throttled, suppressed_errors=())
+        except IllFormedArenaDecklist:
+            raise
+        except suppressed_errors as err:
+            if isinstance(err, ParsingError) and not isinstance(err, (InvalidDeck, CardNotFound)):
+                err = ScrapingError(str(err), type(self), self.url)
+            _log.warning(f"Scraping failed with: {err!r}")
+            return None
 
 
 @DeckScraper.registered

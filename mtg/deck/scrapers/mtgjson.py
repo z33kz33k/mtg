@@ -14,13 +14,13 @@ from typing import Generator, Literal, override
 from tqdm import tqdm
 
 from mtg import DECKS_DIR, FILENAME_TIMESTAMP_FORMAT, Json, PathLike
-from mtg.deck import Deck, InvalidDeck
+from mtg.deck import Deck
 from mtg.deck.export import Exporter
 from mtg.deck.scrapers import DeckScraper
 from mtg.scryfall import Card
 from mtg.utils import logging_disabled, timed
 from mtg.utils.files import getdir
-from mtg.utils.scrape import ScrapingError, getsoup, request_json, throttle
+from mtg.utils.scrape import ScrapingError, getsoup, request_json
 
 _log = logging.getLogger(__name__)
 URL = "https://mtgjson.com/api/v5/decks/"
@@ -92,15 +92,8 @@ def scrape(*mtgjson_deck_links: str) -> Generator[Deck | None, None, None]:
     """
     links = mtgjson_deck_links or _get_links()
     for i, link in enumerate(links, start=1):
-        deck = None
-        throttle(0.15)
         _log.info(f"Scraping deck {i}/{len(links)}: {link!r}...")
-        try:
-            deck = MtgJsonDeckScraper(link).scrape(suppress_invalid_deck=False)
-        except InvalidDeck as err:
-            _log.warning(f"{link!r} yielded invalid deck: {err}")
-            pass
-        yield deck
+        yield MtgJsonDeckScraper(link).scrape(throttled=True)
 
 
 def dump(

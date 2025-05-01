@@ -1030,29 +1030,15 @@ class DeckParser(ABC):
     def _parse_decklist(self) -> None:
         raise NotImplementedError
 
-    def parse(
-            self, suppress_invalid_deck=True, suppress_card_not_found=True,
-            suppress_parsing_errors=False) -> Deck | None:  # override
+    def parse(self, suppressed_errors=(InvalidDeck, CardNotFound)) -> Deck | None:  # override
         try:
             self._pre_parse()
             self._parse_metadata()
             self._parse_decklist()
             return self._build_deck()
-        except InvalidDeck as err:
-            if suppress_invalid_deck:
-                _log.warning(f"Parsing failed with: {err!r}")
-                return None
-            raise err
-        except CardNotFound as cnf:
-            if suppress_card_not_found:
-                _log.warning(f"Parsing failed with: {cnf!r}")
-                return None
-            raise cnf
-        except ParsingError as pe:
-            if suppress_parsing_errors:
-                _log.warning(f"Parsing failed with: {pe!r}")
-                return None
-            raise pe
+        except suppressed_errors as err:
+            _log.warning(f"Parsing failed with: {err!r}")
+            return None
 
     def update_metadata(self, **data: Any) -> None:
         self._metadata.update(data)

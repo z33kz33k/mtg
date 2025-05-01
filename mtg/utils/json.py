@@ -138,7 +138,6 @@ class Node:
         Returns:
             a generator of all tree nodes that satisfy the predicate
         """
-        predicate = predicate if predicate is not None else lambda _: True
         for child in self.children:
             if predicate(child):
                 yield child

@@ -39,7 +39,8 @@ class TopDeckBracketScraper(DeckUrlsContainerScraper):
     """Scraper of TopDeck.gg bracket page.
     """
     SELENIUM_PARAMS = {  # override
-        "xpath": "//table[contains(@class, 'table') and contains(@class, 'dataTable')]"
+        "xpath": "//a[text()='Decklist']",
+        "wait_for_all": True
     }
     CONTAINER_NAME = "TopDeck.gg bracket"  # override
 
@@ -69,7 +70,8 @@ class TopDeckProfileScraper(DeckUrlsContainerScraper):
     """
     SELENIUM_PARAMS = {  # override
         "xpath": ("//a[contains(@class, 'btn') and contains(@class, 'btn-sm') "
-                  "and not(contains(@href, 'topdeck.gg'))]")
+                  "and not(contains(@href, 'topdeck.gg'))]"),
+        "wait_for_all": True
     }
     CONTAINER_NAME = "TopDeck.gg profile"  # override
 
