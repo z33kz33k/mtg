@@ -29,10 +29,6 @@ class MtgSearchItDeckScraper(DeckScraper):
     # TODO: detect presence of this trolling and attempt to click with Selenium
     # XPATH_UNBLOCK = "//a[@href='/access/unblock']"
 
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        self._arena_decklist = ""
-
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
@@ -63,8 +59,8 @@ class MtgSearchItDeckScraper(DeckScraper):
             "section", class_=lambda c: c and all(t in c for t in tokens))
         if not decklist_tag:
             raise ScrapingError("Decklist tag not found", scraper=type(self), url=self.url)
-        self._arena_decklist = decklist_tag.text.strip()
+        self._decklist = decklist_tag.text.strip()
 
     @override
     def _build_deck(self) -> Deck | None:
-        return ArenaParser(self._arena_decklist, metadata=self._metadata).parse()
+        return ArenaParser(self._decklist, metadata=self._metadata).parse()

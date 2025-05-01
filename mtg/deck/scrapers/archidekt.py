@@ -13,7 +13,7 @@ from datetime import datetime
 from typing import override
 
 from mtg import Json
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, FolderContainerScraper
 from mtg.utils.scrape import get_links, strip_url_query
 
 _log = logging.getLogger(__name__)
@@ -92,6 +92,7 @@ class ArchidektSnapshotScraper(ArchidektDeckScraper):
         return "archidekt.com/snapshots/" in url.lower()
 
 
+@FolderContainerScraper.registered
 @DeckUrlsContainerScraper.registered
 class ArchidektFolderScraper(DeckUrlsContainerScraper):
     """Scraper of Archidekt folder page.

@@ -28,6 +28,16 @@ from mtg.utils.scrape.dynamic import get_dynamic_soup
 _log = logging.getLogger(__name__)
 
 
+class HiddenDecklistPage(ScrapingError):
+    """Raised on encountering unscrapeable, private/hidden decklist pages.
+    """
+    def __init__(
+            self, message="Decklist page hidden/private or otherwise unavailable",
+            scraper: Type | None = None,
+            url: str | None = None) -> None:
+        super().__init__(message, scraper, url)
+
+
 def is_in_domain_but_not_main(url: str, domain: str) -> bool:
     """Check whether the passed URL is of the passed domain but other than exactly this domain.
 
@@ -335,6 +345,26 @@ class ContainerScraper(DeckScraper):
         raise NotImplementedError
 
 
+# only for registration
+class FolderContainerScraper(ContainerScraper):
+    _REGISTRY: set[Type[Self]] = set()  # override
+
+    @staticmethod
+    @abstractmethod
+    @override
+    def is_valid_url(url: str) -> bool:
+        raise NotImplementedError
+
+    @abstractmethod
+    @override
+    def scrape(self) -> list[Deck]:
+        raise NotImplementedError
+
+    @abstractmethod
+    def _collect(self) -> Collected:
+        raise NotImplementedError
+
+
 class DeckUrlsContainerScraper(ContainerScraper):
     """Abstract scraper of deck-links-containing pages.
 
@@ -602,9 +632,13 @@ class HybridContainerScraper(
             return [], [], [], []
 
     @classmethod
+    def _get_container_scrapers(cls) -> set[Type[ContainerScraper]]:
+        return set(cls.CONTAINER_SCRAPERS)
+
+    @classmethod
     def _dispatch_container_scraper(
             cls, url: str, metadata: Json | None = None) -> ContainerScraper | None:
-        for scraper_type in cls.CONTAINER_SCRAPERS:
+        for scraper_type in cls._get_container_scrapers():
             if scraper_type.is_valid_url(url):
                 return scraper_type(url, metadata)
         return None
@@ -614,7 +648,7 @@ class HybridContainerScraper(
         deck_urls = [l for l in links if any(ds.is_valid_url(l) for ds in cls._get_deck_scrapers())]
         container_urls = [
             l for l in links if any(
-                cs.is_valid_url(l) for cs in cls.CONTAINER_SCRAPERS)]
+                cs.is_valid_url(l) for cs in cls._get_container_scrapers())]
         return deck_urls, container_urls
 
     def _get_links_from_tags(

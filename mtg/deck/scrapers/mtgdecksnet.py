@@ -18,6 +18,7 @@ from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
     TagBasedDeckParser
+from mtg.scryfall import COMMANDER_FORMATS
 from mtg.utils import ParsingError
 from mtg.utils.scrape import ScrapingError, get_previous_sibling_tag
 from mtg.utils.scrape import strip_url_query
@@ -58,19 +59,47 @@ class MtgDecksNetDeckTagParser(TagBasedDeckParser):
             if fmt := self.derive_format_from_text(title_tag.text):
                 self._update_fmt(fmt)
         if not self.fmt:
-            if fmt := self.derive_format_from_text(self._metadata["name"] + self._metadata["event"]):
+            if fmt := self.derive_format_from_text(
+                    self._metadata["name"] + self._metadata["event"]):
                 self._update_fmt(fmt)
 
     @override
     def _parse_decklist(self) -> None:
         pass
 
+    def _normalize_decklist(self, decklist: str) -> str:
+        commander, maindeck, sideboard, is_sideboard = [], [], [], False
+        for line in decklist.splitlines():
+            if not line:
+                is_sideboard = True
+                continue
+            if is_sideboard:
+                sideboard.append(line)
+            else:
+                maindeck.append(line)
+        if len(sideboard) in (1, 2) and self.fmt in COMMANDER_FORMATS:
+            commander, sideboard = sideboard, commander
+
+        decklist = []
+        if commander:
+            decklist.append("Commander")
+            decklist.extend(commander)
+            decklist.append("")
+        decklist.append("Deck")
+        decklist.extend(maindeck)
+        if sideboard:
+            decklist.append("")
+            decklist.append("Sideboard")
+            decklist.extend(sideboard)
+
+        return "\n".join(decklist)
+
     @override
     def _build_deck(self) -> Deck | None:
         decklist_tag = self._deck_tag.find("textarea", id="arena_deck")
         if not decklist_tag:
             raise ParsingError("Decklist tag not found")
-        decklist = decklist_tag.text.strip()
+        decklist = self._normalize_decklist(decklist_tag.text.strip())
         return ArenaParser(decklist, self._metadata).parse()
 
 

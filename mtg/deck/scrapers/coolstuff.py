@@ -8,7 +8,7 @@
 
 """
 import logging
-from typing import override
+from typing import Type, override
 
 import dateutil.parser
 from bs4 import Tag
@@ -16,12 +16,9 @@ from bs4 import Tag
 from mtg import Json, SECRETS
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser, is_in_domain_but_not_main
-from mtg.deck.scrapers.archidekt import ArchidektFolderScraper
-from mtg.deck.scrapers.cardsrealm import CardsrealmFolderScraper
-from mtg.deck.scrapers.moxfield import MoxfieldBookmarkScraper
-from mtg.deck.scrapers.tappedout import TappedoutFolderScraper
-from mtg.utils import extract_int
+from mtg.deck.scrapers import ContainerScraper, FolderContainerScraper, HybridContainerScraper, \
+    TagBasedDeckParser, is_in_domain_but_not_main
+from mtg.utils import ParsingError, extract_int
 from mtg.utils.scrape import ScrapingError, strip_url_query
 
 _log = logging.getLogger(__name__)
@@ -59,15 +56,11 @@ class CoolStuffIncDeckTagParser(TagBasedDeckParser):
             return extract_int(commander_tag.text.strip())
         return 0
 
-    def __init__(self, deck_tag: Tag, metadata: Json | None = None) -> None:
-        super().__init__(deck_tag, metadata)
-        self._arena_decklist = ""
-
     @override
     def _parse_metadata(self) -> None:
         info_tag = self._deck_tag.find("h4")
         if not info_tag:
-            raise ScrapingError("Metadata tag not found", type(self), self.url)
+            raise ParsingError("Metadata tag not found")
 
         name, fmt, author, rest = "", "", "", []
         if "|" not in info_tag.text:
@@ -98,7 +91,7 @@ class CoolStuffIncDeckTagParser(TagBasedDeckParser):
         decklist_tag = self._deck_tag.find("a", {"data-reveal-id": "copydecklistmodal"})
         if not decklist_tag or not decklist_tag.attrs.get("data-text"):
             # TODO: return with None and delegate to sub-parser instead
-            raise ScrapingError("Decklist tag not found", scraper=type(self), url=self.url)
+            raise ParsingError("Decklist tag not found")
         decklist_text = decklist_tag.attrs["data-text"].strip()
         if "|~|" in decklist_text:
             maindeck, sideboard = decklist_text.split("|~|")
@@ -110,23 +103,22 @@ class CoolStuffIncDeckTagParser(TagBasedDeckParser):
             commander, maindeck = maindeck[:self.commander_count], maindeck[self.commander_count:]
         else:
             commander, maindeck = [], maindeck
-        arena_decklist = []
+        decklist = []
         if commander:
-            arena_decklist.append("Commander")
-            arena_decklist.extend(commander)
-            arena_decklist.append("")
-        arena_decklist.append("Deck")
-        arena_decklist += maindeck
+            decklist.append("Commander")
+            decklist.extend(commander)
+            decklist.append("")
+        decklist.append("Deck")
+        decklist += maindeck
         if sideboard:
-            arena_decklist.append("")
-            arena_decklist.append("Sideboard")
-            arena_decklist.extend(sideboard)
-        self._arena_decklist = "\n".join(arena_decklist)
+            decklist.append("")
+            decklist.append("Sideboard")
+            decklist.extend(sideboard)
+        self._decklist = "\n".join(decklist)
 
     @override
     def _build_deck(self) -> Deck | None:
-        return ArenaParser(
-            self._arena_decklist, self._metadata).parse()
+        return ArenaParser(self._decklist, self._metadata).parse()
 
 
 @HybridContainerScraper.registered
@@ -136,10 +128,6 @@ class CoolStuffIncArticleScraper(HybridContainerScraper):
     CONTAINER_NAME = "CoolStuffInc article"  # override
     HEADERS = HEADERS  # override
     TAG_BASED_DECK_PARSER = CoolStuffIncDeckTagParser  # override
-    # override
-    CONTAINER_SCRAPERS = (
-        ArchidektFolderScraper, MoxfieldBookmarkScraper, CardsrealmFolderScraper,
-        TappedoutFolderScraper)
 
     @staticmethod
     @override
@@ -150,6 +138,11 @@ class CoolStuffIncArticleScraper(HybridContainerScraper):
     @override
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
+
+    @classmethod
+    @override
+    def _get_container_scrapers(cls) -> set[Type[ContainerScraper]]:
+        return FolderContainerScraper.get_registered_scrapers()
 
     @override
     def _parse_metadata(self) -> None:

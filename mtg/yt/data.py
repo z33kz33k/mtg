@@ -524,6 +524,7 @@ def prune_dangling_decklists() -> None:
 
 _QUERY_EXCLUDES = (
     '-"altered tcg"',
+    '-"curiosa.io"',
     '-dfiance',
     '-"eternal card game"',
     '-fab',
@@ -555,7 +556,7 @@ def discover_new_channels(
             "this_week",
             "this_month",
             "this_year"] = "this_week",
-        ) -> tuple[list[str], list[str]]:
+        ) -> tuple[list[str], list[str], list[str]]:
     """Discover channels that aren't yet included in the private Google Sheet.
 
     Args:
@@ -564,10 +565,9 @@ def discover_new_channels(
         option: search option (see: https://pypi.org/project/youtube-search-python/)
 
     Returns:
-        list of discovered channel IDs, list of all checked video links
+        discovered channel IDs, newly-discovered and all checked video links
     """
     query += f' {" ".join(_QUERY_EXCLUDES)}'
-    retrieved_ids, chids = {*retrieve_ids(), *retrieve_ids("avoided")}, set()
     match option:
         case "relevance":
             pref = VideoSortOrder.relevance
@@ -590,6 +590,7 @@ def discover_new_channels(
         case _:
             raise ValueError(f"Unsupported search option: {option!r}")
 
+    retrieved_ids, chids = {*retrieve_ids(), *retrieve_ids("avoided")}, set()
     results = []
     search = CustomSearch(query, pref)
     while True:
@@ -599,16 +600,18 @@ def discover_new_channels(
             break
         search.next()
 
+    found_links = []
     for result in results:
         chid = result["channel"]["id"]
-        if chid not in retrieved_ids:
+        if chid not in retrieved_ids and chid not in chids:
             _log.info(
                 f"Found new channel: {chid!r} (video: {result['link']!r})")
             chids.add(chid)
+            found_links.append(result["link"])
 
     _log.info(f"Found {len(chids)} new channel(s) among {len(results)} checked result(s)")
 
-    return sorted(chids), [r["link"] for r in results]
+    return sorted(chids), found_links, [r["link"] for r in results]
 
 
 def get_channel_ids(*urls: str, only_new=True) -> list[str]:

@@ -19,11 +19,8 @@ from bs4 import BeautifulSoup, Tag
 from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import DeckScraper, HybridContainerScraper, TagBasedDeckParser
-from mtg.deck.scrapers.archidekt import ArchidektFolderScraper
-from mtg.deck.scrapers.cardsrealm import CardsrealmFolderScraper
-from mtg.deck.scrapers.moxfield import MoxfieldBookmarkScraper
-from mtg.deck.scrapers.tappedout import TappedoutFolderScraper
+from mtg.deck.scrapers import ContainerScraper, DeckScraper, FolderContainerScraper, \
+    HybridContainerScraper, TagBasedDeckParser
 from mtg.scryfall import Card
 from mtg.utils import ParsingError
 from mtg.utils.scrape import ScrapingError, get_links, prepend_url, strip_url_query
@@ -177,10 +174,6 @@ class EdhrecAverageDeckScraper(DeckScraper):
 class EdhrecDeckTagParser(TagBasedDeckParser):
     """Parser of an EDHREC decklist HTML tag (that lives inside an article's <script> JSON data).
     """
-    def __init__(self, deck_tag: Tag, metadata: Json | None = None) -> None:
-        super().__init__(deck_tag, metadata)
-        self._arena_decklist = ""
-
     @override
     def _parse_metadata(self) -> None:
         if name := self._deck_tag.attrs.get("name"):
@@ -208,12 +201,11 @@ class EdhrecDeckTagParser(TagBasedDeckParser):
         if not cards_text:
             raise ParsingError("Cards data not found")
         decklist = self._handle_commander(cards_text)
-        self._arena_decklist = self._clean_decklist(decklist)
+        self._decklist = self._clean_decklist(decklist)
 
     @override
     def _build_deck(self) -> Deck | None:
-        return ArenaParser(
-            self._arena_decklist, self._metadata).parse()
+        return ArenaParser(self._decklist, self._metadata).parse()
 
 
 @HybridContainerScraper.registered
@@ -222,10 +214,6 @@ class EdhrecArticleScraper(HybridContainerScraper):
     """
     CONTAINER_NAME = "EDHREC article"  # override
     TAG_BASED_DECK_PARSER = EdhrecDeckTagParser  # override
-    # override
-    CONTAINER_SCRAPERS = (
-        ArchidektFolderScraper, MoxfieldBookmarkScraper, CardsrealmFolderScraper,
-        TappedoutFolderScraper)
 
     @staticmethod
     @override
@@ -238,6 +226,11 @@ class EdhrecArticleScraper(HybridContainerScraper):
     @override
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
+
+    @classmethod
+    @override
+    def _get_container_scrapers(cls) -> set[Type[ContainerScraper]]:
+        return FolderContainerScraper.get_registered_scrapers()
 
     @override
     def _pre_parse(self) -> None:

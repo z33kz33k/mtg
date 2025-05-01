@@ -21,7 +21,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, \
-    HybridContainerScraper
+    FolderContainerScraper, HybridContainerScraper
 from mtg.utils import timed
 from mtg.utils.scrape import ScrapingError, dissect_js, strip_url_query
 from mtg.utils.scrape.dynamic import SELENIUM_TIMEOUT, accept_consent
@@ -131,6 +131,7 @@ class CardsrealmProfileScraper(DeckUrlsContainerScraper):
         return [tag.attrs["href"] for tag in deck_tags]
 
 
+@FolderContainerScraper.registered
 @DeckUrlsContainerScraper.registered
 class CardsrealmFolderScraper(CardsrealmProfileScraper):
     """Scraper of Cardsrealm decks folder page.

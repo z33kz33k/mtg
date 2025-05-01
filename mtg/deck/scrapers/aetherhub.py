@@ -16,7 +16,8 @@ from bs4 import Tag
 
 from mtg import Json
 from mtg.deck import Deck, Mode
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HiddenDecklistPage, \
+    HybridContainerScraper, \
     TagBasedDeckParser
 from mtg.utils import extract_float, extract_int, from_iterable
 from mtg.utils.scrape import ScrapingError, strip_url_query
@@ -129,7 +130,10 @@ class AetherhubDeckScraper(DeckScraper):
         deck_tag = from_iterable(
             deck_tags, lambda t: t.text.strip().startswith(("Main", "Commander", "Companion")))
         if deck_tag is None:
-            raise ScrapingError("Deck tag not found", scraper=type(self), url=self.url)
+            if "Welcome Back" in self._soup.text:
+                raise HiddenDecklistPage(scraper=type(self), url=self.url)
+            else:
+                raise ScrapingError("Deck tag not found", scraper=type(self), url=self.url)
         return AetherhubDeckTagParser(deck_tag)
 
     @override

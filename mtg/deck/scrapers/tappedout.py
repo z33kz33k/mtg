@@ -18,7 +18,7 @@ from requests import Response
 from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper, FolderContainerScraper
 from mtg.utils import extract_int, get_date_from_ago_text
 from mtg.utils.scrape import ScrapingError, getsoup, prepend_url, request_json, strip_url_query, \
     throttle, timed_request
@@ -44,10 +44,6 @@ def _backoff_handler(details: dict) -> None:
 class TappedoutDeckScraper(DeckScraper):
     """Scraper of TappedOut decklist page.
     """
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        self._arena_decklist = ""
-
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
@@ -114,12 +110,12 @@ class TappedoutDeckScraper(DeckScraper):
             raise ScrapingError("Decklist tag not found", scraper=type(self), url=self.url)
         lines = decklist_tag.text.strip().splitlines()
         _, name_line, _, _, *lines = lines
-        self._arena_decklist = "\n".join(lines)
+        self._decklist = "\n".join(lines)
         self._metadata["name"] = name_line.removeprefix("Name ")
 
     @override
     def _build_deck(self) -> Deck | None:
-        return ArenaParser(self._arena_decklist, self._metadata).parse()
+        return ArenaParser(self._decklist, self._metadata).parse()
 
 
 @DeckUrlsContainerScraper.registered
@@ -175,6 +171,7 @@ class TappedoutUserScraper(DeckUrlsContainerScraper):
         return collected
 
 
+@FolderContainerScraper.registered
 @DeckUrlsContainerScraper.registered
 class TappedoutFolderScraper(DeckUrlsContainerScraper):
     """Scraper of Tappedout folder page.
@@ -219,6 +216,7 @@ class TappedoutFolderScraper(DeckUrlsContainerScraper):
         return [d["url"] for d in self._data["folder"]["decks"]]
 
 
+@FolderContainerScraper.registered
 @DeckUrlsContainerScraper.registered
 class TappedoutUserFolderScraper(TappedoutUserScraper):
     """Scraper of Tappedout user folders page.

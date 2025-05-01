@@ -328,7 +328,8 @@ class ArenaParser(DeckParser):
 
     def __init__(self, decklist: str, metadata: Json | None = None) -> None:
         super().__init__(metadata)
-        self._lines = [sanitize_whitespace(l) for l in decklist.splitlines()]
+        self._decklist = decklist
+        self._lines = [sanitize_whitespace(l) for l in self._decklist.splitlines()]
 
     def _handle_missing_commander_line(self):
         if not any(_is_commander_line(l) for l in self._lines):

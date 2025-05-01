@@ -53,10 +53,6 @@ class TopDeckedRegularDeckScraper(DeckScraper):
     DATE_XPATH = ("//span[contains(@class, 'prefix') and contains(@class, 'text-none') and "
                   "contains(@class, 'ng-star-inserted')]")
 
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        self._arena_decklist = []
-
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
@@ -80,7 +76,7 @@ class TopDeckedRegularDeckScraper(DeckScraper):
             else:
                 self._metadata["date"] = dateutil.parser.parse(date_text).date()
 
-    def _get_data(self) -> list[str]:
+    def _get_data(self) -> str:
         with webdriver.Chrome() as driver:
             _log.info(f"Webdriving using Chrome to: '{self.url}'...")
             driver.get(self.url)
@@ -101,14 +97,13 @@ class TopDeckedRegularDeckScraper(DeckScraper):
                 EC.element_to_be_clickable((By.XPATH, self.SHARE_XPATH)))
             share_btn.click()
             _log.info("Share button clicked")
-            arena = click_for_clipboard(driver, self.ARENA_XPATH, self.ARENA_DELAY)
-            return arena.splitlines()
+            return click_for_clipboard(driver, self.ARENA_XPATH, self.ARENA_DELAY)
 
     # _get_data() does all the work here
     @override
     def _pre_parse(self) -> None:
         try:
-            self._arena_decklist = self._get_data()
+            self._decklist = self._get_data()
         except NoSuchElementException as err:
             err_text, *_ = str(err).split("(Session info")
             raise ScrapingError(
@@ -122,20 +117,22 @@ class TopDeckedRegularDeckScraper(DeckScraper):
         pass
 
     def _handle_commander(self) -> None:
-        commander_line, partner_line = self._arena_decklist[1:3]
+        decklist = self._decklist.splitlines()
+        commander_line, partner_line = decklist[1:3]
         commander = PlaysetLine(commander_line).to_playset()[0]
         partner = PlaysetLine(partner_line).to_playset()[0]
         if commander.is_partner and partner.is_partner:
-            del self._arena_decklist[1:3]
-            self._arena_decklist.insert(0, "Commander")
-            self._arena_decklist.insert(1, commander_line)
-            self._arena_decklist.insert(2, partner_line)
-            self._arena_decklist.insert(3, "")
+            del decklist[1:3]
+            decklist.insert(0, "Commander")
+            decklist.insert(1, commander_line)
+            decklist.insert(2, partner_line)
+            decklist.insert(3, "")
         else:
-            del self._arena_decklist[1]
-            self._arena_decklist.insert(0, "Commander")
-            self._arena_decklist.insert(1, commander_line)
-            self._arena_decklist.insert(2, "")
+            del decklist[1]
+            decklist.insert(0, "Commander")
+            decklist.insert(1, commander_line)
+            decklist.insert(2, "")
+        self._decklist = "\n".join(decklist)
 
     @override
     def _parse_decklist(self) -> None:
@@ -144,8 +141,7 @@ class TopDeckedRegularDeckScraper(DeckScraper):
 
     @override
     def _build_deck(self) -> Deck | None:
-        decklist = "\n".join(self._arena_decklist)
-        return ArenaParser(decklist, self._metadata).parse()
+        return ArenaParser(self._decklist, self._metadata).parse()
 
     @backoff.on_exception(
         backoff.expo, IllFormedArenaDecklist, max_time=60)
