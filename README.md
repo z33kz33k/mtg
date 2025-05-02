@@ -20,14 +20,14 @@ YT videos descriptions).
 
 * Scryfall data management via downloading bulk data with 
   [scrython](https://github.com/NandaScott/Scrython) and wrapping it in convenient abstractions
-* Scraping YouTube channels for decklist-featuring video descriptions (or comments) - using no less than 
-  four Python libraries to avoid bothering with Google APIs: 
+* Scraping YouTube channels for decklist-featuring video descriptions (or author's comments) - using 
+  no less than four Python libraries to avoid bothering with Google APIs: 
     * [scrapetube](https://github.com/dermasmid/scrapetube),
     * [pytubefix](https://github.com/JuanBindez/pytubefix),
     * [youtubesearchpython](https://github.com/alexmercerind/youtube-search-python), 
     * [youtube-comment-downloader](https://github.com/egbertbouman/youtube-comment-downloader) 
-* Parsing those descriptions (or comments) for decks:    
-    * Text decklists in Arena/MTGO format pasted into video descriptions are parsed into Deck objects
+* Parsing those descriptions (or author's comments) for decks:    
+    * Pasted text decklists in Arena/MTGO format are parsed into Deck objects
     * Links to decklist sites are scraped into Deck objects. 43 sites are supported so far:
         * [17Lands](https://www.17lands.com)
         * [Aetherhub](https://aetherhub.com)
@@ -84,7 +84,7 @@ YT videos descriptions).
       their CloudFlare protection and be fully supported (anyway, the logic to scrape them is already in place)
     * All those mentioned above work even if they are behind shortener links and need unshortening first
     * Sites that need it are scraped using [Selenium](https://github.com/SeleniumHQ/Selenium)
-    * Link trees posted in descriptions are expanded
+    * Link trees posted in descriptions/comments are expanded
     * Links to pastebin-like services (like [Amazonian](https://www.youtube.com/@Amazonian) does)
       , Patreon posts and Google Docs documents are expanded too and further parsed for decks
     * If nothing is found in the video's description, then the author's comments are parsed
@@ -121,6 +121,7 @@ YT videos descriptions).
         * MTGDecks.net tournaments and articles
         * MTGMeta.io articles and tournaments _(defunct, scraped via Wayback Machine)_
         * [MTGO](https://www.mtgo.com/en/mtgo) events
+        * [MTGRocks](https://mtgrocks.com) articles
         * MTGStocks articles
         * MTGTop8 events
         * MTGVault users
@@ -136,7 +137,7 @@ YT videos descriptions).
         * [TopDeck.gg](https://topdeck.gg) brackets and profiles
         * Untapped profiles
         * [WotC (official MTG site)](https://magic.wizards.com/en) articles
-    * 83 container pages in total with 16 more in plans
+    * 84 container pages in total with 16 more in plans
 * Assessing the meta:
     * Goldfish
     * MGTAZone 
@@ -158,12 +159,12 @@ YT videos descriptions).
 | No | Format | Count | Percentage |
 |:---|:-----|------:|-----------:|
 | 1  | commander       | 56818 |    39.12 % |
-| 2  | standard        | 31637 |    21.79 % |
-| 3  | modern          | 15292 |    10.53 % |
+| 2  | standard        | 31642 |    21.79 % |
+| 3  | modern          | 15297 |    10.53 % |
 | 4  | pauper          |  8794 |     6.06 % |
-| 5  | pioneer         |  8253 |     5.68 % |
+| 5  | pioneer         |  8259 |     5.69 % |
 | 6  | legacy          |  4398 |     3.03 % |
-| 7  | brawl           |  3028 |     2.09 % |
+| 7  | brawl           |  3024 |     2.08 % |
 | 8  | historic        |  2444 |     1.68 % |
 | 9  | explorer        |  2313 |     1.59 % |
 | 10 | undefined       |  2103 |     1.45 % |
@@ -181,19 +182,19 @@ YT videos descriptions).
 | 22 | oldschool       |    50 |     0.03 % |
 | 23 | future          |    30 |     0.02 % |
 | 24 | predh           |     7 |     0.00 % |
-|  | TOTAL           | 145222 | 100.00 %|
+|  | TOTAL           | 145234 | 100.00 %|
 
 | No | Source | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | moxfield.com           | 67232 |    46.30 % |
+| 1  | moxfield.com           | 67235 |    46.29 % |
 | 2  | arena.decklist         | 13071 |     9.00 % |
 | 3  | mtgo.com               | 12961 |     8.92 % |
 | 4  | mtggoldfish.com        |  9965 |     6.86 % |
 | 5  | aetherhub.com          |  9736 |     6.70 % |
 | 6  | archidekt.com          |  5405 |     3.72 % |
-| 7  | mtgdecks.net           |  4374 |     3.01 % |
-| 8  | melee.gg               |  2853 |     1.96 % |
-| 9  | mtga.untapped.gg       |  2778 |     1.91 % |
+| 7  | mtgdecks.net           |  4386 |     3.02 % |
+| 8  | melee.gg               |  2855 |     1.97 % |
+| 9  | mtga.untapped.gg       |  2773 |     1.91 % |
 | 10 | mtg.cardsrealm.com     |  2532 |     1.74 % |
 | 11 | tcgplayer.com          |  2356 |     1.62 % |
 | 12 | tappedout.net          |  1659 |     1.14 % |
@@ -235,4 +236,4 @@ YT videos descriptions).
 | 48 | mtgarena.pro           |     3 |     0.00 % |
 | 49 | mtgotraders.com        |     1 |     0.00 % |
 | 50 | playingmtg.com         |     1 |     0.00 % |
-|  | TOTAL                  | 145222 | 100.00 %|
+|  | TOTAL                  | 145234 | 100.00 %|
