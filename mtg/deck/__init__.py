@@ -934,6 +934,7 @@ class DeckParser(ABC):
         self._maindeck, self._sideboard = [], []
         self._commander, self._partner_commander, self._companion = None, None, None
         self._decklist = ""
+        self._sub_parser: Self | None = None
 
     def _set_commander(self, card: Card) -> None:
         if not card.commander_suitable:

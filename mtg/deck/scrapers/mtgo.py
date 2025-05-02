@@ -172,7 +172,7 @@ class MtgoDeckScraper(DeckScraper):
         return decks_data
 
     @override
-    def _get_deck_parser(self) -> MtgoDeckJsonParser:
+    def _get_sub_parser(self) -> MtgoDeckJsonParser:
         return MtgoDeckJsonParser(self._data, self._metadata)
 
     @override

@@ -16,7 +16,7 @@ import pyperclip
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.common import ElementClickInterceptedException, NoSuchElementException, \
-    TimeoutException
+    TimeoutException, StaleElementReferenceException
 from selenium.webdriver import ActionChains, Keys
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
@@ -35,7 +35,8 @@ SCROLL_DOWN_TIMES = 50
 
 
 @timed("getting dynamic soup")
-@backoff.on_exception(backoff.expo, ElementClickInterceptedException, max_time=300)
+@backoff.on_exception(
+    backoff.expo, (ElementClickInterceptedException, StaleElementReferenceException), max_time=300)
 def get_dynamic_soup(
         url: str,
         xpath: str,

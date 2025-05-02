@@ -132,7 +132,7 @@ class MtgDecksNetDeckScraper(DeckScraper):
         url = strip_url_query(url)
         return url.removesuffix("/visual")
 
-    def _get_deck_parser(self) -> MtgDecksNetDeckTagParser:
+    def _get_sub_parser(self) -> MtgDecksNetDeckTagParser:
         deck_tag = self._soup.select_one("div.deck.shadow")
         if deck_tag is None:
             raise ScrapingError("Deck tag not found", scraper=type(self), url=self.url)
@@ -147,7 +147,7 @@ class MtgDecksNetDeckScraper(DeckScraper):
             fmt = found
         self._update_fmt(fmt)
 
-        self._deck_parser.update_metadata(**self._metadata)
+        self._sub_parser.update_metadata(**self._metadata)
 
     @override
     def _parse_decklist(self) -> None:
@@ -155,7 +155,7 @@ class MtgDecksNetDeckScraper(DeckScraper):
 
     @override
     def _build_deck(self) -> Deck | None:
-        return self._deck_parser.parse()
+        return self._sub_parser.parse()
 
 
 @DeckUrlsContainerScraper.registered

@@ -40,6 +40,7 @@ HEADERS = {
     "Sec-Fetch-Site": "cross-site",
     "Priority": "u=0, i",
 }
+URL_PREFIX = "https://www.coolstuffinc.com"
 
 
 class _SubParser(TagBasedDeckParser):
@@ -85,10 +86,6 @@ class CoolStuffIncDeckTagParser(TagBasedDeckParser):
         if commander_tag:
             return extract_int(commander_tag.text.strip())
         return 0
-
-    def __init__(self, deck_tag: Tag, metadata: Json | None = None) -> None:
-        super().__init__(deck_tag, metadata)
-        self._sub_parser: _SubParser | None = None
 
     @override
     def _parse_metadata(self) -> None:
@@ -141,7 +138,8 @@ class CoolStuffIncDeckTagParser(TagBasedDeckParser):
             maindeck = maindeck.split("|")
             sideboard = sideboard.split("|") if sideboard else []
             if self.commander_count:
-                commander, maindeck = maindeck[:self.commander_count], maindeck[self.commander_count:]
+                commander, maindeck = maindeck[
+                                      :self.commander_count], maindeck[self.commander_count:]
             else:
                 commander, maindeck = [], maindeck
             decklist = []
@@ -210,3 +208,26 @@ class CoolStuffIncArticleScraper(HybridContainerScraper):
             return [], deck_tags, [], []
         deck_urls, container_urls = self._get_links_from_tags(*article_tag.find_all("p"))
         return deck_urls, deck_tags, [], container_urls
+
+
+@HybridContainerScraper.registered
+class CoolStuffIncAuthorScraper(HybridContainerScraper):
+    """Scraper of CoolStuffInc author page.
+    """
+    CONTAINER_NAME = "CoolStuffInc author"  # override
+    HEADERS = HEADERS  # override
+    CONTAINER_SCRAPERS = CoolStuffIncArticleScraper,  # override
+
+    @staticmethod
+    @override
+    def is_valid_url(url: str) -> bool:
+        tokens = "coolstuffinc.com/a/", "action=search", "author"
+        return all(t in url.lower() for t in tokens)
+
+    @override
+    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
+        search_tag = self._soup.select_one("div#article-search-results")
+        if not search_tag:
+            raise ScrapingError("Search results tag not found", scraper=type(self), url=self.url)
+        _, container_urls = self._get_links_from_tags(search_tag, url_prefix=URL_PREFIX)
+        return [], [], [], container_urls

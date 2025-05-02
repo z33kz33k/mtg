@@ -126,7 +126,7 @@ class ScgDeckScraper(DeckScraper):
         return strip_url_query(url)
 
     @override
-    def _get_deck_parser(self) -> ScgDeckTagParser:
+    def _get_sub_parser(self) -> ScgDeckTagParser:
         deck_tag = self._soup.find("div", class_="deck_listing")
         if deck_tag is None:
             deck_tag = self._soup.find("div", class_="deck_listing2")
@@ -144,7 +144,7 @@ class ScgDeckScraper(DeckScraper):
 
     @override
     def _build_deck(self) -> Deck | None:
-        return self._deck_parser.parse()
+        return self._sub_parser.parse()
 
 
 def _is_player_url(url: str) -> bool:

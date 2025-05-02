@@ -144,7 +144,6 @@ class DeckScraper(DeckParser):
         self._post_init()
 
     def _post_init(self) -> None:
-        self._deck_parser: TagBasedDeckParser | JsonBasedDeckParser | None = None
         self._metadata["url"] = self.url
         self._metadata["source"] = extract_source(self.url)
 
@@ -178,7 +177,7 @@ class DeckScraper(DeckParser):
     def _get_data_from_soup(self) -> Json:
         raise NotImplementedError
 
-    def _get_deck_parser(self) -> TagBasedDeckParser | JsonBasedDeckParser | None:
+    def _get_sub_parser(self) -> TagBasedDeckParser | JsonBasedDeckParser | None:
         return None
 
     def _validate_soup(self) -> None:
@@ -200,7 +199,7 @@ class DeckScraper(DeckParser):
             if self.DATA_FROM_SOUP:
                 self._data = self._get_data_from_soup()
                 self._validate_data()
-        self._deck_parser = self._get_deck_parser()
+        self._sub_parser = self._get_sub_parser()
 
     @abstractmethod
     @override

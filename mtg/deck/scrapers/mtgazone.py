@@ -110,7 +110,7 @@ class MtgaZoneDeckScraper(DeckScraper):
         return strip_url_query(url)
 
     @override
-    def _get_deck_parser(self) -> MtgaZoneDeckTagParser:
+    def _get_sub_parser(self) -> MtgaZoneDeckTagParser:
         deck_tag = self._soup.find("div", class_="deck-block")
         if deck_tag is None:
             raise ScrapingError(
@@ -127,7 +127,7 @@ class MtgaZoneDeckScraper(DeckScraper):
 
     @override
     def _build_deck(self) -> Deck | None:
-        return self._deck_parser.parse()
+        return self._sub_parser.parse()
 
 
 @HybridContainerScraper.registered

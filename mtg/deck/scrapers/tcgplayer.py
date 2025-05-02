@@ -256,7 +256,7 @@ class TcgPlayerInfiniteDeckScraper(DeckScraper):
         return _get_deck_data_from_api(self.url, self.API_URL_TEMPLATE, scraper=type(self))
 
     @override
-    def _get_deck_parser(self) -> TcgPlyerInfiniteDeckJsonParser:
+    def _get_sub_parser(self) -> TcgPlyerInfiniteDeckJsonParser:
         return TcgPlyerInfiniteDeckJsonParser(self._data, self._metadata)
 
     @override
@@ -269,7 +269,7 @@ class TcgPlayerInfiniteDeckScraper(DeckScraper):
 
     @override
     def _build_deck(self) -> Deck | None:
-        return self._deck_parser.parse()
+        return self._sub_parser.parse()
 
 
 @DeckUrlsContainerScraper.registered

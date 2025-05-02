@@ -130,7 +130,7 @@ class MtgCircleVideoDeckScraper(DeckScraper):
     def _get_data_from_soup(self) -> Json:
         return get_data(self._soup, type(self), self.url, self._retrieve_deck_data)
 
-    def _get_deck_parser(self) -> MtgCircleDeckJsonParser:
+    def _get_sub_parser(self) -> MtgCircleDeckJsonParser:
         return MtgCircleDeckJsonParser(self._data, self._metadata)
 
     @override

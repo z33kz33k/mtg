@@ -125,7 +125,7 @@ class AetherhubDeckScraper(DeckScraper):
             raise ScrapingError("Page not available", scraper=type(self), url=self.url)
 
     @override
-    def _get_deck_parser(self) -> AetherhubDeckTagParser:
+    def _get_sub_parser(self) -> AetherhubDeckTagParser:
         deck_tags = self._soup.find_all("div", class_="row")
         deck_tag = from_iterable(
             deck_tags, lambda t: t.text.strip().startswith(("Main", "Commander", "Companion")))
@@ -198,7 +198,7 @@ class AetherhubDeckScraper(DeckScraper):
                 rest = " ".join(rest)
                 self._metadata["event"]["name"] = rest
 
-        self._deck_parser.update_metadata(**self._metadata)
+        self._sub_parser.update_metadata(**self._metadata)
 
     @override
     def _parse_decklist(self) -> None:
@@ -206,7 +206,7 @@ class AetherhubDeckScraper(DeckScraper):
 
     @override
     def _build_deck(self) -> Deck | None:
-        return self._deck_parser.parse()
+        return self._sub_parser.parse()
 
 
 @DeckScraper.registered
@@ -224,7 +224,7 @@ class AetherhubWriteupDeckScraper(AetherhubDeckScraper):
         return strip_url_query(url)
 
     @override
-    def _get_deck_parser(self) -> AetherhubDeckTagParser:
+    def _get_sub_parser(self) -> AetherhubDeckTagParser:
         deck_tag = self._soup.find("div", id="tab_deck")
         if not deck_tag:
             raise ScrapingError("Deck tag not found", scraper=type(self), url=self.url)

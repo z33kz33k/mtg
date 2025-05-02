@@ -183,7 +183,7 @@ class MagicGgDeckScraper(DeckScraper):
         return id_
 
     @override
-    def _get_deck_parser(self) -> MagicGgOldDeckTagParser:
+    def _get_sub_parser(self) -> MagicGgOldDeckTagParser:
         deck_tag = self._soup.find("div", id=self._decklist_id)
         if deck_tag is None:
             raise ScrapingError(
