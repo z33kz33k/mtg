@@ -364,6 +364,17 @@ class FolderContainerScraper(ContainerScraper):
     def _collect(self) -> Collected:
         raise NotImplementedError
 
+    @classmethod
+    @override
+    def registered(cls, scraper_type: Type[Self]) -> Type[Self]:
+        """Class decorator for registering folder container scrapers.
+        """
+        if issubclass(scraper_type, ContainerScraper):
+            cls._REGISTRY.add(scraper_type)
+        else:
+            raise TypeError(f"Not a subclass of {ContainerScraper.__name__}: {scraper_type!r}")
+        return scraper_type
+
 
 class DeckUrlsContainerScraper(ContainerScraper):
     """Abstract scraper of deck-links-containing pages.

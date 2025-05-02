@@ -42,7 +42,37 @@ HEADERS = {
 }
 
 
-# TODO: a sub-parser to handle cases where there's no 'Export text' button
+class _SubParser(TagBasedDeckParser):
+    """A sub-parser to handle cases where there's no 'Export text' button.
+    """
+    @override
+    def _parse_metadata(self) -> None:
+        pass
+
+    @override
+    def _parse_decklist(self) -> None:
+        for li_tag in self._deck_tag.find_all("li"):
+            if li_tag.attrs.get("class") == ["card-type"]:
+                if "Commander (" in li_tag.text.strip():
+                    self._state.shift_to_commander()
+                elif "Companion (" in li_tag.text.strip():
+                    self._state.shift_to_companion()
+                elif "Sideboard (" in li_tag.text.strip():
+                    self._state.shift_to_sideboard()
+                else:
+                    if not self._state.is_maindeck:
+                        self._state.shift_to_maindeck()
+            else:
+                qty, name = li_tag.text.strip().split(maxsplit=1)
+                playset = self.get_playset(self.find_card(name), int(qty))
+                if self._state.is_maindeck:
+                    self._maindeck += playset
+                elif self._state.is_sideboard:
+                    self._sideboard += playset
+                elif self._state.is_commander:
+                    self._set_commander(playset[0])
+                elif self._state.is_companion:
+                    self._companion = playset[0]
 
 
 class CoolStuffIncDeckTagParser(TagBasedDeckParser):
@@ -55,6 +85,10 @@ class CoolStuffIncDeckTagParser(TagBasedDeckParser):
         if commander_tag:
             return extract_int(commander_tag.text.strip())
         return 0
+
+    def __init__(self, deck_tag: Tag, metadata: Json | None = None) -> None:
+        super().__init__(deck_tag, metadata)
+        self._sub_parser: _SubParser | None = None
 
     @override
     def _parse_metadata(self) -> None:
@@ -82,6 +116,9 @@ class CoolStuffIncDeckTagParser(TagBasedDeckParser):
         if fmt:
             self._update_fmt(fmt)
         if author:
+            if ", " in author:
+                author, event = author.split(", ", maxsplit=1)
+                self._metadata["event"] = event
             self._metadata["author"] = author.strip()
         if rest:
             self._metadata["event"] = "".join(rest)
@@ -90,34 +127,40 @@ class CoolStuffIncDeckTagParser(TagBasedDeckParser):
     def _parse_decklist(self) -> None:
         decklist_tag = self._deck_tag.find("a", {"data-reveal-id": "copydecklistmodal"})
         if not decklist_tag or not decklist_tag.attrs.get("data-text"):
-            # TODO: return with None and delegate to sub-parser instead
-            raise ParsingError("Decklist tag not found")
-        decklist_text = decklist_tag.attrs["data-text"].strip()
-        if "|~|" in decklist_text:
-            maindeck, sideboard = decklist_text.split("|~|")
+            sub_tag = self._deck_tag.select_one("div.card-list")
+            if not sub_tag:
+                raise ParsingError("Decklist tag not found")
+            self._sub_parser = _SubParser(sub_tag, self._metadata)
+
         else:
-            maindeck, sideboard = decklist_text, ""
-        maindeck = maindeck.split("|")
-        sideboard = sideboard.split("|") if sideboard else []
-        if self.commander_count:
-            commander, maindeck = maindeck[:self.commander_count], maindeck[self.commander_count:]
-        else:
-            commander, maindeck = [], maindeck
-        decklist = []
-        if commander:
-            decklist.append("Commander")
-            decklist.extend(commander)
-            decklist.append("")
-        decklist.append("Deck")
-        decklist += maindeck
-        if sideboard:
-            decklist.append("")
-            decklist.append("Sideboard")
-            decklist.extend(sideboard)
-        self._decklist = "\n".join(decklist)
+            decklist_text = decklist_tag.attrs["data-text"].strip()
+            if "|~|" in decklist_text:
+                maindeck, sideboard = decklist_text.split("|~|")
+            else:
+                maindeck, sideboard = decklist_text, ""
+            maindeck = maindeck.split("|")
+            sideboard = sideboard.split("|") if sideboard else []
+            if self.commander_count:
+                commander, maindeck = maindeck[:self.commander_count], maindeck[self.commander_count:]
+            else:
+                commander, maindeck = [], maindeck
+            decklist = []
+            if commander:
+                decklist.append("Commander")
+                decklist.extend(commander)
+                decklist.append("")
+            decklist.append("Deck")
+            decklist += maindeck
+            if sideboard:
+                decklist.append("")
+                decklist.append("Sideboard")
+                decklist.extend(sideboard)
+            self._decklist = "\n".join(decklist)
 
     @override
     def _build_deck(self) -> Deck | None:
+        if self._sub_parser:
+            return self._sub_parser.parse()
         return ArenaParser(self._decklist, self._metadata).parse()
 
 
@@ -132,7 +175,8 @@ class CoolStuffIncArticleScraper(HybridContainerScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return is_in_domain_but_not_main(url, "coolstuffinc.com/a")
+        return is_in_domain_but_not_main(
+            url, "coolstuffinc.com/a") and "action=search" not in url.lower()
 
     @staticmethod
     @override
@@ -158,7 +202,7 @@ class CoolStuffIncArticleScraper(HybridContainerScraper):
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
-        deck_tags = [*self._soup.select("div.gm-deck.row")]
+        deck_tags = [*self._soup.select("div.gm-deck")]
         article_tag = self._soup.find("article")
         if not article_tag:
             err = ScrapingError("Article tag not found", scraper=type(self), url=self.url)
