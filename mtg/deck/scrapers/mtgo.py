@@ -140,7 +140,6 @@ class MtgoDeckScraper(DeckScraper):
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
         self._player_name = self._parse_player_name()
-        self._deck_parser: MtgoDeckJsonParser | None = None
 
     @staticmethod
     @override
@@ -177,7 +176,7 @@ class MtgoDeckScraper(DeckScraper):
 
     @override
     def _parse_metadata(self) -> None:
-        self._deck_parser.update_metadata(**self._metadata)
+        self._sub_parser.update_metadata(**self._metadata)
 
     @override
     def _parse_decklist(self) -> None:
@@ -185,7 +184,7 @@ class MtgoDeckScraper(DeckScraper):
 
     @override
     def _build_deck(self) -> Deck | None:
-        return self._deck_parser.parse()
+        return self._sub_parser.parse()
 
 
 @DecksJsonContainerScraper.registered

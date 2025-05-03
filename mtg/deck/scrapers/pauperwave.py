@@ -8,12 +8,14 @@
 
 """
 import logging
-from typing import override
+from typing import Type, override
 
 from bs4 import Tag
 
 from mtg import Json
-from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser, is_in_domain_but_not_main
+from mtg.deck.scrapers import ContainerScraper, FolderContainerScraper, HybridContainerScraper, \
+    TagBasedDeckParser, \
+    is_in_domain_but_not_main
 from mtg.utils.scrape import ScrapingError, parse_non_english_month_date, strip_url_query
 
 _log = logging.getLogger(__name__)
@@ -101,6 +103,11 @@ class PauperwaveArticleScraper(HybridContainerScraper):
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
+    @classmethod
+    @override
+    def _get_container_scrapers(cls) -> set[Type[ContainerScraper]]:
+        return FolderContainerScraper.get_registered_scrapers()
+
     @override
     def _parse_metadata(self) -> None:
         if event_tag := self._soup.find("p", class_="has-medium-font-size"):
@@ -136,5 +143,5 @@ class PauperwaveArticleScraper(HybridContainerScraper):
             err = ScrapingError("Article tag not found", scraper=type(self), url=self.url)
             _log.warning(f"Scraping failed with: {err!r}")
             return [], deck_tags, [], []
-        deck_urls, _ = self._get_links_from_tags(*article_tag.find_all("p"))
-        return deck_urls, deck_tags, [], []
+        deck_urls, container_urls = self._get_links_from_tags(*article_tag.find_all("p"))
+        return deck_urls, deck_tags, [], container_urls

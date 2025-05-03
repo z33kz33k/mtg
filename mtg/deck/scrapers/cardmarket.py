@@ -8,13 +8,14 @@
 
 """
 import logging
-from typing import override
+from typing import Type, override
 
 import dateutil.parser
 from bs4 import Tag
 
 from mtg import Json
-from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser
+from mtg.deck.scrapers import ContainerScraper, FolderContainerScraper, HybridContainerScraper, \
+    TagBasedDeckParser
 from mtg.scryfall import COMMANDER_FORMATS, Card, all_formats
 from mtg.utils import from_iterable
 from mtg.utils.scrape import ScrapingError, strip_url_query
@@ -153,6 +154,11 @@ class CardmarketArticleScraper(HybridContainerScraper):
         if not cat_tag or cat_tag.text.strip().lower() != "magic":
             raise ScrapingError("Not a MtG article", scraper=type(self), url=self.url)
 
+    @classmethod
+    @override
+    def _get_container_scrapers(cls) -> set[Type[ContainerScraper]]:
+        return FolderContainerScraper.get_registered_scrapers()
+
     @override
     def _parse_metadata(self) -> None:
         if author_tag := self._soup.select_one("div.u-article-meta__writer"):
@@ -175,5 +181,5 @@ class CardmarketArticleScraper(HybridContainerScraper):
             err = ScrapingError("Article tag not found", scraper=type(self), url=self.url)
             _log.warning(f"Scraping failed with: {err!r}")
             return [], deck_tags, [], []
-        deck_urls, _ = self._get_links_from_tags(*article_tag.find_all("p"))
-        return deck_urls, deck_tags, [], []
+        deck_urls, container_urls = self._get_links_from_tags(*article_tag.find_all("p"))
+        return deck_urls, deck_tags, [], container_urls

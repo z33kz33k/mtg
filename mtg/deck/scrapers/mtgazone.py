@@ -10,13 +10,15 @@
 import contextlib
 import logging
 from datetime import datetime
-from typing import override
+from typing import Type, override
 
 from bs4 import Tag
 
 from mtg import Json
 from mtg.deck import Deck, Mode
-from mtg.deck.scrapers import DeckScraper, HybridContainerScraper, TagBasedDeckParser, \
+from mtg.deck.scrapers import ContainerScraper, DeckScraper, FolderContainerScraper, \
+    HybridContainerScraper, \
+    TagBasedDeckParser, \
     is_in_domain_but_not_main
 from mtg.scryfall import ARENA_FORMATS, Card
 from mtg.utils import ParsingError, extract_int, from_iterable, timed
@@ -148,6 +150,11 @@ class MtgaZoneArticleScraper(HybridContainerScraper):
     @override
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
+
+    @classmethod
+    @override
+    def _get_container_scrapers(cls) -> set[Type[ContainerScraper]]:
+        return FolderContainerScraper.get_registered_scrapers()
 
     def _collect_urls(self) -> tuple[list[str], list[str]]:
         article_tag = self._soup.find("article")

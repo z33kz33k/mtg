@@ -158,19 +158,19 @@ YT videos descriptions).
 ### Scraped decks breakdown
 | No | Format | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | commander       | 56818 |    39.12 % |
-| 2  | standard        | 31642 |    21.79 % |
-| 3  | modern          | 15297 |    10.53 % |
-| 4  | pauper          |  8794 |     6.06 % |
-| 5  | pioneer         |  8259 |     5.69 % |
-| 6  | legacy          |  4398 |     3.03 % |
-| 7  | brawl           |  3024 |     2.08 % |
-| 8  | historic        |  2444 |     1.68 % |
-| 9  | explorer        |  2313 |     1.59 % |
-| 10 | undefined       |  2103 |     1.45 % |
+| 1  | commander       | 56846 |    39.11 % |
+| 2  | standard        | 31693 |    21.81 % |
+| 3  | modern          | 15299 |    10.53 % |
+| 4  | pauper          |  8794 |     6.05 % |
+| 5  | pioneer         |  8259 |     5.68 % |
+| 6  | legacy          |  4400 |     3.03 % |
+| 7  | brawl           |  3028 |     2.08 % |
+| 8  | historic        |  2447 |     1.68 % |
+| 9  | explorer        |  2315 |     1.59 % |
+| 10 | undefined       |  2122 |     1.46 % |
 | 11 | paupercommander |  2010 |     1.38 % |
 | 12 | duel            |  1878 |     1.29 % |
-| 13 | timeless        |  1703 |     1.17 % |
+| 13 | timeless        |  1705 |     1.17 % |
 | 14 | premodern       |   954 |     0.66 % |
 | 15 | irregular       |   932 |     0.64 % |
 | 16 | vintage         |   854 |     0.59 % |
@@ -182,23 +182,23 @@ YT videos descriptions).
 | 22 | oldschool       |    50 |     0.03 % |
 | 23 | future          |    30 |     0.02 % |
 | 24 | predh           |     7 |     0.00 % |
-|  | TOTAL           | 145234 | 100.00 %|
+|  | TOTAL           | 145347 | 100.00 %|
 
 | No | Source | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | moxfield.com           | 67235 |    46.29 % |
-| 2  | arena.decklist         | 13071 |     9.00 % |
+| 1  | moxfield.com           | 67253 |    46.27 % |
+| 2  | arena.decklist         | 13125 |     9.03 % |
 | 3  | mtgo.com               | 12961 |     8.92 % |
-| 4  | mtggoldfish.com        |  9965 |     6.86 % |
-| 5  | aetherhub.com          |  9736 |     6.70 % |
-| 6  | archidekt.com          |  5405 |     3.72 % |
+| 4  | mtggoldfish.com        |  9968 |     6.86 % |
+| 5  | aetherhub.com          |  9739 |     6.70 % |
+| 6  | archidekt.com          |  5413 |     3.72 % |
 | 7  | mtgdecks.net           |  4386 |     3.02 % |
-| 8  | melee.gg               |  2855 |     1.97 % |
-| 9  | mtga.untapped.gg       |  2773 |     1.91 % |
+| 8  | melee.gg               |  2855 |     1.96 % |
+| 9  | mtga.untapped.gg       |  2785 |     1.92 % |
 | 10 | mtg.cardsrealm.com     |  2532 |     1.74 % |
-| 11 | tcgplayer.com          |  2356 |     1.62 % |
-| 12 | tappedout.net          |  1659 |     1.14 % |
-| 13 | streamdecker.com       |  1540 |     1.06 % |
+| 11 | tcgplayer.com          |  2360 |     1.62 % |
+| 12 | tappedout.net          |  1660 |     1.14 % |
+| 13 | streamdecker.com       |  1542 |     1.06 % |
 | 14 | magic.gg               |  1421 |     0.98 % |
 | 15 | mtgtop8.com            |  1356 |     0.93 % |
 | 16 | mtgazone.com           |   705 |     0.49 % |
@@ -210,9 +210,9 @@ YT videos descriptions).
 | 22 | magic.wizards.com      |   337 |     0.23 % |
 | 23 | pennydreadfulmagic.com |   280 |     0.19 % |
 | 24 | pauperwave.com         |   277 |     0.19 % |
-| 25 | scryfall.com           |   271 |     0.19 % |
+| 25 | scryfall.com           |   272 |     0.19 % |
 | 26 | cardmarket.com         |   261 |     0.18 % |
-| 27 | magic-ville.com        |   192 |     0.13 % |
+| 27 | magic-ville.com        |   199 |     0.14 % |
 | 28 | topdecked.com          |   180 |     0.12 % |
 | 29 | channelfireball.com    |   171 |     0.12 % |
 | 30 | manabox.app            |   151 |     0.10 % |
@@ -236,4 +236,4 @@ YT videos descriptions).
 | 48 | mtgarena.pro           |     3 |     0.00 % |
 | 49 | mtgotraders.com        |     1 |     0.00 % |
 | 50 | playingmtg.com         |     1 |     0.00 % |
-|  | TOTAL                  | 145234 | 100.00 %|
+|  | TOTAL                  | 145347 | 100.00 %|

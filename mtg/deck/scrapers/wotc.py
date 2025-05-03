@@ -9,7 +9,7 @@
 """
 import logging
 import re
-from typing import override
+from typing import Type, override
 
 import dateutil.parser
 from bs4 import Tag
@@ -17,7 +17,8 @@ from bs4 import Tag
 from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import TagBasedDeckParser, HybridContainerScraper
+from mtg.deck.scrapers import ContainerScraper, FolderContainerScraper, TagBasedDeckParser, \
+    HybridContainerScraper
 from mtg.scryfall import COMMANDER_FORMATS
 from mtg.utils import ParsingError, from_iterable
 from mtg.utils.scrape import ScrapingError, strip_url_query
@@ -98,6 +99,11 @@ class WotCArticleScraper(HybridContainerScraper):
         url = url.replace(locale, "/en/") if locale else url
         return strip_url_query(url)
 
+    @classmethod
+    @override
+    def _get_container_scrapers(cls) -> set[Type[ContainerScraper]]:
+        return FolderContainerScraper.get_registered_scrapers()
+
     @override
     def _parse_metadata(self) -> None:
         if time_tag := self._soup.select_one("div > time"):
@@ -112,5 +118,5 @@ class WotCArticleScraper(HybridContainerScraper):
             _log.warning(f"Scraping failed with: {err!r}")
             return [], deck_tags, [], []
         p_tags = [t for t in article_tag.find_all("p") if not t.find("deck-list")]
-        deck_urls, _ = self._get_links_from_tags(*p_tags)
-        return deck_urls, deck_tags, [], []
+        deck_urls, container_urls = self._get_links_from_tags(*p_tags)
+        return deck_urls, deck_tags, [], container_urls

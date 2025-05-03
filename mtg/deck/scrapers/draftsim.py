@@ -16,7 +16,9 @@ from bs4 import Tag
 from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import DeckScraper, HybridContainerScraper, TagBasedDeckParser, \
+from mtg.deck.scrapers import ContainerScraper, DeckScraper, FolderContainerScraper, \
+    HybridContainerScraper, \
+    TagBasedDeckParser, \
     is_in_domain_but_not_main
 from mtg.scryfall import all_formats
 from mtg.utils import ParsingError, from_iterable, get_date_from_ago_text
@@ -135,6 +137,11 @@ class DraftsimArticleScraper(HybridContainerScraper):
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
 
+    @classmethod
+    @override
+    def _get_container_scrapers(cls) -> set[Type[ContainerScraper]]:
+        return FolderContainerScraper.get_registered_scrapers()
+
     @override
     def _parse_metadata(self) -> None:
         if info_tag := self._soup.find("div", class_="post_info"):
@@ -170,8 +177,8 @@ class DraftsimArticleScraper(HybridContainerScraper):
             _log.warning(f"Scraping failed with: {err!r}")
             return [], deck_tags, [], []
         p_tags = [t for t in article_tag.find_all("p") if not t.find("div", class_="deck_list")]
-        deck_urls, _ = self._get_links_from_tags(*p_tags)
-        return deck_urls, deck_tags, [], []
+        deck_urls, container_urls = self._get_links_from_tags(*p_tags)
+        return deck_urls, deck_tags, [], container_urls
 
 
 @HybridContainerScraper.registered

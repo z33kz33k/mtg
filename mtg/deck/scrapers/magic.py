@@ -171,7 +171,6 @@ class MagicGgDeckScraper(DeckScraper):
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
         self._decklist_id = self._parse_decklist_id()
-        self._deck_parser: MagicGgOldDeckTagParser | None = None
 
     @staticmethod
     @override
@@ -194,7 +193,7 @@ class MagicGgDeckScraper(DeckScraper):
     @override
     def _parse_metadata(self) -> None:
         self._metadata["event"] = {"name": _get_event_name(self._soup)}
-        self._deck_parser.update_metadata(**self._metadata)
+        self._sub_parser.update_metadata(**self._metadata)
 
     @override
     def _parse_decklist(self) -> None:
@@ -202,7 +201,7 @@ class MagicGgDeckScraper(DeckScraper):
 
     @override
     def _build_deck(self) -> Deck | None:
-        return self._deck_parser.parse()
+        return self._sub_parser.parse()
 
 
 @DeckTagsContainerScraper.registered

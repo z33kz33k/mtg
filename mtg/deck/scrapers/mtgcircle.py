@@ -16,7 +16,9 @@ from bs4 import BeautifulSoup, Tag
 
 from mtg import Json
 from mtg.deck import Deck
-from mtg.deck.scrapers import DeckScraper, HybridContainerScraper, JsonBasedDeckParser
+from mtg.deck.scrapers import ContainerScraper, DeckScraper, FolderContainerScraper, \
+    HybridContainerScraper, \
+    JsonBasedDeckParser
 from mtg.scryfall import Card, all_formats
 from mtg.utils import from_iterable
 from mtg.utils.json import Node
@@ -102,14 +104,10 @@ class MtgCircleVideoDeckScraper(DeckScraper):
     """
     DATA_FROM_SOUP = True  # override
 
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        self._deck_parser: MtgCircleDeckJsonParser | None = None
-
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        if "mtgcircle.com/videos/" not in url.lower():
+        if "mtgcircle.com/videos/" not in url.lower() or "/draft/" in url.lower():
             return False
         *_, rest = url.lower().split("mtgcircle.com/videos/")
         if "/" not in rest:
@@ -142,7 +140,7 @@ class MtgCircleVideoDeckScraper(DeckScraper):
                           and t.text.lower() in all_formats()):
             self._update_fmt(fmt_tag.text)
 
-        self._deck_parser.update_metadata(**self._metadata)
+        self._sub_parser.update_metadata(**self._metadata)
 
     @override
     def _parse_decklist(self) -> None:
@@ -150,7 +148,7 @@ class MtgCircleVideoDeckScraper(DeckScraper):
 
     @override
     def _build_deck(self) -> Deck | None:
-        return self._deck_parser.parse()
+        return self._sub_parser.parse()
 
 
 @DeckScraper.registered
@@ -160,7 +158,7 @@ class MtgCircleRegularDeckScraper(MtgCircleVideoDeckScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        if "mtgcircle.com/decks/" not in url.lower():
+        if "mtgcircle.com/decks/" not in url.lower() or "/draft/" in url.lower():
             return False
         *_, rest = url.lower().split("mtgcircle.com/decks/")
         if "/" not in rest:
@@ -189,6 +187,11 @@ class MtgCircleArticleScraper(HybridContainerScraper):
     @override
     def is_valid_url(url: str) -> bool:
         return "mtgcircle.com/articles/" in url.lower()
+
+    @classmethod
+    @override
+    def _get_container_scrapers(cls) -> set[Type[ContainerScraper]]:
+        return FolderContainerScraper.get_registered_scrapers()
 
     def _retrieve_date_data(self, data: Json) -> Json:
         node = Node(data)
@@ -227,5 +230,5 @@ class MtgCircleArticleScraper(HybridContainerScraper):
             err = ScrapingError("Article tag not found", scraper=type(self), url=self.url)
             _log.warning(f"Scraping failed with: {err!r}")
             return [], [], decks_data, []
-        deck_urls, _ = self._get_links_from_tags(*article_tag.find_all("p"))
-        return deck_urls, [], decks_data, []
+        deck_urls, container_urls = self._get_links_from_tags(*article_tag.find_all("p"))
+        return deck_urls, [], decks_data, container_urls

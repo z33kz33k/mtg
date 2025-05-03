@@ -8,13 +8,14 @@
 
 """
 import logging
-from typing import override
+from typing import Type, override
 
 import dateutil.parser
 from bs4 import Tag
 
 from mtg import Json
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
+from mtg.deck.scrapers import ContainerScraper, DeckScraper, DeckUrlsContainerScraper, \
+    FolderContainerScraper, HybridContainerScraper, \
     TagBasedDeckParser
 from mtg.scryfall import Card
 from mtg.utils import extract_float
@@ -197,6 +198,11 @@ class MtgMetaIoArticleScraper(HybridContainerScraper):
                 "Page not available due to Internet Archive's database error", scraper=type(self),
                 url=self.url)
 
+    @classmethod
+    @override
+    def _get_container_scrapers(cls) -> set[Type[ContainerScraper]]:
+        return FolderContainerScraper.get_registered_scrapers()
+
     @override
     def _parse_metadata(self) -> None:
         if title_tag := self._soup.select_one("h1.entry-title"):
@@ -215,5 +221,5 @@ class MtgMetaIoArticleScraper(HybridContainerScraper):
             raise ScrapingError("Article tag not found", scraper=type(self), url=self.url)
         deck_tags = [*article_tag.find_all("div", class_="decklist-container")]
         p_tags = [t for t in article_tag.find_all("p") if not t.find("div", class_="deck_list")]
-        deck_urls, _ = self._get_links_from_tags(*p_tags)
-        return _strip_wm_part(*deck_urls), deck_tags, [], []
+        deck_urls, container_urls = self._get_links_from_tags(*p_tags)
+        return _strip_wm_part(*deck_urls), deck_tags, [], container_urls
