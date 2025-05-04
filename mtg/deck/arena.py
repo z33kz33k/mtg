@@ -13,7 +13,8 @@ from typing import Generator, override
 
 from mtg import Json
 from mtg.deck import ARENA_MULTIFACE_SEPARATOR, CardNotFound, DeckParser
-from mtg.scryfall import Card, MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, \
+from mtg.scryfall import COMMANDER_FORMATS, Card, \
+    MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, \
     query_api_for_card
 from mtg.utils import ParsingError, extract_int, getrepr, sanitize_whitespace, is_foreign
 
@@ -397,3 +398,43 @@ class ArenaParser(DeckParser):
                     self._companion = playset[0]
                 elif self._state.is_maindeck:
                     self._maindeck.extend(playset)
+
+
+def normalize_decklist(decklist: str, fmt: str | None = None) -> str:
+    """Normalize simple text decklists that only feature card lines and a sideboard demarcated
+    by a blank line by adding proper section headers.
+
+    If sideboard has only 1-2 card lines, it is assumed to be the commander sideboard. For
+    additional certainty, one can pass a format string and then commander sideboard is assumed only
+    if the passed format agrees.
+    """
+    commander, maindeck, sideboard, is_sideboard = [], [], [], False
+    for line in decklist.splitlines():
+        if not line:
+            is_sideboard = True
+            continue
+        if is_sideboard:
+            sideboard.append(line)
+        else:
+            maindeck.append(line)
+
+    if len(sideboard) in (1, 2):
+        if fmt is None:
+            commander, sideboard = sideboard, commander
+        else:
+            if fmt in COMMANDER_FORMATS:
+                commander, sideboard = sideboard, commander
+
+    decklist = []
+    if commander:
+        decklist.append("Commander")
+        decklist.extend(commander)
+        decklist.append("")
+    decklist.append("Deck")
+    decklist.extend(maindeck)
+    if sideboard:
+        decklist.append("")
+        decklist.append("Sideboard")
+        decklist.extend(sideboard)
+
+    return "\n".join(decklist)

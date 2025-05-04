@@ -23,7 +23,7 @@ _log = logging.getLogger(__name__)
 
 @DeckScraper.registered
 class MtgVaultDeckScraper(DeckScraper):
-    """Scraper of MTGVault video decklist page.
+    """Scraper of MTGVault decklist page.
     """
     @staticmethod
     @override

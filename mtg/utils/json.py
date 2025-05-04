@@ -91,6 +91,24 @@ class Node:
     def is_root(self) -> bool:
         return not self.parents
 
+    @property
+    def next_sibling(self) -> Self | None:
+        if self.is_root:
+            return None
+        try:
+            return self.parent.children[self.parent.children.index(self) + 1]
+        except IndexError:
+            return None
+
+    @property
+    def previous_sibling(self) -> Self | None:
+        if self.is_root:
+            return None
+        try:
+            return self.parent.children[self.parent.children.index(self) - 1]
+        except IndexError:
+            return None
+
     def __init__(self, data: Json, *parents: Self, key: str | int | None = None) -> None:
         self._data, self._parents, self._key = data, parents, key
         self._children = self._get_children()
@@ -118,8 +136,13 @@ class Node:
         return hash(self.path)
 
     def __iter__(self) -> Iterator[Self]:
-        for node in self.find_all():
-            yield node
+        return iter(self.children)
+
+    def iter(self) -> Iterator[Self]:
+        """Yield all descendants of this node.
+        """
+        for descendant in self.find_all():
+            yield descendant
 
     @classmethod
     def build_path(cls, *nodes: Self) -> str:

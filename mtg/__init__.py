@@ -126,6 +126,7 @@ from mtg.deck.scrapers.streamdecker import DeckScraper
 from mtg.deck.scrapers.tappedout import DeckScraper
 from mtg.deck.scrapers.tcdecks import DeckScraper
 from mtg.deck.scrapers.tcgplayer import DeckScraper
+from mtg.deck.scrapers.tcgrocks import DeckScraper
 from mtg.deck.scrapers.topdeck import DeckUrlsContainerScraper
 from mtg.deck.scrapers.topdecked import DeckScraper
 from mtg.deck.scrapers.untapped import DeckScraper
