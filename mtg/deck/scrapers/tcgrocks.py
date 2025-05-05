@@ -4,7 +4,7 @@
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape TCGRocks decklists.
 
-    TCGRocks is a sister site of MTGRocks and its decklists are sometimes features in MTGRocks
+    TCGRocks is a sister site of MTGRocks and its decklists are sometimes featured in MTGRocks
     articles.
 
     @author: z33k

@@ -1,0 +1,132 @@
+"""
+
+    mtg.deck.scrapers.herald.py
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Scrape Commander's Herald decklists.
+
+    @author: z33k
+
+"""
+import logging
+from typing import Type, override
+
+import dateutil.parser
+from bs4 import Tag
+
+from mtg import Json
+from mtg.deck import Deck
+from mtg.deck.arena import ArenaParser
+from mtg.deck.scrapers import ContainerScraper, FolderContainerScraper, HybridContainerScraper, \
+    TagBasedDeckParser, is_in_domain_but_not_main
+from mtg.utils.scrape import ScrapingError, strip_url_query
+
+_log = logging.getLogger(__name__)
+
+
+class CommandersHeraldDeckTagParser(TagBasedDeckParser):
+    """Parser of a Commander's Herald decklist HTML tag.
+    """
+    @override
+    def _parse_metadata(self) -> None:
+        self._metadata["name"] = self._deck_tag.attrs["name"]
+        if author := self._metadata.get("article", {}).get("author"):
+            self._metadata["author"] = author
+        if date := self._metadata.get("article", {}).get("date"):
+            self._metadata["date"] = date
+        if cats := self._metadata.get("article", {}).get("tags"):
+            fmt = self.derive_format_from_words(*cats)
+            self._update_fmt(fmt or "commander")
+
+    @override
+    def _parse_decklist(self) -> None:
+        decklist = self._deck_tag.attrs["cards"]
+        lines = ["Commander"]
+        for line in decklist.splitlines():
+            if line.startswith("*"):
+                lines.append(line[1:])
+            elif line == "[/Commander]":
+                lines += ["", "Deck"]
+        self._decklist = "\n".join(lines)
+
+    def _build_deck(self) -> Deck | None:
+        return ArenaParser(self._decklist, self._metadata).parse()
+
+
+@HybridContainerScraper.registered
+class CommandersHeraldArticleScraper(HybridContainerScraper):
+    """Scraper of Commander's Herald article page.
+    """
+    CONTAINER_NAME = "Commander's Herald article"  # override
+    TAG_BASED_DECK_PARSER = CommandersHeraldDeckTagParser  # override
+
+    @staticmethod
+    @override
+    def is_valid_url(url: str) -> bool:
+        tokens = ('/60-to-100-caw-go', '/all-edh-deck-guides', '/articles', '/author/',
+                  '/cedh-deck-guides', '/dueling-deck-techs-aristocrats', '/games/', "/category/",
+                  '/about-us','/contact-us', '/privacy-policy', '/terms-of-service')
+        return is_in_domain_but_not_main(
+            url, "commandersherald.com") and not any(t in url.lower() for t in tokens)
+
+    @staticmethod
+    @override
+    def sanitize_url(url: str) -> str:
+        return strip_url_query(url)
+
+    @classmethod
+    @override
+    def _get_container_scrapers(cls) -> set[Type[ContainerScraper]]:
+        return FolderContainerScraper.get_registered_scrapers()
+
+    @override
+    def _parse_metadata(self) -> None:
+        if header_tag := self._soup.select_one("header.article-header"):
+            if title_tag := header_tag.find("h1"):
+                self._metadata.setdefault("article", {})["title"] = title_tag.text.strip()
+            if author_tag := header_tag.select_one("div.author-meta"):
+                if p_tag := author_tag.find("p"):
+                    if " • " in p_tag.text.strip():
+                        author, date_text = p_tag.text.strip().split(" • ", maxsplit=1)
+                        self._metadata.setdefault("article", {})["author"] = author.strip()
+                        self._metadata.setdefault("article", {})["date"] = dateutil.parser.parse(
+                            date_text.strip()).date()
+                if categories := [a.text.strip() for a in author_tag.select("a.badge")]:
+                    self._metadata.setdefault(
+                "article", {})["tags"] = self.process_metadata_deck_tags(categories)
+
+    @override
+    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
+        # deck_tags = [*self._soup.select("div.edhrecp__deck.mtgh")]
+        deck_tags = [
+            tag.find("span") for tag in self._soup.select("div.edhrecp__deck.mtgh")
+            if tag.find("span")]
+        article_tag = self._soup.select_one("section.article-content")
+        if not article_tag:
+            err = ScrapingError("Article tag not found", scraper=type(self), url=self.url)
+            _log.warning(f"Scraping failed with: {err!r}")
+            return [], deck_tags, [], []
+        deck_urls, container_urls = self._get_links_from_tags(*article_tag.find_all("p"))
+        return deck_urls, deck_tags, [], container_urls
+
+
+# @HybridContainerScraper.registered
+# class CoolStuffIncAuthorScraper(HybridContainerScraper):
+#     """Scraper of CoolStuffInc author page.
+#     """
+#     CONTAINER_NAME = "CoolStuffInc author"  # override
+#     HEADERS = HEADERS  # override
+#     CONTAINER_SCRAPERS = CoolStuffIncArticleScraper,  # override
+#
+#     @staticmethod
+#     @override
+#     def is_valid_url(url: str) -> bool:
+#         tokens = "coolstuffinc.com/a/", "action=search", "author"
+#         return all(t in url.lower() for t in tokens)
+#
+#     @override
+#     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
+#         search_tag = self._soup.select_one("div#article-search-results")
+#         if not search_tag:
+#             raise ScrapingError("Search results tag not found", scraper=type(self), url=self.url)
+#         _, container_urls = self._get_links_from_tags(search_tag, url_prefix=URL_PREFIX)
+#         return [], [], [], container_urls

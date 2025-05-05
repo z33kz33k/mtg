@@ -95,6 +95,7 @@ from mtg.deck.scrapers.fireball import DeckScraper
 from mtg.deck.scrapers.flexslot import DeckScraper
 from mtg.deck.scrapers.goldfish import DeckScraper
 from mtg.deck.scrapers.hareruya import DeckScraper
+from mtg.deck.scrapers.herald import HybridContainerScraper
 from mtg.deck.scrapers.magic import DeckScraper
 from mtg.deck.scrapers.magicblogs import HybridContainerScraper
 from mtg.deck.scrapers.magicville import DeckScraper

@@ -36,13 +36,17 @@ from mtg.utils.scrape import extract_url, getsoup
 _log = logging.getLogger(__name__)
 VIDEO_URL_TEMPLATE = "https://www.youtube.com/watch?v={}"
 CHANNEL_URL_TEMPLATE = "https://www.youtube.com/channel/{}"
-CHANNELS_COUNT = len([d for d in CHANNELS_DIR.iterdir() if d.is_dir()])
 ACTIVE_THRESHOLD = 14  # days (2 weeks)
 DORMANT_THRESHOLD = 30 * 3  # days (ca 3 months)
 ABANDONED_THRESHOLD = 30 * 12  # days (ca. 1 yr)
 DECK_STALE_THRESHOLD = 50  # videos
 VERY_DECK_STALE_THRESHOLD = 100  # videos
 EXCESSIVELY_DECK_STALE_THRESHOLD = 150  # videos
+
+
+def get_channels_count() -> int:
+    return len([d for d in CHANNELS_DIR.iterdir() if d.is_dir()])
+
 
 
 # TODO: formalize video data structure (#231)
@@ -319,7 +323,7 @@ def find_orphans() -> dict[str, list[str]]:
 
     """
     regular_ids, extended_ids = {}, {}
-    for ch in tqdm(load_channels(), total=CHANNELS_COUNT, desc="Loading channels data..."):
+    for ch in tqdm(load_channels(), total=get_channels_count(), desc="Loading channels data..."):
         for v in ch.videos:
             for deck in v["decks"]:
                 path_regular = DataPath(ch.id, v["id"], deck["decklist_id"])
@@ -348,7 +352,8 @@ def get_aggregate_deck_data() -> tuple[Counter, Counter]:
     """Get aggregated deck data across all channels.
     """
     decks = [
-        d for ch in tqdm(load_channels(), total=CHANNELS_COUNT, desc="Loading channels data...")
+        d for ch
+        in tqdm(load_channels(), total=get_channels_count(), desc="Loading channels data...")
         for d in ch.decks]
     fmts = []
     for d in decks:
@@ -491,7 +496,8 @@ def find_dangling_decklists() -> dict[str, str]:
     loaded_regular, loaded_extended = manager.regular, manager.extended
     dangling, scraped_regular, scraped_extended = {}, set(), set()
     decks = [
-        d for ch in tqdm(load_channels(), total=CHANNELS_COUNT, desc="Loading channels data...")
+        d for ch
+        in tqdm(load_channels(), total=get_channels_count(), desc="Loading channels data...")
         for d in ch.decks]
     for d in decks:
         scraped_regular.add(d["decklist_id"])
@@ -696,7 +702,7 @@ def dump_decks(
     timestamp = datetime.now().strftime(FILENAME_TIMESTAMP_FORMAT)
     dstdir = dstdir or DECKS_DIR / "yt" / timestamp
     dstdir = getdir(dstdir)
-    channels = [*tqdm(load_channels(), total=CHANNELS_COUNT, desc="Loading channels data...")]
+    channels = [*tqdm(load_channels(), total=get_channels_count(), desc="Loading channels data...")]
     total = sum(len(ch.decks) for ch in channels)
     with logging_disabled():
         for exporter, channel_dir in tqdm(

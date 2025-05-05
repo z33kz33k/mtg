@@ -120,6 +120,9 @@ class CoolStuffIncDeckTagParser(TagBasedDeckParser):
         if rest:
             self._metadata["event"] = "".join(rest)
 
+        if date := self._metadata.get("article", {}).get("date"):
+            self._metadata["date"] = date
+
     @override
     def _parse_decklist(self) -> None:
         decklist_tag = self._deck_tag.find("a", {"data-reveal-id": "copydecklistmodal"})
@@ -195,7 +198,7 @@ class CoolStuffIncArticleScraper(HybridContainerScraper):
                 if author_tag := byline_tag.find("a"):
                     self._metadata.setdefault("article", {})["author"] = author_tag.text.strip()
                 if date_tag := byline_tag.find("div", string=lambda s: s and "Posted on " in s):
-                    self._metadata["date"] = dateutil.parser.parse(
+                    self._metadata.setdefault("article", {})["date"] = dateutil.parser.parse(
                         date_tag.text.strip().removeprefix("Posted on ")).date()
 
     @override

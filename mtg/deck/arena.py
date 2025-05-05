@@ -408,12 +408,12 @@ def normalize_decklist(decklist: str, fmt: str | None = None) -> str:
     additional certainty, one can pass a format string and then commander sideboard is assumed only
     if the passed format agrees.
     """
-    commander, maindeck, sideboard, is_sideboard = [], [], [], False
+    commander, maindeck, sideboard, sideboard_on = [], [], [], False
     for line in decklist.splitlines():
         if not line:
-            is_sideboard = True
+            sideboard_on = True
             continue
-        if is_sideboard:
+        if sideboard_on:
             sideboard.append(line)
         else:
             maindeck.append(line)
