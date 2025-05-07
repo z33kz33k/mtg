@@ -696,7 +696,7 @@ def _dump_data_gen(
 
 
 def dump_decks(
-        dstdir: PathLike = "", fmt: Literal["arena", "forge", "json", "xmage"] = "xmage") -> None:
+        dstdir: PathLike = "", fmt: Literal["arena", "forge", "json", "xmage"] = "forge") -> None:
     """Export all decks from all channels to ```dstdir``` in the format provided.
     """
     timestamp = datetime.now().strftime(FILENAME_TIMESTAMP_FORMAT)

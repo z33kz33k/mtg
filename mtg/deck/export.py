@@ -189,7 +189,7 @@ class Exporter:
     @classmethod
     def _to_forge_line(cls, playset: list[Card]) -> str:
         card = playset[0]
-        return cls.FORGE_DCK_TEMPLATE.format(len(playset), card.first_face_name, card.set.upper())
+        return cls.FORGE_LINE_TEMPLATE.format(len(playset), card.first_face_name, card.set.upper())
 
     def _get_forge_metadata_lines(self) -> list[str]:
         lines = ["[metadata]"]
