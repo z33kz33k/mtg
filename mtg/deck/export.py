@@ -48,17 +48,7 @@ class Exporter:
     """Export a deck to various text file formats.
     """
     NAME_SEP = "_"
-    FORGE_DCK_TEMPLATE = """[metadata]
-Name={}
-[Commander]
-{}
-[Main]
-{}
-[Sideboard]
-{}
-"""
-    FORGE_LINE_TEMPLATE = "{} {}|{}|1"
-    FORGE_SIDEBOARD_LINE_TEMPLATE = "SB: {} [{}:{}] {}"
+    FORGE_LINE_TEMPLATE = "{} {}|{}"
     XMAGE_LINE_TEMPLATE = "{} [{}:{}] {}"
     XMAGE_SIDEBOARD_LINE_TEMPLATE = "SB: {} [{}:{}] {}"
 
@@ -201,6 +191,21 @@ Name={}
         card = playset[0]
         return cls.FORGE_DCK_TEMPLATE.format(len(playset), card.first_face_name, card.set.upper())
 
+    def _get_forge_metadata_lines(self) -> list[str]:
+        lines = ["[metadata]"]
+        lines += [f"Name={self.name}"]
+        if self._deck.format:
+            lines += [f"Format={self._deck.format}"]
+        if author :=self._deck.metadata.get("author"):
+            lines += [f"Author={author}"]
+        if date := self._deck.metadata.get("date"):
+            lines += [f"Date={date}"]
+        if source := sanitize_source(self._deck.source) if self._deck.source else "":
+            lines += [f"Source={source}"]
+        if url := self._deck.metadata.get("video_url") or self._deck.metadata.get("url"):
+            lines += [f"URL={url}"]
+        return lines
+
     def _build_forge(self) -> str:
         commander = [
             self._to_forge_line(playset) for playset in
@@ -213,8 +218,13 @@ Name={}
         sideboard = [
             self._to_forge_line(playset) for playset in
             aggregate(*self._deck.sideboard).values()] if self._deck.sideboard else []
-        return self.FORGE_DCK_TEMPLATE.format(
-            self.name, "\n".join(commander), "\n".join(maindeck), "\n".join(sideboard))
+        lines = self._get_forge_metadata_lines()
+        if commander:
+            lines += ["[Commander]", *commander]
+        lines += ["[Main]", *maindeck]
+        if sideboard:
+            lines += ["[Sideboard]", *sideboard]
+        return "\n".join(lines)
 
     def to_forge(self, dstdir: PathLike = "") -> None:
         """Export deck to a Forge MTG deckfile format (.dck).
@@ -308,17 +318,17 @@ def from_forge(path: PathLike) -> Deck:
         path: path to a .dck file
     """
     file = getfile(path, ext=".dck")
-    commander, maindeck, sideboard, metadata = None, [], [], {}
-    commander_on, maindeck_on, sideboard_on = False, False, False
+    commander, maindeck, sideboard, metadata = [], [], [], {}
+    metadata_on, commander_on, maindeck_on, sideboard_on = False, False, False, False
     for line in file.read_text(encoding="utf-8").splitlines():
-        if line.startswith("Name="):
-            metadata = {"name": (line.removeprefix("Name="))}
-            # TODO: handle other metadata
+        if line == "[metadata]":
+            metadata_on = True
+            continue
         elif line == "[Commander]":
-            commander_on = True
+            metadata_on, commander_on = False, True
             continue
         elif line == "[Main]":
-            commander_on, maindeck_on = False, True
+            metadata_on, commander_on, maindeck_on = False, False, True
             continue
         elif line == "[Sideboard]":
             maindeck_on, sideboard_on = False, True
@@ -326,14 +336,27 @@ def from_forge(path: PathLike) -> Deck:
         elif not line:
             continue
 
-        if commander_on:
-            commander = _parse_forge_line(line)[0]
+        if metadata_on:
+            if line.startswith("Name="):
+                metadata["name"] = line.removeprefix("Name=")
+            elif line.startswith("Format="):
+                metadata["format"] = line.removeprefix("Format=")
+            elif line.startswith("Author="):
+                metadata["author"] = line.removeprefix("Author=")
+            elif line.startswith("Date="):
+                metadata["date"] = line.removeprefix("Date=")
+            elif line.startswith("Source="):
+                metadata["source"] = line.removeprefix("Source=")
+            elif line.startswith("URL="):
+                metadata["url"] = line.removeprefix("URL=")
+        elif commander_on:
+            commander.append(_parse_forge_line(line)[0])
         elif maindeck_on:
             maindeck += _parse_forge_line(line)
         elif sideboard_on:
             sideboard += _parse_forge_line(line)
 
-    deck = Deck(maindeck, sideboard, commander, metadata=metadata)
+    deck = Deck(maindeck, sideboard, *commander, metadata=metadata)
     if not deck:
         raise ParsingError(f"Unable to parse '{path}' into a deck")
     return deck
