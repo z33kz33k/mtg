@@ -377,8 +377,8 @@ def from_forge(path: PathLike) -> Deck:
 
 
 def _parse_xmage_line(line: str) -> list[Card]:
-    quantity, set_part, name = line.split()
-    set_code, collector_number = set_part[1:-1]
+    quantity, set_part, name = line.split(maxsplit=2)
+    set_code, collector_number = set_part[1:-1].split(":")
     card = DeckParser.find_card(name, (set_code, collector_number))
     if not card:
         raise CardNotFound(f"Unable to find {name!r}")
@@ -406,6 +406,8 @@ def from_xmage(path: PathLike) -> Deck:
             metadata["source"] = line.removeprefix("SOURCE:")
         elif line.startswith("URL:"):
             metadata["url"] = line.removeprefix("URL:")
+        elif line.startswith("LAYOUT "):
+            continue  # ignore XMage internal specifics
         else:
             if line.startswith("SB: "):
                 sideboard += _parse_xmage_line(line.removeprefix("SB: "))
@@ -432,12 +434,8 @@ def from_json(path: PathLike) -> Deck:
     return ArenaParser(data["decklist"], data["metadata"]).parse()
 
 
-def convert(path: PathLike, fmt: Literal["arena", "forge", "json", "xmage"] = "forge") -> None:
-    """Convert a deckfile from one format to another.
-    """
-    if fmt not in FORMATS:
-        raise ValueError(f"Invalid conversion format: {fmt!r}. Must be one of: {FORMATS}")
-    file = getfile(path, ".dck", ".json", ".txt")
+def _convert_file(
+        file: Path, fmt: Literal["arena", "forge", "json", "xmage"], dst_dir: Path) -> None:
     text = file.read_text(encoding="utf-8")
     if text[0] == "{":
         deck = from_json(file)
@@ -447,20 +445,48 @@ def convert(path: PathLike, fmt: Literal["arena", "forge", "json", "xmage"] = "f
         deck = from_arena(file)
     else:
         deck = from_xmage(file)
-
     if fmt == "arena":
-        Exporter(deck, file.stem).to_arena(file.parent)
+        Exporter(deck, file.stem).to_arena(dst_dir)
     elif fmt == "forge":
-        if file.suffix.lower() == ".dck":
+        if file.suffix.lower() == ".dck" and dst_dir == file.parent:  # don't overwrite original
             name = f"{file.stem}_forge"
         else:
             name = file.stem
-        Exporter(deck, name).to_forge(file.parent)
+        Exporter(deck, name).to_forge(dst_dir)
     elif fmt == "json":
-        Exporter(deck, file.stem).to_json(file.parent)
+        Exporter(deck, file.stem).to_json(dst_dir)
     else:
-        if file.suffix.lower() == ".dck":
+        if file.suffix.lower() == ".dck" and dst_dir == file.parent:  # don't overwrite original
             name = f"{file.stem}_xmage"
         else:
             name = file.stem
-        Exporter(deck, name).to_xmage(file.parent)
+        Exporter(deck, name).to_xmage(dst_dir)
+
+
+def convert(
+        src_path: PathLike, fmt: Literal["arena", "forge", "json", "xmage"],
+        dst_dir: PathLike = "") -> None:
+    """Convert deckfile(s) to the specified format.
+
+    Printings-specific card data may not be preserved during conversion.
+
+    Args:
+        src_path: source path to a deckfile or directory containing them
+        fmt: conversion format
+        dst_dir: optionally, a destination directory
+    """
+    if fmt not in FORMATS:
+        raise ValueError(f"Invalid conversion format: {fmt!r}. Must be one of: {FORMATS}")
+    file = getfile(src_path, ".dck", ".json", ".txt", suppress_errors=True)
+    if file:
+        dst_dir = getdir(dst_dir) if dst_dir else file.parent
+        _convert_file(file, fmt, dst_dir)
+    else:
+        folder = getdir(src_path, create_missing=False)
+        root = getdir(dst_dir) if dst_dir else folder
+        deckfiles = [
+            f for f in folder.rglob("*")
+            if f.is_file() and f.suffix.lower() in {".dck", ".json", ".txt"}]
+        for deckfile in deckfiles:
+            dst_dir = (root / deckfile.relative_to(folder)).parent
+            _convert_file(deckfile, fmt, dst_dir)

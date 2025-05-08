@@ -4,6 +4,14 @@
     ~~~~~~~~~~~~~~~
     Handle Scryfall data.
 
+    This module provides convenient abstractions for working with Scryfall data.
+
+    Mind that for local lookups it only downloads "Oracle Cards" bulk data (see:
+    https://scryfall.com/docs/api/bulk-data for details) and falls back on calling Scryfall API
+    only on lookup failures. As Oracle Cards data contains only the most recent version of
+    cards with potentially multiple printings, this means that some printings-specific data may
+    be 'lost in translation' (e.g. during deck conversions).
+
     @author: z33k
 
 """
@@ -12,6 +20,7 @@ import json
 import logging
 import math
 import re
+from asyncio.exceptions import TimeoutError as AsyncIoTimeoutError
 from collections import defaultdict, namedtuple
 from dataclasses import dataclass
 from datetime import date
@@ -19,13 +28,12 @@ from enum import Enum
 from functools import cached_property, lru_cache
 from pprint import pprint
 from types import EllipsisType
-from typing import Callable, Iterable, Optional, Self
+from typing import Callable, Iterable, Self
 
 import scrython
+from aiohttp.client_exceptions import ContentTypeError, ServerTimeoutError
 from tqdm import tqdm
 from unidecode import unidecode
-from aiohttp.client_exceptions import ContentTypeError, ServerTimeoutError
-from asyncio.exceptions import TimeoutError as AsyncIoTimeoutError
 
 from mtg import DATA_DIR, Json
 from mtg.mtgwiki import CLASSES, RACES
