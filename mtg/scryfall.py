@@ -1214,12 +1214,12 @@ def set_cards(*set_codes: str, data: Iterable[Card] | None = None) -> set[Card]:
 
     Run all_sets() to see available set codes.
     """
-    set_codes = [code.lower() for code in set_codes]
+    set_codes = {code.lower() for code in set_codes}
     available = set(all_set_codes())
     for code in set_codes:
         if code not in available:
             raise ValueError(f"Invalid set code: {code!r}. Can be only one of: '{all_set_codes()}'")
-    return find_cards(lambda c: c.set in [code.lower() for code in set_codes], data)
+    return find_cards(lambda c: c.set in set_codes, data)
 
 
 @lru_cache

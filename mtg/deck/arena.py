@@ -317,6 +317,10 @@ def group_arena_lines(*arena_lines: str) -> Generator[list[str], None, None]:
         yield current_group
 
 
+def is_arena_decklist(decklist: str) -> bool:
+    return all(is_arena_line(l) or is_empty(l) for l in decklist.splitlines())
+
+
 class IllFormedArenaDecklist(ParsingError):
     """Raised on no ill-formed Arena decklists being parsed as one.
     """

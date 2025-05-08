@@ -38,14 +38,14 @@ def getdir(path: PathLike, create_missing=True) -> Path:
     return dir_
 
 
-def getfile(path: PathLike, ext="") -> Path:
+def getfile(path: PathLike, *extensions: str) -> Path:
     """Return a path to existing file at ``path``.
     """
     f = Path(path)
     if not f.is_file():
         raise FileNotFoundError(f"Not a file: '{f.resolve()}'")
-    if ext and not f.suffix.lower() == ext.lower():
-        raise ValueError(f"Not a {ext!r} file")
+    if extensions and not f.suffix.lower() in {ext.lower() for ext in extensions}:
+        raise ValueError(f"Not a {extensions} file")
     return f
 
 

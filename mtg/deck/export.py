@@ -9,22 +9,24 @@
 import json
 import logging
 from pathlib import Path
+from typing import Literal
 
 from mtg import OUTPUT_DIR, PathLike
-from mtg.deck import Deck, DeckParser, Mode
-from mtg.deck.arena import ArenaParser, is_arena_line, is_empty
+from mtg.deck import CardNotFound, Deck, DeckParser, Mode
+from mtg.deck.arena import ArenaParser, IllFormedArenaDecklist, is_arena_decklist
 from mtg.deck.scrapers.cardsrealm import get_source as cardsrealm_get_source
 from mtg.deck.scrapers.edhrec import get_source as edhrec_get_source
 from mtg.deck.scrapers.melee import get_source as melee_get_source
 from mtg.deck.scrapers.mtgarenapro import get_source as mtgarenapro_get_source
 from mtg.deck.scrapers.scg import get_source as scg_get_source
 from mtg.deck.scrapers.tcgplayer import get_source as tcgplayer_get_source
-from mtg.scryfall import Card, aggregate
-from mtg.utils import ParsingError
+from mtg.scryfall import Card, aggregate, set_cards
+from mtg.utils import ParsingError, from_iterable
 from mtg.utils.json import serialize_dates
 from mtg.utils.files import getdir, getfile, sanitize_filename, truncate_path
 
 _log = logging.getLogger(__name__)
+FORMATS = "arena", "forge", "json", "xmage"
 
 
 def sanitize_source(src: str) -> str:
@@ -298,17 +300,29 @@ def from_arena(path: PathLike) -> Deck:
     Args:
         path: path to an Arena deck file
     """
-    file = getfile(path, ext=".txt")
+    file = getfile(path, ".txt")
     decklist = file.read_text(encoding="utf-8")
-    if not all(is_arena_line(l) or is_empty(l) for l in decklist.splitlines()):
-        raise ValueError(f"Not an MTG Arena deck file: '{file}'")
+    if not is_arena_decklist(decklist):
+        raise IllFormedArenaDecklist(f"Not an MTG Arena deck file: '{file}'")
     return ArenaParser(decklist).parse(suppressed_errors=())
 
 
 def _parse_forge_line(line: str) -> list[Card]:
     quantity, rest = line.split(maxsplit=1)
-    name, _, _ = rest.split("|")
-    return DeckParser.get_playset(DeckParser.find_card(name), int(quantity))
+    if "|" in rest:
+        name, set_code, *_ = rest.strip().split("|")
+        cards = set_cards(set_code)
+        card = from_iterable(cards, lambda c: c.first_face_name == name)
+        if not card:
+            _log.warning(f"Card {name!r} not found in set {set_code!r}")
+        card = DeckParser.find_card(name)
+    else:
+        name = rest.strip()
+        card = DeckParser.find_card(name)
+
+    if not card:
+        raise CardNotFound(f"Unable to find {name!r}")
+    return DeckParser.get_playset(card, int(quantity))
 
 
 def from_forge(path: PathLike) -> Deck:
@@ -317,7 +331,7 @@ def from_forge(path: PathLike) -> Deck:
     Args:
         path: path to a .dck file
     """
-    file = getfile(path, ext=".dck")
+    file = getfile(path, ".dck")
     commander, maindeck, sideboard, metadata = [], [], [], {}
     metadata_on, commander_on, maindeck_on, sideboard_on = False, False, False, False
     for line in file.read_text(encoding="utf-8").splitlines():
@@ -360,3 +374,93 @@ def from_forge(path: PathLike) -> Deck:
     if not deck:
         raise ParsingError(f"Unable to parse '{path}' into a deck")
     return deck
+
+
+def _parse_xmage_line(line: str) -> list[Card]:
+    quantity, set_part, name = line.split()
+    set_code, collector_number = set_part[1:-1]
+    card = DeckParser.find_card(name, (set_code, collector_number))
+    if not card:
+        raise CardNotFound(f"Unable to find {name!r}")
+    return DeckParser.get_playset(card, int(quantity))
+
+
+def from_xmage(path: PathLike) -> Deck:
+    """Import a deck from a XMage deckfile format (.dck).
+
+    Args:
+        path: path to a .dck file
+    """
+    file = getfile(path, ".dck")
+    commander, maindeck, sideboard, metadata = [], [], [], {}
+    for line in file.read_text(encoding="utf-8").splitlines():
+        if line.startswith("NAME:"):
+            metadata["name"] = line.removeprefix("NAME:")
+        elif line.startswith("FORMAT:"):
+            metadata["format"] = line.removeprefix("FORMAT:")
+        elif line.startswith("AUTHOR:"):
+            metadata["author"] = line.removeprefix("AUTHOR:")
+        elif line.startswith("DATE:"):
+            metadata["date"] = line.removeprefix("DATE:")
+        elif line.startswith("SOURCE:"):
+            metadata["source"] = line.removeprefix("SOURCE:")
+        elif line.startswith("URL:"):
+            metadata["url"] = line.removeprefix("URL:")
+        else:
+            if line.startswith("SB: "):
+                sideboard += _parse_xmage_line(line.removeprefix("SB: "))
+            else:
+                maindeck += _parse_xmage_line(line)
+
+    if len(sideboard) in (1, 2):
+        commander, sideboard = sideboard, commander
+
+    deck = Deck(maindeck, sideboard, *commander, metadata=metadata)
+    if not deck:
+        raise ParsingError(f"Unable to parse '{path}' into a deck")
+    return deck
+
+
+def from_json(path: PathLike) -> Deck:
+    """Import deck from a JSON deckfile.
+
+    Args:
+        path: path to a JSON deckfile
+    """
+    file = getfile(path, ".json")
+    data = json.loads(file.read_text(encoding="utf-8"))
+    return ArenaParser(data["decklist"], data["metadata"]).parse()
+
+
+def convert(path: PathLike, fmt: Literal["arena", "forge", "json", "xmage"] = "forge") -> None:
+    """Convert a deckfile from one format to another.
+    """
+    if fmt not in FORMATS:
+        raise ValueError(f"Invalid conversion format: {fmt!r}. Must be one of: {FORMATS}")
+    file = getfile(path, ".dck", ".json", ".txt")
+    text = file.read_text(encoding="utf-8")
+    if text[0] == "{":
+        deck = from_json(file)
+    elif "[Main]" in text or "[main]" in text:
+        deck = from_forge(file)
+    elif is_arena_decklist(text):
+        deck = from_arena(file)
+    else:
+        deck = from_xmage(file)
+
+    if fmt == "arena":
+        Exporter(deck, file.stem).to_arena(file.parent)
+    elif fmt == "forge":
+        if file.suffix.lower() == ".dck":
+            name = f"{file.stem}_forge"
+        else:
+            name = file.stem
+        Exporter(deck, name).to_forge(file.parent)
+    elif fmt == "json":
+        Exporter(deck, file.stem).to_json(file.parent)
+    else:
+        if file.suffix.lower() == ".dck":
+            name = f"{file.stem}_xmage"
+        else:
+            name = file.stem
+        Exporter(deck, name).to_xmage(file.parent)

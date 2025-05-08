@@ -16,7 +16,7 @@ from tqdm import tqdm
 
 from mtg import DECKS_DIR, FILENAME_TIMESTAMP_FORMAT, Json, PathLike
 from mtg.deck import Deck
-from mtg.deck.export import Exporter
+from mtg.deck.export import Exporter, FORMATS as EXPORT_FORMATS
 from mtg.deck.scrapers import DeckScraper
 from mtg.scryfall import Card
 from mtg.utils import logging_disabled, timed
@@ -93,6 +93,8 @@ class Scraper:
     def __init__(
             self, dump_fmt: Literal["arena", "forge", "json", "xmage"] = "forge",
             only_new=True) -> None:
+        if dump_fmt not in EXPORT_FORMATS:
+            raise ValueError(f"Invalid dump format: {dump_fmt!r}. Must be one of: {EXPORT_FORMATS}")
         self._dump_fmt = dump_fmt
         self._already_scraped = self._get_already_scraped() if only_new else set()
         self._links = [l for l in _scrape_links() if l not in self._already_scraped]

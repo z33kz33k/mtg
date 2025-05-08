@@ -25,7 +25,7 @@ from youtubesearchpython import CustomSearch, VideoSortOrder, VideoUploadDateFil
 from mtg import AVOIDED_DIR, DECKS_DIR, FILENAME_TIMESTAMP_FORMAT, PathLike, \
     READABLE_TIMESTAMP_FORMAT, README
 from mtg.deck.arena import ArenaParser
-from mtg.deck.export import Exporter, sanitize_source
+from mtg.deck.export import Exporter, sanitize_source, FORMATS as EXPORT_FORMATS
 from mtg.gstate import CHANNELS_DIR, CoolOffManager, DecklistsStateManager, UrlsStateManager
 from mtg.utils import Counter, breadcrumbs, logging_disabled
 from mtg.utils.json import deserialize_dates, serialize_dates
@@ -547,6 +547,7 @@ _QUERY_EXCLUDES = (
     '-snap',
     '-"sorcery tcg"',
     '-"swudb.com"',
+    '-"ygom.untapped.gg"',
     '-yugioh',
 )
 def discover_new_channels(
@@ -699,6 +700,8 @@ def dump_decks(
         dstdir: PathLike = "", fmt: Literal["arena", "forge", "json", "xmage"] = "forge") -> None:
     """Export all decks from all channels to ```dstdir``` in the format provided.
     """
+    if fmt not in EXPORT_FORMATS:
+        raise ValueError(f"Invalid dump format: {fmt!r}. Must be one of: {EXPORT_FORMATS}")
     timestamp = datetime.now().strftime(FILENAME_TIMESTAMP_FORMAT)
     dstdir = dstdir or DECKS_DIR / "yt" / timestamp
     dstdir = getdir(dstdir)
