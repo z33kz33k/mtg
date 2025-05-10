@@ -38,7 +38,8 @@ class MoxfieldDeckScraper(DeckScraper):
     @staticmethod
     @override
     def sanitize_url(url: str) -> str:
-        url = strip_url_query(url).removesuffix("/primer").removesuffix("/history")
+        url = strip_url_query(
+            url).removesuffix("/primer").removesuffix("/history").removesuffix("/settings")
         return url.rstrip(".,")
 
     @override

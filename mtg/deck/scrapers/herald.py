@@ -62,9 +62,9 @@ class CommandersHeraldArticleScraper(HybridContainerScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        tokens = ('/60-to-100-caw-go', '/all-edh-deck-guides', '/articles', '/author/',
-                  '/cedh-deck-guides', '/dueling-deck-techs-aristocrats', '/games/', "/category/",
-                  '/about-us','/contact-us', '/privacy-policy', '/terms-of-service')
+        tokens = ('/all-edh-deck-guides', '/articles', '/author/', '/cedh-deck-guides',
+                  '/games/', "/category/", '/about-us','/contact-us', '/privacy-policy',
+                  '/terms-of-service')
         return is_in_domain_but_not_main(
             url, "commandersherald.com") and not any(t in url.lower() for t in tokens)
 
@@ -96,7 +96,6 @@ class CommandersHeraldArticleScraper(HybridContainerScraper):
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
-        # deck_tags = [*self._soup.select("div.edhrecp__deck.mtgh")]
         deck_tags = [
             tag.find("span") for tag in self._soup.select("div.edhrecp__deck.mtgh")
             if tag.find("span")]
@@ -109,24 +108,19 @@ class CommandersHeraldArticleScraper(HybridContainerScraper):
         return deck_urls, deck_tags, [], container_urls
 
 
-# @HybridContainerScraper.registered
-# class CoolStuffIncAuthorScraper(HybridContainerScraper):
-#     """Scraper of CoolStuffInc author page.
-#     """
-#     CONTAINER_NAME = "CoolStuffInc author"  # override
-#     HEADERS = HEADERS  # override
-#     CONTAINER_SCRAPERS = CoolStuffIncArticleScraper,  # override
-#
-#     @staticmethod
-#     @override
-#     def is_valid_url(url: str) -> bool:
-#         tokens = "coolstuffinc.com/a/", "action=search", "author"
-#         return all(t in url.lower() for t in tokens)
-#
-#     @override
-#     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
-#         search_tag = self._soup.select_one("div#article-search-results")
-#         if not search_tag:
-#             raise ScrapingError("Search results tag not found", scraper=type(self), url=self.url)
-#         _, container_urls = self._get_links_from_tags(search_tag, url_prefix=URL_PREFIX)
-#         return [], [], [], container_urls
+@HybridContainerScraper.registered
+class CommandersHeraldAuthorScraper(HybridContainerScraper):
+    """Scraper of Commander's Herald author page.
+    """
+    CONTAINER_NAME = "Commander's Herald author"  # override
+    CONTAINER_SCRAPERS = CommandersHeraldArticleScraper,  # override
+
+    @staticmethod
+    @override
+    def is_valid_url(url: str) -> bool:
+        return "commandersherald.com/author/" in url.lower()
+
+    @override
+    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
+        _, container_urls = self._get_links_from_tags(css_selector="div > div > h3 > a")
+        return [], [], [], container_urls

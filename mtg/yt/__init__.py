@@ -575,6 +575,11 @@ class LinksExpander:
         _log.info(f"Expanded {len(lines)} Google Docs line(s) and gathered {len(links)} link(s)")
 
 
+class PytubeError(ScrapingError):
+    """Raised on unexpected states of data obtained with pytube.
+    """
+
+
 class Video:
     """YouTube video showcasing a MtG deck with its most important metadata.
     """
@@ -758,13 +763,13 @@ class Video:
     def _get_pytube(self) -> pytubefix.YouTube:
         data = pytubefix.YouTube(self.url, use_oauth=True, allow_oauth_cache=True)
         if not data.publish_date:
-            raise ScrapingError(
+            raise PytubeError(
                 "pytube data missing publish date", scraper=type(self), url=self.url)
         return data
 
     @backoff.on_exception(
         backoff.expo,
-        (Timeout, HTTPError, RemoteDisconnected, ScrapingError, urllib.error.HTTPError),
+        (Timeout, HTTPError, RemoteDisconnected, PytubeError, urllib.error.HTTPError),
         max_time=300)
     def _get_pytube_with_backoff(self) -> pytubefix.YouTube:
         return self._get_pytube()
@@ -1128,6 +1133,10 @@ class Channel:
                 video = Video(vid)
             except pytubefix.exceptions.VideoPrivate:
                 _log.warning(f"Skipping private video: 'https://www.youtube.com/watch?v={vid}'...")
+                continue
+            except PytubeError:
+                _log.warning(f"Skipping video that caused pytube to fail (probably private or "
+                             f"otherwise unavailable): 'https://www.youtube.com/watch?v={vid}'...")
                 continue
             self._videos.append(video)
             self._cooloff_manager.bump_video()

@@ -546,6 +546,7 @@ _QUERY_EXCLUDES = (
     '-"ringsdb.com"',
     '-snap',
     '-"sorcery tcg"',
+    '-starwarsunlimited',
     '-"swudb.com"',
     '-"ygom.untapped.gg"',
     '-yugioh',
