@@ -2,7 +2,7 @@
 
     mtg.deck.scrapers.goldfish.py
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Scrape MtGGoldfish decklists.
+    Scrape MTGGoldfish decklists.
 
     @author: z33k
 
@@ -42,7 +42,7 @@ URL_PREFIX = "https://www.mtggoldfish.com"
 # https://www.mtggoldfish.com/deck/arena_download/{DECK_ID} but this entails another request and
 # parsing a DECK_ID from the first URL
 class GoldfishDeckTagParser(TagBasedDeckParser):
-    """Parser of a MtGGoldfish decklist HTML tag.
+    """Parser of a MTGGoldfish decklist HTML tag.
     """
     def _parse_header_tag(self, header_tag: Tag) -> None:
         title_tag = header_tag.find("h1", class_="title")
@@ -115,7 +115,7 @@ class GoldfishDeckTagParser(TagBasedDeckParser):
 
 @DeckScraper.registered
 class GoldfishDeckScraper(DeckScraper):
-    """Scraper of MtGGoldfish decklist page.
+    """Scraper of MTGGoldfish decklist page.
     """
     SELENIUM_PARAMS = {  # override
         "xpath": "//table[@class='deck-view-deck-table']",

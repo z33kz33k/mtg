@@ -82,6 +82,7 @@ from mtg.deck.scrapers.aetherhub import DeckScraper
 from mtg.deck.scrapers.archidekt import DeckScraper
 from mtg.deck.scrapers.cardboardlive import DeckScraper
 from mtg.deck.scrapers.cardhoarder import DeckScraper
+from mtg.deck.scrapers.cardkingdom import HybridContainerScraper
 from mtg.deck.scrapers.cardmarket import HybridContainerScraper
 from mtg.deck.scrapers.cardsrealm import DeckScraper
 from mtg.deck.scrapers.coolstuff import HybridContainerScraper

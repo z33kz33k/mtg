@@ -2,7 +2,7 @@
 
     mtg.deck.scrapers.aetherhub.py
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Scrape AetherHub decklists.
+    Scrape Aetherhub decklists.
 
     @author: z33k
 
