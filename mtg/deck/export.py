@@ -1,6 +1,6 @@
 """
     mtg.deck.export.py
-    ~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~
     Export deck data to various file formats (and import it back).
 
     @author: z33k

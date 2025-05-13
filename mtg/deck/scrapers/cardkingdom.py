@@ -48,7 +48,7 @@ class CardKingdomArticleScraper(HybridContainerScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        tokens = "/category/", '/tag/', '/submissions/', '/updates/'
+        tokens = "/category/", '/tag/', '/submissions/', '/updates/', '/author/'
         return is_in_domain_but_not_main(
             url, "blog.cardkingdom.com") and not any(t in url.lower() for t in tokens)
 
@@ -87,20 +87,22 @@ class CardKingdomArticleScraper(HybridContainerScraper):
         deck_urls, container_urls = self._get_links_from_tags(*article_tag.find_all("p"))
         return deck_urls, [], [], container_urls
 
-#
-# @HybridContainerScraper.registered
-# class CommandersHeraldAuthorScraper(HybridContainerScraper):
-#     """Scraper of Commander's Herald author page.
-#     """
-#     CONTAINER_NAME = "Commander's Herald author"  # override
-#     CONTAINER_SCRAPERS = CommandersHeraldArticleScraper,  # override
-#
-#     @staticmethod
-#     @override
-#     def is_valid_url(url: str) -> bool:
-#         return "commandersherald.com/author/" in url.lower()
-#
-#     @override
-#     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
-#         _, container_urls = self._get_links_from_tags(css_selector="div > div > h3 > a")
-#         return [], [], [], container_urls
+
+@HybridContainerScraper.registered
+class CardKingdomAuthorScraper(HybridContainerScraper):
+    """Scraper of CardKingdom author page.
+    """
+    CONTAINER_NAME = "CardKingdom author"  # override
+    CONTAINER_SCRAPERS = CardKingdomArticleScraper,  # override
+    HEADERS = HEADERS  # override
+
+    @staticmethod
+    @override
+    def is_valid_url(url: str) -> bool:
+        return "blog.cardkingdom.com/author/" in url.lower()
+
+    @override
+    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
+        _, container_urls = self._get_links_from_tags(
+            *self._soup.find_all("article"), css_selector="div.entry-wrap > header > h2 > a")
+        return [], [], [], container_urls

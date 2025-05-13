@@ -97,6 +97,7 @@ YT videos descriptions).
         * Aetherhub users, events and articles
         * Archidekt folders and users
         * Cardsrealm profiles, folders, tournaments and articles
+        * [CardKingdom](https://blog.cardkingdom.com) articles and authors 
         * [Cardmarket](https://www.cardmarket.com/) articles 
         * ChannelFireball players, articles and authors
         * [Commander's Herald](https://commandersherald.com) articles and authors
@@ -139,7 +140,7 @@ YT videos descriptions).
         * [TopDeck.gg](https://topdeck.gg) brackets and profiles
         * Untapped profiles
         * [WotC (official MTG site)](https://magic.wizards.com/en) articles
-    * 87 container pages in total with 19 more in plans
+    * 88 container pages in total with 27 more in plans
 * Assessing the meta:
     * Goldfish
     * MGTAZone 
@@ -160,18 +161,18 @@ YT videos descriptions).
 ### Scraped decks breakdown
 | No | Format | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | commander       | 58609 |    38.98 % |
-| 2  | standard        | 33071 |    22.00 % |
-| 3  | modern          | 15872 |    10.56 % |
+| 1  | commander       | 58627 |    38.99 % |
+| 2  | standard        | 33073 |    21.99 % |
+| 3  | modern          | 15873 |    10.56 % |
 | 4  | pauper          |  9072 |     6.03 % |
 | 5  | pioneer         |  8474 |     5.64 % |
-| 6  | legacy          |  4490 |     2.99 % |
+| 6  | legacy          |  4491 |     2.99 % |
 | 7  | brawl           |  3185 |     2.12 % |
-| 8  | historic        |  2550 |     1.70 % |
+| 8  | historic        |  2549 |     1.70 % |
 | 9  | explorer        |  2367 |     1.57 % |
 | 10 | undefined       |  2215 |     1.47 % |
 | 11 | paupercommander |  2030 |     1.35 % |
-| 12 | duel            |  1936 |     1.29 % |
+| 12 | duel            |  1937 |     1.29 % |
 | 13 | timeless        |  1720 |     1.14 % |
 | 14 | premodern       |  1002 |     0.67 % |
 | 15 | irregular       |   965 |     0.64 % |
@@ -184,16 +185,16 @@ YT videos descriptions).
 | 22 | oldschool       |    52 |     0.03 % |
 | 23 | future          |    32 |     0.02 % |
 | 24 | predh           |     7 |     0.00 % |
-|  | TOTAL           | 150356 | 100.00 %|
+|  | TOTAL           | 150378 | 100.00 %|
 
 | No | Source | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | moxfield.com           | 69315 |    46.10 % |
+| 1  | moxfield.com           | 69334 |    46.11 % |
 | 2  | mtgo.com               | 13633 |     9.07 % |
 | 3  | arena.decklist         | 13548 |     9.01 % |
-| 4  | mtggoldfish.com        | 10180 |     6.77 % |
+| 4  | mtggoldfish.com        | 10182 |     6.77 % |
 | 5  | aetherhub.com          | 10013 |     6.66 % |
-| 6  | archidekt.com          |  5506 |     3.66 % |
+| 6  | archidekt.com          |  5507 |     3.66 % |
 | 7  | mtgdecks.net           |  4392 |     2.92 % |
 | 8  | melee.gg               |  3103 |     2.06 % |
 | 9  | mtga.untapped.gg       |  2873 |     1.91 % |
@@ -202,7 +203,7 @@ YT videos descriptions).
 | 12 | tappedout.net          |  1667 |     1.11 % |
 | 13 | streamdecker.com       |  1570 |     1.04 % |
 | 14 | mtgtop8.com            |  1468 |     0.98 % |
-| 15 | magic.gg               |  1421 |     0.95 % |
+| 15 | magic.gg               |  1421 |     0.94 % |
 | 16 | mtgazone.com           |   709 |     0.47 % |
 | 17 | mtgcircle.com          |   706 |     0.47 % |
 | 18 | deckstats.net          |   573 |     0.38 % |
@@ -214,7 +215,7 @@ YT videos descriptions).
 | 24 | pauperwave.com         |   277 |     0.18 % |
 | 25 | scryfall.com           |   274 |     0.18 % |
 | 26 | cardmarket.com         |   261 |     0.17 % |
-| 27 | magic-ville.com        |   203 |     0.14 % |
+| 27 | magic-ville.com        |   203 |     0.13 % |
 | 28 | topdecked.com          |   182 |     0.12 % |
 | 29 | channelfireball.com    |   171 |     0.11 % |
 | 30 | manabox.app            |   157 |     0.10 % |
@@ -239,4 +240,4 @@ YT videos descriptions).
 | 49 | mtgarena.pro           |     3 |     0.00 % |
 | 50 | mtgotraders.com        |     1 |     0.00 % |
 | 51 | playingmtg.com         |     1 |     0.00 % |
-|  | TOTAL                  | 150356 | 100.00 %|
+|  | TOTAL                  | 150378 | 100.00 %|
