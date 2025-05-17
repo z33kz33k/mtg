@@ -84,12 +84,12 @@ class PlaysetLine:
         '4 Commit /// Memory (AKR) 54'
     """
     # matches '4 Commit /// Memory' or '4x Commit /// Memory'
-    PATTERN = re.compile("^\\d{1,3}x?\\s" + _ALL_UPPERCASE + "[\\w\\s'\"&/,.!:_-]+")
+    PATTERN = re.compile("^\\d{1,3}\\s?x?\\s" + _ALL_UPPERCASE + "[\\w\\s'\"&/,.!:_-]+")
     # matches 'Commit /// Memory 4' or 'Commit /// Memory x4'
-    INVERTED_PATTERN = re.compile("^" + _ALL_UPPERCASE + "[\\w\\s'\"&/,.!:_-]+\\sx?\\d{1,3}$")
+    INVERTED_PATTERN = re.compile("^" + _ALL_UPPERCASE + "[\\w\\s'\"&/,.!:_-]+\\sx?\\s?\\d{1,3}$")
     # matches '4 Commit /// Memory (AKR) 54' or '4x Commit /// Memory (AKR) 54'
     EXTENDED_PATTERN = re.compile(
-        "^\\d{1,3}x?\\s" + _ALL_UPPERCASE +
+        "^\\d{1,3}\\s?x?\\s" + _ALL_UPPERCASE +
         "[\\w\\s'\"&/,.!:_-]+\\s+\\([A-Za-z\\d]{3,6}\\)\\s+[A-Za-z\\d]{1,6}")
 
     @property

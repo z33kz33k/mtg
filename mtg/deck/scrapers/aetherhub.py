@@ -17,8 +17,7 @@ from bs4 import Tag
 from mtg import Json
 from mtg.deck import Deck, Mode
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HiddenDecklistPage, \
-    HybridContainerScraper, \
-    TagBasedDeckParser
+    HybridContainerScraper, TagBasedDeckParser
 from mtg.utils import extract_float, extract_int, from_iterable
 from mtg.utils.scrape import ScrapingError, strip_url_query
 

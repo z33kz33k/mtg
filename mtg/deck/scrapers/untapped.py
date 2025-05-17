@@ -171,7 +171,8 @@ class UntappedProfileScraper(DeckUrlsContainerScraper):
     """
     SELENIUM_PARAMS = {  # override
         "xpath": "//a[contains(@href, '/profile/') and contains(@class, 'deckbox')]",
-        "consent_xpath": CONSENT_XPATH
+        "consent_xpath": CONSENT_XPATH,
+        "wait_for_all": True
     }
     THROTTLING = DeckUrlsContainerScraper.THROTTLING * 1.4  # override
     CONTAINER_NAME = "Untapped profile"  # override
