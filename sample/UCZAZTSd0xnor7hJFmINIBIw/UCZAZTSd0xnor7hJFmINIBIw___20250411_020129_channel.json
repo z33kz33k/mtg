@@ -1,0 +1,62 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 342000,
+    "scrape_time": "2025-04-11 02:01:29",
+    "videos": [
+        {
+            "id": "Ubv7T0J1VlI",
+            "url": "https://www.youtube.com/watch?v=Ubv7T0J1VlI",
+            "author": "MTGGoldfish",
+            "title": "Mardu has a Siege Chicken!",
+            "description": "Rhinos were so 2015. Its all about giant Siege Chickens now! The Mardu have one hell of a curve topper with Mardu Siegebreaker.\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-mardu-has-a-siege-chicken\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7015180#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/Hl3Mc\n◼ Purchase this deck (Magic Online): http://mtg.fish/nHc8y\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-04-10 08:00:04",
+            "views": 12031,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-mardu-has-a-siege-chicken",
+                        "date": "2025-04-03",
+                        "format": "standard",
+                        "name": "Siege Chicken",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-mardu-has-a-siege-chicken"
+                    },
+                    "decklist_id": "c6ec2b71-4f9b-244c-b35a-0122e9b49c7a",
+                    "decklist_extended_id": "9c23cd13-8c3d-ead4-970e-08e2fda8a80f"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-04-03",
+                        "format": "standard",
+                        "name": "Siege Chicken",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7015180"
+                    },
+                    "decklist_id": "c6ec2b71-4f9b-244c-b35a-0122e9b49c7a",
+                    "decklist_extended_id": "9c23cd13-8c3d-ead4-970e-08e2fda8a80f"
+                }
+            ]
+        }
+    ]
+}

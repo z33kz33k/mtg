@@ -1,0 +1,62 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 343000,
+    "scrape_time": "2025-05-04 02:01:22",
+    "videos": [
+        {
+            "id": "CNw3gfiV-QY",
+            "url": "https://www.youtube.com/watch?v=CNw3gfiV-QY",
+            "author": "MTGGoldfish",
+            "title": "The Speed Demons Will Save the Meta!",
+            "description": "The Speed Demons from Aetherdrift will help us with a Cori-Steel Cutter Meta!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-the-speed-demons-will-save-the-meta\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7070699#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/wICiz\n◼ Purchase this deck (Magic Online): http://mtg.fish/P0xvr\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-05-03 08:00:04",
+            "views": 12167,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-the-speed-demons-will-save-the-meta",
+                        "date": "2025-04-29",
+                        "format": "standard",
+                        "name": "Demons",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-the-speed-demons-will-save-the-meta"
+                    },
+                    "decklist_id": "06c069d1-1083-4f3a-db5c-29bc2ef3fbf2",
+                    "decklist_extended_id": "83dfa5e0-5a24-7d99-d290-918ea1d1e995"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-04-29",
+                        "format": "standard",
+                        "name": "Demons",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7070699"
+                    },
+                    "decklist_id": "06c069d1-1083-4f3a-db5c-29bc2ef3fbf2",
+                    "decklist_extended_id": "83dfa5e0-5a24-7d99-d290-918ea1d1e995"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,62 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 339000,
+    "scrape_time": "2025-03-15 02:10:02",
+    "videos": [
+        {
+            "id": "CEuCtkjluv8",
+            "url": "https://www.youtube.com/watch?v=CEuCtkjluv8",
+            "author": "MTGGoldfish",
+            "title": "249-Card Oops All Spells Battle of Wits  Much Abrew",
+            "description": "249 cards. Zero 'real' lands. Oops, All Spells. Battle of Wits. What more could you want in Modern?\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/much-abrew-249-card-no-real-land-oops-all-spells-battle-of-wits\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6956621#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/XVDKG\n◼ Purchase this deck (Magic Online): http://mtg.fish/PbAYo\n\n#MTG\n#MagicTheGathering\n#MTGO\n#mtgmodern \n\n0:00 Start\n6:41 Match 1\n16:17 Match 2\n24:24 Match 3\n41:53 Match 4\n51:43 Match 5",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-03-14 08:00:31",
+            "views": 28357,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "李 辉",
+                        "container_url": "https://www.mtggoldfish.com/articles/much-abrew-249-card-no-real-land-oops-all-spells-battle-of-wits",
+                        "date": "2025-03-02",
+                        "format": "modern",
+                        "name": "Oops All Battle of Wits",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/much-abrew-249-card-no-real-land-oops-all-spells-battle-of-wits"
+                    },
+                    "decklist_id": "c1724d1d-7a23-e902-12c9-336ff2b70956",
+                    "decklist_extended_id": "9312c941-c37b-b8cc-7b67-6fa37db6a969"
+                },
+                {
+                    "metadata": {
+                        "author": "李 辉",
+                        "date": "2025-03-02",
+                        "format": "modern",
+                        "name": "Oops All Battle of Wits",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6956621"
+                    },
+                    "decklist_id": "c1724d1d-7a23-e902-12c9-336ff2b70956",
+                    "decklist_extended_id": "9312c941-c37b-b8cc-7b67-6fa37db6a969"
+                }
+            ]
+        }
+    ]
+}

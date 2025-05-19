@@ -1,0 +1,96 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "dragonstorm",
+        "edh",
+        "educational",
+        "explorer",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mythic",
+        "standard",
+        "strategy",
+        "tarkir",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 135000,
+    "scrape_time": "2025-03-20 02:11:59",
+    "videos": [
+        {
+            "id": "hr-CS_Pv3OA",
+            "url": "https://www.youtube.com/watch?v=hr-CS_Pv3OA",
+            "author": "LegenVD",
+            "title": "The Ultimatum Commander.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a five color Progenitus deck in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro \n01:34 - Deck Tech\n07:30 - vs Laughing Jasper Flint\n14:22 - vs Maha, Its Feathers Night\n21:25 - vs Soul of Windgrace\n35:51 - vs Mitotic Ultimus\n44:28 - vs Go-Shintai of Life's Origin\n50:32 - vs Baylen, the Haymaker\n56:29 - vs Purphoros, Bronze-Blooded\n1:01:15 - vs Captain Howler, Sea-Scourge\n1:05:27 - vs Nicol Bolas, God-Pharaoh\n\nDecklist: \nhttps://aetherhub.com/Deck/progenitus-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtg  #mtgarena #magicthegathering #mtgaetherdrift",
+            "keywords": [
+                "aetherdrift",
+                "black",
+                "blue",
+                "brawl deck",
+                "commander",
+                "deck",
+                "decks",
+                "dft",
+                "edh",
+                "five color",
+                "gameplay",
+                "green",
+                "guide",
+                "historic brawl",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "progenitus brawl",
+                "progenitus commander",
+                "progenitus edh",
+                "red",
+                "ultimatum",
+                "white"
+            ],
+            "publish_time": "2025-03-19 10:00:49",
+            "views": 16114,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "control",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-03-19",
+                        "exports": 229,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Progenitus Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/progenitus-brawl",
+                        "views": 508
+                    },
+                    "decklist_id": "f7af72f6-81b3-b272-0ca5-dc92730e3f34",
+                    "decklist_extended_id": "735478a8-6915-2f58-f830-8d215fce9c85"
+                }
+            ]
+        }
+    ]
+}

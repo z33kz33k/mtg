@@ -1,0 +1,62 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 342000,
+    "scrape_time": "2025-04-10 02:24:47",
+    "videos": [
+        {
+            "id": "o0yrCSkdbGE",
+            "url": "https://www.youtube.com/watch?v=o0yrCSkdbGE",
+            "author": "MTGGoldfish",
+            "title": "Dracogenesis Dragon Storm  Against the Odds",
+            "description": "What are the odds of literally storming off with Dragons in Standard with the help of Dracogenesis? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/against-the-odds-dracogenesis-dragon-storm-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7015882#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/Wf6aS\n◼ Purchase this deck (Magic Online): http://mtg.fish/Svu8F\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-04-09 08:00:20",
+            "views": 27535,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/against-the-odds-dracogenesis-dragon-storm-standard",
+                        "date": "2025-04-03",
+                        "format": "standard",
+                        "name": "Dracogenesis Dragon Storm",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/against-the-odds-dracogenesis-dragon-storm-standard"
+                    },
+                    "decklist_id": "0b4235e5-aa12-9c6b-46e8-3a81fd0230e7",
+                    "decklist_extended_id": "696b6a66-dd39-0c77-ac8c-392ce89f7cb7"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-04-03",
+                        "format": "standard",
+                        "name": "Dracogenesis Dragon Storm",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7015882"
+                    },
+                    "decklist_id": "0b4235e5-aa12-9c6b-46e8-3a81fd0230e7",
+                    "decklist_extended_id": "696b6a66-dd39-0c77-ac8c-392ce89f7cb7"
+                }
+            ]
+        }
+    ]
+}

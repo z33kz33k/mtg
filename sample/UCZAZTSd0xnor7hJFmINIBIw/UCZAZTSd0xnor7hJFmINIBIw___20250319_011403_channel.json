@@ -1,0 +1,82 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 339000,
+    "scrape_time": "2025-03-19 01:14:03",
+    "videos": [
+        {
+            "id": "vDsaAgRvVWw",
+            "url": "https://www.youtube.com/watch?v=vDsaAgRvVWw",
+            "author": "MTGGoldfish",
+            "title": "Absurd New Ugin, Token Doubling Elspeth, Spirit Dragons  Tarkir Dragonstorm MTG Spoilers (Day 1)",
+            "description": "Today we officially kicked off spoiler season for Tarkir: Dragonstorm and the set looks awesome!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\nMore spoilers: https://www.mtgpreviews.com\n\n#MTG #magicthegathering #mtgspoilers #mtgtarkir \n\n0:00 Start\n1:30 Ugin\n7:14 Elspeth\n11:11 Betor, Kin to All\n14:36 Teval, Arbiter of Virtue\n19:29 Neriv, Heart of the Storm\n22:38 Ureni, the Song Unending\n24:34 Taigam, Master Opportunist\n29:20 Craterhoof Behemoth\n32:17 All-Out Assault\n35:39 Voice of Victory\n39:09 Marang River Regent\n40:53 Bloomvine Regent\n41:46 Qarsi Revenant\n44:56 Anafenza\n47:35 Harmonize\n48:18 Temur Battlecrier\n50:40 Frostcliff Siege\n53:24 Maelstrom of the Spirit Dragon\n55:24 Koris\n57:10 Sidisi\n59:45 Rediscover the Way\n1:00:42 Sunset Strikemaster\n1:03:14 Basic Lands\n1:03:57 Special Guests\n1:05:26 Commons and Uncommons",
+            "keywords": [
+                "MTG",
+                "MTG Arena",
+                "MTGGoldfish",
+                "Magic: the Gathering"
+            ],
+            "publish_time": "2025-03-18 16:30:26",
+            "views": 3328,
+            "sources": [
+                "www.cardkingdom.com",
+                "www.mtgpreviews.com"
+            ],
+            "decks": []
+        },
+        {
+            "id": "VxIlUBow6Vw",
+            "url": "https://www.youtube.com/watch?v=VxIlUBow6Vw",
+            "author": "MTGGoldfish",
+            "title": "Pioneer Needed a Bard",
+            "description": "Bard Class has been popping up in Pioneer and it's absurdly fun being able to play a Gruul deck like an Izzet Storm deck!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-pioneer-needed-a-bard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6979558#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/s1Zf6\n◼ Purchase this deck (Magic Online): http://mtg.fish/cl0Am\n\n#MTG\n#MagicTheGathering\n#MTGO\n#MTGPioneer",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-03-18 08:00:07",
+            "views": 10970,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-03-13",
+                        "format": "pioneer",
+                        "name": "Bard Class",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6979558"
+                    },
+                    "decklist_id": "2227e36d-7614-2797-1c8b-fa17b1356989",
+                    "decklist_extended_id": "51443e2b-9757-ac97-0a9f-b55322bb6d5c"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-pioneer-needed-a-bard",
+                        "date": "2025-03-13",
+                        "format": "pioneer",
+                        "name": "Bard Class",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-pioneer-needed-a-bard"
+                    },
+                    "decklist_id": "2227e36d-7614-2797-1c8b-fa17b1356989",
+                    "decklist_extended_id": "51443e2b-9757-ac97-0a9f-b55322bb6d5c"
+                }
+            ]
+        }
+    ]
+}

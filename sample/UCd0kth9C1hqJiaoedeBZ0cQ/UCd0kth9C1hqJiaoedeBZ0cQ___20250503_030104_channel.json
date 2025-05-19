@@ -1,0 +1,103 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "dragonstorm",
+        "edh",
+        "educational",
+        "explorer",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mythic",
+        "standard",
+        "strategy",
+        "tarkir",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 136000,
+    "scrape_time": "2025-05-03 03:01:04",
+    "videos": [
+        {
+            "id": "m-3gLlQz9R4",
+            "url": "https://www.youtube.com/watch?v=m-3gLlQz9R4",
+            "author": "LegenVD",
+            "title": "Creature tokens fear him.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a Mardu mobilize deck, ft. Zurgo Stormrender as commander in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro\n03:19 - Deck Tech\n10:19 - vs Lam, Storm Crane Elder\n20:55 - vs Zurgo Stormrender\n29:41 - vs Mythweaver Poq\n34:10 - vs Tsagan, Raider Warlord\n42:55 - vs Ureni of the Unwritten\n50:21 - vs Omnath, Locus of the Roil\n\nDecklist: \nhttps://aetherhub.com/Deck/zurgo-stormrender-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #tarkir #mtg #mtgtarkir #mtgtdm #magicthegathering",
+            "keywords": [
+                "aggro",
+                "aristocrats",
+                "black",
+                "brawl deck",
+                "commander",
+                "deck",
+                "decks",
+                "dragonstorm",
+                "edh",
+                "gameplay",
+                "guide",
+                "historic brawl",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mardu",
+                "mobilize",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "ramp",
+                "red",
+                "sacrifice",
+                "tarkir",
+                "tarkir dragonstorm",
+                "tdm",
+                "tokens",
+                "white",
+                "zurgo",
+                "zurgo brawl",
+                "zurgo commander",
+                "zurgo edh",
+                "zurgo stormrender"
+            ],
+            "publish_time": "2025-05-02 09:01:16",
+            "views": 13133,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-05-02",
+                        "exports": 93,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Zurgo Stormrender Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/zurgo-stormrender-brawl",
+                        "views": 343
+                    },
+                    "decklist_id": "f0d0f5b7-a1a6-a686-5203-45cbd9c9f033",
+                    "decklist_extended_id": "d41d82dd-a29e-a62a-253e-e74b4107e5cc"
+                }
+            ]
+        }
+    ]
+}

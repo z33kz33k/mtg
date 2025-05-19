@@ -1,0 +1,98 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "aetherdrift",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 135000,
+    "scrape_time": "2025-03-15 02:03:40",
+    "videos": [
+        {
+            "id": "F0gjlUVPeSc",
+            "url": "https://www.youtube.com/watch?v=F0gjlUVPeSc",
+            "author": "LegenVD",
+            "title": "Playing mill on hard mode.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a mill deck, ft. Phenax, God of Deception in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro \n01:58 - Deck Tech\n07:57 - vs Saheeli, Filigree Master\n14:47 - vs Helga, Skittish Seer\n20:54 - vs Gyruda, Doom of Depths\n27:32 - vs Chandra, Flameshaper\n36:10 - vs Chulane, Teller of Tales\n42:12 - vs Vexyr, Ich-Tekik's Heir\n49:55 - vs Chandra, Hope's Beacon\n\nDecklist: \nhttps://aetherhub.com/Deck/phenax-god-of-deception-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtg  #mtgarena #magicthegathering #mtgaetherdrift",
+            "keywords": [
+                "aetherdrift",
+                "black",
+                "blue",
+                "brawl deck",
+                "commander",
+                "deck",
+                "decks",
+                "dft",
+                "dimir",
+                "edh",
+                "gameplay",
+                "god",
+                "guide",
+                "historic brawl",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mill",
+                "mill deck",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "phenax",
+                "phenax brawl",
+                "phenax commander",
+                "phenax edh",
+                "theros"
+            ],
+            "publish_time": "2025-03-14 10:00:15",
+            "views": 12760,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "control",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-03-14",
+                        "exports": 116,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Phenax, God of Deception Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/phenax-god-of-deception-brawl",
+                        "views": 336
+                    },
+                    "decklist_id": "239a1669-4dea-75fc-4ba5-2202442e807d",
+                    "decklist_extended_id": "7ca81229-9a85-42e4-0040-6b8493dcc236"
+                }
+            ]
+        }
+    ]
+}

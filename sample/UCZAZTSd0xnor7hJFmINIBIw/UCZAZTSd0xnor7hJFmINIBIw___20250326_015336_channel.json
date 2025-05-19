@@ -1,0 +1,82 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 340000,
+    "scrape_time": "2025-03-26 01:53:36",
+    "videos": [
+        {
+            "id": "Ly3meBvcGxQ",
+            "url": "https://www.youtube.com/watch?v=Ly3meBvcGxQ",
+            "author": "MTGGoldfish",
+            "title": "Massive Mythic Jeskai Instant, Temur Snapcaster, Hexproof Equip  Tarkir Dragonstorm MTG Spoilers",
+            "description": "Today in Tarkir: Dragonstorm we get a Temur Snapcaster Mage, a massive, mythic Jeskai instant, some spicy Dragons, a cool hexproof equipment and more! Let's discuss!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\nMore spoilers: https://www.mtgpreviews.com\n\n#MTG #magicthegathering #mtgspoilers #mtgtarkir \n\n0:00 Start\n0:54 Songcrafter Mage\n5:36 Dragonfire Blade\n10:30 Scavenger Regent\n14:18 Revival of the Ancestors\n17:02 Lasyd Prowler\n19:25 Windcrag Siege\n24:23 Jeskai Revelation\n29:05 Felothar, Dawn of the Abzan\n33:29 Sage of the Skies\n35:59 Thunder of Unity\n40:49 Commons and Uncommons",
+            "keywords": [
+                "MTG",
+                "MTG Arena",
+                "MTGGoldfish",
+                "Magic: the Gathering"
+            ],
+            "publish_time": "2025-03-25 12:25:38",
+            "views": 17795,
+            "sources": [
+                "www.cardkingdom.com",
+                "www.mtgpreviews.com"
+            ],
+            "decks": []
+        },
+        {
+            "id": "-lZFi-0aKjE",
+            "url": "https://www.youtube.com/watch?v=-lZFi-0aKjE",
+            "author": "MTGGoldfish",
+            "title": "Caves, but It Only Costs $30 and Has 0 Rares  Budget Magic",
+            "description": "Can a build of Caves compete in Standard on a $30 / 0 rare budget? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/budget-magic-30-zero-rare-caves-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6986479#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/osKwW\n◼ Purchase this deck (Magic Online): http://mtg.fish/z7lZr\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard\n\n0:00 Start \n5:07 Match 1\n16:04 Match 2\n25:42 Match 3\n38:24 Match 4\n43:53 Match 5",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-03-24 19:00:07",
+            "views": 50548,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "Matsukasa10",
+                        "container_url": "https://www.mtggoldfish.com/articles/budget-magic-30-zero-rare-caves-standard",
+                        "date": "2025-03-17",
+                        "format": "standard",
+                        "name": "$30 Caves",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/budget-magic-30-zero-rare-caves-standard"
+                    },
+                    "decklist_id": "94ca1487-efaf-3774-13a4-24942afa03d4",
+                    "decklist_extended_id": "72a925ff-fc29-5b96-6f0a-cb7f8b262dca"
+                },
+                {
+                    "metadata": {
+                        "author": "Matsukasa10",
+                        "date": "2025-03-17",
+                        "format": "standard",
+                        "name": "$30 Caves",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6986479"
+                    },
+                    "decklist_id": "94ca1487-efaf-3774-13a4-24942afa03d4",
+                    "decklist_extended_id": "72a925ff-fc29-5b96-6f0a-cb7f8b262dca"
+                }
+            ]
+        }
+    ]
+}

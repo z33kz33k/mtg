@@ -1,0 +1,62 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 339000,
+    "scrape_time": "2025-03-12 02:13:49",
+    "videos": [
+        {
+            "id": "qwZTW5bukWk",
+            "url": "https://www.youtube.com/watch?v=qwZTW5bukWk",
+            "author": "MTGGoldfish",
+            "title": "Punishing the Beanstalk",
+            "description": "Its time for Up the Beanstalk players to feel the pain for all of that value they're getting!\n\nToday's vide is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-punishing-the-beanstalk\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6964196#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/PQi4A\n◼ Purchase this deck (Magic Online): http://mtg.fish/aFfwj\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-03-11 08:00:09",
+            "views": 18698,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-03-06",
+                        "format": "standard",
+                        "name": "Draw Punisher",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6964196"
+                    },
+                    "decklist_id": "214b2901-db23-c8f6-29d0-5e6554b54100",
+                    "decklist_extended_id": "0589f559-006a-164a-ce59-a0e69b5308a3"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-punishing-the-beanstalk",
+                        "date": "2025-03-06",
+                        "format": "standard",
+                        "name": "Draw Punisher",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-punishing-the-beanstalk"
+                    },
+                    "decklist_id": "214b2901-db23-c8f6-29d0-5e6554b54100",
+                    "decklist_extended_id": "0589f559-006a-164a-ce59-a0e69b5308a3"
+                }
+            ]
+        }
+    ]
+}

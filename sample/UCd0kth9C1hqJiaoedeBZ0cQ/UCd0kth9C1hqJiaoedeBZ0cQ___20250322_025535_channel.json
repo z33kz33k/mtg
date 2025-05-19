@@ -1,0 +1,102 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "dragonstorm",
+        "edh",
+        "educational",
+        "explorer",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mythic",
+        "standard",
+        "strategy",
+        "tarkir",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 135000,
+    "scrape_time": "2025-03-22 02:55:35",
+    "videos": [
+        {
+            "id": "wXcXQLe476w",
+            "url": "https://www.youtube.com/watch?v=wXcXQLe476w",
+            "author": "LegenVD",
+            "title": "They didn't like my gifts...",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with Sol'Kanar the Tainted in Standard Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro \n01:54 - Deck Tech\n07:14 - vs Etali, Primal Conqueror\n12:15 - vs Amalia Benavides Aguirre\n18:34 - vs Abuelo, Ancestral Echo\n33:23 - vs Marina Vendrell\n40:10 - vs Anim Pakal, Thousandth Moon\n44:18 - vs Liliana, Dreadhorde General\n\nDecklist: \nhttps://aetherhub.com/Deck/solkanar-the-tainted-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtg  #mtgarena #magicthegathering #mtgaetherdrift #aetherdrift",
+            "keywords": [
+                "aetherdrift",
+                "black",
+                "blue",
+                "brawl deck",
+                "cat pact",
+                "combo",
+                "commander",
+                "control",
+                "deck",
+                "decks",
+                "demonic",
+                "demons",
+                "edh",
+                "exchange",
+                "gameplay",
+                "gift",
+                "grixis",
+                "guide",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "pact",
+                "red",
+                "sol kanar",
+                "sol kanar brawl",
+                "sol kanar commander",
+                "sol kanar edh",
+                "standard",
+                "standard brawl"
+            ],
+            "publish_time": "2025-03-21 10:01:08",
+            "views": 12924,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "control",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-03-21",
+                        "exports": 78,
+                        "format": "standardbrawl",
+                        "mode": "Bo3",
+                        "name": "Sol'kanar the Tainted Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/solkanar-the-tainted-brawl",
+                        "views": 303
+                    },
+                    "decklist_id": "3fb72ad9-79e4-466e-29d3-569dea18de5b",
+                    "decklist_extended_id": "87c458e4-4a24-e8ce-17a2-3ec9fb4c0006"
+                }
+            ]
+        }
+    ]
+}

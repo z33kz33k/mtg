@@ -1,0 +1,98 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "dragonstorm",
+        "edh",
+        "educational",
+        "explorer",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mythic",
+        "standard",
+        "strategy",
+        "tarkir",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 135000,
+    "scrape_time": "2025-03-27 01:45:57",
+    "videos": [
+        {
+            "id": "gPq8u3GkaTw",
+            "url": "https://www.youtube.com/watch?v=gPq8u3GkaTw",
+            "author": "LegenVD",
+            "title": "Taking Turns with Sab-Sunen.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with Sab-Sunen, Luxa Embodied in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro \n01:48 - Deck Tech\n09:29 - vs Ketramose, the New Dawn\n13:23 - vs Korvold, Fae-Cursed King\n19:51 - vs The First Sliver\n23:15 - vs Zahur, Glory's Past\n27:12 - vs Klotyhs, God of Destiny\n30:17 - vs Imoti, Celebrant of Bounty\n33:45 - vs Azusa, Lost but Seeking\n36:25 - vs Djeru and Hazoret\n41:10 - vs Fynn, the Fangbearer\n\nDecklist: \nhttps://aetherhub.com/Deck/sab-sunen-luxa-embodied-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtg  #mtgarena #magicthegathering #mtgaetherdrift",
+            "keywords": [
+                "aetherdrift",
+                "blue",
+                "brawl deck",
+                "commander",
+                "deck",
+                "decks",
+                "dft",
+                "edh",
+                "extra turn",
+                "frog",
+                "gameplay",
+                "god",
+                "green",
+                "guide",
+                "historic brawl",
+                "landfall",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "ramp",
+                "sab-sunen",
+                "sab-sunen commander",
+                "sab-sunen edh",
+                "simic",
+                "time walk"
+            ],
+            "publish_time": "2025-03-26 10:00:46",
+            "views": 12522,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-03-26",
+                        "exports": 233,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Sab-Sunen, Luxa Embodied Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/sab-sunen-luxa-embodied-brawl",
+                        "views": 536
+                    },
+                    "decklist_id": "b612c1bb-fc1d-37f6-4172-40ba6c5a77e9",
+                    "decklist_extended_id": "e9b04d75-a5d7-d5a9-6d93-6f57a42127f5"
+                }
+            ]
+        }
+    ]
+}

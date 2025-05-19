@@ -1,0 +1,62 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 341000,
+    "scrape_time": "2025-04-09 02:04:51",
+    "videos": [
+        {
+            "id": "IQCte0Xyo_U",
+            "url": "https://www.youtube.com/watch?v=IQCte0Xyo_U",
+            "author": "MTGGoldfish",
+            "title": "Pioneer Is Fun if 6-Crab Mill is Good",
+            "description": "Has anybody told you that Pioneer is a fun format and that you should check it out? Well, every format is only as good as it's Mill deck. \n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-pioneer-is-fun-if-6-crab-mill-is-good\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7012004#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/T4H1b\n◼ Purchase this deck (Magic Online): http://mtg.fish/56nRk\n\n#MTG\n#MagicTheGathering\n#MTGO\n#MTGPioneer",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-04-08 08:00:07",
+            "views": 15502,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-04-01",
+                        "format": "pioneer",
+                        "name": "Pio Mill",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7012004"
+                    },
+                    "decklist_id": "b9db5f18-17a7-07bb-2192-4bc7d590594f",
+                    "decklist_extended_id": "faecc9b9-6863-8727-6407-453ff287b94d"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-pioneer-is-fun-if-6-crab-mill-is-good",
+                        "date": "2025-04-01",
+                        "format": "pioneer",
+                        "name": "Pio Mill",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-pioneer-is-fun-if-6-crab-mill-is-good"
+                    },
+                    "decklist_id": "b9db5f18-17a7-07bb-2192-4bc7d590594f",
+                    "decklist_extended_id": "faecc9b9-6863-8727-6407-453ff287b94d"
+                }
+            ]
+        }
+    ]
+}

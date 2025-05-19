@@ -1,0 +1,62 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 343000,
+    "scrape_time": "2025-04-30 02:33:22",
+    "videos": [
+        {
+            "id": "Del9Tvxj9zg",
+            "url": "https://www.youtube.com/watch?v=Del9Tvxj9zg",
+            "author": "MTGGoldfish",
+            "title": "You Don't Need to Build Around Ugin At All",
+            "description": "Ugin might read like in a way to where you'd load your deck up with a bunch of random colorless spells but Ugin might just be good on his own! This Golgari Ramp shell will test that. \n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-you-don-t-need-to-build-around-ugin-at-all\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7060903#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/7qjaN\n◼ Purchase this deck (Magic Online): http://mtg.fish/hnjkc\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-04-29 08:00:08",
+            "views": 16500,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-04-25",
+                        "format": "standard",
+                        "name": "Golgari Ugin",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7060903"
+                    },
+                    "decklist_id": "5a93da04-725d-a4d0-e493-3e91355ae3c7",
+                    "decklist_extended_id": "30022f48-bf4b-1545-c1c4-664397cab3b5"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-you-don-t-need-to-build-around-ugin-at-all",
+                        "date": "2025-04-25",
+                        "format": "standard",
+                        "name": "Golgari Ugin",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-you-don-t-need-to-build-around-ugin-at-all"
+                    },
+                    "decklist_id": "5a93da04-725d-a4d0-e493-3e91355ae3c7",
+                    "decklist_extended_id": "30022f48-bf4b-1545-c1c4-664397cab3b5"
+                }
+            ]
+        }
+    ]
+}

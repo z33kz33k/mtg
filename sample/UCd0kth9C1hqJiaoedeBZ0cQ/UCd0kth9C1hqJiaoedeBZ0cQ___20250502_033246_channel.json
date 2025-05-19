@@ -1,0 +1,102 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "dragonstorm",
+        "edh",
+        "educational",
+        "explorer",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mythic",
+        "standard",
+        "strategy",
+        "tarkir",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 136000,
+    "scrape_time": "2025-05-02 03:32:46",
+    "videos": [
+        {
+            "id": "LUOIAMzeXmM",
+            "url": "https://www.youtube.com/watch?v=LUOIAMzeXmM",
+            "author": "LegenVD",
+            "title": "Monastery Mentor's Mentor is ...",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with Lam, Storm Crane Elder as commander in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro\n02:28 - Deck Tech\n10:39 - vs Ygra, Eater of All\n13:31 - vs Kotis, the Fangkeeper \n28:30 - vs Narset, Jeskai Waymaster\n35:28 - vs Bruna, the Fading Light\n40:45 - vs Kotis, the Fangkeeper\n44:00 - vs Itzquinth, Firstborn of Gishath \n47:12 - vs Tatyova, Benthic Druid \n54:47 - vs Kotis, the Fangkeeper \n\nDecklist: \nhttps://aetherhub.com/Deck/lam-storm-crane-elder-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #tarkir #mtg #mtgtarkir #mtgtdm #magicthegathering",
+            "keywords": [
+                "artifact",
+                "brawl deck",
+                "combo",
+                "commander",
+                "deck",
+                "decks",
+                "dragonstorm",
+                "edh",
+                "elder",
+                "gameplay",
+                "guide",
+                "historic brawl",
+                "lam",
+                "lam brawl",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "matryoshka",
+                "monastery mentor",
+                "monk",
+                "monowhite",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "prowess",
+                "ramp",
+                "storm",
+                "tarkir",
+                "tarkir dragonstorm",
+                "tdm",
+                "ugin",
+                "white"
+            ],
+            "publish_time": "2025-05-01 09:26:48",
+            "views": 15351,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-05-01",
+                        "exports": 175,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Lam, Storm Crane Elder Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/lam-storm-crane-elder-brawl",
+                        "views": 501
+                    },
+                    "decklist_id": "ade897c4-f4d2-a548-67fc-7636c8b8bc96",
+                    "decklist_extended_id": "49a02737-9b9f-c3ed-255c-611592b6c488"
+                }
+            ]
+        }
+    ]
+}

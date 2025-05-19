@@ -1,0 +1,96 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "dragonstorm",
+        "edh",
+        "educational",
+        "explorer",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mythic",
+        "standard",
+        "strategy",
+        "tarkir",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 135000,
+    "scrape_time": "2025-04-03 02:55:54",
+    "videos": [
+        {
+            "id": "kWHPxTt5ESc",
+            "url": "https://www.youtube.com/watch?v=kWHPxTt5ESc",
+            "author": "LegenVD",
+            "title": "Affinity for Artifacts.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with Imskir Iron-Eater in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro \n02:21 - Deck Tech\n10:19 - vs Valgavoth, Terror Eater\n17:23 - vs Arcades, the Strategist\n21:09 - vs Kethis, the Hidden Hand\n30:20 - vs Codie, Vociferous Codex\n36:02 - vs Gonti, Canny Acquisitor\n42:08 - vs Tom Bombadil\n\nDecklist: \nhttps://aetherhub.com/Deck/imskir-iron-eater-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtg  #mtgarena #magicthegathering #mtgaetherdrift",
+            "keywords": [
+                "aetherdrift",
+                "affinity",
+                "black",
+                "brawl deck",
+                "commander",
+                "cranial",
+                "deck",
+                "decks",
+                "dft",
+                "edh",
+                "gameplay",
+                "guide",
+                "historic brawl",
+                "imskir",
+                "imskir brawl",
+                "imskir commander",
+                "imskir edh",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "rakdos",
+                "ram",
+                "red"
+            ],
+            "publish_time": "2025-04-02 09:01:07",
+            "views": 12835,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-04-02",
+                        "exports": 129,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Imskir Iron-Eater Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/imskir-iron-eater-brawl",
+                        "views": 487
+                    },
+                    "decklist_id": "d9618fbe-c556-8dbd-02ea-d0a3d11b0870",
+                    "decklist_extended_id": "a96f7dde-a786-33b9-570e-c9ba91fdbe2d"
+                }
+            ]
+        }
+    ]
+}

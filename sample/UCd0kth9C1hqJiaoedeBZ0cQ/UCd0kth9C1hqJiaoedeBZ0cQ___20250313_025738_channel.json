@@ -1,0 +1,98 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "aetherdrift",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 135000,
+    "scrape_time": "2025-03-13 02:57:38",
+    "videos": [
+        {
+            "id": "K54j-stwn9A",
+            "url": "https://www.youtube.com/watch?v=K54j-stwn9A",
+            "author": "LegenVD",
+            "title": "This commander is paper worthy.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with an double strike aggro deck, ft. Tsagan, Raider Warlord in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro \n02:13 - Deck Tech\n09:15 - vs Nadu, Winged Wisdom\n22:00 - vs Kroxa, Titan of Death's Hunger\n24:55 - vs Loot, the Pathfinder\n32:39 - vs Tatyova, Benthic Druid\n37:19 - vs Coram, the Undertaker\n41:54 - vs Bristly Bill, Spine Sower\n48:20 - vs Rocco, Street Chef\n\nDecklist: \nhttps://aetherhub.com/Deck/tsagan-raider-warlord-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtg  #mtgarena #magicthegathering #mtgaetherdrift",
+            "keywords": [
+                "aetherdrift",
+                "aggro",
+                "black",
+                "brawl deck",
+                "commander",
+                "deck",
+                "decks",
+                "dft",
+                "dinosaur",
+                "double strike",
+                "edh",
+                "first strike",
+                "gameplay",
+                "guide",
+                "historic brawl",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "red",
+                "tsagan",
+                "tsagan brawl",
+                "tsagan commander",
+                "tsagan edh",
+                "white"
+            ],
+            "publish_time": "2025-03-12 10:00:30",
+            "views": 13592,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-03-12",
+                        "exports": 99,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Tsagan, Raider Warlord Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/tsagan-raider-warlord-brawl",
+                        "views": 300
+                    },
+                    "decklist_id": "bffc6849-652c-6797-aea3-8274122cf35e",
+                    "decklist_extended_id": "070fc68e-7425-d6ad-95c8-024685ad71fb"
+                }
+            ]
+        }
+    ]
+}

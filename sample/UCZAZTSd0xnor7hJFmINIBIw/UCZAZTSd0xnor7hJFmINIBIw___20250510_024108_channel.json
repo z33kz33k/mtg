@@ -1,0 +1,62 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 344000,
+    "scrape_time": "2025-05-10 02:41:08",
+    "videos": [
+        {
+            "id": "k-Mod99SA98",
+            "url": "https://www.youtube.com/watch?v=k-Mod99SA98",
+            "author": "MTGGoldfish",
+            "title": "There Will Be Dragons. Many, Many Dragons.  Much Abrew",
+            "description": "Can Dragonback Assault bring Aftermath Analyst and the land-reanimator plan back to Standard? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/much-abrew-dragonback-analyst-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7060345#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/gPI21\n◼ Purchase this deck (Magic Online): http://mtg.fish/iMoUv\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#mtgstandard \n\n0:00 Start\n4:53 Match 1\n23:20 Match 2\n32:25 Match 3\n39:41 Match 4\n55:31 Match 5",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-05-09 08:00:09",
+            "views": 18740,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/much-abrew-dragonback-analyst-standard",
+                        "date": "2025-04-25",
+                        "format": "standard",
+                        "name": "Dragonback Analyst",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/much-abrew-dragonback-analyst-standard"
+                    },
+                    "decklist_id": "d2e5ed20-41db-24dc-71bc-3575d7a999c0",
+                    "decklist_extended_id": "dca074fd-b7d1-83c2-b284-2d7ccd287ab9"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-04-25",
+                        "format": "standard",
+                        "name": "Dragonback Analyst",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7060345"
+                    },
+                    "decklist_id": "d2e5ed20-41db-24dc-71bc-3575d7a999c0",
+                    "decklist_extended_id": "dca074fd-b7d1-83c2-b284-2d7ccd287ab9"
+                }
+            ]
+        }
+    ]
+}

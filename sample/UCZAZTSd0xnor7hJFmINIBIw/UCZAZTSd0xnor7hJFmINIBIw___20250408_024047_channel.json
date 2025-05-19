@@ -1,0 +1,62 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 341000,
+    "scrape_time": "2025-04-08 02:40:47",
+    "videos": [
+        {
+            "id": "hfMfwmcfEbM",
+            "url": "https://www.youtube.com/watch?v=hfMfwmcfEbM",
+            "author": "MTGGoldfish",
+            "title": "$59 Abzan Felothar Aggro (Featuring Skirmish Rhino)  Budget Magic",
+            "description": "Takrir: Dragonstorm Standard is here and we kick off our budget exploration of the format with an Abzan Aggro deck featuring some of my favorite new cards from the set and costs just $69 in paper and four non-land rares on MTG Arena!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkigndom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/budget-magic-69-abzan-felothar-rhino-aggro\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7010504#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/BwDI0\n◼ Purchase this deck (Magic Online): http://mtg.fish/3bC5A\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-04-07 08:00:08",
+            "views": 30917,
+            "sources": [
+                "mtg.fish",
+                "www.cardkigndom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-03-31",
+                        "format": "standard",
+                        "name": "Abzan Felothar Aggro",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7010504"
+                    },
+                    "decklist_id": "6756123a-b712-297b-c037-521040682aa0",
+                    "decklist_extended_id": "f0419fc0-8fb6-900b-df01-243d467c8d6e"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/budget-magic-69-abzan-felothar-rhino-aggro",
+                        "date": "2025-03-31",
+                        "format": "standard",
+                        "name": "Abzan Felothar Aggro",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/budget-magic-69-abzan-felothar-rhino-aggro"
+                    },
+                    "decklist_id": "6756123a-b712-297b-c037-521040682aa0",
+                    "decklist_extended_id": "f0419fc0-8fb6-900b-df01-243d467c8d6e"
+                }
+            ]
+        }
+    ]
+}

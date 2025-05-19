@@ -1,0 +1,75 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 339000,
+    "scrape_time": "2025-03-13 03:01:29",
+    "videos": [
+        {
+            "id": "GYfBr9wAX7U",
+            "url": "https://www.youtube.com/watch?v=GYfBr9wAX7U",
+            "author": "MTGGoldfish",
+            "title": "How Will You Win If You Can Never Deal Damage?  Against the Odds",
+            "description": "What are the odds of winning with Standard Turbo Fog by never taking damage as we work our way to max speed with crimelands to mill our opponent out with Aether Syphon? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/against-the-odds-turbo-fog-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6958927#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/UJFjB\n◼ Purchase this deck (Magic Online): http://mtg.fish/NftKL\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#mtgstandard \n\n0:00 Start\n5:44: Match 1\n27:55 Match 2\n32:12 Updates\n37:20 Match 3\n53:22 Match 4\n59:46 Match 5",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-03-12 08:00:08",
+            "views": 30751,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "kacyhasthecandy",
+                        "container_url": "https://www.mtggoldfish.com/articles/against-the-odds-turbo-fog-standard",
+                        "date": "2025-02-28",
+                        "format": "standard",
+                        "name": "straight foggin it",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/against-the-odds-turbo-fog-standard"
+                    },
+                    "decklist_id": "0bd53c5f-18bf-210a-cad0-2f3987ac2912",
+                    "decklist_extended_id": "381f5139-e16b-938d-f97a-675f04405f87"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/against-the-odds-turbo-fog-standard",
+                        "date": "2025-03-03",
+                        "format": "standard",
+                        "name": "Turbo Fog 2.0",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/against-the-odds-turbo-fog-standard"
+                    },
+                    "decklist_id": "6076d132-d6ce-5864-bed8-f106eaa87cf0",
+                    "decklist_extended_id": "f8b1bbe3-96fb-2810-eccc-3450f9f60649"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-03-03",
+                        "format": "standard",
+                        "name": "Turbo Fog 2.0",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6958927"
+                    },
+                    "decklist_id": "6076d132-d6ce-5864-bed8-f106eaa87cf0",
+                    "decklist_extended_id": "f8b1bbe3-96fb-2810-eccc-3450f9f60649"
+                }
+            ]
+        }
+    ]
+}

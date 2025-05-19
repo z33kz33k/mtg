@@ -1,0 +1,103 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "dragonstorm",
+        "edh",
+        "educational",
+        "explorer",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mythic",
+        "standard",
+        "strategy",
+        "tarkir",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 136000,
+    "scrape_time": "2025-04-30 02:29:38",
+    "videos": [
+        {
+            "id": "ircyF0Kc4rU",
+            "url": "https://www.youtube.com/watch?v=ircyF0Kc4rU",
+            "author": "LegenVD",
+            "title": "This commander has Deathtouch for players.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a Sultai voltron deck, ft. Kotis, the Fangkeeper as commander in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro\n02:14 - Deck Tech\n07:22 - vs Jetmir, Nexus of Revels\n15:55 - vs Feather, the Redeemed\n23:57 - vs Tiamat\n26:13 - vs Go-Shintai of Life's Origin\n34:59 - vs Amalia Benavides Aguirre \n39:47 - vs Quintorius, Field Historian \n48:13 - vs Sauron, the Dark Lord \n55:59 - vs Kotis, the Fangkeeper \n1:02:54 - vs Ygra, Eater of All \n\nDecklist: \nhttps://aetherhub.com/Deck/kotis-the-fangkeeper-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #tarkir #mtg #mtgtarkir #mtgtdm #magicthegathering",
+            "keywords": [
+                "black",
+                "blue",
+                "brawl deck",
+                "commander",
+                "deathtouch",
+                "deck",
+                "decks",
+                "dragonstorm",
+                "edh",
+                "equipment",
+                "gameplay",
+                "green",
+                "guide",
+                "historic brawl",
+                "indestructible",
+                "kotis",
+                "kotis brawl",
+                "kotis commander",
+                "kotis deck",
+                "kotis edh",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "ramp",
+                "sultai",
+                "tarkir",
+                "tarkir dragonstorm",
+                "tdm",
+                "the Fangkeeper",
+                "voltron"
+            ],
+            "publish_time": "2025-04-29 09:01:12",
+            "views": 16593,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-04-29",
+                        "exports": 257,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Kotis, the Fangkeeper Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/kotis-the-fangkeeper-brawl",
+                        "views": 575
+                    },
+                    "decklist_id": "1c28f76a-0a8b-b64a-73fe-0a82e36a1c78",
+                    "decklist_extended_id": "13e95a34-dd72-4953-ce38-8179804da317"
+                }
+            ]
+        }
+    ]
+}

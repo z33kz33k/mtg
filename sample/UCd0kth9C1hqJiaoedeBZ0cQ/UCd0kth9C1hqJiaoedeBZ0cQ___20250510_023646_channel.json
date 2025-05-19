@@ -1,0 +1,93 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "dragonstorm",
+        "edh",
+        "educational",
+        "explorer",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mythic",
+        "standard",
+        "strategy",
+        "tarkir",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 137000,
+    "scrape_time": "2025-05-10 02:36:46",
+    "videos": [
+        {
+            "id": "uSvLZHK_wAA",
+            "url": "https://www.youtube.com/watch?v=uSvLZHK_wAA",
+            "author": "LegenVD",
+            "title": "Summoning every god all at once.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a five color god combo deck ft. Golos and The World Tree in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro\n02:04 - Deck Tech\n07:19 - vs Ugin, Eye of the Storms\n12:53 - vs Sythis, Harvest's Hand\n22:39 - vs Maha, Its Feathers Night \n29:56 - vs Vadrik, Astral Archmage \n36:46 - vs Roxanne, Starfall Savant \n42:24 - vs Phelia, Exuberant Shepherd \n47:12 - vs Ragavan, Nimble Pilferer \n51:32 - vs Kona, Rescue Beastie \n58:43 - vs Zurgo and Ojutai \n1:05:32 - vs Eladamri, Korvecdal \n\nDecklist: \nhttps://aetherhub.com/Deck/golos-god-combo\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #tarkir #mtg #mtgtarkir #mtgtdm #magicthegathering",
+            "keywords": [
+                "brawl deck",
+                "commander",
+                "deck",
+                "decks",
+                "edh",
+                "every god",
+                "five color",
+                "gameplay",
+                "gods",
+                "golos",
+                "guide",
+                "historic brawl",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "pantheon",
+                "purphoros",
+                "rhonas",
+                "theros",
+                "xenagos"
+            ],
+            "publish_time": "2025-05-09 09:33:52",
+            "views": 15950,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-05-09",
+                        "exports": 163,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Golos God Combo",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/golos-god-combo",
+                        "views": 375
+                    },
+                    "decklist_id": "8cbba145-4ab8-7add-6b03-dbb1416f0699",
+                    "decklist_extended_id": "6421a775-ba33-8d40-f72d-f75677542e9c"
+                }
+            ]
+        }
+    ]
+}

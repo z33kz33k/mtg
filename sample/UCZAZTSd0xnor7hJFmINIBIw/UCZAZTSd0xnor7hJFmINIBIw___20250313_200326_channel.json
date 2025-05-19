@@ -1,0 +1,62 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 339000,
+    "scrape_time": "2025-03-13 20:03:26",
+    "videos": [
+        {
+            "id": "bkHWXtLTfoQ",
+            "url": "https://www.youtube.com/watch?v=bkHWXtLTfoQ",
+            "author": "MTGGoldfish",
+            "title": "Gas Guzzling Aristocrats",
+            "description": "Gas Guzzler , Bloodghast, and Zahur are the Aristocrats team to gel this sacrifice deck together!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-gas-guzzling-aristocrats\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6971800#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/e2BEv\n◼ Purchase this deck (Magic Online): http://mtg.fish/Jxw95\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-03-13 08:00:08",
+            "views": 4919,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-03-10",
+                        "format": "standard",
+                        "name": "Guzzlin Aristocrats",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6971800"
+                    },
+                    "decklist_id": "e45f623d-2acd-701c-663d-22f9098b7832",
+                    "decklist_extended_id": "c6621f34-8a5e-d96c-877a-99a25f2a1dfd"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-gas-guzzling-aristocrats",
+                        "date": "2025-03-10",
+                        "format": "standard",
+                        "name": "Guzzlin Aristocrats",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-gas-guzzling-aristocrats"
+                    },
+                    "decklist_id": "e45f623d-2acd-701c-663d-22f9098b7832",
+                    "decklist_extended_id": "c6621f34-8a5e-d96c-877a-99a25f2a1dfd"
+                }
+            ]
+        }
+    ]
+}

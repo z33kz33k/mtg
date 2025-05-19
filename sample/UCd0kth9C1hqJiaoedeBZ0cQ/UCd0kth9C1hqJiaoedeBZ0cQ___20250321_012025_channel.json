@@ -1,0 +1,101 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "dragonstorm",
+        "edh",
+        "educational",
+        "explorer",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mythic",
+        "standard",
+        "strategy",
+        "tarkir",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 135000,
+    "scrape_time": "2025-03-21 01:20:25",
+    "videos": [
+        {
+            "id": "SmJDOgcMO7U",
+            "url": "https://www.youtube.com/watch?v=SmJDOgcMO7U",
+            "author": "LegenVD",
+            "title": "Defense is the best offense.",
+            "description": "Magic: The Gathering Arena gameplay with a Blue/Green high toughness defender deck in Aetherdrift Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:52 - Match 1\n07:23 - Match 2\n21:55 - Match 3\n27:53 - Match 4\n33:40 - Match 5\n38:49 - Match 6\n41:14 - Match 7\n46:28 - Match 8\n\nDecklist:\nhttps://aetherhub.com/Deck/toughness-turtles\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #aetherdrift #mtgaetherdrift #mtgdft #mtg #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "aetherdrift",
+                "aetherdrift standard",
+                "bedrock",
+                "blue",
+                "coral tyrant",
+                "deck",
+                "decks",
+                "defender",
+                "defender deck",
+                "defenders",
+                "dft",
+                "gameplay",
+                "green",
+                "guide",
+                "high toughness",
+                "hull clade",
+                "jank",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg aetherdrift",
+                "mtg arena",
+                "mtga",
+                "new standard",
+                "pride",
+                "standard",
+                "standard deck",
+                "tortoise",
+                "turtle deck",
+                "turtles"
+            ],
+            "publish_time": "2025-03-20 10:00:27",
+            "views": 13112,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-03-20",
+                        "exports": 124,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Toughness Turtles",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/toughness-turtles",
+                        "views": 427
+                    },
+                    "decklist_id": "834837dc-3aa7-645f-409b-08c87a363a4d",
+                    "decklist_extended_id": "b6a0e32c-ec96-0cd2-4643-1be4792af269"
+                }
+            ]
+        }
+    ]
+}

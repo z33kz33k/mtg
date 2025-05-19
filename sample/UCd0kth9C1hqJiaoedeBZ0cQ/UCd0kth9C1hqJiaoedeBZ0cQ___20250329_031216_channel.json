@@ -1,0 +1,97 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "dragonstorm",
+        "edh",
+        "educational",
+        "explorer",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mythic",
+        "standard",
+        "strategy",
+        "tarkir",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 135000,
+    "scrape_time": "2025-03-29 03:12:16",
+    "videos": [
+        {
+            "id": "_F2aBe26Az8",
+            "url": "https://www.youtube.com/watch?v=_F2aBe26Az8",
+            "author": "LegenVD",
+            "title": "When one spell causes 100+ triggers.",
+            "description": "Magic: The Gathering Arena gameplay with a black/white speed sacrifice deck in Aetherdrift Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n05:38 - Match 1\n12:57 - Match 2\n15:57 - Match 3\n24:14 - Match 4\n29:26 - Match 5\n40:08 - Match 6\n\nDecklist:\nhttps://aetherhub.com/Deck/speed-sacrifice\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #aetherdrift #mtgaetherdrift #mtgdft #mtg #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "aetherdrift",
+                "aetherdrift standard",
+                "black",
+                "deck",
+                "decks",
+                "dft",
+                "gameplay",
+                "guide",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg aetherdrift",
+                "mtg arena",
+                "mtga",
+                "new standard",
+                "orzhov",
+                "raise the past",
+                "sacrifice",
+                "sacrifice deck",
+                "speed",
+                "standard",
+                "standard deck",
+                "standard raise the past",
+                "white",
+                "zombie"
+            ],
+            "publish_time": "2025-03-28 10:00:47",
+            "views": 15217,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-03-28",
+                        "exports": 347,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Speed Sacrifice",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/speed-sacrifice",
+                        "views": 731
+                    },
+                    "decklist_id": "5b98e82f-c398-7683-5749-7ce79fd17b87",
+                    "decklist_extended_id": "60d6cfa7-7027-947f-7024-cbb57e91e30f"
+                }
+            ]
+        }
+    ]
+}

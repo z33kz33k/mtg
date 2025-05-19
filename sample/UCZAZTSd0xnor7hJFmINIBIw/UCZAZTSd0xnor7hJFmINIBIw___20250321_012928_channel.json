@@ -1,0 +1,82 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 339000,
+    "scrape_time": "2025-03-21 01:29:28",
+    "videos": [
+        {
+            "id": "KW_dk9VBSDI",
+            "url": "https://www.youtube.com/watch?v=KW_dk9VBSDI",
+            "author": "MTGGoldfish",
+            "title": "Ridiculous Reanimate Mythic, Uncounterable Land, Zurgo Returns!  Tarkir Dragonstorm MTG Spoilers",
+            "description": "We've reached day three of Tarkir: Dragonstorm spoilerse, and today we get one of the most ridiculous reanimation spells ever printed, a cycle of strong utility lands, the return of Zurgo and so much more! Let's discuss!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\nMore spoilers: https://www.mtgpreviews.com\n\n0:00 Start\n1:00 Perennation\n6:48 Severance Priest\n12:31 Rare Utility Lands\n22:41 Zurgo\n25:33 The New Way\n31:05 Commons and Uncommons\n\n#MTG #magicthegathering #mtgtarkir #mtgspoilers",
+            "keywords": [
+                "MTG",
+                "MTG Arena",
+                "MTGGoldfish",
+                "Magic: the Gathering"
+            ],
+            "publish_time": "2025-03-20 08:36:44",
+            "views": 34289,
+            "sources": [
+                "www.cardkingdom.com",
+                "www.mtgpreviews.com"
+            ],
+            "decks": []
+        },
+        {
+            "id": "Z2bxvBOIHJI",
+            "url": "https://www.youtube.com/watch?v=Z2bxvBOIHJI",
+            "author": "MTGGoldfish",
+            "title": "I Reanimate Every Vehicle, and Then They Crash  Against the Odds",
+            "description": "Can Push the Limit and a bunch of janky cycling Vehicles make for a Living End–style deck in Standard? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/against-the-odds-push-the-limit-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6965018#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/LhWbZ\n◼ Purchase this deck (Magic Online): http://mtg.fish/PYmqI\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-03-19 19:00:06",
+            "views": 32648,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-03-07",
+                        "format": "standard",
+                        "name": "Push the Limit",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6965018"
+                    },
+                    "decklist_id": "1b5bc070-f985-abb7-786a-1324730fa82b",
+                    "decklist_extended_id": "c7c359d9-6728-0224-08a9-de96d991a634"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/against-the-odds-push-the-limit-standard",
+                        "date": "2025-03-07",
+                        "format": "standard",
+                        "name": "Push the Limit",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/against-the-odds-push-the-limit-standard"
+                    },
+                    "decklist_id": "1b5bc070-f985-abb7-786a-1324730fa82b",
+                    "decklist_extended_id": "c7c359d9-6728-0224-08a9-de96d991a634"
+                }
+            ]
+        }
+    ]
+}

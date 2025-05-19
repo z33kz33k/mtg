@@ -1,0 +1,102 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "dragonstorm",
+        "edh",
+        "educational",
+        "explorer",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mythic",
+        "standard",
+        "strategy",
+        "tarkir",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 135000,
+    "scrape_time": "2025-03-25 02:14:02",
+    "videos": [
+        {
+            "id": "xSPBsGwCKVg",
+            "url": "https://www.youtube.com/watch?v=xSPBsGwCKVg",
+            "author": "LegenVD",
+            "title": "Getting lucky in Standard.",
+            "description": "Magic: The Gathering Arena gameplay with a Count on Luck exile deck in Aetherdrift Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:00 - Match 1\n12:07 - Match 2\n23:25 - Match 3\n24:25 - Match 4\n31:13 - Match 5\n36:50 - Match 6\n\nDecklist:\nhttps://aetherhub.com/Deck/count-on-luck\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #aetherdrift #mtgaetherdrift #mtgdft #mtg #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "aetherdrift",
+                "aetherdrift standard",
+                "count on luck",
+                "deck",
+                "decks",
+                "dft",
+                "exile",
+                "exile deck",
+                "gameplay",
+                "green",
+                "guide",
+                "legend",
+                "loot",
+                "lucky",
+                "lvd",
+                "magic the gathering",
+                "midrange",
+                "mtg",
+                "mtg aetherdrift",
+                "mtg arena",
+                "mtga",
+                "naya",
+                "new standard",
+                "pia",
+                "plot",
+                "rainbow",
+                "red",
+                "rocco",
+                "standard",
+                "standard deck",
+                "white"
+            ],
+            "publish_time": "2025-03-24 10:01:11",
+            "views": 14701,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-03-24",
+                        "exports": 310,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Count on Luck",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/count-on-luck",
+                        "views": 733
+                    },
+                    "decklist_id": "d85ee02b-f676-b669-e859-748c876bf579",
+                    "decklist_extended_id": "f925f12b-531e-8d1d-3ddd-3d7e4e88d34a"
+                }
+            ]
+        }
+    ]
+}

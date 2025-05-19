@@ -1,0 +1,82 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 344000,
+    "scrape_time": "2025-05-11 00:32:01",
+    "videos": [
+        {
+            "id": "GBjxFo1zSho",
+            "url": "https://www.youtube.com/watch?v=GBjxFo1zSho",
+            "author": "MTGGoldfish",
+            "title": "An Absurd Amount of Final Fantasy Spoilers  Daily MTG Final Fantasy Spoilers",
+            "description": "We kick off MTG Final Fantasy spoiler today with one of the biggest spoiler days every! From Kefka to Chocobo to Sephiroth to Dark Confident, here's everything you need to know!\n\nPreorder some cards: https://www.cardkingdom.com/mtggoldfish\n\nMore spoilers: https://www.mtgpreviews.com\n\n0:00 Start\n1:32 Kefka\n5:22 Terra\n8:37 Traveling Chocobo\n10:55 Cloud\n13:27 Sephiroth\n17:08 Y'Shtola\n19:48 Firion\n23:45 Kain\n25:45 The Darkness Crystal\n30:44 Gilgamesh\n33:19 Bartz and Boko\n35:15 Tifa Lockhart\n38:10 Aerith\n41:03 Squall\n43:29 Kuja\n46:27 Summon: Bahamut\n49:10 Yuna\n52:20 Absolute Virtue\n56:17 Vivi Orenitier\n1:00:27 Lightning\n1:02:30 Balthier and Fran\n1:04:32 Summoner's Grimoire\n1:07:54 Summon: Primal Odin\n1:10:16 Zanarkand\n1:12:05 Noctis\n1:14:27 Jill\n1:16:23 Zodiark\n1:18:26 Clive\n1:21:17 Reprints\n1:24:02 Commons and Uncommons\n\n#MTG #Magicthegathering #mtgspoilers #finalFantasy",
+            "keywords": [
+                "MTG",
+                "MTG Arena",
+                "MTGGoldfish",
+                "Magic: the Gathering"
+            ],
+            "publish_time": "2025-05-10 15:13:02",
+            "views": 952,
+            "sources": [
+                "www.cardkingdom.com",
+                "www.mtgpreviews.com"
+            ],
+            "decks": []
+        },
+        {
+            "id": "6OjbeSKhCX0",
+            "url": "https://www.youtube.com/watch?v=6OjbeSKhCX0",
+            "author": "MTGGoldfish",
+            "title": "Sultai Snake Bounce is The Real Bounce Deck",
+            "description": "Sultai has Fangkeeper's Familiar. We are fans of Ssssnake. Sssnake is how we attack standard.\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-sultai-snake-bounce-is-the-real-bounce-deck\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7089695#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/7nGXI\n◼ Purchase this deck (Magic Online): http://mtg.fish/FLy6l\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-05-10 08:00:05",
+            "views": 11401,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-05-07",
+                        "format": "standard",
+                        "name": "Snek",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7089695"
+                    },
+                    "decklist_id": "0d04bdfc-88f1-8ad1-6098-001c6ae30db7",
+                    "decklist_extended_id": "e79ec5ce-f6d4-df10-a8b9-433b4710394c"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-sultai-snake-bounce-is-the-real-bounce-deck",
+                        "date": "2025-05-07",
+                        "format": "standard",
+                        "name": "Snek",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-sultai-snake-bounce-is-the-real-bounce-deck"
+                    },
+                    "decklist_id": "0d04bdfc-88f1-8ad1-6098-001c6ae30db7",
+                    "decklist_extended_id": "e79ec5ce-f6d4-df10-a8b9-433b4710394c"
+                }
+            ]
+        }
+    ]
+}

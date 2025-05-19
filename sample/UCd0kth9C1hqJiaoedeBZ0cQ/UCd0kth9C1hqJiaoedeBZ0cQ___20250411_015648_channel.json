@@ -1,0 +1,102 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "dragonstorm",
+        "edh",
+        "educational",
+        "explorer",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mythic",
+        "standard",
+        "strategy",
+        "tarkir",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 136000,
+    "scrape_time": "2025-04-11 01:56:48",
+    "videos": [
+        {
+            "id": "_aZhpuRipjg",
+            "url": "https://www.youtube.com/watch?v=_aZhpuRipjg",
+            "author": "LegenVD",
+            "title": "It's even better than advertised.",
+            "description": "Magic: The Gathering Arena gameplay with a flurry aggro mouse deck, ft. Cori-Steel Cutter in Tarkir Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:07 - Match 1\n07:15 - Match 2\n10:03 - Match 3\n17:54 - Match 4\n20:13 - Match 5\n29:39 - Match 6 \n31:49 - Match 7\n38:29 - Match 8\n45:11 - Match 9\n50:33 - Match 10\n\nDecklist:\nhttps://aetherhub.com/Deck/flurry-mouse-aggro\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #tarkir #mtg #mtgtarkir #mtgtdm #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "aggro",
+                "boros",
+                "deck",
+                "decks",
+                "dragonstorm",
+                "fast deck",
+                "flurry",
+                "flurry deck",
+                "gameplay",
+                "guide",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "monk",
+                "mouse",
+                "mouse aggro",
+                "mouse deck",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "new standard",
+                "prowess",
+                "red",
+                "standard",
+                "standard deck",
+                "tarkir",
+                "tarkir dragonstorm",
+                "tarkir standard",
+                "tdm",
+                "tdm standard",
+                "white"
+            ],
+            "publish_time": "2025-04-10 09:04:11",
+            "views": 14528,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-04-10",
+                        "exports": 181,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Flurry Mouse Aggro",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/flurry-mouse-aggro",
+                        "views": 496
+                    },
+                    "decklist_id": "7e91b78d-7547-91a9-7ca2-5005ec7a1550",
+                    "decklist_extended_id": "fe5e263a-4982-e824-ed55-45eda6f3f9df"
+                }
+            ]
+        }
+    ]
+}

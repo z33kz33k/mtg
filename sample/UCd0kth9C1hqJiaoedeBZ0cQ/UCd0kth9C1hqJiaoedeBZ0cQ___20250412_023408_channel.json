@@ -1,0 +1,102 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "dragonstorm",
+        "edh",
+        "educational",
+        "explorer",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mythic",
+        "standard",
+        "strategy",
+        "tarkir",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 136000,
+    "scrape_time": "2025-04-12 02:34:08",
+    "videos": [
+        {
+            "id": "ipme27dtKvo",
+            "url": "https://www.youtube.com/watch?v=ipme27dtKvo",
+            "author": "LegenVD",
+            "title": "How to octuple your tokens.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a monowhite tokens deck, ft. Elspeth, Storm Slayer in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro\n01:52 - Deck Tech\n09:21 - vs Felothar, Dawn of the Abzan\n22:32 - vs Helga, Skittish Seer\n29:35 - vs Nicol Bolas, God-Pharaoh\n35:04 - vs Ugin, Eye of the Storms\n38:56 - vs Juri, Master of the Revue\n44:02 - vs Elenda, Saint of Dusk \n49:06 - vs Gonti, Night Minister \n53:17 - vs Yorion, Sky Nomad \n55:51 - vs Ral, Crackling Wit \n1:00:57 - vs Marwyn, the Nurturer \n1:05:56 - vs Elspeth, Storm Slayer\n\nDecklist: \nhttps://aetherhub.com/Deck/elspeth-storm-slayer-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #tarkir #mtg #mtgtarkir #mtgtdm #magicthegathering",
+            "keywords": [
+                "brawl deck",
+                "commander",
+                "deck",
+                "decks",
+                "double",
+                "dragonstorm",
+                "edh",
+                "elspeth",
+                "elspeth brawl",
+                "elspeth commander",
+                "elspeth edh",
+                "gameplay",
+                "guide",
+                "historic brawl",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "monowhite",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "octuple",
+                "planeswalker",
+                "quadruple",
+                "ramp",
+                "tarkir",
+                "tarkir dragonstorm",
+                "tdm",
+                "token deck",
+                "tokens",
+                "tokens deck",
+                "white"
+            ],
+            "publish_time": "2025-04-11 09:01:13",
+            "views": 14983,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-04-11",
+                        "exports": 210,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Elspeth, Storm Slayer Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/elspeth-storm-slayer-brawl",
+                        "views": 481
+                    },
+                    "decklist_id": "03f8c4d0-4b65-2351-3c73-3b46293d9f7f",
+                    "decklist_extended_id": "008bf5f5-cff1-66cf-a7b1-beb5de2d5276"
+                }
+            ]
+        }
+    ]
+}

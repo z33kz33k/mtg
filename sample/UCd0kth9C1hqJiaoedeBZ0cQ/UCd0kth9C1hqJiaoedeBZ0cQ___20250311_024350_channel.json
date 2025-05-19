@@ -1,0 +1,100 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "aetherdrift",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "explorer",
+        "foundations",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mtg foundations",
+        "mythic",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 135000,
+    "scrape_time": "2025-03-11 02:43:50",
+    "videos": [
+        {
+            "id": "_jp0yAqUIhY",
+            "url": "https://www.youtube.com/watch?v=_jp0yAqUIhY",
+            "author": "LegenVD",
+            "title": "Going wide with Aetherdrift.",
+            "description": "Magic: The Gathering Arena gameplay with a jeskai tokens deck in Aetherdrift Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n03:50 - Match 1\n07:28 - Match 2\n11:08 - Match 3\n18:09 - Match 4\n21:48 - Match 5\n25:37 - Match 6\n27:32 - Match 7\n34:45 - Match 8\n\nDecklist:\nhttps://aetherhub.com/Deck/aetherdrift-jeskai-tokens\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #aetherdrift #mtgaetherdrift #mtgdft #mtg #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "aetherdrift",
+                "aetherdrift standard",
+                "aggro",
+                "aggro deck",
+                "artifact",
+                "blue",
+                "convoke",
+                "deck",
+                "decks",
+                "dft",
+                "gameplay",
+                "guide",
+                "jeskai",
+                "jeskai tokens",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg aetherdrift",
+                "mtg arena",
+                "mtga",
+                "new standard",
+                "red",
+                "standard",
+                "standard deck",
+                "start your engines",
+                "tokens",
+                "white"
+            ],
+            "publish_time": "2025-03-10 10:00:42",
+            "views": 11655,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-03-10",
+                        "exports": 71,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Aetherdrift Jeskai Tokens",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/aetherdrift-jeskai-tokens",
+                        "views": 327
+                    },
+                    "decklist_id": "a0d5fd1e-2d2f-da8a-8728-b9183169916a",
+                    "decklist_extended_id": "2a27d03e-0022-f36c-9e6a-f715a41ebe87"
+                }
+            ]
+        }
+    ]
+}

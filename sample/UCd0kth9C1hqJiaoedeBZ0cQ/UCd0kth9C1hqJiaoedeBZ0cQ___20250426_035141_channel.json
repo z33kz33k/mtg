@@ -1,0 +1,100 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "dragonstorm",
+        "edh",
+        "educational",
+        "explorer",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mythic",
+        "standard",
+        "strategy",
+        "tarkir",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 136000,
+    "scrape_time": "2025-04-26 03:51:41",
+    "videos": [
+        {
+            "id": "el00MwgTIE8",
+            "url": "https://www.youtube.com/watch?v=el00MwgTIE8",
+            "author": "LegenVD",
+            "title": "This dragon likes big butts.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with an Abzan defender deck, ft. Betor, Kin to All as commander in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro\n02:01 - Deck Tech\n08:18 - vs Ureni, the Song Unending\n14:14 - vs Ruby, Daring Tracker\n18:05 - vs Chandra, Hope's Beacon\n22:19 - vs Bartolomé del Presidio\n27:01 - vs Captain Howler, Sea Scourge \n37:15 - vs Sarkhan, Dragon Ascendant \n42:58 - vs Nissa, Resurgent Animist \n\nDecklist: \nhttps://aetherhub.com/Deck/betor-kin-to-all-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #tarkir #mtg #mtgtarkir #mtgtdm #magicthegathering",
+            "keywords": [
+                "betor",
+                "betor brawl",
+                "betor commander",
+                "betor deck",
+                "betor edh",
+                "big butt",
+                "brawl deck",
+                "commander",
+                "deck",
+                "decks",
+                "defender",
+                "dragon",
+                "dragon deck",
+                "dragonstorm",
+                "edh",
+                "gameplay",
+                "guide",
+                "high toughness",
+                "historic brawl",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "ramp",
+                "tarkir",
+                "tarkir dragonstorm",
+                "tdm",
+                "toughness"
+            ],
+            "publish_time": "2025-04-25 09:01:06",
+            "views": 15311,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-04-25",
+                        "exports": 173,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Betor, Kin to All Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/betor-kin-to-all-brawl",
+                        "views": 507
+                    },
+                    "decklist_id": "a882765b-4276-4565-794a-ca0eb8d8c302",
+                    "decklist_extended_id": "2881f37d-6278-8adf-983e-6a6fa94da1d4"
+                }
+            ]
+        }
+    ]
+}

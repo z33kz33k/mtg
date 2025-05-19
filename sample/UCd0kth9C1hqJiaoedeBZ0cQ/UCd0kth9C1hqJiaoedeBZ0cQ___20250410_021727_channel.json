@@ -1,0 +1,103 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "dragonstorm",
+        "edh",
+        "educational",
+        "explorer",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mythic",
+        "standard",
+        "strategy",
+        "tarkir",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 136000,
+    "scrape_time": "2025-04-10 02:17:27",
+    "videos": [
+        {
+            "id": "_M7y86aVWls",
+            "url": "https://www.youtube.com/watch?v=_M7y86aVWls",
+            "author": "LegenVD",
+            "title": "Eldrazi have a new best friend.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a colorless Eldrazi ramp deck, ft. Ugin, Eye of the Storms in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\nColorless Brawl decks:\nhttps://www.youtube.com/watch?v=m-xyjiy0YPw\nhttps://www.youtube.com/watch?v=sBINZbI21MI\n\n00:00 - Deck Tech\n03:53 - vs Glarb, Calamity's Augur\n19:07 - vs Alesha, Who Laughs at Fate\n27:04 - vs Yorion, Sky Nomad\n48:25 - vs Chatterfang, Squirrel General\n56:48 - vs Davriel, Soul Broker\n1:04:41 - vs Lumra, Bellow of the Woods\n1:10:49 - vs Nicol Bolas, the Ravager\n\nDecklist: \nhttps://aetherhub.com/Deck/ugin-eye-of-the-storms-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #tarkir #mtg #mtgtarkir #mtgtdm #magicthegathering",
+            "keywords": [
+                "brawl deck",
+                "colorless",
+                "commander",
+                "deck",
+                "decks",
+                "dragonstorm",
+                "edh",
+                "eldrazi",
+                "eldrazi deck",
+                "emrakul",
+                "exile",
+                "gameplay",
+                "guide",
+                "historic brawl",
+                "kozilek",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "ramp",
+                "ramp deck",
+                "tarkir",
+                "tarkir dragonstorm",
+                "tdm",
+                "ugin",
+                "ugin brawl",
+                "ugin commander",
+                "ugin deck",
+                "ugin edh",
+                "ulamog"
+            ],
+            "publish_time": "2025-04-09 10:33:17",
+            "views": 14031,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com",
+                "www.youtube.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-04-09",
+                        "exports": 321,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Ugin, Eye of the Storms Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/ugin-eye-of-the-storms-brawl",
+                        "views": 607
+                    },
+                    "decklist_id": "49525f06-ebd2-ecf5-516d-52ddc9bf4e02",
+                    "decklist_extended_id": "24986c6d-0f8e-a8f5-c7ee-cc24e9e85325"
+                }
+            ]
+        }
+    ]
+}

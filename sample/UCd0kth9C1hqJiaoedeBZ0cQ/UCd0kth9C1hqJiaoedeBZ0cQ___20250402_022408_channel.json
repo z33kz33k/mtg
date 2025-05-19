@@ -1,0 +1,99 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "dragonstorm",
+        "edh",
+        "educational",
+        "explorer",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mythic",
+        "standard",
+        "strategy",
+        "tarkir",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 135000,
+    "scrape_time": "2025-04-02 02:24:08",
+    "videos": [
+        {
+            "id": "83U_MnRr4-A",
+            "url": "https://www.youtube.com/watch?v=83U_MnRr4-A",
+            "author": "LegenVD",
+            "title": "It finally happened ...",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with Mythweaver Poq in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro \n01:55 - Deck Tech\n08:26 - vs Liliana of the Veil\n16:27 - vs Ajani, Strength of the Pride\n19:48 - vs Imoti, Celebrant of Bounty\n31:14 - vs Phlage, Titan of Fire's Fury\n35:28 - vs Unesh, Criosphinx Sovereign\n40:42 - vs Emperor Apatzec Intli IV\n45:26 - vs Sorin, Imperious Bloodlord \n51:53 - vs The Mouth of Sauron\n58:13 - vs Outro\n\nDecklist: \nhttps://aetherhub.com/Deck/mythweaver-poq-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtg  #mtgarena #magicthegathering #mtgaetherdrift",
+            "keywords": [
+                "aetherdrift",
+                "april fools",
+                "brawl deck",
+                "commander",
+                "deck",
+                "decks",
+                "dft",
+                "edh",
+                "fool",
+                "gameplay",
+                "green",
+                "guide",
+                "historic brawl",
+                "landfall",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "monogreen",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "mythweaver",
+                "mythweaver brawl",
+                "mythweaver deck",
+                "poq",
+                "poq deck",
+                "prank",
+                "ramp",
+                "tarkir"
+            ],
+            "publish_time": "2025-04-01 09:00:10",
+            "views": 17076,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-04-01",
+                        "exports": 162,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Mythweaver Poq Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/mythweaver-poq-brawl",
+                        "views": 382
+                    },
+                    "decklist_id": "d6188a63-e3b1-2e3b-d022-05b585087c72",
+                    "decklist_extended_id": "ca86af8d-dc11-1767-357a-d6d836463ee3"
+                }
+            ]
+        }
+    ]
+}

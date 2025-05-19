@@ -1,0 +1,62 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 341000,
+    "scrape_time": "2025-04-03 03:05:42",
+    "videos": [
+        {
+            "id": "UwUjQHDsEms",
+            "url": "https://www.youtube.com/watch?v=UwUjQHDsEms",
+            "author": "MTGGoldfish",
+            "title": "I Doppelgang for More Doppelgangs Which Doppelgangs for Even More Doppelgangs  Against the Odds",
+            "description": "What is the problem with Doppelgang is that we just aren't Doppelganging enough?\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/against-the-odds-invasion-of-the-doppelgangs\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6981617#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/hCVbg\n◼ Purchase this deck (Magic Online): http://mtg.fish/2Qq9E\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#mtgstandard \n\n0:00 Start\n4:30 Match 1\n29:20 Match 2\n41:14 Match 3\n55:00 Match 4",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-04-02 08:00:06",
+            "views": 27083,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/against-the-odds-invasion-of-the-doppelgangs",
+                        "date": "2025-03-14",
+                        "format": "standard",
+                        "name": "Invasion of the Doppelgangs",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/against-the-odds-invasion-of-the-doppelgangs"
+                    },
+                    "decklist_id": "fb6c49f6-8115-44c7-57e7-1eba990a1709",
+                    "decklist_extended_id": "fe04b48a-1eff-ee6b-6ef8-4e6e5ba8b79d"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-03-14",
+                        "format": "standard",
+                        "name": "Invasion of the Doppelgangs",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6981617"
+                    },
+                    "decklist_id": "fb6c49f6-8115-44c7-57e7-1eba990a1709",
+                    "decklist_extended_id": "fe04b48a-1eff-ee6b-6ef8-4e6e5ba8b79d"
+                }
+            ]
+        }
+    ]
+}

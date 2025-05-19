@@ -1,0 +1,101 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "dragonstorm",
+        "edh",
+        "educational",
+        "explorer",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mythic",
+        "standard",
+        "strategy",
+        "tarkir",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 136000,
+    "scrape_time": "2025-04-29 01:56:24",
+    "videos": [
+        {
+            "id": "s03K2dCYQOw",
+            "url": "https://www.youtube.com/watch?v=s03K2dCYQOw",
+            "author": "LegenVD",
+            "title": "Playing hide and seek with Mythic rares.",
+            "description": "Magic: The Gathering Arena gameplay with a Collector's Cage deck, ft. Craterhoof Behemoth in Dragonstorm Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:10 - Match 1\n09:14 - Match 2\n16:09 - Match 3\n21:37 - Match 4\n28:38 - Match 5\n31:39 - Match 6\n39:09 - Match 7\n43:45 - Match 8\n\nDecklist:\nhttps://aetherhub.com/Deck/craterhoof-cage\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #tarkir #mtg #mtgtarkir #mtgtdm #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "cage",
+                "collector",
+                "craterhoof",
+                "deck",
+                "decks",
+                "dragonstorm",
+                "elspeth",
+                "gameplay",
+                "green",
+                "guide",
+                "hideaway",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "mythic",
+                "new standard",
+                "overlord",
+                "selesnya",
+                "standard",
+                "standard deck",
+                "tarkir",
+                "tarkir dragonstorm",
+                "tarkir standard",
+                "tdm",
+                "tdm standard",
+                "tokens",
+                "white"
+            ],
+            "publish_time": "2025-04-28 09:01:19",
+            "views": 14380,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-04-28",
+                        "exports": 252,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Craterhoof Cage",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/craterhoof-cage",
+                        "views": 565
+                    },
+                    "decklist_id": "3d47649e-5c65-acf8-01a5-edddf2d3fbff",
+                    "decklist_extended_id": "0164db14-7b5c-c0d9-3f0c-d1246c460c33"
+                }
+            ]
+        }
+    ]
+}

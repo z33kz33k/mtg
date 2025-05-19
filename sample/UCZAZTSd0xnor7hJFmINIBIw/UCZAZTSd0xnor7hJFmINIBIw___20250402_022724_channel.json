@@ -1,0 +1,62 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 341000,
+    "scrape_time": "2025-04-02 02:27:24",
+    "videos": [
+        {
+            "id": "lYyYbck2Zoo",
+            "url": "https://www.youtube.com/watch?v=lYyYbck2Zoo",
+            "author": "MTGGoldfish",
+            "title": "Zombie Lovers, Rejoice!",
+            "description": "Remember Cryptbreaker, Dark Salvation, and the sweet zombies of old? Well, lets see if a few new Zombies can help this deck be borderline Tier 3 playable \n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-zombie-lovers-rejoice-maybe\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7007768#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/0XHfS\n◼ Purchase this deck (Magic Online): http://mtg.fish/7pfQd\n\n#MTG\n#MagicTheGathering\n#MTGO\n#MTGPioneer",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-04-01 08:00:23",
+            "views": 12470,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-zombie-lovers-rejoice-maybe",
+                        "date": "2025-03-29",
+                        "format": "pioneer",
+                        "name": "An Honest Zombie Deck",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-zombie-lovers-rejoice-maybe"
+                    },
+                    "decklist_id": "b7a22fae-d4a3-4334-a294-7d7a3a549c08",
+                    "decklist_extended_id": "dc47b431-ebeb-6b32-3471-d2680f9a7739"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-03-29",
+                        "format": "pioneer",
+                        "name": "An Honest Zombie Deck",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7007768"
+                    },
+                    "decklist_id": "b7a22fae-d4a3-4334-a294-7d7a3a549c08",
+                    "decklist_extended_id": "dc47b431-ebeb-6b32-3471-d2680f9a7739"
+                }
+            ]
+        }
+    ]
+}

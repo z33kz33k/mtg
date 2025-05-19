@@ -1,0 +1,83 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 344000,
+    "scrape_time": "2025-05-16 02:45:01",
+    "videos": [
+        {
+            "id": "X2wPjLd34FY",
+            "url": "https://www.youtube.com/watch?v=X2wPjLd34FY",
+            "author": "MTGGoldfish",
+            "title": "The New Best Mono-Blue Ramp?  Daily MTG Final Fantasy Spoilers",
+            "description": "Today in Final Fantasy we get an uncommon that just might be the new best mono-blue ramp spell for Commander, some cool reprints from the Final Fantasy Thought the Ages bonus sheet and more! Let's discuss!\n\nPreorder Final Fantasy: https://www.cardkingdom.com/mtggoldfish\n\nMore spoilers: https://www.mtgpreviews.com\n\n#MTG #Magicthegathering #mtgspoilers #finalfantasy",
+            "keywords": [
+                "MTG",
+                "MTG Arena",
+                "MTGGoldfish",
+                "Magic: the Gathering"
+            ],
+            "publish_time": "2025-05-15 09:13:05",
+            "views": 18277,
+            "sources": [
+                "www.cardkingdom.com",
+                "www.mtgpreviews.com"
+            ],
+            "decks": []
+        },
+        {
+            "id": "5l7Knde3e9I",
+            "url": "https://www.youtube.com/watch?v=5l7Knde3e9I",
+            "author": "MTGGoldfish",
+            "title": "Flying, Indestructible, Hexproof, Double Strike,  Lifelink, Trample, Haste...  Against the Odds",
+            "description": "What are the odds of winning in Standard by building the most absurd three-drop ever? Let's find out!\n\nGet high quality MTG prints at https://www.cookandbecker.com. Use code FISH5 to get 5% off at checkout. https://www.cookandbecker.com/en/merchandise/3070/magic-the-gathering-art-prints.html\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/against-the-odds-urborg-scavengers-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7085709#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/zimQV\n◼ Purchase this deck (Magic Online): http://mtg.fish/fiuTr\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-05-14 19:00:07",
+            "views": 47450,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.cookandbecker.com.",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/against-the-odds-urborg-scavengers-standard",
+                        "date": "2025-05-06",
+                        "format": "standard",
+                        "name": "Sultai Scavengers",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/against-the-odds-urborg-scavengers-standard"
+                    },
+                    "decklist_id": "1de72908-8e30-6ea6-a7e9-c7c37fa42231",
+                    "decklist_extended_id": "0848d50a-1f20-dbf0-0603-2abbaca4cea3"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-05-06",
+                        "format": "standard",
+                        "name": "Sultai Scavengers",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7085709"
+                    },
+                    "decklist_id": "1de72908-8e30-6ea6-a7e9-c7c37fa42231",
+                    "decklist_extended_id": "0848d50a-1f20-dbf0-0603-2abbaca4cea3"
+                }
+            ]
+        }
+    ]
+}

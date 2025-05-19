@@ -1,0 +1,102 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "final fantasy",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mythic",
+        "pioneer",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 137000,
+    "scrape_time": "2025-05-15 03:05:12",
+    "videos": [
+        {
+            "id": "mvXrsIozubc",
+            "url": "https://www.youtube.com/watch?v=mvXrsIozubc",
+            "author": "LegenVD",
+            "title": "This dragon commands a zombie army.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a Sultai landfall deck, ft. Teval, the Balanced Scale as commander in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro\n01:50 - Deck Tech\n07:50 - vs Zurgo, Thunder's Decree\n12:58 - vs Ugin, Eye of the Storms\n17:08 - vs Helga, Skittish Seer\n23:15 - vs Extus, Oriq Overlord\n32:30 - vs Eshki, Temur's Roar\n40:05 - vs Clement, the Worrywort\n48:57 - vs Adeline, Resplendent Cathar\n51:46 - vs Nethroi, Apex of Death\n53:53 - vs Lonis, Cryptozoologist\n\nDecklist: \nhttps://aetherhub.com/Deck/teval-the-balanced-scale-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #tarkir #mtg #mtgtarkir #mtgtdm #magicthegathering",
+            "keywords": [
+                "balanced scale",
+                "black",
+                "blue",
+                "brawl deck",
+                "commander",
+                "deck",
+                "decks",
+                "dragon",
+                "dragonstorm",
+                "druid",
+                "edh",
+                "gameplay",
+                "graveyard",
+                "green",
+                "guide",
+                "historic brawl",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mill",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "ramp",
+                "selfmill",
+                "sultai",
+                "tarkir",
+                "tarkir dragonstorm",
+                "tdm",
+                "teval",
+                "teval brawl",
+                "teval edh",
+                "zombie"
+            ],
+            "publish_time": "2025-05-14 09:01:24",
+            "views": 14388,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-05-14",
+                        "exports": 172,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Teval, the Balanced Scale Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/teval-the-balanced-scale-brawl",
+                        "views": 509
+                    },
+                    "decklist_id": "8dc66c42-66a6-8091-9cea-723bd6b6146a",
+                    "decklist_extended_id": "b98d2386-3c30-4969-fbfb-7471e969e4b0"
+                }
+            ]
+        }
+    ]
+}
