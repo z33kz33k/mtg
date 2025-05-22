@@ -21,7 +21,7 @@ from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import Collected, DeckScraper, DeckTagsContainerScraper, TagBasedDeckParser
 from mtg.utils import ParsingError, sanitize_whitespace
-from mtg.utils.scrape import ScrapingError, strip_url_query
+from mtg.utils.scrape import ScrapingError, getsoup, strip_url_query
 from mtg.utils.scrape.dynamic import get_dynamic_soup
 
 _log = logging.getLogger(__name__)
@@ -222,12 +222,9 @@ class MagicGgEventScraper(DeckTagsContainerScraper):
         return strip_url_query(url)
 
     @override
-    def _pre_parse(self) -> None:
-        pass
-
-    @override
     def _gather(self) -> Collected:
         try:
+            self._pre_parse()
             return self._collect()
         except ParsingError as pe:
             err = ScrapingError(str(pe), type(self), self.url)

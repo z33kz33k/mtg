@@ -532,6 +532,7 @@ _QUERY_EXCLUDES = (
     '-"altered tcg"',
     '-"curiosa.io"',
     '-dfiance',
+    '-digimon',
     '-"eternal card game"',
     '-fab',
     '-"fabrary.net"',
