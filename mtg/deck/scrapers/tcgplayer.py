@@ -360,8 +360,8 @@ class TcgPlayerInfiniteArticleScraper(DecksJsonContainerScraper):
     _HOOK = "/magic-the-gathering/deck/"
     SELENIUM_PARAMS = {  # override
         "xpath": f"//a[contains(@href, '{_HOOK}')]",
-        "consent_xpath": ("//button[contains(@class, 'martech-button') and contains(@class, "
-                          "'martech-medium') and contains(@class, 'martech-primary')]"),
+        # "consent_xpath": ("//button[contains(@class, 'martech-button') and contains(@class, "
+        #                   "'martech-medium') and contains(@class, 'martech-primary')]"),
         "wait_for_all": True,
         "scroll_down": True,
         "scroll_down_delay": 2.0,
@@ -434,7 +434,7 @@ class TcgPlayerInfiniteAuthorScraper(HybridContainerScraper):
     """
     SELENIUM_PARAMS = {  # override
         "xpath": "//div[@class='grid']",
-        "consent_xpath": TcgPlayerInfiniteArticleScraper.SELENIUM_PARAMS["consent_xpath"],
+        # "consent_xpath": TcgPlayerInfiniteArticleScraper.SELENIUM_PARAMS["consent_xpath"],
     }
     CONTAINER_NAME = "TCGPlayer Infinite author"  # override
     API_URL_TEMPLATE = ("https://infinite-api.tcgplayer.com/content/author/{}/?source="
@@ -494,7 +494,7 @@ class TcgPlayerInfiniteAuthorDecksPaneScraper(DeckUrlsContainerScraper):
     """
     SELENIUM_PARAMS = {  # override
         "xpath": TcgPlayerInfiniteAuthorScraper.SELENIUM_PARAMS["xpath"],
-        "consent_xpath": TcgPlayerInfiniteArticleScraper.SELENIUM_PARAMS["consent_xpath"],
+        # "consent_xpath": TcgPlayerInfiniteArticleScraper.SELENIUM_PARAMS["consent_xpath"],
     }
     CONTAINER_NAME = "TCGPlayer Infinite author decks pane"  # override
     # 200 rows is pretty arbitrary but tested to work (even though usually events have fewer rows)

@@ -32,7 +32,9 @@ class InternationalHareruyaDeckScraper(DeckScraper):
     def is_valid_url(url: str) -> bool:
         url = url.lower()
         return ("hareruyamtg.com" in url and "/deck/" in url
-                and "deck.hareruyamtg.com/deck/" not in url and "/result?" not in url)
+                and "deck.hareruyamtg.com/deck/" not in url
+                and "/result?" not in url
+                and "/metagame" not in url)
 
     @staticmethod
     @override

@@ -750,6 +750,8 @@ def clean_up(move=True) -> None:
         if chdir.name not in ids:
             if move:
                 dst = AVOIDED_DIR /  chdir.name
+                if dst.is_dir():
+                    shutil.rmtree(dst)
                 _log.info(f"Moving channel data from '{chdir}' to '{dst}'...")
                 shutil.move(chdir, dst)
             else:
