@@ -20,7 +20,7 @@ from decimal import Decimal
 from functools import cached_property
 from http.client import RemoteDisconnected
 from pathlib import Path
-from typing import Callable, Generator
+from typing import Callable, Generator, Type
 
 import backoff
 import httpcore
@@ -1010,6 +1010,16 @@ class Video:
         dst.write_text(self.json, encoding="utf-8")
 
 
+class MissingChannelData(ScrapingError):
+    """Raised on Channel missing scrapeable data.
+    """
+    def __init__(self, message: str, channel: str, url: str) -> None:
+        channel = channel or "Channel"
+        details = [f"'{channel}'", url]
+        message += f" [{', '.join(details)}]"
+        super().__init__(message, None, None)
+
+
 class Channel:
     """YouTube channel showcasing MtG decks.
     """
@@ -1099,9 +1109,9 @@ class Channel:
                 video_ids.append(vid)
 
         if not count:
-            raise ScrapingError(
+            raise MissingChannelData(
                 "scrapetube failed to yield any video IDs. Are you sure the channel has a 'Videos' "
-                "tab?", scraper=type(self), url=self.url)
+                "tab?", self.title, url=self.url)
 
         return video_ids
 
