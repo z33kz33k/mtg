@@ -210,7 +210,7 @@ def scrape_fresh(
     ids, retrieved = [], retrieve_ids()
     for chid in tqdm(retrieved, total=len(retrieved), desc="Loading channels data..."):
         try:
-            with logging_disabled():
+            with logging_disabled(logging.ERROR):
                 data = load_channel(chid)
         except FileNotFoundError:
             data = None
@@ -233,7 +233,7 @@ def scrape_active(
     ids, retrieved = [], retrieve_ids()
     for chid in tqdm(retrieved, total=len(retrieved), desc="Loading channels data..."):
         try:
-            with logging_disabled():
+            with logging_disabled(logging.ERROR):
                 data = load_channel(chid)
         except FileNotFoundError:
             data = None
@@ -254,7 +254,7 @@ def scrape_dormant(
     ids, retrieved = [], retrieve_ids()
     for chid in tqdm(retrieved, total=len(retrieved), desc="Loading channels data..."):
         try:
-            with logging_disabled():
+            with logging_disabled(logging.ERROR):
                 data = load_channel(chid)
         except FileNotFoundError:
             data = None
@@ -275,7 +275,7 @@ def scrape_abandoned(
     ids, retrieved = [], retrieve_ids()
     for chid in tqdm(retrieved, total=len(retrieved), desc="Loading channels data..."):
         try:
-            with logging_disabled():
+            with logging_disabled(logging.ERROR):
                 data = load_channel(chid)
         except FileNotFoundError:
             data = None
@@ -297,7 +297,7 @@ def scrape_deck_stale(
     ids, retrieved = [], retrieve_ids()
     for chid in tqdm(retrieved, total=len(retrieved), desc="Loading channels data..."):
         try:
-            with logging_disabled():
+            with logging_disabled(logging.ERROR):
                 data = load_channel(chid)
         except FileNotFoundError:
             data = None
@@ -319,7 +319,7 @@ def scrape_very_deck_stale(
     ids, retrieved = [], retrieve_ids()
     for chid in tqdm(retrieved, total=len(retrieved), desc="Loading channels data..."):
         try:
-            with logging_disabled():
+            with logging_disabled(logging.ERROR):
                 data = load_channel(chid)
         except FileNotFoundError:
             data = None
@@ -341,7 +341,7 @@ def scrape_excessively_deck_stale(
     ids, retrieved = [], retrieve_ids()
     for chid in tqdm(retrieved, total=len(retrieved), desc="Loading channels data..."):
         try:
-            with logging_disabled():
+            with logging_disabled(logging.ERROR):
                 data = load_channel(chid)
         except FileNotFoundError:
             data = None

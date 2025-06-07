@@ -11,6 +11,7 @@ import itertools
 import json
 import logging
 import shutil
+import sys
 from collections import defaultdict
 from dataclasses import astuple, dataclass
 from datetime import date, datetime
@@ -193,7 +194,11 @@ def load_channel(channel_id: str) -> ChannelData:
         raise FileNotFoundError(f"No channel files found at: '{channel_dir}'")
     channels = []
     for file in files:
-        channel = json.loads(file.read_text(encoding="utf-8"), object_hook=deserialize_dates)
+        try:
+            channel = json.loads(file.read_text(encoding="utf-8"), object_hook=deserialize_dates)
+        except json.JSONDecodeError:
+            _log.critical(f"Failed to load channel data from: '{file}'")
+            sys.exit(1)
         # deal with legacy data that contains "url"
         if "url" in channel:
             del channel["url"]
