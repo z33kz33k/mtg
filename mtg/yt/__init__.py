@@ -356,6 +356,17 @@ def scrape_excessively_deck_stale(
         *ids, videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
 
 
+def scrape_all(videos=50, only_newer_than_last_scraped=True) -> None:
+    scrape_fresh(videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
+    scrape_active(videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
+    scrape_dormant(videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
+    scrape_abandoned(videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
+    scrape_deck_stale(videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
+    scrape_very_deck_stale(videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
+    scrape_excessively_deck_stale(
+        videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
+
+
 # TODO: async
 class LinksExpander:
     """Expand links to prospective pages into lines eligible for deck-processing.

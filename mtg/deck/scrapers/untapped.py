@@ -17,7 +17,7 @@ from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.utils import extract_float, extract_int
-from mtg.utils.scrape import ScrapingError
+from mtg.utils.scrape import ScrapingError, get_next_sibling_tag
 from mtg.utils.scrape import strip_url_query
 from mtg.utils.scrape.dynamic import get_dynamic_soup
 
@@ -58,9 +58,9 @@ class UntappedProfileDeckScraper(DeckScraper):
 
     @override
     def _parse_metadata(self) -> None:
-        name_tag = self._soup.select_one('span[class*="DeckListContainer__Title"]')
-        strong_tag = name_tag.find("strong")
-        self._metadata["name"] = strong_tag.text.strip()
+        name_tag = self._soup.select_one(
+            "main > div > div > div > div > div > div > div > div > a > span > strong")
+        self._metadata["name"] = name_tag.text.strip()
         author_tag = self._soup.find("h1", string=lambda s: s and s.endswith("'s Profile"))
         self._metadata["author"] = author_tag.text.strip().removesuffix("'s Profile")
 
@@ -96,7 +96,7 @@ class UntappedRegularDeckScraper(DeckScraper):
 
     @override
     def _parse_metadata(self) -> None:
-        name_tag = self._soup.select("h1[class*='styles__H1']")[-1]
+        name_tag = self._soup.select_one("main > div > div > div > h1")
         name = name_tag.text.strip()
         if " (" in name:
             name, *_ = name.split(" (")
@@ -133,19 +133,18 @@ class UntappedMetaDeckScraper(DeckScraper):
 
     @override
     def _parse_metadata(self) -> None:
-        name_tag = self._soup.select_one("h1[class*='layouts__MetaPageHeaderTitle']")
-        if not name_tag:
-            name_tag = self._soup.select_one("span[class*='DeckViewHeader__ArchetypeName']")
-        if not name_tag:
-            raise ScrapingError("Page data not available", scraper=type(self), url=self.url)
-        name = name_tag.text.strip().removesuffix(" Deck")
-        self._metadata["name"] = name
+        name_tag = self._soup.select_one("main > div > div > div > div > div > div > a > div > div > div > span")
+        self._metadata["name"] = name_tag.text.strip()
         fmt_tag = self._soup.find("div", id="filter-format")
         self._metadata["format"] = fmt_tag.text.strip().lower()
         if time_tag := self._soup.find("time"):
             self._metadata["date"] = datetime.strptime(
                 time_tag.attrs["datetime"], "%Y-%m-%dT%H:%M:%S.%fZ").date()
-        winrate, matches, avg_duration = self._soup.select("span[class*='LabledStat__Value']")
+        # info
+        info_tag = name_tag.parent
+        info_tag = get_next_sibling_tag(info_tag)
+        info_tag = [*info_tag][0]
+        winrate, matches, avg_duration = info_tag
         self._metadata["meta"] = {}
         if winrate.text.strip():
             self._metadata["meta"]["winrate"] = extract_float(winrate.text.strip())
@@ -153,7 +152,9 @@ class UntappedMetaDeckScraper(DeckScraper):
             self._metadata["meta"]["matches"] = extract_int(matches.text.strip())
         if avg_duration.text.strip():
             self._metadata["meta"]["avg_minutes"] = extract_float(avg_duration.text.strip())
-        time_range_tag = self._soup.select_one("div[class*='TimeRangeFilter__DateText']")
+        # time range
+        i_tag = self._soup.select_one("#filter-time-range > div > div > div > i")
+        time_range_tag = i_tag.parent
         self._metadata["meta"]["time_range_since"] = time_range_tag.text.removesuffix("Now")
 
     @override
