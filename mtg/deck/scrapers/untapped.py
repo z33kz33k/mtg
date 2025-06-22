@@ -133,7 +133,8 @@ class UntappedMetaDeckScraper(DeckScraper):
 
     @override
     def _parse_metadata(self) -> None:
-        name_tag = self._soup.select_one("main > div > div > div > div > div > div > a > div > div > div > span")
+        name_tag = self._soup.select_one(
+            "main > div > div > div > div > div > div > a > div > div > div > span")
         self._metadata["name"] = name_tag.text.strip()
         fmt_tag = self._soup.find("div", id="filter-format")
         self._metadata["format"] = fmt_tag.text.strip().lower()

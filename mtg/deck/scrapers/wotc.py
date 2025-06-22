@@ -17,11 +17,11 @@ from bs4 import Tag
 from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import ContainerScraper, FolderContainerScraper, TagBasedDeckParser, \
-    HybridContainerScraper
+from mtg.deck.scrapers import ContainerScraper, FolderContainerScraper, HybridContainerScraper, \
+    TagBasedDeckParser
 from mtg.scryfall import COMMANDER_FORMATS
 from mtg.utils import ParsingError, from_iterable
-from mtg.utils.scrape import ScrapingError, strip_url_query
+from mtg.utils.scrape import ScrapingError, Soft404Error, strip_url_query
 
 _log = logging.getLogger(__name__)
 

@@ -34,7 +34,7 @@ class ArchidektDeckScraper(DeckScraper):
     @staticmethod
     @override
     def sanitize_url(url: str) -> str:
-        return strip_url_query(url)
+        return strip_url_query(url).replace("/image/", "/")
 
     @override
     def _get_data_from_soup(self) -> Json:

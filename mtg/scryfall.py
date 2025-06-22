@@ -1283,6 +1283,7 @@ def _build_maps() -> None:
         _COLLECTOR_NUMBER_MAP[(card.set, card.collector_number)] = card
 
 
+@lru_cache
 def query_api_for_card(card_name: str, foreign=False) -> Card | None:
     """Query Scryfall API for a card designated by provided name.
     """

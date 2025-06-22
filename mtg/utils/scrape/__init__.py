@@ -51,6 +51,28 @@ class ScrapingError(OSError):
         super().__init__(message)
 
 
+class InaccessiblePage(ScrapingError):
+    """Raised on encountering hidden, private, or otherwise inaccessible pages.
+    """
+    def __init__(
+            self, message="Page hidden, private or otherwise inaccessible",
+            scraper: Type | None = None,
+            url: str | None = None) -> None:
+        super().__init__(message, scraper, url)
+
+
+class Soft404Error(ScrapingError):
+    """Raised on encountering "soft 404 error" pages instead of a decklist page.
+
+    What "soft 404s" are: https://en.wikipedia.org/wiki/HTTP_404
+    """
+    def __init__(
+            self, message="Soft 404 (Page Not Found) page instead of an intended one encountered",
+            scraper: Type | None = None,
+            url: str | None = None) -> None:
+        super().__init__(message, scraper, url)
+
+
 http_requests_count = 0
 
 

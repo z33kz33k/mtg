@@ -28,16 +28,6 @@ from mtg.utils.scrape.dynamic import get_dynamic_soup
 _log = logging.getLogger(__name__)
 
 
-class HiddenDecklistPage(ScrapingError):
-    """Raised on encountering unscrapeable, private/hidden decklist pages.
-    """
-    def __init__(
-            self, message="Decklist page hidden/private or otherwise unavailable",
-            scraper: Type | None = None,
-            url: str | None = None) -> None:
-        super().__init__(message, scraper, url)
-
-
 def is_in_domain_but_not_main(url: str, domain: str) -> bool:
     """Check whether the passed URL is of the passed domain but other than exactly this domain.
 
