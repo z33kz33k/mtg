@@ -101,7 +101,7 @@ def timed_request(
     http_requests_count += 1
     if handle_http_errors:
         if str(response.status_code)[0] in ("4", "5"):
-            msg = f"Request failed with: '{response.status_code} {response.reason}'"
+            msg = f"Request for '{url}' failed with: '{response.status_code} {response.reason}'"
             if response.status_code in (502, 503, 504):
                 raise HTTPError(msg)
             _log.warning(msg)

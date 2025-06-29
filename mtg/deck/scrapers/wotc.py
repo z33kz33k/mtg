@@ -21,7 +21,7 @@ from mtg.deck.scrapers import ContainerScraper, FolderContainerScraper, HybridCo
     TagBasedDeckParser
 from mtg.scryfall import COMMANDER_FORMATS
 from mtg.utils import ParsingError, from_iterable
-from mtg.utils.scrape import ScrapingError, Soft404Error, strip_url_query
+from mtg.utils.scrape import ScrapingError, strip_url_query
 
 _log = logging.getLogger(__name__)
 
