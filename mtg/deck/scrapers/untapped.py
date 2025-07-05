@@ -133,9 +133,10 @@ class UntappedMetaDeckScraper(DeckScraper):
 
     @override
     def _parse_metadata(self) -> None:
-        name_tag = self._soup.select_one(
-            "main > div > div > div > div > div > div > a > div > div > div > span")
-        self._metadata["name"] = name_tag.text.strip()
+        name_tag = self._soup.find("h1")
+        self._metadata["name"] = name_tag.text.strip().removesuffix(" Deck")
+        if set_tag := self._soup.find("h2"):
+            self._metadata["set"] = set_tag.text.strip()
         fmt_tag = self._soup.find("div", id="filter-format")
         self._metadata["format"] = fmt_tag.text.strip().lower()
         if time_tag := self._soup.find("time"):
@@ -145,18 +146,23 @@ class UntappedMetaDeckScraper(DeckScraper):
         info_tag = name_tag.parent
         info_tag = get_next_sibling_tag(info_tag)
         info_tag = [*info_tag][0]
-        winrate, matches, avg_duration = info_tag
-        self._metadata["meta"] = {}
-        if winrate.text.strip():
-            self._metadata["meta"]["winrate"] = extract_float(winrate.text.strip())
-        if matches.text.strip():
-            self._metadata["meta"]["matches"] = extract_int(matches.text.strip())
-        if avg_duration.text.strip():
-            self._metadata["meta"]["avg_minutes"] = extract_float(avg_duration.text.strip())
+        try:
+            winrate, matches, avg_duration = info_tag
+            self._metadata["meta"] = {}
+            if winrate.text.strip():
+                self._metadata["meta"]["winrate"] = extract_float(winrate.text.strip())
+            if matches.text.strip():
+                self._metadata["meta"]["matches"] = extract_int(matches.text.strip())
+            if avg_duration.text.strip():
+                self._metadata["meta"]["avg_minutes"] = extract_float(avg_duration.text.strip())
+        except ValueError as e:
+            if not "unpack" in str(e):
+                raise
         # time range
         i_tag = self._soup.select_one("#filter-time-range > div > div > div > i")
         time_range_tag = i_tag.parent
-        self._metadata["meta"]["time_range_since"] = time_range_tag.text.removesuffix("Now")
+        self._metadata.setdefault(
+            "meta", {})["time_range_since"] = time_range_tag.text.removesuffix("Now")
 
     @override
     def _parse_decklist(self) -> None:

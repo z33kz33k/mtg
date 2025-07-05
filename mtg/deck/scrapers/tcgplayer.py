@@ -173,7 +173,8 @@ class TcgPlyerInfiniteDeckJsonParser(JsonBasedDeckParser):
     def _get_cardmap(self) -> dict[int, Card]:
         cardmap = {}
         for card_id, data in self._deck_data["cards"].items():
-            name, tcgplayer_id, oracle_id = data["name"], data["tcgPlayerID"], data["oracleID"]
+            name, tcgplayer_id, oracle_id = data["name"], data["tcgPlayerID"], data.get(
+                "oracleID", "")
             card = self.find_card(name, tcgplayer_id=tcgplayer_id, oracle_id=oracle_id)
             cardmap[int(card_id)] = card
         return cardmap

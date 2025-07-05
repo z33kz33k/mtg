@@ -122,10 +122,10 @@ class DeckstatsDeckScraper(DeckScraper):
         author_text = self._soup.find("div", id="deck_folder_subtitle").text.strip()
         self._metadata["author"] = author_text.removeprefix("in  ").removesuffix("'s Decks")
         self._metadata["name"] = self._data["name"]
-        self._metadata["views"] = self._data["views"]
-        if self._data.get("format_id"):
-            fmt = _FORMATS.get(self._data["format_id"])
-            if fmt:
+        if views := self._data.get("views"):
+            self._metadata["views"] = views
+        if fmt_id := self._data.get("format_id"):
+            if fmt := _FORMATS.get(fmt_id):
                 self._update_fmt(fmt)
         self._metadata["date"] = datetime.fromtimestamp(self._data["updated"], UTC).date()
         if tags := self._data.get("tags"):
