@@ -10,10 +10,57 @@
 import logging
 from typing import Type, override
 
+from mtg.deck import Deck
+from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
+from mtg.utils import extract_int
 from mtg.utils.scrape import ScrapingError, strip_url_query
 
 _log = logging.getLogger(__name__)
+
+
+@DeckScraper.registered
+class TopDeckDeckScraper(DeckScraper):
+    """Scraper of TopDeck.gg decklist page.
+    """
+    @staticmethod
+    @override
+    def is_valid_url(url: str) -> bool:
+        return "topdeck.gg/deck/" in url.lower()
+
+    @override
+    def _parse_metadata(self) -> None:
+        header_tag = self._soup.select_one("div.row.align-items-center")
+        if not header_tag:
+            raise ScrapingError("Header tag not found", scraper=type(self), url=self.url)
+        if author_tag := header_tag.find("h1"):
+            self._metadata["author"] = author_tag.text.strip()
+        if event_tag := header_tag.find("h3"):
+            self._metadata.setdefault("event", {})["name"] = event_tag.text.strip()
+        if event_url_tag := header_tag.find("a", href=lambda h: h and h.startswith("/bracket/")):
+            self._metadata.setdefault(
+                "event", {})["url"] = "https://topdeck.gg" + event_url_tag.attrs["href"]
+        if fmt_tag := header_tag.find("small"):
+            self._update_fmt(fmt_tag.text.strip().removeprefix("Magic: The Gathering "))
+        if p_tag := header_tag.find("p"):
+            rank, record = p_tag.text.strip().split("•Record: ", maxsplit=1)
+            self._metadata.setdefault("event", {})["rank"] = extract_int(rank)
+            self._metadata.setdefault("event", {})["record"] = record.strip()
+
+    @override
+    def _parse_decklist(self) -> None:
+        decklist_tag = self._soup.find(
+            "script", string=lambda s: s and "const decklistContent = `" in s)
+        if not decklist_tag:
+            raise ScrapingError("Decklist tag not found", scraper=type(self), url=self.url)
+        _, decklist = decklist_tag.text.split("const decklistContent = `", maxsplit=1)
+        decklist, _ = decklist.split("`;", maxsplit=1)
+        self._decklist = decklist.replace("~~Commanders~~", "Commander").replace(
+            "~~Mainboard~~", "Deck").replace("~~Sideboard~~", "Sideboard")
+
+    @override
+    def _build_deck(self) -> Deck | None:
+        return ArenaParser(self._decklist, metadata=self._metadata).parse()
 
 
 def check_unexpected_urls(urls: list[str], *scrapers: Type[DeckScraper]) -> None:

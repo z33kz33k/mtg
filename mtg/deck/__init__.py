@@ -604,7 +604,7 @@ class Deck:
                     sideboard.remove(cmd)
             cards = {*maindeck, *sideboard}
             if any(cmd in cards for cmd in commanders):
-                raise InvalidDeck(f"Redundant commander maindeck/sideboard inclusion")
+                raise InvalidDeck(f"Redundant commander inclusion")
             identity = {clr for c in commanders for clr in c.color_identity.value}
             for card in [*maindeck, *sideboard]:
                 if any(letter not in identity for letter in card.color_identity.value):

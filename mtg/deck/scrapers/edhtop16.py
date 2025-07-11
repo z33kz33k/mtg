@@ -21,6 +21,7 @@ from mtg.utils.scrape import ScrapingError
 _log = logging.getLogger(__name__)
 
 
+# FIXME
 @DeckUrlsContainerScraper.registered
 class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
     """Scraper of EDHTop 16 tournament page.
@@ -101,6 +102,7 @@ class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
         return decks
 
 
+# FIXME
 @DeckUrlsContainerScraper.registered
 class EdhTop16CommanderScraper(EdhTop16TournamentScraper):
     """Scraper of EDHTop 16 commander page.
