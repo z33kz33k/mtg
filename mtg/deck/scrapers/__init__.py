@@ -665,6 +665,9 @@ class HybridContainerScraper(
             css_selector: CSS selector to obtain links from the tag
             url_prefix: prefix to add to relative URLs
             query_stripped: whether to strip the query part of the URL
+
+        Returns:
+            links sifted into deck URLs and container URLs
         """
         tags = tags or [self._soup]
         links = get_links(

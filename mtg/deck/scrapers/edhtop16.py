@@ -7,26 +7,27 @@
     @author: z33k
 
 """
-import json
 import logging
 from typing import override
+
+import dateutil.parser
 
 from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckUrlsContainerScraper
 from mtg.deck.scrapers.topdeck import check_unexpected_urls
-from mtg.utils.scrape import ScrapingError
+from mtg.utils.scrape import ScrapingError, dissect_js
 
 _log = logging.getLogger(__name__)
 
 
-# FIXME
 @DeckUrlsContainerScraper.registered
 class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
     """Scraper of EDHTop 16 tournament page.
     """
     CONTAINER_NAME = "EDHTop16 tournament"  # override
+    DATA_FROM_SOUP = True  # override
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -37,8 +38,40 @@ class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
     def is_valid_url(url: str) -> bool:
         return "edhtop16.com/tournament/" in url.lower()
 
+    @override
+    def _get_data_from_soup(self) -> Json:
+        script_tag = self._soup.find("script", type="text/javascript")
+        if not script_tag:
+            raise ScrapingError(
+                "<script> data tag not found", scraper=type(self), url=self.url)
+        json_data = dissect_js(
+            script_tag, "window.__river_ops = ", ";\n      ",
+            end_processor=lambda s: s.replace('":undefined', '":null').replace(
+                '": undefined', '": null'))
+        match json_data:
+            case [[_, {"tournament": data}]]:
+                return data
+            case _:
+                raise ScrapingError(
+                    "Tournament data not available", scraper=type(self), url=self.url)
+
+    def _validate_data(self) -> None:
+        super()._validate_data()
+        if not "entries" in self._data:
+            raise ScrapingError(
+                "Tournament entries data not available", scraper=type(self), url=self.url)
+
+    def _parse_metadata(self) -> None:
+        self._update_fmt("commander")
+        self._metadata["event"] = {}
+        self._metadata["event"]["name"] = self._data.get("name")
+        if size := self._data.get("size"):
+            self._metadata["event"]["size"] = size
+        if date := self._data.get("tournamentDate"):
+            self._metadata["event"]["date"] = dateutil.parser.parse(date).date()
+
     @staticmethod
-    def _resolve_decklist(decklist: str) -> str:
+    def _normalize_decklist(decklist: str) -> str:
         tokens = decklist.split("1 ")[1:]
         commander, *playsets = [f"1 {t}" for t in tokens if t]
         return "\n".join(["Commander", commander, "", "Deck"] + [*playsets])
@@ -50,43 +83,16 @@ class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
                 urls.append(decklist)
             else:
                 try:
-                    self._arena_decklists.append(self._resolve_decklist(decklist))
+                    self._arena_decklists.append(self._normalize_decklist(decklist))
                 except ValueError:
                     pass
 
-    def _process_data(self, data: Json) -> list[str]:
-        urls = []
-        match data:
-            case {
-                "props": {
-                    "pageProps": {
-                        "payload": {
-                            "data": {
-                                "tournament": {
-                                    "entries": entries
-                                }
-                            }
-                        }
-                    }
-                }
-            }:
-                for entry in entries:
-                    decklist = entry["decklist"]
-                    self._process_decklist(decklist, urls)
-            case _:
-                pass
-        return urls
-
     @override
     def _collect(self) -> list[str]:
-        script_tag = self._soup.find("script", id="__NEXT_DATA__")
-        if not script_tag:
-            raise ScrapingError("<script> tag not found", scraper=type(self), url=self.url)
-
-        data = json.loads(script_tag.text)
-        deck_urls = self._process_data(data)
+        deck_urls = []
+        for entry in self._data["entries"]:
+            self._process_decklist(entry.get("decklist", ""), deck_urls)
         check_unexpected_urls(deck_urls, *self._get_deck_scrapers())
-
         return deck_urls
 
     @override
@@ -103,38 +109,38 @@ class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
 
 
 # FIXME
-@DeckUrlsContainerScraper.registered
-class EdhTop16CommanderScraper(EdhTop16TournamentScraper):
-    """Scraper of EDHTop 16 commander page.
-    """
-    CONTAINER_NAME = "EDHTop16 commander"  # override
-
-    @staticmethod
-    @override
-    def is_valid_url(url: str) -> bool:
-        return "edhtop16.com/commander/" in url.lower()
-
-    def _process_data(self, data: Json) -> list[str]:  # override
-        urls = []
-        match data:
-            case {
-                "props": {
-                    "pageProps": {
-                        "payload": {
-                            "data": {
-                                "commander": {
-                                    "entries": {
-                                        "edges": edges
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }:
-                for edge in edges:
-                    decklist = edge["node"]["decklist"]
-                    self._process_decklist(decklist, urls)
-            case _:
-                pass
-        return urls
+# @DeckUrlsContainerScraper.registered
+# class EdhTop16CommanderScraper(EdhTop16TournamentScraper):
+#     """Scraper of EDHTop 16 commander page.
+#     """
+#     CONTAINER_NAME = "EDHTop16 commander"  # override
+#
+#     @staticmethod
+#     @override
+#     def is_valid_url(url: str) -> bool:
+#         return "edhtop16.com/commander/" in url.lower()
+#
+#     def _process_data(self, data: Json) -> list[str]:  # override
+#         urls = []
+#         match data:
+#             case {
+#                 "props": {
+#                     "pageProps": {
+#                         "payload": {
+#                             "data": {
+#                                 "commander": {
+#                                     "entries": {
+#                                         "edges": edges
+#                                     }
+#                                 }
+#                             }
+#                         }
+#                     }
+#                 }
+#             }:
+#                 for edge in edges:
+#                     decklist = edge["node"]["decklist"]
+#                     self._process_decklist(decklist, urls)
+#             case _:
+#                 pass
+#         return urls

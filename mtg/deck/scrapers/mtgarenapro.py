@@ -46,7 +46,7 @@ class MtgArenaProDeckScraper(DeckScraper):
     @override
     def _get_data_from_soup(self) -> Json:
         return dissect_js(
-        self._soup, "var precachedDeck=", '"card_ids":', lambda s: s + '"card_ids":[]}')
+            self._soup, "var precachedDeck=", '"card_ids":', lambda s: s + '"card_ids":[]}')
 
     @override
     def _validate_data(self) -> None:
