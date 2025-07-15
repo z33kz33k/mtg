@@ -129,7 +129,7 @@ class ArchidektUserScraper(DeckUrlsContainerScraper):
         url = url.lower()
         return ("archidekt.com/u/" in url or "archidekt.com/user/" in url
                 or ("archidekt.com/search/decks?" in url
-                    and ("owner=" in url or "ownerUsername=" in url)))
+                    and ("owner=" in url or "ownerusername=" in url)))
 
     @override
     def _collect(self) -> list[str]:
