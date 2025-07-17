@@ -19,7 +19,7 @@ from mtg.deck import Deck, Mode
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
     TagBasedDeckParser
 from mtg.utils import extract_float, extract_int, from_iterable
-from mtg.utils.scrape import InaccessiblePage, ScrapingError, strip_url_query
+from mtg.utils.scrape import ScrapingError, strip_url_query
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://aetherhub.com"
@@ -118,10 +118,12 @@ class AetherhubDeckScraper(DeckScraper):
         return url.removesuffix("/")
 
     @override
-    def _validate_soup(self) -> None:
-        super()._validate_soup()
-        if "404 Page Not Found" in self._soup.text:
-            raise ScrapingError("Page not available", scraper=type(self), url=self.url)
+    def _is_page_inaccessible(self) -> bool:
+        return "Welcome Back" in self._soup.text
+
+    @override
+    def _is_soft_404_error(self) -> bool:
+        return "404 Page Not Found" in self._soup.text
 
     @override
     def _get_sub_parser(self) -> AetherhubDeckTagParser:
@@ -129,10 +131,7 @@ class AetherhubDeckScraper(DeckScraper):
         deck_tag = from_iterable(
             deck_tags, lambda t: t.text.strip().startswith(("Main", "Commander", "Companion")))
         if deck_tag is None:
-            if "Welcome Back" in self._soup.text:
-                raise InaccessiblePage(scraper=type(self), url=self.url)
-            else:
-                raise ScrapingError("Deck tag not found", scraper=type(self), url=self.url)
+            raise ScrapingError("Deck tag not found", scraper=type(self), url=self.url)
         return AetherhubDeckTagParser(deck_tag)
 
     @override

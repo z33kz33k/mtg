@@ -21,7 +21,8 @@ from mtg import Json
 from mtg.deck import CardNotFound, Deck, DeckParser, InvalidDeck
 from mtg.gstate import UrlsStateManager
 from mtg.utils import ParsingError, timed
-from mtg.utils.scrape import ScrapingError, get_links, getsoup, prepend_url
+from mtg.utils.scrape import InaccessiblePage, ScrapingError, Soft404Error, get_links, getsoup, \
+    prepend_url
 from mtg.utils.scrape import Throttling, extract_source, throttle
 from mtg.utils.scrape.dynamic import get_dynamic_soup
 
@@ -170,9 +171,19 @@ class DeckScraper(DeckParser):
     def _get_sub_parser(self) -> TagBasedDeckParser | JsonBasedDeckParser | None:
         return None
 
+    def _is_page_inaccessible(self) -> bool:
+        return False
+
+    def _is_soft_404_error(self) -> bool:
+        return False
+
     def _validate_soup(self) -> None:
         if not self._soup:
             raise ScrapingError(self._error_msg, scraper=type(self), url=self.url)
+        if self._is_page_inaccessible():
+            raise InaccessiblePage(scraper=type(self), url=self.url)
+        if self._is_soft_404_error():
+            raise Soft404Error(scraper=type(self), url=self.url)
 
     def _validate_data(self) -> None:
         if not self._data:

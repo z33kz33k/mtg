@@ -29,6 +29,11 @@ class TopDeckDeckScraper(DeckScraper):
         return "topdeck.gg/deck/" in url.lower()
 
     @override
+    def _is_inaccessible(self) -> bool:
+        tag = self._soup.find("h3")
+        return tag and tag.text.strip() == "Unable to Display Deck"
+
+    @override
     def _parse_metadata(self) -> None:
         header_tag = self._soup.select_one("div.row.align-items-center")
         if not header_tag:
