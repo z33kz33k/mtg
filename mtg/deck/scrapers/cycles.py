@@ -15,8 +15,7 @@ from bs4 import NavigableString, Tag
 
 from mtg import Json
 from mtg.deck.scrapers import ContainerScraper, FolderContainerScraper, HybridContainerScraper, \
-    TagBasedDeckParser, \
-    is_in_domain_but_not_main
+    TagBasedDeckParser, is_in_domain_but_not_main
 from mtg.utils.scrape import strip_url_query
 
 _log = logging.getLogger(__name__)
