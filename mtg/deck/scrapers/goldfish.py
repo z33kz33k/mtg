@@ -138,10 +138,9 @@ class GoldfishDeckScraper(DeckScraper):
         return url
 
     @override
-    def _validate_soup(self) -> None:
-        super()._validate_soup()
-        if "Oops... Page not found" in self._soup.text:
-            raise ScrapingError(self._error_msg, scraper=type(self), url=self.url)
+    def _is_soft_404_error(self) -> bool:
+        tag = self._soup.find("h2")
+        return tag and "Page not found" in tag.text
 
     @override
     def _get_sub_parser(self) -> GoldfishDeckTagParser:

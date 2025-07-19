@@ -753,7 +753,7 @@ class Video:
         self._get_pytube_data()
         self._derived_format = self._derive_format()
         self._derived_name = self._derive_name()
-        links, lines = self._parse_lines(*self._desc_lines)
+        links, lines = self._parse_lines(self.title, *self._desc_lines)
         self._decks = self._collect(links, get_arena_lines(*lines))
         if not self._decks:  # try with author's comment
             comment_lines = self._get_comment_lines()

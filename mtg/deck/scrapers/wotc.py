@@ -99,6 +99,11 @@ class WotCArticleScraper(HybridContainerScraper):
         url = url.replace(locale, "/en/") if locale else url
         return strip_url_query(url)
 
+    @override
+    def _is_soft_404_error(self) -> bool:
+        tag = self._soup.find("h1")
+        return tag and tag.text.strip() == "PAGE NOT FOUND"
+
     @classmethod
     @override
     def _get_container_scrapers(cls) -> set[Type[ContainerScraper]]:
