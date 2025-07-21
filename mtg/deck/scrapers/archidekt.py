@@ -36,6 +36,7 @@ class ArchidektDeckScraper(DeckScraper):
     def sanitize_url(url: str) -> str:
         return strip_url_query(url).replace("/image/", "/")
 
+    # FIXME: Archidekt servers seem to respond with a real 404 response (at least at times)
     @override
     def _is_soft_404_error(self) -> bool:
         tag = self._soup.find("h1")

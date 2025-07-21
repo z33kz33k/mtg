@@ -34,6 +34,7 @@ class InternationalHareruyaDeckScraper(DeckScraper):
         return ("hareruyamtg.com" in url and "/deck/" in url
                 and "deck.hareruyamtg.com/deck/" not in url
                 and "/result?" not in url
+                and "/bulk/" not in url  # shopping cart URL
                 and "/metagame" not in url)
 
     @staticmethod
@@ -101,6 +102,8 @@ class InternationalHareruyaDeckScraper(DeckScraper):
                     self._set_commander(cards[0])
 
 
+# TODO: the JSON data processing needs to be encapsulated in a JsonBasedDeckParser to be re-used
+#  in the article scraper
 @DeckScraper.registered
 class JapaneseHareruyaDeckScraper(DeckScraper):
     """Scraper of Japanese Hareruya decklist page.
@@ -234,4 +237,26 @@ class HareruyaPlayerScraper(DeckUrlsContainerScraper):
             "a", class_="deckSearch-searchResult__itemWrapper")]
 
 
-# TODO: articles (#304)
+# TODO: this must be a hybrid scraper that merges this default deck URLs logic (which works for
+#  older article pages) with a JSON data based approach where there's a lookup of tags like:
+#  <deck-embedder deckid="613728" height="640" token="95d60.dac262354c3d67"> and then fetching deck
+#  data from the API by the read deck ID and token
+@DeckUrlsContainerScraper.registered
+class HareruyaArticleScraper(DeckUrlsContainerScraper):
+    """Scraper of Hareruya article page.
+    """
+    CONTAINER_NAME = "Hareruya article"  # override
+
+    @staticmethod
+    @override
+    def is_valid_url(url: str) -> bool:
+        url = url.lower()
+        return "article.hareruyamtg.com/article/" in url and not any(
+            t in url for t in ("/page/", "/author/"))
+
+    @staticmethod
+    @override
+    def sanitize_url(url: str) -> str:
+        url = url.removesuffix("/")
+        return url + "?lang=en" if "?lang=en" not in url else url
+

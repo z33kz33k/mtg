@@ -148,6 +148,7 @@ class DeckScraper(DeckParser):
     def is_valid_url(url: str) -> bool:
         raise NotImplementedError
 
+    # FIXME: this should be a classmethod to enable a re-use of the default logic in subclasses
     @staticmethod
     def sanitize_url(url: str) -> str:
         return url.removesuffix("/")
@@ -397,10 +398,14 @@ class DeckUrlsContainerScraper(ContainerScraper):
     def is_valid_url(url: str) -> bool:
         raise NotImplementedError
 
-    @abstractmethod
+    @classmethod
+    def _get_deck_scrapers(cls) -> set[Type[DeckScraper]]:
+        return set(cls.DECK_SCRAPERS) or DeckScraper.get_registered_scrapers()
+
     @override
     def _collect(self) -> list[str]:
-        raise NotImplementedError
+        links = sorted(set(get_links(self._soup)))
+        return [l for l in links if any(ds.is_valid_url(l) for ds in self._get_deck_scrapers())]
 
     @override
     def _gather(self) -> Collected:
@@ -418,10 +423,6 @@ class DeckUrlsContainerScraper(ContainerScraper):
         except ScrapingError as e:
             _log.warning(f"Scraping failed with: {e!r}")
             return []
-
-    @classmethod
-    def _get_deck_scrapers(cls) -> set[Type[DeckScraper]]:
-        return set(cls.DECK_SCRAPERS) or DeckScraper.get_registered_scrapers()
 
     @classmethod
     def _dispatch_deck_scraper(
