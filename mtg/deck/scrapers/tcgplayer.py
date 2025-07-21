@@ -211,6 +211,8 @@ def _get_deck_data_from_api(
         url: str, api_url_template: str,
         scraper: Type[DeckScraper] | Type[DecksJsonContainerScraper]) -> Json:
     *_, decklist_id = url.split("/")
+    if not all(ch.isdigit() for ch in decklist_id):
+        raise ScrapingError(f"Invalid decklist ID: {decklist_id!r}. Must be an integer string")
     json_data, tries = {}, 0
     try:
         json_data = request_json(api_url_template.format(decklist_id), handle_http_errors=False)
@@ -405,8 +407,8 @@ class TcgPlayerInfiniteArticleScraper(DecksJsonContainerScraper):
     @staticmethod
     def _naive_strip_url_query(url: str) -> str:
         if "?" in url:
-            return url.split("?", maxsplit=1)[0]
-        return url
+            return url.split("?", maxsplit=1)[0].removesuffix("/")
+        return url.removesuffix("/")
 
     @override
     def _collect(self) -> list[Json]:

@@ -124,7 +124,7 @@ def get_dynamic_soup(
             return soup, soup2, clipboard
 
         except TimeoutException:
-            raise
+            raise  # FIXME: this is redundant
 
 
 @timed("getting JSON with Selenium")

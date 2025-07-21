@@ -137,6 +137,8 @@ class GoldfishDeckScraper(DeckScraper):
             url = url.replace("/visual/", "/")
         return url
 
+    # FIXME: this is never reached when faced with a Soft404 page as Selenium fails with timeout
+    #  exception sooner than that (#378)
     @override
     def _is_soft_404_error(self) -> bool:
         tag = self._soup.find("h2")

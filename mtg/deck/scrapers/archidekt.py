@@ -37,6 +37,11 @@ class ArchidektDeckScraper(DeckScraper):
         return strip_url_query(url).replace("/image/", "/")
 
     @override
+    def _is_soft_404_error(self) -> bool:
+        tag = self._soup.find("h1")
+        return tag and tag.text.strip() == "Page not found"
+
+    @override
     def _get_data_from_soup(self) -> Json:
         json_data = json.loads(self._soup.find("script", id="__NEXT_DATA__").text)
         return json_data["props"]["pageProps"]["redux"]["deck"]

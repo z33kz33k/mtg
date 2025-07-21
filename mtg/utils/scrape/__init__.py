@@ -67,7 +67,7 @@ class Soft404Error(ScrapingError):
     What "soft 404s" are: https://en.wikipedia.org/wiki/HTTP_404
     """
     def __init__(
-            self, message="Soft 404 (Page Not Found) page instead of an intended one encountered",
+            self, message="Got Soft 404 (Page Not Found) page instead of an intended one",
             scraper: Type | None = None,
             url: str | None = None) -> None:
         super().__init__(message, scraper, url)

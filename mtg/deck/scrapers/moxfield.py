@@ -16,7 +16,7 @@ from selenium.common import TimeoutException
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, FolderContainerScraper
 from mtg.scryfall import Card
-from mtg.utils.scrape import ScrapingError, strip_url_query
+from mtg.utils.scrape import ScrapingError, Soft404Error, strip_url_query
 from mtg.utils.scrape.dynamic import get_dynamic_soup, get_selenium_json
 
 _log = logging.getLogger(__name__)
@@ -46,6 +46,8 @@ class MoxfieldDeckScraper(DeckScraper):
     @override
     def _get_data_from_api(self) -> Json:
         *_, self._decklist_id = self.url.split("/")
+        if self._decklist_id == "undefined":
+            raise Soft404Error(scraper=type(self), url=self.url)
         return get_selenium_json(self.API_URL_TEMPLATE.format(self._decklist_id))
 
     @override

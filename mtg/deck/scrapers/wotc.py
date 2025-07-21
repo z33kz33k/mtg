@@ -99,6 +99,7 @@ class WotCArticleScraper(HybridContainerScraper):
         url = url.replace(locale, "/en/") if locale else url
         return strip_url_query(url)
 
+    # FIXME: this isn't reached as WotC server answers with an actual 404 response
     @override
     def _is_soft_404_error(self) -> bool:
         tag = self._soup.find("h1")
