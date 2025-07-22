@@ -238,10 +238,10 @@ class HareruyaPlayerScraper(DeckUrlsContainerScraper):
 
 
 # TODO: this must be a hybrid scraper that merges this default deck URLs logic (which works for
-#  older article pages) with a JSON data based approach where there's a lookup of tags like:
-#  <deck-embedder deckid="613728" height="640" token="95d60.dac262354c3d67"> and then fetching deck
-#  data from the API by the read deck ID and token
-@DeckUrlsContainerScraper.registered
+#  older article pages) with a JSON data based approach (suitable for newer pages) where there's a
+#  lookup of tags like: <deck-embedder deckid="613728" height="640" token="95d60.dac262354c3d67">
+#  and then fetching deck data from the API by the read deck ID and token
+# @DeckUrlsContainerScraper.registered
 class HareruyaArticleScraper(DeckUrlsContainerScraper):
     """Scraper of Hareruya article page.
     """

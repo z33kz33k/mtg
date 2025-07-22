@@ -13,7 +13,7 @@ from typing import override
 
 from bs4 import NavigableString, Tag
 
-from mtg import Json
+from mtg import Json, SECRETS
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.scryfall import Card
 from mtg.utils import extract_int
@@ -22,10 +22,31 @@ from mtg.utils.scrape import ScrapingError
 _log = logging.getLogger(__name__)
 
 
+HEADERS = {
+    "Host": "www.tcdecks.net",
+    "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.5",
+    "Accept-Encoding": "gzip, deflate, br, zstd",
+    "DNT": "1",
+    "Sec-GPC": "1",
+    "Connection": "keep-alive",
+    "Cookie": SECRETS["tcdecks"]["cookie"],
+    "Upgrade-Insecure-Requests": "1",
+    "Sec-Fetch-Dest": "document",
+    "Sec-Fetch-Mode": "navigate",
+    "Sec-Fetch-Site": "none",
+    "Sec-Fetch-User": "?1",
+    "Priority": "u=0, i",
+}
+
+
 @DeckScraper.registered
 class TCDecksDeckScraper(DeckScraper):
     """Scraper of TCDecks decklist page.
     """
+    HEADERS = HEADERS  # override
+
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
         self._deck_tag: Tag | None = None
@@ -88,6 +109,7 @@ class TCDecksEventScraper(DeckUrlsContainerScraper):
     """Scraper of TCDecks event page.
     """
     CONTAINER_NAME = "TCDecks event"  # override
+    HEADERS = HEADERS  # override
     DECK_SCRAPERS = TCDecksDeckScraper,  # override
     DECK_URL_PREFIX = "https://www.tcdecks.net/"  # override
 
@@ -98,9 +120,9 @@ class TCDecksEventScraper(DeckUrlsContainerScraper):
 
     @override
     def _collect(self) -> list[str]:  # override
-        table_tag = self._soup.find("table", class_="tourney_list")
+        table_tag = self._soup.select_one('table[class*="tourney"]')
         if not table_tag:
-            raise ScrapingError("Event table table not found", scraper=type(self), url=self.url)
+            raise ScrapingError("Event table tag not found", scraper=type(self), url=self.url)
         a_tags = table_tag.find_all("a", href=lambda h: h and "deck.php?id=" in h)
         if not a_tags:
             raise ScrapingError("Deck tags not found", scraper=type(self), url=self.url)
