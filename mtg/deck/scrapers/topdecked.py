@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.topdecked.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.topdecked
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape TopDecked decklists.
 
     @author: z33k
@@ -20,7 +20,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-from mtg import Json
 from mtg.deck import CardNotFound, Deck, InvalidDeck
 from mtg.deck.arena import ArenaParser, IllFormedArenaDecklist, PlaysetLine
 from mtg.deck.scrapers import DeckScraper
@@ -135,13 +134,9 @@ class TopDeckedRegularDeckScraper(DeckScraper):
         self._decklist = "\n".join(decklist)
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         if self.fmt and self.fmt in COMMANDER_FORMATS:
             self._handle_commander()
-
-    @override
-    def _build_deck(self) -> Deck | None:
-        return ArenaParser(self._decklist, self._metadata).parse()
 
     @backoff.on_exception(
         backoff.expo, IllFormedArenaDecklist, max_time=60)

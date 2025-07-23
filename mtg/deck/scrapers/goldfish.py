@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.goldfish.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.goldfish
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape MTGGoldfish decklists.
 
     @author: z33k
@@ -106,7 +106,7 @@ class GoldfishDeckTagParser(TagBasedDeckParser):
                         self._companion = cards[0]
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         decklist_tag = self._deck_tag.find("table", class_="deck-view-deck-table")
         if decklist_tag is None:
             raise ParsingError("Decklist tag not found")
@@ -156,12 +156,8 @@ class GoldfishDeckScraper(DeckScraper):
         pass
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         pass
-
-    @override
-    def _build_deck(self) -> Deck | None:
-        return self._sub_parser.parse()
 
 
 @DeckUrlsContainerScraper.registered

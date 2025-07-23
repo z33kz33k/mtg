@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.magic.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.magic
+    ~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Magic.gg decklists.
 
     Magic.gg is an official WotC eSports site focused on MTG Arena that covers also tabletop play.
@@ -17,11 +17,9 @@ from bs4 import BeautifulSoup, Comment, NavigableString, Tag
 from selenium.common import TimeoutException
 
 from mtg import Json
-from mtg.deck import Deck
-from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import Collected, DeckScraper, DeckTagsContainerScraper, TagBasedDeckParser
 from mtg.utils import ParsingError, sanitize_whitespace
-from mtg.utils.scrape import ScrapingError, getsoup, strip_url_query
+from mtg.utils.scrape import ScrapingError, strip_url_query
 from mtg.utils.scrape.dynamic import get_dynamic_soup
 
 _log = logging.getLogger(__name__)
@@ -51,7 +49,8 @@ class MagicGgNewDeckTagParser(TagBasedDeckParser):
         }
         self._metadata["date"] = self._metadata["event"]["date"]
 
-    def _build_arena(self) -> str:
+    @override
+    def _parse_deck(self) -> None:
         lines = []
         # <commander-card> tag is only derived based on seen companion treatment
         if commander := self._deck_tag.find("commander-card"):
@@ -70,16 +69,7 @@ class MagicGgNewDeckTagParser(TagBasedDeckParser):
         lines += ["", "Sideboard"]
         if sideboard := self._deck_tag.find("side-board"):
             lines += sideboard.text.lstrip().splitlines()
-        return "\n".join(lines)
-
-    @override
-    def _parse_decklist(self) -> None:
-        pass
-
-    @override
-    def _build_deck(self) -> Deck | None:
-        return ArenaParser(
-            self._build_arena(), self._metadata).parse()
+        self._decklist = "\n".join(lines)
 
 
 class MagicGgOldDeckTagParser(TagBasedDeckParser):
@@ -113,7 +103,7 @@ class MagicGgOldDeckTagParser(TagBasedDeckParser):
             }
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         first_card_name = None
 
         for tag in [
@@ -193,15 +183,10 @@ class MagicGgDeckScraper(DeckScraper):
     @override
     def _parse_metadata(self) -> None:
         self._metadata["event"] = {"name": _get_event_name(self._soup)}
-        self._sub_parser.update_metadata(**self._metadata)
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         pass
-
-    @override
-    def _build_deck(self) -> Deck | None:
-        return self._sub_parser.parse()
 
 
 @DeckTagsContainerScraper.registered

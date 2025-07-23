@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.cardhoarder.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.cardhoarder
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Cardhoarder decklists.
 
     @author: z33k
@@ -58,7 +58,7 @@ class CardhoarderDeckScraper(DeckScraper):
         self._metadata["date"] = dateutil.parser.parse(self._data["deck"]["updated_at"]).date()
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         maindeck, sideboard = [], []
         for item in self._data["items"]:
             card_data = item["card"]["card_data"]

@@ -1,23 +1,21 @@
 """
 
-    mtg.deck.scrapers.coolstuff.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.coolstuff
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape CoolStuffInc decklists.
 
     @author: z33k
 
 """
 import logging
-from typing import Type, override
+from typing import override
 
 import dateutil.parser
 from bs4 import Tag
 
 from mtg import Json, SECRETS
-from mtg.deck import Deck
-from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import ContainerScraper, FolderContainerScraper, HybridContainerScraper, \
-    TagBasedDeckParser, is_in_domain_but_not_main
+from mtg.deck import DeckParser
+from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser, is_in_domain_but_not_main
 from mtg.utils import ParsingError, extract_int
 from mtg.utils.scrape import ScrapingError, strip_url_query
 
@@ -51,7 +49,7 @@ class _SubParser(TagBasedDeckParser):
         pass
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         for li_tag in self._deck_tag.find_all("li"):
             if li_tag.attrs.get("class") == ["card-type"]:
                 if "Commander (" in li_tag.text.strip():
@@ -124,7 +122,7 @@ class CoolStuffIncDeckTagParser(TagBasedDeckParser):
             self._metadata["date"] = date
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         decklist_tag = self._deck_tag.find("a", {"data-reveal-id": "copydecklistmodal"})
         if not decklist_tag or not decklist_tag.attrs.get("data-text"):
             sub_tag = self._deck_tag.select_one("div.card-list")
@@ -159,10 +157,10 @@ class CoolStuffIncDeckTagParser(TagBasedDeckParser):
             self._decklist = "\n".join(decklist)
 
     @override
-    def _build_deck(self) -> Deck | None:
+    def _get_sub_parser(self) -> DeckParser | None:
         if self._sub_parser:
-            return self._sub_parser.parse()
-        return ArenaParser(self._decklist, self._metadata).parse()
+            return self._sub_parser
+        return super()._get_sub_parser()
 
 
 @HybridContainerScraper.registered
@@ -177,17 +175,12 @@ class CoolStuffIncArticleScraper(HybridContainerScraper):
     @override
     def is_valid_url(url: str) -> bool:
         return is_in_domain_but_not_main(
-            url, "coolstuffinc.com/a") and "action=search" not in url.lower()
+            url, "coolstuffinc.com/a/") and "action=search" not in url.lower()
 
     @staticmethod
     @override
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
-
-    @classmethod
-    @override
-    def _get_container_scrapers(cls) -> set[Type[ContainerScraper]]:
-        return FolderContainerScraper.get_registered_scrapers()
 
     @override
     def _parse_metadata(self) -> None:

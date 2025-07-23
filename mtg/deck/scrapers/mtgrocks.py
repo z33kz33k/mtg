@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.mtgrocks.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.mtgrocks
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape MTGRocks articles for decklists.
 
     MTGRocks uses a third-party provider (MTGDecks.net) for its articles' decklists.

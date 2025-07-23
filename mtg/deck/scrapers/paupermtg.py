@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.paupermtg.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.paupermtg
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape PauperMTG decklists.
 
     @author: z33k
@@ -80,7 +80,7 @@ class PauperMtgDeckScraper(DeckScraper):
         return cards
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         if self._is_edh:
             commander, *maindeck = self._parse_container(self._tags["maindeck"])
             self._set_commander(commander)

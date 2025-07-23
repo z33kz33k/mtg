@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.flexslot.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.flexslot
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Flexslot.gg decklists.
 
     @author: z33k
@@ -13,7 +13,7 @@ from typing import override
 import dateutil.parser
 
 from mtg import Json, SECRETS
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, is_in_domain_but_not_main
 from mtg.utils.scrape import ScrapingError, request_json, strip_url_query
 
 _log = logging.getLogger(__name__)
@@ -44,7 +44,7 @@ class FlexslotDeckScraper(DeckScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return "flexslot.gg/decks/" in url.lower()
+        return is_in_domain_but_not_main(url, "flexslot.gg/decks/")
 
     @staticmethod
     @override
@@ -92,7 +92,7 @@ class FlexslotDeckScraper(DeckScraper):
             self._maindeck.extend(playset)
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         for card_json in self._data["deck_card_maps"]:
             self._parse_card_json(card_json)
         self._derive_commander_from_sideboard()

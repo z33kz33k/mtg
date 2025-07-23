@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.mtgotraders.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.mtgotraders
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape MTGO Traders decklists.
 
     @author: z33k
@@ -24,9 +24,6 @@ class MtgoTradersDeckScraper(DeckScraper):
     """Scraper of MTGO Traders deck page.
     """
     API_URL_TEMPLATE = "https://www.mtgotraders.com/deck/data/getdeck.php?deck={}"  # override
-
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
 
     @staticmethod
     @override
@@ -58,7 +55,7 @@ class MtgoTradersDeckScraper(DeckScraper):
         return self.get_playset(self.find_card(name), quantity)
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         for json_card in self._data["main"]:
             self._maindeck += self._parse_json_card(json_card)
         if sideboard := self._data.get("sideboard"):

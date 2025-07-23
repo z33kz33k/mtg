@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.deckbox.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.deckbox
+    ~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Deckbox decklists.
 
     @author: z33k
@@ -63,7 +63,7 @@ class DeckboxDeckScraper(DeckScraper):
         return cls.get_playset(cls.find_card(name), quantity)
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         maindeck_table = self._soup.find("table", class_=lambda c: c and "main" in c)
         if not maindeck_table:
             raise ScrapingError(

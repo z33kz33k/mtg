@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.mtgvault.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.mtgvault
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape MTGVault decklists.
 
     @author: z33k
@@ -61,7 +61,7 @@ class MtgVaultDeckScraper(DeckScraper):
         return cls.get_playset(cls.find_card(name), qty)
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         maindeck_tag = self._soup.select_one("div#main-deck")
         if not maindeck_tag:
             raise ScrapingError("Main deck tag not found", scraper=type(self), url=self.url)

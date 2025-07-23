@@ -1,9 +1,10 @@
 """
 
-    mtg.utils.files.py
-    ~~~~~~~~~~~~~~~~~~~~~~~
-
+    mtg.utils.files
+    ~~~~~~~~~~~~~~~
     Files-related utilities.
+
+    @author: z33k
 
 """
 import os

@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.scryfall.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.scryfall
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Scryfall decklists.
 
     @author: z33k
@@ -69,7 +69,7 @@ class ScryfallDeckScraper(DeckScraper):
         return cards
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         for section_tag in self._soup.find_all("div", class_="deck-list-section"):
             title = section_tag.find("h6").text
             cards = self._parse_section(section_tag)

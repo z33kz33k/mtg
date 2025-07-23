@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.wotc.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.wotc
+    ~~~~~~~~~~~~~~~~~~~~~~
     Scrape the official WotC site's decklists.
 
     @author: z33k
@@ -9,16 +9,13 @@
 """
 import logging
 import re
-from typing import Type, override
+from typing import override
 
 import dateutil.parser
 from bs4 import Tag
 
 from mtg import Json
-from mtg.deck import Deck
-from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import ContainerScraper, FolderContainerScraper, HybridContainerScraper, \
-    TagBasedDeckParser
+from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser
 from mtg.scryfall import COMMANDER_FORMATS
 from mtg.utils import ParsingError, from_iterable
 from mtg.utils.scrape import ScrapingError, strip_url_query
@@ -43,10 +40,6 @@ class WotCDeckTagParser(TagBasedDeckParser):
             self._update_fmt(fmt)
             self._locally_derived_fmt = True
 
-    @override
-    def _parse_decklist(self) -> None:
-        pass
-
     @staticmethod
     def _sanitize_line(line: str) -> str:
         line = line.strip()
@@ -56,7 +49,7 @@ class WotCDeckTagParser(TagBasedDeckParser):
         return re.sub(r'\[[a-zA-Z0-9]+?\]', '', line).strip()
 
     @override
-    def _build_deck(self) -> Deck | None:
+    def _parse_deck(self) -> None:
         maindeck_tag = self._deck_tag.find("main-deck")
         if not maindeck_tag:
             raise ParsingError("Decklist tag not available")
@@ -73,8 +66,7 @@ class WotCDeckTagParser(TagBasedDeckParser):
             lines += ["", "Sideboard"]
             lines += [self._sanitize_line(l) for l in sideboard_tag.text.strip().splitlines()]
 
-        decklist = "\n".join(lines)
-        return ArenaParser(decklist, self._metadata).parse()
+        self._decklist = "\n".join(lines)
 
 
 _LOCALES = {"/ja/", "/fr/", "/it/", "/de/", "/es/", "/pt/", "/pt-BR/", "/ko/"}
@@ -104,11 +96,6 @@ class WotCArticleScraper(HybridContainerScraper):
     def _is_soft_404_error(self) -> bool:
         tag = self._soup.find("h1")
         return tag and tag.text.strip() == "PAGE NOT FOUND"
-
-    @classmethod
-    @override
-    def _get_container_scrapers(cls) -> set[Type[ContainerScraper]]:
-        return FolderContainerScraper.get_registered_scrapers()
 
     @override
     def _parse_metadata(self) -> None:

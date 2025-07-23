@@ -1,21 +1,20 @@
 """
 
-    mtg.deck.scrapers.cardkingdom.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.cardkingdom
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape decklists featured on CardKingdom Blog.
 
     @author: z33k
 
 """
 import logging
-from typing import Type, override
+from typing import override
 
 import dateutil.parser
 from bs4 import Tag
 
 from mtg import Json, SECRETS
-from mtg.deck.scrapers import ContainerScraper, FolderContainerScraper, HybridContainerScraper, \
-    is_in_domain_but_not_main
+from mtg.deck.scrapers import HybridContainerScraper, is_in_domain_but_not_main
 from mtg.utils.scrape import ScrapingError, strip_url_query
 
 _log = logging.getLogger(__name__)
@@ -56,11 +55,6 @@ class CardKingdomArticleScraper(HybridContainerScraper):
     @override
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
-
-    @classmethod
-    @override
-    def _get_container_scrapers(cls) -> set[Type[ContainerScraper]]:
-        return FolderContainerScraper.get_registered_scrapers()
 
     @override
     def _parse_metadata(self) -> None:

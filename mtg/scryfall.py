@@ -1,7 +1,7 @@
 """
 
-    mtg.scryfall.py
-    ~~~~~~~~~~~~~~~
+    mtg.scryfall
+    ~~~~~~~~~~~~
     Handle Scryfall data.
 
     This module provides convenient abstractions for working with Scryfall data.

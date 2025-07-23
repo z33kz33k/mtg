@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.searchit.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.searchit
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape MTGSearch.it decklists.
 
     @author: z33k
@@ -10,9 +10,6 @@
 import logging
 from typing import override
 
-from mtg import Json
-from mtg.deck import Deck
-from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckScraper
 from mtg.utils.scrape import ScrapingError, strip_url_query
 
@@ -53,14 +50,10 @@ class MtgSearchItDeckScraper(DeckScraper):
         self._metadata["author"] = img_tag.attrs["alt"].removesuffix(" | Icon")
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         tokens = "container text hide".split()
         decklist_tag = self._soup.find(
             "section", class_=lambda c: c and all(t in c for t in tokens))
         if not decklist_tag:
             raise ScrapingError("Decklist tag not found", scraper=type(self), url=self.url)
         self._decklist = decklist_tag.text.strip()
-
-    @override
-    def _build_deck(self) -> Deck | None:
-        return ArenaParser(self._decklist, metadata=self._metadata).parse()

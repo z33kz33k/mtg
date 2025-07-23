@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.mtgazone.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.mtgazone
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape MTG Arena Zone decklists.
 
     @author: z33k
@@ -10,15 +10,13 @@
 import contextlib
 import logging
 from datetime import datetime
-from typing import Type, override
+from typing import override
 
 from bs4 import Tag
 
 from mtg import Json
 from mtg.deck import Deck, Mode
-from mtg.deck.scrapers import ContainerScraper, DeckScraper, FolderContainerScraper, \
-    HybridContainerScraper, \
-    TagBasedDeckParser, \
+from mtg.deck.scrapers import DeckScraper, HybridContainerScraper, TagBasedDeckParser, \
     is_in_domain_but_not_main
 from mtg.scryfall import ARENA_FORMATS, Card
 from mtg.utils import ParsingError, extract_int, from_iterable, timed
@@ -72,7 +70,7 @@ class MtgaZoneDeckTagParser(TagBasedDeckParser):
         scryfall_id, *_ = scryfall_id.split(".jpg")
         return cls.get_playset(cls.find_card(name, scryfall_id=scryfall_id), quantity)
 
-    def _process_decklist(self, decklist_tag: Tag) -> list[Card]:
+    def _process_decklist_tag(self, decklist_tag: Tag) -> list[Card]:
         decklist = []
         card_tags = decklist_tag.find_all("div", class_="card")
         for card_tag in card_tags:
@@ -80,21 +78,21 @@ class MtgaZoneDeckTagParser(TagBasedDeckParser):
         return decklist
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         if commander_tag := self._deck_tag.select_one("div.decklist.short.commander"):
-            for card in self._process_decklist(commander_tag):
+            for card in self._process_decklist_tag(commander_tag):
                 self._set_commander(card)
 
         if companion_tag := self._deck_tag.select_one("div.decklist.short.companion"):
-            self._companion = self._process_decklist(companion_tag)[0]
+            self._companion = self._process_decklist_tag(companion_tag)[0]
 
         main_tag = self._deck_tag.select_one("div.decklist.main")
-        self._maindeck = self._process_decklist(main_tag)
+        self._maindeck = self._process_decklist_tag(main_tag)
 
         if sideboard_tags := self._deck_tag.select("div.decklist.sideboard"):
             with contextlib.suppress(IndexError):
                 sideboard_tag = sideboard_tags[1]
-                self._sideboard = self._process_decklist(sideboard_tag)
+                self._sideboard = self._process_decklist_tag(sideboard_tag)
 
 
 @DeckScraper.registered
@@ -124,12 +122,8 @@ class MtgaZoneDeckScraper(DeckScraper):
         pass
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         pass
-
-    @override
-    def _build_deck(self) -> Deck | None:
-        return self._sub_parser.parse()
 
 
 @HybridContainerScraper.registered
@@ -150,11 +144,6 @@ class MtgaZoneArticleScraper(HybridContainerScraper):
     @override
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
-
-    @classmethod
-    @override
-    def _get_container_scrapers(cls) -> set[Type[ContainerScraper]]:
-        return FolderContainerScraper.get_registered_scrapers()
 
     def _collect_urls(self) -> tuple[list[str], list[str]]:
         article_tag = self._soup.find("article")

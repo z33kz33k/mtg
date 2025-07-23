@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.mtgjson.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.mtgjson
+    ~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape MTGJSON decklists.
 
     @author: z33k
@@ -63,7 +63,7 @@ class MtgJsonDeckScraper(DeckScraper):
         return self.get_playset(card, qty)
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         for card_json in self._data["commander"]:
             for card in self._parse_card_json(card_json):
                 self._set_commander(card)

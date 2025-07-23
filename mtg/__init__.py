@@ -1,7 +1,7 @@
 """
 
-    mtg.__init__.py
-    ~~~~~~~~~~~~~~~
+    mtg
+    ~~~
     Root package.
 
     @author: z33k

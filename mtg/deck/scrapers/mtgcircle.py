@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.mtgcircle.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.mtgcircle
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape MTGCircle decklists.
 
     @author: z33k
@@ -16,9 +16,7 @@ from bs4 import BeautifulSoup, Tag
 
 from mtg import Json
 from mtg.deck import Deck
-from mtg.deck.scrapers import ContainerScraper, DeckScraper, FolderContainerScraper, \
-    HybridContainerScraper, \
-    JsonBasedDeckParser
+from mtg.deck.scrapers import DeckScraper, HybridContainerScraper, JsonBasedDeckParser
 from mtg.scryfall import Card, all_formats
 from mtg.utils import from_iterable
 from mtg.utils.json import Node
@@ -69,7 +67,7 @@ class MtgCircleDeckJsonParser(JsonBasedDeckParser):
             name, set_and_collector_number=set_and_number, oracle_id=oracle_id), qty)
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         for card_json in self._deck_data["cards"]:
             match card_json["deckPos"]:
                 case "mainDeck":
@@ -128,6 +126,7 @@ class MtgCircleVideoDeckScraper(DeckScraper):
     def _get_data_from_soup(self) -> Json:
         return get_data(self._soup, type(self), self.url, self._retrieve_deck_data)
 
+    @override
     def _get_sub_parser(self) -> MtgCircleDeckJsonParser:
         return MtgCircleDeckJsonParser(self._data, self._metadata)
 
@@ -140,15 +139,9 @@ class MtgCircleVideoDeckScraper(DeckScraper):
                           and t.text.lower() in all_formats()):
             self._update_fmt(fmt_tag.text)
 
-        self._sub_parser.update_metadata(**self._metadata)
-
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         pass
-
-    @override
-    def _build_deck(self) -> Deck | None:
-        return self._sub_parser.parse()
 
 
 @DeckScraper.registered
@@ -187,11 +180,6 @@ class MtgCircleArticleScraper(HybridContainerScraper):
     @override
     def is_valid_url(url: str) -> bool:
         return "mtgcircle.com/articles/" in url.lower()
-
-    @classmethod
-    @override
-    def _get_container_scrapers(cls) -> set[Type[ContainerScraper]]:
-        return FolderContainerScraper.get_registered_scrapers()
 
     def _retrieve_date_data(self, data: Json) -> Json:
         node = Node(data)

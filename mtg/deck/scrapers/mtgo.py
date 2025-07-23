@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.mtgo.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.mtgo
+    ~~~~~~~~~~~~~~~~~~~~~~
     Scrape MTGO decklists.
 
     @author: z33k
@@ -21,8 +21,6 @@ from mtg.utils import from_iterable, get_ordinal_suffix
 from mtg.utils.scrape import ScrapingError, dissect_js, strip_url_query
 
 _log = logging.getLogger(__name__)
-
-
 HEADERS = {
     "Host": "www.mtgo.com",
     "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:133.0) Gecko/20100101 Firefox/133.0",
@@ -125,7 +123,7 @@ class MtgoDeckJsonParser(JsonBasedDeckParser):
         decklist += self.get_playset(card, qty)
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         for card in [*self._deck_data["main_deck"], *self._deck_data.get("sideboard_deck", [])]:
             self._parse_card(card)
         self._derive_commander_from_sideboard()
@@ -176,15 +174,11 @@ class MtgoDeckScraper(DeckScraper):
 
     @override
     def _parse_metadata(self) -> None:
-        self._sub_parser.update_metadata(**self._metadata)
-
-    @override
-    def _parse_decklist(self) -> None:
         pass
 
     @override
-    def _build_deck(self) -> Deck | None:
-        return self._sub_parser.parse()
+    def _parse_deck(self) -> None:
+        pass
 
 
 @DecksJsonContainerScraper.registered

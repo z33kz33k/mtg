@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.mtgdecksnet.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.mtgdecksnet
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape MTGDecks.net decklists.
 
     @author: z33k
@@ -18,7 +18,6 @@ from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser, normalize_decklist
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
     TagBasedDeckParser
-from mtg.scryfall import COMMANDER_FORMATS
 from mtg.utils import ParsingError
 from mtg.utils.scrape import ScrapingError, get_previous_sibling_tag
 from mtg.utils.scrape import strip_url_query
@@ -64,16 +63,11 @@ class MtgDecksNetDeckTagParser(TagBasedDeckParser):
                 self._update_fmt(fmt)
 
     @override
-    def _parse_decklist(self) -> None:
-        pass
-
-    @override
-    def _build_deck(self) -> Deck | None:
+    def _parse_deck(self) -> None:
         decklist_tag = self._deck_tag.find("textarea", id="arena_deck")
         if not decklist_tag:
             raise ParsingError("Decklist tag not found")
-        decklist = normalize_decklist(decklist_tag.text.strip(), self.fmt)
-        return ArenaParser(decklist, self._metadata).parse()
+        self._decklist = normalize_decklist(decklist_tag.text.strip(), self.fmt)
 
 
 # TODO: scrape the meta
@@ -120,15 +114,9 @@ class MtgDecksNetDeckScraper(DeckScraper):
             fmt = found
         self._update_fmt(fmt)
 
-        self._sub_parser.update_metadata(**self._metadata)
-
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         pass
-
-    @override
-    def _build_deck(self) -> Deck | None:
-        return self._sub_parser.parse()
 
 
 @DeckUrlsContainerScraper.registered

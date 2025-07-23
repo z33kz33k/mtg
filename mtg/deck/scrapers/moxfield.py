@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.moxfield.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.moxfield
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Moxfield decklists.
 
     @author: z33k
@@ -88,7 +88,7 @@ class MoxfieldDeckScraper(DeckScraper):
         return cls.get_playset(cls.find_card(name, scryfall_id=scryfall_id), quantity)
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         for card in self._data["boards"]["mainboard"]["cards"].values():
             self._maindeck.extend(self._to_playset(card))
         for card in self._data["boards"]["sideboard"]["cards"].values():

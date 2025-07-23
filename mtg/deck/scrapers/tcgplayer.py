@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.tcgplayer.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.tcgplayer
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape TCG Player decklists.
 
     @author: z33k
@@ -19,7 +19,6 @@ from requests import HTTPError
 from selenium.common import TimeoutException
 
 from mtg import Json, SECRETS
-from mtg.deck import Deck
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, DecksJsonContainerScraper, \
     HybridContainerScraper, JsonBasedDeckParser
 from mtg.scryfall import Card
@@ -99,7 +98,7 @@ class TcgPlayerDeckScraper(DeckScraper):
         return cards
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         deck_tags = self._soup.find_all("div", class_="subdeck")
         for deck_tag in deck_tags:
             if deck_tag.find("h3").text.lower().startswith("command"):
@@ -180,7 +179,7 @@ class TcgPlyerInfiniteDeckJsonParser(JsonBasedDeckParser):
         return cardmap
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         cardmap = self._get_cardmap()
         sub_decks = self._deck_data["deck"]["subDecks"]
         if command_zone := sub_decks.get("commandzone"):
@@ -267,12 +266,8 @@ class TcgPlayerInfiniteDeckScraper(DeckScraper):
         pass
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         pass
-
-    @override
-    def _build_deck(self) -> Deck | None:
-        return self._sub_parser.parse()
 
 
 @DeckUrlsContainerScraper.registered

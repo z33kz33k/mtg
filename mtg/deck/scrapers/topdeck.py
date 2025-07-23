@@ -1,8 +1,8 @@
 """
 
-    mtg.deck.scrapers.topdeck.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Scrape TopDeck.gg deck containers.
+    mtg.deck.scrapers.topdeck
+    ~~~~~~~~~~~~~~~~~~~~~~~~~
+    Scrape TopDeck.gg decklist containers.
 
     @author: z33k
 
@@ -53,7 +53,7 @@ class TopDeckDeckScraper(DeckScraper):
             self._metadata.setdefault("event", {})["record"] = record.strip()
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         decklist_tag = self._soup.find(
             "script", string=lambda s: s and "const decklistContent = `" in s)
         if not decklist_tag:
@@ -62,10 +62,6 @@ class TopDeckDeckScraper(DeckScraper):
         decklist, _ = decklist.split("`;", maxsplit=1)
         self._decklist = decklist.replace("~~Commanders~~", "Commander").replace(
             "~~Mainboard~~", "Deck").replace("~~Sideboard~~", "Sideboard")
-
-    @override
-    def _build_deck(self) -> Deck | None:
-        return ArenaParser(self._decklist, metadata=self._metadata).parse()
 
 
 def check_unexpected_urls(urls: list[str], *scrapers: Type[DeckScraper]) -> None:

@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.ligamagic.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.ligamagic
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape LigaMagic decklists.
 
     Note: experimental (requires use of scraping APIs to bypass CloudFlare).
@@ -59,24 +59,8 @@ class LigaMagicDeckScraper(DeckScraper):
         return all(t in url.lower() for t in ("ligamagic.com.br", "/deck", "&id="))
 
     @override
-    def _pre_parse(self) -> None:
+    def _fetch_soup(self) -> None:
         self._soup = _get_soup_with_zenrows(self.url, self._CSS_SELECTOR)
-        if not self._soup:
-            raise ScrapingError("Page not available", scraper=type(self), url=self.url)
-        main_tag = self._soup.select_one(self._CSS_SELECTOR)
-        state = "maindeck"
-        stoppers = "Branco", "Azul", "Preto", "Vermelho", "Verde", "Multi Colorida"  # color names
-        potential_stoppers = "Artefato", "Terrenos"
-        for tag in main_tag.find_all("div", class_="deck-line"):
-            if type_tag := tag.find("div", class_=lambda c: c and "deck-type" in c):
-                state = type_tag.text.strip()
-                # stop the moment we're out of the basic deck view and in the color one
-                if any(s in state for s in stoppers):
-                    break
-                if any(ps in state for ps in potential_stoppers) and state in self._tags:
-                    break
-            elif line_tag := tag.find("div", class_="deck-box-left"):
-                self._tags[state].append(line_tag)
 
     @override
     def _parse_metadata(self) -> None:
@@ -96,6 +80,22 @@ class LigaMagicDeckScraper(DeckScraper):
             if date_tag := right_block_tag.find("div", class_="date"):
                 self._metadata["date"] = dateutil.parser.parse(date_tag.text.strip()).date()
 
+    def _parse_main_tag(self):
+        main_tag = self._soup.select_one(self._CSS_SELECTOR)
+        state = "maindeck"
+        stoppers = "Branco", "Azul", "Preto", "Vermelho", "Verde", "Multi Colorida"  # color names
+        potential_stoppers = "Artefato", "Terrenos"
+        for tag in main_tag.find_all("div", class_="deck-line"):
+            if type_tag := tag.find("div", class_=lambda c: c and "deck-type" in c):
+                state = type_tag.text.strip()
+                # stop the moment we're out of the basic deck view and in the color one
+                if any(s in state for s in stoppers):
+                    break
+                if any(ps in state for ps in potential_stoppers) and state in self._tags:
+                    break
+            elif line_tag := tag.find("div", class_="deck-box-left"):
+                self._tags[state].append(line_tag)
+
     @classmethod
     def _parse_tag_list(cls, tag_list: list[Tag]) -> list[Card]:
         cards = []
@@ -109,7 +109,8 @@ class LigaMagicDeckScraper(DeckScraper):
         return cards
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
+        self._parse_main_tag()
         for state in self._tags:
             if "Comandante" in state:
                 for card in self._parse_tag_list(self._tags[state]):
@@ -138,10 +139,8 @@ class LigaMagicEventScraper(DeckUrlsContainerScraper):
         return all(t in url.lower() for t in ("ligamagic.com.br", "/evento", "&id="))
 
     @override
-    def _pre_parse(self) -> None:
+    def _fetch_soup(self) -> None:
         self._soup = _get_soup_with_zenrows(self.url, self._CSS_SELECTOR)
-        if not self._soup:
-            raise ScrapingError(self._error_msg, scraper=type(self), url=self.url)
 
     @override
     def _collect(self) -> list[str]:

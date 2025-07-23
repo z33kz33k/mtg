@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.hareruya.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.hareruya
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Hareruya decklists.
 
     @author: z33k
@@ -13,8 +13,9 @@ from typing import override
 import dateutil.parser
 from bs4 import NavigableString
 
-from mtg import Json, SECRETS
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
+from mtg import HybridContainerScraper, Json, SECRETS
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, JsonBasedDeckParser, \
+    is_in_domain_but_not_main
 from mtg.deck.scrapers.goldfish import HEADERS as GOLDFISH_HEADERS
 from mtg.utils.scrape import request_json
 
@@ -69,7 +70,7 @@ class InternationalHareruyaDeckScraper(DeckScraper):
             self._metadata["name"] = self._metadata["hareruya_archetype"]
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         main_tag = self._soup.find("div", class_="deckSearch-deckList__deckList__wrapper")
 
         for sub_tag in main_tag.descendants:
@@ -102,8 +103,53 @@ class InternationalHareruyaDeckScraper(DeckScraper):
                     self._set_commander(cards[0])
 
 
-# TODO: the JSON data processing needs to be encapsulated in a JsonBasedDeckParser to be re-used
-#  in the article scraper
+class JapaneseHareruyaDeckJsonParser(JsonBasedDeckParser):
+    """Parser of Japanese Hareruya deck JSON data.
+    """
+    @override
+    def _parse_metadata(self) -> None:
+        fmt = self._deck_data["format_name_en"]
+        self._update_fmt(fmt)
+        self._metadata["name"] = self._deck_data["deck_name"]
+        self._metadata["author"] = self._deck_data["nickname"]
+        if arch := self._deck_data.get("archetype_name_en"):
+            self._update_archetype_or_theme(arch)
+        self._metadata["deck_type"] = self._deck_data["deck_type"]
+        if event_name := self._deck_data.get("event_name_en"):
+            self._metadata.setdefault("event", {})
+            self._metadata["event"]["name"] = event_name
+        if event_date := self._deck_data.get("event_date"):
+            self._metadata.setdefault("event", {})
+            self._metadata["event"]["date"] = dateutil.parser.parse(event_date).date()
+        if event_player := self._deck_data.get("player_name"):
+            self._metadata.setdefault("event", {})
+            self._metadata["event"]["player"] = event_player
+        if event_result := self._deck_data.get("result"):
+            self._metadata.setdefault("event", {})
+            self._metadata["event"]["result"] = event_result
+        if event_ranking := self._deck_data.get("ranking"):
+            self._metadata.setdefault("event", {})
+            self._metadata["event"]["ranking"] = event_ranking
+        if source_url := self._deck_data.get("source_url"):
+            self._metadata["original_source"] = source_url
+        self._metadata["date"] = dateutil.parser.parse(self._deck_data["update_date"]).date()
+
+    def _process_card(self, json_card: Json) -> None:
+        quantity = json_card["count"]
+        name = json_card["name_en"]
+        if json_card["board_id"] == 1:
+            self._maindeck.extend(self.get_playset(self.find_card(name), quantity))
+        elif json_card["board_id"] == 2:
+            self._sideboard.extend(self.get_playset(self.find_card(name), quantity))
+        elif json_card["board_id"] == 3:
+            self._set_commander(self.find_card(name))
+
+    @override
+    def _parse_deck(self) -> None:
+        for card in self._deck_data["cards"]:
+            self._process_card(card)
+
+
 @DeckScraper.registered
 class JapaneseHareruyaDeckScraper(DeckScraper):
     """Scraper of Japanese Hareruya decklist page.
@@ -124,6 +170,7 @@ class JapaneseHareruyaDeckScraper(DeckScraper):
             return url.replace("deck.hareruyamtg.com/deck/", "www.hareruyamtg.com/decks/")
         return url
 
+    @override
     def _get_data_from_api(self) -> Json:
         if "?display_token=" in self.url:
             rest, self._display_token = self.url.rsplit("?display_token=", maxsplit=1)
@@ -134,47 +181,16 @@ class JapaneseHareruyaDeckScraper(DeckScraper):
             self.API_URL_TEMPLATE.format(self._decklist_id, self._display_token))
 
     @override
-    def _parse_metadata(self) -> None:
-        fmt = self._data["format_name_en"]
-        self._update_fmt(fmt)
-        self._metadata["name"] = self._data["deck_name"]
-        self._metadata["author"] = self._data["nickname"]
-        if arch := self._data.get("archetype_name_en"):
-            self._update_archetype_or_theme(arch)
-        self._metadata["deck_type"] = self._data["deck_type"]
-        if event_name := self._data.get("event_name_en"):
-            self._metadata.setdefault("event", {})
-            self._metadata["event"]["name"] = event_name
-        if event_date := self._data.get("event_date"):
-            self._metadata.setdefault("event", {})
-            self._metadata["event"]["date"] = dateutil.parser.parse(event_date).date()
-        if event_player := self._data.get("player_name"):
-            self._metadata.setdefault("event", {})
-            self._metadata["event"]["player"] = event_player
-        if event_result := self._data.get("result"):
-            self._metadata.setdefault("event", {})
-            self._metadata["event"]["result"] = event_result
-        if event_ranking := self._data.get("ranking"):
-            self._metadata.setdefault("event", {})
-            self._metadata["event"]["ranking"] = event_ranking
-        if source_url := self._data.get("source_url"):
-            self._metadata["original_source"] = source_url
-        self._metadata["date"] = dateutil.parser.parse(self._data["update_date"]).date()
-
-    def _process_card(self, json_card: Json) -> None:
-        quantity = json_card["count"]
-        name = json_card["name_en"]
-        if json_card["board_id"] == 1:
-            self._maindeck.extend(self.get_playset(self.find_card(name), quantity))
-        elif json_card["board_id"] == 2:
-            self._sideboard.extend(self.get_playset(self.find_card(name), quantity))
-        elif json_card["board_id"] == 3:
-            self._set_commander(self.find_card(name))
+    def _get_sub_parser(self) -> JapaneseHareruyaDeckJsonParser:
+        return JapaneseHareruyaDeckJsonParser(self._data, self._metadata)
 
     @override
-    def _parse_decklist(self) -> None:
-        for card in self._data["cards"]:
-            self._process_card(card)
+    def _parse_metadata(self) -> None:
+        pass
+
+    @override
+    def _parse_deck(self) -> None:
+        pass
 
 
 HEADERS = {
@@ -241,8 +257,9 @@ class HareruyaPlayerScraper(DeckUrlsContainerScraper):
 #  older article pages) with a JSON data based approach (suitable for newer pages) where there's a
 #  lookup of tags like: <deck-embedder deckid="613728" height="640" token="95d60.dac262354c3d67">
 #  and then fetching deck data from the API by the read deck ID and token
+#  ==> see implementation of EdhrecArticleScraper
 # @DeckUrlsContainerScraper.registered
-class HareruyaArticleScraper(DeckUrlsContainerScraper):
+class HareruyaArticleScraper(HybridContainerScraper):
     """Scraper of Hareruya article page.
     """
     CONTAINER_NAME = "Hareruya article"  # override
@@ -251,7 +268,7 @@ class HareruyaArticleScraper(DeckUrlsContainerScraper):
     @override
     def is_valid_url(url: str) -> bool:
         url = url.lower()
-        return "article.hareruyamtg.com/article/" in url and not any(
+        return is_in_domain_but_not_main(url, "article.hareruyamtg.com/article/") and not any(
             t in url for t in ("/page/", "/author/"))
 
     @staticmethod
@@ -259,4 +276,3 @@ class HareruyaArticleScraper(DeckUrlsContainerScraper):
     def sanitize_url(url: str) -> str:
         url = url.removesuffix("/")
         return url + "?lang=en" if "?lang=en" not in url else url
-

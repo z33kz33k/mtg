@@ -1,7 +1,7 @@
 """
 
-    mtg.utils.adhoc.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.utils.adhoc
+    ~~~~~~~~~~~~~~~
     Ad hoc utilities.
 
     @author: z33k

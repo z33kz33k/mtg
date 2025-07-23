@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.mtgarenapro.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.mtgarenapro
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape MTGArena.Pro decklists.
 
     @author: z33k
@@ -87,7 +87,7 @@ class MtgArenaProDeckScraper(DeckScraper):
         return cls.get_playset(card, quantity)
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         for card_json in self._data["deck_order"]:
             self._maindeck.extend(self._parse_card_json(card_json))
         for card_json in self._data["sidedeck_order"]:

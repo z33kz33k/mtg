@@ -1,7 +1,7 @@
 """
 
-    mtg.yt.data.py
-    ~~~~~~~~~~~~~~
+    mtg.yt.data
+    ~~~~~~~~~~~
     Handle YouTube data.
 
     @author: z33k

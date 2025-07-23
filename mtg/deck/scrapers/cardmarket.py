@@ -1,21 +1,20 @@
 """
 
-    mtg.deck.scrapers.cardmarket.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.cardmarket
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Cardmarket decklists.
 
     @author: z33k
 
 """
 import logging
-from typing import Type, override
+from typing import override
 
 import dateutil.parser
 from bs4 import Tag
 
 from mtg import Json
-from mtg.deck.scrapers import ContainerScraper, FolderContainerScraper, HybridContainerScraper, \
-    TagBasedDeckParser
+from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser
 from mtg.scryfall import COMMANDER_FORMATS, Card, all_formats
 from mtg.utils import from_iterable
 from mtg.utils.scrape import ScrapingError, strip_url_query
@@ -105,7 +104,7 @@ class CardmarketDeckTagParser(TagBasedDeckParser):
                 self._sideboard += self._parse_card_tag(card_tag)
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         has_sideboard = len([*self._deck_tag.find_all("thead")]) == 2
         ul_tags = [*self._deck_tag.select("ul")]
         if ul_tags:
@@ -153,11 +152,6 @@ class CardmarketArticleScraper(HybridContainerScraper):
         cat_tag = self._soup.select_one("div.u-article-meta__category")
         if not cat_tag or cat_tag.text.strip().lower() != "magic":
             raise ScrapingError("Not a MtG article", scraper=type(self), url=self.url)
-
-    @classmethod
-    @override
-    def _get_container_scrapers(cls) -> set[Type[ContainerScraper]]:
-        return FolderContainerScraper.get_registered_scrapers()
 
     @override
     def _parse_metadata(self) -> None:

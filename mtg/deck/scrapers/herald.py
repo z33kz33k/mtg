@@ -1,23 +1,20 @@
 """
 
-    mtg.deck.scrapers.herald.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.herald
+    ~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Commander's Herald decklists.
 
     @author: z33k
 
 """
 import logging
-from typing import Type, override
+from typing import override
 
 import dateutil.parser
 from bs4 import Tag
 
 from mtg import Json
-from mtg.deck import Deck
-from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import ContainerScraper, FolderContainerScraper, HybridContainerScraper, \
-    TagBasedDeckParser, is_in_domain_but_not_main
+from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser, is_in_domain_but_not_main
 from mtg.utils.scrape import ScrapingError, strip_url_query
 
 _log = logging.getLogger(__name__)
@@ -38,7 +35,7 @@ class CommandersHeraldDeckTagParser(TagBasedDeckParser):
             self._update_fmt(fmt or "commander")
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         decklist = self._deck_tag.attrs["cards"]
         lines = ["Commander"]
         for line in decklist.splitlines():
@@ -47,9 +44,6 @@ class CommandersHeraldDeckTagParser(TagBasedDeckParser):
             elif line == "[/Commander]":
                 lines += ["", "Deck"]
         self._decklist = "\n".join(lines)
-
-    def _build_deck(self) -> Deck | None:
-        return ArenaParser(self._decklist, self._metadata).parse()
 
 
 @HybridContainerScraper.registered
@@ -72,11 +66,6 @@ class CommandersHeraldArticleScraper(HybridContainerScraper):
     @override
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
-
-    @classmethod
-    @override
-    def _get_container_scrapers(cls) -> set[Type[ContainerScraper]]:
-        return FolderContainerScraper.get_registered_scrapers()
 
     @override
     def _parse_metadata(self) -> None:

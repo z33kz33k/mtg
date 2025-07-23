@@ -1,7 +1,7 @@
 """
 
-    mtg.utils.scrape.py
-    ~~~~~~~~~~~~~~~~~~~
+    mtg.utils.scrape.dynamic
+    ~~~~~~~~~~~~~~~~~~~~~~~~
     Utilities for scraping of dynamic sites.
 
     @author: z33k

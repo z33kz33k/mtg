@@ -1,8 +1,8 @@
 """
 
-    mtg.deck.__init__.py
-    ~~~~~~~~~~~~~~~~~~~~
-    Parse decklist URL/text for deck data.
+    mtg.deck
+    ~~~~~~~~
+    Parse data into Deck objects.
 
     @author: z33k
 
@@ -17,7 +17,7 @@ from collections import Counter, OrderedDict
 from enum import Enum, auto
 from functools import cached_property
 from operator import attrgetter, itemgetter
-from typing import Any, Iterable, Iterator, Self
+from typing import Any, Iterable, Iterator, Self, Type
 
 from mtg import Json
 from mtg.scryfall import (
@@ -933,8 +933,8 @@ class DeckParser(ABC):
         self._state = _ParsingState()
         self._maindeck, self._sideboard = [], []
         self._commander, self._partner_commander, self._companion = None, None, None
-        self._decklist = ""
         self._sub_parser: Self | None = None
+        self._decklist: str | None = None
 
     def _set_commander(self, card: Card) -> None:
         if not card.commander_suitable:
@@ -1029,14 +1029,25 @@ class DeckParser(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         raise NotImplementedError
+
+    def _get_sub_parser(self) -> Self | None:
+        return None
+
+    def _build_deck(self) -> Deck | None:
+        self._sub_parser = self._get_sub_parser()
+        if self._sub_parser:
+            return self._sub_parser.parse()
+        return Deck(
+            self._maindeck, self._sideboard, self._commander, self._partner_commander,
+            self._companion, self._metadata)
 
     def parse(self, suppressed_errors=(InvalidDeck, CardNotFound)) -> Deck | None:  # override
         try:
             self._pre_parse()
             self._parse_metadata()
-            self._parse_decklist()
+            self._parse_deck()
             return self._build_deck()
         except suppressed_errors as err:
             _log.warning(f"Parsing failed with: {err!r}")
@@ -1068,11 +1079,6 @@ class DeckParser(ABC):
             self._metadata["theme"] = name.replace(" ", "-").title()
         else:
             self._metadata["custom_theme"] = name
-
-    def _build_deck(self) -> Deck | None:
-        return Deck(
-            self._maindeck, self._sideboard, self._commander, self._partner_commander,
-            self._companion, self._metadata)
 
     @staticmethod
     def process_metadata_deck_tags(deck_tags: list[str | Json]) -> list[str]:

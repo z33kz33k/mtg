@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.draftsim.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.draftsim
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Draftsim decklists.
 
     @author: z33k
@@ -14,11 +14,7 @@ import dateutil.parser
 from bs4 import Tag
 
 from mtg import Json
-from mtg.deck import Deck
-from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import ContainerScraper, DeckScraper, FolderContainerScraper, \
-    HybridContainerScraper, \
-    TagBasedDeckParser, \
+from mtg.deck.scrapers import DeckScraper, HybridContainerScraper, TagBasedDeckParser, \
     is_in_domain_but_not_main
 from mtg.scryfall import all_formats
 from mtg.utils import ParsingError, from_iterable, get_date_from_ago_text
@@ -34,7 +30,7 @@ class DraftsimDeckScraper(DeckScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return "draftsim.com/decks/" in url.lower()
+        return is_in_domain_but_not_main(url, "draftsim.com/decks/")
 
     @staticmethod
     @override
@@ -53,16 +49,11 @@ class DraftsimDeckScraper(DeckScraper):
                         info_text.removeprefix("Added: ")).date()
 
     @override
-    def _parse_decklist(self) -> None:
-        pass
-
-    @override
-    def _build_deck(self) -> Deck | None:
+    def _parse_deck(self) -> None:
         decklist_tag = self._soup.find("textarea", id="decktext")
         if not decklist_tag:
             raise ScrapingError("Decklist tag not found", scraper=type(self), url=self.url)
-        decklist = decklist_tag.text.strip()
-        return ArenaParser(decklist, self._metadata).parse()
+        self._decklist = decklist_tag.text.strip()
 
 
 class DraftsimDeckTagParser(TagBasedDeckParser):
@@ -88,10 +79,6 @@ class DraftsimDeckTagParser(TagBasedDeckParser):
             if fmt := from_iterable(parts, lambda p: p in all_formats()):
                 self._update_fmt(fmt)
 
-    @override
-    def _parse_decklist(self) -> None:
-        pass
-
     @staticmethod
     def _derive_deck_pos(decklist: list[str]) -> int:
         if "Commander" not in decklist and "Companion" not in decklist:
@@ -112,10 +99,10 @@ class DraftsimDeckTagParser(TagBasedDeckParser):
             raise ParsingError("Unexpected decklist format")
 
     @override
-    def _build_deck(self) -> Deck | None:
+    def _parse_deck(self) -> None:
         decklist = [l.strip() for l in self._deck_tag.text.strip().split("\n")]
         decklist.insert(self._derive_deck_pos(decklist), "Deck")
-        return ArenaParser("\n".join(decklist), self._metadata).parse()
+        self._decklist = "\n".join(decklist)
 
 
 @HybridContainerScraper.registered
@@ -136,11 +123,6 @@ class DraftsimArticleScraper(HybridContainerScraper):
     @override
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
-
-    @classmethod
-    @override
-    def _get_container_scrapers(cls) -> set[Type[ContainerScraper]]:
-        return FolderContainerScraper.get_registered_scrapers()
 
     @override
     def _parse_metadata(self) -> None:

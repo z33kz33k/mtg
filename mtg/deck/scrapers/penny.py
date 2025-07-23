@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.penny.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.penny
+    ~~~~~~~~~~~~~~~~~~~~~~~
     Scrape PennyDreadfulMagic decklists.
 
     @author: z33k
@@ -63,7 +63,7 @@ class PennyDreadfulMagicDeckScraper(DeckScraper):
         return cls.get_playset(cls.find_card(name), quantity)
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         for section_tag in self._soup.find_all("section"):
             if section_tag.find("section"):  # skip higher-order sections
                 continue

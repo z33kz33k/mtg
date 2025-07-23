@@ -1,7 +1,7 @@
 """
 
-    mtg.utils.sheets.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.utils.sheets
+    ~~~~~~~~~~~~~~~~
     Google Sheets as backend/frontend.
 
     @author: z33k

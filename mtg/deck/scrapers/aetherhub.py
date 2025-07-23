@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.aetherhub.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.aetherhub
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Aetherhub decklists.
 
     @author: z33k
@@ -15,7 +15,7 @@ import dateutil.parser
 from bs4 import Tag
 
 from mtg import Json
-from mtg.deck import Deck, Mode
+from mtg.deck import Mode
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
     TagBasedDeckParser
 from mtg.utils import extract_float, extract_int, from_iterable
@@ -36,7 +36,7 @@ class AetherhubDeckTagParser(TagBasedDeckParser):
         pass
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         for tag in self._deck_tag.descendants:
             if tag.name in ("h4", "h5"):
                 if "Side" in tag.text:
@@ -132,7 +132,7 @@ class AetherhubDeckScraper(DeckScraper):
             deck_tags, lambda t: t.text.strip().startswith(("Main", "Commander", "Companion")))
         if deck_tag is None:
             raise ScrapingError("Deck tag not found", scraper=type(self), url=self.url)
-        return AetherhubDeckTagParser(deck_tag)
+        return AetherhubDeckTagParser(deck_tag, self._metadata)
 
     @override
     def _parse_metadata(self) -> None:
@@ -196,15 +196,9 @@ class AetherhubDeckScraper(DeckScraper):
                 rest = " ".join(rest)
                 self._metadata["event"]["name"] = rest
 
-        self._sub_parser.update_metadata(**self._metadata)
-
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         pass
-
-    @override
-    def _build_deck(self) -> Deck | None:
-        return self._sub_parser.parse()
 
 
 @DeckScraper.registered
@@ -226,7 +220,7 @@ class AetherhubWriteupDeckScraper(AetherhubDeckScraper):
         deck_tag = self._soup.find("div", id="tab_deck")
         if not deck_tag:
             raise ScrapingError("Deck tag not found", scraper=type(self), url=self.url)
-        return AetherhubDeckTagParser(deck_tag)
+        return AetherhubDeckTagParser(deck_tag, self._metadata)
 
 
 CONSENT_XPATH = '//button[@class="ncmp__btn" and contains(text(), "Accept")]'

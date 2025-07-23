@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.tappedout.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.tappedout
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape TappedOut decklists.
 
     @author: z33k
@@ -75,9 +75,8 @@ class TappedoutDeckScraper(DeckScraper):
         self._soup = BeautifulSoup(response.text, "lxml")
 
     @override
-    def _validate_soup(self) -> None:
-        if "Page not found (404)" in self._soup.text:
-            raise ScrapingError("Page not found (404)", scraper=type(self), url=self.url)
+    def _is_soft_404_error(self) -> bool:
+        return "Page not found (404)" in self._soup.text
 
     @override
     def _parse_metadata(self) -> None:
@@ -104,7 +103,7 @@ class TappedoutDeckScraper(DeckScraper):
                     self._metadata["views"] = extract_int(views)
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         decklist_tag = self._soup.find("textarea", id="mtga-textarea")
         if not decklist_tag:
             raise ScrapingError("Decklist tag not found", scraper=type(self), url=self.url)
@@ -112,10 +111,6 @@ class TappedoutDeckScraper(DeckScraper):
         _, name_line, _, _, *lines = lines
         self._decklist = "\n".join(lines)
         self._metadata["name"] = name_line.removeprefix("Name ")
-
-    @override
-    def _build_deck(self) -> Deck | None:
-        return ArenaParser(self._decklist, self._metadata).parse()
 
 
 @DeckUrlsContainerScraper.registered

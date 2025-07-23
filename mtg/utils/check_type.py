@@ -1,13 +1,12 @@
 """
 
-    mtg.utils.check_type.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+    mtg.utils.check_type
+    ~~~~~~~~~~~~~~~~~~~~
     Type checking decorators.
-
     Validate types of input arguments of decorated functions (or methods).
-
     This module provides only basic type validation based on `isinstance()` check.
+
+    @author: z33k
 
 """
 from functools import wraps

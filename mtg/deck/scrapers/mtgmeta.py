@@ -1,21 +1,20 @@
 """
 
-    mtg.deck.scrapers.mtgmeta.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.mtgmeta
+    ~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape defunct MTGMeta.io decklists (using Wayback Machine).
 
     @author: z33k
 
 """
 import logging
-from typing import Type, override
+from typing import override
 
 import dateutil.parser
 from bs4 import Tag
 
 from mtg import Json
-from mtg.deck.scrapers import ContainerScraper, DeckScraper, DeckUrlsContainerScraper, \
-    FolderContainerScraper, HybridContainerScraper, \
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
     TagBasedDeckParser
 from mtg.scryfall import Card
 from mtg.utils import extract_float
@@ -92,7 +91,7 @@ class MtgMetaIoDeckScraper(DeckScraper):
         return cls.get_playset(cls.find_card(name), qty)
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         for card_json in self._data["main"]:
             self._maindeck += self._parse_card_json(card_json)
 
@@ -159,7 +158,7 @@ class MtgMetaIoDeckTagParser(TagBasedDeckParser):
                 self._update_fmt(fmt_tag.text.strip())
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         for card in self._deck_tag.select("div.card"):
             qty = int(card.attrs["data-qt"])
             name = card.attrs["data-name"]
@@ -197,11 +196,6 @@ class MtgMetaIoArticleScraper(HybridContainerScraper):
             raise ScrapingError(
                 "Page not available due to Internet Archive's database error", scraper=type(self),
                 url=self.url)
-
-    @classmethod
-    @override
-    def _get_container_scrapers(cls) -> set[Type[ContainerScraper]]:
-        return FolderContainerScraper.get_registered_scrapers()
 
     @override
     def _parse_metadata(self) -> None:

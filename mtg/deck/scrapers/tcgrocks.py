@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.tcgrocks.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.tcgrocks
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape TCGRocks decklists.
 
     TCGRocks is a sister site of MTGRocks and its decklists are sometimes featured in MTGRocks
@@ -17,8 +17,7 @@ from typing import override
 import dateutil.parser
 
 from mtg import Json
-from mtg.deck import Deck
-from mtg.deck.arena import ArenaParser, normalize_decklist
+from mtg.deck.arena import normalize_decklist
 from mtg.deck.scrapers import DeckScraper
 from mtg.utils.json import Node
 from mtg.utils.scrape import ScrapingError, strip_url_query
@@ -30,7 +29,7 @@ _log = logging.getLogger(__name__)
 class TcgRocksDeckScraper(DeckScraper):
     """Scraper of TCGRocks decklist page.
     """
-    DATA_FROM_SOUP = True
+    DATA_FROM_SOUP = True  # override
 
     @staticmethod
     @override
@@ -76,14 +75,10 @@ class TcgRocksDeckScraper(DeckScraper):
                 self._update_fmt(fmt)
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         root = Node(self._data)
         mtg_node = root.find(lambda n: n.data == "mtg")
         decklist_node = mtg_node.next_sibling
         if decklist_node is None or not decklist_node.data:
             raise ScrapingError("Decklist not found", scraper=type(self), url=self.url)
         self._decklist = normalize_decklist(decklist_node.data, self.fmt or None)
-
-    @override
-    def _build_deck(self) -> Deck | None:
-        return ArenaParser(self._decklist, self._metadata).parse()

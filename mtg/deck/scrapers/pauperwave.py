@@ -1,20 +1,19 @@
 """
 
-    mtg.deck.scrapers.pauperwave.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.pauperwave
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Pauperwave decklists.
 
     @author: z33k
 
 """
 import logging
-from typing import Type, override
+from typing import override
 
 from bs4 import Tag
 
 from mtg import Json
-from mtg.deck.scrapers import ContainerScraper, FolderContainerScraper, HybridContainerScraper, \
-    TagBasedDeckParser, \
+from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser, \
     is_in_domain_but_not_main
 from mtg.utils.scrape import ScrapingError, parse_non_english_month_date, strip_url_query
 
@@ -41,7 +40,7 @@ class PauperwaveDeckTagParser(TagBasedDeckParser):
             self._metadata.setdefault("event", {})["place"] = place
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         qty = None
         for tag in self._deck_tag.descendants:
             if tag.name == "span":
@@ -102,11 +101,6 @@ class PauperwaveArticleScraper(HybridContainerScraper):
     @override
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
-
-    @classmethod
-    @override
-    def _get_container_scrapers(cls) -> set[Type[ContainerScraper]]:
-        return FolderContainerScraper.get_registered_scrapers()
 
     @override
     def _parse_metadata(self) -> None:

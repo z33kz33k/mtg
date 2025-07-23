@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.manatraders.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.manatraders
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Manatraders decklists.
 
     @author: z33k
@@ -70,7 +70,7 @@ class ManatradersDeckScraper(DeckScraper):
             self._sideboard += self.get_playset(card, sideboard_qty)
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         for card_data in self._data["cards"].values():
             self._parse_card_json(card_data)
         self._derive_commander_from_sideboard()

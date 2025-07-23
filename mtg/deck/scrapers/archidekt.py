@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.archidekt.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.archidekt
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Archidekt decklists.
 
     @author: z33k
@@ -83,7 +83,7 @@ class ArchidektDeckScraper(DeckScraper):
             self._maindeck.extend(playset)
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         for v in self._data["cardMap"].values():
             self._parse_card_json(v)
 

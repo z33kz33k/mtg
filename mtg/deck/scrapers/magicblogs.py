@@ -1,20 +1,19 @@
 """
 
-    mtg.deck.scrapers.magicblogs.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.magicblogs
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape MagicBlogs.de decklists.
 
     @author: z33k
 
 """
 import logging
-from typing import Type, override
+from typing import override
 
 from bs4 import Tag
 
 from mtg import Json
-from mtg.deck.scrapers import ContainerScraper, FolderContainerScraper, HybridContainerScraper, \
-    TagBasedDeckParser
+from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser
 from mtg.utils import ParsingError
 from mtg.utils.scrape import ScrapingError, parse_non_english_month_date, strip_url_query
 
@@ -59,7 +58,7 @@ class MagicBlogsDeckTagParser(TagBasedDeckParser):
                 self._sideboard += self.get_playset(self.find_card(name), qty)
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         main_td, *side_td = self._sift()
 
         self._state.shift_to_maindeck()
@@ -100,11 +99,6 @@ class MagicBlogsArticleScraper(HybridContainerScraper):
     @override
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
-
-    @classmethod
-    @override
-    def _get_container_scrapers(cls) -> set[Type[ContainerScraper]]:
-        return FolderContainerScraper.get_registered_scrapers()
 
     @override
     def _parse_metadata(self) -> None:

@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.seventeen.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.seventeen
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape 17Lands decklists.
 
     @author: z33k
@@ -65,7 +65,7 @@ class SeventeenLandsDeckScraper(DeckScraper):
         return self.find_card(name, scryfall_id=scryfall_id)
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         maindeck_card_ids = self._data["groups"][0]["cards"]
         try:
             sideboard_card_ids = self._data["groups"][1]["cards"]

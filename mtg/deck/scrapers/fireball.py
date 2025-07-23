@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.fireball.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.fireball
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape ChannelFireball decklists.
 
     ChannelFireball is a TCG Player subsidiary since 2022. As such, its webpages use TCG Player's

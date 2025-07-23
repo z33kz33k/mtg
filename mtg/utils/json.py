@@ -1,7 +1,7 @@
 """
 
-    mtg.utils.json.py
-    ~~~~~~~~~~~~~~~~~
+    mtg.utils.json
+    ~~~~~~~~~~~~~~
     Utilities for JSON handling.
 
     @author: z33k

@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.cardsrealm.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.cardsrealm
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Cardsrealm decklists.
 
     @author: z33k
@@ -95,7 +95,7 @@ class CardsrealmDeckScraper(DeckScraper):
             self._maindeck += self.get_playset(card, quantity)
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         # filter out tokens and maybe-boards
         for card_data in [cd for cd  in self._data if cd["deck_sideboard"] in (0, 1)]:
             self._parse_card_json(card_data)

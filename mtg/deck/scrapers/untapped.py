@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.untapped.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.untapped
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Untapped.gg decklists.
 
     @author: z33k
@@ -13,8 +13,6 @@ from typing import override
 
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 
-from mtg.deck import Deck
-from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.utils import extract_float, extract_int
 from mtg.utils.scrape import ScrapingError, get_next_sibling_tag
@@ -65,12 +63,8 @@ class UntappedProfileDeckScraper(DeckScraper):
         self._metadata["author"] = author_tag.text.strip().removesuffix("'s Profile")
 
     @override
-    def _parse_decklist(self) -> None:
-        pass
-
-    @override
-    def _build_deck(self) -> Deck | None:
-        return ArenaParser(self._clipboard, metadata=self._metadata).parse()
+    def _parse_deck(self) -> None:
+        self._decklist = self._clipboard
 
 
 @DeckScraper.registered
@@ -103,12 +97,8 @@ class UntappedRegularDeckScraper(DeckScraper):
         self._metadata["name"] = name
 
     @override
-    def _parse_decklist(self) -> None:
-        pass
-
-    @override
-    def _build_deck(self) -> Deck | None:
-        return ArenaParser(self._clipboard, metadata=self._metadata).parse()
+    def _parse_deck(self) -> None:
+        self._decklist = self._clipboard
 
 
 @DeckScraper.registered
@@ -165,12 +155,8 @@ class UntappedMetaDeckScraper(DeckScraper):
             "meta", {})["time_range_since"] = time_range_tag.text.removesuffix("Now")
 
     @override
-    def _parse_decklist(self) -> None:
-        pass
-
-    @override
-    def _build_deck(self) -> Deck | None:
-        return ArenaParser(self._clipboard, metadata=self._metadata).parse()
+    def _parse_deck(self) -> None:
+        self._decklist = self._clipboard
 
 
 @DeckUrlsContainerScraper.registered

@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.mtgtop8.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.mtgtop8
+    ~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape MTGTop8 decklists.
 
     @author: z33k
@@ -72,7 +72,7 @@ class MtgTop8DeckScraper(DeckScraper):
             self._metadata["event"]["source"] = source_tag.text.strip()
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         deck_tag = self._soup.find("div", style="display:flex;align-content:stretch;")
         cards, commander_on = self._maindeck, False
         for block_tag in deck_tag:

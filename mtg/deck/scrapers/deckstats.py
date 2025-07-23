@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.deckstats.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.deckstats
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Deckstats decklists.
 
     @author: z33k
@@ -91,15 +91,14 @@ class DeckstatsDeckScraper(DeckScraper):
         return timed_request(self.url, handle_http_errors=False)
 
     @override
-    def _validate_soup(self) -> None:
-        super()._validate_soup()
-        if error_tag := self._soup.find("div", class_="ui-state-error"):
-            if "This deck does not exist." in error_tag.text:
-                raise ScrapingError("Deck does not exist", scraper=type(self), url=self.url)
-            elif "You do not have access to this page." in error_tag.text:
-                raise ScrapingError(
-                    "Access to deck page denied (is the deck private perhaps?)",
-                    scraper=type(self), url=self.url)
+    def _is_page_inaccessible(self) -> bool:
+        tag = self._soup.find("div", class_="ui-state-error")
+        return tag and "You do not have access to this page." in tag.text
+
+    @override
+    def _is_soft_404_error(self) -> bool:
+        tag = self._soup.find("div", class_="ui-state-error")
+        return tag and "This deck does not exist." in tag.text
 
     @override
     def _get_data_from_soup(self) -> Json:
@@ -150,7 +149,7 @@ class DeckstatsDeckScraper(DeckScraper):
         return self.get_playset(card, quantity)
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         cards = itertools.chain(
             *[section["cards"] for section in self._data["sections"]])
         for card_json in cards:

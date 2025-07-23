@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.magicville.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.magicville
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape MagicVille decklists.
 
     @author: z33k
@@ -81,7 +81,7 @@ class MagicVilleDeckScraper(DeckScraper):
                 self._metadata["date"] = date
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         main_tag = self._soup.find("div", id="aff_graphique")
         for tag in main_tag.descendants:
             if (tag.name in ("div", "span")

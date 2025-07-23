@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.scg.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.scg
+    ~~~~~~~~~~~~~~~~~~~~~
     Scrape StarCityGames decklists.
 
     @author: z33k
@@ -98,7 +98,7 @@ class ScgDeckTagParser(TagBasedDeckParser):
                 self._set_commander(commander)
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         decklist_tag = self._deck_tag.find("div", class_="deck_card_wrapper")
         if decklist_tag is None:
             raise ParsingError("Decklist tag not found (page is probably paywalled)")
@@ -139,12 +139,8 @@ class ScgDeckScraper(DeckScraper):
         pass
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         pass
-
-    @override
-    def _build_deck(self) -> Deck | None:
-        return self._sub_parser.parse()
 
 
 def _is_player_url(url: str) -> bool:
@@ -236,10 +232,6 @@ class ScgArticleDeckTagParser(ScgDeckTagParser):
     """Parser of a StarCityGames article page's decklist HTML tag.
     """
     @override
-    def _parse_decklist(self) -> None:
-        pass
-
-    @override
     def _parse_decklist_tag(self, decklist_tag: Tag) -> str:
         decklist_text = decklist_tag.attrs.get("onclick")
         if not decklist_text:
@@ -259,12 +251,12 @@ class ScgArticleDeckTagParser(ScgDeckTagParser):
         return "\n".join(decklist)
 
     @override
-    def _build_deck(self) -> Deck | None:
+    def _parse_deck(self) -> None:
         css = "div[title='Export Decklist for Magic Arena'] > div"
         decklist_tag = self._deck_tag.select_one(css)
         if not decklist_tag:
             raise ParsingError("Decklist tag not found")
-        return ArenaParser(self._parse_decklist_tag(decklist_tag), self._metadata).parse()
+        self._decklist = self._parse_decklist_tag(decklist_tag)
 
 
 @HybridContainerScraper.registered

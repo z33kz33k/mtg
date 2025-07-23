@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.cardboardlive.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.cardboardlive
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape CardBoard Live decklists.
 
     @author: z33k
@@ -10,8 +10,6 @@
 import logging
 from typing import override
 
-from mtg.deck import Deck
-from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckScraper
 from mtg.utils.scrape import strip_url_query
 
@@ -50,10 +48,5 @@ class CardBoardLiveDeckScraper(DeckScraper):
                 self._metadata["event"] = tag.text.strip().removeprefix("Tournament: ")
 
     @override
-    def _parse_decklist(self) -> None:
-        pass
-
-    @override
-    def _build_deck(self) -> Deck | None:
-        return ArenaParser(self._clipboard, metadata=self._metadata).parse()
-
+    def _parse_deck(self) -> None:
+        self._decklist = self._clipboard

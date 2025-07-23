@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.manastack.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.manastack
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape ManaStack decklists.
 
     @author: z33k
@@ -47,7 +47,7 @@ class ManaStackDeckScraper(DeckScraper):
         self._metadata["date"] = get_date_from_ago_text(date_text.strip())
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         deck_tag = self._soup.find("div", class_="deck-list-container")
         for tag in deck_tag.descendants:
             if tag.name == "h4":

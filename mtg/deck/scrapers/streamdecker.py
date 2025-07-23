@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.streamdecker.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.streamdecker
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Streamdecker decklists.
 
     @author: z33k
@@ -79,7 +79,7 @@ class StreamdeckerDeckScraper(DeckScraper):
             self._companion = card
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         for json_card in self._data["cardList"]:
             self._parse_json_card(json_card)
 

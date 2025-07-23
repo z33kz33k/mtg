@@ -1,7 +1,7 @@
 """
 
-    mtg.gstate.py
-    ~~~~~~~~~~~~~
+    mtg.gstate
+    ~~~~~~~~~~
     Global state managers.
 
     @author: z33k

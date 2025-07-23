@@ -1,8 +1,8 @@
 """
 
-    mtg.deck.arena.py
-    ~~~~~~~~~~~~~~~~~
-    Parse Arena decklist text format.
+    mtg.deck.arena
+    ~~~~~~~~~~~~~~
+    Parse Arena/MTGO decklist text format.
 
     @author: z33k
 
@@ -374,7 +374,7 @@ class ArenaParser(DeckParser):
         return False
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         for line in self._lines:
             if _is_maindeck_line(line):
                 self._state.shift_to_maindeck()

@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.tcdecks.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.tcdecks
+    ~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape TC Decks decklists.
 
     @author: z33k
@@ -96,7 +96,7 @@ class TCDecksDeckScraper(DeckScraper):
         return cards
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         for td_tag in self._deck_tag.find_all("td", valign="top"):
             if td_tag.attrs.get("id") == "sideboard":
                 self._sideboard += self._parse_td(td_tag)

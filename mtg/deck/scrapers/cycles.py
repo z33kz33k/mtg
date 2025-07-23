@@ -1,21 +1,20 @@
 """
 
-    mtg.deck.scrapers.cycles.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.cycles
+    ~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Cycles Gaming decklists.
 
     @author: z33k
 
 """
 import logging
-from typing import Type, override
+from typing import override
 
 import dateutil.parser
 from bs4 import NavigableString, Tag
 
 from mtg import Json
-from mtg.deck.scrapers import ContainerScraper, FolderContainerScraper, HybridContainerScraper, \
-    TagBasedDeckParser, is_in_domain_but_not_main
+from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser, is_in_domain_but_not_main
 from mtg.utils.scrape import strip_url_query
 
 _log = logging.getLogger(__name__)
@@ -69,7 +68,7 @@ class CyclesGamingDeckTagParser(TagBasedDeckParser):
                 self._sideboard += playset
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         current = self._deck_tag.next_sibling
         while current:
             if current.name == "p" and "Format: " in current.text and current.text.strip(
@@ -112,11 +111,6 @@ class CyclesGamingArticleScraper(HybridContainerScraper):
     @override
     def sanitize_url(url: str) -> str:
         return strip_url_query(url)
-
-    @classmethod
-    @override
-    def _get_container_scrapers(cls) -> set[Type[ContainerScraper]]:
-        return FolderContainerScraper.get_registered_scrapers()
 
     @override
     def _parse_metadata(self) -> None:

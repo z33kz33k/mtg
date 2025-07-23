@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.melee.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.melee
+    ~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Melee.gg decklists.
 
     @author: z33k
@@ -13,8 +13,6 @@ from typing import override
 import dateutil.parser
 
 from mtg import SECRETS
-from mtg.deck import Deck
-from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.utils import from_iterable
 from mtg.utils.scrape import ScrapingError, get_links
@@ -86,16 +84,11 @@ class MeleeGgDeckScraper(DeckScraper):
             self._update_fmt(fmt)
 
     @override
-    def _parse_decklist(self) -> None:
-        pass
-
-    @override
-    def _build_deck(self) -> Deck | None:
+    def _parse_deck(self) -> None:
         decklist_tag = self._soup.select_one("pre#decklist-text")
         if not decklist_tag:
             raise ScrapingError("Decklist tag not found", scraper=type(self), url=self.url)
-        decklist = decklist_tag.text.strip()
-        return ArenaParser(decklist, metadata=self._metadata).parse()
+        self._decklist = decklist_tag.text.strip()
 
 
 @DeckUrlsContainerScraper.registered

@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.manabox.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.manabox
+    ~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape ManaBox decklists.
 
     @author: z33k
@@ -47,7 +47,7 @@ class ManaBoxDeckScraper(DeckScraper):
         return cards
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         for container_div in self._soup.find_all("div", class_="mb-3"):
             header_tag = container_div.find(
                 "div", class_=["flex", "whitespace-nowrap", "overflow-hidden", "text-ellipsis"])

@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.mtgstocks.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.mtgstocks
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape MTGStocks decklists.
 
     @author: z33k
@@ -81,7 +81,7 @@ class MtgStocksDeckScraper(DeckScraper):
         return self.get_playset(self.find_card(name), qty)
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         for card in self._data["boards"]["mainboard"]["cards"]:
             self._maindeck.extend(self._parse_playset(card))
         if sideboard := self._data["boards"].get("sideboard"):

@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.playingmtg.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers.playingmtg
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape PlayingMTG decklists.
 
     @author: z33k
@@ -82,7 +82,7 @@ class PlayingMtgDeckScraper(DeckScraper):
         return cls.get_playset(cls.find_card(name), qty)
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         maindeck_hook = self._soup.find("div", string=lambda s: s and s == "Main Board")
         if not maindeck_hook:
             raise ScrapingError("Deck data not available")

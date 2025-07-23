@@ -1,7 +1,7 @@
 """
 
-    mtg.deck.scrapers.__init__.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    mtg.deck.scrapers
+    ~~~~~~~~~~~~~~~~~
     Abstract deck scrapers.
 
     @author: z33k
@@ -19,6 +19,7 @@ from selenium.common.exceptions import ElementClickInterceptedException, Timeout
 
 from mtg import Json
 from mtg.deck import CardNotFound, Deck, DeckParser, InvalidDeck
+from mtg.deck.arena import ArenaParser
 from mtg.gstate import UrlsStateManager
 from mtg.utils import ParsingError, timed
 from mtg.utils.scrape import InaccessiblePage, ScrapingError, Soft404Error, get_links, getsoup, \
@@ -29,18 +30,23 @@ from mtg.utils.scrape.dynamic import get_dynamic_soup
 _log = logging.getLogger(__name__)
 
 
-def is_in_domain_but_not_main(url: str, domain: str) -> bool:
+def is_in_domain_but_not_main(url: str, domain: str, lower=True) -> bool:
     """Check whether the passed URL is of the passed domain but other than exactly this domain.
 
     Args:
         url: URL to check
-        domain: the end-part of URL's domain (including sub-folders, e.g. "pauperwave.com" or "playingmtg/tournaments)
+        domain: the end-part of URL's domain (including sub-folders, e.g. "pauperwave.com" or "playingmtg.com/tournaments/")
+        lower: if True, make URL and domain case-insensitive
     """
-    if f"{domain}/" not in url.lower():
+    url = url.lower() if lower else url
+    domain = domain.lower() if lower else domain
+    url = url.removesuffix("/") + "/"
+    domain = domain.removesuffix("/") + "/"
+    if domain not in url:
         return False  # not in domain
-    if f"{domain}/." in url.lower():
+    if f"{domain}." in url:
         return False
-    *_, rest = url.lower().split(f"{domain}/")
+    *_, rest = url.split(f"{domain}")
     if not rest:
         return False  # the domain exactly
     return True
@@ -67,8 +73,14 @@ class TagBasedDeckParser(DeckParser):
 
     @abstractmethod
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         raise NotImplementedError
+
+    @override
+    def _get_sub_parser(self) -> ArenaParser | None:
+        if self._decklist:
+            return ArenaParser(self._decklist, self._metadata)
+        return None
 
 
 class JsonBasedDeckParser(DeckParser):
@@ -93,8 +105,14 @@ class JsonBasedDeckParser(DeckParser):
 
     @abstractmethod
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         raise NotImplementedError
+
+    @override
+    def _get_sub_parser(self) -> DeckParser | None:
+        if self._decklist:
+            return ArenaParser(self._decklist, self._metadata)
+        return None
 
 
 class DeckScraper(DeckParser):
@@ -169,7 +187,10 @@ class DeckScraper(DeckParser):
     def _get_data_from_soup(self) -> Json:
         raise NotImplementedError
 
-    def _get_sub_parser(self) -> TagBasedDeckParser | JsonBasedDeckParser | None:
+    @override
+    def _get_sub_parser(self) -> DeckParser | None:
+        if self._decklist:
+            return ArenaParser(self._decklist, self._metadata)
         return None
 
     def _is_page_inaccessible(self) -> bool:
@@ -201,7 +222,6 @@ class DeckScraper(DeckParser):
             if self.DATA_FROM_SOUP:
                 self._data = self._get_data_from_soup()
                 self._validate_data()
-        self._sub_parser = self._get_sub_parser()
 
     @abstractmethod
     @override
@@ -210,7 +230,7 @@ class DeckScraper(DeckParser):
 
     @abstractmethod
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         raise NotImplementedError
 
     @override
@@ -228,7 +248,7 @@ class DeckScraper(DeckParser):
         try:
             self._pre_parse()
             self._parse_metadata()
-            self._parse_decklist()
+            self._parse_deck()
             return self._build_deck()
         except (InvalidDeck, CardNotFound) as err:
             _log.warning(f"Scraping failed with: {err!r}")
@@ -238,7 +258,6 @@ class DeckScraper(DeckParser):
                 err = ScrapingError(str(err), type(self), self.url)
             _log.warning(f"Scraping failed with: {err!r}")
             return None
-
 
     @classmethod
     def registered(cls, scraper_type: Type[Self]) -> Type[Self]:
@@ -308,7 +327,7 @@ class ContainerScraper(DeckScraper):
         pass
 
     @override
-    def _parse_decklist(self) -> None:
+    def _parse_deck(self) -> None:
         raise NotImplementedError  # not utilized
 
     @override
@@ -404,6 +423,9 @@ class DeckUrlsContainerScraper(ContainerScraper):
 
     @override
     def _collect(self) -> list[str]:
+        # TODO: this default implementation needs to be a separate method: _get_deck_urls(),
+        #  then it could be utilized in hybrid scraping together with similar methods in JSON and
+        #  tag based container scrapers
         links = sorted(set(get_links(self._soup)))
         return [l for l in links if any(ds.is_valid_url(l) for ds in self._get_deck_scrapers())]
 
@@ -645,7 +667,7 @@ class HybridContainerScraper(
 
     @classmethod
     def _get_container_scrapers(cls) -> set[Type[ContainerScraper]]:
-        return set(cls.CONTAINER_SCRAPERS)
+        return set(cls.CONTAINER_SCRAPERS) | FolderContainerScraper.get_registered_scrapers()
 
     @classmethod
     def _dispatch_container_scraper(

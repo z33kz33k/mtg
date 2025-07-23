@@ -1,8 +1,8 @@
 """
 
-    mtg.deck.scrapers.edhtop16.py
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Scrape EDHTop16 deck containers.
+    mtg.deck.scrapers.edhtop16
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Scrape EDHTop16 decklist containers.
 
     @author: z33k
 

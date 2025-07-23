@@ -1,7 +1,7 @@
 """
 
-    mtg.utils.linktree.py
-    ~~~~~~~~~~~~~~~~~~~~~
+    mtg.utils.linktree
+    ~~~~~~~~~~~~~~~~~~
     linktr.ee scraper based on: https://github.com/Touexe/LinkTreeScraper and heavily adapted to
     suit my needs.
 
