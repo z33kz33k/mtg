@@ -11,15 +11,22 @@ import logging
 from typing import override
 
 import dateutil.parser
-from bs4 import NavigableString
+from bs4 import NavigableString, Tag
 
 from mtg import HybridContainerScraper, Json, SECRETS
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, JsonBasedDeckParser, \
+from mtg.deck.scrapers import Collected, DeckScraper, DeckUrlsContainerScraper, JsonBasedDeckParser, \
     is_in_domain_but_not_main
 from mtg.deck.scrapers.goldfish import HEADERS as GOLDFISH_HEADERS
-from mtg.utils.scrape import request_json
+from mtg.utils.scrape import ScrapingError, request_json
 
 _log = logging.getLogger(__name__)
+
+
+def get_source(src: str) -> str | None:
+    if ".hareruyamtg.com" in src:
+        _, *parts = src.split(".")
+        return ".".join(parts)
+    return None
 
 
 @DeckScraper.registered
@@ -34,7 +41,7 @@ class InternationalHareruyaDeckScraper(DeckScraper):
         url = url.lower()
         return ("hareruyamtg.com" in url and "/deck/" in url
                 and "deck.hareruyamtg.com/deck/" not in url
-                and "/result?" not in url
+                and "/result" not in url
                 and "/bulk/" not in url  # shopping cart URL
                 and "/metagame" not in url)
 
@@ -253,16 +260,27 @@ class HareruyaPlayerScraper(DeckUrlsContainerScraper):
             "a", class_="deckSearch-searchResult__itemWrapper")]
 
 
-# TODO: this must be a hybrid scraper that merges this default deck URLs logic (which works for
-#  older article pages) with a JSON data based approach (suitable for newer pages) where there's a
-#  lookup of tags like: <deck-embedder deckid="613728" height="640" token="95d60.dac262354c3d67">
-#  and then fetching deck data from the API by the read deck ID and token
-#  ==> see implementation of EdhrecArticleScraper
-# @DeckUrlsContainerScraper.registered
+# TODO: handle cases like: https://article.hareruyamtg.com/article/44666/#4 (individual scraper
+#  like what works for mtgo.com?)
+# TODO: handle cases like here: https://article.hareruyamtg.com/article/89306 or
+#  https://article.hareruyamtg.com/article/89077 where there's no display token for the API (the
+#  deck scraper seems to handle those cases (simply, no token is then passed))
+# TODO: filter out from JapaneseHareruyaDeckScraper links like this: https://www.hareruyamtg.com/decks/tile/search
+# TODO: investigate if this type of URL: https://article.hareruyamtg.com/article/91545/?utm_source=video&utm_medium=column&utm_campaign=mtgyoutube_ffkoryaku
+#  is not an author URL (or similar) - video: https://www.youtube.com/watch?v=cDmXK40rDbU
+#  still, a very similar URL: https://article.hareruyamtg.com/article/98770/?utm_source=video&utm_medium=column&utm_campaign=mtgyoutube_deck
+#  is a valid article URL and another very similar one:
+#  https://article.hareruyamtg.com/article/?utm_source=video&utm_medium=column&utm_campaign
+#  =mtgyoutube_article seems like a container of articles... VERY CONFUSING!
+# TODO: look into channel: https://www.youtube.com/channel/UC1l7GtlvAmCOXRlxjImbWvw logs ==> 247
+#  videos flagged for re-scraping!
+# TODO: investigate https://article.hareruyamtg.com/article/61228 ==> decklists not detected!
+@DeckUrlsContainerScraper.registered
 class HareruyaArticleScraper(HybridContainerScraper):
     """Scraper of Hareruya article page.
     """
     CONTAINER_NAME = "Hareruya article"  # override
+    JSON_BASED_DECK_PARSER = JapaneseHareruyaDeckJsonParser  # override
 
     @staticmethod
     @override
@@ -272,7 +290,25 @@ class HareruyaArticleScraper(HybridContainerScraper):
             t in url for t in ("/page/", "/author/"))
 
     @staticmethod
+    def _collect_deck_data(article_tag: Tag) -> Json:
+        deck_data = []
+        for tag in article_tag.find_all("deck-embedder", deckid=True, token=True):
+            deck_id, token = tag.attrs["deckid"], tag.attrs["token"]
+            data = request_json(
+                JapaneseHareruyaDeckScraper.API_URL_TEMPLATE.format(deck_id, token))
+            if data:
+                deck_data.append(data)
+        return deck_data
+
     @override
-    def sanitize_url(url: str) -> str:
-        url = url.removesuffix("/")
-        return url + "?lang=en" if "?lang=en" not in url else url
+    def _collect(self) -> Collected:
+        article_tag = self._soup.find("article")
+        if not article_tag:
+            err = ScrapingError("Article tag not found", scraper=type(self), url=self.url)
+            _log.warning(f"Scraping failed with: {err!r}")
+            return [], [], [], []
+        deck_data = self._collect_deck_data(article_tag)
+        if deck_data:
+            return [], [], deck_data, []
+        deck_urls, container_urls = self._get_links_from_tags(article_tag)
+        return deck_urls, [], [], container_urls

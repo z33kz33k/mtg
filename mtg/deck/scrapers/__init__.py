@@ -421,13 +421,10 @@ class DeckUrlsContainerScraper(ContainerScraper):
     def _get_deck_scrapers(cls) -> set[Type[DeckScraper]]:
         return set(cls.DECK_SCRAPERS) or DeckScraper.get_registered_scrapers()
 
+    @abstractmethod
     @override
     def _collect(self) -> list[str]:
-        # TODO: this default implementation needs to be a separate method: _get_deck_urls(),
-        #  then it could be utilized in hybrid scraping together with similar methods in JSON and
-        #  tag based container scrapers
-        links = sorted(set(get_links(self._soup)))
-        return [l for l in links if any(ds.is_valid_url(l) for ds in self._get_deck_scrapers())]
+        raise NotImplementedError
 
     @override
     def _gather(self) -> Collected:
