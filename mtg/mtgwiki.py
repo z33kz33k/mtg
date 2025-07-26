@@ -11,21 +11,22 @@ from bs4 import BeautifulSoup
 from bs4.element import Tag
 
 from mtg import DATA_DIR
+from mtg.utils import from_iterable
 from mtg.utils.files import download_file
 
 FILENAME = "creature_type.html"
 
 
-def download_creature_type_page() -> None:
+def download_page() -> None:
     """Download MGT Wiki page on creature types.
     """
-    url = "https://mtg.fandom.com/wiki/Creature_type"
+    url = "https://mtg.wiki/page/Species"  # (both races and classes are present)
     download_file(url, file_name=FILENAME, dst_dir=DATA_DIR)
 
 
-class _CreatureTypesParser:
-    """Parse MTG Wiki "Creature_type" page for possible races and classes among creature types in a
-    MtG card's type line.
+class _Parser:
+    """Parse MTG Wiki "Species" page for possible races among creature types in a MtG card's type
+    line.
     """
     FILEPATH = DATA_DIR / FILENAME
 
@@ -43,53 +44,50 @@ class _CreatureTypesParser:
 
     def __init__(self) -> None:
         if not self.FILEPATH.exists():
-            download_creature_type_page()
+            download_page()
         self._markup = self.FILEPATH.read_text()
         self._soup = BeautifulSoup(self._markup, "lxml")
-        self._race_table, self._class_table = self._get_tables()
-        self._races = self._parse_table(self._race_table)
-        self._classes = self._parse_table(self._class_table)
+        self._races_tag, self._classes_tag = self._get_table_tags()
+        self._races = self._parse(self._races_tag)
+        self._classes = self._parse(self._classes_tag)
 
-    def _get_tables(self) -> tuple[Tag, Tag]:
-        main_table_tag = self._soup.find("table", class_="navbox")
-        classes = "nowraplinks mw-collapsible navbox-subgroup mw-made-collapsible".split()
-        relevant_tables = main_table_tag.find_all("table", class_=classes)
+    def _get_table_tags(self) -> tuple[Tag, Tag]:
+        # this ensures finding only <table> tags with classes EXACTLY as specified
+        tables = self._soup.find_all(
+            lambda tag: (
+                tag.name == "table" and
+                tag.has_attr("class") and
+                tag['class'] == ['nowraplinks', 'navbox-subgroup']
+            )
+        )
+        races_tag = from_iterable(
+            tables, lambda tag: tag.find("a", string=lambda s: s and s=="Iconic") is not None)
+        classes_tag = from_iterable(
+            tables, lambda tag: tag.find("a", string=lambda s: s and s=="Spellcasters") is not None)
 
-        race_table_tag, class_table_tag = None, None
-        for table_tag in relevant_tables:
-            race_table_tmp = table_tag.find(href="/wiki/Race")
-            if race_table_tmp is not None:
-                race_table_tag = table_tag
-                continue
-            class_table_tmp = table_tag.find(href="/wiki/Creature_class")
-            if class_table_tmp is not None:
-                class_table_tag = table_tag
-                continue
+        if any(tag is None for tag in (races_tag, classes_tag)):
+            raise ValueError("Invalid markup. Cannot find Race/Class <table> tags")
 
-        if any(table is None for table in (race_table_tag, class_table_tag)):
-            raise ValueError("Invalid markup. Cannot find Race/Class tables")
+        return races_tag, classes_tag
 
-        return race_table_tag, class_table_tag
 
     @staticmethod
-    def _parse_table(table: Tag) -> list[str]:
-        lis = table.find_all("li")
-        regular_lis = [li for li in lis if ":" not in li.text]
-        qualified_lis = [li for li in lis if ":" in li.text]
-        regular_types = [a.attrs["title"] for li in regular_lis for a in li.find_all("a")]
+    def _parse(table_tag: Tag) -> list[str]:
+        li_tags = table_tag.find_all("li")
+
+        regular_li_tags = [li for li in li_tags if ":" not in li.text]
+        regular_types = [a.attrs["title"] for li in regular_li_tags for a in li.find_all("a")]
+
+        # didn't really see any such data
+        qualified_li_tags = [li for li in li_tags if ":" in li.text]
         qualified_types = []
-        for li in qualified_lis:
-            *_, a = li.find_all("a")
+        for qlt in qualified_li_tags:
+            *_, a = qlt.find_all("a")
             qualified_types.append(a.attrs["title"])
 
         return sorted(
             t.removesuffix(' (creature type)') for t in [*regular_types, *qualified_types])
 
 
-_parser = _CreatureTypesParser()
+_parser = _Parser()
 RACES, CLASSES = _parser.races, _parser.classes
-
-
-# TODO: parse the below instead (#388)
-# https://mtg.wiki/page/Job (casses)
-# https://mtg.wiki/page/Species (races)
