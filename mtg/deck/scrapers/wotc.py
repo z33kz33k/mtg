@@ -23,6 +23,7 @@ from mtg.utils.scrape import ScrapingError, strip_url_query
 _log = logging.getLogger(__name__)
 
 
+# could be parsed from <script> tags' data
 class WotCDeckTagParser(TagBasedDeckParser):
     """Parser of WotC decklist HTML tag.
     """

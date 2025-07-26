@@ -275,7 +275,7 @@ class HareruyaPlayerScraper(DeckUrlsContainerScraper):
 # TODO: look into channel: https://www.youtube.com/channel/UC1l7GtlvAmCOXRlxjImbWvw logs ==> 247
 #  videos flagged for re-scraping!
 # TODO: investigate https://article.hareruyamtg.com/article/61228 ==> decklists not detected!
-@DeckUrlsContainerScraper.registered
+# @DeckUrlsContainerScraper.registered
 class HareruyaArticleScraper(HybridContainerScraper):
     """Scraper of Hareruya article page.
     """

@@ -40,12 +40,13 @@ HEADERS = {
 
 
 def _get_json(
-        soup: BeautifulSoup, scraper: Type[DeckScraper] | Type[DecksJsonContainerScraper]) -> Json:
+        soup: BeautifulSoup,
+        scraper: Type[DeckScraper] | Type[DecksJsonContainerScraper], url: str) -> Json:
     data = dissect_js(
         soup, "window.MTGO.decklists.data = ", "window.MTGO.decklists.type",
         lambda s: s.rstrip().rstrip(";"))
     if data is None:
-        raise ScrapingError("Data not available", scraper=scraper)
+        raise ScrapingError("Data not available", scraper=scraper, url=url)
     return data
 
 
@@ -156,7 +157,7 @@ class MtgoDeckScraper(DeckScraper):
 
     @override
     def _get_data_from_soup(self) -> Json:
-        json_data = _get_json(self._soup, type(self))
+        json_data = _get_json(self._soup, type(self), self.url)
         decks_data = _get_decks_data(json_data)
         deck_data = from_iterable(decks_data, lambda d: d["player"] == self._player_name)
         if not deck_data:
@@ -201,7 +202,7 @@ class MtgoEventScraper(DecksJsonContainerScraper):
 
     @override
     def _collect(self) -> list[Json]:
-        json_data = _get_json(self._soup, type(self))
+        json_data = _get_json(self._soup, type(self), self.url)
         decks_data = _get_decks_data(json_data)
         if rank_data := json_data.get("final_rank"):
             _process_ranks(rank_data, *decks_data)

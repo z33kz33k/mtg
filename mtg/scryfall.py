@@ -85,10 +85,17 @@ def download_scryfall_set_data() -> None:
         json.dump(data, f, indent=2)
 
 
-MULTIFACE_SEPARATOR = "//"  # separates names of card's faces in multiface cards
+MULTIFACE_SEPARATOR = " // "  # separates names of card's faces in multiface cards
 MULTIFACE_LAYOUTS = (
-    'adventure', 'art_series', 'double_faced_token', 'flip', 'modal_dfc', 'reversible_card',
-    'split', 'transform')
+    'adventure',
+    'art_series',
+    'double_faced_token',
+    'flip',
+    'modal_dfc',
+    'reversible_card',
+    'split',
+    'transform'
+)
 
 # all cards that got Alchemy rebalance treatment have their rebalanced counterparts with names
 # prefixed by 'A-'
@@ -465,12 +472,9 @@ class Card:
             ("type_line", self.type_line))
 
     def __post_init__(self) -> None:
-        if self.is_multifaced and self.card_faces is None:
-            raise ScryfallError(
-                f"Card faces data missing for multiface card {self.name!r}")
         if self.is_multifaced and self.layout not in MULTIFACE_LAYOUTS:
             raise ScryfallError(
-                f"Invalid layout {self.layout!r} for multiface card {self.name!r}")
+                f"Invalid layout {self.layout!r} for a multiface card {self.name!r}")
 
     @property
     def card_faces(self) -> list[CardFace]:
@@ -693,7 +697,7 @@ class Card:
 
     @property
     def is_multifaced(self) -> bool:
-        return MULTIFACE_SEPARATOR in self.name
+        return bool(self.card_faces)
 
     def is_legal_in(self, fmt: str) -> bool:
         """Returns `True` if this card is legal in format designated by `fmt`.
@@ -878,27 +882,24 @@ class Card:
         """Find Alchemy rebalanced version of this card and return it, or 'None' if there's no
         such card.
         """
-        return find_by_name(f"{ALCHEMY_REBALANCE_INDICATOR}{self.name}")
+        if self.is_multifaced:
+            name = MULTIFACE_SEPARATOR.join(
+                f"{ALCHEMY_REBALANCE_INDICATOR}{cf.name}" for cf in self.card_faces)
+        else:
+            name = f"{ALCHEMY_REBALANCE_INDICATOR}{self.name}"
+        return find_by_name(name, query_api=False)
 
-    @property
+    @cached_property
     def alchemy_rebalance_original(self) -> Self | None:
         """If this card is Alchemy rebalance, return the original card. Return 'None' otherwise.
         """
         if not self.is_alchemy_rebalance:
             return None
-        if not self.is_multifaced:
-            return find_by_name(self.name[2:])
-        # is multifaced
-        first_part_name, *_ = self.name.split(MULTIFACE_SEPARATOR)
-        original_name = first_part_name[2:]
-        original = from_iterable(
-            self.json["all_parts"],
-            lambda p: original_name in p["name"] and not p["name"].startswith(
-                ALCHEMY_REBALANCE_INDICATOR)
-        )
-        if original:
-            return find_by_name(original["name"])
-        return None
+        if self.is_multifaced:
+            name = MULTIFACE_SEPARATOR.join(cf.name[2:] for cf in self.card_faces)
+        else:
+            name = self.name[2:]
+        return find_by_name(name, query_api=False)
 
     @property
     def has_alchemy_rebalance(self) -> bool:

@@ -17,7 +17,7 @@ from collections import Counter, OrderedDict
 from enum import Enum, auto
 from functools import cached_property
 from operator import attrgetter, itemgetter
-from typing import Any, Iterable, Iterator, Self, Type
+from typing import Any, Iterable, Iterator, Self
 
 from mtg import Json
 from mtg.scryfall import (
@@ -31,7 +31,7 @@ from mtg.utils import ParsingError, from_iterable, getid, getrepr, type_checker
 from mtg.utils.json import serialize_dates
 
 _log = logging.getLogger(__name__)
-ARENA_MULTIFACE_SEPARATOR = "///"  # this is different from Scryfall data where they use: '//'
+ARENA_MULTIFACE_SEPARATOR = " /// "  # this is different from Scryfall data where they use: ' // '
 
 
 # TODO: look here: https://pennydreadfulmagic.com/archetypes/
@@ -1011,13 +1011,13 @@ class DeckParser(ABC):
     def sanitize_card_name(text: str) -> str:
         text = text.replace("’", "'").replace("‑", "-").replace("꞉", ":")
         if "/" in text:
-            text = text.replace(" / ", f" {SCRYFALL_MULTIFACE_SEPARATOR} ").replace(
-                f" {ARENA_MULTIFACE_SEPARATOR} ", f" {SCRYFALL_MULTIFACE_SEPARATOR} ")
+            text = text.replace(" / ", SCRYFALL_MULTIFACE_SEPARATOR).replace(
+                ARENA_MULTIFACE_SEPARATOR, SCRYFALL_MULTIFACE_SEPARATOR)
             # "Wear/Tear" ==> "Wear // Tear"
             # "Wear//Tear" ==> "Wear // Tear"
             # "Wear///Tear" ==> "Wear // Tear"
             text = re.sub(
-                r'(?<=[a-zA-Z])/{1,3}(?=[a-zA-Z])', f' {SCRYFALL_MULTIFACE_SEPARATOR} ', text)
+                r'(?<=[a-zA-Z])/{1,3}(?=[a-zA-Z])', SCRYFALL_MULTIFACE_SEPARATOR, text)
         return text
 
     @abstractmethod
