@@ -16,9 +16,6 @@ from mtg.utils.files import download_file
 FILENAME = "creature_type.html"
 
 
-# TODO: move to scraping https://mtg.wiki/page/Creature_type instead
-
-
 def download_creature_type_page() -> None:
     """Download MGT Wiki page on creature types.
     """
@@ -54,25 +51,25 @@ class _CreatureTypesParser:
         self._classes = self._parse_table(self._class_table)
 
     def _get_tables(self) -> tuple[Tag, Tag]:
-        table = self._soup.find("table", class_="navbox")
+        main_table_tag = self._soup.find("table", class_="navbox")
         classes = "nowraplinks mw-collapsible navbox-subgroup mw-made-collapsible".split()
-        relevant_tables = table.find_all("table", class_=classes)
+        relevant_tables = main_table_tag.find_all("table", class_=classes)
 
-        race_table, class_table = None, None
-        for table in relevant_tables:
-            race_table_tmp = table.find(href="/wiki/Race")
+        race_table_tag, class_table_tag = None, None
+        for table_tag in relevant_tables:
+            race_table_tmp = table_tag.find(href="/wiki/Race")
             if race_table_tmp is not None:
-                race_table = table
+                race_table_tag = table_tag
                 continue
-            class_table_tmp = table.find(href="/wiki/Creature_class")
+            class_table_tmp = table_tag.find(href="/wiki/Creature_class")
             if class_table_tmp is not None:
-                class_table = table
+                class_table_tag = table_tag
                 continue
 
-        if any(table is None for table in (race_table, class_table)):
+        if any(table is None for table in (race_table_tag, class_table_tag)):
             raise ValueError("Invalid markup. Cannot find Race/Class tables")
 
-        return race_table, class_table
+        return race_table_tag, class_table_tag
 
     @staticmethod
     def _parse_table(table: Tag) -> list[str]:
@@ -85,8 +82,14 @@ class _CreatureTypesParser:
             *_, a = li.find_all("a")
             qualified_types.append(a.attrs["title"])
 
-        return sorted([*regular_types, *qualified_types])
+        return sorted(
+            t.removesuffix(' (creature type)') for t in [*regular_types, *qualified_types])
 
 
 _parser = _CreatureTypesParser()
 RACES, CLASSES = _parser.races, _parser.classes
+
+
+# TODO: parse the below instead (#388)
+# https://mtg.wiki/page/Job (casses)
+# https://mtg.wiki/page/Species (races)
