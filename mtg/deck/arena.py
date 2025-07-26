@@ -335,6 +335,7 @@ class ArenaParser(DeckParser):
         super().__init__(metadata)
         self._decklist = decklist
         self._lines = [sanitize_whitespace(l) for l in self._decklist.splitlines()]
+        self._no_maindeck_line = not any(_is_maindeck_line(l) for l in self._lines)
 
     def _handle_missing_commander_line(self):
         if not any(_is_commander_line(l) for l in self._lines):
@@ -397,7 +398,20 @@ class ArenaParser(DeckParser):
                 if self._state.is_sideboard:
                     self._sideboard.extend(playset)
                 elif self._state.is_commander:
-                    self._set_commander(playset[0])
+                    card = playset[0]
+                    # handle cases when there's a commander section's line but no maindeck one
+                    if self._no_maindeck_line:
+                        if self._partner_commander is None:
+                            if self._commander is not None and (
+                                    len(playset) > 1 or not card.is_partner):
+                                self._state.shift_to_maindeck()
+                                self._maindeck.extend(playset)
+                                continue
+                        else:
+                            self._state.shift_to_maindeck()
+                            self._maindeck.extend(playset)
+                            continue
+                    self._set_commander(card)
                 elif self._state.is_companion:
                     self._companion = playset[0]
                 elif self._state.is_maindeck:
