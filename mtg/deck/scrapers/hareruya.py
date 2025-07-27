@@ -15,9 +15,10 @@ from bs4 import NavigableString, Tag
 
 from mtg import HybridContainerScraper, Json, SECRETS
 from mtg.deck.scrapers import Collected, DeckScraper, DeckUrlsContainerScraper, JsonBasedDeckParser, \
-    is_in_domain_but_not_main
+    TagBasedDeckParser, is_in_domain_but_not_main
 from mtg.deck.scrapers.goldfish import HEADERS as GOLDFISH_HEADERS
-from mtg.utils.scrape import ScrapingError, request_json
+from mtg.utils import ParsingError, from_iterable
+from mtg.utils.scrape import ScrapingError, get_next_sibling_tag, request_json, timed_request
 
 _log = logging.getLogger(__name__)
 
@@ -40,7 +41,7 @@ class InternationalHareruyaDeckScraper(DeckScraper):
     def is_valid_url(url: str) -> bool:
         url = url.lower()
         return ("hareruyamtg.com" in url and "/deck/" in url
-                and "deck.hareruyamtg.com/deck/" not in url
+                and "deck.hareruyamtg.com/deck/" not in url  # Japanese deck scraper (look below)
                 and "/result" not in url
                 and "/bulk/" not in url  # shopping cart URL
                 and "/metagame" not in url)
@@ -168,7 +169,8 @@ class JapaneseHareruyaDeckScraper(DeckScraper):
     def is_valid_url(url: str) -> bool:
         url = url.lower()
         return ("hareruyamtg.com/decks/list/" in url or "hareruyamtg.com/decks/" in url
-                or "deck.hareruyamtg.com/deck/" in url) and "/user/" not in url
+                or "deck.hareruyamtg.com/deck/" in url) and not any(
+            t in url for t in ("/user/", "/tile/", "/search"))
 
     @staticmethod
     @override
@@ -180,12 +182,15 @@ class JapaneseHareruyaDeckScraper(DeckScraper):
     @override
     def _get_data_from_api(self) -> Json:
         if "?display_token=" in self.url:
-            rest, self._display_token = self.url.rsplit("?display_token=", maxsplit=1)
+            rest, display_token = self.url.rsplit("?display_token=", maxsplit=1)
         else:
-            rest, self._display_token = self.url, ""
-        *_, self._decklist_id = rest.split("/")
+            rest, display_token = self.url, ""
+        *_, decklist_id = rest.split("/")
+        if not decklist_id or not all(ch.isdigit() for ch in decklist_id):
+            raise ScrapingError(
+                f"Decklist ID needs to be a number, got: {decklist_id!r}", type(self), self.url)
         return request_json(
-            self.API_URL_TEMPLATE.format(self._decklist_id, self._display_token))
+            self.API_URL_TEMPLATE.format(decklist_id, display_token))
 
     @override
     def _get_sub_parser(self) -> JapaneseHareruyaDeckJsonParser:
@@ -221,6 +226,8 @@ HEADERS = {
 }
 
 
+# TODO: check if those still work (with HEADERS (as nothing other than events and players (
+#  seemingly works with them))
 @DeckUrlsContainerScraper.registered
 class HareruyaEventScraper(DeckUrlsContainerScraper):
     """Scraper of Hareruya event decks search page.
@@ -260,45 +267,112 @@ class HareruyaPlayerScraper(DeckUrlsContainerScraper):
             "a", class_="deckSearch-searchResult__itemWrapper")]
 
 
-# TODO: handle cases like: https://article.hareruyamtg.com/article/44666/#4 (individual scraper
-#  like what works for mtgo.com?)
-# TODO: handle cases like here: https://article.hareruyamtg.com/article/89306 or
-#  https://article.hareruyamtg.com/article/89077 where there's no display token for the API (the
-#  deck scraper seems to handle those cases (simply, no token is then passed))
-# TODO: filter out from JapaneseHareruyaDeckScraper links like this: https://www.hareruyamtg.com/decks/tile/search
-# TODO: investigate if this type of URL: https://article.hareruyamtg.com/article/91545/?utm_source=video&utm_medium=column&utm_campaign=mtgyoutube_ffkoryaku
-#  is not an author URL (or similar) - video: https://www.youtube.com/watch?v=cDmXK40rDbU
-#  still, a very similar URL: https://article.hareruyamtg.com/article/98770/?utm_source=video&utm_medium=column&utm_campaign=mtgyoutube_deck
-#  is a valid article URL and another very similar one:
-#  https://article.hareruyamtg.com/article/?utm_source=video&utm_medium=column&utm_campaign
-#  =mtgyoutube_article seems like a container of articles... VERY CONFUSING!
-# TODO: look into channel: https://www.youtube.com/channel/UC1l7GtlvAmCOXRlxjImbWvw logs ==> 247
-#  videos flagged for re-scraping!
-# TODO: investigate https://article.hareruyamtg.com/article/61228 ==> decklists not detected!
+_FORMATS = {
+    "アルケミー": "alchemy",
+    "ブロール": "brawl",
+    "統率者": "commander",
+    "コマンダー": "commander",
+    "デュエル": "duel",
+    "エクスプローラー": "explorer",
+    "フューチャースタンダード": "future",
+    "グラディエーター": "gladiator",
+    "ヒストリック": "historic",
+    "レガシー": "legacy",
+    "モダン": "modern",
+    "オースブレイカー": "oathbreaker",
+    "オールドスクール": "oldschool",
+    "パウパー": "pauper",
+    "パウパー統率者": "paupercommander",
+    "パウパーコマンダー": "paupercommander",
+    "ペニードレッドフル": "penny",
+    "パイオニア": "pioneer",
+    "プレモダン": "premodern",
+    "スタンダード": "standard",
+    "スタンダードブロール": "standardbrawl",
+    "タイムレス": "timeless",
+    "ヴィンテージ": "vintage",
+    "プレDH": "predh",
+    # commander variants
+    "ハイランダー": "commander",  # highlander
+    "リヴァイアサン": "commander",  # leviathan
+    "タイニーリーダーズ": "commander",  # tiny leaders
+    "アーチエネミー": "commander",  # archenemy
+}
+
+
+class HareruyaArticleDeckTagParser(TagBasedDeckParser):
+    """Parser of deck tags embedded in (some) Hareruya articles.
+    """
+    def _parse_author_and_name(self, info_tag: Tag) -> None:
+        li_tags = [*info_tag.find_all("li")]
+        author_tag, name_tag = None, None
+        if len(li_tags) >= 2:
+            author_tag, name_tag, *_ = li_tags
+        elif len(li_tags) == 1:
+            author_tag, name_tag = li_tags[0], None
+        if author_tag:
+            self._metadata["author"] = author_tag.text.strip()
+        if name_tag:
+            self._metadata["name"] = name_tag.text.strip()
+
+    def _derive_fmt(self) -> None:
+        text = self._metadata.get("name", "") + self._metadata.get("event", {}).get("name", "")
+        if fmt := from_iterable(_FORMATS, lambda f: f in text):
+            self._update_fmt(_FORMATS[fmt])
+
+    @override
+    def _parse_metadata(self) -> None:
+        if caption_tag := self._deck_tag.find("div", class_="deck_caption"):
+            info_tags = [*caption_tag.find_all("ul", class_="deck_info")]
+            if len(info_tags) >= 2:
+                author_name_tag, event_tag, *_ = info_tags
+                self._parse_author_and_name(author_name_tag)
+                self._metadata.setdefault("event", {})["name"] = event_tag.text.strip()
+            elif len(info_tags) == 1:
+                self._parse_author_and_name(info_tags[0])
+        self._derive_fmt()
+
+    @override
+    def _parse_deck(self) -> None:
+        decklist_tag = get_next_sibling_tag(self._deck_tag)
+        if not decklist_tag or not decklist_tag.find("a"):
+            raise ParsingError("Decklist tag not available")
+        url = decklist_tag.find("a")["href"]
+        response = timed_request(url)
+        if not response:
+            raise ParsingError(f"Request for decklist tag's URL: {url!r} returned 'None'")
+        self._decklist = response.text
+
+
 # @DeckUrlsContainerScraper.registered
 class HareruyaArticleScraper(HybridContainerScraper):
     """Scraper of Hareruya article page.
     """
     CONTAINER_NAME = "Hareruya article"  # override
     JSON_BASED_DECK_PARSER = JapaneseHareruyaDeckJsonParser  # override
+    TAG_BASED_DECK_PARSER = HareruyaArticleDeckTagParser  # override
 
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
         url = url.lower()
         return is_in_domain_but_not_main(url, "article.hareruyamtg.com/article/") and not any(
-            t in url for t in ("/page/", "/author/"))
+            t in url for t in ("/page/", "/author/", "/category/", "/coverage/"))
 
     @staticmethod
     def _collect_deck_data(article_tag: Tag) -> Json:
         deck_data = []
-        for tag in article_tag.find_all("deck-embedder", deckid=True, token=True):
-            deck_id, token = tag.attrs["deckid"], tag.attrs["token"]
+        for tag in article_tag.find_all("deck-embedder", deckid=True):
+            deck_id, token = tag.attrs["deckid"], tag.attrs.get("token", "")
             data = request_json(
                 JapaneseHareruyaDeckScraper.API_URL_TEMPLATE.format(deck_id, token))
             if data:
                 deck_data.append(data)
         return deck_data
+
+    @staticmethod
+    def _collect_deck_tags(article_tag: Tag) -> list[Tag]:
+        return [*article_tag.find_all("div", class_="MediaDeckList")]
 
     @override
     def _collect(self) -> Collected:
@@ -308,7 +382,10 @@ class HareruyaArticleScraper(HybridContainerScraper):
             _log.warning(f"Scraping failed with: {err!r}")
             return [], [], [], []
         deck_data = self._collect_deck_data(article_tag)
+        deck_urls, container_urls = self._get_links_from_tags(article_tag, query_stripped=False)
         if deck_data:
-            return [], [], deck_data, []
-        deck_urls, container_urls = self._get_links_from_tags(article_tag)
+            return [], [], deck_data, container_urls
+        deck_tags = self._collect_deck_tags(article_tag)
+        if deck_tags:
+            return [], deck_tags, [], container_urls
         return deck_urls, [], [], container_urls
