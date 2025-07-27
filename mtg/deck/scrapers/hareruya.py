@@ -9,6 +9,7 @@
 """
 import logging
 from typing import override
+import urllib.parse
 
 import dateutil.parser
 from bs4 import NavigableString, Tag
@@ -316,7 +317,7 @@ class HareruyaArticleDeckTagParser(TagBasedDeckParser):
             self._metadata["name"] = name_tag.text.strip()
 
     def _derive_fmt(self) -> None:
-        text = self._metadata.get("name", "") + self._metadata.get("event", {}).get("name", "")
+        text = self._metadata.get("name", "") + self._metadata.get("event", "")
         if fmt := from_iterable(_FORMATS, lambda f: f in text):
             self._update_fmt(_FORMATS[fmt])
 
@@ -327,7 +328,7 @@ class HareruyaArticleDeckTagParser(TagBasedDeckParser):
             if len(info_tags) >= 2:
                 author_name_tag, event_tag, *_ = info_tags
                 self._parse_author_and_name(author_name_tag)
-                self._metadata.setdefault("event", {})["name"] = event_tag.text.strip()
+                self._metadata["event"] = event_tag.text.strip()
             elif len(info_tags) == 1:
                 self._parse_author_and_name(info_tags[0])
         self._derive_fmt()
@@ -337,11 +338,21 @@ class HareruyaArticleDeckTagParser(TagBasedDeckParser):
         decklist_tag = get_next_sibling_tag(self._deck_tag)
         if not decklist_tag or not decklist_tag.find("a"):
             raise ParsingError("Decklist tag not available")
-        url = decklist_tag.find("a")["href"]
-        response = timed_request(url)
-        if not response:
-            raise ParsingError(f"Request for decklist tag's URL: {url!r} returned 'None'")
-        self._decklist = response.text
+        # not so old pages (ca.2022) have a (English) text decklist under a link within the next
+        # sibling tag
+        if a_tag := decklist_tag.find("a", href=True):
+            url = a_tag.attrs["href"]
+            response = timed_request(url)
+            if not response:
+                raise ParsingError(f"Request for decklist tag's URL: {url!r} returned 'None'")
+            self._decklist = response.text
+        # older pages (ca. 2020) have a (Japanese) text decklist under a <textarea> tag within
+        # one more next sibling tag
+        else:
+            decklist_tag = get_next_sibling_tag(decklist_tag)
+            if not decklist_tag or not decklist_tag.find("textarea"):
+                raise ParsingError("Decklist tag not available")
+            self._decklist = decklist_tag.find("textarea").text.strip().replace("\r\n", "\n")
 
 
 # @DeckUrlsContainerScraper.registered
@@ -381,11 +392,44 @@ class HareruyaArticleScraper(HybridContainerScraper):
             err = ScrapingError("Article tag not found", scraper=type(self), url=self.url)
             _log.warning(f"Scraping failed with: {err!r}")
             return [], [], [], []
+        # only the newest pages have <deck-embedder> with deck IDs for API queries
         deck_data = self._collect_deck_data(article_tag)
         deck_urls, container_urls = self._get_links_from_tags(article_tag, query_stripped=False)
         if deck_data:
             return [], [], deck_data, container_urls
+        # older ones need a dedicated tag based parser
         deck_tags = self._collect_deck_tags(article_tag)
         if deck_tags:
             return [], deck_tags, [], container_urls
         return deck_urls, [], [], container_urls
+
+
+# @DeckScraper.registered
+class HareruyaArticleDeckScraper(DeckScraper):
+    """Scraper of Hareruya article page that points to an individual deck.
+    """
+    @staticmethod
+    @override
+    def is_valid_url(url: str) -> bool:
+        try:
+            return HareruyaArticleScraper.is_valid_url(url) and urllib.parse.urlsplit(url).fragment
+        except ValueError:
+            return False
+
+    @override
+    def _get_sub_parser(self) -> HareruyaArticleDeckTagParser:
+        did = urllib.parse.urlsplit(self.url).fragment
+        deck_tag = self._soup.find("div", class_="MediaDeckList",  id=did)
+        if deck_tag is None:
+            raise ScrapingError(
+                f"Decklist tag designated by {did!r} ID not found", scraper=type(self),
+                url=self.url)
+        return HareruyaArticleDeckTagParser(deck_tag)
+
+    @override
+    def _parse_metadata(self) -> None:
+        pass
+
+    @override
+    def _parse_deck(self) -> None:
+        pass

@@ -176,9 +176,9 @@ class MagicGgDeckScraper(DeckScraper):
         deck_tag = self._soup.find("div", id=self._decklist_id)
         if deck_tag is None:
             raise ScrapingError(
-                f"Deck designated by {self._decklist_id!r} data not found", scraper=type(self),
-                url=self.url)
-        return MagicGgOldDeckTagParser(deck_tag)
+                f"Decklist tag designated by {self._decklist_id!r} ID not found",
+                scraper=type(self), url=self.url)
+        return MagicGgOldDeckTagParser(deck_tag, self._metadata)
 
     @override
     def _parse_metadata(self) -> None:

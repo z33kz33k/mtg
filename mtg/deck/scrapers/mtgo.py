@@ -14,7 +14,6 @@ import dateutil.parser
 from bs4 import BeautifulSoup
 
 from mtg import Json, SECRETS
-from mtg.deck import Deck
 from mtg.deck.scrapers import DeckScraper, DecksJsonContainerScraper, JsonBasedDeckParser
 from mtg.scryfall import all_formats
 from mtg.utils import from_iterable, get_ordinal_suffix

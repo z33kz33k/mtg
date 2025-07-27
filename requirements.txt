@@ -10,6 +10,7 @@ lxml~=5.2.1
 pyperclip~=1.9.0
 python-dateutil~=2.9.0.post0
 pytubefix~=6.6.3
+regex~=2024.11.6
 requests~=2.31.0
 selenium~=4.23.1
 scrapetube~=2.5.1
