@@ -20,7 +20,7 @@ from decimal import Decimal
 from functools import cached_property
 from http.client import RemoteDisconnected
 from pathlib import Path
-from typing import Callable, Generator, Type
+from typing import Callable, Generator
 
 import backoff
 import httpcore
@@ -44,8 +44,8 @@ from mtg.gstate import CoolOffManager, DecklistsStateManager, UrlsStateManager
 from mtg.scryfall import all_formats
 from mtg.utils import extract_float, find_longest_seqs, \
     from_iterable, getrepr, logging_disabled, multiply_by_symbol, timed
-from mtg.utils.json import deserialize_dates, serialize_dates
 from mtg.utils.files import getdir, sanitize_filename
+from mtg.utils.json import deserialize_dates, serialize_dates
 from mtg.utils.scrape import ScrapingError, dissect_js, extract_source, extract_url, \
     http_requests_counted, throttled, timed_request, unshorten
 from mtg.utils.scrape.dynamic import get_dynamic_soup
@@ -367,7 +367,7 @@ def scrape_all(videos=50, only_newer_than_last_scraped=True) -> None:
         videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
 
 
-# TODO: async
+# TODO: async, Dropbox (#376)
 class LinksExpander:
     """Expand links to prospective pages into lines eligible for deck-processing.
 

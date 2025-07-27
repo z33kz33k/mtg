@@ -1085,7 +1085,7 @@ class DeckParser(ABC):
         processed = []
         match deck_tags:
             case [*tags] if all(isinstance(t, str) for t in tags):
-                return [t.lower() for t in tags]
+                return sorted({t.lower() for t in tags})
             case [*tags] if all(isinstance(t, dict) for t in tags):
                 for tag in tags:
                     match tag:
@@ -1108,7 +1108,7 @@ class DeckParser(ABC):
             case _:
                 _log.warning(f"Unexpected format of deck metadata tags: {deck_tags!r}")
 
-        return processed
+        return sorted(set(processed))
 
     @staticmethod
     def derive_format_from_words(*words: str) -> str | None:
@@ -1118,9 +1118,9 @@ class DeckParser(ABC):
         return from_iterable(all_formats(), lambda w: w in words)
 
     @staticmethod
-    def derive_format_from_text(text: str) -> str | None:
+    def derive_format_from_text(text: str, *fmt_words: str) -> str | None:
         counts, text = [], text.lower()
-        for fmt_word in [*all_formats(), *SANITIZED_FORMATS]:
+        for fmt_word in [*all_formats(), *SANITIZED_FORMATS, *fmt_words]:
             count = text.count(fmt_word)
             if count:
                 counts.append((fmt_word, count))

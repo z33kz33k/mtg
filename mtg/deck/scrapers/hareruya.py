@@ -8,18 +8,19 @@
 
 """
 import logging
-from typing import override
 import urllib.parse
+from typing import override
 
 import dateutil.parser
-from bs4 import NavigableString, Tag
+from bs4 import BeautifulSoup, NavigableString, Tag
 
 from mtg import HybridContainerScraper, Json, SECRETS
 from mtg.deck.scrapers import Collected, DeckScraper, DeckUrlsContainerScraper, JsonBasedDeckParser, \
     TagBasedDeckParser, is_in_domain_but_not_main
 from mtg.deck.scrapers.goldfish import HEADERS as GOLDFISH_HEADERS
-from mtg.utils import ParsingError, from_iterable
-from mtg.utils.scrape import ScrapingError, get_next_sibling_tag, request_json, timed_request
+from mtg.utils import ParsingError
+from mtg.utils.scrape import ScrapingError, get_next_sibling_tag, request_json, strip_url_query, \
+    timed_request
 
 _log = logging.getLogger(__name__)
 
@@ -318,8 +319,16 @@ class HareruyaArticleDeckTagParser(TagBasedDeckParser):
 
     def _derive_fmt(self) -> None:
         text = self._metadata.get("name", "") + self._metadata.get("event", "")
-        if fmt := from_iterable(_FORMATS, lambda f: f in text):
-            self._update_fmt(_FORMATS[fmt])
+        if fmt := self.derive_format_from_text(text, *_FORMATS):
+            fmt = _FORMATS[fmt] if fmt in _FORMATS else fmt
+            self._update_fmt(fmt)
+        else:
+            text = self._metadata.get("article", {}).get("title", "")
+            for t in self._metadata.get("article", {}).get("tags", []):
+                text += t
+            if fmt := self.derive_format_from_text(text, *_FORMATS):
+                fmt = _FORMATS[fmt] if fmt in _FORMATS else fmt
+                self._update_fmt(fmt)
 
     @override
     def _parse_metadata(self) -> None:
@@ -355,7 +364,25 @@ class HareruyaArticleDeckTagParser(TagBasedDeckParser):
             self._decklist = decklist_tag.find("textarea").text.strip().replace("\r\n", "\n")
 
 
-# @DeckUrlsContainerScraper.registered
+def _get_article_metadata(article_soup: BeautifulSoup) -> Json:
+    metadata = {"article": {}}
+    time_tag = article_soup.find("time", datetime=True)
+    metadata["article"]["date"] = dateutil.parser.parse(time_tag["datetime"]).date()
+    title_tag = article_soup.find("h1", class_="article-content__head__info__title")
+    metadata["article"]["title"] = title_tag.text.strip()
+    author_tag = article_soup.find("p", class_="article-content__head__info__auth")
+    metadata["article"]["author"] = author_tag.text.strip()
+    cat_tags = article_soup.select("p.article-content__head__info__category")
+    tag_tags = [
+        t for t in article_soup.select('a[href*="/article/tag/"]')
+        if t.attrs.get("rel") == ["tag"]]
+    tags = DeckScraper.process_metadata_deck_tags([t.text.strip() for t in [*cat_tags, *tag_tags]])
+    if tags:
+        metadata["article"]["tags"] = tags
+    return metadata
+
+
+@DeckUrlsContainerScraper.registered
 class HareruyaArticleScraper(HybridContainerScraper):
     """Scraper of Hareruya article page.
     """
@@ -366,9 +393,16 @@ class HareruyaArticleScraper(HybridContainerScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        url = url.lower()
-        return is_in_domain_but_not_main(url, "article.hareruyamtg.com/article/") and not any(
-            t in url for t in ("/page/", "/author/", "/category/", "/coverage/"))
+        url = strip_url_query(url).lower()
+        try:
+            return (is_in_domain_but_not_main(url, "article.hareruyamtg.com/article/")
+                    and not any(t in url for t in ("/page/", "/author/", "/category/", "/coverage/"))
+                    and not urllib.parse.urlsplit(url).fragment)
+        except ValueError:
+            return False
+
+    def _parse_metadata(self) -> None:
+        self.update_metadata(**_get_article_metadata(self._soup))
 
     @staticmethod
     def _collect_deck_data(article_tag: Tag) -> Json:
@@ -392,7 +426,8 @@ class HareruyaArticleScraper(HybridContainerScraper):
             err = ScrapingError("Article tag not found", scraper=type(self), url=self.url)
             _log.warning(f"Scraping failed with: {err!r}")
             return [], [], [], []
-        # only the newest pages have <deck-embedder> with deck IDs for API queries
+        # only the newest pages have <deck-embedder> tags with deck IDs that facilitates JSON
+        # based parsing with API queries
         deck_data = self._collect_deck_data(article_tag)
         deck_urls, container_urls = self._get_links_from_tags(article_tag, query_stripped=False)
         if deck_data:
@@ -404,7 +439,7 @@ class HareruyaArticleScraper(HybridContainerScraper):
         return deck_urls, [], [], container_urls
 
 
-# @DeckScraper.registered
+@DeckScraper.registered
 class HareruyaArticleDeckScraper(DeckScraper):
     """Scraper of Hareruya article page that points to an individual deck.
     """
@@ -424,11 +459,11 @@ class HareruyaArticleDeckScraper(DeckScraper):
             raise ScrapingError(
                 f"Decklist tag designated by {did!r} ID not found", scraper=type(self),
                 url=self.url)
-        return HareruyaArticleDeckTagParser(deck_tag)
+        return HareruyaArticleDeckTagParser(deck_tag, self._metadata)
 
     @override
     def _parse_metadata(self) -> None:
-        pass
+        self.update_metadata(**_get_article_metadata(self._soup))
 
     @override
     def _parse_deck(self) -> None:

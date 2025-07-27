@@ -12,17 +12,14 @@ import regex as re
 from typing import Generator, override
 
 
-
 from mtg import Json
 from mtg.deck import ARENA_MULTIFACE_SEPARATOR, CardNotFound, DeckParser
 from mtg.scryfall import COMMANDER_FORMATS, Card, \
-    MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, \
-    query_api_for_card
+    MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, query_api_for_card
 from mtg.utils import ParsingError, extract_int, getrepr, sanitize_whitespace, is_foreign
 
 _log = logging.getLogger(__name__)
 
-_log = logging.getLogger(__name__)
 
 # define the first character class for card names:
 # uppercase Latin, underscore, double-quote, or Japanese character
@@ -30,8 +27,10 @@ _FIRST_CHAR = r'[\p{Lu}_"\p{Han}\p{Hiragana}\p{Katakana}]'
 # the rest: word, whitespace, punctuation, or Japanese scripts
 _REST_CHARS = r'[\w\s\'"&/,.!:_\-{}\(\)\[\]\u3000-\u303F\p{Han}\p{Hiragana}\p{Katakana}]*'
 
+
 class PlaysetLine:
-    """A line of text in MtG Arena decklist format that denotes a card playset."""
+    """A line of text in MtG Arena decklist format that denotes a card playset.
+    """
 
     # Regular: '4 トリックスター、ザレス・サン'
     PATTERN = re.compile(
