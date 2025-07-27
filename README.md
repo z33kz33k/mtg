@@ -111,7 +111,7 @@ YT videos descriptions).
         * [EDHTop16](https://edhtop16.com) tournaments and commanders
         * Flexslot users
         * Goldfish tournaments, players and articles
-        * Hareruya events and players
+        * Hareruya events, players and articles
         * LigaMagic events _(with caveats)_
         * MagicVille events and users
         * ManaStack users
@@ -141,7 +141,7 @@ YT videos descriptions).
         * TopDeck.gg brackets and profiles
         * Untapped profiles
         * [WotC (official MTG site)](https://magic.wizards.com/en) articles
-    * 88 container pages in total with 28 more in plans
+    * 89 container pages in total with 27 more in plans
 * Assessing the meta:
     * Goldfish
     * MGTAZone 
