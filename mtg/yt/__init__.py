@@ -744,6 +744,7 @@ class Video:
             self._pytube = self._get_pytube_with_backoff()
         # description and title is also available in scrapetube data on Channel level
         self._author, self._description, self._title = None, None, None
+        self._comment = None
         self._keywords, self._publish_time, self._views = None, None, None
         self._sources = set()
         self._scrape()
@@ -760,6 +761,8 @@ class Video:
             if comment_lines:
                 links, lines = self._parse_lines(*comment_lines)
                 self._decks = self._collect(links, get_arena_lines(*lines))
+                if self._decks:
+                    self._comment = "\n".join(comment_lines)
         self._cooloff_manager.bump_decks(len(self.decks))
 
     def __repr__(self) -> str:
@@ -1003,6 +1006,8 @@ class Video:
             "sources": self.sources,
             "decks": [json.loads(d.json, object_hook=deserialize_dates) for d in self.decks],
         }
+        if self._comment:
+            data["comment"] = self._comment
         return json.dumps(data, indent=4, ensure_ascii=False, default=serialize_dates)
 
     def dump(self, dstdir: PathLike = "", filename="") -> None:

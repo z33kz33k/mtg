@@ -23,7 +23,7 @@ from typing import Callable, Generator, Iterator, Literal, Self, Type
 from tqdm import tqdm
 from youtubesearchpython import CustomSearch, VideoSortOrder, VideoUploadDateFilter
 
-from mtg import AVOIDED_DIR, DECKS_DIR, FILENAME_TIMESTAMP_FORMAT, PathLike, \
+from mtg import AVOIDED_DIR, DECKS_DIR, FILENAME_TIMESTAMP_FORMAT, Json, PathLike, \
     READABLE_TIMESTAMP_FORMAT, README
 from mtg.deck.arena import ArenaParser
 from mtg.deck.export import Exporter, sanitize_source, FORMATS as EXPORT_FORMATS
@@ -655,8 +655,11 @@ def get_channel_ids(*urls: str, only_new=True) -> list[str]:
     return ids
 
 
-def extract_urls(description: str) -> list[str]:
-    lines = description.splitlines()
+def extract_urls_from_video_data(video_data: Json) -> list[str]:
+    text = video_data["title"] + "\n" + video_data["description"]
+    if comment := video_data.get("comment"):
+        text += f"\n{comment}"
+    lines = text.splitlines()
     return [url for url in [extract_url(l) for l in lines] if url]
 
 
