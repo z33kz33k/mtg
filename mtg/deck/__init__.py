@@ -1128,6 +1128,6 @@ class DeckParser(ABC):
             return None
         counts.sort(key=itemgetter(1), reverse=True)
         fmt = counts[0][0]
-        if len(counts) >= 2 and counts[0][1] == counts[1][1]:
+        if len(counts) >= 2 and counts[0][1] == counts[1][1]:  # FIXME: #391
             return None  # no clear winner
         return SANITIZED_FORMATS.get(fmt, fmt)

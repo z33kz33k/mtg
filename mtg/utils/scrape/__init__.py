@@ -362,28 +362,29 @@ def strip_url_query(url: str, keep_fragment=False) -> str:
     return stripped_url.removesuffix("/")
 
 
-def trim_url(url: str, level=0, keep_scheme=False) -> str:
-    """Trim URL to domain (level=0) or any subfolders after it (level>0).
+def get_query_values(url: str, param: str) -> list[str]:
+    """Return query parameter values from supplied URL. If URL is invalid, or on any other failure,
+    return an empty list.
     """
-    if not "/" in url:
-        return url
-    if url.startswith("https://"):
-        scheme = "https://"
-    elif url.startswith("http://"):
-        scheme = "http://"
-    else:
-        scheme = ""
-    url = url.removeprefix("https://").removeprefix("http://").removesuffix("/")
-    parts = url.split("/")
-    trimmed, *rest = parts
-    if not rest:
-        return scheme + trimmed if keep_scheme else trimmed
-    while rest and level > 0:
-        if "(" in rest:
-            return trimmed + "/" + rest
-        trimmed += "/" + rest.pop(0)
-        level -= 1
-    return scheme + trimmed if keep_scheme else trimmed
+    try:
+        query = urllib.parse.urlsplit(url).query
+    except ValueError:
+        return []
+    return urllib.parse.parse_qs(query).get(param, []) if query else []
+
+
+def get_path_segments(url: str) -> list[str]:
+    """Return path segments from supplied URL.
+
+    E.g. supplying 'https://www.hareruyamtg.com/decks/1043414?utm_source=video' results in:
+        ["decks", "1043414"]
+        and supplying 'https://www.hareruyamtg.com' or 'https://www.hareruyamtg.com' results in: []
+    """
+    try:
+        path = urllib.parse.urlsplit(url).path.strip("/")
+    except ValueError:
+        return []
+    return path.split("/") if path else []
 
 
 def url_decode(encoded: str) -> str:

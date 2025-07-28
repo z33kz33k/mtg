@@ -19,8 +19,8 @@ from mtg.deck.scrapers import Collected, DeckScraper, DeckUrlsContainerScraper, 
     TagBasedDeckParser, is_in_domain_but_not_main
 from mtg.deck.scrapers.goldfish import HEADERS as GOLDFISH_HEADERS
 from mtg.utils import ParsingError
-from mtg.utils.scrape import ScrapingError, get_next_sibling_tag, request_json, strip_url_query, \
-    timed_request
+from mtg.utils.scrape import ScrapingError, get_next_sibling_tag, get_path_segments, \
+    get_query_values, request_json, strip_url_query, timed_request
 
 _log = logging.getLogger(__name__)
 
@@ -56,6 +56,8 @@ class InternationalHareruyaDeckScraper(DeckScraper):
     @override
     def _parse_metadata(self) -> None:
         info_tag = self._soup.find("div", class_="deckSearch-deckList__information__flex")
+        if not info_tag:
+            raise ScrapingError("Info <div> tag not available", type(self), self.url)
         for ul_tag in info_tag.find_all("ul"):
             li_tags = ul_tag.find_all("li")
             if len(li_tags) != 2:
@@ -120,8 +122,10 @@ class JapaneseHareruyaDeckJsonParser(JsonBasedDeckParser):
     def _parse_metadata(self) -> None:
         fmt = self._deck_data["format_name_en"]
         self._update_fmt(fmt)
-        self._metadata["name"] = self._deck_data["deck_name"]
-        self._metadata["author"] = self._deck_data["nickname"]
+        if name := self._deck_data.get("deck_name"):
+            self._metadata["name"] = name
+        if author := self._deck_data.get("nickname", self._deck_data.get("player_name", "")):
+            self._metadata["author"] = author
         if arch := self._deck_data.get("archetype_name_en"):
             self._update_archetype_or_theme(arch)
         self._metadata["deck_type"] = self._deck_data["deck_type"]
@@ -183,11 +187,12 @@ class JapaneseHareruyaDeckScraper(DeckScraper):
 
     @override
     def _get_data_from_api(self) -> Json:
-        if "?display_token=" in self.url:
-            rest, display_token = self.url.rsplit("?display_token=", maxsplit=1)
-        else:
-            rest, display_token = self.url, ""
-        *_, decklist_id = rest.split("/")
+        display_token_values = get_query_values(self.url, "display_token")
+        display_token = display_token_values[0] if display_token_values else ""
+        segments = get_path_segments(self.url)
+        if not segments:
+            raise ScrapingError(f"Unable to parse path segments from URL", type(self), self.url)
+        decklist_id = segments[-1]
         if not decklist_id or not all(ch.isdigit() for ch in decklist_id):
             raise ScrapingError(
                 f"Decklist ID needs to be a number, got: {decklist_id!r}", type(self), self.url)
@@ -269,6 +274,7 @@ class HareruyaPlayerScraper(DeckUrlsContainerScraper):
             "a", class_="deckSearch-searchResult__itemWrapper")]
 
 
+# TODO: merge with mtg.deck.SANITIZED_FORMATS (#391)
 _FORMATS = {
     "アルケミー": "alchemy",
     "ブロール": "brawl",
@@ -315,8 +321,9 @@ class HareruyaArticleDeckTagParser(TagBasedDeckParser):
         if author_tag:
             self._metadata["author"] = author_tag.text.strip()
         if name_tag:
-            self._metadata["name"] = name_tag.text.strip()
+            self._metadata["name"] = name_tag.text.strip().removeprefix("– ")
 
+    # TODO: #391
     def _derive_fmt(self) -> None:
         text = self._metadata.get("name", "") + self._metadata.get("event", "")
         if fmt := self.derive_format_from_text(text, *_FORMATS):
@@ -342,26 +349,35 @@ class HareruyaArticleDeckTagParser(TagBasedDeckParser):
                 self._parse_author_and_name(info_tags[0])
         self._derive_fmt()
 
+    def _parse_decklist_from_link(self, a_tag: Tag) -> None:
+        url = a_tag.attrs["href"]
+        response = timed_request(url)
+        if not response:
+            raise ParsingError(f"Request for decklist tag's URL: {url!r} returned 'None'")
+        self._decklist = response.text
+
     @override
     def _parse_deck(self) -> None:
         decklist_tag = get_next_sibling_tag(self._deck_tag)
-        if not decklist_tag or not decklist_tag.find("a"):
+        if not decklist_tag:
             raise ParsingError("Decklist tag not available")
         # not so old pages (ca.2022) have a (English) text decklist under a link within the next
         # sibling tag
         if a_tag := decklist_tag.find("a", href=True):
-            url = a_tag.attrs["href"]
-            response = timed_request(url)
-            if not response:
-                raise ParsingError(f"Request for decklist tag's URL: {url!r} returned 'None'")
-            self._decklist = response.text
+            self._parse_decklist_from_link(a_tag)
         # older pages (ca. 2020) have a (Japanese) text decklist under a <textarea> tag within
         # one more next sibling tag
         else:
             decklist_tag = get_next_sibling_tag(decklist_tag)
-            if not decklist_tag or not decklist_tag.find("textarea"):
+            if not decklist_tag:
                 raise ParsingError("Decklist tag not available")
-            self._decklist = decklist_tag.find("textarea").text.strip().replace("\r\n", "\n")
+            if textarea_tag := decklist_tag.find("textarea"):
+                self._decklist = textarea_tag.text.strip().replace("\r\n", "\n")
+            # even older pages (ca. 2019) have no text decklist anywhere and need dedicated
+            # scraping from card tags
+            else:
+                # TODO (#392)
+                raise ParsingError("Decklist format not supported")
 
 
 def _get_article_metadata(article_soup: BeautifulSoup) -> Json:
