@@ -18,7 +18,7 @@ from mtg import HybridContainerScraper, Json, SECRETS
 from mtg.deck.scrapers import Collected, DeckScraper, DeckUrlsContainerScraper, JsonBasedDeckParser, \
     TagBasedDeckParser, is_in_domain_but_not_main
 from mtg.deck.scrapers.goldfish import HEADERS as GOLDFISH_HEADERS
-from mtg.utils import ParsingError
+from mtg.utils import ParsingError, extract_int
 from mtg.utils.scrape import ScrapingError, get_next_sibling_tag, get_path_segments, \
     get_query_values, request_json, strip_url_query, timed_request
 
@@ -81,6 +81,10 @@ class InternationalHareruyaDeckScraper(DeckScraper):
         if not self._metadata.get("name") and self._metadata.get("hareruya_archetype"):
             self._metadata["name"] = self._metadata["hareruya_archetype"]
 
+    @staticmethod
+    def parse_card_name(card_tag: Tag) -> str:
+        return card_tag.text.strip().strip("《》")
+
     @override
     def _parse_deck(self) -> None:
         main_tag = self._soup.find("div", class_="deckSearch-deckList__deckList__wrapper")
@@ -101,7 +105,7 @@ class InternationalHareruyaDeckScraper(DeckScraper):
                 name_tag = sub_tag.find("a", class_="popup_product")
                 if not name_tag:
                     continue
-                name = name_tag.text.strip().strip("《》")
+                name = self.parse_card_name(name_tag)
                 qty_tag = sub_tag.find("span")
                 if not qty_tag:
                     continue
@@ -356,6 +360,43 @@ class HareruyaArticleDeckTagParser(TagBasedDeckParser):
             raise ParsingError(f"Request for decklist tag's URL: {url!r} returned 'None'")
         self._decklist = response.text
 
+    def _parse_deck_from_card_tags(self) -> None:
+        col_tags = self._deck_tag.select("div.MediaDeckListColumn")
+        for col_tag in col_tags:
+            qty, card, section = None, None, None
+            for item in col_tag:
+                if isinstance(item, NavigableString):
+                    try:
+                        qty = extract_int(item.text)
+                    except ValueError:
+                        continue
+                elif isinstance(item, Tag) and item.name == "span" and item.has_attr("class"):
+                    if item["class"] == ["cardLink"]:
+                        name = InternationalHareruyaDeckScraper.parse_card_name(item)
+                        self._maindeck += self.get_playset(self.find_card(name), qty)
+                        qty, name = None, None
+                    elif item["class"] == ["media_red"]:
+                        qty = extract_int(item.text)
+                    elif item["class"] == ["MediaDeckList_count"]:
+                        card_count = extract_int(item.text)
+                        if any(t in item.text for t in ("統率者", "コマンダー", "Commander")):
+                            commander_cards = []
+                            for i in range(card_count):
+                                commander_cards.append(self._maindeck.pop())
+                            for cc in commander_cards[::-1]:
+                                self._set_commander(cc)
+                        elif "Sideboard" in item.text or "サイドボード" in item.text:
+                            sideboard_cards = []
+                            for i in range(card_count):
+                                sideboard_cards.append(self._maindeck.pop())
+                            self._sideboard = sideboard_cards[::-1]
+                # part of "media_red" case
+                elif isinstance(item, Tag) and item.name == "a" and item.attrs.get(
+                        "class") == ["popup_product"]:
+                    name = InternationalHareruyaDeckScraper.parse_card_name(item)
+                    self._maindeck += self.get_playset(self.find_card(name), qty)
+                    qty, name = None, None
+
     @override
     def _parse_deck(self) -> None:
         decklist_tag = get_next_sibling_tag(self._deck_tag)
@@ -376,8 +417,7 @@ class HareruyaArticleDeckTagParser(TagBasedDeckParser):
             # even older pages (ca. 2019) have no text decklist anywhere and need dedicated
             # scraping from card tags
             else:
-                # TODO (#392)
-                raise ParsingError("Decklist format not supported")
+                self._parse_deck_from_card_tags()
 
 
 def _get_article_metadata(article_soup: BeautifulSoup) -> Json:
@@ -401,6 +441,17 @@ def _get_article_metadata(article_soup: BeautifulSoup) -> Json:
 @DeckUrlsContainerScraper.registered
 class HareruyaArticleScraper(HybridContainerScraper):
     """Scraper of Hareruya article page.
+
+    There are 4 types of article decklists pages' formats (ordered chronologically from newest to
+    oldest):
+    1. https://article.hareruyamtg.com/article/72794/?lang=en
+        or https://article.hareruyamtg.com/article/84119/ (<deck-embedder> tags with deck ID
+        data that enables API queries for JSON deck data)
+    2. https://article.hareruyamtg.com/article/60476/?lang=en (text decklist links along deck tags)
+    3. https://article.hareruyamtg.com/article/44666/ (text decklists in <textarea> tags along
+        deck tags)
+    4. https://article.hareruyamtg.com/article/21533/?lang=en (only deck tags without any
+        means to scrape text decklist)
     """
     CONTAINER_NAME = "Hareruya article"  # override
     JSON_BASED_DECK_PARSER = JapaneseHareruyaDeckJsonParser  # override
