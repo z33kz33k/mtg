@@ -538,3 +538,23 @@ class HareruyaArticleDeckScraper(DeckScraper):
     @override
     def _parse_deck(self) -> None:
         pass
+
+
+@HybridContainerScraper.registered
+class HareruyaAuthorScraper(HybridContainerScraper):
+    """Scraper of Hareruya author page.
+    """
+    CONTAINER_NAME = "Hareruya author"  # override
+    CONTAINER_SCRAPERS = HareruyaArticleScraper,  # override
+    CONTAINER_URL_PREFIX = "https://article.hareruyamtg.com"
+
+    @staticmethod
+    @override
+    def is_valid_url(url: str) -> bool:
+        return "article.hareruyamtg.com/article/author/" in url.lower()
+
+    @override
+    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
+        a_tags = self._soup.select("article > a")
+        return [], [], [], [
+            t["href"] for t in a_tags if t.has_attr("href") and t["href"].startswith("/article/")]
