@@ -237,8 +237,6 @@ HEADERS = {
 }
 
 
-# TODO: check if those still work (with HEADERS (as nothing other than events and players (
-#  seemingly works with them))
 @DeckUrlsContainerScraper.registered
 class HareruyaEventScraper(DeckUrlsContainerScraper):
     """Scraper of Hareruya event decks search page.
@@ -278,40 +276,6 @@ class HareruyaPlayerScraper(DeckUrlsContainerScraper):
             "a", class_="deckSearch-searchResult__itemWrapper")]
 
 
-# TODO: merge with mtg.deck.SANITIZED_FORMATS (#391)
-_FORMATS = {
-    "アルケミー": "alchemy",
-    "ブロール": "brawl",
-    "統率者": "commander",
-    "コマンダー": "commander",
-    "デュエル": "duel",
-    "エクスプローラー": "explorer",
-    "フューチャースタンダード": "future",
-    "グラディエーター": "gladiator",
-    "ヒストリック": "historic",
-    "レガシー": "legacy",
-    "モダン": "modern",
-    "オースブレイカー": "oathbreaker",
-    "オールドスクール": "oldschool",
-    "パウパー": "pauper",
-    "パウパー統率者": "paupercommander",
-    "パウパーコマンダー": "paupercommander",
-    "ペニードレッドフル": "penny",
-    "パイオニア": "pioneer",
-    "プレモダン": "premodern",
-    "スタンダード": "standard",
-    "スタンダードブロール": "standardbrawl",
-    "タイムレス": "timeless",
-    "ヴィンテージ": "vintage",
-    "プレDH": "predh",
-    # commander variants
-    "ハイランダー": "commander",  # highlander
-    "リヴァイアサン": "commander",  # leviathan
-    "タイニーリーダーズ": "commander",  # tiny leaders
-    "アーチエネミー": "commander",  # archenemy
-}
-
-
 class HareruyaArticleDeckTagParser(TagBasedDeckParser):
     """Parser of deck tags embedded in (some) Hareruya articles.
     """
@@ -327,18 +291,15 @@ class HareruyaArticleDeckTagParser(TagBasedDeckParser):
         if name_tag:
             self._metadata["name"] = name_tag.text.strip().removeprefix("– ")
 
-    # TODO: #391
     def _derive_fmt(self) -> None:
         text = self._metadata.get("name", "") + self._metadata.get("event", "")
-        if fmt := self.derive_format_from_text(text, *_FORMATS):
-            fmt = _FORMATS[fmt] if fmt in _FORMATS else fmt
+        if fmt := self.derive_format_from_text(text, use_japanese=True):
             self._update_fmt(fmt)
         else:
             text = self._metadata.get("article", {}).get("title", "")
             for t in self._metadata.get("article", {}).get("tags", []):
                 text += t
-            if fmt := self.derive_format_from_text(text, *_FORMATS):
-                fmt = _FORMATS[fmt] if fmt in _FORMATS else fmt
+            if fmt := self.derive_format_from_text(text, use_japanese=True):
                 self._update_fmt(fmt)
 
     @override

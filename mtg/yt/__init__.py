@@ -59,6 +59,7 @@ _log = logging.getLogger(__name__)
 
 GOOGLE_API_KEY = SECRETS["google"]["api_key"]  # not used anywhere
 DEAD_THRESHOLD = 2000  # days (ca. 5.5 yrs) - only used in gsheet to trim dead from abandoned
+VIDEOS_COUNT = 100  # default max number of videos to scrape on regular basis
 
 
 def back_up_channel_files(chid: str, *files: PathLike) -> None:
@@ -203,7 +204,7 @@ def scrape_channels(
 
 
 def scrape_fresh(
-        videos=50, only_newer_than_last_scraped=True, only_deck_fresh=True) -> None:
+        videos=VIDEOS_COUNT, only_newer_than_last_scraped=True, only_deck_fresh=True) -> None:
     """Scrape those YouTube channels saved in a private Google Sheet that are not active,
     dormant nor abandoned.
     """
@@ -227,7 +228,7 @@ def scrape_fresh(
 
 
 def scrape_active(
-        videos=50, only_newer_than_last_scraped=True, only_deck_fresh=True) -> None:
+        videos=VIDEOS_COUNT, only_newer_than_last_scraped=True, only_deck_fresh=True) -> None:
     """Scrape those YouTube channels saved in a private Google Sheet that are active.
     """
     ids, retrieved = [], retrieve_ids()
@@ -248,7 +249,7 @@ def scrape_active(
 
 
 def scrape_dormant(
-        videos=50, only_newer_than_last_scraped=True, only_deck_fresh=True) -> None:
+        videos=VIDEOS_COUNT, only_newer_than_last_scraped=True, only_deck_fresh=True) -> None:
     """Scrape those YouTube channels saved in a private Google Sheet that are dormant.
     """
     ids, retrieved = [], retrieve_ids()
@@ -269,7 +270,7 @@ def scrape_dormant(
 
 
 def scrape_abandoned(
-        videos=50, only_newer_than_last_scraped=True, only_deck_fresh=True) -> None:
+        videos=VIDEOS_COUNT, only_newer_than_last_scraped=True, only_deck_fresh=True) -> None:
     """Scrape those YouTube channels saved in a private Google Sheet that are abandoned.
     """
     ids, retrieved = [], retrieve_ids()
@@ -290,7 +291,7 @@ def scrape_abandoned(
 
 
 def scrape_deck_stale(
-        videos=50, only_newer_than_last_scraped=True, only_fresh_or_active=True) -> None:
+        videos=VIDEOS_COUNT, only_newer_than_last_scraped=True, only_fresh_or_active=True) -> None:
     """Scrape those YouTube channels saved in a private Google Sheet that are considered
     deck-stale.
     """
@@ -312,7 +313,7 @@ def scrape_deck_stale(
 
 
 def scrape_very_deck_stale(
-        videos=50, only_newer_than_last_scraped=True, only_fresh_or_active=True) -> None:
+        videos=VIDEOS_COUNT, only_newer_than_last_scraped=True, only_fresh_or_active=True) -> None:
     """Scrape those YouTube channels saved in a private Google Sheet that are considered
     very deck-stale.
     """
@@ -334,7 +335,7 @@ def scrape_very_deck_stale(
 
 
 def scrape_excessively_deck_stale(
-        videos=50, only_newer_than_last_scraped=True, only_fresh_or_active=True) -> None:
+        videos=VIDEOS_COUNT, only_newer_than_last_scraped=True, only_fresh_or_active=True) -> None:
     """Scrape those YouTube channels saved in a private Google Sheet that are considered
     excessively deck-stale.
     """
@@ -356,7 +357,7 @@ def scrape_excessively_deck_stale(
         *ids, videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
 
 
-def scrape_all(videos=50, only_newer_than_last_scraped=True) -> None:
+def scrape_all(videos=VIDEOS_COUNT, only_newer_than_last_scraped=True) -> None:
     scrape_fresh(videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
     scrape_active(videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
     scrape_dormant(videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
@@ -827,10 +828,10 @@ class Video:
     def _derive_format(self) -> str | None:
         # first, check the keywords
         if self.keywords:
-            if fmt := DeckParser.derive_format_from_words(*self.keywords):
+            if fmt := DeckParser.derive_format_from_words(*self.keywords, use_japanese=True):
                 return fmt
         # then the title and description
-        return DeckParser.derive_format_from_text(self.title + self.description)
+        return DeckParser.derive_format_from_text(self.title + self.description, use_japanese=True)
 
     def _derive_name(self) -> str | None:
         if not self.keywords:

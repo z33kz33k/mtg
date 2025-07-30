@@ -9,6 +9,7 @@
 """
 import logging
 from abc import abstractmethod
+from dataclasses import dataclass
 from typing import Self, Type
 from typing import override
 
@@ -50,6 +51,21 @@ def is_in_domain_but_not_main(url: str, domain: str, lower=True) -> bool:
     if not rest:
         return False  # the domain exactly
     return True
+
+
+@dataclass
+class UrlHook:
+    """Encapsulate data needed for discovering new YT deck-featuring channels with queries to
+    Google servers.
+
+        positives - positive elements of a query, e .g. "mtg" and  "decklist" in "mtg decklist"
+        negatives - negative elements of a query, e.g. "-fab" and "-yugioh" in "mtg decklist -fab -yugioh"
+        limit - default results limit for the issued query (default limit maybe too low for a
+                popular site like Archidekt or Goldfish, this needs to be estimated after testing)
+    """
+    positives: tuple[str, ...]
+    negatives: tuple[str, ...]
+    limit: int = 100
 
 
 class TagBasedDeckParser(DeckParser):

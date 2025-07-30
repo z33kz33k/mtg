@@ -919,6 +919,37 @@ SANITIZED_FORMATS = {
     "standard brawl": "standardbrawl",
     "vintage old school": "oldschool",
 }
+JAPANESE_FORMATS = {
+    "アルケミー": "alchemy",
+    "ブロール": "brawl",
+    "統率者": "commander",
+    "コマンダー": "commander",
+    "デュエル": "duel",
+    "エクスプローラー": "explorer",
+    "フューチャースタンダード": "future",
+    "グラディエーター": "gladiator",
+    "ヒストリック": "historic",
+    "レガシー": "legacy",
+    "モダン": "modern",
+    "オースブレイカー": "oathbreaker",
+    "オールドスクール": "oldschool",
+    "パウパー": "pauper",
+    "パウパー統率者": "paupercommander",
+    "パウパーコマンダー": "paupercommander",
+    "ペニードレッドフル": "penny",
+    "パイオニア": "pioneer",
+    "プレモダン": "premodern",
+    "スタンダード": "standard",
+    "スタンダードブロール": "standardbrawl",
+    "タイムレス": "timeless",
+    "ヴィンテージ": "vintage",
+    "プレDH": "predh",
+    # commander variants
+    "ハイランダー": "commander",  # highlander
+    "リヴァイアサン": "commander",  # leviathan
+    "タイニーリーダーズ": "commander",  # tiny leaders
+    "アーチエネミー": "commander",  # archenemy
+}
 
 
 class DeckParser(ABC):
@@ -1111,23 +1142,26 @@ class DeckParser(ABC):
         return sorted(set(processed))
 
     @staticmethod
-    def derive_format_from_words(*words: str) -> str | None:
+    def derive_format_from_words(*words: str, use_japanese=False) -> str | None:
         words = {w.lower() for w in words}
-        if sanitized_fmt := from_iterable(SANITIZED_FORMATS, lambda k: k in words):
-            return SANITIZED_FORMATS[sanitized_fmt]
+        formats = {**SANITIZED_FORMATS, **JAPANESE_FORMATS} if use_japanese else SANITIZED_FORMATS
+        if sanitized_fmt := from_iterable(formats, lambda k: k in words):
+            return formats[sanitized_fmt]
         return from_iterable(all_formats(), lambda w: w in words)
 
     @staticmethod
-    def derive_format_from_text(text: str, *fmt_words: str) -> str | None:
+    def derive_format_from_text(text: str, use_japanese=False) -> str | None:
         counts, text = [], text.lower()
-        for fmt_word in [*all_formats(), *SANITIZED_FORMATS, *fmt_words]:
+        formats = {**SANITIZED_FORMATS, **JAPANESE_FORMATS} if use_japanese else SANITIZED_FORMATS
+        for fmt_word in [*all_formats(), *formats]:
             count = text.count(fmt_word)
             if count:
                 counts.append((fmt_word, count))
         if not counts:
             return None
         counts.sort(key=itemgetter(1), reverse=True)
-        fmt = counts[0][0]
-        if len(counts) >= 2 and counts[0][1] == counts[1][1]:  # FIXME: #391
-            return None  # no clear winner
-        return SANITIZED_FORMATS.get(fmt, fmt)
+        max_count = counts[0][1]
+        top_words = [fw for fw, c in counts if c == max_count]
+        top_words.sort(key=lambda w: len(w), reverse=True)
+        fmt = top_words[0]
+        return formats.get(fmt, fmt)
