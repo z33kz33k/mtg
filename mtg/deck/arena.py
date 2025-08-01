@@ -25,7 +25,7 @@ _log = logging.getLogger(__name__)
 # uppercase Latin, underscore, double-quote, or Japanese character
 _FIRST_CHAR = r'[\p{Lu}_"\p{Han}\p{Hiragana}\p{Katakana}]'
 # the rest: word, whitespace, punctuation, or Japanese scripts
-_REST_CHARS = r'[\w\s\'"&/,.!:_\-{}\(\)\[\]\u3000-\u303F\p{Han}\p{Hiragana}\p{Katakana}]*'
+_REST_CHARS = r'[\w\s\'\"&/,.!:_\-（）\u3000-\u303F\p{Han}\p{Hiragana}\p{Katakana}]*'
 
 
 class PlaysetLine:
