@@ -8,15 +8,15 @@
 
 """
 import logging
+from typing import override
 
 import regex as re
-from typing import Generator, override
 
 from mtg import Json
 from mtg.deck import ARENA_MULTIFACE_SEPARATOR, CardNotFound, DeckParser
 from mtg.scryfall import COMMANDER_FORMATS, Card, \
     MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, query_api_for_card
-from mtg.utils import ParsingError, extract_int, getrepr, sanitize_whitespace, is_foreign
+from mtg.utils import ParsingError, extract_int, getrepr, is_foreign, sanitize_whitespace
 
 _log = logging.getLogger(__name__)
 
@@ -234,7 +234,7 @@ class LinesParser:
 
         for line in self._lines:
             if _is_about_line(line):
-                if last_line and is_arena_line(last_line):
+                if self._maindeck and self._maindeck != ["Deck"]:
                     self._finish_decklist()
                 if "About" not in self._metadata:
                     self._metadata.append("About")
@@ -243,27 +243,24 @@ class LinesParser:
                     self._metadata.append(line)
             elif _is_commander_line(line):
                 if "Commander" not in self._commander:
-                    if last_line and is_arena_line(last_line):
-                        if not self._metadata and not self._companion:
-                            self._finish_decklist()
-                        else:
-                            self._finish_section()
+                    if self._maindeck and self._maindeck != ["Deck"]:
+                        self._finish_decklist()
+                    else:
+                        self._finish_section()
                     self._commander.append("Commander")
             elif _is_companion_line(line):
                 if "Companion" not in self._companion:
-                    if last_line and is_arena_line(last_line):
-                        if not self._metadata and not self._commander:
-                            self._finish_decklist()
-                        else:
-                            self._finish_section()
+                    if self._maindeck and self._maindeck != ["Deck"]:
+                        self._finish_decklist()
+                    else:
+                        self._finish_section()
                     self._companion.append("Companion")
             elif _is_maindeck_line(line):
                 if "Deck" not in self._maindeck:
-                    if last_line and is_arena_line(last_line):
-                        if not self._metadata and not self._commander and not self._companion:
-                            self._finish_decklist()
-                        else:
-                            self._finish_section()
+                    if self._maindeck and self._maindeck != ["Deck"]:
+                        self._finish_decklist()
+                    else:
+                        self._finish_section()
                     self._maindeck.append("Deck")
             elif _is_sideboard_line(line):
                 if "Sideboard" not in self._sideboard:
@@ -274,13 +271,12 @@ class LinesParser:
                 # handle cases like:
                 # Commander
                 # 1 Some Commander Card
-                # 1 Some Other Commander Card
                 # 1 Some Maindeck Card (without prior section separation)
                 if (self._commander == ["Commander"]
                         and self._companion != ["Companion"]
                         and self._maindeck != ["Deck"]
                         and self._sideboard != ["Sideboard"]):
-                    if len(self._buffer) == 2:
+                    if len(self._buffer) == 1:
                         self._flush(self._commander)
                 # handle cases like:
                 # Companion
@@ -306,11 +302,12 @@ class LinesParser:
             if self._maindeck and self._maindeck != ["Deck"]:
                 self._flush(self._sideboard)
             else:
-                if len(self._buffer) <= 2:
-                    if len(self._buffer) == 1:
-                        if self._companion == ["Companion"]:
-                            self._flush(self._companion)
-                            return
+                if len(self._buffer) == 1:
+                    if self._companion == ["Companion"]:
+                        self._flush(self._companion)
+                    else:
+                        self._flush(self._commander)
+                elif len(self._buffer) == 2:
                     self._flush(self._commander)
                 else:
                     self._flush(self._maindeck)
