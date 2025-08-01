@@ -53,7 +53,7 @@ def is_in_domain_but_not_main(url: str, domain: str, lower=True) -> bool:
     return True
 
 
-@dataclass
+@dataclass(frozen=True)
 class UrlHook:
     """Encapsulate data needed for discovering new YT deck-featuring channels with queries to
     Google servers.
@@ -64,8 +64,8 @@ class UrlHook:
                 popular site like Archidekt or Goldfish, this needs to be estimated after testing)
     """
     positives: tuple[str, ...]
-    negatives: tuple[str, ...]
-    limit: int = 100
+    negatives: tuple[str, ...] = ()
+    limit: int = 200
 
 
 class TagBasedDeckParser(DeckParser):

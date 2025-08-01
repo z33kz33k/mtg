@@ -8,9 +8,9 @@
 
 """
 import logging
+
 import regex as re
 from typing import Generator, override
-
 
 from mtg import Json
 from mtg.deck import ARENA_MULTIFACE_SEPARATOR, CardNotFound, DeckParser
@@ -185,90 +185,146 @@ def is_arena_line(line: str) -> bool:
     return False
 
 
-def get_arena_lines(*lines: str) -> list[str]:
-    arena_lines, regular_lines, inverted_lines = [], set(), set()
-    for i, line in enumerate(lines):
-        if _is_about_line(line) and i < len(lines) - 1:
-            if _is_name_line(lines[i + 1]):
-                arena_lines.append("About")
-                if "Deck" in arena_lines:
-                    arena_lines.remove("Deck")
-        elif _is_name_line(line) and i > 0:
-            if _is_about_line(lines[i - 1]):
-                arena_lines.append(line)
-        elif _is_maindeck_line(line):
-            if "Deck" not in arena_lines:
-                arena_lines.append("Deck")
-        elif _is_commander_line(line):
-            if "Commander" not in arena_lines:
-                arena_lines.append("Commander")
-                if "Deck" in arena_lines:
-                    arena_lines.remove("Deck")
-        elif _is_companion_line(line):
-            if "Companion" not in arena_lines:
-                arena_lines.append("Companion")
-                if "Deck" in arena_lines:
-                    arena_lines.remove("Deck")
-        elif _is_playset_line(line):
-            if not arena_lines:
-                if i < len(lines) - 3 and any(_is_maindeck_line(l) for l in lines[i + 1:i + 4]):
-                    arena_lines.append("Commander")
-                else:
-                    arena_lines.append("Deck")
-            if bool(PlaysetLine.INVERTED_PATTERN.match(line)):
-                inverted_lines.add(line)
+class LinesParser:
+    @property
+    def decklists(self) -> list[str]:
+        return self._decklists
+
+    def __init__(self, *lines: str):
+        self._lines = lines
+        self._buffer = []
+        self._metadata, self._commander, self._companion = [], [], []
+        self._maindeck, self._sideboard = [], []
+        self._decklists: list[str] = []
+
+    def _flush(self, section: list[str]) -> None:
+        self._buffer.reverse()
+        while self._buffer:
+            section.append(self._buffer.pop())
+
+    def _reset(self) -> None:
+        self._metadata, self._commander, self._companion = [], [], []
+        self._maindeck, self._sideboard = [], []
+
+    def _concatenate(self) -> None:
+        if self._commander and self._commander[0] != "Commander":
+            self._commander.insert(0, "Commander")
+        if self._companion and self._companion[0] != "Companion":
+            self._companion.insert(0, "Companion")
+        if self._maindeck and self._maindeck[0] != "Deck":
+            self._maindeck.insert(0, "Deck")
+        if self._sideboard and self._sideboard[0] != "Sideboard":
+            self._sideboard.insert(0, "Sideboard")
+        if self._commander == ["Commander"]:
+            self._commander = []
+        if self._companion == ["Companion"]:
+            self._companion = []
+        if self._sideboard == ["Sideboard"]:
+            self._sideboard = []
+        concatenated = (
+                self._metadata + self._commander + self._companion + self._maindeck
+                + self._sideboard)
+        self._reset()
+        return self._decklists.append("\n".join(concatenated))
+
+    def parse(self) -> list[str]:
+        self._reset()
+        self._decklists = []
+        last_line = None
+
+        for line in self._lines:
+            if _is_about_line(line):
+                if last_line and is_arena_line(last_line):
+                    self._finish_decklist()
+                if "About" not in self._metadata:
+                    self._metadata.append("About")
+            elif _is_name_line(line):
+                if "About" in self._metadata:
+                    self._metadata.append(line)
+            elif _is_commander_line(line):
+                if "Commander" not in self._commander:
+                    if last_line and is_arena_line(last_line):
+                        if not self._metadata and not self._companion:
+                            self._finish_decklist()
+                        else:
+                            self._finish_section()
+                    self._commander.append("Commander")
+            elif _is_companion_line(line):
+                if "Companion" not in self._companion:
+                    if last_line and is_arena_line(last_line):
+                        if not self._metadata and not self._commander:
+                            self._finish_decklist()
+                        else:
+                            self._finish_section()
+                    self._companion.append("Companion")
+            elif _is_maindeck_line(line):
+                if "Deck" not in self._maindeck:
+                    if last_line and is_arena_line(last_line):
+                        if not self._metadata and not self._commander and not self._companion:
+                            self._finish_decklist()
+                        else:
+                            self._finish_section()
+                    self._maindeck.append("Deck")
+            elif _is_sideboard_line(line):
+                if "Sideboard" not in self._sideboard:
+                    if last_line and is_arena_line(last_line):
+                        self._finish_section()
+                    self._sideboard.append("Sideboard")
+            elif _is_playset_line(line):
+                # handle cases like:
+                # Commander
+                # 1 Some Commander Card
+                # 1 Some Other Commander Card
+                # 1 Some Maindeck Card (without prior section separation)
+                if (self._commander == ["Commander"]
+                        and self._companion != ["Companion"]
+                        and self._maindeck != ["Deck"]
+                        and self._sideboard != ["Sideboard"]):
+                    if len(self._buffer) == 2:
+                        self._flush(self._commander)
+                # handle cases like:
+                # Companion
+                # 1 Some Companion Card
+                # 1 Some Maindeck Card (without prior section separation)
+                elif (self._companion == ["Companion"]
+                      and self._commander != ["Commander"]
+                        and self._maindeck != ["Deck"]
+                        and self._sideboard != ["Sideboard"]):
+                    if len(self._buffer) == 1:
+                        self._flush(self._companion)
+                self._buffer.append(line)
             else:
-                regular_lines.add(line)
-            arena_lines.append(line)
-        elif _is_sideboard_line(line):
-            if "Sideboard" not in arena_lines:
-                arena_lines.append("Sideboard")
-        elif (is_empty(line)
-              and 1 < i < len(lines) - 1
-              and _is_playset_line(lines[i - 2])  # previous previous line
-              and _is_playset_line(lines[i - 1])  # previous line
-              and (_is_playset_line(lines[i + 1]) or _is_sideboard_line(lines[i + 1]))):  # next line
-            if not _is_sideboard_line(lines[i + 1]) and "Sideboard" not in arena_lines:
-                arena_lines.append("Sideboard")
+                self._finish_section()
 
-    # return either inverted or regular playset lines, but not both
-    if len(inverted_lines) > len(regular_lines):
-        arena_lines = [l for l in arena_lines if l not in regular_lines]
-    else:
-        arena_lines = [l for l in arena_lines if l not in inverted_lines]
+            last_line = line
 
-    # trim empty "Commander"
-    if len(arena_lines) >= 2 and arena_lines[:2] == ["Commander", "Deck"]:
-        return arena_lines[1:]
-    return arena_lines
+        self._finish_decklist()
+        return self._decklists
 
+    def _finish_section(self) -> None:
+        if self._buffer:
+            if self._maindeck and self._maindeck != ["Deck"]:
+                self._flush(self._sideboard)
+            else:
+                if len(self._buffer) <= 2:
+                    if len(self._buffer) == 1:
+                        if self._companion == ["Companion"]:
+                            self._flush(self._companion)
+                            return
+                    self._flush(self._commander)
+                else:
+                    self._flush(self._maindeck)
+        elif self._maindeck and self._maindeck != ["Deck"]:
+            self._concatenate()
 
-def group_arena_lines(*arena_lines: str) -> Generator[list[str], None, None]:
-    current_group, about_on, commander_on, companion_on = [], False, False, False
-    for line in arena_lines:
-        if _is_about_line(line):
-            about_on = True
-            if current_group and not (commander_on or companion_on):
-                yield current_group
-                current_group = []  # reset
-        elif _is_commander_line(line):
-            commander_on = True
-            if current_group and not (companion_on or about_on):
-                yield current_group
-                current_group = []  # reset
-        elif _is_companion_line(line):
-            companion_on = True
-            if current_group and not (commander_on or about_on):
-                yield current_group
-                current_group = []  # reset
-        elif _is_maindeck_line(line):
-            if current_group and not (commander_on or companion_on or about_on):
-                about_on, commander_on, companion_on = False, False, False
-                yield current_group
-                current_group = []  # reset
-        current_group.append(line)
-    if current_group:
-        yield current_group
+    def _finish_decklist(self) -> None:
+        if self._buffer:
+            if self._maindeck:
+                self._flush(self._sideboard)
+            else:
+                self._flush(self._maindeck)
+        if self._maindeck and self._maindeck != ["Deck"]:
+            self._concatenate()
 
 
 def is_arena_decklist(decklist: str) -> bool:
@@ -281,7 +337,7 @@ class IllFormedArenaDecklist(ParsingError):
 
 
 class ArenaParser(DeckParser):
-    """Parser of lines of text that denote a deck in Arena format.
+    """Parser of text decklists in Arena/MTGO format.
     """
     MAX_CARD_QUANTITY = 50
 
@@ -303,7 +359,7 @@ class ArenaParser(DeckParser):
 
     @override
     def _pre_parse(self) -> None:
-        self._lines = get_arena_lines(*self._lines)
+        self._lines = [l for l in self._lines if is_arena_line(l) or is_empty(l)]
         if not self._lines:
             raise IllFormedArenaDecklist("No Arena lines found")
         self._handle_missing_commander_line()

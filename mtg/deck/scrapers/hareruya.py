@@ -16,7 +16,7 @@ from bs4 import BeautifulSoup, NavigableString, Tag
 
 from mtg import HybridContainerScraper, Json, SECRETS
 from mtg.deck.scrapers import Collected, DeckScraper, DeckUrlsContainerScraper, JsonBasedDeckParser, \
-    TagBasedDeckParser, is_in_domain_but_not_main
+    TagBasedDeckParser, is_in_domain_but_not_main, UrlHook
 from mtg.deck.scrapers.goldfish import HEADERS as GOLDFISH_HEADERS
 from mtg.utils import ParsingError, extract_int
 from mtg.utils.scrape import ScrapingError, get_next_sibling_tag, get_path_segments, \
@@ -30,6 +30,38 @@ def get_source(src: str) -> str | None:
         _, *parts = src.split(".")
         return ".".join(parts)
     return None
+
+
+URL_HOOKS = (
+    # international deck
+    UrlHook(
+        ("hareruyamtg.com", '"/deck/"'),
+        ('-"/result"', '-"/bulk/"', '-"/metagame"'),
+    ),
+    # japanese deck
+    UrlHook(
+        ('"hareruyamtg.com/decks/"', ),
+        ('-"/user/"', '-"/tile/"', '-"/search"'),
+    ),
+    UrlHook(
+        ('"deck.hareruyamtg.com/deck/"', ),
+        ('-"/user/"', '-"/tile/"', '-"/search"'),
+    ),
+    # event
+    UrlHook(
+        ("hareruyamtg.com", '"/deck"', '"/result?"', '"eventName="'),
+        limit=100
+    ),
+    # player
+    UrlHook(
+        ("hareruyamtg.com", '"/deck"', '"/result?"', '"player="'),
+        limit=100
+    ),
+    # article & author
+    UrlHook(
+        ('"article.hareruyamtg.com/article/"', ),
+    ),
+)
 
 
 @DeckScraper.registered
