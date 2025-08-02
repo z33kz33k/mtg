@@ -153,7 +153,7 @@ YT videos descriptions).
 * Export/import to other formats in plans
 * Dumping decks, YT videos and channels to .json
 * Semi-automatic discovery of new channels
-* I compiled a list of **almost 2.5k** YT channels that feature decks in their descriptions and successfully 
+* I compiled a list of **over 2.5k** YT channels that feature decks in their descriptions and successfully 
   scraped them (at least 25 videos deep) so this data only waits to be creatively used now!
 
 ### How it looks in a Google Sheet
@@ -162,20 +162,20 @@ YT videos descriptions).
 ### Scraped decks breakdown
 | No | Format | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | commander       | 71931 |    37.80 % |
-| 2  | standard        | 44340 |    23.30 % |
-| 3  | modern          | 20048 |    10.54 % |
-| 4  | pauper          | 12088 |     6.35 % |
-| 5  | pioneer         | 10829 |     5.69 % |
+| 1  | commander       | 72017 |    37.83 % |
+| 2  | standard        | 44344 |    23.29 % |
+| 3  | modern          | 20048 |    10.53 % |
+| 4  | pauper          | 12092 |     6.35 % |
+| 5  | pioneer         | 10834 |     5.69 % |
 | 6  | brawl           |  5214 |     2.74 % |
-| 7  | legacy          |  5165 |     2.71 % |
+| 7  | legacy          |  5167 |     2.71 % |
 | 8  | historic        |  3084 |     1.62 % |
-| 9  | undefined       |  2946 |     1.55 % |
-| 10 | explorer        |  2519 |     1.32 % |
+| 9  | undefined       |  2947 |     1.55 % |
+| 10 | explorer        |  2520 |     1.32 % |
 | 11 | duel            |  2146 |     1.13 % |
 | 12 | paupercommander |  2098 |     1.10 % |
 | 13 | timeless        |  1953 |     1.03 % |
-| 14 | irregular       |  1321 |     0.69 % |
+| 14 | irregular       |  1335 |     0.70 % |
 | 15 | premodern       |  1292 |     0.68 % |
 | 16 | alchemy         |  1022 |     0.54 % |
 | 17 | vintage         |  1015 |     0.53 % |
@@ -186,18 +186,18 @@ YT videos descriptions).
 | 22 | oldschool       |    64 |     0.03 % |
 | 23 | future          |    47 |     0.02 % |
 | 24 | predh           |    12 |     0.01 % |
-|  | TOTAL           | 190274 | 100.00 %|
+|  | TOTAL           | 190391 | 100.00 %|
 
 | No | Source | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | moxfield.com           | 83023 |    43.63 % |
+| 1  | moxfield.com           | 83023 |    43.61 % |
 | 2  | mtgo.com               | 20481 |    10.76 % |
-| 3  | arena.decklist         | 17098 |     8.99 % |
-| 4  | aetherhub.com          | 11906 |     6.26 % |
+| 3  | arena.decklist         | 17101 |     8.98 % |
+| 4  | aetherhub.com          | 11906 |     6.25 % |
 | 5  | mtggoldfish.com        | 11595 |     6.09 % |
-| 6  | archidekt.com          |  7183 |     3.78 % |
+| 6  | archidekt.com          |  7183 |     3.77 % |
 | 7  | mtgdecks.net           |  6771 |     3.56 % |
-| 8  | mtg.cardsrealm.com     |  3759 |     1.98 % |
+| 8  | mtg.cardsrealm.com     |  3759 |     1.97 % |
 | 9  | melee.gg               |  3598 |     1.89 % |
 | 10 | mtga.untapped.gg       |  3598 |     1.89 % |
 | 11 | tcgplayer.com          |  3469 |     1.82 % |
@@ -207,13 +207,13 @@ YT videos descriptions).
 | 15 | magic.gg               |  1622 |     0.85 % |
 | 16 | mtgtop8.com            |  1578 |     0.83 % |
 | 17 | topdeck.gg             |  1400 |     0.74 % |
-| 18 | hareruyamtg.com        |   781 |     0.41 % |
-| 19 | mtgazone.com           |   744 |     0.39 % |
-| 20 | magic.wizards.com      |   729 |     0.38 % |
+| 18 | hareruyamtg.com        |   873 |     0.46 % |
+| 19 | magic.wizards.com      |   751 |     0.39 % |
+| 20 | mtgazone.com           |   744 |     0.39 % |
 | 21 | deckstats.net          |   604 |     0.32 % |
 | 22 | starcitygames.com      |   501 |     0.26 % |
 | 23 | flexslot.gg            |   474 |     0.25 % |
-| 24 | pauperwave.com         |   333 |     0.18 % |
+| 24 | pauperwave.com         |   333 |     0.17 % |
 | 25 | pennydreadfulmagic.com |   318 |     0.17 % |
 | 26 | scryfall.com           |   278 |     0.15 % |
 | 27 | cardmarket.com         |   273 |     0.14 % |
@@ -242,4 +242,4 @@ YT videos descriptions).
 | 50 | mtgarena.pro           |     3 |     0.00 % |
 | 51 | mtgotraders.com        |     1 |     0.00 % |
 | 52 | playingmtg.com         |     1 |     0.00 % |
-|  | TOTAL                  | 190274 | 100.00 %|
+|  | TOTAL                  | 190391 | 100.00 %|

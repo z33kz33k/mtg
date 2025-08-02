@@ -222,6 +222,10 @@ class JapaneseHareruyaDeckScraper(DeckScraper):
         return url
 
     @override
+    def _is_soft_404_error(self) -> bool:
+        return "ページが存在しません" in self._soup.text and "このページは存在しないか、" in self._soup.text
+
+    @override
     def _get_data_from_api(self) -> Json:
         display_token_values = get_query_values(self.url, "display_token")
         display_token = display_token_values[0] if display_token_values else ""

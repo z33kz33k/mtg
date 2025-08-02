@@ -62,6 +62,11 @@ class MeleeGgDeckScraper(DeckScraper):
         return url.replace(ALT_DOMAIN, "melee.gg")
 
     @override
+    def _is_page_inaccessible(self) -> bool:
+        tag = self._soup.select_one("div.content.page-with-container")
+        return tag and "You are not authorized to access this Decklist" in tag.text
+
+    @override
     def _parse_metadata(self) -> None:
         self._metadata["name"] = self._soup.select_one("div.decklist-title").text.strip()
         if author_tag := self._soup.find(
