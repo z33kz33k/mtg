@@ -756,12 +756,12 @@ class Video:
         self._derived_format = self._derive_format()
         self._derived_name = self._derive_name()
         links, lines = self._parse_lines(self.title, *self._desc_lines)
-        self._decks = self._collect(links, LinesParser(*lines).parse())
+        self._decks = self._collect(links, lines)
         if not self._decks:  # try with author's comment
             comment_lines = self._get_comment_lines()
             if comment_lines:
                 links, lines = self._parse_lines(*comment_lines)
-                self._decks = self._collect(links, LinesParser(*lines).parse())
+                self._decks = self._collect(links, lines)
                 if self._decks:
                     self._comment = "\n".join(comment_lines)
         self._cooloff_manager.bump_decks(len(self.decks))
@@ -945,20 +945,31 @@ class Video:
                 decks.append(deck)
         return decks
 
-    def _collect(self, links: list[str], decklists: list[str]) -> list[Deck]:
+    def _process_lines(self, *lines: str) -> list[Deck]:
+        decks, lp = [], LinesParser(*lines)
+        for decklist in lp.parse():
+            if deck := ArenaParser(decklist, self.metadata).parse():
+                deck_name = f"{deck.name!r} deck" if deck.name else "Deck"
+                _log.info(f"{deck_name} scraped successfully")
+                decks.append(deck)
+        if not decks:
+            if decklists := lp.parse(single_decklist_mode=True):
+                if deck := ArenaParser(decklists[0], self.metadata).parse():
+                    deck_name = f"{deck.name!r} deck" if deck.name else "Deck"
+                    _log.info(f"{deck_name} scraped successfully")
+                    decks.append(deck)
+        if decks:
+            self._sources.add("arena.decklist")
+        return decks
+
+    def _collect(self, links: list[str], lines: list[str]) -> list[Deck]:
         decks: set[Deck] = set()
 
         # 1st stage: URLs
         decks.update(self._process_urls(*links))
 
         # 2nd stage: text decklists
-        if decklists:
-            self._sources.add("arena.decklist")
-            for decklist in decklists:
-                if deck := ArenaParser(decklist, self.metadata).parse():
-                    deck_name = f"{deck.name!r} deck" if deck.name else "Deck"
-                    _log.info(f"{deck_name} scraped successfully")
-                    decks.add(deck)
+        decks.update(self._process_lines(*lines))
 
         # 3rd stage: deck containers
         for link in links:

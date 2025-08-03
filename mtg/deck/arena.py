@@ -111,14 +111,14 @@ class PlaysetLine:
     def _handle_foreign(self) -> list[Card] | None:
         if is_foreign(self.name):
             if card := query_api_for_card(self.name, foreign=True):
-                return ArenaParser.get_playset(card, self.quantity)
+                return DeckParser.get_playset(card, self.quantity)
         return None
 
     def to_playset(self) -> list[Card]:
         set_and_collector_number = (
             self.set_code, self.collector_number) if self.is_extended else None
         try:
-            return ArenaParser.get_playset(ArenaParser.find_card(
+            return DeckParser.get_playset(DeckParser.find_card(
                 self.name, set_and_collector_number), self.quantity)
         except CardNotFound as cnf:
             if cards := self._handle_foreign():
@@ -127,7 +127,13 @@ class PlaysetLine:
 
 
 def _is_playset_line(line: str) -> bool:
-    return bool(PlaysetLine.PATTERN.match(line)) or bool(PlaysetLine.INVERTED_PATTERN.match(line))
+    return bool(PlaysetLine.PATTERN.match(line)) or bool(
+        PlaysetLine.INVERTED_PATTERN.match(line)) or bool(
+        PlaysetLine.EXTENDED_PATTERN.match(line))
+
+
+def _is_inverted_playset_line(line: str) -> bool:
+    return bool(PlaysetLine.INVERTED_PATTERN.match(line))
 
 
 def is_empty(line: str) -> bool:
@@ -153,24 +159,81 @@ def _is_name_line(line: str) -> bool:
     return line.startswith("Name ")
 
 
-def _is_maindeck_line(line: str) -> bool:
-    return _is_section_line(
-        line, "Main", "Maindeck", "Mainboard", "Deck", "Decklist", "Main Deck", "Main Board",
-        "Deck List", "Mazo", "Mallet", "デッキ")
-
-
 def _is_commander_line(line: str) -> bool:
-    return _is_section_line(line, "Commander", "Comandante", "統率者", "コマンダー")
+    return _is_section_line(
+        line,
+        "Commander",
+        "指挥官", # chinese simplified
+        "指揮官", # chinese traditional
+        "Commandant",  # french
+        "Kommandeur",  # german
+        "Comandante",  # italian, portuguese, spanish
+        # japanese
+        "統率者",
+        "コマンダー",
+        "사령관",  # korean
+        "Командир",  # russian
+    )
 
 
 def _is_companion_line(line: str) -> bool:
-    return _is_section_line(line, "Companion", "Companheiro")
+    return _is_section_line(
+        line,
+        "Companion",
+        "伙伴",  # chinese simplified
+        "夥伴",  # chinese traditional
+        "Compagnon",  # french
+        "Gefährte",  # german
+        "Compagno",  # italian
+        "相棒",  # japanese
+        "동료",  # korean
+        "Companheiro",  # portuguese
+        "Компаньон",  # russian
+        "Compañero",  # spanish
+    )
+
+
+def _is_maindeck_line(line: str) -> bool:
+    return _is_section_line(
+        line,
+        "Main",
+        "Maindeck",
+        "Mainboard",
+        "Deck",
+        "Decklist",
+        "Main Deck",
+        "Main Board",
+        "Deck List",
+        "牌库",  # chinese simplified
+        "牌庫",  # chinese traditional
+        "Mazzo",  # italian
+        "デッキ",  # japanese
+        "덱",  # korean
+        "Колода"  # russian
+        "Mazo",  # spanish
+        "Malet",  # frech, portuguese
+    )
 
 
 def _is_sideboard_line(line: str) -> bool:
     return _is_section_line(
-        line, "Side", "Sideboard", "Sidedeck", "Sidelist", "Reserva", "Side Board", "Side Deck",
-        "Side List", "サイドボード")
+        line,
+        "Side",
+        "Sideboard",
+        "Sidedeck",
+        "Sidelist",
+        "Side Board",
+        "Side Deck",
+        "Side List",
+        "备牌",  # chinese simplified
+        "備牌",  # chinese traditional
+        "Réserve",  # french
+        "サイドボード",  # japanese
+        "사이드보드",  # korean
+        "Резерв",  # russian
+        "Banquillo",  # spanish
+        "Reserva",  # spanish, portuguese
+    )
 
 
 def is_arena_line(line: str) -> bool:
@@ -185,14 +248,21 @@ def is_arena_line(line: str) -> bool:
     return False
 
 
+# TODO: docstrings
 class LinesParser:
+    MIN_SIZE = 6  # pretty arbitrary
+
     @property
     def decklists(self) -> list[str]:
         return self._decklists
 
-    def __init__(self, *lines: str):
+    @property
+    def _is_ready_for_closing(self) -> bool:
+        return self._maindeck and self._maindeck != ["Deck"]
+
+    def __init__(self, *lines: str) -> None:
         self._lines = lines
-        self._buffer = []
+        self._buffer, self._blanks = [], 0
         self._metadata, self._commander, self._companion = [], [], []
         self._maindeck, self._sideboard = [], []
         self._decklists: list[str] = []
@@ -203,6 +273,7 @@ class LinesParser:
             section.append(self._buffer.pop())
 
     def _reset(self) -> None:
+        self._buffer, self._blanks = [], 0
         self._metadata, self._commander, self._companion = [], [], []
         self._maindeck, self._sideboard = [], []
 
@@ -227,37 +298,55 @@ class LinesParser:
         self._reset()
         return self._decklists.append("\n".join(concatenated))
 
-    def parse(self) -> list[str]:
+    def _get_lines_for_single_decklist_mode(self) -> list[str]:
+        lines = [l for l in self._lines if is_arena_line(l)]
+        regular, inverted = [], []
+        for line in lines:
+            if _is_playset_line(line):
+                if _is_inverted_playset_line(line):
+                    inverted.append(line)
+                else:
+                    regular.append(line)
+        if len(regular) >= len(inverted):
+            for l in inverted:
+                lines.remove(l)
+        else:
+            for l in regular:
+                lines.remove(l)
+        return lines
+
+    def parse(self, single_decklist_mode=False) -> list[str]:
+        lines = self._get_lines_for_single_decklist_mode() if single_decklist_mode else self._lines
         self._reset()
         self._decklists = []
         last_line = None
 
-        for line in self._lines:
+        for line in lines:
+            if is_arena_line(line):
+                self._blanks = 0
             if _is_about_line(line):
-                if self._maindeck and self._maindeck != ["Deck"]:
-                    self._finish_decklist()
                 if "About" not in self._metadata:
-                    self._metadata.append("About")
-            elif _is_name_line(line):
-                if "About" in self._metadata:
-                    self._metadata.append(line)
-            elif _is_commander_line(line):
-                if "Commander" not in self._commander:
-                    if self._maindeck and self._maindeck != ["Deck"]:
+                    if self._is_ready_for_closing:
                         self._finish_decklist()
                     else:
                         self._finish_section()
+                    self._metadata.append("About")
+            elif _is_name_line(line):
+                if self._metadata == ["About"]:
+                    self._metadata.append(line)
+            elif _is_commander_line(line):
+                if "Commander" not in self._commander:
                     self._commander.append("Commander")
             elif _is_companion_line(line):
                 if "Companion" not in self._companion:
-                    if self._maindeck and self._maindeck != ["Deck"]:
+                    if self._is_ready_for_closing:
                         self._finish_decklist()
                     else:
                         self._finish_section()
                     self._companion.append("Companion")
             elif _is_maindeck_line(line):
                 if "Deck" not in self._maindeck:
-                    if self._maindeck and self._maindeck != ["Deck"]:
+                    if self._is_ready_for_closing:
                         self._finish_decklist()
                     else:
                         self._finish_section()
@@ -290,6 +379,7 @@ class LinesParser:
                         self._flush(self._companion)
                 self._buffer.append(line)
             else:
+                self._blanks += 1
                 self._finish_section()
 
             last_line = line
@@ -299,7 +389,7 @@ class LinesParser:
 
     def _finish_section(self) -> None:
         if self._buffer:
-            if self._maindeck and self._maindeck != ["Deck"]:
+            if self._is_ready_for_closing:
                 self._flush(self._sideboard)
             else:
                 if len(self._buffer) == 1:
@@ -309,19 +399,32 @@ class LinesParser:
                         self._flush(self._commander)
                 elif len(self._buffer) == 2:
                     self._flush(self._commander)
-                else:
+                elif len(self._buffer) >= self.MIN_SIZE:
                     self._flush(self._maindeck)
-        elif self._maindeck and self._maindeck != ["Deck"]:
+                else:
+                    self._buffer = []
+        elif self._is_ready_for_closing:
             self._concatenate()
+        # so, we track number of consecutive "trash" lines and reset state after each gap longer
+        # than two lines - that way we still can track ambiguous sections (not heralded by
+        # section headers) based on their size (provided they're not separated by gaps longer
+        # than 2 thrash lines) and at the same time we're able to weed out most cases of false
+        # positives (e.g. lines like "Episode 274" - which mimic playset lines in inverted form)
+        elif self._blanks > 2:
+            self._reset()
 
     def _finish_decklist(self) -> None:
         if self._buffer:
-            if self._maindeck:
+            if self._is_ready_for_closing:
                 self._flush(self._sideboard)
-            else:
+            elif len(self._buffer) >= self.MIN_SIZE:
                 self._flush(self._maindeck)
-        if self._maindeck and self._maindeck != ["Deck"]:
+            else:
+                self._buffer = []
+        if self._is_ready_for_closing:
             self._concatenate()
+        else:
+            self._reset()
 
 
 def is_arena_decklist(decklist: str) -> bool:
@@ -356,9 +459,11 @@ class ArenaParser(DeckParser):
 
     @override
     def _pre_parse(self) -> None:
-        self._lines = [l for l in self._lines if is_arena_line(l) or is_empty(l)]
-        if not self._lines:
-            raise IllFormedArenaDecklist("No Arena lines found")
+        decklists = LinesParser(*self._lines).parse(single_decklist_mode=True)  # normalize lines
+        if not decklists:
+            raise IllFormedArenaDecklist("Not a well formed Arena/MTGO text decklist")
+        self._lines = decklists[0].splitlines()
+        # this shouldn't be theoretically needed now with LineParser normalization
         self._handle_missing_commander_line()
 
     @override
@@ -425,6 +530,7 @@ class ArenaParser(DeckParser):
                     self._maindeck.extend(playset)
 
 
+# bar the sideboard to commander part, this is now covered by LineParser
 def normalize_decklist(decklist: str, fmt: str | None = None) -> str:
     """Normalize simple text decklists that only feature card lines and a sideboard demarcated
     by a blank line by adding proper section headers.
