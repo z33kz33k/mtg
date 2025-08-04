@@ -88,12 +88,18 @@ class MeleeGgDeckScraper(DeckScraper):
                     t not in p for t in ("Magic: ", "Deck: ", "Sideboard: "))):
             self._update_fmt(fmt)
 
+    def _normalize_decklist(self) -> None:
+        before, after = self._decklist.split("MainDeck")
+        self._decklist = "Deck\n" + after.strip() + "\n" + before.strip()
+
     @override
     def _parse_deck(self) -> None:
         decklist_tag = self._soup.select_one("pre#decklist-text")
         if not decklist_tag:
             raise ScrapingError("Decklist tag not found", scraper=type(self), url=self.url)
-        self._decklist = decklist_tag.text.strip()
+        self._decklist = decklist_tag.text.replace("\r\n", "\n").strip()
+        if self._decklist.startswith("Sideboard"):
+            self._normalize_decklist()
 
 
 @DeckUrlsContainerScraper.registered

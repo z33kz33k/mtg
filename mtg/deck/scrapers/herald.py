@@ -13,11 +13,26 @@ from typing import override
 import dateutil.parser
 from bs4 import Tag
 
-from mtg import Json
+from mtg import Json, SECRETS
 from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser, is_in_domain_but_not_main
 from mtg.utils.scrape import ScrapingError, strip_url_query
 
 _log = logging.getLogger(__name__)
+HEADERS = {
+    "Host": "commandersherald.com",
+    "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:141.0) Gecko/20100101 Firefox/141.0",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.5",
+    "Accept-Encoding": "gzip, deflate, br, zstd",
+    "Sec-GPC": "1",
+    "Connection": "keep-alive",
+    "Cookie": SECRETS["herald"]["cookie"],
+    "Upgrade-Insecure-Requests": "1",
+    "Sec-Fetch-Dest": "document",
+    "Sec-Fetch-Mode": "navigate",
+    "Sec-Fetch-Site": "cross-site",
+    "Priority": "u=0, i",
+}
 
 
 class CommandersHeraldDeckTagParser(TagBasedDeckParser):
@@ -52,6 +67,7 @@ class CommandersHeraldArticleScraper(HybridContainerScraper):
     """
     CONTAINER_NAME = "Commander's Herald article"  # override
     TAG_BASED_DECK_PARSER = CommandersHeraldDeckTagParser  # override
+    HEADERS = HEADERS  # override
 
     @staticmethod
     @override
@@ -103,6 +119,7 @@ class CommandersHeraldAuthorScraper(HybridContainerScraper):
     """
     CONTAINER_NAME = "Commander's Herald author"  # override
     CONTAINER_SCRAPERS = CommandersHeraldArticleScraper,  # override
+    HEADERS = HEADERS  # override
 
     @staticmethod
     @override

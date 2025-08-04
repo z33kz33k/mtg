@@ -198,6 +198,7 @@ def _is_maindeck_line(line: str) -> bool:
         line,
         "Main",
         "Maindeck",
+        "MainDeck",
         "Mainboard",
         "Deck",
         "Decklist",
@@ -211,7 +212,7 @@ def _is_maindeck_line(line: str) -> bool:
         "덱",  # korean
         "Колода"  # russian
         "Mazo",  # spanish
-        "Malet",  # frech, portuguese
+        "Malet",  # french, portuguese
     )
 
 
@@ -250,7 +251,7 @@ def is_arena_line(line: str) -> bool:
 
 # TODO: docstrings
 class LinesParser:
-    MIN_SIZE = 6  # pretty arbitrary
+    MAINDECK_MIN_SIZE = 6  # pretty arbitrary
 
     @property
     def decklists(self) -> list[str]:
@@ -389,7 +390,7 @@ class LinesParser:
                 elif len(self._buffer) <= 2 and (
                         self._commander == ["Commander"] or not self._commander):
                     self._flush(self._commander)
-                elif len(self._buffer) >= self.MIN_SIZE:
+                elif len(self._buffer) >= self.MAINDECK_MIN_SIZE:
                     self._flush(self._maindeck)
                 else:
                     self._buffer = []
@@ -405,7 +406,7 @@ class LinesParser:
         if self._buffer:
             if self._is_ready_for_closing:
                 self._flush(self._sideboard)
-            elif len(self._buffer) >= self.MIN_SIZE:
+            elif len(self._buffer) >= self.MAINDECK_MIN_SIZE:
                 self._flush(self._maindeck)
             else:
                 self._buffer = []
