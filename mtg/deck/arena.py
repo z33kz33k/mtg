@@ -315,6 +315,14 @@ class LinesParser:
                 lines.remove(l)
         return lines
 
+    def _handle_header_line(self, header: str, section: list[str]) -> None:
+        if header not in section:
+            if self._is_ready_for_closing:
+                self._finish_decklist()
+            else:
+                self._finish_section()
+            section.append(header)
+
     def parse(self, single_decklist_mode=False) -> list[str]:
         lines = self._get_lines_for_single_decklist_mode() if single_decklist_mode else self._lines
         self._reset()
@@ -325,32 +333,16 @@ class LinesParser:
             if is_arena_line(line):
                 self._blanks = 0
             if _is_about_line(line):
-                if "About" not in self._metadata:
-                    if self._is_ready_for_closing:
-                        self._finish_decklist()
-                    else:
-                        self._finish_section()
-                    self._metadata.append("About")
+                self._handle_header_line("About", self._metadata)
             elif _is_name_line(line):
                 if self._metadata == ["About"]:
                     self._metadata.append(line)
             elif _is_commander_line(line):
-                if "Commander" not in self._commander:
-                    self._commander.append("Commander")
+                self._handle_header_line("Commander", self._commander)
             elif _is_companion_line(line):
-                if "Companion" not in self._companion:
-                    if self._is_ready_for_closing:
-                        self._finish_decklist()
-                    else:
-                        self._finish_section()
-                    self._companion.append("Companion")
+                self._handle_header_line("Companion", self._companion)
             elif _is_maindeck_line(line):
-                if "Deck" not in self._maindeck:
-                    if self._is_ready_for_closing:
-                        self._finish_decklist()
-                    else:
-                        self._finish_section()
-                    self._maindeck.append("Deck")
+                self._handle_header_line("Deck", self._maindeck)
             elif _is_sideboard_line(line):
                 if "Sideboard" not in self._sideboard:
                     if last_line and is_arena_line(last_line):
@@ -392,26 +384,22 @@ class LinesParser:
             if self._is_ready_for_closing:
                 self._flush(self._sideboard)
             else:
-                if len(self._buffer) == 1:
-                    if self._companion == ["Companion"]:
-                        self._flush(self._companion)
-                    else:
-                        self._flush(self._commander)
-                elif len(self._buffer) == 2:
+                if len(self._buffer) == 1 and self._companion == ["Companion"]:
+                    self._flush(self._companion)
+                elif len(self._buffer) <= 2 and (
+                        self._commander == ["Commander"] or not self._commander):
                     self._flush(self._commander)
                 elif len(self._buffer) >= self.MIN_SIZE:
                     self._flush(self._maindeck)
                 else:
                     self._buffer = []
-        elif self._is_ready_for_closing:
-            self._concatenate()
         # so, we track number of consecutive "trash" lines and reset state after each gap longer
         # than two lines - that way we still can track ambiguous sections (not heralded by
         # section headers) based on their size (provided they're not separated by gaps longer
         # than 2 thrash lines) and at the same time we're able to weed out most cases of false
         # positives (e.g. lines like "Episode 274" - which mimic playset lines in inverted form)
         elif self._blanks > 2:
-            self._reset()
+            self._finish_decklist()
 
     def _finish_decklist(self) -> None:
         if self._buffer:

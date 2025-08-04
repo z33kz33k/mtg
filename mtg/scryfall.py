@@ -957,6 +957,7 @@ class Card:
             return 12
         return None
 
+    # FIXME: update to EOE rule change: https://magic.wizards.com/en/news/feature/edge-of-eternities-mechanics
     @property
     def commander_suitable(self) -> bool:
         if self.oracle_text and "can be your commander" in self.oracle_text:
