@@ -786,6 +786,14 @@ class Card:
         return self.parse_types().supertypes
 
     @property
+    def is_legendary(self) -> bool:
+        return "Legendary" in self.supertypes
+
+    @property
+    def is_token(self) -> bool:
+        return "Token" in self.supertypes
+
+    @property
     def regular_types(self) -> list[str]:
         if self.is_multifaced:
             return sorted({t for face in self.card_faces for t in face.regular_types})
@@ -834,6 +842,26 @@ class Card:
         return self.parse_types().subtypes
 
     @property
+    def is_vehicle(self) -> bool:
+        return "Vehicle" in self.subtypes
+
+    @property
+    def is_spacecraft(self) -> bool:
+        return "Spacecraft" in self.subtypes
+
+    @property
+    def is_equipment(self) -> bool:
+        return "Equipment" in self.subtypes
+
+    @property
+    def is_aura(self) -> bool:
+        return "Aura" in self.subtypes
+
+    @property
+    def is_saga(self) -> bool:
+        return "Saga" in self.subtypes
+
+    @property
     def races(self) -> list[str]:
         if self.is_multifaced:
             return sorted({t for face in self.card_faces for t in face.races})
@@ -862,16 +890,12 @@ class Card:
         return "Companion" in self.keywords
 
     @property
-    def is_legendary(self) -> bool:
-        return "Legendary" in self.supertypes
-
-    @property
-    def is_token(self) -> bool:
-        return "Token" in self.supertypes
-
-    @property
     def is_partner(self) -> bool:
         return "Partner" in self.keywords or "Friends forever" in self.keywords
+
+    @property
+    def is_lord(self) -> bool:
+        return bool(self.lord_sentences)
 
     @property
     def is_alchemy_rebalance(self) -> bool:
@@ -957,12 +981,15 @@ class Card:
             return 12
         return None
 
-    # FIXME: update to EOE rule change: https://magic.wizards.com/en/news/feature/edge-of-eternities-mechanics
+    # updated to reflect EOE rule change:
+    # https://magic.wizards.com/en/news/feature/edge-of-eternities-mechanics
     @property
     def commander_suitable(self) -> bool:
         if self.oracle_text and "can be your commander" in self.oracle_text:
             return True
-        return self.is_legendary and (self.is_creature or self.is_planeswalker)
+        return self.is_legendary and (
+                self.power is not None or self.toughness is not None) and (
+                self.is_creature or self.is_vehicle or self.is_spacecraft)
 
 
 @dataclass(frozen=True)
