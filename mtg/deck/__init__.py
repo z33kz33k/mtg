@@ -27,7 +27,7 @@ from mtg.scryfall import (
     find_by_mtgo_id, find_by_name, find_by_oracle_id,
     find_by_scryfall_id, find_by_tcgplayer_id, find_sets,
     query_api_for_card)
-from mtg.utils import ParsingError, from_iterable, getid, getrepr, type_checker
+from mtg.utils import ParsingError, from_iterable, getid, getrepr, remove_furigana, type_checker
 from mtg.utils.json import serialize_dates
 
 _log = logging.getLogger(__name__)
@@ -1049,6 +1049,8 @@ class DeckParser(ABC):
             # "Wear///Tear" ==> "Wear // Tear"
             text = re.sub(
                 r'(?<=[a-zA-Z])/{1,3}(?=[a-zA-Z])', SCRYFALL_MULTIFACE_SEPARATOR, text)
+        if "（" in text:  # for Japanese cards
+            return remove_furigana(text)
         return text
 
     @abstractmethod

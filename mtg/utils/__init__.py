@@ -475,3 +475,17 @@ def logging_disabled(level: int = logging.CRITICAL) -> Generator[None, None, Non
         yield
     finally:
         logging.disable(previous_level)
+
+
+def remove_furigana(text: str) -> str:
+    """Remove parenthesized furigana (content within Japanese parentheses `（）`) from a string.
+    Return the cleaned string with only the base kanji and other characters.
+
+    Args:
+        text: input string, e.g., "嵐（あらし）の討（とう）伐（ばつ）者（しゃ）、エルズペス"
+
+    Returns:
+        str: cleaned string, e.g., "嵐の討伐者、エルズペス"
+    """
+    # pattern: matches `（` followed by any characters (non-greedy) until `）`
+    return re.sub(r'（.*?）', '', text)
