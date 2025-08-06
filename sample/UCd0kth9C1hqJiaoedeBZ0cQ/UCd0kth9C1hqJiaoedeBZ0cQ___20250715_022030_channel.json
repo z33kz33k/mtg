@@ -1,0 +1,101 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "FINAL FANTASY",
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "final fantasy",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mythic",
+        "pioneer",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 139000,
+    "scrape_time": "2025-07-15 02:20:30",
+    "videos": [
+        {
+            "id": "DMqcHtsW06I",
+            "url": "https://www.youtube.com/watch?v=DMqcHtsW06I",
+            "author": "LegenVD",
+            "title": "No Partner? No Problem!",
+            "description": "Magic: The Gathering Arena gameplay with Vial Smasher the Fierce (Clive Rosfield) as commander in Brawl. \n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro\n02:04 - Deck Tech\n07:34 - vs Yuriko, the Tiger's Shadow\n13:42 - vs Tifa Lockhart\n21:02 - vs Celes, Rune Knight\n29:02 - vs Imoti, Celebrant of Bounty\n38:55 - vs Clive Rosfield\n42:38 - vs Azusa, Lost but Seeking\n46:11 - vs Kuja, Mage Manufacturer\n50:09 - vs Sephiroth, Fabled SOLDIER\n\nDecklist:\nhttps://aetherhub.com/Deck/vial-smasher-the-fierce-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGxFINALFANTASY #mtg #magicthegathering",
+            "keywords": [
+                "Clive Rosfield",
+                "FF",
+                "FIN",
+                "FINAL FANTASY",
+                "black",
+                "brawl",
+                "clive",
+                "clive brawl",
+                "clive commander",
+                "clive edh",
+                "commander",
+                "deck",
+                "decks",
+                "edh",
+                "ff",
+                "final fantasy",
+                "gameplay",
+                "guide",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "partner",
+                "rakdos",
+                "red",
+                "vial smasher",
+                "vial smasher brawl",
+                "vial smasher commander",
+                "vial smasher edh"
+            ],
+            "publish_time": "2025-07-14 09:00:30",
+            "views": 13722,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-07-14",
+                        "exports": 68,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Vial Smasher the Fierce Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/vial-smasher-the-fierce-brawl",
+                        "views": 406
+                    },
+                    "decklist_id": "e3d268c0-7eca-a55a-6918-e48c6aaa85ee",
+                    "decklist_extended_id": "014f5c74-3fdd-8661-f82d-62dce154fafd"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,99 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "FINAL FANTASY",
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "final fantasy",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mythic",
+        "pioneer",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 139000,
+    "scrape_time": "2025-07-09 01:57:33",
+    "videos": [
+        {
+            "id": "AOCV2fOKG-4",
+            "url": "https://www.youtube.com/watch?v=AOCV2fOKG-4",
+            "author": "LegenVD",
+            "title": "This commander is out of this world!",
+            "description": "Magic: The Gathering Arena gameplay with a golgari counters deck, ft. Jenova, Ancient Calamity as commander in Brawl. \n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro\n01:52 - Deck Tech\n09:08 - vs Greasefang, Okiba Boss\n19:18 - vs Gishath, Sun's Avatar\n24:04 - vs Vivi Ornitier\n31:24 - vs Ardyn, the Usurper\n35:46 - vs Serah Farron\n42:34 - vs Muldrotha, the Gravetide\n49:30 - vs Squall, SeeD Mercenary\n54:23 - vs Azusa, Lost but Seeking\n\nDecklist:\nhttps://aetherhub.com/Deck/jenova-ancient-calamity-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGxFINALFANTASY #mtg #magicthegathering",
+            "keywords": [
+                "FF",
+                "FIN",
+                "FINAL FANTASY",
+                "alien",
+                "black",
+                "brawl",
+                "commander",
+                "counter deck",
+                "counters",
+                "counters deck",
+                "deck",
+                "decks",
+                "edh",
+                "ff",
+                "final fantasy",
+                "gameplay",
+                "golgari",
+                "green",
+                "guide",
+                "jenova brawl",
+                "jenova commander",
+                "jenova edh",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "mutant"
+            ],
+            "publish_time": "2025-07-08 09:00:17",
+            "views": 13544,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-07-08",
+                        "exports": 184,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Jenova, Ancient Calamity Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/jenova-ancient-calamity-brawl",
+                        "views": 464
+                    },
+                    "decklist_id": "7ea84412-db76-3754-943b-de21a4404111",
+                    "decklist_extended_id": "583fd1e6-17f4-2c74-6464-278c8710ec2d"
+                }
+            ]
+        }
+    ]
+}

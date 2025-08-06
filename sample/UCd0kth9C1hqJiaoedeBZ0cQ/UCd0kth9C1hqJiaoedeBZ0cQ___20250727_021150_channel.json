@@ -1,0 +1,76 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": null,
+    "tags": null,
+    "subscribers": 139000,
+    "scrape_time": "2025-07-27 02:11:50",
+    "videos": [
+        {
+            "id": "1slQYxQg_Ic",
+            "url": "https://www.youtube.com/watch?v=1slQYxQg_Ic",
+            "author": "LegenVD",
+            "title": "Nobody expects the Lhurgoyf of Doom.",
+            "description": "Magic: The Gathering Arena gameplay with a Cosmogoyf combo deck, ft. Doomsday Excruciator in Edge of Eternities Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n06:42 - Match 1\n10:55 - Match 2\n14:16 - Match 3\n25:34 - Match 4\n28:57 - Match 5\n32:35 - Match 6\n36:11 - Match 7\n\nDecklist:\nhttps://aetherhub.com/Deck/cosmogoyf-of-doom\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGEternities #mtg #magicthegathering",
+            "keywords": [
+                "Collect evidence",
+                "Standard MTG",
+                "black",
+                "blue",
+                "combo",
+                "cosmogoyf",
+                "deck",
+                "decks",
+                "doomsday",
+                "edge of eternities",
+                "eoe",
+                "eoe standard",
+                "eternity",
+                "excruciator",
+                "exile",
+                "gameplay",
+                "graveyard",
+                "green",
+                "guide",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "new standard",
+                "selfmill",
+                "standard",
+                "standard deck",
+                "sultai"
+            ],
+            "publish_time": "2025-07-26 09:00:03",
+            "views": 13251,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-07-26",
+                        "exports": 20,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Cosmogoyf of Doom",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/cosmogoyf-of-doom",
+                        "views": 176
+                    },
+                    "decklist_id": "eb976e66-1420-ebdb-bc21-bc31ee51e155",
+                    "decklist_extended_id": "3af4e9ef-f415-9f41-f89d-b398f652fb65"
+                }
+            ]
+        }
+    ]
+}

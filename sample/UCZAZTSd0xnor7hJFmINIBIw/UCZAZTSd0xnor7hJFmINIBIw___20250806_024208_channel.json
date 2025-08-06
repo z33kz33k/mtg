@@ -1,0 +1,58 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": null,
+    "tags": null,
+    "subscribers": 351000,
+    "scrape_time": "2025-08-06 02:42:08",
+    "videos": [
+        {
+            "id": "RwuyoU5iEwg",
+            "url": "https://www.youtube.com/watch?v=RwuyoU5iEwg",
+            "author": "MTGGoldfish",
+            "title": "I Use Lightstall Inquisitor to Exile My Opponents Hand",
+            "description": "We talked about Lightstall Inquisitor on the Goldfish Podcast, now let's see if it works in Standard as Crim tries to exile all his opponents cards in Hand and tax the spells in Exile with Aven Interruptor!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-i-use-lightstall-inquisitor-to-exile-my-opponents-hand\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7264605#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/GP3Uv\n◼ Purchase this deck (Magic Online): http://mtg.fish/Czm9D\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-08-05 08:00:06",
+            "views": 11297,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-07-31",
+                        "format": "standard",
+                        "name": "Orzhov Inquisitor",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7264605"
+                    },
+                    "decklist_id": "d4a34de0-518c-911f-04ec-33cebebce9e7",
+                    "decklist_extended_id": "035391a4-5760-3b64-6a18-f6a0510c0d63"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-i-use-lightstall-inquisitor-to-exile-my-opponents-hand",
+                        "date": "2025-07-31",
+                        "format": "standard",
+                        "name": "Orzhov Inquisitor",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-i-use-lightstall-inquisitor-to-exile-my-opponents-hand"
+                    },
+                    "decklist_id": "d4a34de0-518c-911f-04ec-33cebebce9e7",
+                    "decklist_extended_id": "035391a4-5760-3b64-6a18-f6a0510c0d63"
+                }
+            ]
+        }
+    ]
+}

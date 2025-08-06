@@ -1,0 +1,101 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "FINAL FANTASY",
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "final fantasy",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mythic",
+        "pioneer",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 137000,
+    "scrape_time": "2025-06-05 01:46:23",
+    "videos": [
+        {
+            "id": "iEuV9Ez2xEk",
+            "url": "https://www.youtube.com/watch?v=iEuV9Ez2xEk",
+            "author": "LegenVD",
+            "title": "I get two Dragons for the price of one.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a Temur dragon deck, ft. Ureni of the Unwritten as commander in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro\n01:24 - Deck Tech\n06:34 - vs Elspeth, Storm Slayer\n12:12 - vs Lagrella, the Magpie\n18:26 - vs Gisa, the Hellraiser\n22:34 - vs Chandra, Hope's Beacon\n27:55 - vs Kotis, the Fangkeeper\n30:36 - vs Torens, Fist of the Angels\n35:46 - vs Davriel, Soul Broker\n40:38 - vs Ureni of the Unwritten\n\nDecklist: \nhttps://aetherhub.com/Deck/ureni-of-the-unwritten-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #tarkir #mtg #mtgtarkir #mtgtdm #magicthegathering",
+            "keywords": [
+                "Ureni of the Unwritten",
+                "blue",
+                "brawl deck",
+                "commander",
+                "deck",
+                "decks",
+                "dragon",
+                "dragon ramp",
+                "dragonstorm",
+                "edh",
+                "gameplay",
+                "green",
+                "guide",
+                "historic brawl",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "ramp",
+                "red",
+                "tarkir",
+                "tarkir dragonstorm",
+                "tdm",
+                "temur",
+                "unwritten",
+                "ureni",
+                "ureni brawl",
+                "ureni commander",
+                "ureni edh"
+            ],
+            "publish_time": "2025-06-04 09:01:17",
+            "views": 10526,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-06-04",
+                        "exports": 108,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Ureni of the Unwritten Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/ureni-of-the-unwritten-brawl",
+                        "views": 300
+                    },
+                    "decklist_id": "5045f3e0-7828-e6cb-967f-500adceb3f50",
+                    "decklist_extended_id": "a396dc6d-3380-f562-cade-9c232937f4ef"
+                }
+            ]
+        }
+    ]
+}

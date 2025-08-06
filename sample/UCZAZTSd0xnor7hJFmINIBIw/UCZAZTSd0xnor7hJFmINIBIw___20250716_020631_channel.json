@@ -1,0 +1,82 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 350000,
+    "scrape_time": "2025-07-16 02:06:31",
+    "videos": [
+        {
+            "id": "PE-Lw7YIBtI",
+            "url": "https://www.youtube.com/watch?v=PE-Lw7YIBtI",
+            "author": "MTGGoldfish",
+            "title": "$100 Reprint, Strip Mine on Arena, Red Doppelgang???  Daily Edge of Eternities MTG Spoilers",
+            "description": "Today in Edge of Eternities we get the best and most expensive reprints from the set, some cards to teach Arena zoomers about and a mythic that might be the red Doppelgang! Let's discuss!\n\nNeed #MTGEOE cards? https://www.cardkingdom.com/mtggoldfish\n\nNeed more spoilers? https://www.mtgpreviews.com\n\n#MTG #Magicthegathering #mtgspoilers \n\n0:00 Start\n0:59 Syr Vondam, Sunstar Exemplar\n6:00 Lumen-Class Frigate\n8:41 Xu-Ifit, Osteoharmonist\n13:45 Devastation Onslaught\n20:48 Hardlight Containment\n25:33 Loading Zone\n30:41 Entropic Battlecruiser\n34:45 Pinnacle Emissary\n38:40 Dauntless Scrapbot\n40:22 Close Encounter\n41:48 Desculpting Blast\n42:54 Lands\n44:18 Strip Mine\n45:24 Special Guests",
+            "keywords": [
+                "MTG",
+                "MTG Arena",
+                "MTGGoldfish",
+                "Magic: the Gathering"
+            ],
+            "publish_time": "2025-07-15 13:27:06",
+            "views": 11814,
+            "sources": [
+                "www.cardkingdom.com",
+                "www.mtgpreviews.com"
+            ],
+            "decks": []
+        },
+        {
+            "id": "B801FyYDTgM",
+            "url": "https://www.youtube.com/watch?v=B801FyYDTgM",
+            "author": "MTGGoldfish",
+            "title": "This Standard Deck Plays Like Modern Boomer Jeskai Flash",
+            "description": "Remember Jeskai Flash with Restoration Angels, Bolt + Snapcaster Bolt in Modern? Well, this Jeskai deck feels like that!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-this-standard-deck-plays-like-modern-boomer-jeskai-flash\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7223318#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/UE4Z3\n◼ Purchase this deck (Magic Online): http://mtg.fish/LrTZB\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-07-15 08:00:06",
+            "views": 10444,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-07-09",
+                        "format": "standard",
+                        "name": "Jeskai Sphinx",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7223318"
+                    },
+                    "decklist_id": "d311e424-0a39-0ef5-7dcd-8df38dc7435d",
+                    "decklist_extended_id": "13503581-6e92-e32d-8e44-449d327d3c18"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-this-standard-deck-plays-like-modern-boomer-jeskai-flash",
+                        "date": "2025-07-09",
+                        "format": "standard",
+                        "name": "Jeskai Sphinx",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-this-standard-deck-plays-like-modern-boomer-jeskai-flash"
+                    },
+                    "decklist_id": "d311e424-0a39-0ef5-7dcd-8df38dc7435d",
+                    "decklist_extended_id": "13503581-6e92-e32d-8e44-449d327d3c18"
+                }
+            ]
+        }
+    ]
+}

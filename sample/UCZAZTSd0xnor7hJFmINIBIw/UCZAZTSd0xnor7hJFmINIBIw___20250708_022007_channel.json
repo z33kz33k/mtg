@@ -1,0 +1,62 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 349000,
+    "scrape_time": "2025-07-08 02:20:07",
+    "videos": [
+        {
+            "id": "SYhU_o6vIKc",
+            "url": "https://www.youtube.com/watch?v=SYhU_o6vIKc",
+            "author": "MTGGoldfish",
+            "title": "When Every Card in Your Deck Says Gain Life  $77 Budget Magic",
+            "description": "We've got a bunch new cards that are good in Soul Sisters, but is Soul Sisters good in Standard?\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/budget-magic-77-good-in-soul-sisters-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7208998#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/On2wQ\n◼ Purchase this deck (Magic Online): http://mtg.fish/l4bri\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#mtgstandard \n\n0:00 Start\n5:10 Match 1\n10:32 Match 2\n25:13 Match 3\n38:55 Match 4\n46:29 Match 5",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-07-07 08:00:09",
+            "views": 34219,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-07-01",
+                        "format": "standard",
+                        "name": "Soul Sisters",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7208998"
+                    },
+                    "decklist_id": "005c40e0-4dfc-bc3e-e4cd-50250eecaedd",
+                    "decklist_extended_id": "1d64d89f-1e99-c734-050c-81771754168c"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/budget-magic-77-good-in-soul-sisters-standard",
+                        "date": "2025-07-01",
+                        "format": "standard",
+                        "name": "Soul Sisters",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/budget-magic-77-good-in-soul-sisters-standard"
+                    },
+                    "decklist_id": "005c40e0-4dfc-bc3e-e4cd-50250eecaedd",
+                    "decklist_extended_id": "1d64d89f-1e99-c734-050c-81771754168c"
+                }
+            ]
+        }
+    ]
+}

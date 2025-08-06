@@ -1,0 +1,103 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "FINAL FANTASY",
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "final fantasy",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mythic",
+        "pioneer",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 138000,
+    "scrape_time": "2025-06-14 02:27:28",
+    "videos": [
+        {
+            "id": "s4Z16Hohmbs",
+            "url": "https://www.youtube.com/watch?v=s4Z16Hohmbs",
+            "author": "LegenVD",
+            "title": "Breaking Vivi in Standard.",
+            "description": "Magic: The Gathering Arena gameplay with a Cauldron combo deck, ft. Vivi Ornitier in FINAL FANTASY Standard. \n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:56 - Match 1\n08:47 - Match 2\n14:31 - Match 3\n22:01 - Match 4\n30:28 - Match 5\n36:50 - Match 6\n\nDecklist:\nhttps://aetherhub.com/Deck/vivi-cauldron-combo\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGxFINALFANTASY #mtg #magicthegathering",
+            "keywords": [
+                "FF",
+                "FF Standard",
+                "FIN",
+                "FIN standard",
+                "FINAL FANTASY",
+                "FINAL FANTASY standard",
+                "Standard MTG",
+                "best deck",
+                "blue",
+                "cauldron",
+                "deck",
+                "decks",
+                "ff",
+                "ff deck",
+                "final fantasy",
+                "gameplay",
+                "geralf",
+                "guide",
+                "izzet",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "new standard",
+                "red",
+                "standard",
+                "standard deck",
+                "standard vivi",
+                "vivi",
+                "vivi combo",
+                "zombie"
+            ],
+            "publish_time": "2025-06-13 09:01:34",
+            "views": 14316,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-06-13",
+                        "exports": 397,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Vivi Cauldron Combo",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/vivi-cauldron-combo",
+                        "views": 838
+                    },
+                    "decklist_id": "e1335627-50eb-d68c-af3d-b2c3e70ab347",
+                    "decklist_extended_id": "62802aa1-bb27-1905-b3df-360d8d169f34"
+                }
+            ]
+        }
+    ]
+}

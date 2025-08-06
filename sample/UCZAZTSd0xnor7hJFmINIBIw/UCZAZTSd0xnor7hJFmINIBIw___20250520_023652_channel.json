@@ -1,0 +1,62 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 345000,
+    "scrape_time": "2025-05-20 02:36:52",
+    "videos": [
+        {
+            "id": "QxY9FEnBorQ",
+            "url": "https://www.youtube.com/watch?v=QxY9FEnBorQ",
+            "author": "MTGGoldfish",
+            "title": "Mono-Green, in This Economy?  $40 Budget Magic",
+            "description": "The meta has shifted. Is it time for Mono-Green to rise in Standard on just a $40 budget? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/budget-magic-40-mono-green-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7088151#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/VPXIz\n◼ Purchase this deck (Magic Online): http://mtg.fish/C5ias\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#mtgstandard \n\n0:00 Start\n5:50 Match 1\n12:29 Match 2\n22:40 Match 3\n34:18 Match 4\n43:55 Match 5",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-05-19 08:00:07",
+            "views": 25170,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/budget-magic-40-mono-green-standard",
+                        "date": "2025-05-07",
+                        "format": "standard",
+                        "name": "Mono-Green",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/budget-magic-40-mono-green-standard"
+                    },
+                    "decklist_id": "980264ea-39a0-30e6-fbcf-60140ff276f8",
+                    "decklist_extended_id": "e9761774-5a04-39a6-3585-1b6eeea73345"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-05-07",
+                        "format": "standard",
+                        "name": "Mono-Green",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7088151"
+                    },
+                    "decklist_id": "980264ea-39a0-30e6-fbcf-60140ff276f8",
+                    "decklist_extended_id": "e9761774-5a04-39a6-3585-1b6eeea73345"
+                }
+            ]
+        }
+    ]
+}

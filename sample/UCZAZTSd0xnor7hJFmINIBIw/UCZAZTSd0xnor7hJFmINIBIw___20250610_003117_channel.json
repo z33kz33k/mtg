@@ -1,0 +1,62 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 346000,
+    "scrape_time": "2025-06-10 00:31:17",
+    "videos": [
+        {
+            "id": "6MlMJaFNWrc",
+            "url": "https://www.youtube.com/watch?v=6MlMJaFNWrc",
+            "author": "MTGGoldfish",
+            "title": "Kuja Black Mage Wizard Spellslinger  $60 Budget Magic",
+            "description": "Final Fantasy is here and we kick things off with a Rakdos spellslinger deck that's looking to win by making a ton of Black Mage Wizard tokens and flipping Kuja, Genome Sorcerer all on just a $60 budget!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) a https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/budget-magic-60-kuja-black-mage-wizards-final-fantasy-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7146407#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/VovMN\n◼ Purchase this deck (Magic Online): http://mtg.fish/oDKBG\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-06-09 08:00:08",
+            "views": 19025,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/budget-magic-60-kuja-black-mage-wizards-final-fantasy-standard",
+                        "date": "2025-06-02",
+                        "format": "standard",
+                        "name": "Kuja Black Mage Wizards",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/budget-magic-60-kuja-black-mage-wizards-final-fantasy-standard"
+                    },
+                    "decklist_id": "b159461a-7c9d-3b9e-275e-094bcadf2901",
+                    "decklist_extended_id": "0791fbdc-49b9-9fb7-905f-63c3be71f594"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-06-02",
+                        "format": "standard",
+                        "name": "Kuja Black Mage Wizards",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7146407"
+                    },
+                    "decklist_id": "b159461a-7c9d-3b9e-275e-094bcadf2901",
+                    "decklist_extended_id": "0791fbdc-49b9-9fb7-905f-63c3be71f594"
+                }
+            ]
+        }
+    ]
+}

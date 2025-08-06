@@ -1,0 +1,100 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "FINAL FANTASY",
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "final fantasy",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mythic",
+        "pioneer",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 137000,
+    "scrape_time": "2025-05-21 02:26:09",
+    "videos": [
+        {
+            "id": "D3ltX8EmIxg",
+            "url": "https://www.youtube.com/watch?v=D3ltX8EmIxg",
+            "author": "LegenVD",
+            "title": "This deck is making headlines.",
+            "description": "Magic: The Gathering Arena gameplay with a monored goblins deck, ft. Stadium Headliner and Krenko, Mob Boss in Tarkir Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n03:00 - Match 1 \n08:03 - Match 2\n11:51 - Match 3\n15:55 - Match 4\n21:27 - Match 5\n25:19 - Match 6\n30:19 - Match 7\n\nDecklist:\nhttps://aetherhub.com/Deck/tarkir-monored-goblins\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #tarkir #mtg #mtgtarkir #mtgtdm #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "aggro",
+                "deck",
+                "decks",
+                "dragonstorm",
+                "gameplay",
+                "guide",
+                "haste",
+                "headliner",
+                "hordemaster",
+                "howlsquad",
+                "krenko",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "monored",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "new standard",
+                "red",
+                "sacrifice",
+                "standard",
+                "standard deck",
+                "tarkir",
+                "tarkir dragonstorm",
+                "tarkir standard",
+                "tdm",
+                "tdm standard",
+                "tokens"
+            ],
+            "publish_time": "2025-05-20 09:00:32",
+            "views": 14052,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-05-20",
+                        "exports": 181,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Tarkir Monored Goblins",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/tarkir-monored-goblins",
+                        "views": 600
+                    },
+                    "decklist_id": "28c52138-89b2-3f47-6437-b0c8c2a65a87",
+                    "decklist_extended_id": "b2e52a7b-40e4-e8c0-b914-959aa6cf4d93"
+                }
+            ]
+        }
+    ]
+}

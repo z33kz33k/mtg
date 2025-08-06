@@ -1,0 +1,144 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": null,
+    "tags": null,
+    "subscribers": 139000,
+    "scrape_time": "2025-07-26 11:53:36",
+    "videos": [
+        {
+            "id": "PHpX_taW7ss",
+            "url": "https://www.youtube.com/watch?v=PHpX_taW7ss",
+            "author": "LegenVD",
+            "title": "This new +1+1 counter card is broken.",
+            "description": "Magic: The Gathering Arena gameplay with a monogreen +1/+1 counter deck, featuring Ouroboroid in Edge of Eternities Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n07:33 - Match 1\n10:58 - Match 2\n17:46 - Match 3\n20:22 - Match 4\n24:53 - Match 5\n28:31 - Match 6\n33:11 - Match 7\n\nDecklist:\nhttps://aetherhub.com/Deck/monogreen-ouroboroid-counters\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGEternities #mtg #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "aggro",
+                "bill",
+                "bristly",
+                "brushwagg",
+                "counters",
+                "deck",
+                "decks",
+                "edge of eternities",
+                "eoe",
+                "eoe standard",
+                "eternity",
+                "gameplay",
+                "green",
+                "guide",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "monogreen",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "new standard",
+                "ouroboroid",
+                "ouroboros",
+                "standard",
+                "standard deck",
+                "stompy",
+                "talent",
+                "warden"
+            ],
+            "publish_time": "2025-07-25 09:00:46",
+            "views": 28451,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-07-25",
+                        "exports": 72,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Monogreen Ouroboroid Counters",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/monogreen-ouroboroid-counters",
+                        "views": 445
+                    },
+                    "decklist_id": "dc5e4f95-cc92-ba1a-b1ae-29d72b8739ed",
+                    "decklist_extended_id": "dcf5b573-3eb0-c04b-8a98-f01de84a8ea7"
+                }
+            ]
+        },
+        {
+            "id": "1yT_qcCzw04",
+            "url": "https://www.youtube.com/watch?v=1yT_qcCzw04",
+            "author": "LegenVD",
+            "title": "I'm sending Dinosaurs into space.",
+            "description": "Magic: The Gathering Arena gameplay with a Naya spacecraft survival combo deck in Edge of Eternities Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n06:48 - Match 1\n11:15 - Match 2\n13:53 - Match 3\n20:00 - Match 4\n21:37 - Match 5\n30:23 - Match 6\n32:24 - Match 7\n\nDecklist:\nhttps://aetherhub.com/Deck/spacecraft-survival\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGEternities #mtg #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "anzrag",
+                "beastie",
+                "combo",
+                "deck",
+                "decks",
+                "edge of eternities",
+                "eoe",
+                "eoe standard",
+                "eternity",
+                "gameplay",
+                "ghalta",
+                "green",
+                "guide",
+                "kona",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "naya",
+                "new standard",
+                "red",
+                "rip",
+                "space",
+                "spacecraft",
+                "standard",
+                "standard deck",
+                "station",
+                "survival",
+                "white"
+            ],
+            "publish_time": "2025-07-24 09:00:06",
+            "views": 32432,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-07-24",
+                        "exports": 57,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Spacecraft Survival",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/spacecraft-survival",
+                        "views": 557
+                    },
+                    "decklist_id": "d36aa759-1ea2-5865-1057-b9c7214a3a5c",
+                    "decklist_extended_id": "15c32727-ff2b-8fbd-2c0e-0452e6ca40eb"
+                }
+            ]
+        }
+    ]
+}

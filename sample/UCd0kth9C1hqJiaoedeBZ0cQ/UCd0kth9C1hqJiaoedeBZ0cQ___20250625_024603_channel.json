@@ -1,0 +1,101 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "FINAL FANTASY",
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "final fantasy",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mythic",
+        "pioneer",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 138000,
+    "scrape_time": "2025-06-25 02:46:03",
+    "videos": [
+        {
+            "id": "xMVd70NyFGY",
+            "url": "https://www.youtube.com/watch?v=xMVd70NyFGY",
+            "author": "LegenVD",
+            "title": "This commander is ... busted.",
+            "description": "Magic: The Gathering Arena gameplay with a monogreen landfall aggro deck, ft. Tifa Lockhart in Brawl. \n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro\n01:41 - Deck Tech\n07:25 - vs Pantlaza,Sun-Favored\n11:32 - vs Unesh, Criosphinx Sovereign\n17:45 - vs Extus, Oriq Overlord\n22:20 - vs Vivi Ornitier\n27:13 - vs Rhys the Redeemed\n30:27 - vs Terra, Magical Adept\n34:29 - vs Rigo Streetwise Mentor\n37:11 - vs Tsagan, Raider Warlord\n41:09 - vs Kaya, Spirit's Justice\n43:19 - vs Vivi Ornitier\n52:43 - vs Tifa Lockhart\n\nDecklist:\nhttps://aetherhub.com/Deck/tifa-lockhart-landfall-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGxFINALFANTASY #mtg #magicthegathering",
+            "keywords": [
+                "FF",
+                "FIN",
+                "FINAL FANTASY",
+                "brawl",
+                "busted",
+                "combo",
+                "commander",
+                "deck",
+                "decks",
+                "edh",
+                "ff",
+                "final fantasy",
+                "gameplay",
+                "green",
+                "guide",
+                "landfall",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "monogreen",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "otk",
+                "pump",
+                "ramp",
+                "tifa",
+                "tifa brawl",
+                "tifa commander",
+                "tifa edh",
+                "tifa lockhart"
+            ],
+            "publish_time": "2025-06-24 09:01:26",
+            "views": 14027,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-06-24",
+                        "exports": 302,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Tifa Lockhart Landfall Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/tifa-lockhart-landfall-brawl",
+                        "views": 656
+                    },
+                    "decklist_id": "d10b10fb-7e08-99d6-7051-e2845d07ddaf",
+                    "decklist_extended_id": "5507c32c-c2ee-bc51-ec6c-68251dea038a"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,62 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 348000,
+    "scrape_time": "2025-06-25 02:51:28",
+    "videos": [
+        {
+            "id": "eF0nn9qQqOg",
+            "url": "https://www.youtube.com/watch?v=eF0nn9qQqOg",
+            "author": "MTGGoldfish",
+            "title": "Bahamut, Ultima, and Ugin Love Ramen",
+            "description": "Life is about finding good friends and sharing some good food with friends. Well, in this story, those friends are Bahamut, Ugin, and Ultima.\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-bahamut-ultima-and-ugin-love-ramen\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7151919#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/3KuQh\n◼ Purchase this deck (Magic Online): http://mtg.fish/uhk1K\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-06-24 08:00:05",
+            "views": 16554,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-06-05",
+                        "format": "standard",
+                        "name": "Ultima",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7151919"
+                    },
+                    "decklist_id": "a7706978-be27-ea0b-c1b4-f1072b540b4c",
+                    "decklist_extended_id": "c30040d5-83e1-442f-d59c-cd016b8214b5"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-bahamut-ultima-and-ugin-love-ramen",
+                        "date": "2025-06-05",
+                        "format": "standard",
+                        "name": "Ultima",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-bahamut-ultima-and-ugin-love-ramen"
+                    },
+                    "decklist_id": "a7706978-be27-ea0b-c1b4-f1072b540b4c",
+                    "decklist_extended_id": "c30040d5-83e1-442f-d59c-cd016b8214b5"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,96 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "FINAL FANTASY",
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "final fantasy",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mythic",
+        "pioneer",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 137000,
+    "scrape_time": "2025-05-22 02:19:31",
+    "videos": [
+        {
+            "id": "CJMTRuzmfps",
+            "url": "https://www.youtube.com/watch?v=CJMTRuzmfps",
+            "author": "LegenVD",
+            "title": "Playing a blue deck without counterspells.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a monoblue devotion deck ft. Thassa, God of the Sea in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro\n02:13 - Deck Tech\n08:02 - vs Kellan, Inquisitive Prodigy\n14:38 - vs Shelob, Child of Ungoliant\n18:29 - vs Eshki, Temur's Roar\n24:31 - vs Betor, Ancestor's Voice\n29:08 - vs Tiamat\n36:34 - vs Sidisi, Brood Tyrant\n43:20 - vs Vnwxt, Verbose Host \n49:08 - vs Galadriel of Lothlórien \n54:41 - vs Tatyova, Benthic Druid \n58:29 - vs Old Rutstein \n\nDecklist: \nhttps://aetherhub.com/Deck/thassa-god-of-the-sea-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #tarkir #mtg #mtgtarkir #mtgtdm #magicthegathering",
+            "keywords": [
+                "aggro",
+                "bident",
+                "blue",
+                "brawl deck",
+                "commander",
+                "deck",
+                "decks",
+                "devotion",
+                "draw",
+                "edh",
+                "evasion",
+                "flying",
+                "gameplay",
+                "guide",
+                "historic brawl",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "master of waves",
+                "monoblue",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "thassa",
+                "thassa commander",
+                "thassa edh"
+            ],
+            "publish_time": "2025-05-21 09:00:18",
+            "views": 12555,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-05-21",
+                        "exports": 82,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Thassa, God of the Sea Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/thassa-god-of-the-sea-brawl",
+                        "views": 426
+                    },
+                    "decklist_id": "0d7f77e9-f53c-d324-989c-8a417001b497",
+                    "decklist_extended_id": "259eba53-c5d0-3536-2ddb-36993bd80630"
+                }
+            ]
+        }
+    ]
+}

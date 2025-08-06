@@ -1,0 +1,82 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 345000,
+    "scrape_time": "2025-05-24 03:55:28",
+    "videos": [
+        {
+            "id": "g-NKHQ_dRp4",
+            "url": "https://www.youtube.com/watch?v=g-NKHQ_dRp4",
+            "author": "MTGGoldfish",
+            "title": "Maybe an Equipment Deck Can Be Real After All...  Daily MTG Final Fantasy Spoilers",
+            "description": "We've reached the end of week two of Final Fantasy spoilers. Today we get a blue mythic that can copy your abilities a ton of times, some spicy vehicles, a two-drop that might help make Equipment into a real deck and more! Let's discuss!\n\nNeed Final Fantasy cards? https://www.cardkingdom.com/mtggoldfish\n\nNeed more spoilers? https://www.mtgpreviews.com\n\n#MTG #magicthegathering #mtgspoilers #finalfantasy \n\n0:00 Start\n0:58 Gogo\n9:05 The Lunar Whale\n12:46 The Regalia\n16:41 Raubahn, Bull of Ala Mhigo\n22:25 FF Through the Ages\n22:46 Reach the Horizon\n23:20 World Map\n24:06 Prompto Argentum\n25:33 Ignis Scientia\n26:43 The Gold Saucer",
+            "keywords": [
+                "MTG",
+                "MTG Arena",
+                "MTGGoldfish",
+                "Magic: the Gathering"
+            ],
+            "publish_time": "2025-05-23 08:58:40",
+            "views": 19966,
+            "sources": [
+                "www.cardkingdom.com",
+                "www.mtgpreviews.com"
+            ],
+            "decks": []
+        },
+        {
+            "id": "j1HjugaZsmM",
+            "url": "https://www.youtube.com/watch?v=j1HjugaZsmM",
+            "author": "MTGGoldfish",
+            "title": "Boros Pingers Go Pew Pew",
+            "description": "Its always a blast to ping our opponent's health totals down with Impact Tremor style effects and this deck is looking to emulate that!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-boros-pingers-go-pew-pew\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7112686#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/W4bXZ\n◼ Purchase this deck (Magic Online): http://mtg.fish/B0q18\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-05-23 03:51:47",
+            "views": 15307,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-boros-pingers-go-pew-pew",
+                        "date": "2025-05-19",
+                        "format": "standard",
+                        "name": "Boros Mobilize",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-boros-pingers-go-pew-pew"
+                    },
+                    "decklist_id": "9160ef1f-5c59-594d-3e41-45674d4ca24f",
+                    "decklist_extended_id": "0ca7a021-4c38-6f32-62d4-f5b08a23e9f9"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-05-19",
+                        "format": "standard",
+                        "name": "Boros Mobilize",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7112686"
+                    },
+                    "decklist_id": "9160ef1f-5c59-594d-3e41-45674d4ca24f",
+                    "decklist_extended_id": "0ca7a021-4c38-6f32-62d4-f5b08a23e9f9"
+                }
+            ]
+        }
+    ]
+}

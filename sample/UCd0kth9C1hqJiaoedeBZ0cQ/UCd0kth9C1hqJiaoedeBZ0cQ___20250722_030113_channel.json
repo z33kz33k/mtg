@@ -1,0 +1,77 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": null,
+    "tags": null,
+    "subscribers": 139000,
+    "scrape_time": "2025-07-22 03:01:13",
+    "videos": [
+        {
+            "id": "aUVYL5tp2Og",
+            "url": "https://www.youtube.com/watch?v=aUVYL5tp2Og",
+            "author": "LegenVD",
+            "title": "This barbarian raided the entire armory.",
+            "description": "Magic: The Gathering Arena gameplay with a monored equipment deck, ft. Godo, Bandit Warlord (Gilgamesh) as commander in Brawl. \n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro\n02:08 - Deck Tech\n08:21 - vs Jenova, Ancient Calamity\n12:17 - vs Lumra, Bellow of the Woods\n19:27 - vs Roxanne, Starfall Savant\n25:34 - vs Thalia and The Gitrog Monster\n38:23 - vs Tifa Lockhart\n40:46 - vs Soul of Windgrace\n45:16 - vs Zoyowa Lava-Tongue\n\nDecklist:\nhttps://aetherhub.com/Deck/godo-bandit-warlord-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGxFINALFANTASY #mtg #magicthegathering",
+            "keywords": [
+                "FF",
+                "FIN",
+                "FINAL FANTASY",
+                "brawl",
+                "combo",
+                "combo deck",
+                "commander",
+                "deck",
+                "decks",
+                "edh",
+                "equipment",
+                "equipment deck",
+                "ff",
+                "final fantasy",
+                "gameplay",
+                "gilgamesh",
+                "godo",
+                "godo brawl",
+                "godo commander",
+                "godo edh",
+                "guide",
+                "helm of the host",
+                "infinite",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "monored",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "red"
+            ],
+            "publish_time": "2025-07-21 09:00:04",
+            "views": 13124,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-07-21",
+                        "exports": 63,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Godo, Bandit Warlord Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/godo-bandit-warlord-brawl",
+                        "views": 237
+                    },
+                    "decklist_id": "cdcf7a8e-1f7d-2836-1d0c-79b6a382f701",
+                    "decklist_extended_id": "3040acd9-88ce-a3e3-db67-7dd14059f8c3"
+                }
+            ]
+        }
+    ]
+}

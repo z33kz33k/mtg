@@ -1,0 +1,99 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "FINAL FANTASY",
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "final fantasy",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mythic",
+        "pioneer",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 137000,
+    "scrape_time": "2025-05-20 02:32:57",
+    "videos": [
+        {
+            "id": "IU0oyZX514Q",
+            "url": "https://www.youtube.com/watch?v=IU0oyZX514Q",
+            "author": "LegenVD",
+            "title": "Playing with the cutest control freaks.",
+            "description": "Magic: The Gathering Arena gameplay with a jeskai otter control deck ft. Stormchaser's Talent and Jeskai Revelation in Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n03:40 - Match 1\n15:23 - Match 2\n28:42 - Match 3\n31:31 - Match 4\n34:33 - Match 5\n42:29 - Match 6\n48:42 - Match 7\n\nDecklist:\nhttps://aetherhub.com/Deck/jeskai-otter-control\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #tarkir #mtg #mtgtarkir #mtgtdm #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "blue",
+                "control",
+                "deck",
+                "decks",
+                "dragonstorm",
+                "gameplay",
+                "guide",
+                "jeskai",
+                "jeskai control",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "new standard",
+                "otter",
+                "red",
+                "revelation",
+                "standard",
+                "standard deck",
+                "talent",
+                "tarkir",
+                "tarkir dragonstorm",
+                "tarkir standard",
+                "tdm",
+                "tdm standard",
+                "white"
+            ],
+            "publish_time": "2025-05-19 09:00:34",
+            "views": 11419,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "control",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-05-19",
+                        "exports": 132,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Jeskai Otter Control",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/jeskai-otter-control",
+                        "views": 450
+                    },
+                    "decklist_id": "707b15d8-3722-755e-e54a-ff9195fe8598",
+                    "decklist_extended_id": "9cab6efa-66f4-5830-1e71-dab986eda3bd"
+                }
+            ]
+        }
+    ]
+}

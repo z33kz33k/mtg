@@ -1,0 +1,62 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 346000,
+    "scrape_time": "2025-06-02 21:06:43",
+    "videos": [
+        {
+            "id": "0FWzRRDA6os",
+            "url": "https://www.youtube.com/watch?v=0FWzRRDA6os",
+            "author": "MTGGoldfish",
+            "title": "Simic Spellslinger Siege Mill  12 Rare Budget Magic",
+            "description": "Can Glacerwood Siege power a spellslinger-style mill deck in Standard, all on just a $90 / 12-rare budget? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/budget-magic-12-rare-simic-spellslinger-siege-mill-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7104193#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/DnWEx\n◼ Purchase this deck (Magic Online): http://mtg.fish/M7Oi4\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#mtgstandard \n\n0:00 Start\n5:07 Match 1\n11:25 Match 2\n16:56 Match 3\n39:11 Match 4\n50:32 Match 5",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-06-02 08:00:08",
+            "views": 10047,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-05-15",
+                        "format": "standard",
+                        "name": "Simic Spellslinger Siege Mill",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7104193"
+                    },
+                    "decklist_id": "7f367815-9a81-45cc-33bc-370df6794a64",
+                    "decklist_extended_id": "38d3b99b-bdbc-6e34-e46a-db3c536defbe"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/budget-magic-12-rare-simic-spellslinger-siege-mill-standard",
+                        "date": "2025-05-15",
+                        "format": "standard",
+                        "name": "Simic Spellslinger Siege Mill",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/budget-magic-12-rare-simic-spellslinger-siege-mill-standard"
+                    },
+                    "decklist_id": "7f367815-9a81-45cc-33bc-370df6794a64",
+                    "decklist_extended_id": "38d3b99b-bdbc-6e34-e46a-db3c536defbe"
+                }
+            ]
+        }
+    ]
+}

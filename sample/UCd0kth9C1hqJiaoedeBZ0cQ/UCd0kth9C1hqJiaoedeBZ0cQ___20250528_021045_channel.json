@@ -1,0 +1,102 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "FINAL FANTASY",
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "final fantasy",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mythic",
+        "pioneer",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 137000,
+    "scrape_time": "2025-05-28 02:10:45",
+    "videos": [
+        {
+            "id": "YReVdHdaRik",
+            "url": "https://www.youtube.com/watch?v=YReVdHdaRik",
+            "author": "LegenVD",
+            "title": "Every land makes a dragon.",
+            "description": "Magic: The Gathering Arena gameplay with a Temur dragon ramp deck, ft. Dragonback Assault in Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:13 - Match 1\n12:10 - Match 2\n15:02 - Match 3\n21:54 - Match 4\n24:56 - Match 5\n29:11 - Match 6\n33:30 - Match 7\n37:54 - Match 8\n\nDecklist:\nhttps://aetherhub.com/Deck/temur-dragonback-ramp\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #tarkir #mtg #mtgtarkir #mtgtdm #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "bloomvine",
+                "blue",
+                "brotherhood",
+                "deck",
+                "decks",
+                "dragonback",
+                "dragons",
+                "dragonstorm",
+                "gameplay",
+                "green",
+                "guide",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "new standard",
+                "ramp",
+                "ramp deck",
+                "red",
+                "regent",
+                "standard",
+                "standard deck",
+                "sweeper",
+                "tarkir",
+                "tarkir dragonstorm",
+                "tarkir standard",
+                "tdm",
+                "tdm standard",
+                "temur"
+            ],
+            "publish_time": "2025-05-27 09:01:00",
+            "views": 14535,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-05-27",
+                        "exports": 468,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Temur Dragonback Ramp",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/temur-dragonback-ramp",
+                        "views": 1070
+                    },
+                    "decklist_id": "faf2fa0d-5200-3abe-ba36-59fad8c1fa98",
+                    "decklist_extended_id": "80044025-fb11-b03f-d17b-66baca55ee9d"
+                }
+            ]
+        }
+    ]
+}

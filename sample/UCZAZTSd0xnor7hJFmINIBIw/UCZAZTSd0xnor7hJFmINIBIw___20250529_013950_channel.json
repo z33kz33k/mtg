@@ -1,0 +1,79 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 345000,
+    "scrape_time": "2025-05-29 01:39:50",
+    "videos": [
+        {
+            "id": "NyLMmHcZ9rw",
+            "url": "https://www.youtube.com/watch?v=NyLMmHcZ9rw",
+            "author": "MTGGoldfish",
+            "title": "Will This 5C Towns Commander See Modern Play?  Daily MTG Final Fantasy Spoilers",
+            "description": "It's a big day today in Final Fantasy spoiler land! We've got a 5c Towns commander that seems good enough for Modern, Sephiroth's death trigger doubling sword, a bunch of Chocobo cards, the new best Soul Sisters commander and so much more! Let's discuss!\n\nNeed Final Fantasy cards? https://www.cardkingdom.com/mtggoldfish\n\nNeed more spoilers? https://www.mtgpreviews.com\n\n#MTG #Magicthegathering #finalfantasy #mtgspoilers \n\n0:00 Start\n1:06 Wandering Minstrel\n5:53 The Masamune\n10:08 Minwu\n13:40 Memories Returning\n16:46 Seifer Almasy\n20:23 Summon: G.F. Cereberus\n24:52 Adventurer's Airship\n25:21 Eden\n26:38 Giott\n27:30 Chocobo\n30:09 Random Encounter\n31:29 Opera Love Song\n32:35 Demon Wall\n33:46 Hecteyes\n34:14 Resentful Revelation\n34:53 Diamond Weapon",
+            "keywords": [
+                "MTG",
+                "MTG Arena",
+                "MTGGoldfish",
+                "Magic: the Gathering"
+            ],
+            "publish_time": "2025-05-28 08:34:21",
+            "views": 21110,
+            "sources": [
+                "www.cardkingdom.com",
+                "www.mtgpreviews.com"
+            ],
+            "decks": []
+        },
+        {
+            "id": "ic4pN0oN3pM",
+            "url": "https://www.youtube.com/watch?v=ic4pN0oN3pM",
+            "author": "MTGGoldfish",
+            "title": "Azorius Mages, Standard is Calling You!",
+            "description": "This is an Azorius and Control roll call! Seeing Azorius Control getting love again and being viable has me excited for Standard! Jace is joined by Elspeth to take down this aggressive meta.\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-azorius-mages-standard-is-calling-you\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7122855#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/BR7Ne\n◼ Purchase this deck (Magic Online): http://mtg.fish/xrXcL\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "MTG",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-05-27 19:00:04",
+            "views": 20791,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-azorius-mages-standard-is-calling-you",
+                        "date": "2025-05-22",
+                        "format": "standard",
+                        "name": "Azorius Control",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-azorius-mages-standard-is-calling-you"
+                    },
+                    "decklist_id": "1f690dbf-f6d2-e6f9-528a-57fdd84a8485",
+                    "decklist_extended_id": "ce3b1dae-3d70-811e-ea91-585164117b15"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-05-22",
+                        "format": "standard",
+                        "name": "Azorius Control",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7122855"
+                    },
+                    "decklist_id": "1f690dbf-f6d2-e6f9-528a-57fdd84a8485",
+                    "decklist_extended_id": "ce3b1dae-3d70-811e-ea91-585164117b15"
+                }
+            ]
+        }
+    ]
+}

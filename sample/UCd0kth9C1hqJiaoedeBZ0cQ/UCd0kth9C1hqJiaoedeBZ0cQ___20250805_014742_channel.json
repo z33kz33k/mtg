@@ -1,0 +1,73 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": null,
+    "tags": null,
+    "subscribers": 140000,
+    "scrape_time": "2025-08-05 01:47:42",
+    "videos": [
+        {
+            "id": "abOg1CyxJpA",
+            "url": "https://www.youtube.com/watch?v=abOg1CyxJpA",
+            "author": "LegenVD",
+            "title": "Playing this prison deck before it gets banned.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a Strip Mine land destruction deck, ft. Icetill Explorer in Timeless. \n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n06:12 - Match 1\n09:25 - Match 2\n13:20 - Match 3\n16:15 - Match 4\n31:03 - Match 5\n34:19 - Match 6\n38:35 - Match 7\n40:57 - Match 8\n44:22 - Match 9\n48:26 - Match 10\n\nDecklist: \nhttps://aetherhub.com/Deck/strip-mine-prison-land-destruction\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtg #mtgeternities #edgeofeternities",
+            "keywords": [
+                "ancient tomb",
+                "azusa",
+                "banned",
+                "chalice",
+                "deck",
+                "decks",
+                "edge of eternities",
+                "eoe",
+                "extra land",
+                "gameplay",
+                "green",
+                "guide",
+                "icetill explorer",
+                "land destruction",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "monogreen",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "prison",
+                "prison deck",
+                "ramp",
+                "stellar sights",
+                "strip mine",
+                "timeless",
+                "timeless deck"
+            ],
+            "publish_time": "2025-08-04 09:00:05",
+            "views": 20924,
+            "sources": [
+                "aetherhub.com",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "control",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-08-04",
+                        "exports": 155,
+                        "format": "timeless",
+                        "mode": "Bo1",
+                        "name": "Strip Mine Prison Land Destruction",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/strip-mine-prison-land-destruction",
+                        "views": 524
+                    },
+                    "decklist_id": "c8aa8b40-b27d-24a5-dadd-8753eff3fa46",
+                    "decklist_extended_id": "40ce20b4-3777-cd4f-10e3-9f8d47a5162a"
+                }
+            ]
+        }
+    ]
+}

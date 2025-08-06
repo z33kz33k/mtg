@@ -1,0 +1,82 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 346000,
+    "scrape_time": "2025-05-30 02:32:48",
+    "videos": [
+        {
+            "id": "UnNj3qhIxOA",
+            "url": "https://www.youtube.com/watch?v=UnNj3qhIxOA",
+            "author": "MTGGoldfish",
+            "title": "They Made an Equipment That's GOOD IN SOUL SISTERS!  Daily MTG Final Fantasy Spoilers",
+            "description": "We've reached the penultimate day of Final Fantasy spoilers. The full set drops tomorrow, but today we get an equipment that's good in Soul Sisters, a Welcoming Vampire for legends decks, a Dimir artifact legend, Fat Chocobo and more! Let's discuss!\n\nNeed Final Fantasy?: https://www.cardkingdom.com/mtggoldfish\n\nNeed more spoilers?: https://www.mtgpreviews.com\n\n#MTG #Magicthegathering #mtgspoilers #finalfantasy \n\n0:00 Start\n1:00 Excalibur II\n5:10 Genju Glove\n10:01 Golbez\n16:07 Summon: Brynhildr\n20:57 Venat\n25:10 Fat Chocobo\n25:32 Travel the Overworld",
+            "keywords": [
+                "MTG",
+                "MTG Arena",
+                "MTGGoldfish",
+                "Magic: the Gathering"
+            ],
+            "publish_time": "2025-05-29 08:12:19",
+            "views": 22660,
+            "sources": [
+                "www.cardkingdom.com",
+                "www.mtgpreviews.com"
+            ],
+            "decks": []
+        },
+        {
+            "id": "qmBYFIsOtD4",
+            "url": "https://www.youtube.com/watch?v=qmBYFIsOtD4",
+            "author": "MTGGoldfish",
+            "title": "I Built a Deck to Never Lose to Prowess  Against the Odds",
+            "description": "Are Deification backed by Elspeths and a ton of hateful white cards the answer to Prowess in Standard? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/against-the-odds-i-built-a-deck-to-never-lose-to-prowess-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7102130#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/45YHF\n◼ Purchase this deck (Magic Online): http://mtg.fish/i4VFb\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#mtgstandard \n\n0:00 Start\n5:03 Games",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-05-28 19:00:06",
+            "views": 48332,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/against-the-odds-i-built-a-deck-to-never-lose-to-prowess-standard",
+                        "date": "2025-05-14",
+                        "format": "standard",
+                        "name": "Elspeth Deification",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/against-the-odds-i-built-a-deck-to-never-lose-to-prowess-standard"
+                    },
+                    "decklist_id": "3bb6b6bc-5d1a-5572-ff5b-5bd1f394e67d",
+                    "decklist_extended_id": "8611635d-6df0-65bc-7cdb-41235f8133b8"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-05-14",
+                        "format": "standard",
+                        "name": "Elspeth Deification",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7102130"
+                    },
+                    "decklist_id": "3bb6b6bc-5d1a-5572-ff5b-5bd1f394e67d",
+                    "decklist_extended_id": "8611635d-6df0-65bc-7cdb-41235f8133b8"
+                }
+            ]
+        }
+    ]
+}

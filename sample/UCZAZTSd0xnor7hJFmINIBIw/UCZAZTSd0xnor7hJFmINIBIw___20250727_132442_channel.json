@@ -1,0 +1,58 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": null,
+    "tags": null,
+    "subscribers": 351000,
+    "scrape_time": "2025-07-27 13:24:42",
+    "videos": [
+        {
+            "id": "_GmmkrSNzp4",
+            "url": "https://www.youtube.com/watch?v=_GmmkrSNzp4",
+            "author": "MTGGoldfish",
+            "title": "Kefka and Ultimecia Brings A New Way to Cauldron",
+            "description": "Kefka & Ultimecia is a different way to use Cauldron so you don't need to fling things to the opponent's face!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-kefka-and-ultimecia-brings-a-new-way-to-cauldron\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7249281#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/PXYkT\n◼ Purchase this deck (Magic Online): http://mtg.fish/tsF2v\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-07-26 19:00:04",
+            "views": 8773,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-kefka-and-ultimecia-brings-a-new-way-to-cauldron",
+                        "date": "2025-07-21",
+                        "format": "standard",
+                        "name": "Kefka Cauldron",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-kefka-and-ultimecia-brings-a-new-way-to-cauldron"
+                    },
+                    "decklist_id": "3e439d5d-90e4-6297-fa79-373f5900f706",
+                    "decklist_extended_id": "d4d18f56-4b90-9164-6fb8-d9daa9cef252"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-07-21",
+                        "format": "standard",
+                        "name": "Kefka Cauldron",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7249281"
+                    },
+                    "decklist_id": "3e439d5d-90e4-6297-fa79-373f5900f706",
+                    "decklist_extended_id": "d4d18f56-4b90-9164-6fb8-d9daa9cef252"
+                }
+            ]
+        }
+    ]
+}

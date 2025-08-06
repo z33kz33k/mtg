@@ -1,0 +1,99 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "FINAL FANTASY",
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "final fantasy",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mythic",
+        "pioneer",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 137000,
+    "scrape_time": "2025-05-23 02:59:41",
+    "videos": [
+        {
+            "id": "zW6IYBxomyU",
+            "url": "https://www.youtube.com/watch?v=zW6IYBxomyU",
+            "author": "LegenVD",
+            "title": "This deck is nightmare fuel.",
+            "description": "Magic: The Gathering Arena gameplay with a sultai selfmill deck ft. Cruel Somnophage and Rakshasa's Bargain from Tarkir in Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:05 - Match 1\n15:00 - Match 2\n25:33 - Match 3\n33:39 - Match 4\n38:15 - Match 5 \n\nDecklist:\nhttps://aetherhub.com/Deck/rakshasas-sultai-selfmill\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #tarkir #mtg #mtgtarkir #mtgtdm #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "bargain",
+                "beans",
+                "beanstalk",
+                "black",
+                "blue",
+                "deck",
+                "decks",
+                "dragonstorm",
+                "gameplay",
+                "graveyard",
+                "green",
+                "guide",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "new standard",
+                "selfmill",
+                "standard",
+                "standard deck",
+                "sultai",
+                "tarkir",
+                "tarkir dragonstorm",
+                "tarkir standard",
+                "tdm",
+                "tdm standard"
+            ],
+            "publish_time": "2025-05-22 09:01:27",
+            "views": 13739,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-05-22",
+                        "exports": 304,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Rakshasa's Sultai Selfmill",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/rakshasas-sultai-selfmill",
+                        "views": 703
+                    },
+                    "decklist_id": "e59e48ac-85ba-a170-6841-26db8aed2dd9",
+                    "decklist_extended_id": "722b307b-5ce2-1378-2e4c-31cb1a49efe0"
+                }
+            ]
+        }
+    ]
+}

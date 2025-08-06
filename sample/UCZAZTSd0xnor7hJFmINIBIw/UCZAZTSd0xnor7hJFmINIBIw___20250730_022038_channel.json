@@ -1,0 +1,106 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": null,
+    "tags": null,
+    "subscribers": 351000,
+    "scrape_time": "2025-07-30 02:20:38",
+    "videos": [
+        {
+            "id": "TB6RCIJ0n34",
+            "url": "https://www.youtube.com/watch?v=TB6RCIJ0n34",
+            "author": "MTGGoldfish",
+            "title": "Oh No, Who Let The Lobster Man Cook?",
+            "description": "Ragost, Deft Gastronaught is cooking and we're going to try to fling fiery hot lobster rolls everywhere with the assist of Weapons Manufacturing.\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-oh-no-who-let-the-lobster-man-cook\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7254006#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/lb8Vq\n◼ Purchase this deck (Magic Online): http://mtg.fish/g7V8w\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-07-29 08:00:08",
+            "views": 15408,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-07-24",
+                        "format": "standard",
+                        "name": "Ragost",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7254006"
+                    },
+                    "decklist_id": "4e9d5fec-5e84-9461-38c2-9cdb539c4290",
+                    "decklist_extended_id": "c84d41b5-81c6-5e96-d078-26f4879bbd45"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-oh-no-who-let-the-lobster-man-cook",
+                        "date": "2025-07-24",
+                        "format": "standard",
+                        "name": "Ragost",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-oh-no-who-let-the-lobster-man-cook"
+                    },
+                    "decklist_id": "4e9d5fec-5e84-9461-38c2-9cdb539c4290",
+                    "decklist_extended_id": "c84d41b5-81c6-5e96-d078-26f4879bbd45"
+                }
+            ]
+        },
+        {
+            "id": "AFXhmtU1l1E",
+            "url": "https://www.youtube.com/watch?v=AFXhmtU1l1E",
+            "author": "MTGGoldfish",
+            "title": "$35 Kavu Warp  Budget Magic",
+            "description": "Edge of Eternities is here! Let's warp some Kavu on a $50 budget!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/budget-magic-50-kavu-warp-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7253111#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/czwfV\n◼ Purchase this deck (Magic Online): http://mtg.fish/FXpqa\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#mtgstandard \n\n0:00 Start\n3:42 Games",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-07-28 08:00:08",
+            "views": 40793,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-07-23",
+                        "format": "standard",
+                        "name": "Kavu Warp",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7253111"
+                    },
+                    "decklist_id": "8086c717-f1a1-d8a3-825f-10d9eb9494ff",
+                    "decklist_extended_id": "5428030c-534c-5360-a962-6be8ce012540"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/budget-magic-50-kavu-warp-standard",
+                        "date": "2025-07-23",
+                        "format": "standard",
+                        "name": "Kavu Warp",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/budget-magic-50-kavu-warp-standard"
+                    },
+                    "decklist_id": "8086c717-f1a1-d8a3-825f-10d9eb9494ff",
+                    "decklist_extended_id": "5428030c-534c-5360-a962-6be8ce012540"
+                }
+            ]
+        }
+    ]
+}

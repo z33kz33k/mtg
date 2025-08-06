@@ -1,0 +1,61 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 349000,
+    "scrape_time": "2025-07-05 02:29:54",
+    "videos": [
+        {
+            "id": "VBWR2ZfeHAc",
+            "url": "https://www.youtube.com/watch?v=VBWR2ZfeHAc",
+            "author": "MTGGoldfish",
+            "title": "Blocking is Unbanned and the Aristocrats are Back  Much Abrew",
+            "description": "Now that blocking is unbanned in Standard, is it time for Sephiroth and a bunch of janky sac fodder to shine in the format? Let's find out!\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/much-abrew-sephiroth-aristocrats-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7210620#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/dZBzQ\n◼ Purchase this deck (Magic Online): http://mtg.fish/BmZiJ\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#mtgstandard \n\n0:00 Start\n5:40 Match 1\n18:36 Match 2\n31:57 Match 3\n43:04 Match 4\n50:40 Match 5",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-07-04 08:00:31",
+            "views": 22130,
+            "sources": [
+                "mtg.fish",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-07-02",
+                        "format": "standard",
+                        "name": "Sephiroth Aristocrats",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7210620"
+                    },
+                    "decklist_id": "6e04afa8-c1e7-d4ec-016a-3f674c8210bf",
+                    "decklist_extended_id": "d735f2a6-fb7f-43b3-3942-3c050021c1c5"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/much-abrew-sephiroth-aristocrats-standard",
+                        "date": "2025-07-02",
+                        "format": "standard",
+                        "name": "Sephiroth Aristocrats",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/much-abrew-sephiroth-aristocrats-standard"
+                    },
+                    "decklist_id": "6e04afa8-c1e7-d4ec-016a-3f674c8210bf",
+                    "decklist_extended_id": "d735f2a6-fb7f-43b3-3942-3c050021c1c5"
+                }
+            ]
+        }
+    ]
+}

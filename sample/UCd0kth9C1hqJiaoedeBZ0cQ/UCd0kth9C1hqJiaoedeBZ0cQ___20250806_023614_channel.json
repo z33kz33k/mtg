@@ -1,0 +1,77 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": null,
+    "tags": null,
+    "subscribers": 140000,
+    "scrape_time": "2025-08-06 02:36:14",
+    "videos": [
+        {
+            "id": "GFqUJoph7iA",
+            "url": "https://www.youtube.com/watch?v=GFqUJoph7iA",
+            "author": "LegenVD",
+            "title": "This card should've been banned.",
+            "description": "Magic: The Gathering Arena gameplay with a combo deck, ft. Kona and Omniscience in Edge of Eternities Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n07:37 - Match 1\n15:52 - Match 2\n24:05 - Match 3\n27:07 - Match 4\n44:48 - Match 5\n47:45 - Match 6\n53:01 - Match 7\n56:28 - Match 8\n\nDecklist:\nhttps://aetherhub.com/Deck/kona-station-combo\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGEternities #mtg #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "blue",
+                "combo",
+                "deck",
+                "decks",
+                "edge of eternities",
+                "eoe",
+                "eoe standard",
+                "eternity",
+                "gameplay",
+                "green",
+                "guide",
+                "infinite",
+                "jill",
+                "kona",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "meteor",
+                "meteorite",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "new standard",
+                "omni",
+                "omniscience",
+                "roxanne",
+                "standard",
+                "standard deck",
+                "station",
+                "survival",
+                "white"
+            ],
+            "publish_time": "2025-08-05 11:00:16",
+            "views": 20842,
+            "sources": [
+                "aetherhub.com",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-08-05",
+                        "exports": 221,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Kona Station Combo",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/kona-station-combo",
+                        "views": 598
+                    },
+                    "decklist_id": "e009f378-687e-9108-e499-6c85f02d257e",
+                    "decklist_extended_id": "c99e4613-01ce-6edd-d9ce-9969f1c2314c"
+                }
+            ]
+        }
+    ]
+}

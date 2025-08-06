@@ -141,7 +141,7 @@ YT videos descriptions).
         * TopDeck.gg brackets and profiles
         * Untapped profiles
         * [WotC (official MTG site)](https://magic.wizards.com/en) articles
-    * 91 container pages in total with 25 more in plans
+    * 91 container pages in total with 27 more in plans
 * Assessing the meta:
     * Goldfish
     * MGTAZone 

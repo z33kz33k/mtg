@@ -1,0 +1,62 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 346000,
+    "scrape_time": "2025-06-09 00:49:49",
+    "videos": [
+        {
+            "id": "vEcRmneAtF4",
+            "url": "https://www.youtube.com/watch?v=vEcRmneAtF4",
+            "author": "MTGGoldfish",
+            "title": "Cloud is the New Stoneforge Mystic",
+            "description": "Cloud and the gang are hoping to make Equipments viable and now that Cloud is here, you've got the toolbox play style!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-cloud-is-the-new-stoneforge-mystic\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7151690#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/PNRd9\n◼ Purchase this deck (Magic Online): http://mtg.fish/6okZf\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-06-07 08:00:06",
+            "views": 27690,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-06-05",
+                        "format": "standard",
+                        "name": "Cloud",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7151690"
+                    },
+                    "decklist_id": "25c56e3a-92b2-9ec7-26d1-6f58c93884e5",
+                    "decklist_extended_id": "221cbc6a-1477-98a8-9213-db187f17ec11"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-cloud-is-the-new-stoneforge-mystic",
+                        "date": "2025-06-05",
+                        "format": "standard",
+                        "name": "Cloud",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-cloud-is-the-new-stoneforge-mystic"
+                    },
+                    "decklist_id": "25c56e3a-92b2-9ec7-26d1-6f58c93884e5",
+                    "decklist_extended_id": "221cbc6a-1477-98a8-9213-db187f17ec11"
+                }
+            ]
+        }
+    ]
+}

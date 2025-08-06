@@ -1,0 +1,58 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": null,
+    "tags": null,
+    "subscribers": 350000,
+    "scrape_time": "2025-07-22 03:12:47",
+    "videos": [
+        {
+            "id": "Yo1kdi4FYO4",
+            "url": "https://www.youtube.com/watch?v=Yo1kdi4FYO4",
+            "author": "MTGGoldfish",
+            "title": "I Had a $20 Random Encounter...  Budget Magic",
+            "description": "Can a $20 build of Random Encounter keep up in Standard? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/budget-magic-i-had-a-20-random-encounter\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7226276#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/TDHW9\n◼ Purchase this deck (Magic Online): http://mtg.fish/EGHCw\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-07-21 08:00:09",
+            "views": 29169,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/budget-magic-i-had-a-20-random-encounter",
+                        "date": "2025-07-10",
+                        "format": "standard",
+                        "name": "$20 Random Encounter",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/budget-magic-i-had-a-20-random-encounter"
+                    },
+                    "decklist_id": "78a5203c-e9bd-4c79-cd11-b64fdff26d91",
+                    "decklist_extended_id": "e35d3c10-9e11-1f53-46d8-9b2a296ed24a"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-07-10",
+                        "format": "standard",
+                        "name": "$20 Random Encounter",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7226276"
+                    },
+                    "decklist_id": "78a5203c-e9bd-4c79-cd11-b64fdff26d91",
+                    "decklist_extended_id": "e35d3c10-9e11-1f53-46d8-9b2a296ed24a"
+                }
+            ]
+        }
+    ]
+}

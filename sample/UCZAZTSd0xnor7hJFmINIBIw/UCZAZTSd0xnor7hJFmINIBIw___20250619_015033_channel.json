@@ -1,0 +1,62 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 347000,
+    "scrape_time": "2025-06-19 01:50:33",
+    "videos": [
+        {
+            "id": "qFUfyLENFHE",
+            "url": "https://www.youtube.com/watch?v=qFUfyLENFHE",
+            "author": "MTGGoldfish",
+            "title": "The Water Crystal Sphinx's Tutelage Mill Combo  Against the Odds",
+            "description": "What are the odds of milling your opponent's entire deck by drawing a single card with The Water Crystal and Sphinx's Tutelage on the battlefield? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/against-the-odds-the-water-crystal-combo-pioneer\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7160685#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/h03vr\n◼ Purchase this deck (Magic Online): http://mtg.fish/wBmOg\n\n#MTG\n#MagicTheGathering\n#MTGO\n#mtgpioneer \n\n0:00 Start\n4:11 Games",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-06-18 08:00:17",
+            "views": 28497,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-06-09",
+                        "format": "pioneer",
+                        "name": "The Water Crystal Combo",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7160685"
+                    },
+                    "decklist_id": "a2820e51-00a1-9885-2b8a-b64b84e92054",
+                    "decklist_extended_id": "03401467-d982-6379-0370-3f6745cfb289"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/against-the-odds-the-water-crystal-combo-pioneer",
+                        "date": "2025-06-09",
+                        "format": "pioneer",
+                        "name": "The Water Crystal Combo",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/against-the-odds-the-water-crystal-combo-pioneer"
+                    },
+                    "decklist_id": "a2820e51-00a1-9885-2b8a-b64b84e92054",
+                    "decklist_extended_id": "03401467-d982-6379-0370-3f6745cfb289"
+                }
+            ]
+        }
+    ]
+}

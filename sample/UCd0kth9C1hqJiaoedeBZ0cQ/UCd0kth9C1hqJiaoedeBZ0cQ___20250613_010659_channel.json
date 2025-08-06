@@ -1,0 +1,103 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "FINAL FANTASY",
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "final fantasy",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mythic",
+        "pioneer",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 138000,
+    "scrape_time": "2025-06-13 01:06:59",
+    "videos": [
+        {
+            "id": "sxfAhalQink",
+            "url": "https://www.youtube.com/watch?v=sxfAhalQink",
+            "author": "LegenVD",
+            "title": "I built the Ultima(te) ramp deck.",
+            "description": "Magic: The Gathering Arena gameplay with a colorless ramp deck, ft. Ultima, Origin of Oblivion in FINAL FANTASY Standard. \n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n05:02 - Match 1\n10:21 - Match 2\n22:45 - Match 3\n28:46 - Match 4\n32:08 - Match 5\n38:04 - Match 6\n\nDecklist:\nhttps://aetherhub.com/Deck/ultima-ugin-ramp\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGxFINALFANTASY #mtg #magicthegathering",
+            "keywords": [
+                "FINAL FANTASY",
+                "Standard MTG",
+                "artifact",
+                "colorless",
+                "colorless deck",
+                "deck",
+                "decks",
+                "exile",
+                "ff ramp",
+                "ff standard",
+                "ff standard deck",
+                "ff ultima",
+                "final fantasy",
+                "gameplay",
+                "guide",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "new standard",
+                "ramp",
+                "ramp deck",
+                "standard",
+                "standard deck",
+                "standard ugin",
+                "ufo",
+                "ugin",
+                "ugin deck",
+                "ultima",
+                "ultima ramp",
+                "ultimate"
+            ],
+            "publish_time": "2025-06-12 09:01:23",
+            "views": 17175,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-06-12",
+                        "exports": 283,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Ultima Ugin Ramp",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/ultima-ugin-ramp",
+                        "views": 755
+                    },
+                    "decklist_id": "65ec88ef-958b-1762-7f98-bd9ef46b0339",
+                    "decklist_extended_id": "c36c5aa5-0cf5-e077-7dc9-2ab5d1de0456"
+                }
+            ]
+        }
+    ]
+}

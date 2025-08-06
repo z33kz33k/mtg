@@ -1,0 +1,61 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 346000,
+    "scrape_time": "2025-06-14 02:42:53",
+    "videos": [
+        {
+            "id": "fxai5y68Jm8",
+            "url": "https://www.youtube.com/watch?v=fxai5y68Jm8",
+            "author": "MTGGoldfish",
+            "title": "Wait, Could a Bird Deck be Real in Final Fantasy Standard?  Much Abrew",
+            "description": "Could Chocobo be a real deck in Final Fantasy Standard? Let's find out!\n\nThanks to Wizards for the account to use for early access!\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/much-abrew-chocobo-chocobo-chocobo-final-fantasy-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7152636#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/NQ4yj\n◼ Purchase this deck (Magic Online): http://mtg.fish/Kt35i\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#mtgstandard \n\n0:00 Start\n5:49 Games",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-06-13 08:00:09",
+            "views": 18479,
+            "sources": [
+                "mtg.fish",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-06-05",
+                        "format": "standard",
+                        "name": "Chocobo",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7152636"
+                    },
+                    "decklist_id": "d3a90765-2c54-c617-ee56-d448c834ac04",
+                    "decklist_extended_id": "93ceb36b-9d64-928a-b0d9-8b218f575649"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/much-abrew-chocobo-chocobo-chocobo-final-fantasy-standard",
+                        "date": "2025-06-05",
+                        "format": "standard",
+                        "name": "Chocobo",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/much-abrew-chocobo-chocobo-chocobo-final-fantasy-standard"
+                    },
+                    "decklist_id": "d3a90765-2c54-c617-ee56-d448c834ac04",
+                    "decklist_extended_id": "93ceb36b-9d64-928a-b0d9-8b218f575649"
+                }
+            ]
+        }
+    ]
+}

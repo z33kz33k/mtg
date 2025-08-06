@@ -1,0 +1,100 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "FINAL FANTASY",
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "final fantasy",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mythic",
+        "pioneer",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 138000,
+    "scrape_time": "2025-07-01 02:36:07",
+    "videos": [
+        {
+            "id": "WfAuHZvGXM0",
+            "url": "https://www.youtube.com/watch?v=WfAuHZvGXM0",
+            "author": "LegenVD",
+            "title": "Putting sagas into play for free!",
+            "description": "Magic: The Gathering Arena gameplay with a five color saga deck, ft. Tom Bombadil as commander in Brawl. \n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro\n01:15 - Deck Tech\n08:19 - vs Tatsunari, Toad Rider \n16:45 - vs Jhoira, Weatherlight Captain\n20:31 - vs Sephiroth, Fabled SOLDIER\n27:23 - vs Serah, Farron\n31:15 - vs Tifa Lockhart\n34:30 - vs Clive, Ifrit's Dominant\n39:02 - vs Mendicant Core, Guidelight\n43:03 - vs Choco, Seeker of Paradise\n47:53 - vs Kotis, the Fangkeeper\n\nDecklist:\nhttps://aetherhub.com/Deck/tom-bombadil-brawl-sagas\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGxFINALFANTASY #mtg #magicthegathering",
+            "keywords": [
+                "FF",
+                "FIN",
+                "FINAL FANTASY",
+                "bombadil brawl",
+                "bombadil commander",
+                "bombadil edh",
+                "brawl",
+                "commander",
+                "deck",
+                "decks",
+                "edh",
+                "enchantments",
+                "enchantress",
+                "ff",
+                "final fantasy",
+                "five color",
+                "gameplay",
+                "guide",
+                "legend",
+                "lotr",
+                "lotr mtg",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtg lotr",
+                "mtga",
+                "saga deck",
+                "sagas",
+                "tom bombadil"
+            ],
+            "publish_time": "2025-06-30 09:01:00",
+            "views": 15049,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-06-30",
+                        "exports": 277,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Tom Bombadil Brawl Sagas",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/tom-bombadil-brawl-sagas",
+                        "views": 580
+                    },
+                    "decklist_id": "119bf95e-c58b-30a0-dbdd-448708d631eb",
+                    "decklist_extended_id": "d64f96a0-8bc1-decb-9396-df6cc5791690"
+                }
+            ]
+        }
+    ]
+}

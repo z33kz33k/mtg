@@ -1,0 +1,62 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 347000,
+    "scrape_time": "2025-06-17 01:56:28",
+    "videos": [
+        {
+            "id": "-fUJ2YcWJgs",
+            "url": "https://www.youtube.com/watch?v=-fUJ2YcWJgs",
+            "author": "MTGGoldfish",
+            "title": "Tifa Lockhart Will Kill You With Just One Attack  Budget Magic",
+            "description": "How good is Tifa Lockhart? What are the odds of using the Final Fantasy rare to one-shot kill on Turn 3 in Standard, all on a budget? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/budget-magic-tifa-one-shot-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7166533#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/I8z71\n◼ Purchase this deck (Magic Online): http://mtg.fish/NxZGt\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-06-16 08:00:07",
+            "views": 25553,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/budget-magic-tifa-one-shot-standard",
+                        "date": "2025-06-11",
+                        "format": "standard",
+                        "name": "Tifa",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/budget-magic-tifa-one-shot-standard"
+                    },
+                    "decklist_id": "4d1498ef-b134-f5dc-96b2-96bd6e320e3c",
+                    "decklist_extended_id": "5f006c6e-2a97-818e-9582-7a2e0e948ee3"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-06-11",
+                        "format": "standard",
+                        "name": "Tifa",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7166533"
+                    },
+                    "decklist_id": "4d1498ef-b134-f5dc-96b2-96bd6e320e3c",
+                    "decklist_extended_id": "5f006c6e-2a97-818e-9582-7a2e0e948ee3"
+                }
+            ]
+        }
+    ]
+}

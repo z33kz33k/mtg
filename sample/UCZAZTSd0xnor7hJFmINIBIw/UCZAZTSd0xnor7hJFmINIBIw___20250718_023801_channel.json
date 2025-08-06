@@ -1,0 +1,80 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": null,
+    "tags": null,
+    "subscribers": 350000,
+    "scrape_time": "2025-07-18 02:38:01",
+    "videos": [
+        {
+            "id": "1nPVPpwLhZg",
+            "url": "https://www.youtube.com/watch?v=1nPVPpwLhZg",
+            "author": "MTGGoldfish",
+            "title": "Crazy Mythic Kavu, One Mana Angel, Warp Leviathan and More!  Daily Edge of Eternities Spoilers",
+            "description": "Today in Edge of Eternities we get a crazy mythic Kavu, a one mana Angel, a card drawing Leviathan, some artifact impulse draw and more! Let's discuss!\n\nNeed Edge of Eternities cards? https://www.cardkingdom.com/mtggoldfish\n\nNeed more spoilers? https://www.mtgpreviews.com\n\n#MTG #MTGSpoilers #magicthegathering #mtgeoe \n\n0:00 Start\n1:17 Tannuk, Steadfast Second\n8:06 Pinnacle Starcage\n12:10 Starwinder\n15:28 Secluded Starforge\n20:18 Lightstall Inquisitor\n25:24 Memorial Vault\n30:24 Wrap Up",
+            "keywords": [
+                "MTG",
+                "MTG Arena",
+                "MTGGoldfish",
+                "Magic: the Gathering"
+            ],
+            "publish_time": "2025-07-17 08:28:28",
+            "views": 21601,
+            "sources": [
+                "www.cardkingdom.com",
+                "www.mtgpreviews.com"
+            ],
+            "decks": []
+        },
+        {
+            "id": "fR6hJ5aGJR4",
+            "url": "https://www.youtube.com/watch?v=fR6hJ5aGJR4",
+            "author": "MTGGoldfish",
+            "title": "I Made Infinite Copies of Terra  Against the Odds",
+            "description": "What are the odds of winning by making infinite copies of Esper Terra with Terra itself? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/against-the-odds-i-made-infinite-copies-of-terra-brawl\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7197609#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/d2xUi\n◼ Purchase this deck (Magic Online): http://mtg.fish/ySQch\n\n#MTG\n#MagicTheGathering\n#MTGBrawl\n\n0:00 Start\n4:23 Games",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-07-16 19:00:07",
+            "views": 29707,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "custom_theme": "Terra, Magical Adept",
+                        "date": "2025-06-26",
+                        "format": "brawl",
+                        "name": "Terra Combo",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7197609"
+                    },
+                    "decklist_id": "547eaa8a-f20a-20a7-d9a5-378b4f23ac77",
+                    "decklist_extended_id": "056573cd-b412-efaa-236f-36def5393dd8"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/against-the-odds-i-made-infinite-copies-of-terra-brawl",
+                        "custom_theme": "Terra, Magical Adept",
+                        "date": "2025-06-26",
+                        "format": "brawl",
+                        "name": "Terra Combo",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/against-the-odds-i-made-infinite-copies-of-terra-brawl"
+                    },
+                    "decklist_id": "547eaa8a-f20a-20a7-d9a5-378b4f23ac77",
+                    "decklist_extended_id": "056573cd-b412-efaa-236f-36def5393dd8"
+                }
+            ]
+        }
+    ]
+}

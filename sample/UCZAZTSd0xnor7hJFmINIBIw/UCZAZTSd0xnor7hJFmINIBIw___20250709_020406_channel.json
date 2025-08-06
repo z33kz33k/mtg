@@ -1,0 +1,82 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 349000,
+    "scrape_time": "2025-07-09 02:04:06",
+    "videos": [
+        {
+            "id": "WZsPUcjhGnI",
+            "url": "https://www.youtube.com/watch?v=WZsPUcjhGnI",
+            "author": "MTGGoldfish",
+            "title": "Goyf in Space, Mythic Planet Lands, Spacecraft and Much More  Daily Edge of Eternities MTG Spoilers",
+            "description": "Today we kick off Edge of Eternities spoiler season with what might be the biggest spoiler day yet! Let's get into it!\n\nNeed Edge of Eternities cards? https://www.cardkingdom.com/mtggoldfish\n\nNeed more spoilers? https://www.mtgpreviews.com\n\n#MTG #MTGEOE #magicthegathering #mtgspoilers\n\n0:0 Start\n1:12 The Eternity Elevator\n6:38 Extinguisher Battleship\n11:35 Uthros, Titanic Godcore\n16:30 Susur Secundi, Void Altar\n20:52 Nova Hellkite\n24:30 Quantum Riddler\n27:38 Exalted Sunborn\n32:17 Starfield Vocalist\n34:20 Haliya, Guided by Light\n37:01 Astelli Reclaimer\n39:00 Starfield Shepherd\n40:14 Anticausal Vestige\n42:28 Biotech Specialist\n46:35 Elegy Acolyte\n48:47 Tragic Trajectory\n49:41 Temporal Intervention\n51:00 Terrasymboisis\n54:53 Rust Harvester\n56:38 Mutinous Massacre\n1:00:44 Thrumming Hivestone\n1:02:09 Cosmogoyf\n1:07:52 Weapons Manufacturing\n1:11:37 Ouroboroid\n1:15:22 Terminal Velocity\n1:21:38 Genemorph Imago\n1:23:15 Sunset Saboteur\n1:25:32 Frenzied Baloth\n1:26:50 Emissary Escort\n1:28:20 Infinite Guideline Station\n1:31:52 Sami, Wildcat Captain\n1:34:54 Ragost, Deft Gastronaut\n1:37:56 Archenemy's Charm\n1:41:42 Lands",
+            "keywords": [
+                "MTG",
+                "MTG Arena",
+                "MTGGoldfish",
+                "Magic: the Gathering"
+            ],
+            "publish_time": "2025-07-08 16:12:34",
+            "views": 2868,
+            "sources": [
+                "www.cardkingdom.com",
+                "www.mtgpreviews.com"
+            ],
+            "decks": []
+        },
+        {
+            "id": "hp46Y2D39XU",
+            "url": "https://www.youtube.com/watch?v=hp46Y2D39XU",
+            "author": "MTGGoldfish",
+            "title": "This Delirium Deck is Terra-ble",
+            "description": "Is Delirium Aggro the new aggression? Terra, Magical Adept & Brynhildr might be the boost the archetype needed!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-this-delirium-deck-is-terra-ble\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7211002#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/FhxZt\n◼ Purchase this deck (Magic Online): http://mtg.fish/HMuog\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-07-08 08:00:08",
+            "views": 11055,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-this-delirium-deck-is-terra-ble",
+                        "date": "2025-07-02",
+                        "format": "standard",
+                        "name": "Terra",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-this-delirium-deck-is-terra-ble"
+                    },
+                    "decklist_id": "c52045b5-7aa7-5f14-0832-5169fee4dc0e",
+                    "decklist_extended_id": "904782c5-150d-31aa-630e-668fdc8dd7ac"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-07-02",
+                        "format": "standard",
+                        "name": "Terra",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7211002"
+                    },
+                    "decklist_id": "c52045b5-7aa7-5f14-0832-5169fee4dc0e",
+                    "decklist_extended_id": "904782c5-150d-31aa-630e-668fdc8dd7ac"
+                }
+            ]
+        }
+    ]
+}

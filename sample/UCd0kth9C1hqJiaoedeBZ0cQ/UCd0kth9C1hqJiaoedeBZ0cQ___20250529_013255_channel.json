@@ -1,0 +1,101 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "FINAL FANTASY",
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "final fantasy",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mythic",
+        "pioneer",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 137000,
+    "scrape_time": "2025-05-29 01:32:55",
+    "videos": [
+        {
+            "id": "z_mkzZiP5Jg",
+            "url": "https://www.youtube.com/watch?v=z_mkzZiP5Jg",
+            "author": "LegenVD",
+            "title": "This demon keeps coming back from the dead.",
+            "description": "Magic: The Gathering Arena gameplay with a demon sacrifice deck, ft. Rot-Curse Rakshasa in Tarkir Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:29 - Match 1 \n12:57 - Match 2\n19:32 - Match 3\n29:06 - Match 4\n35:05 - Match 5\n40:39 - Match 6\n44:41 - Match 7\n47:50 - Match 8\n50:47 - Match 9\n\nDecklist:\nhttps://aetherhub.com/Deck/rakdos-rakshasa-sacrifice\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #tarkir #mtg #mtgtarkir #mtgtdm #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "alesha",
+                "bargain",
+                "black",
+                "decayed",
+                "deck",
+                "decks",
+                "demon",
+                "dragonstorm",
+                "gameplay",
+                "guide",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "new standard",
+                "rakdos",
+                "rakshasa",
+                "reanimator",
+                "red",
+                "sacrifice",
+                "sacrifice deck",
+                "standard",
+                "standard deck",
+                "tarkir",
+                "tarkir dragonstorm",
+                "tarkir standard",
+                "tdm",
+                "tdm standard"
+            ],
+            "publish_time": "2025-05-28 09:01:48",
+            "views": 11585,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-05-28",
+                        "exports": 327,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Rakdos Rakshasa Sacrifice",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/rakdos-rakshasa-sacrifice",
+                        "views": 911
+                    },
+                    "decklist_id": "f5f6453d-989e-3d47-84a9-1b1760211dfb",
+                    "decklist_extended_id": "978d8255-aab9-c014-1c5e-a0fec01ae267"
+                }
+            ]
+        }
+    ]
+}

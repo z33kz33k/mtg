@@ -1,0 +1,82 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 345000,
+    "scrape_time": "2025-05-22 02:25:26",
+    "videos": [
+        {
+            "id": "qBQgZYa5Gj0",
+            "url": "https://www.youtube.com/watch?v=qBQgZYa5Gj0",
+            "author": "MTGGoldfish",
+            "title": "All the Crystals (and the Blue One Seems Busted!)  Daily Final Fantasy MTG Spoilers",
+            "description": "Today in Final Fantasy we get the full Crystal cycle, a crazy new coin flipping legend, one of the best Saga creatures in the set, an equipment that's hilariously strong in some Commander decks and more! Let's discuss!\n\nNeed Final Fantasy cards? https://www.cardkigndom.com/mtggoldfish\n\nNeed more spoilers: https://www.mtgpreviews.com\n\n#MTG #Magicthegathering #finalfantasy #mtgspoilers \n\n0:00 Start\n1:01 The Earth Crystal\n4:12 The Wind Crystal\n7:43 The Watery Crystal\n13:20 The Fire Crystal\n17:03 Aettir and Priwen\n21:22 Edgar (not that one)\n26:18 Summon Titan\n30:52 Joshua\n35:10 FF Through the Ages\n35:58 Balamb T-Rexaur",
+            "keywords": [
+                "MTG",
+                "MTG Arena",
+                "MTGGoldfish",
+                "Magic: the Gathering"
+            ],
+            "publish_time": "2025-05-21 09:05:52",
+            "views": 21143,
+            "sources": [
+                "www.cardkigndom.com",
+                "www.mtgpreviews.com"
+            ],
+            "decks": []
+        },
+        {
+            "id": "xvKVmMVhQeQ",
+            "url": "https://www.youtube.com/watch?v=xvKVmMVhQeQ",
+            "author": "MTGGoldfish",
+            "title": "Making Our Jodah & Kotis Meme a Reality",
+            "description": "Is it too much to ask for when all we want to do is use Jodah the Unifier to turn our Kotis, the Fangkeeper into a big beefy value engine?\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-making-our-jodah-kotis-meme-a-reality\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7102893#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/hfrjl\n◼ Purchase this deck (Magic Online): http://mtg.fish/yQcF0\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-05-20 19:00:03",
+            "views": 20056,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-making-our-jodah-kotis-meme-a-reality",
+                        "date": "2025-05-15",
+                        "format": "standard",
+                        "name": "A Kotis Dream",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-making-our-jodah-kotis-meme-a-reality"
+                    },
+                    "decklist_id": "161ffc1b-c198-40c0-9e1d-0b3f8503841d",
+                    "decklist_extended_id": "51986256-0891-478f-6b38-b897a300bcb6"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-05-15",
+                        "format": "standard",
+                        "name": "A Kotis Dream",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7102893"
+                    },
+                    "decklist_id": "161ffc1b-c198-40c0-9e1d-0b3f8503841d",
+                    "decklist_extended_id": "51986256-0891-478f-6b38-b897a300bcb6"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,134 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": null,
+    "tags": null,
+    "subscribers": 139000,
+    "scrape_time": "2025-07-24 03:42:11",
+    "videos": [
+        {
+            "id": "CcCHK2698G0",
+            "url": "https://www.youtube.com/watch?v=CcCHK2698G0",
+            "author": "LegenVD",
+            "title": "Cloud has a new favorite weapon.",
+            "description": "Magic: The Gathering Arena gameplay with a boros hammer equipment deck in Pioneer, ft. Cloud, Midgar Mercenary.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:38 - Match 1\n06:18 - Match 2\n11:49 - Match 3\n13:51 - Match 4\n16:38 - Match 5\n18:53 - Match 6 \n25:27 - Match 7\n\nDecklist:\nhttps://aetherhub.com/Deck/boros-hammer-cloud\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtg #mtgfinalfantasy #magicthegathering #mtgpioneer",
+            "keywords": [
+                "boros",
+                "cloud",
+                "colossus",
+                "deck",
+                "decks",
+                "equipment",
+                "equipment deck",
+                "explorer",
+                "ff",
+                "final fantasy",
+                "gameplay",
+                "guide",
+                "hammer",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "pioneer",
+                "pioneer deck",
+                "pioneer equipment",
+                "pioneer hammer",
+                "pioneer mtg",
+                "red",
+                "sigarda",
+                "white"
+            ],
+            "publish_time": "2025-07-23 09:00:29",
+            "views": 14157,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-07-23",
+                        "exports": 77,
+                        "format": "pioneer",
+                        "mode": "Bo3",
+                        "name": "Boros Hammer Cloud",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/boros-hammer-cloud",
+                        "views": 359
+                    },
+                    "decklist_id": "8d91f2ad-ef82-ea08-d76e-f1c029b2e48b",
+                    "decklist_extended_id": "ca8c712f-4fa7-95bb-7f25-037aa0ef241d"
+                }
+            ]
+        },
+        {
+            "id": "SpuRul9IZrM",
+            "url": "https://www.youtube.com/watch?v=SpuRul9IZrM",
+            "author": "LegenVD",
+            "title": "This commander is to die for.",
+            "description": "Magic: The Gathering Arena gameplay with Sephiroth, Fabled SOLDIER as commander in Brawl. \n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro\n02:17 - Deck Tech\n09:14 - vs Ureni of the Unwritten\n17:44 - vs Bartz and Boko\n25:15 - vs Adeline, Resplendent Cathar\n34:42 - vs Glarb, Calamity's Augur\n38:27 - vs Vivi Ornitier\n42:52 - vs Tifa Lockhart\n47:09 - vs Omnath, Locus of the Roil\n56:29 - vs Sin, Spira's Punishment\n57:23 - vs Vivien, Monster's Advocate\n\nDecklist:\nhttps://aetherhub.com/Deck/sephiroth-sacrifice-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGxFINALFANTASY #mtg #magicthegathering",
+            "keywords": [
+                "FF",
+                "FIN",
+                "FINAL FANTASY",
+                "black",
+                "brawl",
+                "commander",
+                "deck",
+                "decks",
+                "edh",
+                "ff",
+                "final fantasy",
+                "gameplay",
+                "guide",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "monoblack",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "sacrifice",
+                "sephiroth",
+                "sephiroth brawl",
+                "sephiroth commander",
+                "sephiroth edh"
+            ],
+            "publish_time": "2025-07-22 09:00:51",
+            "views": 23825,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-07-22",
+                        "exports": 463,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Sephiroth Sacrifice Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/sephiroth-sacrifice-brawl",
+                        "views": 1093
+                    },
+                    "decklist_id": "cfd6104f-1e3e-3a53-9060-e9ebeef5943c",
+                    "decklist_extended_id": "292a9738-fe54-1fbe-86d8-89aaa6737ddb"
+                }
+            ]
+        }
+    ]
+}

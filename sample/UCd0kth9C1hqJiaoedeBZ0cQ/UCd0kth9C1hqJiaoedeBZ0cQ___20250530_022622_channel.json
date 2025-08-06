@@ -1,0 +1,102 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "FINAL FANTASY",
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "final fantasy",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mythic",
+        "pioneer",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 137000,
+    "scrape_time": "2025-05-30 02:26:22",
+    "videos": [
+        {
+            "id": "RjTl6yEYuIU",
+            "url": "https://www.youtube.com/watch?v=RjTl6yEYuIU",
+            "author": "LegenVD",
+            "title": "Their library is under siege.",
+            "description": "Magic: The Gathering Arena gameplay with a bant mill selfmill deck ft. Glacierwood Siege from Tarkir in Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n02:57 - Match 1\n12:37 - Match 2\n23:22 - Match 3\n29:57 - Match 4\n38:18 - Match 5 \n44:36 - Match 6\n52:22 - Match 7\n\nDecklist:\nhttps://aetherhub.com/Deck/glacierwood-siege-bant-mill\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #tarkir #mtg #mtgtarkir #mtgtdm #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "bant",
+                "blue",
+                "control",
+                "control deck",
+                "deck",
+                "decks",
+                "dragonstorm",
+                "gameplay",
+                "glacierwood",
+                "green",
+                "guide",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mill",
+                "millstone",
+                "monument",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "new standard",
+                "riverchurn",
+                "siege",
+                "standard",
+                "standard deck",
+                "tarkir",
+                "tarkir dragonstorm",
+                "tarkir standard",
+                "tdm",
+                "tdm standard",
+                "white"
+            ],
+            "publish_time": "2025-05-29 09:00:56",
+            "views": 14188,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "control",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-05-29",
+                        "exports": 374,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Glacierwood Siege Bant Mill",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/glacierwood-siege-bant-mill",
+                        "views": 1008
+                    },
+                    "decklist_id": "c4d11e98-b47e-7226-ded7-5658c95f18bc",
+                    "decklist_extended_id": "5fbff017-9a4c-f9f4-adcb-9190fb65dabb"
+                }
+            ]
+        }
+    ]
+}

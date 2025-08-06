@@ -1,0 +1,62 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 349000,
+    "scrape_time": "2025-07-06 00:48:43",
+    "videos": [
+        {
+            "id": "AVbk6qU4EAo",
+            "url": "https://www.youtube.com/watch?v=AVbk6qU4EAo",
+            "author": "MTGGoldfish",
+            "title": "Jenova is Turning Everyone into Mutants!",
+            "description": "Jenova loves experimenting and her experiments are going to turn all the cards in our deck to Mutants for absurd value.\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-jenova-is-turning-everyone-into-mutants\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7206747#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/qbcXa\n◼ Purchase this deck (Magic Online): http://mtg.fish/BIklY\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-07-05 08:00:04",
+            "views": 11827,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-jenova-is-turning-everyone-into-mutants",
+                        "date": "2025-06-30",
+                        "format": "standard",
+                        "name": "Jenova's Mutations",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-jenova-is-turning-everyone-into-mutants"
+                    },
+                    "decklist_id": "c9aba2a0-ef74-abf6-5f71-48aa721aa813",
+                    "decklist_extended_id": "5e732747-4495-d04f-5d68-5275ea727be6"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-06-30",
+                        "format": "standard",
+                        "name": "Jenova's Mutations",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7206747"
+                    },
+                    "decklist_id": "c9aba2a0-ef74-abf6-5f71-48aa721aa813",
+                    "decklist_extended_id": "5e732747-4495-d04f-5d68-5275ea727be6"
+                }
+            ]
+        }
+    ]
+}

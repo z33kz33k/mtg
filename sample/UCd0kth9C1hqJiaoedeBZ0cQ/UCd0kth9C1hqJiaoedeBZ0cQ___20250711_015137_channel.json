@@ -1,0 +1,100 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "FINAL FANTASY",
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "edh",
+        "educational",
+        "final fantasy",
+        "gameplay",
+        "historic",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "mythic",
+        "pioneer",
+        "standard",
+        "strategy",
+        "timeless",
+        "tips",
+        "tutorial"
+    ],
+    "subscribers": 139000,
+    "scrape_time": "2025-07-11 01:51:37",
+    "videos": [
+        {
+            "id": "o5dpYfH9QFQ",
+            "url": "https://www.youtube.com/watch?v=o5dpYfH9QFQ",
+            "author": "LegenVD",
+            "title": "This deck is Legendary.",
+            "description": "Magic: The Gathering Arena gameplay with a Legendary deck, ft. Serah Farron as commander in Brawl. \n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro\n01:12 - Deck Tech\n07:56 - vs Vivi Ornitier\n13:01 - vs Bristly Bill, Spine Sower\n19:00 - vs Judge Magister Gabranth\n27:51 - vs Elspeth, Storm Slayer\n34:27 - vs Clive, Ifrit's Dominant\n40:04 - vs Choco, Seeker of Paradise\n45:38 - vs Kellan, Inquisitive Prodigy\n51:11 - vs Aragorn, the Uniter\n55:52 - vs Felothar, Dawn of the Abzan\n59:25 - vs Minwu, White Mage\n1:04:15 - vs Terra, Magical Adept\n1:07:41 - vs Betor, Kin to All\n\nDecklist:\nhttps://aetherhub.com/Deck/serah-farron-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGxFINALFANTASY #mtg #magicthegathering",
+            "keywords": [
+                "Crystallized Serah",
+                "FF",
+                "FIN",
+                "FINAL FANTASY",
+                "aggro",
+                "brawl",
+                "commander",
+                "deck",
+                "decks",
+                "edh",
+                "ff",
+                "final fantasy",
+                "gameplay",
+                "green",
+                "guide",
+                "legend",
+                "legend deck",
+                "legendary",
+                "legends",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "selesnya",
+                "serah FF",
+                "serah brawl",
+                "serah commander",
+                "serah edh",
+                "white"
+            ],
+            "publish_time": "2025-07-10 09:01:24",
+            "views": 14716,
+            "sources": [
+                "aetherhub.com",
+                "arena.decklist",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-07-10",
+                        "exports": 264,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Serah Farron Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/serah-farron-brawl",
+                        "views": 903
+                    },
+                    "decklist_id": "9147b778-ffb1-0cbb-1555-c08d28207507",
+                    "decklist_extended_id": "bac6e0ff-6c31-3b1c-0298-707bf742c206"
+                }
+            ]
+        }
+    ]
+}
