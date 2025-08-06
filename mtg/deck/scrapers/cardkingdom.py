@@ -14,7 +14,7 @@ import dateutil.parser
 from bs4 import Tag
 
 from mtg import Json, SECRETS
-from mtg.deck.scrapers import HybridContainerScraper, is_in_domain_but_not_main
+from mtg.deck.scrapers import HybridContainerScraper, UrlHook, is_in_domain_but_not_main
 from mtg.utils.scrape import ScrapingError, strip_url_query
 
 _log = logging.getLogger(__name__)
@@ -35,6 +35,15 @@ HEADERS = {
     "Priority": "u=0, i",
     "TE": "trailers",
 }
+
+
+URL_HOOKS = (
+    # article & author
+    UrlHook(
+        ('"blog.cardkingdom.com/"', ),
+        ('-"/category/"', '-"/tag/"', '-"/submissions/"', '-"/updates/"'),
+    ),
+)
 
 
 @HybridContainerScraper.registered

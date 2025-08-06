@@ -35,7 +35,7 @@ def get_source(src: str) -> str | None:
 URL_HOOKS = (
     # international deck
     UrlHook(
-        ("hareruyamtg.com", '"/deck/"'),
+        ('"hareruyamtg.com/"', '"/deck/"'),
         ('-"/result"', '-"/bulk/"', '-"/metagame"'),
     ),
     # japanese deck
@@ -49,12 +49,12 @@ URL_HOOKS = (
     ),
     # event
     UrlHook(
-        ("hareruyamtg.com", '"/deck"', '"/result?"', '"eventName="'),
+        ('"hareruyamtg.com/"', '"/deck"', '"/result?"', '"eventName="'),
         limit=100
     ),
     # player
     UrlHook(
-        ("hareruyamtg.com", '"/deck"', '"/result?"', '"player="'),
+        ('"hareruyamtg.com/"', '"/deck"', '"/result?"', '"player="'),
         limit=100
     ),
     # article & author

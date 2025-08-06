@@ -14,7 +14,8 @@ import dateutil.parser
 from bs4 import Tag
 
 from mtg import Json, SECRETS
-from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser, is_in_domain_but_not_main
+from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser, UrlHook, \
+    is_in_domain_but_not_main
 from mtg.utils.scrape import ScrapingError, strip_url_query
 
 _log = logging.getLogger(__name__)
@@ -33,6 +34,17 @@ HEADERS = {
     "Sec-Fetch-Site": "cross-site",
     "Priority": "u=0, i",
 }
+
+
+URL_HOOKS = (
+    # article & author
+    UrlHook(
+        ('"commandersherald.com/"', ),
+        ('-"/all-edh-deck-guides"', '-"/articles"', '-"/cedh-deck-guides"', '-"/games/"',
+         '-"/category/"', '-"/about-us"','-"/contact-us"', '-"/privacy-policy"',
+         '-"/terms-of-service"'),
+    ),
+)
 
 
 class CommandersHeraldDeckTagParser(TagBasedDeckParser):

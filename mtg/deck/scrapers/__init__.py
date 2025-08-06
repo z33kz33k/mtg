@@ -53,6 +53,7 @@ def is_in_domain_but_not_main(url: str, domain: str, lower=True) -> bool:
     return True
 
 
+# TODO: move this to mtg.yt.discover, make default limit a shared global constant
 @dataclass(frozen=True)
 class UrlHook:
     """Encapsulate data needed for discovering new YT deck-featuring channels with queries to
@@ -60,8 +61,9 @@ class UrlHook:
 
         positives - positive elements of a query, e .g. "mtg" and  "decklist" in "mtg decklist"
         negatives - negative elements of a query, e.g. "-fab" and "-yugioh" in "mtg decklist -fab -yugioh"
-        limit - default results limit for the issued query (default limit maybe too low for a
-                popular site like Archidekt or Goldfish, this needs to be estimated after testing)
+        limit - maximum number of videos for 'youtubesearchpython' to return when querying Google
+                servers (default maybe too low for a popular site like Archidekt or Goldfish,
+                this needs to be estimated after testing)
     """
     positives: tuple[str, ...]
     negatives: tuple[str, ...] = ()

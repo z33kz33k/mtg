@@ -10,11 +10,19 @@
 import logging
 from typing import override
 
-from mtg.deck.scrapers import DeckScraper
+from mtg.deck.scrapers import DeckScraper, UrlHook
 from mtg.utils.scrape import strip_url_query
 
 _log = logging.getLogger(__name__)
 CLIPBOARD_XPATH = "//span[text()='Export to Arena']"
+
+
+URL_HOOKS = (
+    # regular deck
+    UrlHook(
+        ('"app.cardboard.live/shared-deck/"', ),
+    ),
+)
 
 
 @DeckScraper.registered

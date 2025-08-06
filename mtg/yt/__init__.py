@@ -458,8 +458,8 @@ class LinksExpander:
         return self._lines
 
     def __init__(self, *links: str) -> None:
-        self._links = links
         self._urls_manager = UrlsStateManager()
+        self._links = [l for l in links if not self._urls_manager.is_failed(l)]
         self._expanded_links, self._gathered_links, self._lines = [], [], []
         self._expand()
 
@@ -475,9 +475,6 @@ class LinksExpander:
         backoff.expo, (ConnectionError, HTTPError, ReadTimeout), max_time=60)
     def _expand(self) -> None:
         for link in self._links:
-            if self._urls_manager.is_failed(link):
-                _log.info(f"Skipping expansion of already failed URL: {link!r}...")
-                continue
             if self.is_pastebin_like_url(link):
                 _log.info(f"Expanding {link!r}...")
                 self._expand_pastebin(link)

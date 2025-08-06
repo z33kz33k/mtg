@@ -178,7 +178,7 @@ def channels_batch(start_row=2, batch_size: int | None = None) -> Iterator[str]:
     if batch_size is not None and batch_size < 1:
         raise ValueError("Batch size must be a positive integer or None")
     txt = f" {batch_size}" if batch_size else ""
-    _log.info(f"Batch updating{txt} channels...")
+    _log.info(f"Batch updating{txt} channel(s)...")
     start_idx = start_row - 2
     end_idx = None if batch_size is None else start_row - 2 + batch_size
     return itertools.islice(retrieve_ids(), start_idx, end_idx)

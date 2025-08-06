@@ -14,12 +14,25 @@ import dateutil.parser
 from bs4 import Tag
 
 from mtg import Json
-from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser
+from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser, UrlHook
 from mtg.scryfall import COMMANDER_FORMATS, Card, all_formats
 from mtg.utils import from_iterable
 from mtg.utils.scrape import ScrapingError, strip_url_query
 
 _log = logging.getLogger(__name__)
+
+
+URL_HOOKS = (
+    # article
+    UrlHook(
+        ('"cardmarket.com/"', '"/Insight/Articles/"'),
+        ('-"/yugioh/"', ),
+    ),
+    # writer
+    UrlHook(
+        ('"cardmarket.com/"', '"/Insight/Writers/"'),
+    ),
+)
 
 
 class CardmarketDeckTagParser(TagBasedDeckParser):
@@ -177,3 +190,30 @@ class CardmarketArticleScraper(HybridContainerScraper):
             return [], deck_tags, [], []
         deck_urls, container_urls = self._get_links_from_tags(*article_tag.find_all("p"))
         return deck_urls, deck_tags, [], container_urls
+
+
+@HybridContainerScraper.registered
+class CardmarketWriterScraper(HybridContainerScraper):
+    """Scraper of Cardmarket writer page.
+    """
+    SELENIUM_PARAMS = {  # override
+        "xpath": "//article//a[contains(@href, '/Insight/Articles/')]",
+        "wait_for_all": True
+    }
+    CONTAINER_NAME = "Cardmarket writer"  # override
+    CONTAINER_SCRAPERS = CardmarketArticleScraper,  # override
+    CONTAINER_URL_PREFIX = "https://www.cardmarket.com"
+
+    @staticmethod
+    @override
+    def is_valid_url(url: str) -> bool:
+        return "cardmarket.com/" in url.lower() and "/insight/writers/" in url.lower()
+
+    @override
+    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
+        article_tag = self._soup.find("article")
+        if not article_tag:
+            raise ScrapingError("Article tag not found", type(self), self.url)
+        a_tags = article_tag.find_all("a")
+        return [], [], [], [
+            t["href"] for t in a_tags if t.has_attr("href") and "/Insight/Articles/" in t["href"]]

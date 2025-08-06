@@ -583,7 +583,10 @@ class Card:
 
     @property
     def mana_cost(self) -> str | None:
-        return self.json.get("mana_cost")
+        mana_cost = self.json.get("mana_cost")
+        if mana_cost is None and self.is_multifaced:
+            return self.card_faces[0].mana_cost
+        return mana_cost
 
     @property
     def oracle_text(self) -> str | None:
@@ -609,7 +612,10 @@ class Card:
 
     @property
     def power(self) -> int | None:
-        return self.json.get("power")
+        power = self.json.get("power")
+        if power is None and self.is_multifaced:
+            return self.card_faces[0].power
+        return power
 
     @property
     def power_int(self) -> int | None:
@@ -681,7 +687,10 @@ class Card:
 
     @property
     def toughness(self) -> str | None:
-        return self.json.get("toughness")
+        toughness = self.json.get("toughness")
+        if toughness is None and self.is_multifaced:
+            return self.card_faces[0].toughness
+        return toughness
 
     @property
     def toughness_int(self) -> int | None:

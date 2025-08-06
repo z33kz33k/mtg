@@ -17,12 +17,38 @@ from bs4 import Tag
 from mtg import Json
 from mtg.deck import Mode
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
-    TagBasedDeckParser
+    TagBasedDeckParser, UrlHook
 from mtg.utils import extract_float, extract_int, from_iterable
 from mtg.utils.scrape import ScrapingError, strip_url_query
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://aetherhub.com"
+
+
+URL_HOOKS = (
+    # regular deck
+    UrlHook(
+        ('"aetherhub.com/"', '"/deck/"'),
+        ('-"export/"', '-"/mydecks"', '-"/builder"'),
+    ),
+    # write-up deck
+    UrlHook(
+        ('"aetherhub.com/decks/writeups/"', ),
+    ),
+    # user
+    UrlHook(
+        ('"aetherhub.com/user/"', ),
+    ),
+    # event
+    UrlHook(
+        ("aetherhub.com/events/", ),
+        limit=100
+    ),
+    # article
+    UrlHook(
+        ('"aetherhub.com/article/"', ),
+    ),
+)
 
 
 # TODO: scrape the meta

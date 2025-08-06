@@ -13,11 +13,43 @@ from datetime import datetime
 from typing import override
 
 from mtg import Json
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, FolderContainerScraper
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, FolderContainerScraper, UrlHook
 from mtg.utils.scrape import get_links, strip_url_query
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://archidekt.com"
+
+
+URL_HOOKS = (
+    # regular deck
+    UrlHook(
+        ('"archidekt.com/decks/"', ),
+    ),
+    # snapshot deck
+    UrlHook(
+        ('"archidekt.com/snapshots/"', ),
+    ),
+    # folder
+    UrlHook(
+        ('"archidekt.com/folders/"', ),
+    ),
+    # user #1
+    UrlHook(
+        ('"archidekt.com/u/"', ),
+    ),
+    # user #2
+    UrlHook(
+        ("archidekt.com/user/", ),
+    ),
+    # user #3
+    UrlHook(
+        ('"archidekt.com/search/decks?"', "owner="),
+    ),
+    # user #4
+    UrlHook(
+        ('"archidekt.com/search/decks?"', "ownerusername="),
+    ),
+)
 
 
 @DeckScraper.registered

@@ -14,10 +14,18 @@ from typing import override
 import dateutil.parser
 
 from mtg import Json
-from mtg.deck.scrapers import DeckScraper
+from mtg.deck.scrapers import DeckScraper, UrlHook
 from mtg.utils.scrape import ScrapingError, dissect_js, strip_url_query
 
 _log = logging.getLogger(__name__)
+
+
+URL_HOOKS = (
+    # regular deck
+    UrlHook(
+        ('"cardhoarder.com/d/"', ),
+    ),
+)
 
 
 # Cardhoarder has anti-scraping protection (I doubt they care much about user-posted decks
