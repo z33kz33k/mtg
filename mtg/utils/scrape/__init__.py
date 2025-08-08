@@ -452,8 +452,8 @@ def get_links(
 
         Args:
             *tags: variable number of BeautifulSoup tags containing links
-            css_selector: CSS selector to obtain links from a tag
-            url_prefix: prefix to add to relative URLs
+            css_selector: CSS selector to pass to BeautifulSoup's select() method
+            url_prefix: prefix to prepend relative URLs with
             query_stripped: whether to strip the query part of the URL
             **bs_options: options to pass to BeautifulSoup's find_all() method for better filtering
         """

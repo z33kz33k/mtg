@@ -274,7 +274,7 @@ class CardsrealmArticleScraper(HybridContainerScraper):
     def is_valid_url(url: str) -> bool:
         return (all(
             t in url.lower() for t in (f"{BASIC_DOMAIN}/", "/articles/"))
-                and "/search/" not in url.lower())
+                and "/search/" not in url.lower() and "/author/" not in url.lower())
 
     @staticmethod
     @override
@@ -289,3 +289,28 @@ class CardsrealmArticleScraper(HybridContainerScraper):
             raise ScrapingError("Article tag not found", scraper=type(self), url=self.url)
         deck_links, container_links = self._get_links_from_tags(article_tag, url_prefix=URL_PREFIX)
         return deck_links, [], [], container_links
+
+
+@HybridContainerScraper.registered
+class CardsrealmAuthorScraper(HybridContainerScraper):
+    """Scraper of Cardsrealm article's author page.
+    """
+    CONTAINER_NAME = "Cardsrealm author"  # override
+    CONTAINER_SCRAPERS = CardsrealmArticleScraper,  # override
+
+    @staticmethod
+    @override
+    def is_valid_url(url: str) -> bool:
+        return (all(
+            t in url.lower() for t in (f"{BASIC_DOMAIN}/", "/articles/author/"))
+                and "/search/" not in url.lower())
+
+    @staticmethod
+    @override
+    def sanitize_url(url: str) -> str:
+        return CardsrealmArticleScraper.sanitize_url(url)
+
+    @override
+    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
+        _, container_links = self._get_links_from_tags(self._soup)
+        return [], [], [], container_links
