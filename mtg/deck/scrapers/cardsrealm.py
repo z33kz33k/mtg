@@ -28,6 +28,16 @@ from mtg.utils.scrape.dynamic import SELENIUM_TIMEOUT, accept_consent
 
 _log = logging.getLogger(__name__)
 BASIC_DOMAIN = "cardsrealm.com"
+NEGATIVE_DOMAINS = (
+    f"board.{BASIC_DOMAIN}",
+    f"hs.{BASIC_DOMAIN}",
+    f"lol.{BASIC_DOMAIN}"
+    f"lor.{BASIC_DOMAIN}",
+    f"lorcana.{BASIC_DOMAIN}",
+    f"onepiece.{BASIC_DOMAIN}",
+    f"pokemon.{BASIC_DOMAIN}",
+    f"yugioh.{BASIC_DOMAIN}",
+)
 URL_PREFIX = "https://mtg.cardsrealm.com"
 
 
@@ -272,9 +282,10 @@ class CardsrealmArticleScraper(HybridContainerScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return (all(
-            t in url.lower() for t in (f"{BASIC_DOMAIN}/", "/articles/"))
-                and "/search/" not in url.lower() and "/author/" not in url.lower())
+        positives = (f"{BASIC_DOMAIN}/", "/articles/")
+        negatives = ("/search/", "/author/", *NEGATIVE_DOMAINS)
+        return (all(p in url.lower() for p in positives)
+                and not any(n in url.lower() for n in negatives))
 
     @staticmethod
     @override
@@ -301,9 +312,10 @@ class CardsrealmAuthorScraper(HybridContainerScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return (all(
-            t in url.lower() for t in (f"{BASIC_DOMAIN}/", "/articles/author/"))
-                and "/search/" not in url.lower())
+        positives = (f"{BASIC_DOMAIN}/", "/articles/author/")
+        negatives = ("/search/", *NEGATIVE_DOMAINS)
+        return (all(p in url.lower() for p in positives)
+                and not any(n in url.lower() for n in negatives))
 
     @staticmethod
     @override
@@ -313,4 +325,32 @@ class CardsrealmAuthorScraper(HybridContainerScraper):
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
         _, container_links = self._get_links_from_tags(self._soup)
+        return [], [], [], container_links
+
+
+@HybridContainerScraper.registered
+class CardsrealmArticleSearchScraper(HybridContainerScraper):
+    """Scraper of Cardsrealm article search page.
+    """
+    CONTAINER_NAME = "Cardsrealm article search"  # override
+    CONTAINER_SCRAPERS = CardsrealmArticleScraper,  # override
+
+    @staticmethod
+    @override
+    def is_valid_url(url: str) -> bool:
+        positives = (f"{BASIC_DOMAIN}/", "/articles/search/", "keyword=")
+        return (all(p in url.lower() for p in positives)
+                and not any(n in url.lower() for n in NEGATIVE_DOMAINS))
+
+    @staticmethod
+    @override
+    def sanitize_url(url: str) -> str:
+        return to_eng_url(url, "/articles/")
+
+    @override
+    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
+        main_tag = self._soup.select_one("div#articlePage")
+        if not main_tag:
+            raise ScrapingError("Main <div> tag not found", type(self), self.url)
+        _, container_links = self._get_links_from_tags(main_tag)
         return [], [], [], container_links
