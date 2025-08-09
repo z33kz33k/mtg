@@ -21,29 +21,69 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, \
-    FolderContainerScraper, HybridContainerScraper
+    FolderContainerScraper, HybridContainerScraper, UrlHook
 from mtg.utils import timed
 from mtg.utils.scrape import ScrapingError, dissect_js, strip_url_query
 from mtg.utils.scrape.dynamic import SELENIUM_TIMEOUT, accept_consent
 
 _log = logging.getLogger(__name__)
-BASIC_DOMAIN = "cardsrealm.com"
 NEGATIVE_DOMAINS = (
-    f"board.{BASIC_DOMAIN}",
-    f"hs.{BASIC_DOMAIN}",
-    f"lol.{BASIC_DOMAIN}"
-    f"lor.{BASIC_DOMAIN}",
-    f"lorcana.{BASIC_DOMAIN}",
-    f"onepiece.{BASIC_DOMAIN}",
-    f"pokemon.{BASIC_DOMAIN}",
-    f"yugioh.{BASIC_DOMAIN}",
+    "board.cardsrealm.com/",
+    "hs.cardsrealm.com/",
+    "lol.cardsrealm.com"
+    "lor.cardsrealm.com/",
+    "lorcana.cardsrealm.com/",
+    "onepiece.cardsrealm.com/",
+    "pokemon.cardsrealm.com/",
+    "yugioh.cardsrealm.com/",
 )
 URL_PREFIX = "https://mtg.cardsrealm.com"
+URL_HOOKS = (
+    # deck
+    UrlHook(
+        ('"cardsrealm.com/"', '"/decks/"'),
+        ('-"/profile/"', '-"/folder/"'),
+    ),
+    # profile
+    UrlHook(
+        ('"cardsrealm.com/"', '"/profile/"', '"/decks"'),
+        ('-"/folder/"', ),
+    ),
+    # folder
+    UrlHook(
+        ('"cardsrealm.com/"', '"/decks/folder/"'),
+        ('-"/profile/"', ),
+    ),
+    # meta-deck tournament
+    UrlHook(
+        ('"cardsrealm.com/"', '"/meta-decks/"', '"/tournaments/"'),
+    ),
+    # regular tournament
+    UrlHook(
+        ('"cardsrealm.com/"', '"/tournament/"'),
+        ('-"/meta-decks/"', ),
+    ),
+    # article
+    UrlHook(
+        ('"cardsrealm.com/"', '"/articles/"'),
+        ('-"/search/"', "/author/", *(f'-"{t}"' for t in NEGATIVE_DOMAINS)),
+    ),
+    # author
+    UrlHook(
+        ('"cardsrealm.com/"', '"/articles/author/"'),
+        ('-"/search/"', *(f'-"{t}"' for t in NEGATIVE_DOMAINS)),
+    ),
+    # article search
+    UrlHook(
+        ('"cardsrealm.com/"', '"/articles/search/"', '"keyword="'),
+        tuple(f'-"{t}"' for t in NEGATIVE_DOMAINS),
+    ),
+)
 
 
 def get_source(src: str) -> str | None:
-    if BASIC_DOMAIN in src and "mtg." not in src:
-        return f"mtg.{BASIC_DOMAIN}"
+    if "cardsrealm.com" in src and "mtg." not in src:
+        return "mtg.cardsrealm.com"
     return None
 
 
@@ -52,11 +92,11 @@ def to_eng_url(url: str, lang_code_delimiter: str) -> str:
             ch != "/" for ch in (lang_code_delimiter[0], lang_code_delimiter[-1])):
         raise ValueError(f"Invalid language code delimiter: {lang_code_delimiter!r}")
     # attempt to replace any language code other than 'en-us' with 'en-us'
-    _, first = url.split(f"{BASIC_DOMAIN}/", maxsplit=1)
+    _, first = url.split("cardsrealm.com/", maxsplit=1)
     if first.startswith(lang_code_delimiter[1:]):  # no lang code in url (implicitly means 'en-us')
         return url
     lang, _ = first.split(lang_code_delimiter, maxsplit=1)
-    return url.replace(f"/{lang}/", "/en-us/")
+    return url.replace("/{lang}/", "/en-us/")
 
 
 @DeckScraper.registered
@@ -68,7 +108,10 @@ class CardsrealmDeckScraper(DeckScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return f"{BASIC_DOMAIN}/" in url.lower() and "/decks/" in url.lower()
+        positives = ("cardsrealm.com/", "/decks/")
+        negatives = ("/profile/", "/folder/")
+        return (all(p in url.lower() for p in positives)
+                and not any(n in url.lower() for n in negatives))
 
     @staticmethod
     @override
@@ -123,7 +166,10 @@ class CardsrealmProfileScraper(DeckUrlsContainerScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return all(t in url.lower() for t in (f"{BASIC_DOMAIN}/", "/profile/", "/decks"))
+        positives = ("cardsrealm.com/", "/profile/", "/decks")
+        negatives = ("/folder/", )
+        return (all(p in url.lower() for p in positives)
+                and not any(n in url.lower() for n in negatives))
 
     @staticmethod
     @override
@@ -151,24 +197,16 @@ class CardsrealmFolderScraper(CardsrealmProfileScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return all(t in url.lower() for t in (f"{BASIC_DOMAIN}/", "/decks/folder/"))
+        positives = ("cardsrealm.com/", "/decks/folder/")
+        negatives = ("/profile/", )
+        return (all(p in url.lower() for p in positives)
+                and not any(n in url.lower() for n in negatives))
 
     @staticmethod
     @override
     def sanitize_url(url: str) -> str:
         url = strip_url_query(url)
         return to_eng_url(url, "/decks/")
-
-
-# e.g.: https://mtg.cardsrealm.com/en-us/meta-decks/pauper/tournaments/1k27j-pauper-royale-220
-def _is_meta_tournament_url(url: str) -> bool:
-    return all(t in url.lower() for t in (f"{BASIC_DOMAIN}/", "/meta-decks/", "/tournaments/"))
-
-
-# e.g.: https://mtg.cardsrealm.com/en-us/tournament/1k27j-pauper-royale-220
-def _is_regular_tournament_url(url: str) -> bool:
-    return (all(t in url.lower() for t in (f"{BASIC_DOMAIN}/", "/tournament/"))
-            and "/meta-decks/" not in url.lower())
 
 
 @DeckUrlsContainerScraper.registered
@@ -181,8 +219,9 @@ class CardsrealmMetaTournamentScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
+    # e.g.: https://mtg.cardsrealm.com/en-us/meta-decks/pauper/tournaments/1k27j-pauper-royale-220
     def is_valid_url(url: str) -> bool:
-        return _is_meta_tournament_url(url)
+        return all(t in url.lower() for t in ("cardsrealm.com/", "/meta-decks/", "/tournaments/"))
 
     @staticmethod
     @override
@@ -216,8 +255,10 @@ class CardsrealmRegularTournamentScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
+    # e.g.: https://mtg.cardsrealm.com/en-us/tournament/1k27j-pauper-royale-220
     def is_valid_url(url: str) -> bool:
-        return _is_regular_tournament_url(url)
+        return (all(t in url.lower() for t in ("cardsrealm.com/", "/tournament/"))
+                and "/meta-decks/" not in url.lower())
 
     @staticmethod
     @override
@@ -282,7 +323,7 @@ class CardsrealmArticleScraper(HybridContainerScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        positives = (f"{BASIC_DOMAIN}/", "/articles/")
+        positives = ("cardsrealm.com/", "/articles/")
         negatives = ("/search/", "/author/", *NEGATIVE_DOMAINS)
         return (all(p in url.lower() for p in positives)
                 and not any(n in url.lower() for n in negatives))
@@ -312,7 +353,7 @@ class CardsrealmAuthorScraper(HybridContainerScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        positives = (f"{BASIC_DOMAIN}/", "/articles/author/")
+        positives = ("cardsrealm.com/", "/articles/author/")
         negatives = ("/search/", *NEGATIVE_DOMAINS)
         return (all(p in url.lower() for p in positives)
                 and not any(n in url.lower() for n in negatives))
@@ -338,7 +379,7 @@ class CardsrealmArticleSearchScraper(HybridContainerScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        positives = (f"{BASIC_DOMAIN}/", "/articles/search/", "keyword=")
+        positives = ("cardsrealm.com/", "/articles/search/", "keyword=")
         return (all(p in url.lower() for p in positives)
                 and not any(n in url.lower() for n in NEGATIVE_DOMAINS))
 
