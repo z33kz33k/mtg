@@ -39,43 +39,21 @@ NEGATIVE_DOMAINS = (
 )
 URL_PREFIX = "https://mtg.cardsrealm.com"
 URL_HOOKS = (
-    # deck
+    # deck & profile & folder
     UrlHook(
-        ('"cardsrealm.com/"', '"/decks/"'),
-        ('-"/profile/"', '-"/folder/"'),
-    ),
-    # profile
-    UrlHook(
-        ('"cardsrealm.com/"', '"/profile/"', '"/decks"'),
-        ('-"/folder/"', ),
-    ),
-    # folder
-    UrlHook(
-        ('"cardsrealm.com/"', '"/decks/folder/"'),
-        ('-"/profile/"', ),
+        ('"cardsrealm.com/"', '"/decks"'),
     ),
     # meta-deck tournament
     UrlHook(
-        ('"cardsrealm.com/"', '"/meta-decks/"', '"/tournaments/"'),
+        ('"cardsrealm.com/"', '"/tournaments/"'),
     ),
     # regular tournament
     UrlHook(
         ('"cardsrealm.com/"', '"/tournament/"'),
-        ('-"/meta-decks/"', ),
     ),
-    # article
+    # article & author & article searches
     UrlHook(
         ('"cardsrealm.com/"', '"/articles/"'),
-        ('-"/search/"', "/author/", *(f'-"{t}"' for t in NEGATIVE_DOMAINS)),
-    ),
-    # author
-    UrlHook(
-        ('"cardsrealm.com/"', '"/articles/author/"'),
-        ('-"/search/"', *(f'-"{t}"' for t in NEGATIVE_DOMAINS)),
-    ),
-    # article search
-    UrlHook(
-        ('"cardsrealm.com/"', '"/articles/search/"', '"keyword="'),
         tuple(f'-"{t}"' for t in NEGATIVE_DOMAINS),
     ),
 )

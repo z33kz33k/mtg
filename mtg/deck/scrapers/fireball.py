@@ -14,19 +14,38 @@ import logging
 from typing import override
 
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, DecksJsonContainerScraper, \
-    HybridContainerScraper
+    HybridContainerScraper, UrlHook
 from mtg.deck.scrapers.tcgplayer import (
     TcgPlayerInfiniteArticleScraper, TcgPlayerInfiniteDeckScraper,
     TcgPlayerInfinitePlayerScraper, TcgPlayerInfiniteAuthorScraper)
-
-_log = logging.getLogger(__name__)
-FIREBALL_URL_PREFIX = "https://www.channelfireball.com"
 
 
 # NOTE: As of Feb 25th, TCGPlayer seems to have recently withdrawn special ChannelFireball-specific
 # API domain: 'cfg-infinite-api.tcgplayer.com' that the scrapers below used to utilize. Now there's
 # a simple redirection from ChannelFireball URL directly to TCGPlayer Infinite article and the
 # regular TCGPlayer Infinite API domain is used.
+
+
+_log = logging.getLogger(__name__)
+FIREBALL_URL_PREFIX = "https://www.channelfireball.com"
+URL_HOOKS = (
+    # deck
+    UrlHook(
+        ('"channelfireball.com/magic-the-gathering/deck/"', ),
+    ),
+    # player
+    UrlHook(
+        ('"channelfireball.com/magic-the-gathering/decks/player/"', ),
+    ),
+    # article
+    UrlHook(
+        ('"channelfireball.com/article/"', ),
+    ),
+    # author
+    UrlHook(
+        ('"channelfireball.com/author/"', ),
+    ),
+)
 
 
 @DeckScraper.registered

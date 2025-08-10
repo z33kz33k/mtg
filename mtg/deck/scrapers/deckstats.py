@@ -17,14 +17,18 @@ from bs4 import BeautifulSoup
 from requests import Response
 
 from mtg import Json
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, UrlHook
 from mtg.scryfall import Card
 from mtg.utils.scrape import ScrapingError, dissect_js, request_json, strip_url_query, \
     throttle, timed_request
 
 _log = logging.getLogger(__name__)
-
-
+URL_HOOKS = (
+    # deck & users (user is: domain + user ID, and deck is: domain + user ID + deck ID)
+    UrlHook(
+        ('"deckstats.net/decks/"', ),
+    ),
+)
 _FORMATS = {
     2: "vintage",
     3: "legacy",

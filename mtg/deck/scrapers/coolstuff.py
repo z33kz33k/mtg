@@ -15,7 +15,8 @@ from bs4 import Tag
 
 from mtg import Json, SECRETS
 from mtg.deck import DeckParser
-from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser, is_in_domain_but_not_main
+from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser, UrlHook, \
+    is_in_domain_but_not_main
 from mtg.utils import ParsingError, extract_int
 from mtg.utils.scrape import ScrapingError, strip_url_query
 
@@ -39,6 +40,12 @@ HEADERS = {
     "Priority": "u=0, i",
 }
 URL_PREFIX = "https://www.coolstuffinc.com"
+URL_HOOKS = (
+    # article & author
+    UrlHook(
+        ('"coolstuffinc.com/a/"', ),
+    ),
+)
 
 
 class _SubParser(TagBasedDeckParser):

@@ -15,11 +15,21 @@ import dateutil.parser
 from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import DeckUrlsContainerScraper
+from mtg.deck.scrapers import DeckUrlsContainerScraper, UrlHook
 from mtg.deck.scrapers.topdeck import check_unexpected_urls
 from mtg.utils.scrape import ScrapingError, dissect_js
 
 _log = logging.getLogger(__name__)
+URL_HOOKS = (
+    # tournament
+    UrlHook(
+        ('"edhtop16.com/tournament/"', ),
+    ),
+    # commander
+    UrlHook(
+        ('"edhtop16.com/commander/"', ),
+    ),
+)
 
 
 @DeckUrlsContainerScraper.registered

@@ -12,12 +12,26 @@ from typing import override
 
 from bs4 import Tag
 
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, UrlHook
 from mtg.scryfall import COMMANDER_FORMATS, Card
 from mtg.utils.scrape import ScrapingError, strip_url_query
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://deckbox.org"
+URL_HOOKS = (
+    # deck
+    UrlHook(
+        ('"deckbox.org/sets/"', ),
+    ),
+    # user
+    UrlHook(
+        ('"deckbox.org/users/"', ),
+    ),
+    # event
+    UrlHook(
+        ('"deckbox.org/communities/"', '"/events/"'),
+    ),
+)
 
 
 @DeckScraper.registered

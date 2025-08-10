@@ -15,12 +15,19 @@ from bs4 import Tag
 
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper, HybridContainerScraper, TagBasedDeckParser, \
-    is_in_domain_but_not_main
+    UrlHook, is_in_domain_but_not_main
 from mtg.scryfall import all_formats
 from mtg.utils import ParsingError, from_iterable, get_date_from_ago_text
 from mtg.utils.scrape import ScrapingError, strip_url_query
 
 _log = logging.getLogger(__name__)
+URL_HOOKS = (
+    # deck & article & author
+    UrlHook(
+        ('"draftsim.com/"', ),
+        ('-"/blog"', '-"/ratings"', '-"/all-sets"', '-"/arenatutor"'),
+    ),
+)
 
 
 @DeckScraper.registered

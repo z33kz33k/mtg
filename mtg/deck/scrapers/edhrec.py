@@ -17,7 +17,7 @@ import dateutil.parser
 from bs4 import BeautifulSoup, Tag
 
 from mtg import Json
-from mtg.deck.scrapers import DeckScraper, HybridContainerScraper, TagBasedDeckParser
+from mtg.deck.scrapers import DeckScraper, HybridContainerScraper, TagBasedDeckParser, UrlHook
 from mtg.scryfall import Card
 from mtg.utils import ParsingError
 from mtg.utils.scrape import ScrapingError, get_links, prepend_url, strip_url_query
@@ -25,6 +25,30 @@ from mtg.utils.scrape import getsoup
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://edhrec.com"
+URL_HOOKS = (
+    # deck preview
+    UrlHook(
+        ('"edhrec.com/"', '"/deckpreview/"'),
+    ),
+    # average deck #1
+    UrlHook(
+        ('"edhrec.com/"', '"/average-decks/"'),
+        ('-"/month"', ),
+    ),
+    # average deck #2
+    UrlHook(
+        ('"edhrec.com/"', '"/commanders/"'),
+        ('-"/month"', ),
+    ),
+    # article & author & article search #1
+    UrlHook(
+        ('"edhrec.com/articles/"', ),
+    ),
+    # article & author & article search #2
+    UrlHook(
+        ('"articles.edhrec.com/"', ),
+    ),
+)
 
 
 def get_source(src: str) -> str | None:

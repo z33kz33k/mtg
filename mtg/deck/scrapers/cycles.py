@@ -14,10 +14,17 @@ import dateutil.parser
 from bs4 import NavigableString, Tag
 
 from mtg import Json
-from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser, is_in_domain_but_not_main
+from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser, UrlHook, \
+    is_in_domain_but_not_main
 from mtg.utils.scrape import strip_url_query
 
 _log = logging.getLogger(__name__)
+URL_HOOKS = (
+    # article
+    UrlHook(
+        ('"cyclesgaming.com/"', ),
+    ),
+)
 
 
 class CyclesGamingDeckTagParser(TagBasedDeckParser):
