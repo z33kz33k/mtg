@@ -147,7 +147,10 @@ class FlexslotSideboardScraper(DecksJsonContainerScraper):
         return json_data["decks"]
 
 
-# TODO: scrape sideboards and articles too
+# FIXME: use API to collect data, similar to other scrapers, example request:
+#  https://api.flexslot.gg/users/get_user_short_by_name/Mrtoolshed/ for URL:
+#  https://flexslot.gg/u/Mrtoolshed (#406)
+# TODO: scrape sideboards and articles too (#406)
 @DeckUrlsContainerScraper.registered
 class FlexslotUserScraper(DeckUrlsContainerScraper):
     """Scraper of Flexslot user page.

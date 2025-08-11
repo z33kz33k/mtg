@@ -21,7 +21,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from mtg.deck import CardNotFound, Deck, InvalidDeck
-from mtg.deck.arena import ArenaParser, IllFormedArenaDecklist, PlaysetLine
+from mtg.deck.arena import IllFormedArenaDecklist, PlaysetLine
 from mtg.deck.scrapers import DeckScraper
 from mtg.scryfall import COMMANDER_FORMATS
 from mtg.utils import ParsingError, extract_float, get_date_from_ago_text
@@ -38,6 +38,7 @@ def _sanitize_element_text(text: str) -> str:
     return text
 
 
+# FIXME: get data from the API (#310)
 @DeckScraper.registered
 class TopDeckedRegularDeckScraper(DeckScraper):
     """Scraper of TopDecked regular decklist page.

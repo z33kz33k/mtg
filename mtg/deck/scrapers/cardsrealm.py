@@ -23,7 +23,7 @@ from mtg import Json
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, \
     FolderContainerScraper, HybridContainerScraper, UrlHook
 from mtg.utils import timed
-from mtg.utils.scrape import ScrapingError, dissect_js, strip_url_query
+from mtg.utils.scrape import ScrapingError, dissect_js, get_path_segments, strip_url_query
 from mtg.utils.scrape.dynamic import SELENIUM_TIMEOUT, accept_consent
 
 _log = logging.getLogger(__name__)
@@ -65,16 +65,14 @@ def get_source(src: str) -> str | None:
     return None
 
 
-def to_eng_url(url: str, lang_code_delimiter: str) -> str:
-    if len(lang_code_delimiter) < 3 or any(
-            ch != "/" for ch in (lang_code_delimiter[0], lang_code_delimiter[-1])):
-        raise ValueError(f"Invalid language code delimiter: {lang_code_delimiter!r}")
-    # attempt to replace any language code other than 'en-us' with 'en-us'
-    _, first = url.split("cardsrealm.com/", maxsplit=1)
-    if first.startswith(lang_code_delimiter[1:]):  # no lang code in url (implicitly means 'en-us')
-        return url
-    lang, _ = first.split(lang_code_delimiter, maxsplit=1)
-    return url.replace("/{lang}/", "/en-us/")
+def to_eng_url(url: str, first_non_lang_segment: str) -> str:
+    segments = get_path_segments(url)
+    if not segments:
+        raise ValueError(f"Cannot parse path segments from {url!r}")
+    if segments[0] == first_non_lang_segment:
+        return url  # no lang code in url (implicitly means 'en-us')
+    lang = segments[0]
+    return url.replace(f"/{lang}/", "/en-us/")
 
 
 @DeckScraper.registered
@@ -95,7 +93,7 @@ class CardsrealmDeckScraper(DeckScraper):
     @override
     def sanitize_url(url: str) -> str:
         url = strip_url_query(url)
-        return to_eng_url(url, "/decks/")
+        return to_eng_url(url, "decks")
 
     @override
     def _get_data_from_soup(self) -> Json:
@@ -153,7 +151,7 @@ class CardsrealmProfileScraper(DeckUrlsContainerScraper):
     @override
     def sanitize_url(url: str) -> str:
         url = strip_url_query(url)
-        return to_eng_url(url, "/profile/")
+        return to_eng_url(url, "profile")
 
     @override
     def _collect(self) -> list[str]:
@@ -184,7 +182,7 @@ class CardsrealmFolderScraper(CardsrealmProfileScraper):
     @override
     def sanitize_url(url: str) -> str:
         url = strip_url_query(url)
-        return to_eng_url(url, "/decks/")
+        return to_eng_url(url, "decks")
 
 
 @DeckUrlsContainerScraper.registered
@@ -205,7 +203,7 @@ class CardsrealmMetaTournamentScraper(DeckUrlsContainerScraper):
     @override
     def sanitize_url(url: str) -> str:
         url = strip_url_query(url)
-        return to_eng_url(url, "/meta-decks/")
+        return to_eng_url(url, "meta-decks")
 
     @override
     def _collect(self) -> list[str]:
@@ -242,7 +240,7 @@ class CardsrealmRegularTournamentScraper(DeckUrlsContainerScraper):
     @override
     def sanitize_url(url: str) -> str:
         url = strip_url_query(url)
-        return to_eng_url(url, "/tournament/")
+        return to_eng_url(url, "tournament")
 
     @timed("getting dynamic soup")
     def _get_dynamic_soup(self) -> BeautifulSoup:
@@ -310,7 +308,7 @@ class CardsrealmArticleScraper(HybridContainerScraper):
     @override
     def sanitize_url(url: str) -> str:
         url = strip_url_query(url)
-        return to_eng_url(url, "/articles/")
+        return to_eng_url(url, "articles")
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
@@ -364,7 +362,7 @@ class CardsrealmArticleSearchScraper(HybridContainerScraper):
     @staticmethod
     @override
     def sanitize_url(url: str) -> str:
-        return to_eng_url(url, "/articles/")
+        return to_eng_url(url, "articles")
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
