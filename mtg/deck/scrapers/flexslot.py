@@ -11,10 +11,11 @@ import logging
 from typing import Type, override
 
 import dateutil.parser
+from bs4 import BeautifulSoup, Tag
 
 from mtg import Json, SECRETS
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, DecksJsonContainerScraper, \
-    JsonBasedDeckParser, is_in_domain_but_not_main
+    HybridContainerScraper, JsonBasedDeckParser, is_in_domain_but_not_main
 from mtg.utils.scrape import InaccessiblePage, ScrapingError, request_json, strip_url_query
 
 _log = logging.getLogger(__name__)
@@ -38,10 +39,12 @@ HEADERS = {
 }
 
 
-def _get_json_data(url: str, scraper: Type[DeckScraper]) -> Json:
-    json_data = request_json(
-        url.replace("https://flexslot.gg", "https://api.flexslot.gg"),
-        headers=HEADERS)
+def _get_json_data(url: str, scraper: Type[DeckScraper], article=False) -> Json:
+    domain, api_domain = "https://flexslot.gg", "https://api.flexslot.gg"
+    if article:
+        domain += "/article/"
+        api_domain += "/blogposts/"
+    json_data = request_json(url.replace(domain, api_domain), headers=HEADERS)
     if not json_data or not json_data.get("data"):
         raise ScrapingError("Data not available", scraper=scraper, url=url)
     return json_data["data"]
@@ -145,6 +148,54 @@ class FlexslotSideboardScraper(DecksJsonContainerScraper):
                     "Content paywalled (Patreon exclusive)", type(self), self.url)
             raise ScrapingError("Decks data not found", type(self), self.url)
         return json_data["decks"]
+
+
+@HybridContainerScraper.registered
+class FlexslotArticleScraper(HybridContainerScraper):
+    """Scraper of Flexslot article page.
+    """
+    CONTAINER_NAME = "Flexslot article"  # override
+    CONTAINER_SCRAPERS = FlexslotSideboardScraper,  # override
+
+    @staticmethod
+    @override
+    def is_valid_url(url: str) -> bool:
+        return is_in_domain_but_not_main(url, "flexslot.gg/article/")
+
+    @staticmethod
+    @override
+    def sanitize_url(url: str) -> str:
+        return FlexslotDeckScraper.sanitize_url(url)
+
+    @override
+    def _pre_parse(self) -> None:
+        self._data = _get_json_data(self.url, type(self), article=True)
+        if not self._data.get("content"):
+            raise ScrapingError("Article HTML content not found", type(self), self.url)
+        self._soup = BeautifulSoup(self._data["content"], "lxml")
+
+    @override
+    def _parse_metadata(self) -> None:
+        if author := self._data.get("author_name") or self._data.get("author_username"):
+            self._metadata["author"] = author
+        if date := self._data.get("date_updated") or self._data.get(
+                "date_created") or self._data.get("date_published"):
+            self._metadata["date"] = dateutil.parser.parse(date).date()
+        if title := self._data.get("title"):
+            self._metadata.setdefault("article", {})["title"] = title
+        if page_views := self._data.get("pageviews"):
+            self._metadata.setdefault("article", {})["page_views"] = page_views
+        if likes := self._data.get("likes"):
+            self._metadata.setdefault("article", {})["likes"] = likes
+        if tags := self._data.get("tags"):
+            self._metadata.setdefault("article", {})["tags"] = self.process_metadata_deck_tags(tags)
+
+    @override
+    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
+        deck_urls, container_urls = self._get_links_from_tags()
+        deck_urls2, container_urls2 = self._sift_links(
+            *[t.text for t in self._soup.select("h4 > strong > u")])
+        return deck_urls + deck_urls2, [], [], container_urls + container_urls2
 
 
 # FIXME: use API to collect data, similar to other scrapers, example request:

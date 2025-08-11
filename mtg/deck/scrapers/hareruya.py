@@ -493,7 +493,7 @@ class HareruyaArticleScraper(HybridContainerScraper):
         # only the newest pages have <deck-embedder> tags with deck IDs that facilitates JSON
         # based parsing with API queries
         deck_data = self._collect_deck_data(article_tag)
-        deck_urls, container_urls = self._get_links_from_tags(article_tag, query_stripped=False)
+        deck_urls, container_urls = self._get_links_from_tags(article_tag)
         if deck_data:
             return [], [], deck_data, container_urls
         # older ones need a dedicated tag based parser

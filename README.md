@@ -109,7 +109,7 @@ YT videos descriptions).
         * Draftsim articles and authors
         * EDHREC authors, articles and article searches
         * [EDHTop16](https://edhtop16.com) tournaments and commanders
-        * Flexslot sideboards and users
+        * Flexslot sideboards, articles and users
         * Goldfish tournaments, players and articles
         * Hareruya events, players, articles and authors
         * LigaMagic events _(with caveats)_
@@ -141,7 +141,7 @@ YT videos descriptions).
         * TopDeck.gg brackets and profiles
         * Untapped profiles
         * [WotC (official MTG site)](https://magic.wizards.com/en) articles
-    * 94 container pages in total with 24 more in plans
+    * 95 container pages in total with 23 more in plans
 * Assessing the meta:
     * Goldfish
     * MGTAZone 
@@ -162,17 +162,17 @@ YT videos descriptions).
 ### Scraped decks breakdown
 | No | Format | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | commander       | 73351 |    37.38 % |
-| 2  | standard        | 46577 |    23.73 % |
+| 1  | commander       | 73351 |    37.37 % |
+| 2  | standard        | 46589 |    23.73 % |
 | 3  | modern          | 20682 |    10.54 % |
 | 4  | pauper          | 12522 |     6.38 % |
 | 5  | pioneer         | 11253 |     5.73 % |
-| 6  | brawl           |  5447 |     2.78 % |
+| 6  | brawl           |  5447 |     2.77 % |
 | 7  | legacy          |  5272 |     2.69 % |
 | 8  | historic        |  3222 |     1.64 % |
 | 9  | undefined       |  3016 |     1.54 % |
 | 10 | explorer        |  2519 |     1.28 % |
-| 11 | duel            |  2196 |     1.12 % |
+| 11 | duel            |  2225 |     1.13 % |
 | 12 | paupercommander |  2115 |     1.08 % |
 | 13 | timeless        |  2015 |     1.03 % |
 | 14 | irregular       |  1347 |     0.69 % |
@@ -186,32 +186,32 @@ YT videos descriptions).
 | 22 | oldschool       |    68 |     0.03 % |
 | 23 | future          |    52 |     0.03 % |
 | 24 | predh           |    12 |     0.01 % |
-|  | TOTAL           | 196249 | 100.00 %|
+|  | TOTAL           | 196290 | 100.00 %|
 
 | No | Source | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | moxfield.com           | 84663 |    43.14 % |
+| 1  | moxfield.com           | 84663 |    43.13 % |
 | 2  | mtgo.com               | 21985 |    11.20 % |
-| 3  | arena.decklist         | 17764 |     9.05 % |
-| 4  | aetherhub.com          | 12315 |     6.28 % |
-| 5  | mtggoldfish.com        | 11770 |     6.00 % |
+| 3  | arena.decklist         | 17771 |     9.05 % |
+| 4  | aetherhub.com          | 12315 |     6.27 % |
+| 5  | mtggoldfish.com        | 11772 |     6.00 % |
 | 6  | archidekt.com          |  7284 |     3.71 % |
 | 7  | mtgdecks.net           |  6780 |     3.45 % |
 | 8  | mtg.cardsrealm.com     |  3981 |     2.03 % |
-| 9  | mtga.untapped.gg       |  3768 |     1.92 % |
+| 9  | mtga.untapped.gg       |  3773 |     1.92 % |
 | 10 | melee.gg               |  3623 |     1.85 % |
 | 11 | tcgplayer.com          |  3497 |     1.78 % |
 | 12 | mtgcircle.com          |  2998 |     1.53 % |
 | 13 | tappedout.net          |  1993 |     1.02 % |
 | 14 | streamdecker.com       |  1811 |     0.92 % |
 | 15 | topdeck.gg             |  1701 |     0.87 % |
-| 16 | mtgtop8.com            |  1633 |     0.83 % |
+| 16 | mtgtop8.com            |  1659 |     0.85 % |
 | 17 | magic.gg               |  1622 |     0.83 % |
 | 18 | hareruyamtg.com        |   907 |     0.46 % |
 | 19 | magic.wizards.com      |   757 |     0.39 % |
 | 20 | mtgazone.com           |   745 |     0.38 % |
 | 21 | deckstats.net          |   610 |     0.31 % |
-| 22 | flexslot.gg            |   524 |     0.27 % |
+| 22 | flexslot.gg            |   525 |     0.27 % |
 | 23 | starcitygames.com      |   508 |     0.26 % |
 | 24 | pauperwave.com         |   333 |     0.17 % |
 | 25 | pennydreadfulmagic.com |   318 |     0.16 % |
@@ -242,4 +242,4 @@ YT videos descriptions).
 | 50 | mtgarena.pro           |     3 |     0.00 % |
 | 51 | mtgotraders.com        |     1 |     0.00 % |
 | 52 | playingmtg.com         |     1 |     0.00 % |
-|  | TOTAL                  | 196249 | 100.00 %|
+|  | TOTAL                  | 196290 | 100.00 %|

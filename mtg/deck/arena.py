@@ -249,8 +249,17 @@ def is_arena_line(line: str) -> bool:
     return False
 
 
-# TODO: docstrings
 class LinesParser:
+    """Parse list of arbitrary text lines for multiple (or singular) Arena/MGTO decklists.
+
+    In default mode this parser tries to find as many decklists as possible and doesn't assume
+    that any decklist's section is going to be announced by a section header line. Instead,
+    it looks at the size of consecutive playset lines' blocks it encounters and at sizes of gaps
+    between them to determine the relevant states.
+
+    In single-decklist mode it filters out anything that isn't a playset or section header line (
+    including any possible gaps between them).
+    """
     MAINDECK_MIN_SIZE = 6  # pretty arbitrary
 
     @property
@@ -399,6 +408,7 @@ class LinesParser:
         # section headers) based on their size (provided they're not separated by gaps longer
         # than 2 thrash lines) and at the same time we're able to weed out most cases of false
         # positives (e.g. lines like "Episode 274" - which mimic playset lines in inverted form)
+        # - because they get discarded after each too-long a gap
         elif self._blanks > 2:
             self._finish_decklist()
 
