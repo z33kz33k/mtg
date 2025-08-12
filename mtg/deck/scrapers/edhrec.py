@@ -168,6 +168,10 @@ class EdhrecAverageDeckScraper(DeckScraper):
         return url.replace("/commanders/", "/average-decks/")
 
     @override
+    def _is_soft_404_error(self) -> bool:
+        return self._soup.find("h2", string=lambda s: s and s == "404 Page Not Found") is not None
+
+    @override
     def _pre_parse(self) -> None:
         self._data, self._soup = _get_data(self.url, type(self))
 

@@ -8,14 +8,14 @@
 
 """
 import logging
-from typing import Type, override
+from typing import override
 
 import dateutil.parser
 from bs4 import BeautifulSoup, Tag
 
 from mtg import Json, SECRETS
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, DecksJsonContainerScraper, \
-    HybridContainerScraper, JsonBasedDeckParser, is_in_domain_but_not_main
+    HybridContainerScraper, JsonBasedDeckParser, UrlHook, is_in_domain_but_not_main
 from mtg.utils.scrape import InaccessiblePage, ScrapingError, request_json, strip_url_query
 
 _log = logging.getLogger(__name__)
@@ -37,17 +37,32 @@ HEADERS = {
     "Sec-Fetch-Site": "same-site",
     "TE": "trailers",
 }
+URL_HOOKS = (
+    # deck
+    UrlHook(
+        ('"flexslot.gg/decks/"', ),
+    ),
+    # sideboard
+    UrlHook(
+        ('"flexslot.gg/sideboards/"', ),
+    ),
+    # article
+    UrlHook(
+        ('"flexslot.gg/article/"', ),
+    ),
+    # user
+    UrlHook(
+        ('"flexslot.gg/u/"', ),
+    ),
+)
 
 
-def _get_json_data(url: str, scraper: Type[DeckScraper], article=False) -> Json:
+def _get_json_data(url: str, **suffixes) -> Json:
     domain, api_domain = "https://flexslot.gg", "https://api.flexslot.gg"
-    if article:
-        domain += "/article/"
-        api_domain += "/blogposts/"
-    json_data = request_json(url.replace(domain, api_domain), headers=HEADERS)
-    if not json_data or not json_data.get("data"):
-        raise ScrapingError("Data not available", scraper=scraper, url=url)
-    return json_data["data"]
+    if suffixes:
+        domain += suffixes["domain_suffix"]
+        api_domain += suffixes["api_domain_suffix"]
+    return request_json(url.replace(domain, api_domain), headers=HEADERS)
 
 
 class FlexslotDeckJsonParser(JsonBasedDeckParser):
@@ -107,7 +122,10 @@ class FlexslotDeckScraper(DeckScraper):
 
     @override
     def _pre_parse(self) -> None:
-        self._data = _get_json_data(self.url, type(self))
+        json_data = _get_json_data(self.url)
+        if not json_data or not json_data.get("data"):
+            raise ScrapingError("No deck data", scraper=type(self), url=self.url)
+        self._data = json_data["data"]
 
     @override
     def _get_sub_parser(self) -> FlexslotDeckJsonParser:
@@ -140,14 +158,21 @@ class FlexslotSideboardScraper(DecksJsonContainerScraper):
         return FlexslotDeckScraper.sanitize_url(url)
 
     @override
-    def _collect(self) -> list[Json]:
-        json_data = _get_json_data(self.url, type(self))
+    def _pre_parse(self) -> None:
+        json_data = _get_json_data(self.url)
+        if not json_data or not json_data.get("data"):
+            raise ScrapingError("No sideboard data", scraper=type(self), url=self.url)
+        json_data = json_data["data"]
         if not json_data.get("decks"):
             if json_data.get("visibility") == "Patreon Exclusive":
                 raise InaccessiblePage(
                     "Content paywalled (Patreon exclusive)", type(self), self.url)
-            raise ScrapingError("Decks data not found", type(self), self.url)
-        return json_data["decks"]
+            raise ScrapingError("No decks data", type(self), self.url)
+        self._data = json_data["decks"]
+
+    @override
+    def _collect(self) -> list[Json]:
+        return self._data
 
 
 @HybridContainerScraper.registered
@@ -169,9 +194,13 @@ class FlexslotArticleScraper(HybridContainerScraper):
 
     @override
     def _pre_parse(self) -> None:
-        self._data = _get_json_data(self.url, type(self), article=True)
+        json_data = _get_json_data(
+            self.url, domain_suffix="/article/", api_domain_suffix="/blogposts/")
+        if not json_data or not json_data.get("data"):
+            raise ScrapingError("No article data", scraper=type(self), url=self.url)
+        self._data = json_data["data"]
         if not self._data.get("content"):
-            raise ScrapingError("Article HTML content not found", type(self), self.url)
+            raise ScrapingError("No article HTML content data", type(self), self.url)
         self._soup = BeautifulSoup(self._data["content"], "lxml")
 
     @override
@@ -198,23 +227,20 @@ class FlexslotArticleScraper(HybridContainerScraper):
         return deck_urls + deck_urls2, [], [], container_urls + container_urls2
 
 
-# FIXME: use API to collect data, similar to other scrapers, example request:
-#  https://api.flexslot.gg/users/get_user_short_by_name/Mrtoolshed/ for URL:
-#  https://flexslot.gg/u/Mrtoolshed (#406)
-# TODO: scrape sideboards and articles too (#406)
-@DeckUrlsContainerScraper.registered
-class FlexslotUserScraper(DeckUrlsContainerScraper):
+# TODO: add articles (once Flexslot.gg actually adds them to a user page)
+@HybridContainerScraper.registered
+class FlexslotUserScraper(HybridContainerScraper):
     """Scraper of Flexslot user page.
     """
-    SELENIUM_PARAMS = {  # override
-        "xpath": '//a[contains(@href, "/decks/")]',
-        "consent_xpath": "//p[text()='Consent']",
-        "wait_for_all": True
-    }
     CONTAINER_NAME = "Flexslot user"  # override
     THROTTLING = DeckUrlsContainerScraper.THROTTLING * 2  # override
     DECK_SCRAPERS = FlexslotDeckScraper,  # override
-    DECK_URL_PREFIX = "https://flexslot.gg"  # override
+    CONTAINER_SCRAPERS = FlexslotSideboardScraper,  #override
+    API_URL_TEMPLATE = "https://api.flexslot.gg/{}/search/?firebase_user_id={}&page=1"
+
+    def __init__(self, url: str, metadata: Json | None = None) -> None:
+        super().__init__(url, metadata)
+        self._decks_data, self._sideboards_data = None, None
 
     @staticmethod
     @override
@@ -227,5 +253,42 @@ class FlexslotUserScraper(DeckUrlsContainerScraper):
         return strip_url_query(url)
 
     @override
-    def _collect(self) -> list[str]:
-        return [t["href"] for t in self._soup.find_all("a", href=lambda h: h and "/decks/" in h)]
+    def _pre_parse(self) -> None:
+        user_data = _get_json_data(
+            self.url, domain_suffix="/u/",
+            api_domain_suffix="/users/get_user_short_by_name/")
+        if not user_data.get("firebase_id"):
+            raise ScrapingError("No user Firebase ID data", type(self), self.url)
+        user_id = user_data["firebase_id"]
+        self._decks_data = request_json(
+            self.API_URL_TEMPLATE.format("decks", user_id), headers=HEADERS)
+        self._sideboards_data = request_json(
+            self.API_URL_TEMPLATE.format("sideboards", user_id), headers=HEADERS)
+
+    @staticmethod
+    def _check_visibility(data: list[dict]) -> None:
+        visibilities = {d["visibility"] for d in data}
+        known = {"Public", "Patreon Exclusive", "Paid Exclusive"}
+        if unexpected := {v for v in visibilities if v not in known}:
+            _log.warning(f"Unexpected data visibilities: {unexpected}")
+
+    @classmethod
+    def _process_data(cls, data: list[dict], template: str) -> list[str]:
+        cls._check_visibility(data)
+        return [template.format(d["id"]) for d in data if d["visibility"] == "Public"]
+
+    def _get_deck_urls(self) -> list[str]:
+        template = "https://flexslot.gg/decks/{}"
+        if decks := self._decks_data.get("decks", []):
+            return self._process_data(decks, template)
+        return []
+
+    def _get_sideboard_urls(self) -> list[str]:
+        template = "https://flexslot.gg/sideboards/{}"
+        if sideboards := self._sideboards_data.get("sideboards", []):
+            return self._process_data(sideboards, template)
+        return []
+
+    @override
+    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
+        return self._get_deck_urls(), [], [], self._get_sideboard_urls()
