@@ -169,7 +169,8 @@ class EdhrecAverageDeckScraper(DeckScraper):
 
     @override
     def _is_soft_404_error(self) -> bool:
-        return self._soup.find("h2", string=lambda s: s and s == "404 Page Not Found") is not None
+        return self._soup.find(
+            "h2", string=lambda s: s and s.strip() == "404 Page Not Found") is not None
 
     @override
     def _pre_parse(self) -> None:

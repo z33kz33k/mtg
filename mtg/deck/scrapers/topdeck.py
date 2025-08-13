@@ -10,8 +10,6 @@
 import logging
 from typing import Type, override
 
-from mtg.deck import Deck
-from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.utils import extract_int
 from mtg.utils.scrape import ScrapingError, strip_url_query

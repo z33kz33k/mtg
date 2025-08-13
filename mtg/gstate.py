@@ -150,10 +150,12 @@ class UrlsStateManager(_Singleton):
 
     # used by URL-based scrapers
     def add_scraped(self, url: str) -> None:
-        self._scraped.setdefault(self.current_channel, set()).add(url.removesuffix("/").lower())
-        self._scraped.setdefault(
-            f"{self.current_channel}/{self.current_video}",
-            set()).add(url.removesuffix("/").lower())
+        url = url.removesuffix("/").lower()
+        self._scraped.setdefault(self.current_channel, set()).add(url)
+        self._scraped.setdefault(f"{self.current_channel}/{self.current_video}", set()).add(url)
+        # if present, remove successfully scraped URL from failed (useful when re-scraping)
+        if self.current_channel in self._failed:
+            self._failed[self.current_channel].discard(url)
 
     def add_failed(self, url: str) -> None:
         self._failed.setdefault(self.current_channel, set()).add(url.removesuffix("/").lower())
