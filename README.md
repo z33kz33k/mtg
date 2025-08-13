@@ -110,7 +110,7 @@ YT videos descriptions).
         * EDHREC authors, articles and article searches
         * [EDHTop16](https://edhtop16.com) tournaments and commanders
         * Flexslot sideboards, articles and users
-        * Goldfish tournaments, players and articles
+        * Goldfish tournaments, players, articles and authors
         * Hareruya events, players, articles and authors
         * LigaMagic events _(with caveats)_
         * MagicVille events and users
@@ -141,7 +141,7 @@ YT videos descriptions).
         * TopDeck.gg brackets and profiles
         * Untapped profiles
         * [WotC (official MTG site)](https://magic.wizards.com/en) articles
-    * 95 container pages in total with 23 more in plans
+    * 96 container pages in total with 22 more in plans
 * Assessing the meta:
     * Goldfish
     * MGTAZone 
@@ -162,20 +162,20 @@ YT videos descriptions).
 ### Scraped decks breakdown
 | No | Format | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | commander       | 73465 |    37.36 % |
-| 2  | standard        | 46737 |    23.77 % |
+| 1  | commander       | 73539 |    37.38 % |
+| 2  | standard        | 46749 |    23.76 % |
 | 3  | modern          | 20697 |    10.52 % |
-| 4  | pauper          | 12559 |     6.39 % |
-| 5  | pioneer         | 11256 |     5.72 % |
-| 6  | brawl           |  5469 |     2.78 % |
-| 7  | legacy          |  5279 |     2.68 % |
-| 8  | historic        |  3227 |     1.64 % |
-| 9  | undefined       |  3019 |     1.54 % |
+| 4  | pauper          | 12559 |     6.38 % |
+| 5  | pioneer         | 11259 |     5.72 % |
+| 6  | brawl           |  5470 |     2.78 % |
+| 7  | legacy          |  5278 |     2.68 % |
+| 8  | historic        |  3226 |     1.64 % |
+| 9  | undefined       |  3019 |     1.53 % |
 | 10 | explorer        |  2519 |     1.28 % |
 | 11 | duel            |  2226 |     1.13 % |
-| 12 | paupercommander |  2117 |     1.08 % |
+| 12 | paupercommander |  2118 |     1.08 % |
 | 13 | timeless        |  2015 |     1.02 % |
-| 14 | irregular       |  1351 |     0.69 % |
+| 14 | irregular       |  1352 |     0.69 % |
 | 15 | premodern       |  1339 |     0.68 % |
 | 16 | alchemy         |  1048 |     0.53 % |
 | 17 | vintage         |  1038 |     0.53 % |
@@ -186,21 +186,21 @@ YT videos descriptions).
 | 22 | oldschool       |    68 |     0.03 % |
 | 23 | future          |    52 |     0.03 % |
 | 24 | predh           |    12 |     0.01 % |
-|  | TOTAL           | 196660 | 100.00 %|
+|  | TOTAL           | 196750 | 100.00 %|
 
 | No | Source | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | moxfield.com           | 84811 |    43.13 % |
-| 2  | mtgo.com               | 21985 |    11.18 % |
+| 1  | moxfield.com           | 84827 |    43.11 % |
+| 2  | mtgo.com               | 21985 |    11.17 % |
 | 3  | arena.decklist         | 17817 |     9.06 % |
 | 4  | aetherhub.com          | 12352 |     6.28 % |
-| 5  | mtggoldfish.com        | 11778 |     5.99 % |
-| 6  | archidekt.com          |  7286 |     3.70 % |
+| 5  | mtggoldfish.com        | 11856 |     6.03 % |
+| 6  | archidekt.com          |  7285 |     3.70 % |
 | 7  | mtgdecks.net           |  6781 |     3.45 % |
 | 8  | mtg.cardsrealm.com     |  4015 |     2.04 % |
 | 9  | mtga.untapped.gg       |  3785 |     1.92 % |
 | 10 | melee.gg               |  3623 |     1.84 % |
-| 11 | tcgplayer.com          |  3500 |     1.78 % |
+| 11 | tcgplayer.com          |  3497 |     1.78 % |
 | 12 | mtgcircle.com          |  3031 |     1.54 % |
 | 13 | tappedout.net          |  1993 |     1.01 % |
 | 14 | streamdecker.com       |  1813 |     0.92 % |
@@ -242,4 +242,4 @@ YT videos descriptions).
 | 50 | mtgarena.pro           |     3 |     0.00 % |
 | 51 | mtgotraders.com        |     1 |     0.00 % |
 | 52 | playingmtg.com         |     1 |     0.00 % |
-|  | TOTAL                  | 196660 | 100.00 %|
+|  | TOTAL                  | 196750 | 100.00 %|

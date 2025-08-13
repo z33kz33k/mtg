@@ -350,7 +350,7 @@ def is_foreign(text: str) -> bool:
         lang = detect_mtg_lang(text)
     except ValueError:
         return False
-    if lang.iso_code_639_1.name.lower() == "en":
+    if lang.iso_code_639_1.name.lower() != "en":
         return True
     return False
 

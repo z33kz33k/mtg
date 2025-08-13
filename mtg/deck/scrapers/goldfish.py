@@ -16,7 +16,7 @@ from bs4 import Tag
 from mtg import Json
 from mtg.deck import Deck, Mode
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
-    TagBasedDeckParser
+    TagBasedDeckParser, UrlHook
 from mtg.scryfall import all_formats
 from mtg.utils import ParsingError, extract_int, timed
 from mtg.utils.scrape import ScrapingError, http_requests_counted, strip_url_query, \
@@ -33,6 +33,31 @@ HEADERS = {
 }
 CONSENT_XPATH = "//button[@aria-label='Consent']"
 URL_PREFIX = "https://www.mtggoldfish.com"
+URL_HOOKS = (
+    # regular deck
+    UrlHook(
+        ('"mtggoldfish.com/deck/"', ),
+        ('-"/custom/"', ),
+    ),
+    # archetype deck
+    UrlHook(
+        ('"mtggoldfish.com/archetype/"', ),
+        ('-"/custom/"', ),
+    ),
+    # tournament
+    UrlHook(
+        ('"mtggoldfish.com/tournament/"', ),
+    ),
+    # player
+    UrlHook(
+        ('"mtggoldfish.com/deck_searches/create?"', '"deck_search%5Bplayer%5D="'),
+    ),
+    # article & author
+    UrlHook(
+        ('"mtggoldfish.com/articles/"', ),
+    ),
+)
+
 
 # alternative approach would be to scrape:
 # self._soup.find("input", id="deck_input_deck").attrs["value"] which contains a decklist in
@@ -204,7 +229,7 @@ class GoldfishPlayerScraper(DeckUrlsContainerScraper):
     @override
     def is_valid_url(url: str) -> bool:
         return ("mtggoldfish.com/deck_searches/create?" in url.lower() and
-                "&deck_search%5Bplayer%5D=" in url)
+                "deck_search%5Bplayer%5D=" in url)
 
     @override
     def _collect(self) -> list[str]:
@@ -253,6 +278,30 @@ class GoldfishArticleScraper(HybridContainerScraper):
         deck_tags = [*self._soup.find_all("div", class_="deck-container")]
         deck_urls, container_urls = self._collect_urls()
         return deck_urls, deck_tags, [], container_urls
+
+
+@HybridContainerScraper.registered
+class GoldfishAuthorScraper(HybridContainerScraper):
+    """Scraper of MTG Goldfish author page.
+    """
+    CONTAINER_NAME = "Goldfish author"  # override
+    CONTAINER_SCRAPERS = GoldfishArticleScraper,  # override
+    HEADERS = HEADERS  # override
+    DECK_URL_PREFIX = URL_PREFIX  # override
+
+    @staticmethod
+    @override
+    def is_valid_url(url: str) -> bool:
+        return "mtggoldfish.com/articles/search?" in url.lower() and "author=" in url
+
+    @override
+    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
+        container_tag = self._soup.select_one("div.articles-container")
+        if not container_tag:
+            raise ScrapingError("Container <div> tag not found", type(self), self.url)
+        _, container_urls = self._get_links_from_tags(
+            container_tag, url_prefix=self.DECK_URL_PREFIX)
+        return [], [], [], container_urls
 
 
 @http_requests_counted("scraping meta decks")
