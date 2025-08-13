@@ -10,9 +10,12 @@
 import logging
 from typing import Type, override
 
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
-from mtg.utils import extract_int
-from mtg.utils.scrape import ScrapingError, strip_url_query
+from bs4 import Tag
+
+from mtg import HybridContainerScraper, Json
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, JsonBasedDeckParser
+from mtg.utils import decode_escapes, extract_int
+from mtg.utils.scrape import ScrapingError, request_json, strip_url_query
 
 _log = logging.getLogger(__name__)
 
@@ -80,15 +83,31 @@ def check_unexpected_urls(urls: list[str], *scrapers: Type[DeckScraper]) -> None
 # TappedoutDeckScraper
 
 
-@DeckUrlsContainerScraper.registered
-class TopDeckBracketScraper(DeckUrlsContainerScraper):
+class TopDeckBracketDeckJsonParser(JsonBasedDeckParser):
+    """Parser of TopDeck.gg bracket deck JSON data.
+    """
+    @override
+    def _parse_metadata(self) -> None:
+        if author := self._deck_data.get("name", self._deck_data.get("username")):
+            self._metadata["author"] = author
+        if elo := self._deck_data.get("elo"):
+            self._metadata["elo"] = elo
+
+    @override
+    def _parse_deck(self) -> None:
+        decklist = self._deck_data["decklist"]
+        self._decklist = decode_escapes(decklist).replace(
+            '~~Commanders~~', "Commander").replace('~~Mainboard~~', "Deck").replace(
+            '~~Sideboard~~', "Sideboard").replace('~~Companion~~', "Companion")
+
+
+@HybridContainerScraper.registered
+class TopDeckBracketScraper(HybridContainerScraper):
     """Scraper of TopDeck.gg bracket page.
     """
-    SELENIUM_PARAMS = {  # override
-        "xpath": "//a[text()='Decklist']",
-        "wait_for_all": True
-    }
     CONTAINER_NAME = "TopDeck.gg bracket"  # override
+    JSON_BASED_DECK_PARSER = TopDeckBracketDeckJsonParser  # override
+    API_URL_TEMPLATE = "https://topdeck.gg/PublicPData/dummy-tournament-name"
 
     @staticmethod
     @override
@@ -101,15 +120,31 @@ class TopDeckBracketScraper(DeckUrlsContainerScraper):
         return strip_url_query(url)
 
     @override
-    def _collect(self) -> list[str]:
-        deck_tags = self._soup.find_all("a", string="Decklist")
-        if not deck_tags:
-            raise ScrapingError("Decklist tags not found", scraper=type(self), url=self.url)
-        deck_urls = [t["href"] for t in deck_tags]
-        check_unexpected_urls(deck_urls, *self._get_deck_scrapers())
-        return deck_urls
+    def _get_data_from_api(self) -> Json:
+        return request_json(self.url.replace("/bracket/", "/PublicPData/"))
+
+    @override
+    def _parse_metadata(self) -> None:
+        self._metadata["event"] = self.url.removeprefix("https://topdeck.gg/bracket/")
+
+    @override
+    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
+        deck_urls, decks_data = [], []
+        for v in self._data.values():
+            if decklist := v.get("decklist"):
+                if decklist.startswith("http"):
+                    deck_urls.append(decklist)
+                else:
+                    decks_data.append(v)
+        if deck_urls:
+            check_unexpected_urls(deck_urls, *self._get_deck_scrapers())
+        return deck_urls, [], decks_data, []
 
 
+# TODO (#411): as it seems 'decklist' field in a deck JSON can be either a text decklist or a an
+#  arbitrary external link and there's valuable metadata in the JSON that would be lost in case
+#  of only a link being delegated to a dedicated scraper, for the first time there seems to rise a
+#  need for a JSON-based parser that uses a deck scraper as a sub-parser
 @DeckUrlsContainerScraper.registered
 class TopDeckProfileScraper(DeckUrlsContainerScraper):
     """Scraper of TopDeck.gg profile page.
@@ -129,7 +164,8 @@ class TopDeckProfileScraper(DeckUrlsContainerScraper):
     @staticmethod
     @override
     def sanitize_url(url: str) -> str:
-        return strip_url_query(url)
+        url = strip_url_query(url)
+        return url.removesuffix("/stats")
 
     @override
     def _collect(self) -> list[str]:

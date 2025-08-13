@@ -7,6 +7,7 @@
     @author: z33k
 
 """
+import ast
 import contextlib
 import hashlib
 import itertools
@@ -489,3 +490,29 @@ def remove_furigana(text: str) -> str:
     """
     # pattern: matches `（` followed by any characters (non-greedy) until `）`
     return re.sub(r'（.*?）', '', text)
+
+
+# based on: https://x.com/i/grok/share/KQ8Luq4TiwRq93XHXY1IUmsfg
+def decode_escapes(text: str) -> str:
+    """Decode text with doubly escaped sequences, e.g. with `\\n` instead of `\n` or `\\'`
+    instead of `'`.
+
+    This is common in online data scenarios when JSON is serialized from a source (e.g a database)
+    that already includes escaped characters (e.g. `\n` for newlines or `\'` for single quotes).
+    The JSON parser interprets the outer layer of escaping, leaving single backslashes in the
+    resulting string, which then need further processing to handle the inner escapes like `\\n` or
+    `\\'`.
+    """
+    escape_map = {
+        r'\\n': '\n',
+        r"\\'": "'",
+        r'\\"': '"',
+        r'\\\\': '\\'  # handle literal backslashes
+    }
+    try:
+        return ast.literal_eval(f'"{text}"')
+    except (SyntaxError, ValueError):
+        # fall back to targeted escape sequence replacement
+        for escaped, actual in escape_map.items():
+            text = text.replace(escaped, actual)
+        return text

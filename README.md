@@ -163,8 +163,8 @@ YT videos descriptions).
 | No | Format | Count | Percentage |
 |:---|:-----|------:|-----------:|
 | 1  | commander       | 73785 |    37.34 % |
-| 2  | standard        | 47100 |    23.84 % |
-| 3  | modern          | 20719 |    10.49 % |
+| 2  | standard        | 47104 |    23.84 % |
+| 3  | modern          | 20719 |    10.48 % |
 | 4  | pauper          | 12692 |     6.42 % |
 | 5  | pioneer         | 11282 |     5.71 % |
 | 6  | brawl           |  5489 |     2.78 % |
@@ -186,15 +186,15 @@ YT videos descriptions).
 | 22 | oldschool       |    68 |     0.03 % |
 | 23 | future          |    52 |     0.03 % |
 | 24 | predh           |    12 |     0.01 % |
-|  | TOTAL           | 197604 | 100.00 %|
+|  | TOTAL           | 197608 | 100.00 %|
 
 | No | Source | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | moxfield.com           | 85137 |    43.08 % |
+| 1  | moxfield.com           | 85139 |    43.08 % |
 | 2  | mtgo.com               | 22081 |    11.17 % |
 | 3  | arena.decklist         | 17934 |     9.08 % |
-| 4  | aetherhub.com          | 12471 |     6.31 % |
-| 5  | mtggoldfish.com        | 11886 |     6.02 % |
+| 4  | aetherhub.com          | 12473 |     6.31 % |
+| 5  | mtggoldfish.com        | 11886 |     6.01 % |
 | 6  | archidekt.com          |  7305 |     3.70 % |
 | 7  | mtgdecks.net           |  6811 |     3.45 % |
 | 8  | mtg.cardsrealm.com     |  4016 |     2.03 % |
@@ -242,4 +242,4 @@ YT videos descriptions).
 | 50 | mtgarena.pro           |     3 |     0.00 % |
 | 51 | mtgotraders.com        |     1 |     0.00 % |
 | 52 | playingmtg.com         |     1 |     0.00 % |
-|  | TOTAL                  | 197604 | 100.00 %|
+|  | TOTAL                  | 197608 | 100.00 %|

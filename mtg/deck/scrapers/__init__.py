@@ -227,7 +227,7 @@ class DeckScraper(DeckParser):
 
     def _validate_data(self) -> None:
         if not self._data:
-            raise ScrapingError("Data not available", scraper=type(self), url=self.url)
+            raise ScrapingError("No data", scraper=type(self), url=self.url)
 
     @override
     def _pre_parse(self) -> None:
@@ -252,10 +252,8 @@ class DeckScraper(DeckParser):
         raise NotImplementedError
 
     @override
-    def parse(
-            self, suppress_invalid_deck=True, suppress_card_not_found=True,
-            suppress_parsing_errors=False) -> Deck | None:
-        raise NotImplementedError  # not utilized
+    def parse(self, suppressed_errors=(InvalidDeck, CardNotFound)) -> Deck | None:  # override
+        self.scrape()
 
     @backoff.on_exception(
         backoff.expo, (ConnectionError, HTTPError, ReadTimeout), max_time=60)
