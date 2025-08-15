@@ -83,11 +83,6 @@ class MtgDecksNetDeckScraper(DeckScraper):
         "historic-brawl": "brawl",
     }
 
-    @property
-    @override
-    def _error_msg(self) -> str:
-        return super()._error_msg + " (deck probably hidden)"
-
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:

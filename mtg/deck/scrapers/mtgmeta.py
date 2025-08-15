@@ -141,7 +141,8 @@ class MtgMetaIoTournamentScraper(DeckUrlsContainerScraper):
     def _collect(self) -> list[str]:
         ul_tag = self._soup.select_one("ul.playerslist")
         if not ul_tag:
-            raise ScrapingError(self._error_msg, scraper=type(self), url=self.url)
+            raise ScrapingError(
+                "Players' list <ul> tag not found", scraper=type(self), url=self.url)
         links = get_links(ul_tag)
         return _strip_wm_part(*links)
 

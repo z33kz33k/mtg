@@ -230,7 +230,7 @@ def scrape_meta(fmt="standard", bo3=True) -> list[Deck]:
 
     soup = getsoup(url)
     if not soup:
-        raise ScrapingError("Page not available", scraper=MtgaZoneDeckTagParser, url=url)
+        raise ScrapingError(scraper=MtgaZoneDeckTagParser, url=url)
     time_tag = soup.find("time", class_="ct-meta-element-date")
     deck_date = datetime.fromisoformat(time_tag.attrs["datetime"]).date()
     tier_table = soup.find("figure", class_="wp-block-table")

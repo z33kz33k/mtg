@@ -53,7 +53,7 @@ class MoxfieldDeckScraper(DeckScraper):
     @override
     def _validate_data(self) -> None:
         if not self._data or not self._data.get("boards"):
-            raise ScrapingError("Data not available", scraper=type(self), url=self.url)
+            raise ScrapingError("No deck data", scraper=type(self), url=self.url)
 
     @override
     def _parse_metadata(self) -> None:
@@ -133,7 +133,7 @@ class MoxfieldBookmarkScraper(DeckUrlsContainerScraper):
 
     def _validate_data(self) -> None:
         if not self._data or not self._data.get("decks") or not self._data["decks"].get("data"):
-            raise ScrapingError("Data not available", scraper=type(self), url=self.url)
+            raise ScrapingError("No decks data", scraper=type(self), url=self.url)
 
     @override
     def _collect(self) -> list[str]:
@@ -168,7 +168,7 @@ class MoxfieldUserScraper(DeckUrlsContainerScraper):
 
     def _validate_data(self) -> None:
         if not self._data or not self._data.get("data"):
-            raise ScrapingError("Data not available", scraper=type(self), url=self.url)
+            raise ScrapingError("No decks data", scraper=type(self), url=self.url)
 
     @override
     def _collect(self) -> list[str]:
@@ -216,9 +216,9 @@ class MoxfieldSearchScraper(DeckUrlsContainerScraper):
         filter_ = self._get_filter()
         if not filter_:
             raise ScrapingError(
-                "API URL 'filter' parameter not found", scraper=type(self), url=self.url)
+                "'filter' parameter missing from API URL", scraper=type(self), url=self.url)
         api_url = self.API_URL_TEMPLATE.format(filter_)
         json_data = get_selenium_json(api_url)
         if not json_data or not json_data.get("data"):
-            raise ScrapingError("Data not available", scraper=type(self), url=self.url)
+            raise ScrapingError("No deck data", scraper=type(self), url=self.url)
         return [d["publicUrl"] for d in json_data["data"]]

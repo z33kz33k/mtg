@@ -151,10 +151,6 @@ class DeckScraper(DeckParser):
         return self._url
 
     @property
-    def _error_msg(self) -> str:
-        return "Page not available"
-
-    @property
     def _selenium_timeout_msg(self) -> str:
         word = self.SELENIUM_PARAMS.get("xpath")
         word = f"'{word}'" if word else "XPath-defined"
@@ -219,7 +215,7 @@ class DeckScraper(DeckParser):
 
     def _validate_soup(self) -> None:
         if not self._soup:
-            raise ScrapingError(self._error_msg, scraper=type(self), url=self.url)
+            raise ScrapingError(scraper=type(self), url=self.url)
         if self._is_page_inaccessible():
             raise InaccessiblePage(scraper=type(self), url=self.url)
         if self._is_soft_404_error():
@@ -227,7 +223,7 @@ class DeckScraper(DeckParser):
 
     def _validate_data(self) -> None:
         if not self._data:
-            raise ScrapingError("No data", scraper=type(self), url=self.url)
+            raise ScrapingError("No deck data", scraper=type(self), url=self.url)
 
     @override
     def _pre_parse(self) -> None:
@@ -321,13 +317,6 @@ class ContainerScraper(DeckScraper):
             return name
         except ValueError:
             return cls.CONTAINER_NAME
-
-    @property
-    @override
-    def _error_msg(self) -> str:
-        if not self.CONTAINER_NAME:
-            return "Data not available"
-        return f"{self.short_name().title()} data not available"
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)

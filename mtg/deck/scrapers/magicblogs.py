@@ -46,11 +46,11 @@ class MagicBlogsDeckTagParser(TagBasedDeckParser):
                 continue
             qty_tag = tag.find("span", class_="count")
             if qty_tag is None:
-                raise ParsingError("Card quantity not available")
+                raise ParsingError("Card quantity <span> tag not found")
             qty = int(qty_tag.text)
             name_tag = tag.find("span", class_="cardname")
             if name_tag is None:
-                raise ParsingError("Card name not available")
+                raise ParsingError("Card name <span> tag not found")
             name = name_tag.text
             if self._state.is_maindeck:
                 self._maindeck += self.get_playset(self.find_card(name), qty)

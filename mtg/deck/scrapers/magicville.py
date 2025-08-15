@@ -34,9 +34,8 @@ class MagicVilleDeckScraper(DeckScraper):
         return f"{url}&decklanglocal=eng"
 
     @override
-    def _validate_soup(self) -> None:
-        if not self._soup or self._soup.text == "Ce deck n'existe pas.":
-            raise ScrapingError(self._error_msg, scraper=type(self), url=self.url)
+    def _is_page_inaccessible(self) -> bool:
+        return self._soup.text == "Ce deck n'existe pas."
 
     @override
     def _parse_metadata(self) -> None:

@@ -45,7 +45,7 @@ def _get_json(
         soup, "window.MTGO.decklists.data = ", "window.MTGO.decklists.type",
         lambda s: s.rstrip().rstrip(";"))
     if data is None:
-        raise ScrapingError("Data not available", scraper=scraper, url=url)
+        raise ScrapingError("Nothing extracted from JavaScript", scraper=scraper, url=url)
     return data
 
 

@@ -44,6 +44,7 @@ class MtgStocksDeckScraper(DeckScraper):
         url = strip_url_query(url)
         return url.replace("/visual/", "/")
 
+    # FIXME: use `get_path_segments()` instead (#394)
     def _parse_deck_id(self) -> int:
         try:
             _, id_part = self.url.split("mtgstocks.com/decks/", maxsplit=1)
@@ -52,7 +53,7 @@ class MtgStocksDeckScraper(DeckScraper):
                 return int(id_)
             return int(id_part)
         except ValueError:
-            raise ScrapingError(f"Deck ID not available", scraper=type(self), url=self.url)
+            raise ScrapingError(f"Deck ID missing from URL", scraper=type(self), url=self.url)
 
     def _get_data_from_soup(self) -> Json:
         script_tag = self._soup.find("script", id="ng-state")
@@ -63,7 +64,8 @@ class MtgStocksDeckScraper(DeckScraper):
             [v for v in data.values() if isinstance(v, dict)],
             lambda v: v.get("b") and v["b"].get("id") and v["b"]["id"] == self._deck_id)
         if not deck_data:
-            raise ScrapingError("Deck data not found", scraper=type(self), url=self.url)
+            raise ScrapingError(
+                "Deck data missing in <script> tag's JSON", scraper=type(self), url=self.url)
         return deck_data["b"]
 
     @override

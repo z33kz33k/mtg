@@ -51,7 +51,7 @@ class SeventeenLandsDeckScraper(DeckScraper):
     def _validate_data(self) -> None:
         super()._validate_data()
         if not self._data.get("groups") or not self._data.get("cards"):
-            raise ScrapingError("Data not available", scraper=type(self), url=self.url)
+            raise ScrapingError("No deck data", scraper=type(self), url=self.url)
 
     @override
     def _parse_metadata(self) -> None:

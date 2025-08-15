@@ -53,7 +53,7 @@ class WotCDeckTagParser(TagBasedDeckParser):
     def _parse_deck(self) -> None:
         maindeck_tag = self._deck_tag.find("main-deck")
         if not maindeck_tag:
-            raise ParsingError("Decklist tag not available")
+            raise ParsingError("Decklist tag not found")
 
         lines = [self._sanitize_line(l) for l in maindeck_tag.text.strip().splitlines()]
         if self.fmt and self._locally_derived_fmt and self.fmt in COMMANDER_FORMATS:

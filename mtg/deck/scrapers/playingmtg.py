@@ -85,7 +85,7 @@ class PlayingMtgDeckScraper(DeckScraper):
     def _parse_deck(self) -> None:
         maindeck_hook = self._soup.find("div", string=lambda s: s and s == "Main Board")
         if not maindeck_hook:
-            raise ScrapingError("Deck data not available")
+            raise ScrapingError("Main board <div> tag not found")
         maindeck_tag = maindeck_hook.parent
         card_tags = [a_tag.parent for a_tag in maindeck_tag.find_all(
             "a", href=lambda h: h and "playingmtg.com/" in h)]

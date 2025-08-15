@@ -236,7 +236,7 @@ class MagicGgEventScraper(DeckTagsContainerScraper):
                 if not deck_tags:
                     raise ScrapingError("Deck tags not found", scraper=type(self), url=self.url)
             except TimeoutException:
-                raise ScrapingError(self._error_msg, scraper=type(self), url=self.url)
+                raise ScrapingError(self._selenium_timeout_msg, scraper=type(self), url=self.url)
             self._parse_metadata()
         else:
             self.__class__.TAG_BASED_DECK_PARSER = MagicGgNewDeckTagParser

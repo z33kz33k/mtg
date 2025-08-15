@@ -155,7 +155,7 @@ class TappedoutUserScraper(DeckUrlsContainerScraper):
             json_data = request_json(self.API_URL_TEMPLATE.format(username, page))
             if not json_data or not json_data.get("results") or not json_data.get("total_decks"):
                 if not collected:
-                    err = ScrapingError(self._error_msg, scraper=type(self), url=self.url)
+                    err = ScrapingError("No decks data", scraper=type(self), url=self.url)
                     _log.warning(f"Scraping failed with: {err!r}")
                 break
             total = json_data["total_decks"]
@@ -204,7 +204,7 @@ class TappedoutFolderScraper(DeckUrlsContainerScraper):
     def _validate_data(self) -> None:
         super()._validate_data()
         if not self._data.get("folder") or not self._data["folder"].get("decks"):
-            raise ScrapingError("Data not available", scraper=type(self), url=self.url)
+            raise ScrapingError("No decks data", scraper=type(self), url=self.url)
 
     @override
     def _collect(self) -> list[str]:
@@ -234,7 +234,7 @@ class TappedoutUserFolderScraper(TappedoutUserScraper):
             json_data = request_json(self.API_URL_TEMPLATE.format(username, page))
             if not json_data or not json_data.get("results"):
                 if not collected:
-                    err = ScrapingError(self._error_msg, scraper=type(self), url=self.url)
+                    err = ScrapingError("No decks data", scraper=type(self), url=self.url)
                     _log.warning(f"Scraping failed with: {err!r}")
                 break
             has_next = json_data.get("hasNext", False)

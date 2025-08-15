@@ -46,7 +46,7 @@ class TcgRocksDeckScraper(DeckScraper):
         script_tag = self._soup.select_one("script#__NUXT_DATA__")
         if not script_tag:
             raise ScrapingError(
-                "Script tag with JSON data not found", scraper=type(self), url=self.url)
+                "Deck data <script> tag not found", scraper=type(self), url=self.url)
 
     def _get_data_from_soup(self) -> Json:
         script_tag = self._soup.select_one("script#__NUXT_DATA__")
@@ -55,7 +55,7 @@ class TcgRocksDeckScraper(DeckScraper):
     def _validate_data(self) -> None:
         super()._validate_data()
         if not isinstance(self._data, list) or "mtg" not in self._data:
-            raise ScrapingError("Deck data not available", scraper=type(self), url=self.url)
+            raise ScrapingError("No deck data", scraper=type(self), url=self.url)
 
     @override
     def _parse_metadata(self) -> None:

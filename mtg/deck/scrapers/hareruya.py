@@ -89,7 +89,7 @@ class InternationalHareruyaDeckScraper(DeckScraper):
     def _parse_metadata(self) -> None:
         info_tag = self._soup.find("div", class_="deckSearch-deckList__information__flex")
         if not info_tag:
-            raise ScrapingError("Info <div> tag not available", type(self), self.url)
+            raise ScrapingError("Info <div> tag not found", type(self), self.url)
         for ul_tag in info_tag.find_all("ul"):
             li_tags = ul_tag.find_all("li")
             if len(li_tags) != 2:
@@ -398,7 +398,7 @@ class HareruyaArticleDeckTagParser(TagBasedDeckParser):
     def _parse_deck(self) -> None:
         decklist_tag = get_next_sibling_tag(self._deck_tag)
         if not decklist_tag:
-            raise ParsingError("Decklist tag not available")
+            raise ParsingError("Decklist tag not found")
         # not so old pages (ca.2022) have a (English) text decklist under a link within the next
         # sibling tag
         if a_tag := decklist_tag.find("a", href=True):
@@ -408,7 +408,7 @@ class HareruyaArticleDeckTagParser(TagBasedDeckParser):
         else:
             decklist_tag = get_next_sibling_tag(decklist_tag)
             if not decklist_tag:
-                raise ParsingError("Decklist tag not available")
+                raise ParsingError("Decklist tag not found")
             if textarea_tag := decklist_tag.find("textarea"):
                 self._decklist = textarea_tag.text.strip().replace("\r\n", "\n")
             # even older pages (ca. 2019) have no text decklist anywhere and need dedicated

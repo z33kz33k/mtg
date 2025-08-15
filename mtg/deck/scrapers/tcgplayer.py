@@ -231,7 +231,7 @@ def _get_deck_data_from_api(
 
     if not json_data or not json_data.get(
             "result") or json_data["result"].get("deck") == {"deck": {}}:
-        raise ScrapingError("Data not available", scraper=scraper, url=url)
+        raise ScrapingError("No deck data", scraper=scraper, url=url)
     return json_data["result"]
 
 
@@ -302,7 +302,7 @@ class TcgPlayerInfinitePlayerScraper(DeckUrlsContainerScraper):
     def _validate_data(self) -> None:
         super()._validate_data()
         if not self._data.get("result"):
-            raise ScrapingError("Data not available", scraper=type(self), url=self.url)
+            raise ScrapingError(f"No {self.short_name()} data", scraper=type(self), url=self.url)
 
     @override
     def _collect(self) -> list[str]:
@@ -464,12 +464,13 @@ class TcgPlayerInfiniteAuthorScraper(HybridContainerScraper):
         script_tag = soup.find(
             "script", string=lambda s: s and 'identifier' in s and 'description' in s)
         if script_tag is None:
-            raise ScrapingError("Author ID not available", scraper=cls)
+            raise ScrapingError("Author ID <script> tag not found", scraper=cls)
         try:
             data = json.loads(script_tag.text)
             return data.get("mainEntity", {}).get("identifier")
         except json.decoder.JSONDecodeError:
-            raise ScrapingError("Author ID not available", scraper=cls)
+            raise ScrapingError(
+                "Failed to obtain author ID from <script> tag's JavaScript", scraper=cls)
 
     @override
     def _get_data_from_api(self) -> Json:
@@ -479,7 +480,7 @@ class TcgPlayerInfiniteAuthorScraper(HybridContainerScraper):
     def _validate_data(self) -> None:
         super()._validate_data()
         if not self._data.get("result") or not self._data["result"].get("articles"):
-            raise ScrapingError("Data not available", scraper=type(self), url=self.url)
+            raise ScrapingError("No author or articles data", scraper=type(self), url=self.url)
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
@@ -530,7 +531,7 @@ class TcgPlayerInfiniteAuthorDecksPaneScraper(DeckUrlsContainerScraper):
     def _validate_data(self) -> None:
         super()._validate_data()
         if not self._data.get("result"):
-            raise ScrapingError("Data not available", scraper=type(self), url=self.url)
+            raise ScrapingError("No decks data", scraper=type(self), url=self.url)
 
     @override
     def _collect(self) -> list[str]:

@@ -131,7 +131,7 @@ class ScgDeckScraper(DeckScraper):
         if deck_tag is None:
             deck_tag = self._soup.find("div", class_="deck_listing2")
             if deck_tag is None:
-                raise ScrapingError("Deck data not found", scraper=type(self), url=self.url)
+                raise ScrapingError("Deck tag not found", scraper=type(self), url=self.url)
         return ScgDeckTagParser(deck_tag, self._metadata)
 
     @override
@@ -235,7 +235,7 @@ class ScgArticleDeckTagParser(ScgDeckTagParser):
     def _parse_decklist_tag(self, decklist_tag: Tag) -> str:
         decklist_text = decklist_tag.attrs.get("onclick")
         if not decklist_text:
-            raise ParsingError("Decklist data not found")
+            raise ParsingError("Text decklist missing from decklist tag's attributes")
         decklist_text = decklist_text.removeprefix("arenaExport(").removesuffix(")")
         decklist_data = json.loads(decklist_text)
         decklist = ["Deck", *[l for l in decklist_data["Maindeck"]]]

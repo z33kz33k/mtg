@@ -79,7 +79,8 @@ class Linktree:
         try:
             self._account_id = self._json_data["account"]["id"]
         except KeyError:
-            raise ScrapingError("Account ID not available", scraper=type(self), url=self.url)
+            raise ScrapingError(
+                "Account ID missing from JSON data", scraper=type(self), url=self.url)
         self._links = self._get_links()
         self._data = self._get_data()
 
@@ -91,10 +92,10 @@ class Linktree:
     def _get_json(self) -> Json:
         soup = getsoup(self.url, self.HEADERS)
         if not soup:
-            raise ScrapingError("Page not available", scraper=type(self), url=self.url)
+            raise ScrapingError(scraper=type(self), url=self.url)
         user_info_tag = soup.find('script', id="__NEXT_DATA__")
         if user_info_tag is None:
-            raise ScrapingError("Data not available")
+            raise ScrapingError("Data <script> tag not found", scraper=type(self), url=self.url)
         return json.loads(user_info_tag.contents[0])["props"]["pageProps"]
 
     def _uncensor_links(self, *link_ids : int) -> list[str]:

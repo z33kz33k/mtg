@@ -40,7 +40,7 @@ class MtgJsonDeckScraper(DeckScraper):
     def _pre_parse(self) -> None:
         json_data = request_json(self.url)
         if not json_data or not json_data.get("data"):
-            raise ScrapingError("Data not available", scraper=type(self), url=self.url)
+            raise ScrapingError("No deck data", scraper=type(self), url=self.url)
         self._metadata["date"] = datetime.fromisoformat(json_data["meta"]["date"]).date()
         self._metadata["version"] = json_data["meta"]["version"]
         self._data = json_data["data"]
@@ -76,7 +76,7 @@ class MtgJsonDeckScraper(DeckScraper):
 def _scrape_links() -> list[str]:
     soup = getsoup(URL)
     if not soup:
-        raise ScrapingError("API page not available", scraper=MtgJsonDeckScraper)
+        raise ScrapingError("No API page soup", scraper=MtgJsonDeckScraper)
     tbody = soup.find("tbody")
     link_tags = [t.find("a") for t in tbody.find_all("td", class_="link")]
     link_tags = [t for t in link_tags if t is not None]

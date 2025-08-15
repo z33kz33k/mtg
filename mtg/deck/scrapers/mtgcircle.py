@@ -85,15 +85,18 @@ class MtgCircleDeckJsonParser(JsonBasedDeckParser):
 def get_data(
         soup: BeautifulSoup, scraper: Type[DeckScraper] | Type[HybridContainerScraper], url: str,
         retriever: Callable[[Json], Json], start_pos=3) -> Json:
+    tokens = "cards", "deckPos", "mainDeck", "name", "quantity"
+    script_tag = soup.find("script", string=lambda s: s and all(t in s for t in tokens))
+    if not script_tag:
+        raise ScrapingError("Data <script> tag not found", scraper=scraper, url=url)
     try:
-        tokens = "cards", "deckPos", "mainDeck", "name", "quantity"
-        script_tag = soup.find("script", string=lambda s: s and all(t in s for t in tokens))
         js_data = dissect_js(
             script_tag, 'self.__next_f.push(', '|||dummy|||', end_processor=lambda t: t[:-1])
         data = json.loads(js_data[1][start_pos:])
         return retriever(data)
     except (AttributeError, KeyError):
-        raise ScrapingError("Deck data not available", scraper=scraper, url=url)
+        raise ScrapingError(
+            "Failed data extraction from <script> tag's JavaScript", scraper=scraper, url=url)
 
 
 @DeckScraper.registered
@@ -117,7 +120,7 @@ class MtgCircleVideoDeckScraper(DeckScraper):
         decks = [*node.find_all(
             lambda n: "deck" in n.name and isinstance(n.data, dict) and "cards" in n.data)]
         if not decks:
-            raise ScrapingError("Deck data not available", scraper=type(self), url=self.url)
+            raise ScrapingError("Decks data not found", scraper=type(self), url=self.url)
         # sort to return the deck with the most cards (not an opponent's one)
         decks.sort(key=lambda n: sum(card["quantity"] for card in n.data["cards"]))
         return decks[-1].data
@@ -165,7 +168,7 @@ class MtgCircleRegularDeckScraper(MtgCircleVideoDeckScraper):
             lambda n: isinstance(n.data, dict) and "cards" in n.data
                       and "variations" in n.parent.name )
         if deck is None:
-            raise ScrapingError("Deck data not available", scraper=type(self), url=self.url)
+            raise ScrapingError("Deck data not found", scraper=type(self), url=self.url)
         return deck.data
 
 
@@ -186,7 +189,7 @@ class MtgCircleArticleScraper(HybridContainerScraper):
         dates = [*node.find_all(
             lambda n: isinstance(n.data, dict) and "date" in n.data and "userContent" in n.data)]
         if not dates:
-            raise ScrapingError("Date data not available", scraper=type(self), url=self.url)
+            raise ScrapingError("Date data not found", scraper=type(self), url=self.url)
         # sort to not return an update date (the most recent) instead of creation date
         dates.sort(key=lambda n: n.data["date"])
         return dates[0].data

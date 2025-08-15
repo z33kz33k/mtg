@@ -53,15 +53,14 @@ class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
             case [[_, {"tournament": data}]]:
                 return data
             case _:
-                raise ScrapingError(
-                    "Tournament data not available", scraper=type(self), url=self.url)
+                raise ScrapingError("No tournament data", scraper=type(self), url=self.url)
 
     @override
     def _get_data_from_soup(self) -> Json:
         script_tag = self._soup.find("script", type="text/javascript")
         if not script_tag:
             raise ScrapingError(
-                "<script> data tag not found", scraper=type(self), url=self.url)
+                "Data <script> tag not found", scraper=type(self), url=self.url)
         json_data = dissect_js(
             script_tag, "window.__river_ops = ", ";\n      ",
             end_processor=lambda s: s.replace('":undefined', '":null').replace(
@@ -72,8 +71,7 @@ class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
     def _validate_data(self) -> None:
         super()._validate_data()
         if "entries" not in self._data:
-            raise ScrapingError(
-                "Tournament entries data not available", scraper=type(self), url=self.url)
+            raise ScrapingError("No tournament entries data", scraper=type(self), url=self.url)
 
     @override
     def _parse_metadata(self) -> None:
@@ -140,14 +138,12 @@ class EdhTop16CommanderScraper(EdhTop16TournamentScraper):
             case [[_, {"commander": data}]]:
                 return data
             case _:
-                raise ScrapingError(
-                    "Commander data not available", scraper=type(self), url=self.url)
+                raise ScrapingError("No commander data", scraper=type(self), url=self.url)
 
     @override
     def _validate_data(self) -> None:
         if not self._data or "entries" not in self._data or not self._data["entries"].get("edges"):
-            raise ScrapingError(
-                "Commander entries data not available", scraper=type(self), url=self.url)
+            raise ScrapingError("No commander entries data", scraper=type(self), url=self.url)
 
     @override
     def _parse_metadata(self) -> None:
