@@ -242,8 +242,8 @@ class CardsrealmRegularTournamentScraper(DeckUrlsContainerScraper):
         url = strip_url_query(url)
         return to_eng_url(url, "tournament")
 
-    @timed("getting dynamic soup")
-    def _get_dynamic_soup(self) -> BeautifulSoup:
+    @timed("fetching dynamic soup")
+    def _fetch_dynamic_soup(self) -> BeautifulSoup:
         with webdriver.Chrome() as driver:
             try:
                 _log.info(f"Webdriving using Chrome to: '{self.url}'...")
@@ -274,7 +274,7 @@ class CardsrealmRegularTournamentScraper(DeckUrlsContainerScraper):
 
     @override
     def _fetch_soup(self) -> None:
-        self._soup = self._get_dynamic_soup()
+        self._soup = self._fetch_dynamic_soup()
 
     @override
     def _collect(self) -> list[str]:
@@ -315,7 +315,7 @@ class CardsrealmArticleScraper(HybridContainerScraper):
         article_tag = self._soup.find("div", id="article_div_all")
         if article_tag is None:
             raise ScrapingError("Article tag not found", scraper=type(self), url=self.url)
-        deck_links, container_links = self._get_links_from_tags(article_tag, url_prefix=URL_PREFIX)
+        deck_links, container_links = self._find_links_in_tags(article_tag, url_prefix=URL_PREFIX)
         return deck_links, [], [], container_links
 
 
@@ -341,7 +341,7 @@ class CardsrealmAuthorScraper(HybridContainerScraper):
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
-        _, container_links = self._get_links_from_tags(self._soup)
+        _, container_links = self._find_links_in_tags(self._soup)
         return [], [], [], container_links
 
 
@@ -369,5 +369,5 @@ class CardsrealmArticleSearchScraper(HybridContainerScraper):
         main_tag = self._soup.select_one("div#articlePage")
         if not main_tag:
             raise ScrapingError("Main <div> tag not found", type(self), self.url)
-        _, container_links = self._get_links_from_tags(main_tag)
+        _, container_links = self._find_links_in_tags(main_tag)
         return [], [], [], container_links

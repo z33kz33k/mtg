@@ -20,7 +20,7 @@ from mtg import Json
 from mtg.deck.scrapers import Collected, DeckScraper, DeckTagsContainerScraper, TagBasedDeckParser
 from mtg.utils import ParsingError, sanitize_whitespace
 from mtg.utils.scrape import ScrapingError, strip_url_query
-from mtg.utils.scrape.dynamic import get_dynamic_soup
+from mtg.utils.scrape.dynamic import fetch_dynamic_soup
 
 _log = logging.getLogger(__name__)
 
@@ -229,7 +229,7 @@ class MagicGgEventScraper(DeckTagsContainerScraper):
         if not deck_tags:
             self.__class__.TAG_BASED_DECK_PARSER = MagicGgOldDeckTagParser
             try:
-                self._soup, _, _ = get_dynamic_soup(
+                self._soup, _, _ = fetch_dynamic_soup(
                     self.url, MagicGgDeckScraper.SELENIUM_PARAMS["xpath"],
                     consent_xpath=MagicGgDeckScraper.SELENIUM_PARAMS["consent_xpath"])
                 deck_tags = [*self._soup.find_all("div", class_="css-3X0PN")]

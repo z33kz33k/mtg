@@ -21,7 +21,7 @@ from mtg.deck.scrapers import DeckScraper
 from mtg.scryfall import Card
 from mtg.utils import logging_disabled, timed
 from mtg.utils.files import getdir
-from mtg.utils.scrape import ScrapingError, getsoup, request_json
+from mtg.utils.scrape import ScrapingError, fetch_soup, fetch_json
 
 _log = logging.getLogger(__name__)
 URL = "https://mtgjson.com/api/v5/decks/"
@@ -38,7 +38,7 @@ class MtgJsonDeckScraper(DeckScraper):
 
     @override
     def _pre_parse(self) -> None:
-        json_data = request_json(self.url)
+        json_data = fetch_json(self.url)
         if not json_data or not json_data.get("data"):
             raise ScrapingError("No deck data", scraper=type(self), url=self.url)
         self._metadata["date"] = datetime.fromisoformat(json_data["meta"]["date"]).date()
@@ -74,7 +74,7 @@ class MtgJsonDeckScraper(DeckScraper):
 
 
 def _scrape_links() -> list[str]:
-    soup = getsoup(URL)
+    soup = fetch_soup(URL)
     if not soup:
         raise ScrapingError("No API page soup", scraper=MtgJsonDeckScraper)
     tbody = soup.find("tbody")

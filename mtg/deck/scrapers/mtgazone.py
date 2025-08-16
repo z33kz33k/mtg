@@ -16,11 +16,10 @@ from bs4 import Tag
 
 from mtg import Json
 from mtg.deck import Deck, Mode
-from mtg.deck.scrapers import DeckScraper, HybridContainerScraper, TagBasedDeckParser, \
-    is_in_domain_but_not_main
+from mtg.deck.scrapers import DeckScraper, HybridContainerScraper, TagBasedDeckParser
 from mtg.scryfall import ARENA_FORMATS, Card
 from mtg.utils import ParsingError, extract_int, from_iterable, timed
-from mtg.utils.scrape import ScrapingError, getsoup, strip_url_query
+from mtg.utils.scrape import ScrapingError, fetch_soup, is_more_than_root_path, strip_url_query
 
 _log = logging.getLogger(__name__)
 
@@ -136,7 +135,7 @@ class MtgaZoneArticleScraper(HybridContainerScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return is_in_domain_but_not_main(url, "mtgazone.com") and not any(
+        return is_more_than_root_path(url, "mtgazone.com") and not any(
             t in url.lower() for t in ("/user-decks", "/deck/", "/plans/premium",
                                        "/mtg-arena-codes", "/author/", "jump-in"))
 
@@ -154,7 +153,7 @@ class MtgaZoneArticleScraper(HybridContainerScraper):
         p_tags = [
             t for t in article_tag.find_all("p") if not t.find("div", class_="deck-block")]
 
-        return self._get_links_from_tags(*p_tags)
+        return self._find_links_in_tags(*p_tags)
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
@@ -182,7 +181,7 @@ class MtgaZoneAuthorScraper(HybridContainerScraper):
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
-        deck_urls, article_urls = self._get_links_from_tags(css_selector="article > h2 > a")
+        deck_urls, article_urls = self._find_links_in_tags(css_selector="article > h2 > a")
         return deck_urls, [], [], article_urls
 
 
@@ -228,7 +227,7 @@ def scrape_meta(fmt="standard", bo3=True) -> list[Deck]:
         mode = ""
     url = f"https://mtgazone.com/{fmt}{mode}-metagame-tier-list/"
 
-    soup = getsoup(url)
+    soup = fetch_soup(url)
     if not soup:
         raise ScrapingError(scraper=MtgaZoneDeckTagParser, url=url)
     time_tag = soup.find("time", class_="ct-meta-element-date")

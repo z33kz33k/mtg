@@ -15,9 +15,9 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException
 
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.utils import extract_float, extract_int
-from mtg.utils.scrape import ScrapingError, get_next_sibling_tag
+from mtg.utils.scrape import ScrapingError, find_next_sibling_tag
 from mtg.utils.scrape import strip_url_query
-from mtg.utils.scrape.dynamic import get_dynamic_soup
+from mtg.utils.scrape.dynamic import fetch_dynamic_soup
 
 _log = logging.getLogger(__name__)
 CONSENT_XPATH = '//button[contains(@class, "fc-button fc-cta-consent") and @aria-label="Consent"]'
@@ -44,7 +44,7 @@ class UntappedProfileDeckScraper(DeckScraper):
 
     def _fetch_soup(self) -> None:
         try:
-            self._soup, _, self._clipboard = get_dynamic_soup(
+            self._soup, _, self._clipboard = fetch_dynamic_soup(
                 self.url, CLIPBOARD_XPATH, self.NO_GAMES_XPATH, self.PRIVATE_XPATH,
                 consent_xpath=CONSENT_XPATH, clipboard_xpath=CLIPBOARD_XPATH)
         except NoSuchElementException:
@@ -134,7 +134,7 @@ class UntappedMetaDeckScraper(DeckScraper):
                 time_tag.attrs["datetime"], "%Y-%m-%dT%H:%M:%S.%fZ").date()
         # info
         info_tag = name_tag.parent
-        info_tag = get_next_sibling_tag(info_tag)
+        info_tag = find_next_sibling_tag(info_tag)
         info_tag = [*info_tag][0]
         try:
             winrate, matches, avg_duration = info_tag

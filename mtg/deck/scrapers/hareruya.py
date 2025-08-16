@@ -16,11 +16,11 @@ from bs4 import BeautifulSoup, NavigableString, Tag
 
 from mtg import HybridContainerScraper, Json, SECRETS
 from mtg.deck.scrapers import Collected, DeckScraper, DeckUrlsContainerScraper, JsonBasedDeckParser, \
-    TagBasedDeckParser, is_in_domain_but_not_main, UrlHook
+    TagBasedDeckParser, UrlHook
 from mtg.deck.scrapers.goldfish import HEADERS as GOLDFISH_HEADERS
 from mtg.utils import ParsingError, extract_int
-from mtg.utils.scrape import ScrapingError, get_next_sibling_tag, get_path_segments, \
-    get_query_values, request_json, strip_url_query, timed_request
+from mtg.utils.scrape import ScrapingError, find_next_sibling_tag, get_path_segments, \
+    get_query_values, is_more_than_root_path, fetch_json, strip_url_query, fetch
 
 _log = logging.getLogger(__name__)
 
@@ -236,7 +236,7 @@ class JapaneseHareruyaDeckScraper(DeckScraper):
         if not decklist_id or not all(ch.isdigit() for ch in decklist_id):
             raise ScrapingError(
                 f"Decklist ID needs to be a number, got: {decklist_id!r}", type(self), self.url)
-        return request_json(
+        return fetch_json(
             self.API_URL_TEMPLATE.format(decklist_id, display_token))
 
     @override
@@ -352,7 +352,7 @@ class HareruyaArticleDeckTagParser(TagBasedDeckParser):
 
     def _parse_decklist_from_link(self, a_tag: Tag) -> None:
         url = a_tag.attrs["href"]
-        response = timed_request(url)
+        response = fetch(url)
         if not response:
             raise ParsingError(f"Request for decklist tag's URL: {url!r} returned 'None'")
         self._decklist = response.text
@@ -396,7 +396,7 @@ class HareruyaArticleDeckTagParser(TagBasedDeckParser):
 
     @override
     def _parse_deck(self) -> None:
-        decklist_tag = get_next_sibling_tag(self._deck_tag)
+        decklist_tag = find_next_sibling_tag(self._deck_tag)
         if not decklist_tag:
             raise ParsingError("Decklist tag not found")
         # not so old pages (ca.2022) have a (English) text decklist under a link within the next
@@ -406,7 +406,7 @@ class HareruyaArticleDeckTagParser(TagBasedDeckParser):
         # older pages (ca. 2020) have a (Japanese) text decklist under a <textarea> tag within
         # one more next sibling tag
         else:
-            decklist_tag = get_next_sibling_tag(decklist_tag)
+            decklist_tag = find_next_sibling_tag(decklist_tag)
             if not decklist_tag:
                 raise ParsingError("Decklist tag not found")
             if textarea_tag := decklist_tag.find("textarea"):
@@ -459,7 +459,7 @@ class HareruyaArticleScraper(HybridContainerScraper):
     def is_valid_url(url: str) -> bool:
         try:
             url = strip_url_query(url).lower()
-            return (is_in_domain_but_not_main(url, "article.hareruyamtg.com/article/")
+            return (is_more_than_root_path(url, "article.hareruyamtg.com/article/")
                     and not any(t in url for t in ("/page/", "/author/", "/category/", "/coverage/"))
                     and not urllib.parse.urlsplit(url).fragment)
         except ValueError:
@@ -473,7 +473,7 @@ class HareruyaArticleScraper(HybridContainerScraper):
         deck_data = []
         for tag in article_tag.find_all("deck-embedder", deckid=True):
             deck_id, token = tag.attrs["deckid"], tag.attrs.get("token", "")
-            data = request_json(
+            data = fetch_json(
                 JapaneseHareruyaDeckScraper.API_URL_TEMPLATE.format(deck_id, token))
             if data:
                 deck_data.append(data)
@@ -493,7 +493,7 @@ class HareruyaArticleScraper(HybridContainerScraper):
         # only the newest pages have <deck-embedder> tags with deck IDs that facilitates JSON
         # based parsing with API queries
         deck_data = self._collect_deck_data(article_tag)
-        deck_urls, container_urls = self._get_links_from_tags(article_tag)
+        deck_urls, container_urls = self._find_links_in_tags(article_tag)
         if deck_data:
             return [], [], deck_data, container_urls
         # older ones need a dedicated tag based parser
@@ -512,7 +512,7 @@ class HareruyaArticleDeckScraper(DeckScraper):
     def is_valid_url(url: str) -> bool:
         try:
             url = strip_url_query(url).lower()
-            return (is_in_domain_but_not_main(url, "article.hareruyamtg.com/article/")
+            return (is_more_than_root_path(url, "article.hareruyamtg.com/article/")
                     and not any(t in url for t in ("/page/", "/author/", "/category/", "/coverage/"))
                     and urllib.parse.urlsplit(url).fragment)
         except ValueError:

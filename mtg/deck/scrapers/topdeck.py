@@ -15,7 +15,7 @@ from bs4 import Tag
 from mtg import HybridContainerScraper, Json
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, JsonBasedDeckParser
 from mtg.utils import decode_escapes, extract_int
-from mtg.utils.scrape import ScrapingError, request_json, strip_url_query
+from mtg.utils.scrape import ScrapingError, fetch_json, strip_url_query
 
 _log = logging.getLogger(__name__)
 
@@ -121,7 +121,7 @@ class TopDeckBracketScraper(HybridContainerScraper):
 
     @override
     def _get_data_from_api(self) -> Json:
-        return request_json(self.url.replace("/bracket/", "/PublicPData/"))
+        return fetch_json(self.url.replace("/bracket/", "/PublicPData/"))
 
     @override
     def _parse_metadata(self) -> None:

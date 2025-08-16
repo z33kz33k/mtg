@@ -344,5 +344,5 @@ class AetherhubArticleScraper(HybridContainerScraper):
         article_tag = self._soup.find("div", id="article-text")
         if article_tag is None:
             raise ScrapingError("Article tag not found", scraper=type(self), url=self.url)
-        deck_links, container_links = self._get_links_from_tags(article_tag, url_prefix=URL_PREFIX)
+        deck_links, container_links = self._find_links_in_tags(article_tag, url_prefix=URL_PREFIX)
         return deck_links, [], [], container_links

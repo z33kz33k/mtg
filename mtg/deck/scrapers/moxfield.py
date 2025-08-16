@@ -17,7 +17,7 @@ from mtg import Json
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, FolderContainerScraper
 from mtg.scryfall import Card
 from mtg.utils.scrape import ScrapingError, Soft404Error, strip_url_query
-from mtg.utils.scrape.dynamic import get_dynamic_soup, get_selenium_json
+from mtg.utils.scrape.dynamic import fetch_dynamic_soup, fetch_selenium_json
 
 _log = logging.getLogger(__name__)
 
@@ -48,7 +48,7 @@ class MoxfieldDeckScraper(DeckScraper):
         *_, self._decklist_id = self.url.split("/")
         if self._decklist_id == "undefined":
             raise Soft404Error(scraper=type(self), url=self.url)
-        return get_selenium_json(self.API_URL_TEMPLATE.format(self._decklist_id))
+        return fetch_selenium_json(self.API_URL_TEMPLATE.format(self._decklist_id))
 
     @override
     def _validate_data(self) -> None:
@@ -129,7 +129,7 @@ class MoxfieldBookmarkScraper(DeckUrlsContainerScraper):
 
     @override
     def _get_data_from_api(self) -> Json:
-        return get_selenium_json(self.API_URL_TEMPLATE.format(self._get_bookmark_id()))
+        return fetch_selenium_json(self.API_URL_TEMPLATE.format(self._get_bookmark_id()))
 
     def _validate_data(self) -> None:
         if not self._data or not self._data.get("decks") or not self._data["decks"].get("data"):
@@ -164,7 +164,7 @@ class MoxfieldUserScraper(DeckUrlsContainerScraper):
     @override
     def _get_data_from_api(self) -> Json:
         *_, last = self.url.split("/")
-        return get_selenium_json(self.API_URL_TEMPLATE.format(last))
+        return fetch_selenium_json(self.API_URL_TEMPLATE.format(last))
 
     def _validate_data(self) -> None:
         if not self._data or not self._data.get("data"):
@@ -176,13 +176,13 @@ class MoxfieldUserScraper(DeckUrlsContainerScraper):
 
 
 @DeckUrlsContainerScraper.registered
-class MoxfieldSearchScraper(DeckUrlsContainerScraper):
-    """Scraper of Moxfield search results page.
+class MoxfieldDeckSearchScraper(DeckUrlsContainerScraper):
+    """Scraper of Moxfield deck search results page.
     """
     SELENIUM_PARAMS = {  # override
         "xpath": "//input[@id='filter']"
     }
-    CONTAINER_NAME = "Moxfield search results"  # override
+    CONTAINER_NAME = "Moxfield deck search"  # override
     # 100 page size is pretty arbitrary but tested to work
     API_URL_TEMPLATE = ("https://api2.moxfield.com/v2/decks/search?pageNumber=1&pageSize=100&sort"
                         "Type=updated&sortDirection=descending&filter={}")  # override
@@ -199,7 +199,7 @@ class MoxfieldSearchScraper(DeckUrlsContainerScraper):
 
     def _get_filter(self) -> str | None:
         try:
-            soup, _, _ = get_dynamic_soup(self.url, self.SELENIUM_PARAMS["xpath"])
+            soup, _, _ = fetch_dynamic_soup(self.url, self.SELENIUM_PARAMS["xpath"])
             if not soup:
                 return None
         except TimeoutException:
@@ -218,7 +218,7 @@ class MoxfieldSearchScraper(DeckUrlsContainerScraper):
             raise ScrapingError(
                 "'filter' parameter missing from API URL", scraper=type(self), url=self.url)
         api_url = self.API_URL_TEMPLATE.format(filter_)
-        json_data = get_selenium_json(api_url)
+        json_data = fetch_selenium_json(api_url)
         if not json_data or not json_data.get("data"):
             raise ScrapingError("No deck data", scraper=type(self), url=self.url)
         return [d["publicUrl"] for d in json_data["data"]]

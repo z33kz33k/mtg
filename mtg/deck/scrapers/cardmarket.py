@@ -188,7 +188,7 @@ class CardmarketArticleScraper(HybridContainerScraper):
             err = ScrapingError("Article tag not found", scraper=type(self), url=self.url)
             _log.warning(f"Scraping failed with: {err!r}")
             return [], deck_tags, [], []
-        deck_urls, container_urls = self._get_links_from_tags(*article_tag.find_all("p"))
+        deck_urls, container_urls = self._find_links_in_tags(*article_tag.find_all("p"))
         return deck_urls, deck_tags, [], container_urls
 
 

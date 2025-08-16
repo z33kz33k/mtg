@@ -15,8 +15,9 @@ from bs4 import BeautifulSoup, Tag
 
 from mtg import Json, SECRETS
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, DecksJsonContainerScraper, \
-    HybridContainerScraper, JsonBasedDeckParser, UrlHook, is_in_domain_but_not_main
-from mtg.utils.scrape import InaccessiblePage, ScrapingError, request_json, strip_url_query
+    HybridContainerScraper, JsonBasedDeckParser, UrlHook
+from mtg.utils.scrape import InaccessiblePage, ScrapingError, is_more_than_root_path, \
+    fetch_json, strip_url_query
 
 _log = logging.getLogger(__name__)
 HEADERS = {
@@ -62,7 +63,7 @@ def _get_json_data(url: str, **suffixes) -> Json:
     if suffixes:
         domain += suffixes["domain_suffix"]
         api_domain += suffixes["api_domain_suffix"]
-    return request_json(url.replace(domain, api_domain), headers=HEADERS)
+    return fetch_json(url.replace(domain, api_domain), headers=HEADERS)
 
 
 class FlexslotDeckJsonParser(JsonBasedDeckParser):
@@ -113,7 +114,7 @@ class FlexslotDeckScraper(DeckScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return is_in_domain_but_not_main(url, "flexslot.gg/decks/")
+        return is_more_than_root_path(url, "flexslot.gg/decks/")
 
     @staticmethod
     @override
@@ -150,7 +151,7 @@ class FlexslotSideboardScraper(DecksJsonContainerScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return is_in_domain_but_not_main(url, "flexslot.gg/sideboards/")
+        return is_more_than_root_path(url, "flexslot.gg/sideboards/")
 
     @staticmethod
     @override
@@ -185,7 +186,7 @@ class FlexslotArticleScraper(HybridContainerScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return is_in_domain_but_not_main(url, "flexslot.gg/article/")
+        return is_more_than_root_path(url, "flexslot.gg/article/")
 
     @staticmethod
     @override
@@ -221,7 +222,7 @@ class FlexslotArticleScraper(HybridContainerScraper):
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
-        deck_urls, container_urls = self._get_links_from_tags()
+        deck_urls, container_urls = self._find_links_in_tags()
         deck_urls2, container_urls2 = self._sift_links(
             *[t.text for t in self._soup.select("h4 > strong > u")])
         return deck_urls + deck_urls2, [], [], container_urls + container_urls2
@@ -260,9 +261,9 @@ class FlexslotUserScraper(HybridContainerScraper):
         if not user_data.get("firebase_id"):
             raise ScrapingError("No user Firebase ID data", type(self), self.url)
         user_id = user_data["firebase_id"]
-        self._decks_data = request_json(
+        self._decks_data = fetch_json(
             self.API_URL_TEMPLATE.format("decks", user_id), headers=HEADERS)
-        self._sideboards_data = request_json(
+        self._sideboards_data = fetch_json(
             self.API_URL_TEMPLATE.format("sideboards", user_id), headers=HEADERS)
 
     @staticmethod

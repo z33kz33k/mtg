@@ -14,7 +14,7 @@ from typing import override
 
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, FolderContainerScraper, UrlHook
-from mtg.utils.scrape import get_links, strip_url_query
+from mtg.utils.scrape import find_links, strip_url_query
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://archidekt.com"
@@ -150,7 +150,7 @@ class ArchidektFolderScraper(DeckUrlsContainerScraper):
 
     @override
     def _collect(self) -> list[str]:
-        return get_links(self._soup, css_selector='a[href*="/decks/"]', url_prefix=URL_PREFIX)
+        return find_links(self._soup, css_selector='a[href*="/decks/"]', url_prefix=URL_PREFIX)
 
 
 @DeckUrlsContainerScraper.registered

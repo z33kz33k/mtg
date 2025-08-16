@@ -14,9 +14,8 @@ import dateutil.parser
 from bs4 import Tag
 
 from mtg import Json, SECRETS
-from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser, UrlHook, \
-    is_in_domain_but_not_main
-from mtg.utils.scrape import ScrapingError, strip_url_query
+from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser, UrlHook
+from mtg.utils.scrape import ScrapingError, is_more_than_root_path, strip_url_query
 
 _log = logging.getLogger(__name__)
 HEADERS = {
@@ -87,7 +86,7 @@ class CommandersHeraldArticleScraper(HybridContainerScraper):
         tokens = ('/all-edh-deck-guides', '/articles', '/author/', '/cedh-deck-guides',
                   '/games/', "/category/", '/about-us','/contact-us', '/privacy-policy',
                   '/terms-of-service')
-        return is_in_domain_but_not_main(
+        return is_more_than_root_path(
             url, "commandersherald.com") and not any(t in url.lower() for t in tokens)
 
     @staticmethod
@@ -121,7 +120,7 @@ class CommandersHeraldArticleScraper(HybridContainerScraper):
             err = ScrapingError("Article tag not found", scraper=type(self), url=self.url)
             _log.warning(f"Scraping failed with: {err!r}")
             return [], deck_tags, [], []
-        deck_urls, container_urls = self._get_links_from_tags(*article_tag.find_all("p"))
+        deck_urls, container_urls = self._find_links_in_tags(*article_tag.find_all("p"))
         return deck_urls, deck_tags, [], container_urls
 
 
@@ -140,5 +139,5 @@ class CommandersHeraldAuthorScraper(HybridContainerScraper):
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
-        _, container_urls = self._get_links_from_tags(css_selector="div > div > h3 > a")
+        _, container_urls = self._find_links_in_tags(css_selector="div > div > h3 > a")
         return [], [], [], container_urls

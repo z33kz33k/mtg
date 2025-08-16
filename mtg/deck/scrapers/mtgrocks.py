@@ -17,10 +17,9 @@ import dateutil.parser
 from bs4 import Tag
 
 from mtg import Json
-from mtg.deck.scrapers import ContainerScraper, FolderContainerScraper, HybridContainerScraper, \
-    is_in_domain_but_not_main
+from mtg.deck.scrapers import ContainerScraper, FolderContainerScraper, HybridContainerScraper
 from mtg.utils.json import Node
-from mtg.utils.scrape import ScrapingError, strip_url_query
+from mtg.utils.scrape import ScrapingError, is_more_than_root_path, strip_url_query
 
 _log = logging.getLogger(__name__)
 
@@ -36,7 +35,7 @@ class MtgRocksArticleScraper(HybridContainerScraper):
     def is_valid_url(url: str) -> bool:
         tokens = ("/mtg-arena-codes/", "/deck-builder/", "/category/", "/sitemap/", "/about-us/",
                   "/editorial-policy/", "/privacy-policy/")
-        return is_in_domain_but_not_main(
+        return is_more_than_root_path(
             url, "mtgrocks.com") and not any(t in url.lower() for t in tokens)
 
     @staticmethod
@@ -81,7 +80,7 @@ class MtgRocksArticleScraper(HybridContainerScraper):
             err = ScrapingError("Article tag not found", scraper=type(self), url=self.url)
             _log.warning(f"Scraping failed with: {err!r}")
             return iframe_urls, [], [], []
-        deck_urls, container_urls = self._get_links_from_tags(*article_tag.find_all("p"))
+        deck_urls, container_urls = self._find_links_in_tags(*article_tag.find_all("p"))
         deck_urls = sorted({*iframe_urls, *deck_urls}) if deck_urls else iframe_urls
         return deck_urls, [], [], container_urls
 
@@ -105,5 +104,5 @@ class MtgRocksAuthorScraper(HybridContainerScraper):
             err = ScrapingError("Listing tag not found", scraper=type(self), url=self.url)
             _log.warning(f"Scraping failed with: {err!r}")
             return [], [], [], []
-        _, container_urls = self._get_links_from_tags(listing_tag)
+        _, container_urls = self._find_links_in_tags(listing_tag)
         return [], [], [], container_urls

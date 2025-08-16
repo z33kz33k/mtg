@@ -15,7 +15,7 @@ import dateutil.parser
 from mtg import SECRETS
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.utils import from_iterable
-from mtg.utils.scrape import ScrapingError, get_links
+from mtg.utils.scrape import ScrapingError, find_links
 
 _log = logging.getLogger(__name__)
 
@@ -147,5 +147,5 @@ class MeleeGgProfileScraper(DeckUrlsContainerScraper):
 
     @override
     def _collect(self) -> list[str]:
-        links = get_links(self._soup)
+        links = find_links(self._soup)
         return [l for l in links if l.startswith('/Decklist/View/')]

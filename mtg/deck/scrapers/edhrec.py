@@ -20,8 +20,8 @@ from mtg import Json
 from mtg.deck.scrapers import DeckScraper, HybridContainerScraper, TagBasedDeckParser, UrlHook
 from mtg.scryfall import Card
 from mtg.utils import ParsingError
-from mtg.utils.scrape import ScrapingError, get_links, prepend_url, strip_url_query
-from mtg.utils.scrape import getsoup
+from mtg.utils.scrape import ScrapingError, find_links, prepend_url, strip_url_query
+from mtg.utils.scrape import fetch_soup
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://edhrec.com"
@@ -62,7 +62,7 @@ def _get_data(
         url: str,
         scraper: Type[DeckScraper] | Type[HybridContainerScraper],
         data_key="data") -> tuple[Json, BeautifulSoup]:
-    soup = getsoup(url)
+    soup = fetch_soup(url)
     if not soup:
         raise ScrapingError(scraper=scraper, url=url)
     script_tag = soup.find("script", id="__NEXT_DATA__")
@@ -273,7 +273,7 @@ class EdhrecArticleScraper(HybridContainerScraper):
         return [*content_soup.find_all("span", class_="edhrecp__deck-s")]
 
     def _collect_urls(self) -> tuple[list[str], list[str]]:
-        links = get_links(self._soup)
+        links = find_links(self._soup)
         tokens = "/deckpreview/", "/average-decks/", "/commanders/"
         links = [
             prepend_url(l, URL_PREFIX) if any(

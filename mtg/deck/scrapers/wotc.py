@@ -112,5 +112,5 @@ class WotCArticleScraper(HybridContainerScraper):
             _log.warning(f"Scraping failed with: {err!r}")
             return [], deck_tags, [], []
         p_tags = [t for t in article_tag.find_all("p") if not t.find("deck-list")]
-        deck_urls, container_urls = self._get_links_from_tags(*p_tags)
+        deck_urls, container_urls = self._find_links_in_tags(*p_tags)
         return deck_urls, deck_tags, [], container_urls

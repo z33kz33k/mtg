@@ -20,8 +20,8 @@ from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper, FolderContainerScraper
 from mtg.utils import extract_int, get_date_from_ago_text
-from mtg.utils.scrape import ScrapingError, getsoup, prepend_url, request_json, strip_url_query, \
-    throttle, timed_request
+from mtg.utils.scrape import ScrapingError, fetch_soup, prepend_url, fetch_json, strip_url_query, \
+    throttle, fetch
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://tappedout.net"
@@ -63,7 +63,7 @@ class TappedoutDeckScraper(DeckScraper):
         on_backoff=_backoff_handler,
     )
     def _get_response(self) -> Response | None:
-        return timed_request(self.url, handle_http_errors=False)
+        return fetch(self.url, handle_http_errors=False)
 
     @override
     def _fetch_soup(self) -> None:
@@ -152,7 +152,7 @@ class TappedoutUserScraper(DeckUrlsContainerScraper):
         while len(collected) < total:
             if page != 1:
                 throttle(*DeckScraper.THROTTLING)
-            json_data = request_json(self.API_URL_TEMPLATE.format(username, page))
+            json_data = fetch_json(self.API_URL_TEMPLATE.format(username, page))
             if not json_data or not json_data.get("results") or not json_data.get("total_decks"):
                 if not collected:
                     err = ScrapingError("No decks data", scraper=type(self), url=self.url)
@@ -187,7 +187,7 @@ class TappedoutFolderScraper(DeckUrlsContainerScraper):
         return strip_url_query(url)
 
     def _get_folder_id(self) -> int:
-        soup = getsoup(self.url)
+        soup = fetch_soup(self.url)
         start_hook, end_hook = "window.django = ", ";"
         script_tag = soup.find("script", string=lambda s: s and start_hook in s and end_hook in s)
         text = script_tag.text
@@ -198,7 +198,7 @@ class TappedoutFolderScraper(DeckUrlsContainerScraper):
 
     @override
     def _get_data_from_api(self) -> Json:
-        return request_json(self.API_URL_TEMPLATE.format(self._get_folder_id()))
+        return fetch_json(self.API_URL_TEMPLATE.format(self._get_folder_id()))
 
     @override
     def _validate_data(self) -> None:
@@ -231,7 +231,7 @@ class TappedoutUserFolderScraper(TappedoutUserScraper):
         while has_next:
             if page != 1:
                 throttle(*DeckScraper.THROTTLING)
-            json_data = request_json(self.API_URL_TEMPLATE.format(username, page))
+            json_data = fetch_json(self.API_URL_TEMPLATE.format(username, page))
             if not json_data or not json_data.get("results"):
                 if not collected:
                     err = ScrapingError("No decks data", scraper=type(self), url=self.url)

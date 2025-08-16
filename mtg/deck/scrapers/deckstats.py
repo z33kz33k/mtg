@@ -19,8 +19,8 @@ from requests import Response
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, UrlHook
 from mtg.scryfall import Card
-from mtg.utils.scrape import ScrapingError, dissect_js, request_json, strip_url_query, \
-    throttle, timed_request
+from mtg.utils.scrape import ScrapingError, dissect_js, fetch_json, strip_url_query, \
+    throttle, fetch
 
 _log = logging.getLogger(__name__)
 URL_HOOKS = (
@@ -92,7 +92,7 @@ class DeckstatsDeckScraper(DeckScraper):
         on_backoff=_backoff_handler,
     )
     def _get_response(self) -> Response | None:
-        return timed_request(self.url, handle_http_errors=False)
+        return fetch(self.url, handle_http_errors=False)
 
     @override
     def _is_page_inaccessible(self) -> bool:
@@ -214,7 +214,7 @@ class DeckstatsUserScraper(DeckUrlsContainerScraper):
         while len(collected) < total:
             if page != 1:
                 throttle(*self.THROTTLING)
-            json_data = request_json(self.API_URL_TEMPLATE.format(user_id, page))
+            json_data = fetch_json(self.API_URL_TEMPLATE.format(user_id, page))
             if collected and last_seen == json_data:
                 break
             if not json_data or not json_data.get("folder") or not json_data["folder"].get("decks"):

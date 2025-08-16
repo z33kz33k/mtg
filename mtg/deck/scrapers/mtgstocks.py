@@ -17,7 +17,7 @@ from mtg import Json
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.scryfall import Card
 from mtg.utils import from_iterable
-from mtg.utils.scrape import ScrapingError, get_links, prepend_url, strip_url_query
+from mtg.utils.scrape import ScrapingError, find_links, prepend_url, strip_url_query
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://mtgstocks.com"
@@ -113,7 +113,7 @@ class MtgStocksArticleScraper(DeckUrlsContainerScraper):
             err = ScrapingError("Article tag not found", scraper=type(self), url=self.url)
             _log.warning(f"Scraping failed with: {err!r}")
             return []
-        links = get_links(article_tag)
+        links = find_links(article_tag)
         return [l for l in links if any(ds.is_valid_url(l) for ds in self._get_deck_scrapers())]
 
     def _collect_own_urls(self) -> list[str]:

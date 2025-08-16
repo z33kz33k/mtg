@@ -32,7 +32,7 @@ from mtg.utils import Counter, breadcrumbs, logging_disabled
 from mtg.utils.json import deserialize_dates, serialize_dates
 from mtg.utils.files import getdir, getfile, sanitize_filename
 from mtg.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
-from mtg.utils.scrape import extract_url, getsoup
+from mtg.utils.scrape import extract_url, fetch_soup
 
 _log = logging.getLogger(__name__)
 VIDEO_URL_TEMPLATE = "https://www.youtube.com/watch?v={}"
@@ -637,7 +637,7 @@ def get_channel_ids(*urls: str, only_new=True) -> list[str]:
     retrieved_ids = set(retrieve_ids())
     ids = []
     for url in sorted(set(urls)):
-        soup = getsoup(url)
+        soup = fetch_soup(url)
         if not soup:
             _log.warning(f"Skipping invalid channel URL: {url!r}...")
             continue

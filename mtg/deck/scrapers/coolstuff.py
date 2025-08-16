@@ -15,10 +15,9 @@ from bs4 import Tag
 
 from mtg import Json, SECRETS
 from mtg.deck import DeckParser
-from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser, UrlHook, \
-    is_in_domain_but_not_main
+from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser, UrlHook
 from mtg.utils import ParsingError, extract_int
-from mtg.utils.scrape import ScrapingError, strip_url_query
+from mtg.utils.scrape import ScrapingError, is_more_than_root_path, strip_url_query
 
 _log = logging.getLogger(__name__)
 
@@ -181,7 +180,7 @@ class CoolStuffIncArticleScraper(HybridContainerScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return is_in_domain_but_not_main(
+        return is_more_than_root_path(
             url, "coolstuffinc.com/a/") and "action=search" not in url.lower()
 
     @staticmethod
@@ -209,7 +208,7 @@ class CoolStuffIncArticleScraper(HybridContainerScraper):
             err = ScrapingError("Article tag not found", scraper=type(self), url=self.url)
             _log.warning(f"Scraping failed with: {err!r}")
             return [], deck_tags, [], []
-        deck_urls, container_urls = self._get_links_from_tags(*article_tag.find_all("p"))
+        deck_urls, container_urls = self._find_links_in_tags(*article_tag.find_all("p"))
         return deck_urls, deck_tags, [], container_urls
 
 
@@ -232,5 +231,5 @@ class CoolStuffIncAuthorScraper(HybridContainerScraper):
         search_tag = self._soup.select_one("div#article-search-results")
         if not search_tag:
             raise ScrapingError("Search results tag not found", scraper=type(self), url=self.url)
-        _, container_urls = self._get_links_from_tags(search_tag, url_prefix=URL_PREFIX)
+        _, container_urls = self._find_links_in_tags(search_tag, url_prefix=URL_PREFIX)
         return [], [], [], container_urls

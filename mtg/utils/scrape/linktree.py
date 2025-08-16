@@ -37,7 +37,7 @@ import backoff
 from requests import ReadTimeout, HTTPError, ConnectionError
 
 from mtg import Json
-from mtg.utils.scrape import ScrapingError, getsoup, strip_url_query, timed_request
+from mtg.utils.scrape import ScrapingError, fetch_soup, strip_url_query, fetch
 
 _log = logging.getLogger(__name__)
 
@@ -90,7 +90,7 @@ class Linktree:
 
     @backoff.on_exception(backoff.expo, (ConnectionError, HTTPError, ReadTimeout), max_time=60)
     def _get_json(self) -> Json:
-        soup = getsoup(self.url, self.HEADERS)
+        soup = fetch_soup(self.url, self.HEADERS)
         if not soup:
             raise ScrapingError(scraper=type(self), url=self.url)
         user_info_tag = soup.find('script', id="__NEXT_DATA__")
@@ -113,7 +113,7 @@ class Linktree:
         }
         url = "https://linktr.ee/api/profiles/validation/gates"
         try:
-            resp = timed_request(url, postdata=data, headers=self.HEADERS)
+            resp = fetch(url, postdata=data, headers=self.HEADERS)
             return [link["url"] for link in resp.json()["links"]]
         except Exception as e:
             _log.warning(f"linktr.ee links uncensoring failed with: {e!r}")

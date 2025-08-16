@@ -16,7 +16,7 @@ from mtg import Json
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.scryfall import Card
 from mtg.utils import from_iterable, get_date_from_ago_text, get_date_from_month_text
-from mtg.utils.scrape import ScrapingError, getsoup, request_json, strip_url_query
+from mtg.utils.scrape import ScrapingError, fetch_soup, fetch_json, strip_url_query
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://pennydreadfulmagic.com"
@@ -106,7 +106,7 @@ class PennyDreadfulMagicCompetitionScraper(DeckUrlsContainerScraper):
     @override
     def _get_data_from_api(self) -> Json:
         *_, competition_id = self.url.split("/")
-        return request_json(self.API_URL_TEMPLATE.format(competition_id))
+        return fetch_json(self.API_URL_TEMPLATE.format(competition_id))
 
     @override
     def _validate_data(self) -> None:
@@ -152,7 +152,7 @@ class PennyDreadfulMagicUserScraper(DeckUrlsContainerScraper):
         return season_id, user_id
 
     def _find_ids(self) -> tuple[str, str] | None:
-        soup = getsoup(self.url)
+        soup = fetch_soup(self.url)
         if not soup:
             return None
         season_ids, user_ids = set(), set()
@@ -185,7 +185,7 @@ class PennyDreadfulMagicUserScraper(DeckUrlsContainerScraper):
         else:
             raise ScrapingError(
                 "Relevant query parameters missing from API URL", scraper=type(self), url=self.url)
-        json_data = request_json(self.API_URL_TEMPLATE.format(user_id, season_id))
+        json_data = fetch_json(self.API_URL_TEMPLATE.format(user_id, season_id))
         if not json_data or not json_data.get("objects"):
             raise ScrapingError("No decks data", scraper=type(self), url=self.url)
         return [d["url"] for d in json_data["objects"]]

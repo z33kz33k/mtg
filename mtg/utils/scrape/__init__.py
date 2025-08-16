@@ -88,13 +88,16 @@ def handle_brotli(response: Response, return_json: bool = False) -> str | Json:
     return response.text
 
 
-@timed("request")
+@timed("fetching")
 @type_checker(str)
-def timed_request(
+def fetch(
         url: str, postdata: Json | None = None, handle_http_errors=True,
         request_timeout=REQUESTS_TIMEOUT,
         **requests_kwargs) -> Response | None:
-    _log.info(f"Requesting: '{url}'...")
+    """Do a GET (or POST wit ``postdata``) HTTP request for ``url`` and return the response
+    (or None).
+    """
+    _log.info(f"Fetching: '{url}'...")
     global http_requests_count
     if postdata:
         response = requests.post(url, json=postdata, **requests_kwargs)
@@ -112,30 +115,32 @@ def timed_request(
     return response
 
 
-def request_json(url: str, handle_http_errors=True, **requests_kwargs) -> Json:
-    response = timed_request(url, handle_http_errors=handle_http_errors, **requests_kwargs)
+def fetch_json(url: str, handle_http_errors=True, **requests_kwargs) -> Json:
+    """Do a GET HTTP request for ``url`` and return the response's JSON data (or an empty dict).
+    """
+    response = fetch(url, handle_http_errors=handle_http_errors, **requests_kwargs)
     if not response:
         return {}
     return response.json() if response.text else {}
 
 
 @type_checker(str)
-def getsoup(
+def fetch_soup(
         url: str, headers: dict[str, str] | None = None,
         params: dict[str, str] | None = None,
         request_timeout=REQUESTS_TIMEOUT) -> BeautifulSoup | None:
-    """Return BeautifulSoup object based on ``url``.
+    """Do a GET HTTP request for ``url`` and return a BeautifulSoup object (or None).
 
     Args:
         url: URL string
         headers: a dictionary of headers to add to the request
-        params: requests' query parameters
+        params: URL's query parameters (if not already present in the URL)
         request_timeout: request timeout in seconds
 
     Returns:
         a BeautifulSoup object or None on client-side errors
     """
-    response = timed_request(url, headers=headers, params=params, request_timeout=request_timeout)
+    response = fetch(url, headers=headers, params=params, request_timeout=request_timeout)
     if not response or not response.text:
         return None
     http_encoding = response.encoding if 'charset' in response.headers.get(
@@ -145,14 +150,14 @@ def getsoup(
     return BeautifulSoup(response.content, "lxml", from_encoding=encoding)
 
 
-def get_next_sibling_tag(tag: Tag) -> Tag | None:
+def find_next_sibling_tag(tag: Tag) -> Tag | None:
     for sibling in tag.next_siblings:
         if isinstance(sibling, Tag):
             return sibling
     return None
 
 
-def get_previous_sibling_tag(tag: Tag) -> Tag | None:
+def find_previous_sibling_tag(tag: Tag) -> Tag | None:
     for sibling in tag.previous_siblings:
         if isinstance(sibling, Tag):
             return sibling
@@ -209,8 +214,8 @@ def throttled(delay: float, offset=0.0) -> Callable:
 
 
 @throttled(DEFAULT_THROTTLING)
-def throttled_soup(url: str, headers: dict[str, str] | None = None) -> BeautifulSoup | None:
-    return getsoup(url, headers=headers)
+def fetch_throttled_soup(url: str, headers: dict[str, str] | None = None) -> BeautifulSoup | None:
+    return fetch_soup(url, headers=headers)
 
 
 def http_requests_counted(operation="") -> Callable:
@@ -293,7 +298,7 @@ def extract_url(text: str, https=True) -> str | None:
     match = re.search(pattern, text)
     if not match:
         return None
-    url = match.group("url").rstrip(",])}/\u2060").removesuffix("...").removesuffix("..")
+    url = match.group("url").rstrip(",.])}/\u2060")
     if url.count("https://") > 1:
         return "https://" + [part for part in url.split("https://") if part][0]
     elif url.count("http://") > 1:
@@ -398,6 +403,28 @@ def url_decode(encoded: str) -> str:
     return urllib.parse.unquote(encoded.replace('+', ' '))
 
 
+def is_more_than_root_path(url: str, root_path: str, lower=True) -> bool:
+    """Check whether the passed URL is more than the provided root path (whether the root path is
+    within the URL, but NOT EXACTLY it).
+
+    Args:
+        url: a URL to check
+        root_path: URL root path (netloc + (optionally) initial path segments, with or without
+                   the trailing slash), e.g. "pauperwave.com" or "playingmtg.com/tournaments/")
+        lower: if True, make the check case-insensitive
+    """
+    url = url.lower() if lower else url
+    root_path = root_path.lower() if lower else root_path
+    url = url.removesuffix("/") + "/"
+    root_path = root_path.removesuffix("/") + "/"
+    if root_path not in url:
+        return False  # root path not within URL
+    *_, rest = url.split(f"{root_path}")
+    if not rest:
+        return False  # URL is the root path exactly
+    return True
+
+
 MONTHS = [
     'January',
     'February',
@@ -447,10 +474,10 @@ def prepend_url(url: str, prefix="") -> str:
     return url
 
 
-def get_links(
+def find_links(
         *tags: Tag, css_selector="", url_prefix="", query_stripped=False,
         **bs_options) -> list[str]:
-    """Get all links from provided tags.
+    """Find all links in the provided tags.
 
         Args:
             *tags: variable number of BeautifulSoup tags containing links
@@ -479,15 +506,15 @@ def _wayback_predicate(soup: BeautifulSoup | None) -> bool:
     return False
 
 
-@timed("getting wayback soup")
+@timed("fetching wayback soup")
 @backoff.on_predicate(
     backoff.expo,
     predicate=_wayback_predicate,
     jitter=None,
     max_tries=7
 )
-def get_wayback_soup(url: str) -> BeautifulSoup | None:
-    """Get BeautifulSoup object for a URL from Wayback Machine.
+def fetch_wayback_soup(url: str) -> BeautifulSoup | None:
+    """Fetch a BeautifulSoup object (or None) for a URL from Wayback Machine.
     """
     try:
         client = WaybackClient()

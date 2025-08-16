@@ -16,7 +16,7 @@ import pyperclip
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.common import ElementClickInterceptedException, NoSuchElementException, \
-    TimeoutException, StaleElementReferenceException
+    StaleElementReferenceException, TimeoutException
 from selenium.webdriver import ActionChains, Keys
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
@@ -26,18 +26,16 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from mtg import Json
 from mtg.utils import timed
-from mtg.utils.scrape import DEFAULT_THROTTLING, throttled
-
 
 _log = logging.getLogger(__name__)
 SELENIUM_TIMEOUT = 20.0  # seconds
 SCROLL_DOWN_TIMES = 50
 
 
-@timed("getting dynamic soup")
+@timed("fetching dynamic soup")
 @backoff.on_exception(
     backoff.expo, (ElementClickInterceptedException, StaleElementReferenceException), max_time=300)
-def get_dynamic_soup(
+def fetch_dynamic_soup(
         url: str,
         xpath: str,
         *halt_xpaths,
@@ -127,10 +125,10 @@ def get_dynamic_soup(
             raise  # FIXME: this is redundant
 
 
-@timed("getting JSON with Selenium")
+@timed("fetching JSON with Selenium")
 @backoff.on_exception(backoff.expo, json.decoder.JSONDecodeError, max_time=60)
-def get_selenium_json(url: str) -> Json:
-    """Get JSON data at ``url`` using Selenium WebDriver.
+def fetch_selenium_json(url: str) -> Json:
+    """Fetch JSON data at ``url`` using Selenium WebDriver.
 
     This function assumes there's really JSON string at the destination and uses backoff
     redundancy on any problems with JSON parsing, so it'd better be.
@@ -140,13 +138,6 @@ def get_selenium_json(url: str) -> Json:
         driver.get(url)
         soup = BeautifulSoup(driver.page_source, "lxml")
         return json.loads(soup.text)
-
-
-@throttled(DEFAULT_THROTTLING)
-def throttled_dynamic_soup_by_xpath(
-        url: str, xpath: str, click=False, consent_xpath="", clipboard_xpath="",
-        timeout=SELENIUM_TIMEOUT) -> tuple[BeautifulSoup, BeautifulSoup | None, str | None]:
-    return get_dynamic_soup(url, xpath, click, consent_xpath, clipboard_xpath, timeout)
 
 
 def accept_consent(driver: WebDriver, xpath: str, timeout=SELENIUM_TIMEOUT) -> None:

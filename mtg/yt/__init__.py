@@ -47,8 +47,8 @@ from mtg.utils import extract_float, find_longest_seqs, \
 from mtg.utils.files import getdir, sanitize_filename
 from mtg.utils.json import deserialize_dates, serialize_dates
 from mtg.utils.scrape import ScrapingError, dissect_js, extract_source, extract_url, \
-    http_requests_counted, throttled, timed_request, unshorten
-from mtg.utils.scrape.dynamic import get_dynamic_soup
+    http_requests_counted, throttled, fetch, unshorten
+from mtg.utils.scrape.dynamic import fetch_dynamic_soup
 from mtg.utils.scrape.linktree import Linktree
 from mtg.yt.data import CHANNELS_DIR, CHANNEL_URL_TEMPLATE, ChannelData, DataPath, ScrapingSession, \
     VIDEO_URL_TEMPLATE, find_channel_files, find_orphans, load_channel, load_channels, \
@@ -494,7 +494,7 @@ class LinksExpander:
         elif "pastebin.com/" in link and "/raw/" not in link:
             link = link.replace("pastebin.com/", "pastebin.com/raw/")
 
-        response = timed_request(link)
+        response = fetch(link)
         if not response:
             self._urls_manager.add_failed(original_link)
             return
@@ -510,7 +510,7 @@ class LinksExpander:
 
     def _get_patreon_text_tag(self, link: str) -> Tag | None:
         try:
-            soup, _, _ = get_dynamic_soup(link, self._PATREON_XPATH, timeout=10)
+            soup, _, _ = fetch_dynamic_soup(link, self._PATREON_XPATH, timeout=10)
             if not soup:
                 _log.warning("Patreon post data not available")
                 self._urls_manager.add_failed(link)
@@ -518,7 +518,7 @@ class LinksExpander:
             return soup.find("div", class_=lambda c: c and "sc-dtMgUX" in c and 'IEufa' in c)
         except TimeoutException:
             try:
-                soup, _, _ = get_dynamic_soup(link, self._PATREON_XPATH2)
+                soup, _, _ = fetch_dynamic_soup(link, self._PATREON_XPATH2)
                 if not soup:
                     _log.warning("Patreon post data not available")
                     self._urls_manager.add_failed(link)
@@ -546,7 +546,7 @@ class LinksExpander:
     def _expand_google_doc(self, link: str) -> None:
         # url = "https://docs.google.com/document/d/1Bnsd4M7n_8LHfN6uEJVxoRr72antIEIO9w4YOGKltiU/edit"
         try:
-            soup, _, _ = get_dynamic_soup(link, self._GOOGLE_DOC_XPATH)
+            soup, _, _ = fetch_dynamic_soup(link, self._GOOGLE_DOC_XPATH)
             if not soup:
                 _log.warning("Google Docs document data not available")
                 self._urls_manager.add_failed(link)
@@ -1254,7 +1254,7 @@ class Channel:
 
     def _scrape_subscribers_with_selenium(self) -> int:
         try:
-            soup, _, _ = get_dynamic_soup(self.url, self.XPATH, consent_xpath=self.CONSENT_XPATH)
+            soup, _, _ = fetch_dynamic_soup(self.url, self.XPATH, consent_xpath=self.CONSENT_XPATH)
             text = soup.find("span", string=lambda t: t and "subscribers" in t).text.removesuffix(
                 " subscribers")
             number = extract_float(text)
@@ -1267,7 +1267,7 @@ class Channel:
 
     def _scrape_title_with_selenium(self) -> str | None:
         try:
-            soup, _, _ = get_dynamic_soup(
+            soup, _, _ = fetch_dynamic_soup(
                 self.url, self.XPATH.replace("subscribers", "subscriber"),
                 consent_xpath=self.CONSENT_XPATH)
             text_tag = soup.find(
