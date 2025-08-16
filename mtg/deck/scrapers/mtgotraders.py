@@ -14,7 +14,7 @@ from typing import override
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper
 from mtg.scryfall import Card
-from mtg.utils.scrape import request_json
+from mtg.utils.scrape import fetch_json
 
 _log = logging.getLogger(__name__)
 
@@ -33,7 +33,7 @@ class MtgoTradersDeckScraper(DeckScraper):
     @override
     def _get_data_from_api(self) -> Json:
         *_, decklist_id = self.url.split("?deck=")
-        return request_json(self.API_URL_TEMPLATE.format(decklist_id))
+        return fetch_json(self.API_URL_TEMPLATE.format(decklist_id))
 
     @override
     def _parse_metadata(self) -> None:

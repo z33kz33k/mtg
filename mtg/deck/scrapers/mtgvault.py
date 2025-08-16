@@ -15,8 +15,8 @@ from bs4 import Tag
 
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.scryfall import Card
-from mtg.utils.scrape import ScrapingError, get_links, strip_url_query
-from mtg.utils.scrape import getsoup
+from mtg.utils.scrape import ScrapingError, find_links, strip_url_query
+from mtg.utils.scrape import fetch_soup
 
 _log = logging.getLogger(__name__)
 
@@ -94,7 +94,7 @@ class MtgVaultUserScraper(DeckUrlsContainerScraper):
 
     @override
     def _collect(self) -> list[str]:
-        deck_urls = get_links(
+        deck_urls = find_links(
             self._soup, href=lambda h: h and "/decks/" in h and "/search/" not in h)
 
         url_template = f"{self.url}/?p=" + "{}"
@@ -104,9 +104,9 @@ class MtgVaultUserScraper(DeckUrlsContainerScraper):
             last_page = int(last_page)
             while current_page < last_page:
                 current_page += 1
-                soup = getsoup(url_template.format(current_page))
+                soup = fetch_soup(url_template.format(current_page))
                 if soup:
-                    deck_urls += get_links(
+                    deck_urls += find_links(
                         soup, href=lambda h: h and "/decks/" in h and "/search/" not in h)
 
         if not deck_urls:

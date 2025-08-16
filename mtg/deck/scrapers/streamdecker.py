@@ -16,7 +16,7 @@ from requests import ReadTimeout
 from mtg import Json
 from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
 from mtg.utils import get_date_from_ago_text
-from mtg.utils.scrape import ScrapingError, request_json, strip_url_query
+from mtg.utils.scrape import ScrapingError, fetch_json, strip_url_query
 
 _log = logging.getLogger(__name__)
 
@@ -41,7 +41,7 @@ class StreamdeckerDeckScraper(DeckScraper):
     def _get_data_from_api(self) -> Json:
         *_, decklist_id = self.url.split("/")
         try:
-            json_data = request_json(self.API_URL_TEMPLATE.format(decklist_id))
+            json_data = fetch_json(self.API_URL_TEMPLATE.format(decklist_id))
         except ReadTimeout:
             raise ScrapingError("API request timed out", scraper=type(self), url=self.url)
         if not json_data or not json_data.get("data") or json_data["data"] == {"deck": {}}:
@@ -106,7 +106,7 @@ class StreamdeckerUserScraper(DeckUrlsContainerScraper):
     @override
     def _get_data_from_api(self) -> Json:
         *_, user_name = self.url.split("/")
-        return request_json(self.API_URL_TEMPLATE.format(user_name))
+        return fetch_json(self.API_URL_TEMPLATE.format(user_name))
 
     @override
     def _validate_data(self) -> None:

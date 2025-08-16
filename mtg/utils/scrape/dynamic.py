@@ -37,7 +37,7 @@ SCROLL_DOWN_TIMES = 50
 @timed("getting dynamic soup")
 @backoff.on_exception(
     backoff.expo, (ElementClickInterceptedException, StaleElementReferenceException), max_time=300)
-def get_dynamic_soup(
+def fetch_dynamic_soup(
         url: str,
         xpath: str,
         *halt_xpaths,
@@ -129,8 +129,8 @@ def get_dynamic_soup(
 
 @timed("getting JSON with Selenium")
 @backoff.on_exception(backoff.expo, json.decoder.JSONDecodeError, max_time=60)
-def get_selenium_json(url: str) -> Json:
-    """Get JSON data at ``url`` using Selenium WebDriver.
+def fetch_selenium_json(url: str) -> Json:
+    """Fetch JSON data at ``url`` using Selenium WebDriver.
 
     This function assumes there's really JSON string at the destination and uses backoff
     redundancy on any problems with JSON parsing, so it'd better be.
@@ -146,7 +146,7 @@ def get_selenium_json(url: str) -> Json:
 def throttled_dynamic_soup_by_xpath(
         url: str, xpath: str, click=False, consent_xpath="", clipboard_xpath="",
         timeout=SELENIUM_TIMEOUT) -> tuple[BeautifulSoup, BeautifulSoup | None, str | None]:
-    return get_dynamic_soup(url, xpath, click, consent_xpath, clipboard_xpath, timeout)
+    return fetch_dynamic_soup(url, xpath, click, consent_xpath, clipboard_xpath, timeout)
 
 
 def accept_consent(driver: WebDriver, xpath: str, timeout=SELENIUM_TIMEOUT) -> None:

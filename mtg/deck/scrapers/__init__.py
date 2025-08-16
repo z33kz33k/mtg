@@ -23,34 +23,12 @@ from mtg.deck import CardNotFound, Deck, DeckParser, InvalidDeck
 from mtg.deck.arena import ArenaParser
 from mtg.gstate import UrlsStateManager
 from mtg.utils import ParsingError, timed
-from mtg.utils.scrape import InaccessiblePage, ScrapingError, Soft404Error, get_links, getsoup, \
+from mtg.utils.scrape import InaccessiblePage, ScrapingError, Soft404Error, find_links, fetch_soup, \
     prepend_url
 from mtg.utils.scrape import Throttling, extract_source, throttle
-from mtg.utils.scrape.dynamic import get_dynamic_soup
+from mtg.utils.scrape.dynamic import fetch_dynamic_soup
 
 _log = logging.getLogger(__name__)
-
-
-def is_in_domain_but_not_main(url: str, domain: str, lower=True) -> bool:
-    """Check whether the passed URL is of the passed domain but other than exactly this domain.
-
-    Args:
-        url: URL to check
-        domain: the end-part of URL's domain (including sub-folders, e.g. "pauperwave.com" or "playingmtg.com/tournaments/")
-        lower: if True, make URL and domain case-insensitive
-    """
-    url = url.lower() if lower else url
-    domain = domain.lower() if lower else domain
-    url = url.removesuffix("/") + "/"
-    domain = domain.removesuffix("/") + "/"
-    if domain not in url:
-        return False  # not in domain
-    if f"{domain}." in url:
-        return False
-    *_, rest = url.split(f"{domain}")
-    if not rest:
-        return False  # the domain exactly
-    return True
 
 
 # TODO: move this to mtg.yt.discover, make default limit a shared global constant
@@ -188,12 +166,12 @@ class DeckScraper(DeckParser):
     def _fetch_soup(self) -> None:
         if self.SELENIUM_PARAMS:
             try:
-                self._soup, _, self._clipboard = get_dynamic_soup(
+                self._soup, _, self._clipboard = fetch_dynamic_soup(
                     self.url, **self.SELENIUM_PARAMS)
             except TimeoutException:
                 raise ScrapingError(self._selenium_timeout_msg, scraper=type(self), url=self.url)
         else:
-            self._soup = getsoup(self.url, self.HEADERS)
+            self._soup = fetch_soup(self.url, self.HEADERS)
 
     def _get_data_from_api(self) -> Json:
         raise NotImplementedError
@@ -687,9 +665,9 @@ class HybridContainerScraper(
                 cs.is_valid_url(l) for cs in cls._get_container_scrapers())]
         return deck_urls, container_urls
 
-    def _get_links_from_tags(
+    def _find_links_in_tags(
             self, *tags: Tag, css_selector="", url_prefix="") -> tuple[list[str], list[str]]:
-        """Get all links from the provided tags. If no tags are provided, the soup is assumed.
+        """Find all links in the provided tags. If no tags are provided, the soup is assumed.
 
         Note: this assumes the same URL prefix both for deck URLs and container URLs (which ought
         to be most of the time as multi-domain relative URLs on the same page don't make much
@@ -704,7 +682,7 @@ class HybridContainerScraper(
             links sifted into deck URLs and container URLs
         """
         tags = tags or [self._soup]
-        links = get_links(
+        links = find_links(
             *tags, css_selector=css_selector, url_prefix=url_prefix, query_stripped=False)
         return self._sift_links(*links)
 

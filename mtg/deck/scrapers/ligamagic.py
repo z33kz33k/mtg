@@ -21,7 +21,7 @@ from mtg import SECRETS
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.scryfall import Card
 from mtg.utils import extract_int
-from mtg.utils.scrape import ScrapingError, getsoup, url_decode
+from mtg.utils.scrape import ScrapingError, fetch_soup, url_decode
 
 _log = logging.getLogger(__name__)
 _API_KEY = SECRETS["zenrows"]["api_key"]
@@ -38,7 +38,7 @@ def _get_soup_with_zenrows(url: str, css_selector: str) -> BeautifulSoup | None:
         'premium_proxy': 'true',
         'proxy_country': 'br',
     }
-    return getsoup(_API_URL, params=params, request_timeout=REQUEST_TIMEOUT)
+    return fetch_soup(_API_URL, params=params, request_timeout=REQUEST_TIMEOUT)
 
 
 # TODO: uncomment when ready

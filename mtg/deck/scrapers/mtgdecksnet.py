@@ -19,7 +19,7 @@ from mtg.deck.arena import ArenaParser, normalize_decklist
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
     TagBasedDeckParser
 from mtg.utils import ParsingError
-from mtg.utils.scrape import ScrapingError, get_previous_sibling_tag
+from mtg.utils.scrape import ScrapingError, find_previous_sibling_tag
 from mtg.utils.scrape import strip_url_query
 
 _log = logging.getLogger(__name__)
@@ -32,7 +32,7 @@ class MtgDecksNetDeckTagParser(TagBasedDeckParser):
     def _find_title_tag(self) -> Tag | None:
         tries, tag = 3, self._deck_tag
         while tries:
-            previous = get_previous_sibling_tag(tag)
+            previous = find_previous_sibling_tag(tag)
             if not previous:
                 return None
             if previous.name.startswith("h"):
@@ -195,5 +195,5 @@ class MtgDecksNetArticleScraper(HybridContainerScraper):
             _log.warning(f"Scraping failed with: {err!r}")
             return [], deck_tags, [], []
         self._parse_article_metadata()
-        deck_urls, container_urls = self._get_links_from_tags(*self._article_tag.find_all("p"))
+        deck_urls, container_urls = self._find_links_in_tags(*self._article_tag.find_all("p"))
         return deck_urls, deck_tags, [], container_urls

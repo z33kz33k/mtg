@@ -286,5 +286,5 @@ class ScgArticleScraper(HybridContainerScraper):
             _log.warning(f"Scraping failed with: {err!r}")
             return [], deck_tags, [], []
         p_tags = [t for t in article_tag.find_all("p") if not t.find("div", class_="deck_listing")]
-        deck_urls, article_urls = self._get_links_from_tags(*p_tags)
+        deck_urls, article_urls = self._find_links_in_tags(*p_tags)
         return deck_urls, deck_tags, [], article_urls

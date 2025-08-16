@@ -14,12 +14,11 @@ import dateutil.parser
 from bs4 import Tag
 
 from mtg import Json
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
-    is_in_domain_but_not_main
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper
 from mtg.scryfall import Card
 from mtg.utils import extract_float, extract_int
-from mtg.utils.scrape import ScrapingError, get_links, get_next_sibling_tag, prepend_url, \
-    strip_url_query
+from mtg.utils.scrape import ScrapingError, find_links, find_next_sibling_tag, \
+    is_more_than_root_path, prepend_url, strip_url_query
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://playingmtg.com"
@@ -36,7 +35,7 @@ class PlayingMtgDeckScraper(DeckScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return is_in_domain_but_not_main(url, "playingmtg.com/decks")
+        return is_more_than_root_path(url, "playingmtg.com/decks")
 
     @staticmethod
     @override
@@ -123,7 +122,7 @@ class PlayingMtgTournamentScraper(DeckUrlsContainerScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return is_in_domain_but_not_main(url, "playingmtg.com/tournaments")
+        return is_more_than_root_path(url, "playingmtg.com/tournaments")
 
     def _parse_metadata(self) -> None:
         if event_date_hook := self._soup.find("div", string=lambda s: s and s == "Event Date"):
@@ -133,12 +132,12 @@ class PlayingMtgTournamentScraper(DeckUrlsContainerScraper):
             date_text = date_tag.text.strip().removeprefix("Event Date").strip()
             self._metadata["event"]["date"] = dateutil.parser.parse(date_text).date()
             # name
-            name_tag = get_next_sibling_tag(date_tag)
+            name_tag = find_next_sibling_tag(date_tag)
             if not name_tag:
                 return
             self._metadata["event"]["name"] = name_tag.text.strip()
             # format and latest set
-            fmt_set_tag = get_next_sibling_tag(name_tag)
+            fmt_set_tag = find_next_sibling_tag(name_tag)
             if not fmt_set_tag:
                 return
             for tag in fmt_set_tag.find_all("div"):
@@ -148,7 +147,7 @@ class PlayingMtgTournamentScraper(DeckUrlsContainerScraper):
                 else:
                     self._metadata["event"]["format"] = tag.text.strip().lower()
             # themes
-            info_tag = get_next_sibling_tag(fmt_set_tag)
+            info_tag = find_next_sibling_tag(fmt_set_tag)
             if not info_tag:
                 return
             theme_tags = info_tag.find_all("div")
@@ -162,11 +161,11 @@ class PlayingMtgTournamentScraper(DeckUrlsContainerScraper):
                 if data:
                     self._metadata["event"]["themes"].append(data)
             # players and winner
-            players_tag = get_next_sibling_tag(info_tag)
+            players_tag = find_next_sibling_tag(info_tag)
             if not players_tag:
                 return
             self._metadata["event"]["players"] = extract_int(players_tag.text.strip())
-            winner_tag = get_next_sibling_tag(players_tag)
+            winner_tag = find_next_sibling_tag(players_tag)
             if not winner_tag:
                 return
             self._metadata["event"]["winner"] = winner_tag.text.strip().removeprefix(
@@ -174,7 +173,7 @@ class PlayingMtgTournamentScraper(DeckUrlsContainerScraper):
 
     @override
     def _collect(self) -> list[str]:
-        return get_links(
+        return find_links(
             self._soup, href=lambda h: h and "/decks/" in h and "playingmtg.com/" not in h)
 
 
@@ -202,7 +201,7 @@ class PlayingMtgArticleScraper(HybridContainerScraper):
             "builder", "meta", "tier-list")
         if any(f"playingmtg.com/{t}" in url.lower() for t in tokens):
             return False
-        return is_in_domain_but_not_main(url, "playingmtg.com")
+        return is_more_than_root_path(url, "playingmtg.com")
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
@@ -216,5 +215,5 @@ class PlayingMtgArticleScraper(HybridContainerScraper):
             _log.warning(f"Scraping failed with: {err!r}")
             return deck_urls, [], [], []
 
-        p_deck_urls, container_urls = self._get_links_from_tags(*article_tag.find_all("p"))
+        p_deck_urls, container_urls = self._find_links_in_tags(*article_tag.find_all("p"))
         return deck_urls + [l for l in p_deck_urls if l not in deck_urls], [], [], container_urls

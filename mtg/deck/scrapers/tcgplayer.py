@@ -23,8 +23,8 @@ from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, DecksJsonCo
     HybridContainerScraper, JsonBasedDeckParser
 from mtg.scryfall import Card
 from mtg.utils import extract_int
-from mtg.utils.scrape import ScrapingError, request_json, strip_url_query, throttle
-from mtg.utils.scrape.dynamic import SCROLL_DOWN_TIMES, get_dynamic_soup
+from mtg.utils.scrape import ScrapingError, fetch_json, strip_url_query, throttle
+from mtg.utils.scrape.dynamic import SCROLL_DOWN_TIMES, fetch_dynamic_soup
 
 _log = logging.getLogger(__name__)
 
@@ -214,12 +214,12 @@ def _get_deck_data_from_api(
         raise ScrapingError(f"Invalid decklist ID: {decklist_id!r}. Must be an integer string")
     json_data, tries = {}, 0
     try:
-        json_data = request_json(api_url_template.format(decklist_id), handle_http_errors=False)
+        json_data = fetch_json(api_url_template.format(decklist_id), handle_http_errors=False)
         tries += 1
     except HTTPError as e:
         if "404 Not Found" in str(e):
             api_url_template += "&external=true"
-            json_data = request_json(api_url_template.format(decklist_id))
+            json_data = fetch_json(api_url_template.format(decklist_id))
             tries += 1
     except ReadTimeout:
         raise ScrapingError("Request timed out", scraper=scraper, url=url)
@@ -227,7 +227,7 @@ def _get_deck_data_from_api(
     if not json_data and tries < 2:
         throttle(*DeckScraper.THROTTLING)
         api_url_template += "&external=true"
-        json_data = request_json(api_url_template.format(decklist_id))
+        json_data = fetch_json(api_url_template.format(decklist_id))
 
     if not json_data or not json_data.get(
             "result") or json_data["result"].get("deck") == {"deck": {}}:
@@ -296,7 +296,7 @@ class TcgPlayerInfinitePlayerScraper(DeckUrlsContainerScraper):
     @override
     def _get_data_from_api(self) -> Json:
         *_, player_name = self.url.split("/")
-        return request_json(self.API_URL_TEMPLATE.format(player_name))
+        return fetch_json(self.API_URL_TEMPLATE.format(player_name))
 
     @override
     def _validate_data(self) -> None:
@@ -332,7 +332,7 @@ class TcgPlayerInfiniteAuthorSearchScraper(TcgPlayerInfinitePlayerScraper):
         *_, author = self.url.split("author=")
         if "&" in author:
             author, *_ = author.split("&")
-        return request_json(self.API_URL_TEMPLATE.format(author))
+        return fetch_json(self.API_URL_TEMPLATE.format(author))
 
 
 @DeckUrlsContainerScraper.registered
@@ -394,7 +394,7 @@ class TcgPlayerInfiniteArticleScraper(DecksJsonContainerScraper):
     @override
     def _fetch_soup(self) -> None:
         try:
-            self._soup, _, _ = get_dynamic_soup(
+            self._soup, _, _ = fetch_dynamic_soup(
                 self.url, **self.SELENIUM_PARAMS, scroll_down_times=self._scroll_down_times)
         except TimeoutException:
             raise ScrapingError(self._selenium_timeout_msg, scraper=type(self), url=self.url)
@@ -474,7 +474,7 @@ class TcgPlayerInfiniteAuthorScraper(HybridContainerScraper):
 
     @override
     def _get_data_from_api(self) -> Json:
-        return request_json(self.API_URL_TEMPLATE.format(self.get_author_id(self._soup)))
+        return fetch_json(self.API_URL_TEMPLATE.format(self.get_author_id(self._soup)))
 
     @override
     def _validate_data(self) -> None:
@@ -525,7 +525,7 @@ class TcgPlayerInfiniteAuthorDecksPaneScraper(DeckUrlsContainerScraper):
     @override
     def _get_data_from_api(self) -> Json:
         author_id = TcgPlayerInfiniteAuthorScraper.get_author_id(self._soup)
-        return request_json(self.API_URL_TEMPLATE.format(author_id))
+        return fetch_json(self.API_URL_TEMPLATE.format(author_id))
 
     @override
     def _validate_data(self) -> None:

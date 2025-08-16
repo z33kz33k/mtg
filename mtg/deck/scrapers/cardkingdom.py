@@ -14,8 +14,8 @@ import dateutil.parser
 from bs4 import Tag
 
 from mtg import Json, SECRETS
-from mtg.deck.scrapers import HybridContainerScraper, UrlHook, is_in_domain_but_not_main
-from mtg.utils.scrape import ScrapingError, strip_url_query
+from mtg.deck.scrapers import HybridContainerScraper, UrlHook
+from mtg.utils.scrape import ScrapingError, is_more_than_root_path, strip_url_query
 
 _log = logging.getLogger(__name__)
 HEADERS = {
@@ -57,7 +57,7 @@ class CardKingdomArticleScraper(HybridContainerScraper):
     @override
     def is_valid_url(url: str) -> bool:
         tokens = "/category/", '/tag/', '/submissions/', '/updates/', '/author/'
-        return is_in_domain_but_not_main(
+        return is_more_than_root_path(
             url, "blog.cardkingdom.com") and not any(t in url.lower() for t in tokens)
 
     @staticmethod
@@ -87,7 +87,7 @@ class CardKingdomArticleScraper(HybridContainerScraper):
             err = ScrapingError("Article tag not found", scraper=type(self), url=self.url)
             _log.warning(f"Scraping failed with: {err!r}")
             return [], [], [], []
-        deck_urls, container_urls = self._get_links_from_tags(*article_tag.find_all("p"))
+        deck_urls, container_urls = self._find_links_in_tags(*article_tag.find_all("p"))
         return deck_urls, [], [], container_urls
 
 
@@ -106,6 +106,6 @@ class CardKingdomAuthorScraper(HybridContainerScraper):
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
-        _, container_urls = self._get_links_from_tags(
+        _, container_urls = self._find_links_in_tags(
             *self._soup.find_all("article"), css_selector="div.entry-wrap > header > h2 > a")
         return [], [], [], container_urls

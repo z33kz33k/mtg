@@ -14,9 +14,8 @@ import dateutil.parser
 from bs4 import NavigableString, Tag
 
 from mtg import Json
-from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser, UrlHook, \
-    is_in_domain_but_not_main
-from mtg.utils.scrape import strip_url_query
+from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser, UrlHook
+from mtg.utils.scrape import is_more_than_root_path, strip_url_query
 
 _log = logging.getLogger(__name__)
 URL_HOOKS = (
@@ -112,7 +111,7 @@ class CyclesGamingArticleScraper(HybridContainerScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return is_in_domain_but_not_main(url, "cyclesgaming.com")
+        return is_more_than_root_path(url, "cyclesgaming.com")
 
     @staticmethod
     @override
@@ -133,5 +132,5 @@ class CyclesGamingArticleScraper(HybridContainerScraper):
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
         deck_tags = [tag for tag in self._soup.find_all("h2") if "list – " in tag.text.lower()]
-        deck_urls, container_urls = self._get_links_from_tags(*self._soup.find_all("p"))
+        deck_urls, container_urls = self._find_links_in_tags(*self._soup.find_all("p"))
         return deck_urls, deck_tags, [], container_urls

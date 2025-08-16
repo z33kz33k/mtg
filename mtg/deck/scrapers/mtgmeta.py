@@ -18,7 +18,7 @@ from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridConta
     TagBasedDeckParser
 from mtg.scryfall import Card
 from mtg.utils import extract_float
-from mtg.utils.scrape import ScrapingError, dissect_js, get_links, get_wayback_soup, strip_url_query
+from mtg.utils.scrape import ScrapingError, dissect_js, find_links, fetch_wayback_soup, strip_url_query
 
 _log = logging.getLogger(__name__)
 
@@ -41,7 +41,7 @@ class MtgMetaIoDeckScraper(DeckScraper):
 
     @override
     def _fetch_soup(self) -> None:
-        self._soup = get_wayback_soup(self.url)
+        self._soup = fetch_wayback_soup(self.url)
 
     @override
     def _validate_soup(self) -> None:
@@ -128,7 +128,7 @@ class MtgMetaIoTournamentScraper(DeckUrlsContainerScraper):
 
     @override
     def _fetch_soup(self) -> None:
-        self._soup = get_wayback_soup(self.url)
+        self._soup = fetch_wayback_soup(self.url)
 
     def _validate_soup(self) -> None:
         super()._validate_soup()
@@ -143,7 +143,7 @@ class MtgMetaIoTournamentScraper(DeckUrlsContainerScraper):
         if not ul_tag:
             raise ScrapingError(
                 "Players' list <ul> tag not found", scraper=type(self), url=self.url)
-        links = get_links(ul_tag)
+        links = find_links(ul_tag)
         return _strip_wm_part(*links)
 
 
@@ -189,7 +189,7 @@ class MtgMetaIoArticleScraper(HybridContainerScraper):
         return strip_url_query(url)
 
     def _fetch_soup(self) -> None:
-        self._soup = get_wayback_soup(self.url)
+        self._soup = fetch_wayback_soup(self.url)
 
     def _validate_soup(self) -> None:
         super()._validate_soup()
@@ -216,5 +216,5 @@ class MtgMetaIoArticleScraper(HybridContainerScraper):
             raise ScrapingError("Article tag not found", scraper=type(self), url=self.url)
         deck_tags = [*article_tag.find_all("div", class_="decklist-container")]
         p_tags = [t for t in article_tag.find_all("p") if not t.find("div", class_="deck_list")]
-        deck_urls, container_urls = self._get_links_from_tags(*p_tags)
+        deck_urls, container_urls = self._find_links_in_tags(*p_tags)
         return _strip_wm_part(*deck_urls), deck_tags, [], container_urls

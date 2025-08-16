@@ -13,9 +13,9 @@ from typing import override
 from bs4 import Tag
 
 from mtg import Json
-from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser, \
-    is_in_domain_but_not_main
-from mtg.utils.scrape import ScrapingError, parse_non_english_month_date, strip_url_query
+from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser
+from mtg.utils.scrape import ScrapingError, is_more_than_root_path, parse_non_english_month_date, \
+    strip_url_query
 
 _log = logging.getLogger(__name__)
 
@@ -95,7 +95,7 @@ class PauperwaveArticleScraper(HybridContainerScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return is_in_domain_but_not_main(url, "pauperwave.com")
+        return is_more_than_root_path(url, "pauperwave.com")
 
     @staticmethod
     @override
@@ -137,5 +137,5 @@ class PauperwaveArticleScraper(HybridContainerScraper):
             err = ScrapingError("Article tag not found", scraper=type(self), url=self.url)
             _log.warning(f"Scraping failed with: {err!r}")
             return [], deck_tags, [], []
-        deck_urls, container_urls = self._get_links_from_tags(*article_tag.find_all("p"))
+        deck_urls, container_urls = self._find_links_in_tags(*article_tag.find_all("p"))
         return deck_urls, deck_tags, [], container_urls

@@ -15,7 +15,7 @@ from requests import ReadTimeout
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper
 from mtg.scryfall import Card
-from mtg.utils.scrape import ScrapingError, request_json, strip_url_query
+from mtg.utils.scrape import ScrapingError, fetch_json, strip_url_query
 
 _log = logging.getLogger(__name__)
 
@@ -43,7 +43,7 @@ class SeventeenLandsDeckScraper(DeckScraper):
         _, rest = self.url.split("/user/deck/", maxsplit=1)
         sharing_token, deck_id, timestamp = rest.split("/")
         try:
-            return request_json(self.API_URL_TEMPLATE.format(sharing_token, deck_id, timestamp))
+            return fetch_json(self.API_URL_TEMPLATE.format(sharing_token, deck_id, timestamp))
         except ReadTimeout:
             raise ScrapingError("API request timed out", scraper=type(self), url=self.url)
 

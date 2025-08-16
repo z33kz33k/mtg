@@ -20,7 +20,7 @@ from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridConta
 from mtg.scryfall import all_formats
 from mtg.utils import ParsingError, extract_int, timed
 from mtg.utils.scrape import ScrapingError, http_requests_counted, strip_url_query, \
-    throttled_soup
+    fetch_throttled_soup
 
 _log = logging.getLogger(__name__)
 
@@ -271,7 +271,7 @@ class GoldfishArticleScraper(HybridContainerScraper):
         # filter out paragraphs that are covered by tag-based deck parser
         p_tags = [t for t in main_tag.find_all("p") if not t.find("div", class_="deck-container")]
 
-        return self._get_links_from_tags(*p_tags)
+        return self._find_links_in_tags(*p_tags)
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
@@ -299,7 +299,7 @@ class GoldfishAuthorScraper(HybridContainerScraper):
         container_tag = self._soup.select_one("div.articles-container")
         if not container_tag:
             raise ScrapingError("Container <div> tag not found", type(self), self.url)
-        _, container_urls = self._get_links_from_tags(
+        _, container_urls = self._find_links_in_tags(
             container_tag, url_prefix=self.DECK_URL_PREFIX)
         return [], [], [], container_urls
 
@@ -311,7 +311,7 @@ def scrape_meta(fmt="standard") -> list[Deck]:
     if fmt not in all_formats():
         raise ValueError(f"Invalid format: {fmt!r}. Can be only one of: {all_formats()}")
     url = f"https://www.mtggoldfish.com/metagame/{fmt}/full"
-    soup = throttled_soup(url, headers=HEADERS)
+    soup = fetch_throttled_soup(url, headers=HEADERS)
     if not soup:
         raise ScrapingError(scraper=GoldfishDeckScraper, url=url)
     tiles = soup.find_all("div", class_="archetype-tile")

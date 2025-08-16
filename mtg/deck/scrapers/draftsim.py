@@ -14,11 +14,10 @@ import dateutil.parser
 from bs4 import Tag
 
 from mtg import Json
-from mtg.deck.scrapers import DeckScraper, HybridContainerScraper, TagBasedDeckParser, \
-    UrlHook, is_in_domain_but_not_main
+from mtg.deck.scrapers import DeckScraper, HybridContainerScraper, TagBasedDeckParser, UrlHook
 from mtg.scryfall import all_formats
 from mtg.utils import ParsingError, from_iterable, get_date_from_ago_text
-from mtg.utils.scrape import ScrapingError, strip_url_query
+from mtg.utils.scrape import ScrapingError, is_more_than_root_path, strip_url_query
 
 _log = logging.getLogger(__name__)
 URL_HOOKS = (
@@ -37,7 +36,7 @@ class DraftsimDeckScraper(DeckScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return is_in_domain_but_not_main(url, "draftsim.com/decks/")
+        return is_more_than_root_path(url, "draftsim.com/decks/")
 
     @staticmethod
     @override
@@ -123,7 +122,7 @@ class DraftsimArticleScraper(HybridContainerScraper):
     @override
     def is_valid_url(url: str) -> bool:
         tokens = "/decks/", "/author/", "/blog", "/ratings/", "/all-sets", "/arenatutor"
-        return is_in_domain_but_not_main(url, "draftsim.com") and not any(
+        return is_more_than_root_path(url, "draftsim.com") and not any(
             t in url.lower() for t in tokens)
 
     @staticmethod
@@ -166,7 +165,7 @@ class DraftsimArticleScraper(HybridContainerScraper):
             _log.warning(f"Scraping failed with: {err!r}")
             return [], deck_tags, [], []
         p_tags = [t for t in article_tag.find_all("p") if not t.find("div", class_="deck_list")]
-        deck_urls, container_urls = self._get_links_from_tags(*p_tags)
+        deck_urls, container_urls = self._find_links_in_tags(*p_tags)
         return deck_urls, deck_tags, [], container_urls
 
 
@@ -198,5 +197,5 @@ class DraftsimAuthorScraper(HybridContainerScraper):
         if not content_tag:
             raise ScrapingError("Content tag not found", scraper=type(self), url=self.url)
         h3_tags = [t for t in content_tag.select("h3.post_title")]
-        _, container_urls = self._get_links_from_tags(*h3_tags)
+        _, container_urls = self._find_links_in_tags(*h3_tags)
         return [], [], [], container_urls
