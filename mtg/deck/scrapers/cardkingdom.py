@@ -78,7 +78,7 @@ class CardKingdomArticleScraper(HybridContainerScraper):
                         time_tag.attrs["datetime"]).date()
                 if categories := [a.text.strip() for a in cat_span.find_all("a")]:
                     self._metadata.setdefault(
-                        "article", {})["tags"] = self.process_metadata_deck_tags(categories)
+                        "article", {})["tags"] = self.sanitize_metadata_deck_tags(categories)
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:

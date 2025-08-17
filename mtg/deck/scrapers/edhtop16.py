@@ -109,8 +109,8 @@ class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
         return deck_urls
 
     @override
-    def scrape(self) -> list[Deck]:
-        decks = super().scrape()
+    def scrape_decks(self) -> list[Deck]:
+        decks = super().scrape_decks()
         if self._arena_decklists:
             _log.info(
                 f"Gathered {len(self._arena_decklists)} text decklists from a {self.CONTAINER_NAME}"

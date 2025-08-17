@@ -218,7 +218,7 @@ class FlexslotArticleScraper(HybridContainerScraper):
         if likes := self._data.get("likes"):
             self._metadata.setdefault("article", {})["likes"] = likes
         if tags := self._data.get("tags"):
-            self._metadata.setdefault("article", {})["tags"] = self.process_metadata_deck_tags(tags)
+            self._metadata.setdefault("article", {})["tags"] = self.sanitize_metadata_deck_tags(tags)
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:

@@ -65,7 +65,7 @@ class MtgRocksArticleScraper(HybridContainerScraper):
             self._metadata.setdefault("article", {})["description"] = desc_node.data["description"]
         if keywords_node := node.find(lambda n: "keywords" in n.data):
             self._metadata.setdefault(
-                "article", {})["tags"] = self.process_metadata_deck_tags(
+                "article", {})["tags"] = self.sanitize_metadata_deck_tags(
                 keywords_node.data["keywords"])
 
     @override

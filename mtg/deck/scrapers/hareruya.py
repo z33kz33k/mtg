@@ -429,7 +429,7 @@ def _get_article_metadata(article_soup: BeautifulSoup) -> Json:
     tag_tags = [
         t for t in article_soup.select('a[href*="/article/tag/"]')
         if t.attrs.get("rel") == ["tag"]]
-    tags = DeckScraper.process_metadata_deck_tags([t.text.strip() for t in [*cat_tags, *tag_tags]])
+    tags = DeckScraper.sanitize_metadata_deck_tags([t.text.strip() for t in [*cat_tags, *tag_tags]])
     if tags:
         metadata["article"]["tags"] = tags
     return metadata

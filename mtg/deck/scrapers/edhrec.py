@@ -121,7 +121,7 @@ class EdhrecPreviewDeckScraper(DeckScraper):
         if edhrec_tags := self._data.get("edhrec_tags"):
             self._metadata["edhrec_tags"] = edhrec_tags
         if tags := self._data.get("tags"):
-            self._metadata["tags"] = self.process_metadata_deck_tags(tags)
+            self._metadata["tags"] = self.sanitize_metadata_deck_tags(tags)
         if salt := self._data.get("salt"):
             self._metadata["salt"] = salt
         if theme := self._data.get("theme"):
@@ -266,7 +266,7 @@ class EdhrecArticleScraper(HybridContainerScraper):
         if title := self._data.get("title"):
             self._metadata.setdefault("article", {})["title"] = title
         if tags := self._data.get("tags"):
-            self._metadata["tags"] = self.process_metadata_deck_tags(tags)
+            self._metadata["tags"] = self.sanitize_metadata_deck_tags(tags)
 
     def _collect_tags(self) -> list[Tag]:
         content_soup = BeautifulSoup(self._data["content"], "lxml")

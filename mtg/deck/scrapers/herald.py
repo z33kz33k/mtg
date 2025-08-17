@@ -108,7 +108,7 @@ class CommandersHeraldArticleScraper(HybridContainerScraper):
                             date_text.strip()).date()
                 if categories := [a.text.strip() for a in author_tag.select("a.badge")]:
                     self._metadata.setdefault(
-                "article", {})["tags"] = self.process_metadata_deck_tags(categories)
+                "article", {})["tags"] = self.sanitize_metadata_deck_tags(categories)
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:

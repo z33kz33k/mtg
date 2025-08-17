@@ -97,7 +97,7 @@ class ArchidektDeckScraper(DeckScraper):
         if edh_bracket := self._data.get("edhBracket"):
             self._metadata["edh_bracket"] = edh_bracket
         if tags := self._data.get("deckTags"):
-            self._metadata["tags"] = self.process_metadata_deck_tags(tags)
+            self._metadata["tags"] = self.sanitize_metadata_deck_tags(tags)
 
     def _parse_card_json(self, card_json: Json) -> None:
         name = card_json["name"]

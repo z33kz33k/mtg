@@ -976,7 +976,7 @@ class Video:
             # parts flag the container URL as scraped/failed
             if scraper := DeckUrlsContainerScraper.from_url(
                     link, self.metadata):
-                decks.update(scraper.scrape())
+                decks.update(scraper.scrape_decks())
             elif scraper := DecksJsonContainerScraper.from_url(
                     link, self.metadata) or DeckTagsContainerScraper.from_url(
                 link, self.metadata) or HybridContainerScraper.from_url(link, self.metadata):
@@ -991,7 +991,7 @@ class Video:
                         f"Skipping already failed {scraper.short_name()} URL: "
                         f"{sanitized_link!r}...")
                     continue
-                decks.update(scraper.scrape())
+                decks.update(scraper.scrape_decks())
 
         for deck in decks:
             self._decklists_manager.add_regular(deck.decklist_id, deck.decklist)

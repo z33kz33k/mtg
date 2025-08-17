@@ -63,6 +63,7 @@ class Mode(Enum):
 # https://www.mtgsalvation.com/forums/the-game/commander-edh/806251-all-the-commander-edh-deck-archetypes-and-themes
 # https://www.mtggoldfish.com/metagame/
 # https://mtgdecks.net/Modern/staples/
+# TODO: use Python's 'inflection' lib to handle key variants (#418)
 THEMES = {
     "Affinity",  # mechanic
     "Aggression",
@@ -358,7 +359,7 @@ class InvalidDeck(ParsingError):
 # knows nothing about signature spells) to not over-complicate things (by either going into an
 # inheritance hierarchy or bloating the generic API beyond comprehension)
 class Deck:
-    """A deck of cards suitable for Constructed formats.
+    """A deck of Magic: the Gathering cards suitable for Constructed formats.
     """
     MIN_MAINDECK_SIZE = 60
     MAX_SIDEBOARD_SIZE = 15
@@ -860,6 +861,7 @@ class CardNotFound(ParsingError):
     """
 
 
+# TODO: use Python's 'inflection' lib to handle key variants (#418)
 SANITIZED_FORMATS = {
     "1v1 commander": "commander",
     "archon": "commander",
@@ -1001,6 +1003,14 @@ class DeckParser(ABC):
             cardmarket_id: int | None = None,
             mtgo_id: int | None = None,
             foreign=False) -> Card:
+        """Find a MtG card designated by ``name`` and (optionally) other parameters.
+
+        Raises:
+            CardNotFound on failure
+
+        Returns:
+            a Card object
+        """
         name = cls.sanitize_card_name(name)
         if set_and_collector_number:
             if card := find_by_collector_number(*set_and_collector_number):
@@ -1055,20 +1065,32 @@ class DeckParser(ABC):
 
     @abstractmethod
     def _pre_parse(self) -> None:
+        """Do anything that is needed before parsing here (like obtaining a remote data from an
+        input URL in scrapers).
+        """
         raise NotImplementedError
 
     @abstractmethod
     def _parse_metadata(self) -> None:
+        """Parse the input data for deck metadata.
+        """
         raise NotImplementedError
 
     @abstractmethod
     def _parse_deck(self) -> None:
+        """Parse the input data for a text decklist or playsets of Card objects.
+        """
         raise NotImplementedError
 
     def _get_sub_parser(self) -> Self | None:
+        """Return a sub-parser object.
+        """
         return None
 
     def _build_deck(self) -> Deck | None:
+        """Build a Deck object from a text decklist or aggregated playsets of Card objects and
+        return it.
+        """
         self._sub_parser = self._get_sub_parser()
         if self._sub_parser:
             return self._sub_parser.parse()
@@ -1077,6 +1099,20 @@ class DeckParser(ABC):
             self._companion, self._metadata)
 
     def parse(self, suppressed_errors=(InvalidDeck, CardNotFound)) -> Deck | None:  # override
+        """Parse the input data for a Deck object.
+
+        This happens in four distinct and defined stages:
+            * pre-parsing
+            * parsing metadata from the input data
+            * parsing the decklist or playsets of Card objects
+            * building a Deck object
+
+        Args:
+            suppressed_errors: a tuple of exceptions to suppress
+
+        Returns:
+            a Deck object or None
+        """
         try:
             self._pre_parse()
             self._parse_metadata()
@@ -1114,8 +1150,8 @@ class DeckParser(ABC):
             self._metadata["custom_theme"] = name
 
     @staticmethod
-    def process_metadata_deck_tags(deck_tags: list[str | Json]) -> list[str]:
-        processed = []
+    def sanitize_metadata_deck_tags(deck_tags: list[str | Json]) -> list[str]:
+        sanitized = []
         match deck_tags:
             case [*tags] if all(isinstance(t, str) for t in tags):
                 return sorted({t.lower() for t in tags})
@@ -1123,25 +1159,25 @@ class DeckParser(ABC):
                 for tag in tags:
                     match tag:
                         case {"name": name} if isinstance(name, str):
-                            processed.append(name.lower())
+                            sanitized.append(name.lower())
                         case {"Name": name} if isinstance(name, str):
-                            processed.append(name.lower())
+                            sanitized.append(name.lower())
                         case {"tag": name} if isinstance(name, str):
-                            processed.append(name.lower())
+                            sanitized.append(name.lower())
                         case {"Tag": name} if isinstance(name, str):
-                            processed.append(name.lower())
+                            sanitized.append(name.lower())
                         case {"deck_tag": name} if isinstance(name, str):
-                            processed.append(name.lower())
+                            sanitized.append(name.lower())
                         case {"deckTag": name} if isinstance(name, str):
-                            processed.append(name.lower())
+                            sanitized.append(name.lower())
                         case {"Deck Tag": name} if isinstance(name, str):
-                            processed.append(name.lower())
+                            sanitized.append(name.lower())
                         case _:
                             _log.warning(f"Unexpected format of deck metadata tag: {tag!r}")
             case _:
                 _log.warning(f"Unexpected format of deck metadata tags: {deck_tags!r}")
 
-        return sorted(set(processed))
+        return sorted(set(sanitized))
 
     @staticmethod
     def derive_format_from_words(*words: str, use_japanese=False) -> str | None:
