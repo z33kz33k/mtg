@@ -211,6 +211,7 @@ class TopDeckProfileDeckJsonParser(TopDeckBracketDeckJsonParser):
             raise ParsingError(f"No suitable scraper found for sub-scraping: {self._url!r}")
         return scraper
 
+    @override
     def _parse_deck(self) -> None:
         decklist = self._deck_data["decklist"]
         if decklist.startswith("http"):

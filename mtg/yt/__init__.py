@@ -16,15 +16,12 @@ import urllib.error
 from collections import defaultdict
 from dataclasses import asdict
 from datetime import datetime
-from decimal import Decimal
 from functools import cached_property
 from http.client import RemoteDisconnected
 from pathlib import Path
 from typing import Callable, Generator
 
 import backoff
-import httpcore
-import httpx
 import pytubefix
 import pytubefix.exceptions
 import scrapetube
@@ -33,7 +30,7 @@ from requests import ConnectionError, HTTPError, ReadTimeout, Timeout
 from selenium.common.exceptions import TimeoutException
 from tqdm import tqdm
 from youtube_comment_downloader import SORT_BY_POPULAR, YoutubeCommentDownloader
-from youtubesearchpython import Channel as YtspChannel
+# from yt_dlp import YoutubeDL  # works, but with enormous downtimes (ca. 40s per channel)
 
 from mtg import FILENAME_TIMESTAMP_FORMAT, Json, OUTPUT_DIR, PathLike, SECRETS
 from mtg.deck import Deck, SANITIZED_FORMATS
@@ -47,7 +44,7 @@ from mtg.utils import extract_float, find_longest_seqs, \
 from mtg.utils.files import getdir, sanitize_filename
 from mtg.utils.json import deserialize_dates, serialize_dates
 from mtg.utils.scrape import ScrapingError, dissect_js, extract_source, extract_url, \
-    http_requests_counted, throttled, fetch, unshorten
+    fetch_soup, http_requests_counted, throttled, fetch, unshorten
 from mtg.utils.scrape.dynamic import fetch_dynamic_soup
 from mtg.utils.scrape.linktree import Linktree
 from mtg.yt.data import CHANNELS_DIR, CHANNEL_URL_TEMPLATE, ChannelData, DataPath, ScrapingSession, \
@@ -1048,7 +1045,7 @@ class Channel:
     """YouTube channel showcasing MtG decks.
     """
     CONSENT_XPATH = "//button[@aria-label='Accept all']"
-    XPATH = "//span[contains(., 'subscribers')]"
+    XPATH = "//span[contains(., 'subscriber')]"
 
     @property
     def id(self) -> str:
@@ -1099,15 +1096,14 @@ class Channel:
         self._cooloff_manager = CoolOffManager()
         self._urls_manager = UrlsStateManager()
         self._urls_manager.current_channel = self.id
-        self._title, self._description, self._tags = None, None, None
-        self._subscribers, self._scrape_time, self._videos = None, None, []
-        self._ytsp_data, self._data = None, None
+        self._scrape_time, self._videos = None, []
+        self._data = None
+        self._title, self._subscribers, self._description, self._tags = self._fetch_info_with_selenium()
         self._handle_earlier_data()
 
     def _handle_earlier_data(self) -> None:
         try:
             self._earlier_data = load_channel(self.id)
-            self._title = self._earlier_data.title
             self._urls_manager.update_scraped({self.id: self.earlier_data.deck_urls})
             self._urls_manager.update_scraped(
                 {f"{self.id}/{v['id']}": {d["metadata"]["url"] for d in v["decks"]
@@ -1174,22 +1170,9 @@ class Channel:
                 continue
             self._videos.append(video)
             self._cooloff_manager.bump_video()
-        try:
-            self._ytsp_data = self._get_ytsp() if self._id else None
-            self._description = self._ytsp_data.result.get("description") if self._id else None
-            self._title = self._ytsp_data.result.get("title") if self._id else None
-            self._tags = self._ytsp_data.result.get("tags") if self._id else None
-            self._subscribers = self._parse_subscribers() if self._id else None
-        except TypeError:
-            _log.warning(
-                "YTSP failed with TypeError. The channel is probably missing some tab and its "
-                "description and tags will be set to 'None'.")
+
         if not self._subscribers:
             self._subscribers = self.videos[0].channel_subscribers
-            if self._subscribers is None:
-                self._subscribers = self._scrape_subscribers_with_selenium()
-        if not self._title:
-            self._title = self._scrape_title_with_selenium()
         self._data = ChannelData(
             id=self.id,
             title=self.title,
@@ -1230,53 +1213,59 @@ class Channel:
             ("scrape_time", str(self.scrape_time)),
         )
 
-    @backoff.on_exception(
-        backoff.expo, (Timeout, HTTPError, RemoteDisconnected, ReadTimeout, httpx.ReadTimeout,
-                       httpcore.ReadTimeout), max_time=300)
-    def _get_ytsp(self) -> YtspChannel:
-        return YtspChannel(self.id)
+    @timed("fetching channel info")
+    def _fetch_info_with_selenium(
+            self) -> tuple[str | None, int | None, str | None, list[str] | None]:
+        soup, _, _ = fetch_dynamic_soup(self.url, self.XPATH, consent_xpath=self.CONSENT_XPATH)
 
-    def _parse_subscribers(self) -> int | None:
-        if not self._id:
-            return None
-        text = self._ytsp_data.result["subscribers"]["simpleText"]
-        if not text:
-            return None
-        number = text.rstrip(" subscribers").rstrip("KM")
-        subscribers = Decimal(number)
-        if "K" in text:
-            subscribers *= 1000
-        elif "M" in text:
-            subscribers *= 1_000_000
-        elif "B" in text:
-            subscribers *= 1_000_000_000
-        return int(subscribers)
+        # title (from <meta> or <title>)
+        title_tag = soup.find('meta', property='og:title') or soup.find('title')
+        title = title_tag.get('content', title_tag.text.replace(
+            ' - YouTube', '').strip()) if title_tag else None
 
-    def _scrape_subscribers_with_selenium(self) -> int:
-        try:
-            soup, _, _ = fetch_dynamic_soup(self.url, self.XPATH, consent_xpath=self.CONSENT_XPATH)
-            text = soup.find("span", string=lambda t: t and "subscribers" in t).text.removesuffix(
-                " subscribers")
-            number = extract_float(text)
-            if text and text[-1] in {"K", "M", "B", "T"}:
-                return multiply_by_symbol(number, text[-1])
-            return int(number)
-        # looking for subscribers is futile if there's only one (or none) :)
-        except TimeoutException:
-            return 1
+        # description (from <meta name="description">)
+        description_tag = soup.find('meta', {'name': 'description'})
+        description = description_tag.get('content', None) if description_tag else None
 
-    def _scrape_title_with_selenium(self) -> str | None:
-        try:
-            soup, _, _ = fetch_dynamic_soup(
-                self.url, self.XPATH.replace("subscribers", "subscriber"),
-                consent_xpath=self.CONSENT_XPATH)
-            text_tag = soup.find(
-                "span", class_=lambda c: c and "yt-core-attributed-string" in c,
-                dir="auto", role="text")
-            return text_tag.text.strip() if text_tag is not None else None
-        except TimeoutException:
-            _log.warning(f"Failed to scrape channel's title with Selenium")
-            return None
+        # tags (from <meta name="keywords"> or JSON-LD)
+        tags = []
+        keywords_tag = soup.find('meta', {'name': 'keywords'})
+        if keywords_tag:
+            tags = [tag.strip() for tag in keywords_tag['content'].split(',')]
+
+        # subscribers
+        count = None
+        if count_text := soup.find(
+            "span", string=lambda t: t and "subscriber" in t).text.removesuffix(
+            " subscribers").removesuffix(" subscriber"):
+            count = extract_float(count_text)
+            if count_text and count_text[-1] in {"K", "M", "B", "T"}:
+                count = multiply_by_symbol(count, count_text[-1])
+            count = int(count)
+
+        return title, count, description, tags
+
+
+    # works, but with enormous downtimes (ca. 40s per channel)
+    # @timed("fetching channel info")
+    # def _fetch_ytdlp_info(self) -> tuple[str | None, int | None, str | None, list[str] | None]:
+    #     options = {
+    #         'quiet': True,  # suppress verbose output
+    #         'extract_flat': True,  # avoid downloading, only fetch metadata
+    #         'force_generic_extractor': False,
+    #     }
+    #     # options = {
+    #     #     'quiet': True,
+    #     #     'skip_download': True,
+    #     #     'no_playlist': True,
+    #     #     'extract_flat': True,
+    #     # }
+    #     with YoutubeDL(options) as ydl:
+    #         # fetch channel info
+    #         info = ydl.extract_info(self.url, download=False)
+    #         # extract relevant metadata
+    #         return info.get('title'), info.get('channel_follower_count'), info.get(
+    #             'description'), info.get('tags')
 
     @property
     def json(self) -> str | None:
