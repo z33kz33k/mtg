@@ -10,11 +10,15 @@
 import logging
 from typing import Type, override
 
-from bs4 import Tag
+from bs4 import BeautifulSoup, Tag
+import dateutil.parser
 
 from mtg import HybridContainerScraper, Json
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, JsonBasedDeckParser
-from mtg.utils import decode_escapes, extract_int
+from mtg.deck import DeckParser
+from mtg.deck.arena import ArenaParser
+from mtg.deck.scrapers import ContainerScraper, DeckScraper, DecksJsonContainerScraper, \
+    JsonBasedDeckParser
+from mtg.utils import ParsingError, decode_escapes, extract_int
 from mtg.utils.scrape import ScrapingError, fetch_json, strip_url_query
 
 _log = logging.getLogger(__name__)
@@ -53,6 +57,17 @@ class TopDeckDeckScraper(DeckScraper):
             self._metadata.setdefault("event", {})["rank"] = extract_int(rank)
             self._metadata.setdefault("event", {})["record"] = record.strip()
 
+    @staticmethod
+    def sanitize_decklist(decklist: str) -> str:
+        # in profile JSON there are cases of annotations (e.g. "Imported from [link]")
+        # after a triple-linebreak
+        if "\n\n\n" in decklist:
+            decklist, *_ = decklist.split("\n\n\n")
+            decklist += "\n"
+        return decklist.replace("~~Commanders~~", "Commander").replace(
+            "~~Mainboard~~", "Deck").replace("~~Sideboard~~", "Sideboard").replace(
+            '~~Companion~~', "Companion")
+
     @override
     def _parse_deck(self) -> None:
         decklist_tag = self._soup.find(
@@ -61,8 +76,7 @@ class TopDeckDeckScraper(DeckScraper):
             raise ScrapingError("Decklist tag not found", scraper=type(self), url=self.url)
         _, decklist = decklist_tag.text.split("const decklistContent = `", maxsplit=1)
         decklist, _ = decklist.split("`;", maxsplit=1)
-        self._decklist = decklist.replace("~~Commanders~~", "Commander").replace(
-            "~~Mainboard~~", "Deck").replace("~~Sideboard~~", "Sideboard")
+        self._decklist = self.sanitize_decklist(decklist)
 
 
 def check_unexpected_urls(urls: list[str], *scrapers: Type[DeckScraper]) -> None:
@@ -70,17 +84,6 @@ def check_unexpected_urls(urls: list[str], *scrapers: Type[DeckScraper]) -> None
     if unexpected := [url for url in urls if url.startswith("http") and
                       not any(s.is_valid_url(url) for s in scrapers)]:
         _log.warning(f"Non-{names} deck(s) found: {', '.join(unexpected)}")
-
-
-# seen scrapers:
-# ArchidektDeckScraper
-# DeckboxDeckScraper
-# GoldfishDeckScraper
-# ManaBoxDeckScraper
-# ManaStackDeckScraper
-# MoxfieldDeckScraper
-# ScryfallDeckScraper
-# TappedoutDeckScraper
 
 
 class TopDeckBracketDeckJsonParser(JsonBasedDeckParser):
@@ -96,9 +99,7 @@ class TopDeckBracketDeckJsonParser(JsonBasedDeckParser):
     @override
     def _parse_deck(self) -> None:
         decklist = self._deck_data["decklist"]
-        self._decklist = decode_escapes(decklist).replace(
-            '~~Commanders~~', "Commander").replace('~~Mainboard~~', "Deck").replace(
-            '~~Sideboard~~', "Sideboard").replace('~~Companion~~', "Companion")
+        self._decklist = TopDeckDeckScraper.sanitize_decklist(decode_escapes(decklist))
 
 
 @HybridContainerScraper.registered
@@ -107,7 +108,6 @@ class TopDeckBracketScraper(HybridContainerScraper):
     """
     CONTAINER_NAME = "TopDeck.gg bracket"  # override
     JSON_BASED_DECK_PARSER = TopDeckBracketDeckJsonParser  # override
-    API_URL_TEMPLATE = "https://topdeck.gg/PublicPData/dummy-tournament-name"
 
     @staticmethod
     @override
@@ -124,37 +124,109 @@ class TopDeckBracketScraper(HybridContainerScraper):
         return fetch_json(self.url.replace("/bracket/", "/PublicPData/"))
 
     @override
+    def _pre_parse(self) -> None:
+        self._fetch_soup()
+        self._validate_soup()
+        self._data = self._get_data_from_api()
+        self._validate_data()
+
+    @staticmethod
+    def get_title(soup: BeautifulSoup, scraper: Type[ContainerScraper], url: str) -> str:
+        title_tag = soup.select_one("title")
+        if not title_tag:
+            raise ScrapingError("Title tag not found", scraper=scraper, url=url)
+        title = title_tag.text
+        if " - " in title:
+            return title.split(" - ", maxsplit=1)[0]
+        return title
+
+    @override
     def _parse_metadata(self) -> None:
-        self._metadata["event"] = self.url.removeprefix("https://topdeck.gg/bracket/")
+        self._metadata["event"] = self.get_title(self._soup, type(self), self.url)
+
+    @staticmethod
+    def _process_json(*items: Json) -> tuple[list[str], list[Json]]:
+        deck_urls, decks_data = set(), []
+        for item in items:
+            decklist = item["decklist"]
+            if decklist.startswith("http"):
+                deck_urls.add(decklist)
+            elif "http" in decklist:
+                deck_urls.add("http" + decklist.split("http", maxsplit=1)[1])
+            else:
+                decks_data.append(item)
+        return sorted(deck_urls), decks_data
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
-        deck_urls, decks_data = [], []
+        items = []
         for v in self._data.values():
-            if decklist := v.get("decklist"):
-                if decklist.startswith("http"):
-                    deck_urls.append(decklist)
-                else:
-                    decks_data.append(v)
+            d = v.get("decklist")
+            # at least in profile JSON data
+            # 'decklist' attributes can have a boolean value of 'true'
+            if isinstance(d, str) and d:
+                items.append(v)
+        deck_urls, decks_data = self._process_json(*items)
         if deck_urls:
             check_unexpected_urls(deck_urls, *self._get_deck_scrapers())
         return deck_urls, [], decks_data, []
 
 
-# TODO (#411): as it seems 'decklist' field in a deck JSON can be either a text decklist or a an
-#  arbitrary external link and there's valuable metadata in the JSON that would be lost in case
-#  of only a link being delegated to a dedicated scraper, for the first time there seems to rise a
-#  need for a JSON-based parser that uses a deck scraper as a sub-parser
-@DeckUrlsContainerScraper.registered
-class TopDeckProfileScraper(DeckUrlsContainerScraper):
+class TopDeckProfileDeckJsonParser(TopDeckBracketDeckJsonParser):
+    """Parser of TopDeck.gg profile deck JSON data.
+    """
+    def __init__(self, deck_data: Json, metadata: Json | None = None) -> None:
+        super().__init__(deck_data, metadata)
+        self._url: str | None = None
+
+    @override
+    def _parse_metadata(self) -> None:
+        if fmt := self._deck_data.get("rawFormat"):
+            self._update_fmt(fmt)
+        if event_name := self._deck_data.get("name"):
+            self._metadata["event"] = {"name": event_name}
+            if event_date := self._deck_data.get("date"):
+                self._metadata["event"]["date"] = dateutil.parser.parse(event_date).date()
+            if event_record := self._deck_data.get("record"):
+                self._metadata["event"]["record"] = event_record
+            if event_placement := self._deck_data.get("placement"):
+                self._metadata["event"]["placement"] = event_placement
+            if event_place_number := self._deck_data.get("placeNumber"):
+                self._metadata["event"]["place_number"] = event_place_number
+            if event_size := self._deck_data.get("size"):
+                self._metadata["event"]["size"] = event_size
+            if event_top_cut := self._deck_data.get("topCut"):
+                self._metadata["event"]["top_cut"] = event_top_cut
+        if bracket_url := self._deck_data.get("bracketLink"):
+            self._metadata["bracket_url"] = bracket_url
+
+    @override
+    def _get_sub_parser(self) -> DeckParser | None:
+        if self._decklist:
+            return ArenaParser(self._decklist, self._metadata)
+        if not self._url:
+            raise ParsingError("No URL for sub-scraping")
+        scraper = DeckScraper.from_url(self._url, self._metadata)
+        if not scraper:
+            raise ParsingError(f"No suitable scraper found for sub-scraping: {self._url!r}")
+        return scraper
+
+    def _parse_deck(self) -> None:
+        decklist = self._deck_data["decklist"]
+        if decklist.startswith("http"):
+            self._url = decklist
+        elif "http" in decklist:
+            self._url = "http" + decklist.split("http", maxsplit=1)[1]
+        else:
+            self._decklist = TopDeckDeckScraper.sanitize_decklist(decode_escapes(decklist))
+
+
+@DecksJsonContainerScraper.registered
+class TopDeckProfileScraper(DecksJsonContainerScraper):
     """Scraper of TopDeck.gg profile page.
     """
-    SELENIUM_PARAMS = {  # override
-        "xpath": ("//a[contains(@class, 'btn') and contains(@class, 'btn-sm') "
-                  "and not(contains(@href, 'topdeck.gg'))]"),
-        "wait_for_all": True
-    }
     CONTAINER_NAME = "TopDeck.gg profile"  # override
+    JSON_BASED_DECK_PARSER = TopDeckProfileDeckJsonParser  # override
 
     @staticmethod
     @override
@@ -168,12 +240,34 @@ class TopDeckProfileScraper(DeckUrlsContainerScraper):
         return url.removesuffix("/stats")
 
     @override
-    def _collect(self) -> list[str]:
-        deck_tags = self._soup.find_all(
-            "a", class_=lambda c: c and "btn" in c and "btn-sm" in c,
-            href=lambda h: h and "topdeck.gg" not in h)
-        if not deck_tags:
-            raise ScrapingError("Decklist tags not found", scraper=type(self), url=self.url)
-        deck_urls = [t["href"] for t in deck_tags]
-        check_unexpected_urls(deck_urls, *self._get_deck_scrapers())
-        return deck_urls
+    def _pre_parse(self) -> None:
+        self._fetch_soup()
+        self._validate_soup()
+        self._data = self._get_data_from_api()
+        self._validate_data()
+
+    @override
+    def _get_data_from_api(self) -> Json:
+        return fetch_json(self.url + "/stats")
+
+    @override
+    def _validate_data(self) -> None:
+        super()._validate_data()
+        if not self._data.get("gameFormats"):
+            raise ScrapingError("No 'gameFormats' data", scraper=type(self), url=self.url)
+
+    @override
+    def _parse_metadata(self) -> None:
+        self._metadata["author"] = TopDeckBracketScraper.get_title(
+            self._soup, type(self), self.url)
+
+    @override
+    def _collect(self) -> list[Json]:
+        decks_data = []
+        for fmt, t in self._data.get("gameFormats").items():
+            if "Magic: The Gathering" in fmt:
+                for td in t:
+                    d = td.get("decklist")
+                    if isinstance(d, str) and d:
+                        decks_data.append(td)
+        return decks_data

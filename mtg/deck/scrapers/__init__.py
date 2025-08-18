@@ -227,7 +227,7 @@ class DeckScraper(DeckParser):
 
     @override
     def parse(self, suppressed_errors=(ParsingError, ScrapingError)) -> Deck | None:
-        self.scrape(suppressed_errors=suppressed_errors)
+        return self.scrape(suppressed_errors=suppressed_errors)
 
     @backoff.on_exception(
         backoff.expo, (ConnectionError, HTTPError, ReadTimeout), max_time=60)
@@ -521,7 +521,10 @@ class DeckTagsContainerScraper(ContainerScraper):
                 deck = None
             if deck:
                 decks.append(deck)
-                _log.info(f"Parsed deck {i}/{len(self._deck_tags)}: {deck.name!r}")
+                msg = f"Parsed deck {i}/{len(self._deck_tags)}"
+                if deck.name:
+                    msg += f": {deck.name!r}"
+                _log.info(msg)
             else:
                 _log.warning(f"Failed to parse deck {i}/{len(self._deck_tags)}. Skipping...")
                 continue
@@ -580,7 +583,10 @@ class DecksJsonContainerScraper(ContainerScraper):
                 deck = None
             if deck:
                 decks.append(deck)
-                _log.info(f"Parsed deck {i}/{len(self._decks_data)}: {deck.name!r}")
+                msg = f"Parsed deck {i}/{len(self._decks_data)}"
+                if deck.name:
+                    msg += f": {deck.name!r}"
+                _log.info(msg)
             else:
                 _log.warning(f"Failed to parse deck {i}/{len(self._decks_data)}. Skipping...")
                 continue
