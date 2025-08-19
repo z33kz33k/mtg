@@ -7,6 +7,7 @@
     @author: z33k
 
 """
+import contextlib
 import logging
 from typing import override
 
@@ -124,10 +125,8 @@ class CyclesGamingArticleScraper(HybridContainerScraper):
                 "p", string=lambda s: s and "cycles" in s.lower() and ", " in s):
             author, date = info_tag.text.split(", ", maxsplit=1)
             self._metadata["author"] = author.strip().removeprefix("by ")
-            try:
+            with contextlib.suppress(dateutil.parser.ParserError):
                 self._metadata["date"] = dateutil.parser.parse(date.strip()).date()
-            except dateutil.parser.ParserError:
-                pass
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:

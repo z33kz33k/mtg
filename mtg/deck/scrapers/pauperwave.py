@@ -7,6 +7,7 @@
     @author: z33k
 
 """
+import contextlib
 import logging
 from typing import override
 
@@ -120,11 +121,9 @@ class PauperwaveArticleScraper(HybridContainerScraper):
                         case "players":
                             self._metadata["event"][key] = int(el.text)
                         case "date":
-                            try:
+                            with contextlib.suppress(ValueError):
                                 self._metadata["event"][key] = parse_non_english_month_date(
                                     el.text, *self._MONTHS)
-                            except ValueError:
-                                pass
                         case _:
                             self._metadata["event"][key] = el.text
 

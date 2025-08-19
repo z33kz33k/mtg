@@ -7,6 +7,7 @@
     @author: z33k
 
 """
+import contextlib
 import logging
 from typing import override
 
@@ -95,10 +96,8 @@ class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
             if decklist.lower().startswith("http"):
                 urls.append(decklist)
             else:
-                try:
+                with contextlib.suppress(ValueError):
                     self._arena_decklists.append(self._normalize_decklist(decklist))
-                except ValueError:
-                    pass
 
     @override
     def _collect(self) -> list[str]:

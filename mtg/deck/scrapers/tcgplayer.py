@@ -7,6 +7,7 @@
     @author: z33k
 
 """
+import contextlib
 import json
 import logging
 from datetime import datetime
@@ -148,10 +149,8 @@ class TcgPlyerInfiniteDeckJsonParser(JsonBasedDeckParser):
         self._update_fmt(self._deck_data["deck"]["format"])
         self._metadata["author"] = self._deck_data["deck"]["playerName"]
         if date_text := self._deck_data["deck"]["created"]:
-            try:
+            with contextlib.suppress(dateutil.parser.ParserError):
                 self._metadata["date"] = dateutil.parser.parse(date_text).date()
-            except dateutil.parser.ParserError:
-                pass
         if event_name := self._deck_data["deck"].get("eventName"):
             self._metadata["event"] = {}
             self._metadata["event"]["name"] = event_name
@@ -184,26 +183,20 @@ class TcgPlyerInfiniteDeckJsonParser(JsonBasedDeckParser):
         sub_decks = self._deck_data["deck"]["subDecks"]
         if command_zone := sub_decks.get("commandzone"):
             for item in command_zone:
-                try:
+                with contextlib.suppress(KeyError):
                     card_id, quantity = item["cardID"], item["quantity"]
                     self._set_commander(self.get_playset(cardmap[card_id], quantity)[0])
-                except KeyError:
-                    pass
 
         for item in sub_decks["maindeck"]:
-            try:
+            with contextlib.suppress(KeyError):
                 card_id, quantity = item["cardID"], item["quantity"]
                 self._maindeck += self.get_playset(cardmap[card_id], quantity)
-            except KeyError:
-                pass
 
         if sideboard := sub_decks.get("sideboard"):
             for item in sideboard:
-                try:
+                with contextlib.suppress(KeyError):
                     card_id, quantity = item["cardID"], item["quantity"]
                     self._sideboard += self.get_playset(cardmap[card_id], quantity)
-                except KeyError:
-                    pass
 
 
 def _get_deck_data_from_api(

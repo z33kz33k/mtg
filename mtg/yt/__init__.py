@@ -30,7 +30,6 @@ from requests import ConnectionError, HTTPError, ReadTimeout, Timeout
 from selenium.common.exceptions import TimeoutException
 from tqdm import tqdm
 from youtube_comment_downloader import SORT_BY_POPULAR, YoutubeCommentDownloader
-# from yt_dlp import YoutubeDL  # works, but with enormous downtimes (ca. 40s per channel)
 
 from mtg import FILENAME_TIMESTAMP_FORMAT, Json, OUTPUT_DIR, PathLike, SECRETS
 from mtg.deck import Deck, SANITIZED_FORMATS
@@ -43,13 +42,15 @@ from mtg.utils import extract_float, find_longest_seqs, \
     from_iterable, getrepr, logging_disabled, multiply_by_symbol, timed
 from mtg.utils.files import getdir, sanitize_filename
 from mtg.utils.json import deserialize_dates, serialize_dates
-from mtg.utils.scrape import ScrapingError, dissect_js, extract_source, extract_url, \
-    fetch_soup, http_requests_counted, throttled, fetch, unshorten
+from mtg.utils.scrape import ScrapingError, dissect_js, extract_source, extract_url, fetch, \
+    http_requests_counted, throttled, unshorten
 from mtg.utils.scrape.dynamic import fetch_dynamic_soup
 from mtg.utils.scrape.linktree import Linktree
 from mtg.yt.data import CHANNELS_DIR, CHANNEL_URL_TEMPLATE, ChannelData, DataPath, ScrapingSession, \
     VIDEO_URL_TEMPLATE, find_channel_files, find_orphans, load_channel, load_channels, \
     prune_channel_data_file, retrieve_ids, retrieve_video_data, sanitize_source
+
+# from yt_dlp import YoutubeDL  # works, but with enormous downtimes (ca. 40s per channel)
 
 _log = logging.getLogger(__name__)
 
@@ -1114,7 +1115,20 @@ class Channel:
         except FileNotFoundError:
             self._earlier_data = None
 
-    def get_unscraped_video_ids(self, limit=10, only_newer_than_last_scraped=True) -> list[str]:
+    def video_ids(self, limit=10) -> Generator[str, None, None]:
+        try:
+            for ch_data in scrapetube.get_channel(channel_id=self.id, limit=limit):
+                yield ch_data["videoId"]
+        except OSError:
+            raise ValueError(f"Invalid channel ID: {self.id!r}")
+        except json.decoder.JSONDecodeError:
+            raise ScrapingError(
+                "scrapetube failed with JSON error. This channel probably doesn't exist "
+                "anymore", scraper=type(self), url=self.url)
+
+    def _get_unscraped_video_ids(
+            self, limit=10,
+            only_newer_than_last_scraped=True) -> list[str]:
         scraped_ids = [v["id"] for v in self.earlier_data.videos] if self.earlier_data else []
         if not scraped_ids:
             last_scraped_id = None
@@ -1137,16 +1151,32 @@ class Channel:
 
         return video_ids
 
-    def video_ids(self, limit=10) -> Generator[str, None, None]:
-        try:
-            for ch_data in scrapetube.get_channel(channel_id=self.id, limit=limit):
-                yield ch_data["videoId"]
-        except OSError:
-            raise ValueError(f"Invalid channel ID: {self.id!r}")
-        except json.decoder.JSONDecodeError:
-            raise ScrapingError(
-                "scrapetube failed with JSON error. This channel probably doesn't exist "
-                "anymore", scraper=type(self), url=self.url)
+    def get_unscraped_video_ids(
+            self, limit=10,
+            only_newer_than_last_scraped=True,
+            soft_limit=True) -> list[str]:
+        """Return a list of not yet scraped video IDs.
+
+        The ``limit`` parameter is only to not overload scrapetube with requests. The default
+        behavior is to extend it as needed (so long as it's exactly met). That means that all
+        freshly posted videos of channels with unusually high number of regularly posted material
+        are still scraped in their totality.
+
+        Args:
+            limit: maximum number of video IDs to return
+            only_newer_than_last_scraped: if True, only return video IDs newer than the most recently scraped
+            soft_limit: if True, extend the limit indefinitely unless not exactly met
+        """
+        video_ids = self._get_unscraped_video_ids(limit, only_newer_than_last_scraped)
+        if not soft_limit:
+            return video_ids
+
+        original_limit = limit
+        while len(video_ids) == limit:
+            limit += original_limit
+            video_ids = self._get_unscraped_video_ids(limit, only_newer_than_last_scraped)
+
+        return video_ids
 
     @staticmethod
     def get_url_and_title(channel_id: str, title: str) -> str:
@@ -1155,8 +1185,11 @@ class Channel:
 
     def _scrape_videos(self, *video_ids: str) -> None:
         self._scrape_time = datetime.now()
+        self._title, self._subscribers, self._description, self._tags = self._fetch_info_with_selenium()
+
         text = self.get_url_and_title(self.id, self.title)
         _log.info(f"Scraping channel: {text}, {len(video_ids)} video(s)...")
+
         self._videos = []
         for i, vid in enumerate(video_ids, start=1):
             _log.info(
@@ -1203,7 +1236,6 @@ class Channel:
         if not video_ids:
             _log.info(f"Channel data for {text} already up to date")
             return
-        self._title, self._subscribers, self._description, self._tags = self._fetch_info_with_selenium()
         self._scrape_videos(*video_ids)
 
     def __repr__(self) -> str:
@@ -1216,28 +1248,26 @@ class Channel:
             ("scrape_time", str(self.scrape_time)),
         )
 
-    @timed("fetching channel info")
     def _fetch_info_with_selenium(
             self) -> tuple[str | None, int | None, str | None, list[str] | None]:
         soup, _, _ = fetch_dynamic_soup(self.url, self.XPATH, consent_xpath=self.CONSENT_XPATH)
+        title, description, tags, count = None, None, None, None
 
         # title (from <meta> or <title>)
         title_tag = soup.find('meta', property='og:title') or soup.find('title')
-        title = title_tag.get('content', title_tag.text.replace(
-            ' - YouTube', '').strip()) if title_tag else None
+        if title_tag:
+            title = title_tag.get('content', title_tag.text.replace(
+                ' - YouTube', '').strip()) if title_tag else None
 
         # description (from <meta name="description">)
-        description_tag = soup.find('meta', {'name': 'description'})
-        description = description_tag.get('content', None) if description_tag else None
+        if description_tag := soup.find('meta', {'name': 'description'}):
+            description = description_tag.get('content', None) if description_tag else None
 
         # tags (from <meta name="keywords">)
-        tags = []
-        keywords_tag = soup.find('meta', {'name': 'keywords'})
-        if keywords_tag:
+        if keywords_tag := soup.find('meta', {'name': 'keywords'}):
             tags = [tag.strip() for tag in keywords_tag['content'].split(',')]
 
         # subscribers
-        count = None
         if count_text := soup.find(
             "span", string=lambda t: t and "subscriber" in t).text.removesuffix(
             " subscribers").removesuffix(" subscriber"):

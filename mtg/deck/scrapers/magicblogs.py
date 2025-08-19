@@ -7,6 +7,7 @@
     @author: z33k
 
 """
+import contextlib
 import logging
 from typing import override
 
@@ -108,10 +109,8 @@ class MagicBlogsArticleScraper(HybridContainerScraper):
         if author_tag := self._soup.find("a", rel="author"):
             self._metadata["author"] = author_tag.text
         if time_tag := self._soup.find("time", class_="published"):
-            try:
+            with contextlib.suppress(ValueError):
                 self._metadata["date"] = parse_non_english_month_date(time_tag.text, *self._MONTHS)
-            except ValueError:
-                pass
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:

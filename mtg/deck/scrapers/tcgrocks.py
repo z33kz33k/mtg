@@ -10,6 +10,7 @@
     @author: z33k
 
 """
+import contextlib
 import json
 import logging
 from typing import override
@@ -64,11 +65,9 @@ class TcgRocksDeckScraper(DeckScraper):
 
         root = Node(self._data)
         for text in [n.data for n in root.find_all(lambda n: isinstance(n.data, str))]:
-            try:
+            with contextlib.suppress(dateutil.parser.ParserError):
                 self._metadata["date"] = dateutil.parser.parse(text).date()
                 break
-            except dateutil.parser.ParserError:
-                pass
 
         if keywords := self._metadata.get("article", {}).get("tags"):
             if fmt := self.derive_format_from_words(*keywords):

@@ -7,6 +7,7 @@
     @author: z33k
 
 """
+import contextlib
 import logging
 from typing import override
 
@@ -39,12 +40,10 @@ class MtgSearchItDeckScraper(DeckScraper):
     @override
     def _parse_metadata(self) -> None:
         tags = self._soup.select_one("div.tags.mt10").text.strip()
-        try:
+        with contextlib.suppress(ValueError):
             fmt, arch = tags.splitlines()
             self._update_archetype_or_theme(arch)
             self._update_fmt(fmt)
-        except ValueError:
-            pass
         a_tag = self._soup.select_one("a.icon")
         img_tag = a_tag.find("img")
         self._metadata["author"] = img_tag.attrs["alt"].removesuffix(" | Icon")
