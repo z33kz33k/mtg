@@ -43,9 +43,18 @@ DEFAULT_THROTTLING = 1.0  # seconds
 class ScrapingError(OSError):
     """Raised whenever scraping produces unexpected results.
     """
+    @property
+    def scraper(self) -> Type | None:
+        return self._scraper
+
+    @property
+    def url(self) -> str | None:
+        return self._url
+
     def __init__(
             self, message="No page soup", scraper: Type | None = None, url: str | None = None) -> \
             None:
+        self._scraper, self._url = scraper, url
         scraper = scraper.__name__ if scraper else ""
         details = [item for item in (scraper, url) if item]
         if details:

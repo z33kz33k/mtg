@@ -7,18 +7,15 @@
     @author: z33k
 
 """
-import itertools
 import json
 import logging
 import re
-import shutil
 import urllib.error
 from collections import defaultdict
 from dataclasses import asdict
 from datetime import datetime
 from functools import cached_property
 from http.client import RemoteDisconnected
-from pathlib import Path
 from typing import Callable, Generator
 
 import backoff
@@ -36,19 +33,20 @@ from mtg.deck import Deck, SANITIZED_FORMATS
 from mtg.deck.arena import ArenaParser, LinesParser
 from mtg.deck.scrapers import DeckParser, DeckScraper, DeckTagsContainerScraper, \
     DeckUrlsContainerScraper, DecksJsonContainerScraper, HybridContainerScraper
-from mtg.gstate import CoolOffManager, DecklistsStateManager, UrlsStateManager
+from mtg.gstate import CHANNELS_DIR, CoolOffManager, DecklistsStateManager, UrlsStateManager
 from mtg.scryfall import all_formats
-from mtg.utils import extract_float, find_longest_seqs, \
-    from_iterable, getrepr, logging_disabled, multiply_by_symbol, timed
+from mtg.utils import extract_float, find_longest_seqs, from_iterable, getrepr, logging_disabled, \
+    multiply_by_symbol, timed
 from mtg.utils.files import getdir, sanitize_filename
 from mtg.utils.json import deserialize_dates, serialize_dates
 from mtg.utils.scrape import ScrapingError, dissect_js, extract_source, extract_url, fetch, \
     http_requests_counted, throttled, unshorten
 from mtg.utils.scrape.dynamic import fetch_dynamic_soup
-from mtg.utils.scrape.linktree import Linktree
-from mtg.yt.data import CHANNELS_DIR, CHANNEL_URL_TEMPLATE, ChannelData, DataPath, ScrapingSession, \
-    VIDEO_URL_TEMPLATE, find_channel_files, find_orphans, load_channel, load_channels, \
-    prune_channel_data_file, retrieve_ids, retrieve_video_data, sanitize_source
+from mtg.utils.scrape.linktree import LinktreeScraper
+from mtg.yt.data import CHANNEL_URL_TEMPLATE, DataPath, ScrapingSession, \
+    VIDEO_URL_TEMPLATE, back_up_channel_files, find_channel_files, find_orphans, load_channel, \
+    load_channels, prune_channel_data_file, retrieve_ids, retrieve_video_data
+from mtg.yt.data.structures import Channel, sanitize_source
 
 # from yt_dlp import YoutubeDL  # works, but with enormous downtimes (ca. 40s per channel)
 
@@ -58,21 +56,6 @@ _log = logging.getLogger(__name__)
 GOOGLE_API_KEY = SECRETS["google"]["api_key"]  # not used anywhere
 DEAD_THRESHOLD = 2000  # days (ca. 5.5 yrs) - only used in gsheet to trim dead from abandoned
 VIDEOS_COUNT = 100  # default max number of videos to scrape on regular basis
-
-
-def back_up_channel_files(chid: str, *files: PathLike) -> None:
-    now = datetime.now()
-    timestamp = f"{now.year}{now.month:02}{now.day:02}"
-    backup_root = getdir(OUTPUT_DIR / "_archive" / "channels")
-    backup_path, counter = backup_root / timestamp / chid, itertools.count(1)
-    while backup_path.exists():
-        backup_path = backup_root / timestamp /  f"{chid} ({next(counter)})"
-    backup_dir = getdir(backup_path)
-    for f in files:
-        f = Path(f)
-        dst = backup_dir / f.name
-        _log.info(f"Backing-up '{f}' to '{dst}'...")
-        shutil.copy(f, dst)
 
 
 def _process_videos(channel_id: str, *video_ids: str) -> None:
@@ -157,8 +140,8 @@ def scrape_channel_videos(channel_id: str, *video_ids: str) -> bool:
         *video_ids: IDs of videos to scrape
     """
     try:
-        ch = Channel(channel_id)
-        text = Channel.get_url_and_title(ch.id, ch.title)
+        ch = ChannelScraper(channel_id)
+        text = ChannelScraper.get_url_and_title(ch.id, ch.title)
         _log.info(f"Scraping {len(video_ids)} video(s) from channel {text}...")
         ch.scrape_videos(*video_ids)
         if ch.data:
@@ -190,8 +173,8 @@ def scrape_channels(
     with ScrapingSession() as session:
         for i, id_ in enumerate(chids, start=1):
             try:
-                ch = Channel(id_)
-                text = Channel.get_url_and_title(ch.id, ch.title)
+                ch = ChannelScraper(id_)
+                text = ChannelScraper.get_url_and_title(ch.id, ch.title)
                 _log.info(f"Scraping channel {i}/{len(chids)}: {text}...")
                 ch.scrape(videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
                 if ch.data:
@@ -587,6 +570,7 @@ class PytubeError(ScrapingError):
     """
 
 
+# TODO: rename to VideoScraper, decouple from data (#231)
 class Video:
     """YouTube video showcasing a MtG deck with its most important metadata.
     """
@@ -873,9 +857,9 @@ class Video:
             if url:
                 if cls.is_shortened_url(url):
                     url = unshorten(url) or url
-                if Linktree.is_linktree_url(url):
+                if LinktreeScraper.is_linktree_url(url):
                     try:
-                        new_links = Linktree(url).data.links
+                        new_links = LinktreeScraper(url).data.links
                         _log.info(f"Parsed {len(new_links)} link(s) from: {url!r}")
                         links.update(new_links)
                     except (ConnectionError, HTTPError, ReadTimeout, ScrapingError) as err:
@@ -1042,8 +1026,8 @@ class MissingChannelData(ScrapingError):
         super().__init__(message, None, None)
 
 
-class Channel:
-    """YouTube channel showcasing MtG decks.
+class ChannelScraper:
+    """Scrape YouTube channel's videos for MtG deck data.
     """
     CONSENT_XPATH = "//button[@aria-label='Accept all']"
     XPATH = "//span[contains(., 'subscriber')]"
@@ -1085,11 +1069,11 @@ class Channel:
         return [d for v in self.videos for d in v.decks]
 
     @property
-    def data(self) -> ChannelData | None:
+    def data(self) -> Channel | None:
         return self._data
 
     @property
-    def earlier_data(self) -> ChannelData | None:
+    def earlier_data(self) -> Channel | None:
         return self._earlier_data
 
     def __init__(self, channel_id: str) -> None:
@@ -1208,7 +1192,7 @@ class Channel:
 
         if not self._subscribers:
             self._subscribers = self.videos[0].channel_subscribers
-        self._data = ChannelData(
+        self._data = Channel(
             id=self.id,
             title=self.title,
             description=self.description,
@@ -1277,7 +1261,6 @@ class Channel:
             count = int(count)
 
         return title, count, description, tags
-
 
     # works, but with enormous downtimes (ca. 40s per channel)
     # @timed("fetching channel info")

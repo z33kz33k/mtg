@@ -14,154 +14,31 @@ import shutil
 import sys
 from collections import defaultdict
 from dataclasses import astuple, dataclass
-from datetime import date, datetime
+from datetime import datetime
 from operator import attrgetter, itemgetter
 from pathlib import Path
 from types import TracebackType
-from typing import Callable, Generator, Iterator, Literal, Self, Type
+from typing import Callable, Generator, Iterator, Self, Type
 
 from tqdm import tqdm
-from youtubesearchpython import CustomSearch, VideoSortOrder, VideoUploadDateFilter
 
-from mtg import AVOIDED_DIR, DECKS_DIR, FILENAME_TIMESTAMP_FORMAT, Json, PathLike, \
+from mtg import AVOIDED_DIR, FILENAME_TIMESTAMP_FORMAT, Json, OUTPUT_DIR, PathLike, \
     READABLE_TIMESTAMP_FORMAT, README
-from mtg.deck.arena import ArenaParser
-from mtg.deck.export import Exporter, sanitize_source, FORMATS as EXPORT_FORMATS
-from mtg.gstate import CHANNELS_DIR, CoolOffManager, DecklistsStateManager, UrlsStateManager
+from mtg.yt.data.structures import Channel, sanitize_source
 from mtg.utils import Counter, breadcrumbs, logging_disabled
 from mtg.utils.json import deserialize_dates, serialize_dates
-from mtg.utils.files import getdir, getfile, sanitize_filename
+from mtg.utils.files import getdir, getfile
 from mtg.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
+from mtg.gstate import CHANNELS_DIR, CoolOffManager, DecklistsStateManager, UrlsStateManager
 from mtg.utils.scrape import extract_url, fetch_soup
 
 _log = logging.getLogger(__name__)
 VIDEO_URL_TEMPLATE = "https://www.youtube.com/watch?v={}"
 CHANNEL_URL_TEMPLATE = "https://www.youtube.com/channel/{}"
-ACTIVE_THRESHOLD = 14  # days (2 weeks)
-DORMANT_THRESHOLD = 30 * 3  # days (ca 3 months)
-ABANDONED_THRESHOLD = 30 * 12  # days (ca. 1 yr)
-DECK_STALE_THRESHOLD = 50  # videos
-VERY_DECK_STALE_THRESHOLD = 100  # videos
-EXCESSIVELY_DECK_STALE_THRESHOLD = 150  # videos
 
 
 def get_channels_count() -> int:
     return len([d for d in CHANNELS_DIR.iterdir() if d.is_dir()])
-
-
-
-# TODO: formalize video data structure (#231)
-@dataclass
-class ChannelData:
-    id: str
-    title: str | None
-    description: str | None
-    tags: list[str] | None
-    subscribers: int
-    scrape_time: datetime
-    videos: list[dict]
-
-    @property
-    def decks(self) -> list[dict]:
-        return [d for v in self.videos for d in v["decks"]]
-
-    @property
-    def sources(self) -> list[str]:
-        return sorted({s for v in self.videos for s in v["sources"]})
-
-    @property
-    def deck_urls(self) -> set[str]:
-        return {d["metadata"]["url"] for d in self.decks
-                if d.get("metadata") and d["metadata"].get("url")}
-
-    @property
-    def deck_sources(self) -> Counter:
-        return Counter(sanitize_source(d["metadata"]["source"]) for d in self.decks)
-
-    @property
-    def deck_formats(self) -> Counter:
-        return Counter(d["metadata"]["format"] for d in self.decks if d["metadata"].get("format"))
-
-    @property
-    def staleness(self) -> int | None:
-        return (date.today() - self.videos[0]["publish_time"].date()).days if self.videos else None
-
-    @property
-    def deck_staleness(self) -> int:
-        """Return number of last scraped videos without a deck.
-        """
-        if not self.decks:
-            return len(self.videos)
-        video_ids = [v["id"] for v in self.videos]
-        deck_ids = [v["id"] for v in self.videos if v["decks"]]
-        return len(self.videos[:video_ids.index(deck_ids[0])])
-
-    @property
-    def span(self) -> int | None:
-        if self.videos:
-            return (self.videos[0]["publish_time"].date() - self.videos[-1]["publish_time"].date(
-                )).days
-        return None
-
-    @property
-    def posting_interval(self) -> float | None:
-        return self.span / len(self.videos) if self.videos else None
-
-    @property
-    def total_views(self) -> int:
-        return sum(v["views"] for v in self.videos)
-
-    @property
-    def subs_activity(self) -> float | None:
-        """Return ratio of subscribers needed to generate one video view in inverted relation to 10
-        subscribers, if available.
-
-        The greater this number the more active the subscribers. 1 means 10 subscribers are
-        needed to generate one video view. 2 means 5 subscribers are needed to generate one
-        video view, 10 means 1 subscriber is needed one and so on.
-        """
-        avg_views = self.total_views / len(self.videos)
-        return 10 / (self.subscribers / avg_views) if self.subscribers else None
-
-    @property
-    def decks_per_video(self) -> float | None:
-        if not self.videos:
-            return None
-        return len(self.decks) / len(self.videos)
-
-    @property
-    def is_abandoned(self) -> bool:
-        return self.staleness is not None and self.staleness > ABANDONED_THRESHOLD
-
-    @property
-    def is_dormant(self) -> bool:
-        return (self.staleness is not None
-                and ABANDONED_THRESHOLD >= self.staleness > DORMANT_THRESHOLD)
-
-    @property
-    def is_active(self) -> bool:
-        return (self.staleness is not None
-                and DORMANT_THRESHOLD >= self.staleness > ACTIVE_THRESHOLD)
-
-    @property
-    def is_fresh(self) -> bool:
-        return not self.is_abandoned and not self.is_dormant and not self.is_active
-
-    @property
-    def is_deck_stale(self) -> bool:
-        return VERY_DECK_STALE_THRESHOLD >= self.deck_staleness > DECK_STALE_THRESHOLD
-
-    @property
-    def is_very_deck_stale(self) -> bool:
-        return EXCESSIVELY_DECK_STALE_THRESHOLD >= self.deck_staleness > VERY_DECK_STALE_THRESHOLD
-
-    @property
-    def is_excessively_deck_stale(self) -> bool:
-        return self.deck_staleness > EXCESSIVELY_DECK_STALE_THRESHOLD
-
-    @property
-    def is_deck_fresh(self) -> bool:
-        return not (self.is_deck_stale or self.is_very_deck_stale or self.is_excessively_deck_stale)
 
 
 def retrieve_ids(sheet="channels") -> list[str]:
@@ -184,7 +61,7 @@ def channels_batch(start_row=2, batch_size: int | None = None) -> Iterator[str]:
     return itertools.islice(retrieve_ids(), start_idx, end_idx)
 
 
-def load_channel(channel_id: str) -> ChannelData:
+def load_channel(channel_id: str) -> Channel:
     """Load all earlier scraped data for a channel designated by the provided ID.
     """
     channel_dir = getdir(CHANNELS_DIR / channel_id)
@@ -202,7 +79,7 @@ def load_channel(channel_id: str) -> ChannelData:
         # deal with legacy data that contains "url"
         if "url" in channel:
             del channel["url"]
-        channels.append(ChannelData(**channel))
+        channels.append(Channel(**channel))
     channels.sort(key=attrgetter("scrape_time"), reverse=True)
 
     seen, videos = set(), []
@@ -213,7 +90,7 @@ def load_channel(channel_id: str) -> ChannelData:
         videos.append(video)
     videos.sort(key=itemgetter("publish_time"), reverse=True)
 
-    return ChannelData(
+    return Channel(
         id=channels[0].id,
         title=channels[0].title,
         description=channels[0].description,
@@ -224,7 +101,7 @@ def load_channel(channel_id: str) -> ChannelData:
     )
 
 
-def load_channels() -> Generator[ChannelData, None, None]:
+def load_channels() -> Generator[Channel, None, None]:
     """Load channel data for all channels recorded in a private Google Sheet.
     """
     with logging_disabled():
@@ -533,106 +410,6 @@ def prune_dangling_decklists() -> None:
     _log.info(f"Pruning done")
 
 
-_QUERY_EXCLUDES = (
-    '-"altered tcg"',
-    '-"curiosa.io"',
-    '-dfiance',
-    '-digimon',
-    '-"eternal card game"',
-    '-elestrals',
-    '-elestralstcg',
-    '-fab',
-    '-"fabrary.net"',
-    '-"fabtcg.com"',
-    '-"flesh and blood"',
-    '-"grand archive tcg"',
-    '-hptcg',
-    '-"lackeybot.com"',
-    '-lorcana',
-    '-"lotr lcg"',
-    '-msem',
-    '-onepiece',
-    '-pokemon',
-    '-"ringsdb.com"',
-    '-snap',
-    '-"sorcery tcg"',
-    '-starwarsunlimited',
-    '-"star wars unlimited"',
-    '-"swudb.com"',
-    '-"ygom.untapped.gg"',
-    '-yugioh',
-)
-def discover_new_channels(
-        query: str = "mtg decklist",
-        limit=200,
-        option: Literal[
-            "relevance",
-            "upload_date",
-            "view_count",
-            "rating",
-            "last_hour",
-            "today",
-            "this_week",
-            "this_month",
-            "this_year"] = "this_week",
-        ) -> tuple[list[str], list[str], list[str]]:
-    """Discover channels that aren't yet included in the private Google Sheet.
-
-    Args:
-        query: YouTube search query (e.g. 'mtg' or 'mtg foo')
-        limit: maximum number of videos for 'youtubesearchpython' to return
-        option: search option (see: https://pypi.org/project/youtube-search-python/)
-
-    Returns:
-        discovered channel IDs, newly-discovered and all checked video links
-    """
-    query += f' {" ".join(_QUERY_EXCLUDES)}'
-    match option:
-        case "relevance":
-            pref = VideoSortOrder.relevance
-        case "upload_date":
-            pref = VideoSortOrder.uploadDate
-        case "view_count":
-            pref = VideoSortOrder.viewCount
-        case "rating":
-            pref = VideoSortOrder.rating
-        case "last_hour":
-            pref = VideoUploadDateFilter.lastHour
-        case "today":
-            pref = VideoUploadDateFilter.today
-        case "this_week":
-            pref = VideoUploadDateFilter.thisWeek
-        case "this_month":
-            pref = VideoUploadDateFilter.thisMonth
-        case "this_year":
-            pref = VideoUploadDateFilter.thisYear
-        case _:
-            raise ValueError(f"Unsupported search option: {option!r}")
-
-    retrieved_ids, chids = {*retrieve_ids(), *retrieve_ids("avoided")}, set()
-    results = []
-    search = CustomSearch(query, pref)
-    while True:
-        results += search.result()["result"]
-        limit -= 20
-        if limit <= 0:
-            break
-        search.next()
-
-    found_links = []
-    for result in results:
-        chid = result["channel"]["id"]
-        if chid not in retrieved_ids and chid not in chids:
-            _log.info(
-                f"Found new channel: {chid!r} (video: {result['link']!r})")
-            chids.add(chid)
-            found_links.append(result["link"])
-
-    _log.info(f"Found {len(chids)} new channel(s) among {len(results)} checked result(s)")
-
-    return sorted(chids), found_links, [r["link"] for r in results]
-
-
 def get_channel_ids(*urls: str, only_new=True) -> list[str]:
     retrieved_ids = set(retrieve_ids())
     ids = []
@@ -689,60 +466,6 @@ def retrieve_video_data(
     return channels
 
 
-def _dump_data_gen(
-        channels: list[ChannelData],
-        dstdir: Path) -> Generator[tuple[Exporter | None, Path], None, None]:
-    manager = DecklistsStateManager()
-    manager.load()
-    for channel_data in channels:
-        if title := channel_data.title:
-            channel_dir = dstdir / f"{sanitize_filename(title)}_({channel_data.id})"
-        else:
-            channel_dir = dstdir /channel_data.id
-        for video_data in channel_data.videos:
-            for deck_data in video_data["decks"]:
-                decklist = manager.extended[deck_data["decklist_extended_id"]]
-                metadata = dict(**deck_data["metadata"])
-                metadata["video_url"] = video_data["url"]
-                deck = ArenaParser(decklist, metadata=metadata).parse()
-                if deck:
-                    yield Exporter(deck), channel_dir
-                else:
-                    yield None, channel_dir
-
-
-def dump_decks(
-        dstdir: PathLike = "", fmt: Literal["arena", "forge", "json", "xmage"] = "forge") -> None:
-    """Export all decks from all channels to ```dstdir``` in the format provided.
-    """
-    if fmt not in EXPORT_FORMATS:
-        raise ValueError(f"Invalid dump format: {fmt!r}. Must be one of: {EXPORT_FORMATS}")
-    timestamp = datetime.now().strftime(FILENAME_TIMESTAMP_FORMAT)
-    dstdir = dstdir or DECKS_DIR / "yt" / timestamp
-    dstdir = getdir(dstdir)
-    channels = [*tqdm(load_channels(), total=get_channels_count(), desc="Loading channels data...")]
-    total = sum(len(ch.decks) for ch in channels)
-    with logging_disabled():
-        for exporter, channel_dir in tqdm(
-                _dump_data_gen(channels, dstdir), total=total, desc="Exporting YT decks..."):
-            if exporter:
-                try:
-                    match fmt:
-                        case "arena":
-                            exporter.to_arena(channel_dir)
-                        case "forge":
-                            exporter.to_forge(channel_dir)
-                        case "json":
-                            exporter.to_json(channel_dir)
-                        case "xmage":
-                            exporter.to_xmage(channel_dir)
-                except OSError as err:
-                    if "File name too long" in str(err):
-                        pass
-                    else:
-                        raise
-
-
 def clean_up(move=True) -> None:
     """Clean up channels data.
 
@@ -772,3 +495,18 @@ def clean_up(move=True) -> None:
     manager.load_failed()
     manager.prune_failed(ids)
     manager.dump_failed()
+
+
+def back_up_channel_files(chid: str, *files: PathLike) -> None:
+    now = datetime.now()
+    timestamp = f"{now.year}{now.month:02}{now.day:02}"
+    backup_root = getdir(OUTPUT_DIR / "_archive" / "channels")
+    backup_path, counter = backup_root / timestamp / chid, itertools.count(1)
+    while backup_path.exists():
+        backup_path = backup_root / timestamp /  f"{chid} ({next(counter)})"
+    backup_dir = getdir(backup_path)
+    for f in files:
+        f = Path(f)
+        dst = backup_dir / f.name
+        _log.info(f"Backing-up '{f}' to '{dst}'...")
+        shutil.copy(f, dst)

@@ -43,7 +43,7 @@ _log = logging.getLogger(__name__)
 
 
 @dataclass
-class LinktreeData:
+class Linktree:
     username : str | None
     url : str
     id : int
@@ -55,7 +55,7 @@ class LinktreeData:
     links : list[str]
 
 
-class Linktree:
+class LinktreeScraper:
     HEADERS = {
         "origin": "https://linktr.ee",
         "referer": "https://linktr.ee",
@@ -68,7 +68,7 @@ class Linktree:
         return self._url
 
     @property
-    def data(self) -> LinktreeData:
+    def data(self) -> Linktree:
         return self._data
 
     def __init__(self, url: str) -> None:
@@ -142,11 +142,11 @@ class Linktree:
         return links
 
 
-    def _get_data(self)-> LinktreeData:
+    def _get_data(self)-> Linktree:
         data = self._json_data["account"]
         created, updated = data.get("createdAt"), data.get("updatedAt")
 
-        return LinktreeData(
+        return Linktree(
             data.get("username"),
             self.url,
             self._account_id,

@@ -19,6 +19,7 @@ from mtg.utils.files import getfile
 from mtg.utils.scrape import throttle_with_countdown
 
 _log = logging.getLogger(__name__)
+
 CHANNELS_DIR = OUTPUT_DIR / "channels"
 REGULAR_DECKLISTS_FILE = CHANNELS_DIR / "regular_decklists.json"
 EXTENDED_DECKLISTS_FILE = CHANNELS_DIR / "extended_decklists.json"

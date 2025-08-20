@@ -14,39 +14,15 @@ from typing import Literal
 from mtg import OUTPUT_DIR, PathLike
 from mtg.deck import CardNotFound, Deck, DeckParser, Mode
 from mtg.deck.arena import ArenaParser, IllFormedArenaDecklist, is_arena_decklist
-from mtg.deck.scrapers.cardsrealm import get_source as cardsrealm_get_source
-from mtg.deck.scrapers.edhrec import get_source as edhrec_get_source
-from mtg.deck.scrapers.hareruya import get_source as hareruya_get_source
-from mtg.deck.scrapers.melee import get_source as melee_get_source
-from mtg.deck.scrapers.mtgarenapro import get_source as mtgarenapro_get_source
-from mtg.deck.scrapers.scg import get_source as scg_get_source
-from mtg.deck.scrapers.tcgplayer import get_source as tcgplayer_get_source
+
 from mtg.scryfall import Card, aggregate, set_cards
 from mtg.utils import ParsingError, from_iterable
 from mtg.utils.json import serialize_dates
 from mtg.utils.files import getdir, getfile, sanitize_filename, truncate_path
+from mtg.yt.data.structures import sanitize_source
 
 _log = logging.getLogger(__name__)
 FORMATS = "arena", "forge", "json", "xmage"
-
-
-def sanitize_source(src: str) -> str:
-    src = src.removeprefix("www.")
-    if new_src := cardsrealm_get_source(src):
-        src = new_src
-    elif new_src := edhrec_get_source(src):
-        src = new_src
-    elif new_src := hareruya_get_source(src):
-        src = new_src
-    elif new_src := melee_get_source(src):
-        src = new_src
-    elif new_src := mtgarenapro_get_source(src):
-        src = new_src
-    elif new_src := scg_get_source(src):
-        src = new_src
-    elif new_src := tcgplayer_get_source(src):
-        src = new_src
-    return src
 
 
 class Exporter:
