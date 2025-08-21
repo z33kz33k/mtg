@@ -18,7 +18,7 @@ from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckUrlsContainerScraper, UrlHook
 from mtg.deck.scrapers.topdeck import check_unexpected_urls
-from mtg.utils.scrape import ScrapingError, dissect_js
+from mtg.utils.scrape import ScrapingError, dissect_js, strip_url_query
 
 _log = logging.getLogger(__name__)
 URL_HOOKS = (
@@ -48,6 +48,10 @@ class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
     @override
     def is_valid_url(url: str) -> bool:
         return "edhtop16.com/tournament/" in url.lower()
+
+    @staticmethod
+    def sanitize_url(url: str) -> str:
+        return strip_url_query(url)
 
     def _process_json(self, json_data: Json) -> Json:
         match json_data:
