@@ -13,24 +13,22 @@ import logging
 import shutil
 import sys
 from collections import defaultdict
-from dataclasses import astuple, dataclass
 from datetime import datetime
 from operator import attrgetter, itemgetter
-from pathlib import Path
 from types import TracebackType
 from typing import Callable, Generator, Iterator, Self, Type
 
 from tqdm import tqdm
 
-from mtg import AVOIDED_DIR, FILENAME_TIMESTAMP_FORMAT, Json, OUTPUT_DIR, PathLike, \
-    READABLE_TIMESTAMP_FORMAT, README
-from mtg.yt.data.structures import Channel, sanitize_source
-from mtg.utils import Counter, breadcrumbs, logging_disabled
-from mtg.utils.json import deserialize_dates, serialize_dates
-from mtg.utils.files import getdir, getfile
-from mtg.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
+from mtg import AVOIDED_DIR, FILENAME_TIMESTAMP_FORMAT, Json, READABLE_TIMESTAMP_FORMAT, README
 from mtg.gstate import CHANNELS_DIR, CoolOffManager, DecklistsStateManager, UrlsStateManager
+from mtg.utils import Counter, logging_disabled
+from mtg.utils.files import getdir
+from mtg.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
+from mtg.utils.json import deserialize_dates
 from mtg.utils.scrape import extract_url, fetch_soup
+from mtg.yt.data.structures import Channel, sanitize_source
+
 
 _log = logging.getLogger(__name__)
 VIDEO_URL_TEMPLATE = "https://www.youtube.com/watch?v={}"
@@ -38,6 +36,8 @@ CHANNEL_URL_TEMPLATE = "https://www.youtube.com/channel/{}"
 
 
 def get_channels_count() -> int:
+    """Return number of currently existing channel folders.
+    """
     return len([d for d in CHANNELS_DIR.iterdir() if d.is_dir()])
 
 
@@ -50,6 +50,11 @@ def retrieve_ids(sheet="channels") -> list[str]:
 
 
 def channels_batch(start_row=2, batch_size: int | None = None) -> Iterator[str]:
+    """Retrieve a batch of channel IDs from a private Google Sheet spreadsheet.
+
+    Returns:
+        an iterator of string IDs
+    """
     if start_row < 2:
         raise ValueError("Start row must not be lesser than 2")
     if batch_size is not None and batch_size < 1:
@@ -110,7 +115,7 @@ def load_channels() -> Generator[Channel, None, None]:
 
 
 def update_gsheet() -> None:
-    """Update "channels" Google Sheets worksheet.
+    """Update "channels" Google Sheets worksheet with the currently scraped data.
     """
     data, ids = [], retrieve_ids()
     for id_ in tqdm(ids, total=len(ids), desc="Loading channels data..."):
@@ -178,58 +183,6 @@ class ScrapingSession:
         self._cooloff_manager.reset()
 
 
-@dataclass(frozen=True)
-class DataPath:
-    """Structural path to a channel/video/decklist in the channel data.
-    """
-    channel_id: str
-    video_id: str | None = None
-    decklist_id: str | None = None
-
-    def __str__(self) -> str:
-        return breadcrumbs(*[crumb for crumb in astuple(self) if crumb])
-
-    @classmethod
-    def from_path(cls, path: str) -> Self:
-        parts = path.strip("/").split("/", maxsplit=2)
-        return cls(*parts)
-
-
-def find_orphans() -> dict[str, list[str]]:
-    """Check the scraped channels data for any decklists missing in the global decklist
-    repositories and return their structural paths.
-
-    Returns:
-        A dictionary of string paths pointing to the orphaned decklists (both in regular and
-        extended form) in the channel data.
-
-    """
-    regular_ids, extended_ids = {}, {}
-    for ch in tqdm(load_channels(), total=get_channels_count(), desc="Loading channels data..."):
-        for v in ch.videos:
-            for deck in v["decks"]:
-                path_regular = DataPath(ch.id, v["id"], deck["decklist_id"])
-                path_extended = DataPath(ch.id, v["id"], deck["decklist_extended_id"])
-                regular_ids[deck["decklist_id"]] = path_regular
-                extended_ids[deck["decklist_extended_id"]] = path_extended
-
-    manager = DecklistsStateManager()
-    manager.reset()
-    manager.load()
-    loaded_regular, loaded_extended = manager.regular, manager.extended
-    regular_orphans = {r for r in regular_ids if r not in loaded_regular}
-    extended_orphans = {e for e in extended_ids if e not in loaded_extended}
-
-    _log.info(
-        f"Found {len(regular_orphans):,} orphaned regular decklist(s) and {len(extended_orphans):,}"
-        f" orphaned extended decklist(s)")
-
-    return {
-        "regular_orphans": sorted({str(regular_ids[r]) for r in regular_orphans}),
-        "extended_orphans": sorted({str(extended_ids[e]) for e in extended_orphans}),
-    }
-
-
 def get_aggregate_deck_data() -> tuple[Counter, Counter]:
     """Get aggregated deck data across all channels.
     """
@@ -284,6 +237,8 @@ def get_duplicates() -> list[str]:
 
 
 def parse_channel_data_filename(filename: str) -> tuple[str, datetime]:
+    """Parse channel data's filename into the channel ID and timestamp's datetime embedded in it.
+    """
     if not filename.endswith("_channel.json") or "___" not in filename:
         raise ValueError(f"Not a channel data filename: {filename!r}")
     channel_id, timestamp = filename.split("___", maxsplit=1)
@@ -325,47 +280,6 @@ def remove_channel_data(*range_: datetime | str) -> None:
             if start <= timestamp <= end:
                 _log.info(f"Removing file: '{file}'...")
                 file.unlink()
-
-
-def prune_channel_data_file(file: PathLike, *video_ids: str) -> None:
-    """Prune specified videos from channel data at 'file'.
-    """
-    file = getfile(file)
-    _log.info(f"Pruning {len(video_ids)} video(s) from '{file}'...")
-    data = json.loads(file.read_text(encoding="utf-8"), object_hook=deserialize_dates)
-    videos = data["videos"]
-    data["videos"], indices = [], []
-    for i, video in enumerate(videos):
-        if video["id"] in video_ids:
-            _log.info(f"Removing video data {i + 1}/{len(videos)} ({video['title']!r})...")
-            indices.append(i)
-        else:
-            data["videos"].append(video)
-
-    if indices:
-        _log.info(f"Dumping pruned channel data at: '{file}'...")
-        file.write_text(
-            json.dumps(data, indent=2, ensure_ascii=False, default=serialize_dates),
-            encoding="utf-8")
-    else:
-        _log.info(f"Nothing to prune in '{file}'")
-
-
-def find_channel_files(channel_id: str, *video_ids: str) -> list[str]:
-    """Find channel data files containing specified videos.
-    """
-    video_ids = set(video_ids)
-    channel_dir = getdir(CHANNELS_DIR / channel_id)
-    _log.info(f"Loading channel data from: '{channel_dir}'...")
-    files = [f for f in channel_dir.iterdir() if f.is_file() and f.suffix.lower() == ".json"]
-    if not files:
-        raise FileNotFoundError(f"No channel files found at: '{channel_dir}'")
-    filtered = []
-    for file in files:
-        data = json.loads(file.read_text(encoding="utf-8"), object_hook=deserialize_dates)
-        if any(video["id"] in video_ids for video in data["videos"]):
-            filtered.append(file.as_posix())
-    return filtered
 
 
 def find_dangling_decklists() -> dict[str, str]:
@@ -410,7 +324,10 @@ def prune_dangling_decklists() -> None:
     _log.info(f"Pruning done")
 
 
-def get_channel_ids(*urls: str, only_new=True) -> list[str]:
+def fetch_channel_ids(*urls: str, only_new=True) -> list[str]:
+    """Fetch channel IDs from the provided channels URLs. By default return only the ones not
+    already present in the private Google Sheet.
+    """
     retrieved_ids = set(retrieve_ids())
     ids = []
     for url in sorted(set(urls)):
@@ -432,6 +349,7 @@ def get_channel_ids(*urls: str, only_new=True) -> list[str]:
     return ids
 
 
+# FIXME: turn into a new Video object's property (#231)
 def extract_urls_from_video_data(video_data: Json) -> list[str]:
     text = video_data["title"] + "\n" + video_data["description"]
     if comment := video_data.get("comment"):
@@ -495,18 +413,3 @@ def clean_up(move=True) -> None:
     manager.load_failed()
     manager.prune_failed(ids)
     manager.dump_failed()
-
-
-def back_up_channel_files(chid: str, *files: PathLike) -> None:
-    now = datetime.now()
-    timestamp = f"{now.year}{now.month:02}{now.day:02}"
-    backup_root = getdir(OUTPUT_DIR / "_archive" / "channels")
-    backup_path, counter = backup_root / timestamp / chid, itertools.count(1)
-    while backup_path.exists():
-        backup_path = backup_root / timestamp /  f"{chid} ({next(counter)})"
-    backup_dir = getdir(backup_path)
-    for f in files:
-        f = Path(f)
-        dst = backup_dir / f.name
-        _log.info(f"Backing-up '{f}' to '{dst}'...")
-        shutil.copy(f, dst)

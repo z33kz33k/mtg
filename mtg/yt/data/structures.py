@@ -7,11 +7,13 @@
     @author: z33k
 
 """
-from dataclasses import dataclass
+import json
+from dataclasses import asdict, astuple, dataclass
 from datetime import date, datetime
+from typing import Self
 
 from mtg import Json
-from mtg.utils import Counter
+from mtg.utils import Counter, breadcrumbs
 from mtg.deck.scrapers.cardsrealm import get_source as cardsrealm_get_source
 from mtg.deck.scrapers.edhrec import get_source as edhrec_get_source
 from mtg.deck.scrapers.hareruya import get_source as hareruya_get_source
@@ -19,6 +21,7 @@ from mtg.deck.scrapers.melee import get_source as melee_get_source
 from mtg.deck.scrapers.mtgarenapro import get_source as mtgarenapro_get_source
 from mtg.deck.scrapers.scg import get_source as scg_get_source
 from mtg.deck.scrapers.tcgplayer import get_source as tcgplayer_get_source
+from mtg.utils.json import serialize_dates
 
 
 ACTIVE_THRESHOLD = 14  # days (2 weeks)
@@ -49,20 +52,20 @@ def sanitize_source(src: str) -> str:
 
 
 # # TODO: formalize video data structure (#231)
-# @dataclass
-# class Video:
-#     id: str
-#     url: str
-#     author: str
-#     title: str
-#     description: str
-#     keywords: list[str]
-#     publish_time: datetime
-#     views: int
-#     sources: list[str]
-#     decks: list[dict[str, Json | str]]
-#     # injected from Channel
-#     scrape_time: datetime | None = None
+@dataclass
+class Video:
+    id: str
+    url: str
+    author: str
+    title: str
+    description: str
+    keywords: list[str]
+    publish_time: datetime
+    views: int
+    sources: list[str]
+    decks: list[dict[str, Json | str]]
+    # injected from Channel
+    scrape_time: datetime | None = None
 
 
 @dataclass
@@ -176,3 +179,24 @@ class Channel:
     @property
     def is_deck_fresh(self) -> bool:
         return not (self.is_deck_stale or self.is_very_deck_stale or self.is_excessively_deck_stale)
+
+    @property
+    def as_dict(self) -> Json:
+        return json.dumps(asdict(self), indent=4, ensure_ascii=False, default=serialize_dates)
+
+
+@dataclass(frozen=True)
+class DataPath:
+    """Structural path to a channel/video/decklist in the channel data.
+    """
+    channel_id: str
+    video_id: str | None = None
+    decklist_id: str | None = None
+
+    def __str__(self) -> str:
+        return breadcrumbs(*[crumb for crumb in astuple(self) if crumb])
+
+    @classmethod
+    def from_path(cls, path: str) -> Self:
+        parts = path.strip("/").split("/", maxsplit=2)
+        return cls(*parts)

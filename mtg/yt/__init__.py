@@ -12,19 +12,16 @@ import logging
 import re
 import urllib.error
 from collections import defaultdict
-from dataclasses import asdict
 from datetime import datetime
 from functools import cached_property
 from http.client import RemoteDisconnected
-from typing import Callable, Generator
+from typing import Generator
 
 import backoff
 import pytubefix
 import pytubefix.exceptions
 import scrapetube
-from bs4 import Tag
 from requests import ConnectionError, HTTPError, ReadTimeout, Timeout
-from selenium.common.exceptions import TimeoutException
 from tqdm import tqdm
 from youtube_comment_downloader import SORT_BY_POPULAR, YoutubeCommentDownloader
 
@@ -39,92 +36,20 @@ from mtg.utils import extract_float, find_longest_seqs, from_iterable, getrepr, 
     multiply_by_symbol, timed
 from mtg.utils.files import getdir, sanitize_filename
 from mtg.utils.json import deserialize_dates, serialize_dates
-from mtg.utils.scrape import ScrapingError, dissect_js, extract_source, extract_url, fetch, \
-    http_requests_counted, throttled, unshorten
+from mtg.utils.scrape import ScrapingError, extract_source, extract_url, http_requests_counted, throttled, unshorten
 from mtg.utils.scrape.dynamic import fetch_dynamic_soup
 from mtg.utils.scrape.linktree import LinktreeScraper
-from mtg.yt.data import CHANNEL_URL_TEMPLATE, DataPath, ScrapingSession, \
-    VIDEO_URL_TEMPLATE, back_up_channel_files, find_channel_files, find_orphans, load_channel, \
-    load_channels, prune_channel_data_file, retrieve_ids, retrieve_video_data
+from mtg.yt.data import CHANNEL_URL_TEMPLATE, ScrapingSession, VIDEO_URL_TEMPLATE, load_channel, \
+    load_channels, retrieve_ids
 from mtg.yt.data.structures import Channel, sanitize_source
+from mtg.yt.expand import LinksExpander
 
 # from yt_dlp import YoutubeDL  # works, but with enormous downtimes (ca. 40s per channel)
 
 _log = logging.getLogger(__name__)
-
-
 GOOGLE_API_KEY = SECRETS["google"]["api_key"]  # not used anywhere
 DEAD_THRESHOLD = 2000  # days (ca. 5.5 yrs) - only used in gsheet to trim dead from abandoned
 VIDEOS_COUNT = 100  # default max number of videos to scrape on regular basis
-
-
-def _process_videos(channel_id: str, *video_ids: str) -> None:
-    files = find_channel_files(channel_id, *video_ids)
-    if not files:
-        return
-    back_up_channel_files(channel_id, *files)
-    if scrape_channel_videos(channel_id, *video_ids):
-        for f in files:
-            prune_channel_data_file(f, *video_ids)
-
-
-@http_requests_counted("re-scraping videos")
-@timed("re-scraping videos", precision=1)
-def rescrape_missing_decklists() -> None:
-    """Re-scrape those YT videos that contain decklists that are missing from global decklists
-    repositories.
-    """
-    decklist_paths = {p for lst in find_orphans().values() for p in lst}
-    channels = defaultdict(set)
-    for path in [DataPath.from_path(p) for p in decklist_paths]:
-        channels[path.channel_id].add(path.video_id)
-
-    if not channels:
-        _log.info("No videos found that needed re-scraping")
-        return
-
-    with ScrapingSession() as session:
-        manager = UrlsStateManager()
-        manager.ignore_scraped = True
-        for i, (channel_id, video_ids) in enumerate(channels.items(), start=1):
-            _log.info(
-                f"Re-scraping ==> {i}/{len(channels)} <== channel for missing decklists data...")
-            _process_videos(channel_id, *video_ids)
-
-
-@http_requests_counted("re-scraping videos")
-@timed("re-scraping videos", precision=1)
-def rescrape_videos(
-        *chids: str, video_filter: Callable[[dict], bool] = lambda _: True) -> None:
-    """Re-scrape videos across all specified channels. Optionally, define a video-filtering
-    predicate.
-
-    The default for scraping is all known channels and all their videos.
-
-    Args:
-        *chids: channel IDs
-        video_filter: video-filtering predicate
-    """
-    chids = chids or retrieve_ids()
-    channels = defaultdict(list)
-    for chid in tqdm(chids, total=len(chids), desc="Retrieving video data per channel..."):
-        with logging_disabled():
-            ch = load_channel(chid)
-        vids = [v["id"] for v in ch.videos if video_filter(v)]
-        if vids:
-            channels[chid].extend(vids)
-
-    if not channels:
-        _log.info("No videos found that needed re-scraping")
-        return
-
-    with ScrapingSession():
-        manager = UrlsStateManager()
-        manager.ignore_scraped_within_current_video, manager.ignore_failed = True, True
-        for i, (channel_id, video_ids) in enumerate(channels.items(), start=1):
-            _log.info(
-                f"Re-scraping {len(video_ids)} video(s) of ==> {i}/{len(channels)} <== channel...")
-            _process_videos(channel_id, *video_ids)
 
 
 @http_requests_counted("channel videos scraping")
@@ -347,222 +272,6 @@ def scrape_all(videos=VIDEOS_COUNT, only_newer_than_last_scraped=True) -> None:
     scrape_very_deck_stale(videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
     scrape_excessively_deck_stale(
         videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
-
-
-# TODO: async, Dropbox (#376)
-class LinksExpander:
-    """Expand links to prospective pages into lines eligible for deck-processing.
-
-    Note: On 15th Jan 2025 there were only 108 `pastebin.com` and 2 `gist.github.com` links
-    identified across 278,101 links scraped so far from YT videos' descriptions in total.
-    """
-    PASTEBIN_LIKE_HOOKS = {
-        "gist.github.com/",
-        "pastebin.com/",
-    }
-    OBSCURE_PASTEBIN_LIKE_HOOKS = {
-        "bitbin.it/",
-        "bpa.st/",
-        "cl1p.net/",
-        "codebeautify.org/",
-        "codeshare.io/",
-        "commie.io/",
-        "controlc.com/",
-        "cutapaste.net/",
-        "defuse.ca/pastebin.htm/",
-        "dotnetfiddle.net/",
-        "dpaste.com/",
-        "dpaste.org/",
-        "everfall.com/paste/",
-        "friendpaste.com/",
-        "hastebin.com/",
-        "ide.geeksforgeeks.org/",
-        "ideone.com/",
-        "ivpaste.com/",
-        "jpst.it/",
-        "jsbin.com/",
-        "jsfiddle.net/",
-        "jsitor.com/",
-        "justpaste.it/",
-        "justpaste.me/",
-        "kpaste.net/",
-        "n0paste.tk/",
-        "nekobin.com/",
-        "notes.io/",
-        "p.ip.fi/",
-        "paste-bin.xyz/",
-        "paste.centos.org/",
-        "paste.debian.net/",
-        "paste.ee/",
-        "paste.jp/",
-        "paste.mozilla.org/",
-        "paste.ofcode.org/",
-        "paste.opensuse.org/",
-        "paste.org.ru/",
-        "paste.rohitab.com/",
-        "paste.sh/",
-        "paste2.org/",
-        "pastebin.ai/",
-        "pastebin.fi/",
-        "pastebin.fr/",
-        "pastebin.osuosl.org/",
-        "pastecode.io/",
-        "pasted.co/",
-        "pasteio.com/",
-        "pastelink.net/",
-        "pastie.org/",
-        "privatebin.net/",
-        "pst.innomi.net/",
-        "quickhighlighter.com/",
-        "termbin.com/",
-        "tny.cz/",
-        "tutpaste.com/",
-        "vpaste.net/",
-        "www.paste.lv/",
-        "www.paste4btc.com/",
-        "www.pastebin.pt/",
-    }
-    _PATREON_XPATH = "//div[contains(@class, 'sc-dtMgUX') and contains(@class, 'IEufa')]"
-    _PATREON_XPATH2 = "//div[contains(@class, 'sc-b20d4e5f-0') and contains(@class, 'fbPSoT')]"
-    _GOOGLE_DOC_XPATH = "//div[@id='docs-editor-container']"
-
-    @property
-    def expanded_links(self) -> list[str]:
-        return self._expanded_links
-
-    @property
-    def gathered_links(self) -> list[str]:
-        return self._gathered_links
-
-    @property
-    def lines(self) -> list[str]:
-        return self._lines
-
-    def __init__(self, *links: str) -> None:
-        self._urls_manager = UrlsStateManager()
-        self._links = [l for l in links if not self._urls_manager.is_failed(l)]
-        self._expanded_links, self._gathered_links, self._lines = [], [], []
-        self._expand()
-
-    @classmethod
-    def is_pastebin_like_url(cls, url: str) -> bool:
-        return any(h in url for h in cls.PASTEBIN_LIKE_HOOKS)
-
-    @classmethod
-    def is_obscure_pastebin_like_url(cls, url: str) -> bool:
-        return any(h in url for h in cls.OBSCURE_PASTEBIN_LIKE_HOOKS)
-
-    @backoff.on_exception(
-        backoff.expo, (ConnectionError, HTTPError, ReadTimeout), max_time=60)
-    def _expand(self) -> None:
-        for link in self._links:
-            if self.is_pastebin_like_url(link):
-                _log.info(f"Expanding {link!r}...")
-                self._expand_pastebin(link)
-            elif self.is_obscure_pastebin_like_url(link):
-                _log.warning(f"Obscure pastebin-like link found: {link!r}...")
-            elif self.is_patreon_url(link):
-                _log.info(f"Expanding {link!r}...")
-                self._expand_patreon(link)
-            elif self.is_google_doc_url(link):
-                _log.info(f"Expanding {link!r}...")
-                self._expand_google_doc(link)
-
-    def _expand_pastebin(self, link: str) -> None:
-        original_link = link
-        if "gist.github.com/" in link and not link.endswith("/raw"):
-            link = f"{link}/raw"
-        elif "pastebin.com/" in link and "/raw/" not in link:
-            link = link.replace("pastebin.com/", "pastebin.com/raw/")
-
-        response = fetch(link)
-        if not response:
-            self._urls_manager.add_failed(original_link)
-            return
-
-        lines = [l.strip() for l in response.text.splitlines()]
-        self._lines += [l.strip() for l in response.text.splitlines()]
-        _log.info(f"Expanded {len(lines)} Pastebin-like line(s)")
-        self._expanded_links.append(original_link)
-
-    @staticmethod
-    def is_patreon_url(url: str) -> bool:
-        return "patreon.com/posts/" in url.lower()
-
-    def _get_patreon_text_tag(self, link: str) -> Tag | None:
-        try:
-            soup, _, _ = fetch_dynamic_soup(link, self._PATREON_XPATH, timeout=10)
-            if not soup:
-                _log.warning("Patreon post data not available")
-                self._urls_manager.add_failed(link)
-                return None
-            return soup.find("div", class_=lambda c: c and "sc-dtMgUX" in c and 'IEufa' in c)
-        except TimeoutException:
-            try:
-                soup, _, _ = fetch_dynamic_soup(link, self._PATREON_XPATH2)
-                if not soup:
-                    _log.warning("Patreon post data not available")
-                    self._urls_manager.add_failed(link)
-                    return None
-                return soup.find(
-                    "div", class_=lambda c: c and "sc-b20d4e5f-0" in c and 'fbPSoT' in c)
-            except TimeoutException:
-                _log.warning("Patreon post data not available")
-                self._urls_manager.add_failed(link)
-                return None
-
-    def _expand_patreon(self, link: str) -> None:
-        text_tag = self._get_patreon_text_tag(link)
-        if not text_tag:
-            return
-        lines = [p_tag.text.strip() for p_tag in text_tag.find_all("p")]
-        self._lines += lines
-        _log.info(f"Expanded {len(lines)} Patreon line(s)")
-        self._expanded_links.append(link)
-
-    @staticmethod
-    def is_google_doc_url(url: str) -> bool:
-        return "docs.google.com/document/" in url.lower()
-
-    def _expand_google_doc(self, link: str) -> None:
-        # url = "https://docs.google.com/document/d/1Bnsd4M7n_8LHfN6uEJVxoRr72antIEIO9w4YOGKltiU/edit"
-        try:
-            soup, _, _ = fetch_dynamic_soup(link, self._GOOGLE_DOC_XPATH)
-            if not soup:
-                _log.warning("Google Docs document data not available")
-                self._urls_manager.add_failed(link)
-                return
-        except TimeoutException:
-            _log.warning("Google Docs document data not available")
-            self._urls_manager.add_failed(link)
-            return
-
-        start = "DOCS_modelChunk = "
-        end = "; DOCS_modelChunkLoadStart = "
-        js = dissect_js(soup, start_hook=start, end_hook=end, left_split_on_start_hook=True)
-
-        if not js:
-            _log.warning("Google Docs document data not available")
-            self._urls_manager.add_failed(link)
-            return
-
-        matched_text, links = None, []
-        for i, d in enumerate(js):
-            match d:
-                case {"s": text} if i == 0:
-                    matched_text = text.strip()
-                case {"sm": {'lnks_link': {'ulnk_url': link}}}:
-                    links.append(link)
-                    self._gathered_links.append(link)
-                case _:
-                    pass
-
-        lines = []
-        if matched_text:
-            lines = [l.strip() for l in matched_text.splitlines()]
-            self._lines += lines
-
-        _log.info(f"Expanded {len(lines)} Google Docs line(s) and gathered {len(links)} link(s)")
 
 
 class PytubeError(ScrapingError):
@@ -1283,12 +992,6 @@ class ChannelScraper:
     #         return info.get('title'), info.get('channel_follower_count'), info.get(
     #             'description'), info.get('tags')
 
-    @property
-    def json(self) -> str | None:
-        if not self.data:
-            return None
-        return json.dumps(asdict(self.data), indent=4, ensure_ascii=False, default=serialize_dates)
-
     def dump(self, dstdir: PathLike = "", filename="") -> None:
         """Dump to a .json file.
 
@@ -1296,7 +999,7 @@ class ChannelScraper:
             dstdir: optionally, the destination directory (if not provided CWD is used)
             filename: optionally, a custom filename (if not provided a default is used)
         """
-        if not self.json:
+        if not self.data:
             _log.info("Nothing to dump")
             return
         dstdir = dstdir or OUTPUT_DIR / "json"
@@ -1305,5 +1008,5 @@ class ChannelScraper:
         filename = filename or f"{self.id}___{timestamp}_channel"
         dst = dstdir / f"{sanitize_filename(filename)}.json"
         _log.info(f"Exporting channel to: '{dst}'...")
-        dst.write_text(self.json, encoding="utf-8")
+        dst.write_text(self.data.as_dict, encoding="utf-8")
         self._cooloff_manager.bump_channel()
