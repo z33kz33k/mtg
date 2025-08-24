@@ -215,13 +215,18 @@ class DecklistsStateManager(_Singleton):
     def extended(self) -> dict[str, str]:
         return dict(self._extended)
 
+    @property
+    def is_loaded(self) -> bool:
+        return self._is_loaded
+
     def reset(self) -> None:  # override
         self._regular: dict[str, str] = {}
         self._extended: dict[str, str] = {}
         self._initial_regular_count, self._initial_extended_count = 0, 0
+        self._is_loaded = False
 
     def load(self) -> None:
-        if self._initial_regular_count or self._initial_extended_count:
+        if self.is_loaded:
             _log.warning("Decklists already loaded")
             return
         regular_src, extended_src = getfile(REGULAR_DECKLISTS_FILE), getfile(
@@ -233,6 +238,7 @@ class DecklistsStateManager(_Singleton):
             f"repository")
         self._extended = json.loads(extended_src.read_text(encoding="utf-8"))
         self._initial_extended_count = len(self._extended)
+        self._is_loaded = True
         _log.info(
             f"Loaded {self._initial_extended_count:,} extended decklist(s) from the global "
             f"repository")
@@ -246,12 +252,16 @@ class DecklistsStateManager(_Singleton):
         _log.info(f"Dumping {extended_count:,} decklist(s) to '{extended_dst}'...")
         extended_dst.write_text(
             json.dumps(self._extended, indent=4, ensure_ascii=False),encoding="utf-8")
+        regular_delta = regular_count - self._initial_regular_count
+        extended_delta = extended_count - self._initial_extended_count
         _log.info(
-            f"Total of {regular_count - self._initial_regular_count:,} unique regular "
-            f"decklist(s) added to the global repository")
+            f"Total of {abs(regular_delta):,} unique regular "
+            f"decklist(s) {'subtracted from' if regular_delta < 0 else 'added to'} the global "
+            f"repository")
         _log.info(
-            f"Total of {extended_count - self._initial_extended_count:,} unique extended "
-            f"decklist(s) added to the global repository")
+            f"Total of {abs(extended_delta):,} unique extended "
+            f"decklist(s) {'subtracted from' if extended_delta < 0 else 'added to'} the global "
+            f"repository")
 
     def add_regular(self, decklist_id: str, decklist: str) -> None:
         self._regular[decklist_id] = decklist

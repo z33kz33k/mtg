@@ -8,11 +8,15 @@
 
 """
 import json
-from dataclasses import asdict, astuple, dataclass
+from dataclasses import asdict, astuple, dataclass, fields
 from datetime import date, datetime
+from functools import lru_cache
 from typing import Self
 
 from mtg import Json
+from mtg.deck import Deck
+from mtg.deck.arena import ArenaParser
+from mtg.gstate import DecklistsStateManager
 from mtg.utils import Counter, breadcrumbs
 from mtg.deck.scrapers.cardsrealm import get_source as cardsrealm_get_source
 from mtg.deck.scrapers.edhrec import get_source as edhrec_get_source
@@ -51,6 +55,34 @@ def sanitize_source(src: str) -> str:
     return src
 
 
+@dataclass
+class SerializedDeck:
+    metadata: Json
+    decklist_id: str
+    decklist_extended_id: str
+
+    @property
+    def json(self) -> Json:
+        return json.dumps(asdict(self), indent=4, ensure_ascii=False, default=serialize_dates)
+
+    def __hash__(self) -> int:
+        return hash(self.json)
+
+    def __eq__(self, other: Self) -> bool:
+        return isinstance(other, SerializedDeck) and self.json == other.json
+
+    @lru_cache
+    def deck(self, extended=True) -> Deck | None:
+        manager = DecklistsStateManager()
+        if not manager.is_loaded:
+            manager.load()
+        decklist = manager.retrieve(
+            self.decklist_extended_id) if extended else manager.retrieve(self.decklist_id)
+        if not decklist:
+            return None
+        return ArenaParser(decklist, self.metadata).parse()
+
+
 # # TODO: formalize video data structure (#231)
 @dataclass
 class Video:
@@ -63,9 +95,16 @@ class Video:
     publish_time: datetime
     views: int
     sources: list[str]
-    decks: list[dict[str, Json | str]]
+    decks: list[SerializedDeck]
     # injected from Channel
     scrape_time: datetime | None = None
+
+    @classmethod
+    def from_dict(cls, data: Json) -> Self:
+        field_names = {f.name for f in fields(cls)}
+        data = {k: v for k, v in data.items() if k in field_names}
+        data["decks"] = [SerializedDeck(**d) for d in data["decks"]]
+        return cls(**data)
 
 
 @dataclass
@@ -181,7 +220,7 @@ class Channel:
         return not (self.is_deck_stale or self.is_very_deck_stale or self.is_excessively_deck_stale)
 
     @property
-    def as_dict(self) -> Json:
+    def json(self) -> Json:
         return json.dumps(asdict(self), indent=4, ensure_ascii=False, default=serialize_dates)
 
 

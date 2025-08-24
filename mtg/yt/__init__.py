@@ -1008,5 +1008,5 @@ class ChannelScraper:
         filename = filename or f"{self.id}___{timestamp}_channel"
         dst = dstdir / f"{sanitize_filename(filename)}.json"
         _log.info(f"Exporting channel to: '{dst}'...")
-        dst.write_text(self.data.as_dict, encoding="utf-8")
+        dst.write_text(self.data.json, encoding="utf-8")
         self._cooloff_manager.bump_channel()
