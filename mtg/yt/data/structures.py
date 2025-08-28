@@ -7,27 +7,23 @@
     @author: z33k
 
 """
-import json
-from dataclasses import asdict, astuple, dataclass, fields
+from collections import OrderedDict
+from dataclasses import asdict, astuple, dataclass, field, fields
 from datetime import date, datetime
 from functools import lru_cache
-from typing import Self
+from operator import attrgetter
+from typing import Self, override
 
 from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.gstate import DecklistsStateManager
 from mtg.utils import Counter, breadcrumbs
-from mtg.deck.scrapers.cardsrealm import get_source as cardsrealm_get_source
-from mtg.deck.scrapers.edhrec import get_source as edhrec_get_source
-from mtg.deck.scrapers.hareruya import get_source as hareruya_get_source
-from mtg.deck.scrapers.melee import get_source as melee_get_source
-from mtg.deck.scrapers.mtgarenapro import get_source as mtgarenapro_get_source
-from mtg.deck.scrapers.scg import get_source as scg_get_source
-from mtg.deck.scrapers.tcgplayer import get_source as tcgplayer_get_source
-from mtg.utils.json import serialize_dates
+from mtg.utils.json import to_json
+from mtg.utils.scrape import extract_url, get_netloc_domain
 
-
+VIDEO_URL_TEMPLATE = "https://www.youtube.com/watch?v={}"
+CHANNEL_URL_TEMPLATE = "https://www.youtube.com/channel/{}"
 ACTIVE_THRESHOLD = 14  # days (2 weeks)
 DORMANT_THRESHOLD = 30 * 3  # days (ca 3 months)
 ABANDONED_THRESHOLD = 30 * 12  # days (ca. 1 yr)
@@ -36,40 +32,35 @@ VERY_DECK_STALE_THRESHOLD = 100  # videos
 EXCESSIVELY_DECK_STALE_THRESHOLD = 150  # videos
 
 
-def sanitize_source(src: str) -> str:
-    src = src.removeprefix("www.")
-    if new_src := cardsrealm_get_source(src):
-        src = new_src
-    elif new_src := edhrec_get_source(src):
-        src = new_src
-    elif new_src := hareruya_get_source(src):
-        src = new_src
-    elif new_src := melee_get_source(src):
-        src = new_src
-    elif new_src := mtgarenapro_get_source(src):
-        src = new_src
-    elif new_src := scg_get_source(src):
-        src = new_src
-    elif new_src := tcgplayer_get_source(src):
-        src = new_src
-    return src
-
-
 @dataclass
-class SerializedDeck:
-    metadata: Json
-    decklist_id: str
-    decklist_extended_id: str
+class _JsonSerializable:
+    @property
+    def json(self) -> str:
+        return to_json(self.as_dict or asdict(self))
 
     @property
-    def json(self) -> Json:
-        return json.dumps(asdict(self), indent=4, ensure_ascii=False, default=serialize_dates)
+    def as_dict(self) -> Json:
+        return {}
 
     def __hash__(self) -> int:
         return hash(self.json)
 
     def __eq__(self, other: Self) -> bool:
-        return isinstance(other, SerializedDeck) and self.json == other.json
+        return isinstance(other, type(self)) and self.json == other.json
+
+
+@dataclass
+class SerializedDeck(_JsonSerializable):
+    metadata: Json
+    decklist_id: str
+    decklist_extended_id: str
+
+    def __post_init__(self) -> None:
+        self.metadata = OrderedDict(sorted((k, v) for k, v in self.metadata.items()))
+
+    @property
+    def source(self) -> str:
+        return Deck.url_to_source(self.metadata.get("url"))
 
     @lru_cache
     def deck(self, extended=True) -> Deck | None:
@@ -83,64 +74,96 @@ class SerializedDeck:
         return ArenaParser(decklist, self.metadata).parse()
 
 
-# # TODO: formalize video data structure (#231)
 @dataclass
-class Video:
+class Video(_JsonSerializable):
     id: str
-    url: str
     author: str
     title: str
     description: str
     keywords: list[str]
     publish_time: datetime
     views: int
-    sources: list[str]
-    decks: list[SerializedDeck]
+    comment: str | None = None
+    decks: list[SerializedDeck] = field(default_factory=list)
     # injected from Channel
     scrape_time: datetime | None = None
 
+    @property
+    def url(self) -> str:
+        return VIDEO_URL_TEMPLATE.format(self.id)
+
+    @property
+    def deck_urls(self) -> set[str]:
+        return {d.metadata["url"] for d in self.decks if d.metadata.get("url")}
+
+    @property
+    def featured_urls(self) -> list[str]:
+        text = self.title + "\n" + self.description
+        if self.comment:
+            text += f"\n{self.comment}"
+        lines = text.splitlines()
+        return sorted({url for url in [extract_url(l) for l in lines] if url})
+
+    @property
+    def domains(self) -> list[str]:
+        domains = [
+            get_netloc_domain(url).lower().removeprefix("www.") for url in self.featured_urls]
+        return sorted({domain for domain in domains if domain})
+
+    @property
+    @override
+    def as_dict(self) -> Json:
+        data = asdict(self)
+        del data["scrape_time"]
+        if not self.comment:
+            del data["comment"]
+        return data
+
     @classmethod
-    def from_dict(cls, data: Json) -> Self:
+    def from_dict(cls, data: Json, scrape_time: datetime | None = None) -> Self:
         field_names = {f.name for f in fields(cls)}
         data = {k: v for k, v in data.items() if k in field_names}
         data["decks"] = [SerializedDeck(**d) for d in data["decks"]]
-        return cls(**data)
+        return cls(**data, scrape_time=scrape_time)
 
 
 @dataclass
-class Channel:
+class Channel(_JsonSerializable):
     id: str
     title: str | None
     description: str | None
     tags: list[str] | None
-    subscribers: int
+    subscribers: int | None
     scrape_time: datetime
-    videos: list[dict]
+    videos: list[Video]
 
     @property
-    def decks(self) -> list[dict]:
-        return [d for v in self.videos for d in v["decks"]]
+    def url(self) -> str:
+        return CHANNEL_URL_TEMPLATE.format(self.id)
 
     @property
-    def sources(self) -> list[str]:
-        return sorted({s for v in self.videos for s in v["sources"]})
+    def decks(self) -> list[SerializedDeck]:
+        return [d for v in self.videos for d in v.decks]
+
+    @property
+    def domains(self) -> list[str]:
+        return sorted({domain for v in self.videos for domain in v.domains})
 
     @property
     def deck_urls(self) -> set[str]:
-        return {d["metadata"]["url"] for d in self.decks
-                if d.get("metadata") and d["metadata"].get("url")}
+        return {url for v in self.videos for url in v.deck_urls}
 
     @property
     def deck_sources(self) -> Counter:
-        return Counter(sanitize_source(d["metadata"]["source"]) for d in self.decks)
+        return Counter(d.source for d in self.decks)
 
     @property
     def deck_formats(self) -> Counter:
-        return Counter(d["metadata"]["format"] for d in self.decks if d["metadata"].get("format"))
+        return Counter(d.metadata["format"] for d in self.decks if d.metadata.get("format"))
 
     @property
     def staleness(self) -> int | None:
-        return (date.today() - self.videos[0]["publish_time"].date()).days if self.videos else None
+        return (date.today() - self.videos[0].publish_time.date()).days if self.videos else None
 
     @property
     def deck_staleness(self) -> int:
@@ -148,16 +171,15 @@ class Channel:
         """
         if not self.decks:
             return len(self.videos)
-        video_ids = [v["id"] for v in self.videos]
-        deck_ids = [v["id"] for v in self.videos if v["decks"]]
-        return len(self.videos[:video_ids.index(deck_ids[0])])
+        video_ids = [v.id for v in self.videos]
+        deck_video_ids = [v.id for v in self.videos if v.decks]
+        return len(self.videos[:video_ids.index(deck_video_ids[0])])
 
     @property
     def span(self) -> int | None:
-        if self.videos:
-            return (self.videos[0]["publish_time"].date() - self.videos[-1]["publish_time"].date(
-                )).days
-        return None
+        if not self.videos:
+            return None
+        return (self.videos[0].publish_time.date() - self.videos[-1].publish_time.date()).days
 
     @property
     def posting_interval(self) -> float | None:
@@ -165,7 +187,7 @@ class Channel:
 
     @property
     def total_views(self) -> int:
-        return sum(v["views"] for v in self.videos)
+        return sum(v.views for v in self.videos)
 
     @property
     def subs_activity(self) -> float | None:
@@ -220,8 +242,20 @@ class Channel:
         return not (self.is_deck_stale or self.is_very_deck_stale or self.is_excessively_deck_stale)
 
     @property
-    def json(self) -> Json:
-        return json.dumps(asdict(self), indent=4, ensure_ascii=False, default=serialize_dates)
+    @override
+    def as_dict(self) -> Json:
+        data = asdict(self)
+        data["videos"] = [v.as_dict for v in self.videos]
+        return data
+
+    @classmethod
+    def from_dict(cls, data: Json, sort_videos_by_publish_time=True) -> Self:
+        field_names = {f.name for f in fields(cls)}
+        data = {k: v for k, v in data.items() if k in field_names}
+        data["videos"] = [Video.from_dict(v, data["scrape_time"]) for v in data["videos"]]
+        if sort_videos_by_publish_time:
+            data["videos"].sort(key=attrgetter("publish_time"), reverse=True)
+        return cls(**data)
 
 
 @dataclass(frozen=True)

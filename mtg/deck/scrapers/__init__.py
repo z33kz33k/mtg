@@ -23,9 +23,9 @@ from mtg.deck import CardNotFound, Deck, DeckParser, InvalidDeck
 from mtg.deck.arena import ArenaParser
 from mtg.gstate import UrlsStateManager
 from mtg.utils import ParsingError, timed
-from mtg.utils.scrape import InaccessiblePage, ScrapingError, Soft404Error, find_links, fetch_soup, \
+from mtg.utils.scrape import InaccessiblePage, ScrapingError, Soft404Error, fetch_soup, find_links, \
     prepend_url
-from mtg.utils.scrape import Throttling, extract_source, throttle
+from mtg.utils.scrape import Throttling, throttle
 from mtg.utils.scrape.dynamic import fetch_dynamic_soup
 
 _log = logging.getLogger(__name__)
@@ -146,7 +146,6 @@ class DeckScraper(DeckParser):
 
     def _post_init(self) -> None:
         self._metadata["url"] = self.url
-        self._metadata["source"] = extract_source(self.url)
 
     @classmethod
     def _validate_url(cls, url: str) -> None:
@@ -283,7 +282,7 @@ type Collected = list[str | Tag | Json] | tuple[list[str], list[Tag], list[Json]
 class ContainerScraper(DeckScraper):
     """Abstract base container scraper.
 
-    Note: container scrapers don't scrape their page by themselves. Instead, they only collect
+    Container scrapers don't scrape their page by themselves. Instead, they only collect
     relevant deck-containing links/tags/JSON and delegate this work to their sub-scrapers or
     sub-parsers. Still, occasionally, a container scraper may need to actually parse some part of
     their page (e.g. to gather metadata or some other data common (and therefore out of scope) for
@@ -496,7 +495,6 @@ class DeckTagsContainerScraper(ContainerScraper):
         super().__init__(url, metadata)
         if self.TAG_BASED_DECK_PARSER:
             self._metadata["url"] = self.url
-            self._metadata["source"] = extract_source(self.url)
         self._deck_tags: list[Tag] = []
 
     @staticmethod
@@ -558,7 +556,6 @@ class DecksJsonContainerScraper(ContainerScraper):
         super().__init__(url, metadata)
         if self.JSON_BASED_DECK_PARSER:
             self._metadata["url"] = self.url
-            self._metadata["source"] = extract_source(self.url)
         self._decks_data: Json = []
 
     @staticmethod

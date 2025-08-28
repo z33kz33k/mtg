@@ -28,15 +28,6 @@ from mtg.utils.scrape import ScrapingError, fetch_json, strip_url_query, throttl
 from mtg.utils.scrape.dynamic import SCROLL_DOWN_TIMES, fetch_dynamic_soup
 
 _log = logging.getLogger(__name__)
-
-
-def get_source(src: str) -> str | None:
-    if ".tcgplayer.com" in src:
-        _, *parts = src.split(".")
-        return ".".join(parts)
-    return None
-
-
 HEADERS = {
     "Host": "decks.tcgplayer.com",
     "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:137.0) Gecko/20100101 Firefox/137.0",

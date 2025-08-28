@@ -8,6 +8,7 @@
 
 """
 import contextlib
+import json
 from datetime import date, datetime
 from typing import Any, Callable, Generator, Iterator, Self
 
@@ -42,6 +43,14 @@ def deserialize_dates(dct: dict) -> dict:
                     # leave it as a string if both parsing attempts fail
                     dct[key] = date.fromisoformat(value)
     return dct
+
+
+def to_json(data: Json) -> str:
+    return json.dumps(data, indent=4, ensure_ascii=False, default=serialize_dates)
+
+
+def from_json(json_text: str) -> Json:
+    return json.loads(json_text, object_hook=deserialize_dates)
 
 
 class Node:

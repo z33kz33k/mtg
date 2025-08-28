@@ -51,13 +51,6 @@ URL_HOOKS = (
 )
 
 
-def get_source(src: str) -> str | None:
-    if ".edhrec.com" in src:
-        _, *parts = src.split(".")
-        return ".".join(parts)
-    return None
-
-
 def _get_data(
         url: str,
         scraper: Type[DeckScraper] | Type[HybridContainerScraper],

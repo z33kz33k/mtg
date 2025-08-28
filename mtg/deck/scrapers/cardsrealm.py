@@ -59,12 +59,6 @@ URL_HOOKS = (
 )
 
 
-def get_source(src: str) -> str | None:
-    if "cardsrealm.com" in src and "mtg." not in src:
-        return "mtg.cardsrealm.com"
-    return None
-
-
 def to_eng_url(url: str, first_non_lang_segment: str) -> str:
     segments = get_path_segments(url)
     if not segments:

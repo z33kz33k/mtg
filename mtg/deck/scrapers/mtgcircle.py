@@ -15,7 +15,6 @@ from typing import Callable, Type, override
 from bs4 import BeautifulSoup, Tag
 
 from mtg import Json
-from mtg.deck import Deck
 from mtg.deck.scrapers import DeckScraper, HybridContainerScraper, JsonBasedDeckParser
 from mtg.scryfall import Card, all_formats
 from mtg.utils import from_iterable
@@ -114,6 +113,14 @@ class MtgCircleVideoDeckScraper(DeckScraper):
         if "/" not in rest:
             return False
         return True
+
+    # FIXME: this doesn't work as it's in a part loaded dynamically
+    @override
+    def _is_soft_404_error(self) -> bool:
+        texts = "Oops! Something went wrong on our end", "This page does not exist"
+        if self._soup.find("h1", string=lambda s: s and s in texts):
+            return True
+        return False
 
     def _retrieve_deck_data(self, data: Json) -> Json:
         node = Node(data)

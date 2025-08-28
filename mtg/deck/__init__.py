@@ -9,7 +9,6 @@
 """
 import contextlib
 import itertools
-import json
 import logging
 import re
 from abc import ABC, abstractmethod
@@ -28,7 +27,8 @@ from mtg.scryfall import (
     find_by_scryfall_id, find_by_tcgplayer_id, find_sets,
     query_api_for_card)
 from mtg.utils import ParsingError, from_iterable, getid, getrepr, remove_furigana, type_checker
-from mtg.utils.json import serialize_dates
+from mtg.utils.json import to_json
+from mtg.utils.scrape import get_netloc_domain
 
 _log = logging.getLogger(__name__)
 ARENA_MULTIFACE_SEPARATOR = " /// "  # this is different from Scryfall data where they use: ' // '
@@ -354,6 +354,25 @@ class InvalidDeck(ParsingError):
     """
 
 
+def sanitize_deck_source(src: str) -> str:
+    src = src.lower().removeprefix("www.")
+    if "cardsrealm.com" in src:
+        return "mtg.cardsrealm.com"
+    if "edhrec.com" in src:
+        return "edhrec.com"
+    if "hareruyamtg.com" in src:
+        return "hareruyamtg.com"
+    if "mtgmelee.com" in src:
+        return "melee.gg"
+    if "mtga.cc" in src:
+        return "mtgarena.pro"
+    if "starcitygames.com" in src:
+        return "starcitygames.com"
+    if "tcgplayer.com" in src:
+        return "tcgplayer.com"
+    return src
+
+
 # this class tries to be as generic as possible and still support multiple Constructed formats
 # this means some more complicated formats like Oathbreaker are not fully supported (e.g a Deck
 # knows nothing about signature spells) to not over-complicate things (by either going into an
@@ -557,16 +576,16 @@ class Deck:
         return self.metadata.get("name")
 
     @property
-    def source(self) -> str | None:
-        return self.metadata.get("source")
+    def url(self) -> str | None:
+        return self.metadata.get("url")
+
+    @property
+    def source(self) -> str:
+        return self.url_to_source(self.url)
 
     @property
     def format(self) -> str | None:
         return self.metadata.get("format")
-
-    @property
-    def url(self) -> str | None:
-        return self.metadata.get("url")
 
     @property
     def is_meta_deck(self) -> bool:
@@ -584,6 +603,12 @@ class Deck:
             return None
         sets = sorted(sets, key=attrgetter("released_at"))
         return [s.code for s in sets][-1]
+
+    @classmethod
+    def url_to_source(cls, url: str | None) -> str:
+        if not url:
+            return "arena.decklist"
+        return sanitize_deck_source(get_netloc_domain(url))
 
     def __init__(
             self, maindeck: Iterable[Card], sideboard: Iterable[Card] | None = None,
@@ -790,7 +815,7 @@ class Deck:
             "decklist_id": self.decklist_id,
             "decklist_extended_id": self.decklist_extended_id,
         }
-        return json.dumps(data, indent=4, ensure_ascii=False, default=serialize_dates)
+        return to_json(data)
 
 
 class _ParsingStates(Enum):

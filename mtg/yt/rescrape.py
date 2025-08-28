@@ -8,7 +8,6 @@
 
 """
 import itertools
-import json
 import logging
 import shutil
 from collections import defaultdict
@@ -22,13 +21,12 @@ from mtg import OUTPUT_DIR, PathLike
 from mtg.gstate import CHANNELS_DIR, DecklistsStateManager, UrlsStateManager
 from mtg.utils import logging_disabled, timed
 from mtg.utils.files import getdir, getfile
-from mtg.utils.json import deserialize_dates, serialize_dates
+from mtg.utils.json import from_json, to_json
 from mtg.utils.scrape import http_requests_counted
 from mtg.yt import scrape_channel_videos
 from mtg.yt.data import ScrapingSession, get_channels_count, load_channel, load_channels, \
     retrieve_ids
-from mtg.yt.data.structures import DataPath
-
+from mtg.yt.data.structures import DataPath, Video
 
 _log = logging.getLogger(__name__)
 
@@ -44,11 +42,11 @@ def find_orphans() -> dict[str, list[str]]:
     regular_ids, extended_ids = {}, {}
     for ch in tqdm(load_channels(), total=get_channels_count(), desc="Loading channels data..."):
         for v in ch.videos:
-            for deck in v["decks"]:
-                path_regular = DataPath(ch.id, v["id"], deck["decklist_id"])
-                path_extended = DataPath(ch.id, v["id"], deck["decklist_extended_id"])
-                regular_ids[deck["decklist_id"]] = path_regular
-                extended_ids[deck["decklist_extended_id"]] = path_extended
+            for deck in v.decks:
+                path_regular = DataPath(ch.id, v.id, deck.decklist_id)
+                path_extended = DataPath(ch.id, v.id, deck.decklist_extended_id)
+                regular_ids[deck.decklist_id] = path_regular
+                extended_ids[deck.decklist_extended_id] = path_extended
 
     manager = DecklistsStateManager()
     manager.reset()
@@ -72,7 +70,7 @@ def prune_channel_file(file: PathLike, *video_ids: str) -> None:
     """
     file = getfile(file)
     _log.info(f"Pruning {len(video_ids)} video(s) from '{file}'...")
-    data = json.loads(file.read_text(encoding="utf-8"), object_hook=deserialize_dates)
+    data = from_json(file.read_text(encoding="utf-8"))
     videos = data["videos"]
     data["videos"], indices = [], []
     for i, video in enumerate(videos):
@@ -84,9 +82,7 @@ def prune_channel_file(file: PathLike, *video_ids: str) -> None:
 
     if indices:
         _log.info(f"Dumping pruned channel data at: '{file}'...")
-        file.write_text(
-            json.dumps(data, indent=2, ensure_ascii=False, default=serialize_dates),
-            encoding="utf-8")
+        file.write_text(to_json(data), encoding="utf-8")
     else:
         _log.info(f"Nothing to prune in '{file}'")
 
@@ -102,7 +98,7 @@ def find_channel_files(channel_id: str, *video_ids: str) -> list[str]:
         raise FileNotFoundError(f"No channel files found at: '{channel_dir}'")
     filtered = []
     for file in files:
-        data = json.loads(file.read_text(encoding="utf-8"), object_hook=deserialize_dates)
+        data = from_json(file.read_text(encoding="utf-8"))
         if any(video["id"] in video_ids for video in data["videos"]):
             filtered.append(file.as_posix())
     return filtered
@@ -162,7 +158,7 @@ def rescrape_missing_decklists() -> None:
 @http_requests_counted("re-scraping videos")
 @timed("re-scraping videos", precision=1)
 def rescrape_videos(
-        *chids: str, video_filter: Callable[[dict], bool] = lambda _: True) -> None:
+        *chids: str, video_filter: Callable[[Video], bool] = lambda _: True) -> None:
     """Re-scrape videos across all specified channels. Optionally, define a video-filtering
     predicate.
 
@@ -177,7 +173,7 @@ def rescrape_videos(
     for chid in tqdm(chids, total=len(chids), desc="Retrieving video data per channel..."):
         with logging_disabled():
             ch = load_channel(chid)
-        vids = [v["id"] for v in ch.videos if video_filter(v)]
+        vids = [v.id for v in ch.videos if video_filter(v)]
         if vids:
             channels[chid].extend(vids)
 

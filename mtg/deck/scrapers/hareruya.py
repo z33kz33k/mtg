@@ -25,13 +25,6 @@ from mtg.utils.scrape import ScrapingError, find_next_sibling_tag, get_path_segm
 _log = logging.getLogger(__name__)
 
 
-def get_source(src: str) -> str | None:
-    if ".hareruyamtg.com" in src:
-        _, *parts = src.split(".")
-        return ".".join(parts)
-    return None
-
-
 URL_HOOKS = (
     # international deck
     UrlHook(

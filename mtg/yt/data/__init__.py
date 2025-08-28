@@ -20,19 +20,16 @@ from typing import Callable, Generator, Iterator, Self, Type
 
 from tqdm import tqdm
 
-from mtg import AVOIDED_DIR, FILENAME_TIMESTAMP_FORMAT, Json, READABLE_TIMESTAMP_FORMAT, README
+from mtg import AVOIDED_DIR, FILENAME_TIMESTAMP_FORMAT, READABLE_TIMESTAMP_FORMAT, README
 from mtg.gstate import CHANNELS_DIR, CoolOffManager, DecklistsStateManager, UrlsStateManager
 from mtg.utils import Counter, logging_disabled
 from mtg.utils.files import getdir
 from mtg.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
-from mtg.utils.json import deserialize_dates
-from mtg.utils.scrape import extract_url, fetch_soup
-from mtg.yt.data.structures import Channel, sanitize_source
-
+from mtg.utils.json import from_json
+from mtg.utils.scrape import fetch_soup
+from mtg.yt.data.structures import CHANNEL_URL_TEMPLATE, Channel, Video
 
 _log = logging.getLogger(__name__)
-VIDEO_URL_TEMPLATE = "https://www.youtube.com/watch?v={}"
-CHANNEL_URL_TEMPLATE = "https://www.youtube.com/channel/{}"
 
 
 def get_channels_count() -> int:
@@ -77,23 +74,20 @@ def load_channel(channel_id: str) -> Channel:
     channels = []
     for file in files:
         try:
-            channel = json.loads(file.read_text(encoding="utf-8"), object_hook=deserialize_dates)
+            data = from_json(file.read_text(encoding="utf-8"))
         except json.JSONDecodeError:
             _log.critical(f"Failed to load channel data from: '{file}'")
             sys.exit(1)
-        # deal with legacy data that contains "url"
-        if "url" in channel:
-            del channel["url"]
-        channels.append(Channel(**channel))
+        channels.append(Channel.from_dict(data, sort_videos_by_publish_time=False))
     channels.sort(key=attrgetter("scrape_time"), reverse=True)
 
     seen, videos = set(), []
     for video in itertools.chain(*[c.videos for c in channels]):
-        if video["id"] in seen:
+        if video.id in seen:
             continue
-        seen.add(video["id"])
+        seen.add(video.id)
         videos.append(video)
-    videos.sort(key=itemgetter("publish_time"), reverse=True)
+    videos.sort(key=attrgetter("publish_time"), reverse=True)
 
     return Channel(
         id=channels[0].id,
@@ -128,7 +122,7 @@ def update_gsheet() -> None:
             deck_sources = [pair[0] for pair in deck_sources]
             data.append([
                 ch.title,
-                CHANNEL_URL_TEMPLATE.format(ch.id),
+                ch.url,
                 ch.scrape_time.date().strftime("%Y-%m-%d"),
                 ch.staleness if ch.staleness is not None else "N/A",
                 ch.posting_interval if ch.posting_interval is not None else "N/A",
@@ -141,7 +135,7 @@ def update_gsheet() -> None:
                 ch.subscribers or "N/A",
                 ", ".join(formats),
                 ", ".join(deck_sources),
-                ", ".join(ch.sources),
+                ", ".join(ch.domains),
             ])
         except FileNotFoundError:
             _log.warning(f"Channel data for ID {id_!r} not found. Skipping...")
@@ -192,18 +186,15 @@ def get_aggregate_deck_data() -> tuple[Counter, Counter]:
         for d in ch.decks]
     fmts = []
     for d in decks:
-        if fmt := d["metadata"].get("format"):
+        if fmt := d.metadata.get("format"):
             fmts.append(fmt)
-        elif d["metadata"].get("irregular_format"):
+        elif d.metadata.get("irregular_format"):
             fmts.append("irregular")
     delta = len(decks) - len(fmts)
     if delta > 0:
         fmts += ["undefined"] * delta
     format_counter = Counter(fmts)
-    sources = []
-    for d in decks:
-        src = sanitize_source(d["metadata"]["source"])
-        sources.append(src)
+    sources = [d.source for d in decks if d.source]
     source_counter = Counter(sources)
     return format_counter, source_counter
 
@@ -285,6 +276,9 @@ def remove_channel_data(*range_: datetime | str) -> None:
 def find_dangling_decklists() -> dict[str, str]:
     """Find those decklists in the global decklist repositories that have no counterpart in the
     scraped data.
+
+    Returns:
+        a mapping of decklist ID to decklists
     """
     manager = DecklistsStateManager()
     manager.reset()
@@ -296,8 +290,8 @@ def find_dangling_decklists() -> dict[str, str]:
         in tqdm(load_channels(), total=get_channels_count(), desc="Loading channels data...")
         for d in ch.decks]
     for d in decks:
-        scraped_regular.add(d["decklist_id"])
-        scraped_extended.add(d["decklist_extended_id"])
+        scraped_regular.add(d.decklist_id)
+        scraped_extended.add(d.decklist_extended_id)
     for decklist_id in loaded_regular:
         if decklist_id not in scraped_regular:
             dangling[decklist_id] = loaded_regular[decklist_id]
@@ -325,8 +319,11 @@ def prune_dangling_decklists() -> None:
 
 
 def fetch_channel_ids(*urls: str, only_new=True) -> list[str]:
-    """Fetch channel IDs from the provided channels URLs. By default return only the ones not
+    """Fetch channel IDs from the provided channels URLs. By default, return only the ones not
     already present in the private Google Sheet.
+
+    This function is for extracting channel IDs from links that does not contain it (they e.g. can
+    contain an author's YT handle instead).
     """
     retrieved_ids = set(retrieve_ids())
     ids = []
@@ -349,18 +346,9 @@ def fetch_channel_ids(*urls: str, only_new=True) -> list[str]:
     return ids
 
 
-# FIXME: turn into a new Video object's property (#231)
-def extract_urls_from_video_data(video_data: Json) -> list[str]:
-    text = video_data["title"] + "\n" + video_data["description"]
-    if comment := video_data.get("comment"):
-        text += f"\n{comment}"
-    lines = text.splitlines()
-    return [url for url in [extract_url(l) for l in lines] if url]
-
-
 def retrieve_video_data(
         *chids: str,
-        video_filter: Callable[[dict], bool] = lambda _: True) -> defaultdict[str, list[dict]]:
+        video_filter: Callable[[Video], bool] = lambda _: True) -> defaultdict[str, list[Video]]:
     """Retrieve video data for specified channels. Optionally, define a video-filtering
     predicate.
 
@@ -378,9 +366,9 @@ def retrieve_video_data(
     for chid in tqdm(chids, total=len(chids), desc="Retrieving video data per channel..."):
         with logging_disabled():
             ch = load_channel(chid)
-        vids = [v for v in ch.videos if video_filter(v)]
-        if vids:
-            channels[chid].extend(vids)
+        videos = [v for v in ch.videos if video_filter(v)]
+        if videos:
+            channels[chid].extend(videos)
     return channels
 
 

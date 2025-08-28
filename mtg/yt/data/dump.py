@@ -14,9 +14,7 @@ from typing import Generator, Literal
 from tqdm import tqdm
 
 from mtg import DECKS_DIR, FILENAME_TIMESTAMP_FORMAT, PathLike
-from mtg.deck.arena import ArenaParser
 from mtg.deck.export import Exporter, FORMATS as EXPORT_FORMATS
-from mtg.gstate import DecklistsStateManager
 from mtg.utils import logging_disabled
 from mtg.utils.files import getdir, sanitize_filename
 from mtg.yt.data import get_channels_count, load_channels
@@ -26,20 +24,19 @@ from mtg.yt.data.structures import Channel
 def _dump_data_gen(
         channels: list[Channel],
         dstdir: Path) -> Generator[tuple[Exporter | None, Path], None, None]:
-    manager = DecklistsStateManager()
-    manager.load()
-    for channel_data in channels:
-        if title := channel_data.title:
-            channel_dir = dstdir / f"{sanitize_filename(title)}_({channel_data.id})"
+    seen_decks = {}
+    for channel in channels:
+        if title := channel.title:
+            channel_dir = dstdir / f"{sanitize_filename(title)}_({channel.id})"
         else:
-            channel_dir = dstdir /channel_data.id
-        for video_data in channel_data.videos:
-            for deck_data in video_data["decks"]:
-                decklist = manager.extended[deck_data["decklist_extended_id"]]
-                metadata = dict(**deck_data["metadata"])
-                metadata["video_url"] = video_data["url"]
-                deck = ArenaParser(decklist, metadata=metadata).parse()
+            channel_dir = dstdir /channel.id
+        for video in channel.videos:
+            for serialized_deck in video.decks:
+                serialized_deck.metadata["video_url"] = video.url
+                # FIXME: improve decks' equivalence (#426)
+                deck = seen_decks.get(hash(serialized_deck), serialized_deck.deck())
                 if deck:
+                    seen_decks[hash(deck)] = deck
                     yield Exporter(deck), channel_dir
                 else:
                     yield None, channel_dir

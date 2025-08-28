@@ -35,13 +35,6 @@ _log = logging.getLogger(__name__)
 # could be utilized.
 
 
-def get_source(src: str) -> str | None:
-    if ".starcitygames.com" in src:
-        _, *parts = src.split(".")
-        return ".".join(parts)
-    return None
-
-
 class ScgDeckTagParser(TagBasedDeckParser):
     """Parser of a StarCityGames decklist page's HTML tag.
     """

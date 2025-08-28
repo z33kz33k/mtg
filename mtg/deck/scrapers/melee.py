@@ -39,12 +39,6 @@ ALT_DOMAIN = "mtgmelee.com"
 URL_PREFIX = "https://melee.gg"
 
 
-def get_source(src: str) -> str | None:
-    if ALT_DOMAIN in src:
-        return "melee.gg"
-    return None
-
-
 @DeckScraper.registered
 class MeleeGgDeckScraper(DeckScraper):
     """Scraper of Melee.gg decklist page.

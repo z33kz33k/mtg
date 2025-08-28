@@ -84,7 +84,7 @@ class Soft404Error(ScrapingError):
         super().__init__(message, scraper, url)
 
 
-http_requests_count = 0
+_http_requests_count = 0
 
 
 def handle_brotli(response: Response, return_json: bool = False) -> str | Json:
@@ -107,12 +107,12 @@ def fetch(
     (or None).
     """
     _log.info(f"Fetching: '{url}'...")
-    global http_requests_count
+    global _http_requests_count
     if postdata:
         response = requests.post(url, json=postdata, **requests_kwargs)
     else:
         response = requests.get(url, timeout=request_timeout, **requests_kwargs)
-    http_requests_count += 1
+    _http_requests_count += 1
     if handle_http_errors:
         if str(response.status_code)[0] in ("4", "5"):
             msg = f"Request for '{url}' failed with: '{response.status_code} {response.reason}'"
@@ -239,10 +239,10 @@ def http_requests_counted(operation="") -> Callable:
     def decorate(func: Callable) -> Callable:
         @wraps(func)
         def wrapper(*args, **kwargs):
-            global http_requests_count
-            initial_count = http_requests_count
+            global _http_requests_count
+            initial_count = _http_requests_count
             result = func(*args, **kwargs)
-            requests_made = http_requests_count - initial_count
+            requests_made = _http_requests_count - initial_count
             nonlocal operation
             operation = operation or f"{func.__name__!r}"
             _log.info(f"Needed {requests_made} HTTP request(s) to carry out {operation}")
@@ -307,7 +307,7 @@ def extract_url(text: str, https=True) -> str | None:
     match = re.search(pattern, text)
     if not match:
         return None
-    url = match.group("url").rstrip(",.])}/\u2060")
+    url = match.group("url").rstrip(",.[](){}/\u2060")
     if url.count("https://") > 1:
         return "https://" + [part for part in url.split("https://") if part][0]
     elif url.count("http://") > 1:
@@ -315,16 +315,6 @@ def extract_url(text: str, https=True) -> str | None:
     elif all(not url.startswith(t) for t in ("https://", "http://")) or len(url) < 10:
         return None
     return url
-
-
-def extract_source(url: str) -> str:
-    """Extract source domain from ``url``.
-    """
-    parts = [p for p in url.split("/") if p]
-    source = parts[1] if "http" in parts[0] else parts[0]
-    if "?" in source:
-        source, _ = source.split("?", maxsplit=1)
-    return source
 
 
 def dissect_js(
@@ -378,9 +368,24 @@ def strip_url_query(url: str, keep_fragment=False) -> str:
     return stripped_url.removesuffix("/")
 
 
+def get_netloc_domain(url: str) -> str:
+    """Return the netloc domain of the supplied URL.
+
+    E.g. supplying 'https://www.hareruyamtg.com/decks/1043414?utm_source=video' results in:
+        'www.hareruyamtg.com'
+    """
+    try:
+        return urllib.parse.urlsplit(url).netloc
+    except ValueError:
+        return ""
+
+
 def get_query_values(url: str, param: str) -> list[str]:
     """Return query parameter values from supplied URL. If URL is invalid, or on any other failure,
     return an empty list.
+
+    E.g. supplying 'https://www.hareruyamtg.com/decks/1023318?display_token=f9d56.d861dfb19d83d9' and 'display_token' results in:
+        ["f9d56.d861dfb19d83d9"]
     """
     try:
         query = urllib.parse.urlsplit(url).query

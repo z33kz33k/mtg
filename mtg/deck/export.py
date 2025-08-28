@@ -6,7 +6,6 @@
     @author: z33k
 
 """
-import json
 import logging
 from pathlib import Path
 from typing import Literal
@@ -14,12 +13,10 @@ from typing import Literal
 from mtg import OUTPUT_DIR, PathLike
 from mtg.deck import CardNotFound, Deck, DeckParser, Mode
 from mtg.deck.arena import ArenaParser, IllFormedArenaDecklist, is_arena_decklist
-
 from mtg.scryfall import Card, aggregate, set_cards
 from mtg.utils import ParsingError, from_iterable
-from mtg.utils.json import serialize_dates
 from mtg.utils.files import getdir, getfile, sanitize_filename, truncate_path
-from mtg.yt.data.structures import sanitize_source
+from mtg.utils.json import from_json as deserialize_json, to_json
 
 _log = logging.getLogger(__name__)
 FORMATS = "arena", "forge", "json", "xmage"
@@ -97,8 +94,7 @@ class Exporter:
             date = date.strftime("%Y%m%d")
             name += f"{date}{self.NAME_SEP}{self.NAME_SEP}"
         # prefix (source/author)
-        source = sanitize_source(self._deck.source) if self._deck.source else ""
-        source = source.replace(".", self.NAME_SEP)
+        source = self._deck.source.replace(".", self.NAME_SEP)
         if self._deck.is_meta_deck and source:
             prefix = source
         else:
@@ -159,7 +155,7 @@ class Exporter:
             "metadata": self._deck.metadata,
             "decklist": self._deck.decklist_extended if extended else self._deck.decklist,
         }
-        data = json.dumps(data, indent=4, ensure_ascii=False, default=serialize_dates)
+        data = to_json(data)
         dstdir = dstdir or OUTPUT_DIR / "json"
         dstdir = getdir(dstdir)
         dst = dstdir / f"{self._filename}.json"
@@ -181,8 +177,8 @@ class Exporter:
             lines += [f"Author={author}"]
         if date := self._deck.metadata.get("date"):
             lines += [f"Date={date}"]
-        if source := sanitize_source(self._deck.source) if self._deck.source else "":
-            lines += [f"Source={source}"]
+        if self._deck.source:
+            lines += [f"Source={self._deck.source}"]
         if url := self._deck.metadata.get("video_url") or self._deck.metadata.get("url"):
             lines += [f"URL={url}"]
         return lines
@@ -235,8 +231,8 @@ class Exporter:
             lines += [f"AUTHOR:{author}"]
         if date := self._deck.metadata.get("date"):
             lines += [f"DATE:{date}"]
-        if source := sanitize_source(self._deck.source) if self._deck.source else "":
-            lines += [f"SOURCE:{source}"]
+        if self._deck.source:
+            lines += [f"SOURCE:{self._deck.source}"]
         if url := self._deck.metadata.get("video_url") or self._deck.metadata.get("url"):
             lines += [f"URL:{url}"]
         return lines
@@ -409,7 +405,7 @@ def from_json(path: PathLike) -> Deck:
         path: path to a JSON deckfile
     """
     file = getfile(path, ".json")
-    data = json.loads(file.read_text(encoding="utf-8"))
+    data = deserialize_json(file.read_text(encoding="utf-8"))
     return ArenaParser(data["decklist"], data["metadata"]).parse()
 
 

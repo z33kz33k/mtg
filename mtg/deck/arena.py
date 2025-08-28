@@ -467,8 +467,7 @@ class ArenaParser(DeckParser):
 
     @override
     def _parse_metadata(self) -> None:
-        if not self._metadata.get("source"):
-            self._metadata["source"] = "arena.decklist"
+        pass
 
     # last safeguard against lines that mimicked Arena lines successfully enough
     # not to be weeded out at this point
