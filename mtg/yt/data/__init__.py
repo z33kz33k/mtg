@@ -22,7 +22,7 @@ from tqdm import tqdm
 
 from mtg import AVOIDED_DIR, FILENAME_TIMESTAMP_FORMAT, READABLE_TIMESTAMP_FORMAT, README
 from mtg.gstate import CHANNELS_DIR, CoolOffManager, DecklistsStateManager, UrlsStateManager
-from mtg.utils import Counter, logging_disabled
+from mtg.utils import Counter, get_ordinal_suffix, logging_disabled
 from mtg.utils.files import getdir
 from mtg.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
 from mtg.utils.json import from_json
@@ -203,12 +203,14 @@ def update_readme_with_deck_data() -> None:
     """Update README.md with aggregated deck data.
     """
     _log.info("Updating README.md with aggregated deck data...")
+    today = datetime.today()
+    dt = today.strftime(f"%d{get_ordinal_suffix(today.day)} %b %Y")
     fmt_c, src_c = get_aggregate_deck_data()
     table_lines = fmt_c.markdown("Format").splitlines() + [""] + src_c.markdown(
         "Source").splitlines() + [""]
     old_lines = README.read_text(encoding="utf-8").splitlines()
     idx = old_lines.index("### Scraped decks breakdown")
-    new_lines = old_lines[:idx + 1] + table_lines
+    new_lines = old_lines[:idx + 1] + [f"**{dt}**"] + table_lines
     README.write_text("\n".join(new_lines), encoding="utf-8")
     _log.info("README.md updates done")
 

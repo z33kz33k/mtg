@@ -160,6 +160,7 @@ YT videos descriptions).
 ![Most popular channels](assets/channels.jpg)
 
 ### Scraped decks breakdown
+**29th Aug 2025**
 | No | Format | Count | Percentage |
 |:---|:-----|------:|-----------:|
 | 1  | commander       | 79227 |    37.96 % |
