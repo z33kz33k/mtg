@@ -113,6 +113,7 @@ def update_gsheet() -> None:
     """
     data, ids = [], retrieve_ids()
     for id_ in tqdm(ids, total=len(ids), desc="Loading channels data..."):
+        url = CHANNEL_URL_TEMPLATE.format(id_)
         try:
             with logging_disabled():
                 ch = load_channel(id_)
@@ -140,12 +141,12 @@ def update_gsheet() -> None:
         except FileNotFoundError:
             _log.warning(f"Channel data for ID {id_!r} not found. Skipping...")
             data.append(
-                ["NOT AVAILABLE", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A",
+                ["NOT AVAILABLE", url, "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A",
                  "N/A", "N/A", "N/A", "N/A", "N/A"])
         except AttributeError as err:
             _log.warning(f"Corrupted Channel data for ID {id_!r}: {err}. Skipping...")
             data.append(
-                ["NOT AVAILABLE", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A",
+                ["NOT AVAILABLE", url, "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A",
                  "N/A", "N/A", "N/A", "N/A", "N/A"])
 
     extend_gsheet_rows_with_cols("mtga_yt", "channels", data, start_row=2, start_col=2)

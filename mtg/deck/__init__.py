@@ -12,7 +12,7 @@ import itertools
 import logging
 import re
 from abc import ABC, abstractmethod
-from collections import Counter, OrderedDict
+from collections import Counter
 from enum import Enum, auto
 from functools import cached_property
 from operator import attrgetter, itemgetter
@@ -569,7 +569,7 @@ class Deck:
 
     @property
     def metadata(self) -> Json:
-        return OrderedDict(sorted((k, v) for k, v in self._metadata.items()))
+        return self._metadata
 
     @property
     def name(self) -> str | None:
@@ -806,7 +806,7 @@ class Deck:
     def decklist_extended_id(self) -> str:
         return getid(self.decklist_extended)
 
-    @property
+    @cached_property
     def json(self) -> str:
         """Return a JSON representation of this deck.
         """

@@ -9,6 +9,7 @@
 """
 import contextlib
 import json
+from collections import OrderedDict
 from datetime import date, datetime
 from typing import Any, Callable, Generator, Iterator, Self
 
@@ -45,7 +46,21 @@ def deserialize_dates(dct: dict) -> dict:
     return dct
 
 
-def to_json(data: Json) -> str:
+def recursive_sort(obj: Json) -> Json:
+    """Recursively sort any dicts contained in ``obj`` (by their keys).
+    """
+    if isinstance(obj, dict):
+        return OrderedDict(
+            (k, recursive_sort(v))
+            for k, v in sorted(obj.items())
+        )
+    elif isinstance(obj, list):
+        return [recursive_sort(x) for x in obj]
+    return obj
+
+
+def to_json(data: Json, sort_dictionaries=True) -> str:
+    data = recursive_sort(data) if sort_dictionaries else data
     return json.dumps(data, indent=4, ensure_ascii=False, default=serialize_dates)
 
 

@@ -7,10 +7,9 @@
     @author: z33k
 
 """
-from collections import OrderedDict
 from dataclasses import asdict, astuple, dataclass, field, fields
 from datetime import date, datetime
-from functools import lru_cache
+from functools import cached_property, lru_cache
 from operator import attrgetter
 from typing import Self, override
 
@@ -34,7 +33,7 @@ EXCESSIVELY_DECK_STALE_THRESHOLD = 150  # videos
 
 @dataclass
 class _JsonSerializable:
-    @property
+    @cached_property
     def json(self) -> str:
         return to_json(self.as_dict or asdict(self))
 
@@ -54,9 +53,6 @@ class SerializedDeck(_JsonSerializable):
     metadata: Json
     decklist_id: str
     decklist_extended_id: str
-
-    def __post_init__(self) -> None:
-        self.metadata = OrderedDict(sorted((k, v) for k, v in self.metadata.items()))
 
     @property
     def source(self) -> str:

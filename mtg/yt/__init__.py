@@ -636,9 +636,9 @@ class ChannelScraper:
         self._scrape_videos(*video_ids)
 
     @timed("channel scraping", precision=2)
-    def scrape(self, limit=10, only_newer_than_last_scraped=True) -> None:
+    def scrape(self, limit=10, only_newer_than_last_scraped=True, soft_limit=True) -> None:
         video_ids = self.get_unscraped_video_ids(
-            limit, only_newer_than_last_scraped=only_newer_than_last_scraped)
+            limit, only_newer_than_last_scraped=only_newer_than_last_scraped, soft_limit=soft_limit)
         text = self.url_title_text()
         if not video_ids:
             _log.info(f"Channel data for {text} already up to date")
@@ -646,7 +646,7 @@ class ChannelScraper:
         self._scrape_videos(*video_ids)
 
     def dump(self, dstdir: PathLike = "", filename="") -> None:
-        """Dump to a .json file.
+        """Dump data to a .json file.
 
         Args:
             dstdir: optionally, the destination directory (if not provided CWD is used)
@@ -698,7 +698,8 @@ def scrape_channel_videos(channel_id: str, *video_ids: str) -> bool:
 def scrape_channels(
         *chids: str,
         videos=25,
-        only_newer_than_last_scraped=True) -> None:
+        only_newer_than_last_scraped=True,
+        soft_limit=True) -> None:
     """Scrape YouTube channels as specified in a session.
 
     Each scraped channel's data is saved in a .json file and session ensures decklists are saved
@@ -708,13 +709,16 @@ def scrape_channels(
         chids: IDs of channels to scrape
         videos: number of videos to scrape per channel
         only_newer_than_last_scraped: if True, only scrape videos newer than the last one scraped
+        soft_limit: if True, extend the limit indefinitely unless not exactly met
     """
     with ScrapingSession() as session:
         for i, id_ in enumerate(chids, start=1):
             try:
                 ch = ChannelScraper(id_)
                 _log.info(f"Scraping channel {i}/{len(chids)}: {ch.url_title_text()}...")
-                ch.scrape(videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
+                ch.scrape(
+                    videos, only_newer_than_last_scraped=only_newer_than_last_scraped,
+                    soft_limit=soft_limit)
                 if ch.data:
                     ch.dump()
             except Exception as err:
