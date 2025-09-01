@@ -32,14 +32,10 @@ EXCESSIVELY_DECK_STALE_THRESHOLD = 150  # videos
 
 
 @dataclass
-class _JsonSerializable:
-    @cached_property
-    def json(self) -> str:
-        return to_json(self.as_dict or asdict(self))
-
-    @property
-    def as_dict(self) -> Json:
-        return {}
+class SerializedDeck:
+    metadata: Json
+    decklist_id: str
+    decklist_extended_id: str
 
     def __hash__(self) -> int:
         return hash(self.json)
@@ -47,12 +43,9 @@ class _JsonSerializable:
     def __eq__(self, other: Self) -> bool:
         return isinstance(other, type(self)) and self.json == other.json
 
-
-@dataclass
-class SerializedDeck(_JsonSerializable):
-    metadata: Json
-    decklist_id: str
-    decklist_extended_id: str
+    @cached_property
+    def json(self) -> str:
+        return to_json(asdict(self), sort_dictionaries=True)
 
     @property
     def source(self) -> str:
@@ -71,7 +64,7 @@ class SerializedDeck(_JsonSerializable):
 
 
 @dataclass
-class Video(_JsonSerializable):
+class Video:
     id: str
     author: str
     title: str
@@ -106,6 +99,10 @@ class Video(_JsonSerializable):
             get_netloc_domain(url).lower().removeprefix("www.") for url in self.featured_urls]
         return sorted({domain for domain in domains if domain})
 
+    @cached_property
+    def json(self) -> str:
+        return to_json(self.as_dict)
+
     @property
     @override
     def as_dict(self) -> Json:
@@ -124,7 +121,7 @@ class Video(_JsonSerializable):
 
 
 @dataclass
-class Channel(_JsonSerializable):
+class Channel:
     id: str
     title: str | None
     description: str | None
@@ -236,6 +233,10 @@ class Channel(_JsonSerializable):
     @property
     def is_deck_fresh(self) -> bool:
         return not (self.is_deck_stale or self.is_very_deck_stale or self.is_excessively_deck_stale)
+
+    @cached_property
+    def json(self) -> str:
+        return to_json(self.as_dict)
 
     @property
     @override

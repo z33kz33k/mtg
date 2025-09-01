@@ -59,7 +59,7 @@ def recursive_sort(obj: Json) -> Json:
     return obj
 
 
-def to_json(data: Json, sort_dictionaries=True) -> str:
+def to_json(data: Json, sort_dictionaries=False) -> str:
     data = recursive_sort(data) if sort_dictionaries else data
     return json.dumps(data, indent=4, ensure_ascii=False, default=serialize_dates)
 

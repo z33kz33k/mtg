@@ -155,7 +155,7 @@ class Exporter:
             "metadata": self._deck.metadata,
             "decklist": self._deck.decklist_extended if extended else self._deck.decklist,
         }
-        data = to_json(data)
+        data = to_json(data, sort_dictionaries=True)
         dstdir = dstdir or OUTPUT_DIR / "json"
         dstdir = getdir(dstdir)
         dst = dstdir / f"{self._filename}.json"

@@ -815,7 +815,7 @@ class Deck:
             "decklist_id": self.decklist_id,
             "decklist_extended_id": self.decklist_extended_id,
         }
-        return to_json(data)
+        return to_json(data, sort_dictionaries=True)
 
 
 class _ParsingStates(Enum):
