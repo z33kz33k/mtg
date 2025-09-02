@@ -81,12 +81,16 @@ def load_channel(channel_id: str) -> Channel:
         channels.append(Channel.from_dict(data, sort_videos_by_publish_time=False))
     channels.sort(key=attrgetter("scrape_time"), reverse=True)
 
-    seen, videos = set(), []
+    videos_map = defaultdict(list)
     for video in itertools.chain(*[c.videos for c in channels]):
-        if video.id in seen:
-            continue
-        seen.add(video.id)
-        videos.append(video)
+        videos_map[video.id].append(video)
+
+    videos = []
+    for same_video_batch in videos_map.values():
+        if len(same_video_batch) > 1:
+            same_video_batch.sort(key=attrgetter("scrape_time"), reverse=True)
+        videos.append(same_video_batch[0])
+
     videos.sort(key=attrgetter("publish_time"), reverse=True)
 
     return Channel(
