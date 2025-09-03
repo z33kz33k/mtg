@@ -11,7 +11,7 @@ import itertools
 import logging
 import shutil
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, date
 from pathlib import Path
 from typing import Callable
 
@@ -188,3 +188,66 @@ def rescrape_videos(
             _log.info(
                 f"Re-scraping {len(video_ids)} video(s) of ==> {i}/{len(channels)} <== channel...")
             _process_videos(channel_id, *video_ids)
+
+
+def rescrape_by_date(
+        *chids: str, after: date | None = None,  before: date | None = None) -> None:
+    """Re-scrape videos across all specified channels but only those scraped before/after the
+    specified threshold dates (or inbetween them).
+
+    If not specified, all known channels are considered.
+
+    Args:
+        *chids: channel IDs
+        after: scrape videos after or equal to this date (if specified)
+        before: scrape videos before this date (if specified)
+    """
+    if after and before:
+        rescrape_videos(
+            *chids,
+            video_filter=lambda v: v.scrape_time and before > v.scrape_time.date() >= after
+        )
+    elif after:
+        rescrape_videos(
+            *chids,
+            video_filter=lambda v: v.scrape_time and v.scrape_time.date() >= after
+        )
+    elif before:
+        rescrape_videos(
+            *chids,
+            video_filter=lambda v: v.scrape_time and before > v.scrape_time.date()
+        )
+    else:
+        raise ValueError("At least one threshold date must be specified")
+
+
+def rescrape_by_urls_pool(urls_pool: set[str], *chids: str) -> None:
+    """Re-scrape videos across all specified channels but only those that feature URLs present in
+    ``urls_pool``.
+
+    If not specified, all known channels are considered.
+
+    Args:
+        urls_pool: set of URLs to filter against
+        *chids: channel IDs
+    """
+    rescrape_videos(
+        *chids,
+        video_filter=lambda v: any(l in urls_pool for l in v.features_urls)
+    )
+
+
+def rescrape_by_url_predicate(url_predicate: Callable[[str], bool], *chids: str) -> None:
+    """Re-scrape videos across all specified channels but only those that feature URLs satisfying
+    the provided predicate.
+
+    If not specified, all known channels are considered.
+
+    Args:
+        url_predicate: URL-filtering predicate
+        *chids: channel IDs
+    """
+    rescrape_videos(
+        *chids,
+        video_filter=lambda v: any(url_predicate(l) for l in v.features_urls)
+    )
