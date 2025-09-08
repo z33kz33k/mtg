@@ -14,7 +14,8 @@ from typing import override
 from selenium.common import TimeoutException
 
 from mtg import Json
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, FolderContainerScraper
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, \
+    folder_container_scraper, throttled_deck_scraper
 from mtg.scryfall import Card
 from mtg.utils.scrape import ScrapingError, Soft404Error, strip_url_query
 from mtg.utils.scrape.dynamic import fetch_dynamic_soup, fetch_selenium_json
@@ -22,6 +23,7 @@ from mtg.utils.scrape.dynamic import fetch_dynamic_soup, fetch_selenium_json
 _log = logging.getLogger(__name__)
 
 
+@throttled_deck_scraper
 @DeckScraper.registered
 class MoxfieldDeckScraper(DeckScraper):
     """Scraper of Moxfield decklist page.
@@ -106,7 +108,7 @@ class MoxfieldDeckScraper(DeckScraper):
             self._companion = result[0]
 
 
-@FolderContainerScraper.registered
+@folder_container_scraper
 @DeckUrlsContainerScraper.registered
 class MoxfieldBookmarkScraper(DeckUrlsContainerScraper):
     """Scraper of Moxfield bookmark page.

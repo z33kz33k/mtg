@@ -16,12 +16,11 @@ from bs4 import BeautifulSoup
 from requests import Response
 
 from mtg import Json
-from mtg.deck import Deck
-from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper, FolderContainerScraper
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, \
+    folder_container_scraper, throttled_deck_scraper
 from mtg.utils import extract_int, get_date_from_ago_text
-from mtg.utils.scrape import ScrapingError, fetch_soup, prepend_url, fetch_json, strip_url_query, \
-    throttle, fetch
+from mtg.utils.scrape import ScrapingError, fetch, fetch_json, fetch_soup, prepend_url, \
+    strip_url_query, throttle
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://tappedout.net"
@@ -40,6 +39,7 @@ def _backoff_handler(details: dict) -> None:
     _log.info("Backing off {wait:0.1f} seconds after {tries} tries...".format(**details))
 
 
+@throttled_deck_scraper
 @DeckScraper.registered
 class TappedoutDeckScraper(DeckScraper):
     """Scraper of TappedOut decklist page.
@@ -166,7 +166,7 @@ class TappedoutUserScraper(DeckUrlsContainerScraper):
         return collected
 
 
-@FolderContainerScraper.registered
+@folder_container_scraper
 @DeckUrlsContainerScraper.registered
 class TappedoutFolderScraper(DeckUrlsContainerScraper):
     """Scraper of Tappedout folder page.
@@ -211,7 +211,7 @@ class TappedoutFolderScraper(DeckUrlsContainerScraper):
         return [d["url"] for d in self._data["folder"]["decks"]]
 
 
-@FolderContainerScraper.registered
+@folder_container_scraper
 @DeckUrlsContainerScraper.registered
 class TappedoutUserFolderScraper(TappedoutUserScraper):
     """Scraper of Tappedout user folders page.

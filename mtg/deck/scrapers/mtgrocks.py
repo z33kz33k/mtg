@@ -17,7 +17,8 @@ import dateutil.parser
 from bs4 import Tag
 
 from mtg import Json
-from mtg.deck.scrapers import ContainerScraper, FolderContainerScraper, HybridContainerScraper
+from mtg.deck.scrapers import ContainerScraper, HybridContainerScraper, \
+    get_folder_container_scrapers
 from mtg.utils.json import Node
 from mtg.utils.scrape import ScrapingError, is_more_than_root_path, strip_url_query
 
@@ -46,7 +47,7 @@ class MtgRocksArticleScraper(HybridContainerScraper):
     @classmethod
     @override
     def _get_container_scrapers(cls) -> set[Type[ContainerScraper]]:
-        return FolderContainerScraper.get_registered_scrapers()
+        return get_folder_container_scrapers()
 
     @override
     def _parse_metadata(self) -> None:

@@ -16,7 +16,7 @@ from bs4 import BeautifulSoup, NavigableString, Tag
 
 from mtg import HybridContainerScraper, Json, SECRETS
 from mtg.deck.scrapers import Collected, DeckScraper, DeckUrlsContainerScraper, JsonBasedDeckParser, \
-    TagBasedDeckParser, UrlHook
+    TagBasedDeckParser, UrlHook, throttled_deck_scraper
 from mtg.deck.scrapers.goldfish import HEADERS as GOLDFISH_HEADERS
 from mtg.utils import ParsingError, extract_int
 from mtg.utils.scrape import ScrapingError, find_next_sibling_tag, get_path_segments, \
@@ -57,6 +57,7 @@ URL_HOOKS = (
 )
 
 
+@throttled_deck_scraper
 @DeckScraper.registered
 class InternationalHareruyaDeckScraper(DeckScraper):
     """Scraper of international Hareruya decklist page.
@@ -193,6 +194,7 @@ class JapaneseHareruyaDeckJsonParser(JsonBasedDeckParser):
             self._process_card(card)
 
 
+@throttled_deck_scraper
 @DeckScraper.registered
 class JapaneseHareruyaDeckScraper(DeckScraper):
     """Scraper of Japanese Hareruya decklist page.

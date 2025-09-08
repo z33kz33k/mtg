@@ -28,7 +28,8 @@ from mtg import FILENAME_TIMESTAMP_FORMAT, Json, PathLike, SECRETS
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser, LinesParser
 from mtg.deck.scrapers import DeckParser, DeckScraper, DeckTagsContainerScraper, \
-    DeckUrlsContainerScraper, DecksJsonContainerScraper, HybridContainerScraper
+    DeckUrlsContainerScraper, DecksJsonContainerScraper, HybridContainerScraper, \
+    get_throttled_deck_scrapers
 from mtg.gstate import CHANNELS_DIR, CoolOffManager, DecklistsStateManager, UrlsStateManager
 from mtg.scryfall import all_formats
 from mtg.utils import extract_float, find_longest_seqs, from_iterable, logging_disabled, \
@@ -111,15 +112,6 @@ class VideoScraper:
         "zlnk.com/",
         "zws.im/",
     }
-
-    _THROTTLED = (
-        "aetherhub.com",
-        "deckstats.net",
-        "hareruyamtg.com"
-        "moxfield.com",
-        "mtggoldfish.com",
-        "tappedout.net",
-    )
 
     @property
     def url(self) -> str:
@@ -295,7 +287,7 @@ class VideoScraper:
                 _log.info(f"Skipping already failed deck URL: {sanitized_link!r}...")
                 return None
             try:
-                deck = scraper.scrape(throttled=any(site in link for site in self._THROTTLED))
+                deck = scraper.scrape(throttled=type(scraper) in get_throttled_deck_scrapers())
             except ReadTimeout:
                 _log.warning(f"Back-offed scraping of {link!r} failed with read timeout")
             if not deck:
@@ -512,7 +504,7 @@ class ChannelScraper:
     def get_unscraped_video_ids(
             self, limit=10,
             only_newer_than_last_scraped=True,
-            soft_limit=True) -> list[str]:
+            soft_limit=False) -> list[str]:
         """Return a list of not yet scraped video IDs.
 
         The ``limit`` parameter is only to not overload scrapetube with requests. The default
@@ -636,7 +628,7 @@ class ChannelScraper:
         self._scrape_videos(*video_ids)
 
     @timed("channel scraping", precision=2)
-    def scrape(self, limit=10, only_newer_than_last_scraped=True, soft_limit=True) -> None:
+    def scrape(self, limit=10, only_newer_than_last_scraped=True, soft_limit=False) -> None:
         video_ids = self.get_unscraped_video_ids(
             limit, only_newer_than_last_scraped=only_newer_than_last_scraped, soft_limit=soft_limit)
         text = self.url_title_text()
@@ -699,7 +691,7 @@ def scrape_channels(
         *chids: str,
         videos=25,
         only_newer_than_last_scraped=True,
-        soft_limit=True) -> None:
+        soft_limit=False) -> None:
     """Scrape YouTube channels as specified in a session.
 
     Each scraped channel's data is saved in a .json file and session ensures decklists are saved
@@ -746,7 +738,8 @@ def scrape_fresh(
     text = "fresh and deck-fresh" if only_deck_fresh else "fresh"
     _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
-        *ids, videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
+        *ids, videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped,
+        soft_limit=True)
 
 
 def scrape_active(
@@ -767,7 +760,8 @@ def scrape_active(
     text = "active and deck-fresh" if only_deck_fresh else "active"
     _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
-        *ids, videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
+        *ids, videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped,
+        soft_limit=True)
 
 
 def scrape_dormant(
@@ -788,7 +782,8 @@ def scrape_dormant(
     text = "dormant and deck-fresh" if only_deck_fresh else "dormant"
     _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
-        *ids, videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
+        *ids, videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped,
+        soft_limit=True)
 
 
 def scrape_abandoned(
@@ -809,7 +804,8 @@ def scrape_abandoned(
     text = "abandoned and deck-fresh" if only_deck_fresh else "abandoned"
     _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
-        *ids, videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
+        *ids, videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped,
+        soft_limit=True)
 
 
 def scrape_deck_stale(
@@ -831,7 +827,8 @@ def scrape_deck_stale(
     text = "deck-stale and fresh/active" if only_fresh_or_active else "deck-stale"
     _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
-        *ids, videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
+        *ids, videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped,
+        soft_limit=True)
 
 
 def scrape_very_deck_stale(
@@ -853,7 +850,8 @@ def scrape_very_deck_stale(
     text = "very deck-stale and fresh/active" if only_fresh_or_active else "very deck-stale"
     _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
-        *ids, videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
+        *ids, videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped,
+        soft_limit=True)
 
 
 def scrape_excessively_deck_stale(
@@ -876,7 +874,8 @@ def scrape_excessively_deck_stale(
         "excessively deck-stale")
     _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
-        *ids, videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
+        *ids, videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped,
+        soft_limit=True)
 
 
 def scrape_all(videos=VIDEOS_COUNT, only_newer_than_last_scraped=True) -> None:

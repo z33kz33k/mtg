@@ -17,7 +17,7 @@ from bs4 import Tag
 from mtg import Json
 from mtg.deck import Mode
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
-    TagBasedDeckParser, UrlHook
+    TagBasedDeckParser, UrlHook, throttled_deck_scraper
 from mtg.utils import extract_float, extract_int, from_iterable
 from mtg.utils.scrape import ScrapingError, strip_url_query
 
@@ -97,6 +97,7 @@ class AetherhubDeckTagParser(TagBasedDeckParser):
                         self._companion = cards[0]
 
 
+@throttled_deck_scraper
 @DeckScraper.registered
 class AetherhubDeckScraper(DeckScraper):
     """Scraper of Aetherhub decklist page.

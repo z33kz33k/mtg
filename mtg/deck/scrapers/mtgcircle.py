@@ -14,14 +14,32 @@ from typing import Callable, Type, override
 
 from bs4 import BeautifulSoup, Tag
 
-from mtg import Json
-from mtg.deck.scrapers import DeckScraper, HybridContainerScraper, JsonBasedDeckParser
+from mtg import Json, SECRETS
+from mtg.deck.scrapers import DeckScraper, HybridContainerScraper, JsonBasedDeckParser, \
+    throttled_deck_scraper
 from mtg.scryfall import Card, all_formats
 from mtg.utils import from_iterable
 from mtg.utils.json import Node
 from mtg.utils.scrape import ScrapingError, dissect_js
 
 _log = logging.getLogger(__name__)
+HEADERS = {  # FIXME: not working
+    "Host": "mtgcircle.com",
+    "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:142.0) Gecko/20100101 Firefox/142.0",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.5",
+    "Accept-Encoding": "gzip, deflate, br, zstd",
+    "Sec-GPC": "1",
+    "Connection": "keep-alive",
+    "Cookie": SECRETS["mtgcircle"]["cookie"],
+    "Upgrade-Insecure-Requests": "1",
+    "Sec-Fetch-Dest": "document",
+    "Sec-Fetch-Mode": "navigate",
+    "Sec-Fetch-Site": "cross-site",
+    "Priority": "u=0, i",
+    "TE": "trailers",
+}
+THROTTLING = DeckScraper.THROTTLING * 2
 
 
 class MtgCircleDeckJsonParser(JsonBasedDeckParser):
@@ -98,11 +116,14 @@ def get_data(
             "Failed data extraction from <script> tag's JavaScript", scraper=scraper, url=url)
 
 
+@throttled_deck_scraper
 @DeckScraper.registered
 class MtgCircleVideoDeckScraper(DeckScraper):
     """Scraper of MTGCircle video decklist page.
     """
     DATA_FROM_SOUP = True  # override
+    HEADERS = HEADERS  # override
+    THROTTLING = THROTTLING  # override
 
     @staticmethod
     @override
@@ -154,6 +175,7 @@ class MtgCircleVideoDeckScraper(DeckScraper):
         pass
 
 
+@throttled_deck_scraper
 @DeckScraper.registered
 class MtgCircleRegularDeckScraper(MtgCircleVideoDeckScraper):
     """Scraper of MTGCircle regular decklist page.
@@ -185,6 +207,8 @@ class MtgCircleArticleScraper(HybridContainerScraper):
     """
     CONTAINER_NAME = "MTGCircle article"  # override
     JSON_BASED_DECK_PARSER = MtgCircleDeckJsonParser  # override
+    HEADERS = HEADERS  # override
+    THROTTLING = THROTTLING  # override
 
     @staticmethod
     @override

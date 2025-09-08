@@ -16,7 +16,7 @@ from bs4 import Tag
 from mtg import Json
 from mtg.deck import Deck, Mode
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
-    TagBasedDeckParser, UrlHook
+    TagBasedDeckParser, UrlHook, throttled_deck_scraper
 from mtg.scryfall import all_formats
 from mtg.utils import ParsingError, extract_int, timed
 from mtg.utils.scrape import ScrapingError, http_requests_counted, strip_url_query, \
@@ -138,6 +138,7 @@ class GoldfishDeckTagParser(TagBasedDeckParser):
         self._parse_decklist_tag(decklist_tag)
 
 
+@throttled_deck_scraper
 @DeckScraper.registered
 class GoldfishDeckScraper(DeckScraper):
     """Scraper of MTGGoldfish decklist page.

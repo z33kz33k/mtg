@@ -22,7 +22,7 @@ from mtg import Json
 from mtg.deck import CardNotFound, Deck, DeckParser, InvalidDeck
 from mtg.deck.arena import ArenaParser
 from mtg.gstate import UrlsStateManager
-from mtg.utils import ParsingError, timed
+from mtg.utils import ParsingError, register_type, timed
 from mtg.utils.scrape import InaccessiblePage, ScrapingError, Soft404Error, fetch_soup, find_links, \
     prepend_url
 from mtg.utils.scrape import Throttling, throttle
@@ -254,10 +254,7 @@ class DeckScraper(DeckParser):
     def registered(cls, scraper_type: Type[Self]) -> Type[Self]:
         """Class decorator for registering subclasses of this class.
         """
-        if issubclass(scraper_type, cls):
-            cls._REGISTRY.add(scraper_type)
-        else:
-            raise TypeError(f"Not a subclass of {cls.__name__}: {scraper_type!r}")
+        register_type(cls._REGISTRY, scraper_type, cls)
         return scraper_type
 
     @classmethod
@@ -274,6 +271,21 @@ class DeckScraper(DeckParser):
         """Return a set of the registered deck scraper subclasses.
         """
         return set(cls._REGISTRY)
+
+
+_THROTTLED_DECK_SCRAPERS = set()
+
+
+def throttled_deck_scraper(
+        scraper_type: Type[DeckScraper]) -> Type[DeckScraper]:
+    """Register this deck scraper as a throttled one.
+    """
+    register_type(_THROTTLED_DECK_SCRAPERS, scraper_type, DeckScraper)
+    return scraper_type
+
+
+def get_throttled_deck_scrapers() -> set[Type[DeckScraper]]:
+    return set(_THROTTLED_DECK_SCRAPERS)
 
 
 type Collected = list[str | Tag | Json] | tuple[list[str], list[Tag], list[Json], list[str]]
@@ -368,30 +380,19 @@ class ContainerScraper(DeckScraper):
         raise NotImplementedError
 
 
-# only for registration
-class FolderContainerScraper(ContainerScraper):
-    _REGISTRY: set[Type[Self]] = set()  # override
+_FOLDER_CONTAINER_SCRAPERS = set()
 
-    @staticmethod
-    @abstractmethod
-    @override
-    def is_valid_url(url: str) -> bool:
-        raise NotImplementedError
 
-    @abstractmethod
-    def _collect(self) -> Collected:
-        raise NotImplementedError
+def folder_container_scraper(
+        scraper_type: Type[ContainerScraper]) -> Type[ContainerScraper]:
+    """Register this scraper as a folder container scraper.
+    """
+    register_type(_FOLDER_CONTAINER_SCRAPERS, scraper_type, ContainerScraper)
+    return scraper_type
 
-    @classmethod
-    @override
-    def registered(cls, scraper_type: Type[Self]) -> Type[Self]:
-        """Class decorator for registering folder container scrapers.
-        """
-        if issubclass(scraper_type, ContainerScraper):
-            cls._REGISTRY.add(scraper_type)
-        else:
-            raise TypeError(f"Not a subclass of {ContainerScraper.__name__}: {scraper_type!r}")
-        return scraper_type
+
+def get_folder_container_scrapers() -> set[Type[ContainerScraper]]:
+    return set(_FOLDER_CONTAINER_SCRAPERS)
 
 
 class DeckUrlsContainerScraper(ContainerScraper):
@@ -656,7 +657,7 @@ class HybridContainerScraper(
 
     @classmethod
     def _get_container_scrapers(cls) -> set[Type[ContainerScraper]]:
-        return set(cls.CONTAINER_SCRAPERS) | FolderContainerScraper.get_registered_scrapers()
+        return set(cls.CONTAINER_SCRAPERS) | get_folder_container_scrapers()
 
     @classmethod
     def _dispatch_container_scraper(

@@ -516,3 +516,14 @@ def decode_escapes(text: str) -> str:
         for escaped, actual in escape_map.items():
             text = text.replace(escaped, actual)
         return text
+
+
+# Registry Pattern
+def register_type(
+        registry: set[Type], registered_type: Type, parent_type: Type | None = None) -> None:
+    """Register a type in the supplied registry. If ``parent_type`` is defined,
+    the registered type must be a subclass of it.
+    """
+    if parent_type and not issubclass(registered_type, parent_type):
+        raise TypeError(f"Not a subclass of {parent_type.__name__}: {registered_type!r}")
+    registry.add(registered_type)

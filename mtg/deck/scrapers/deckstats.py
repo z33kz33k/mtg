@@ -17,7 +17,7 @@ from bs4 import BeautifulSoup
 from requests import Response
 
 from mtg import Json
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, UrlHook
+from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, UrlHook, throttled_deck_scraper
 from mtg.scryfall import Card
 from mtg.utils.scrape import ScrapingError, dissect_js, fetch_json, strip_url_query, \
     throttle, fetch
@@ -59,6 +59,7 @@ def _backoff_handler(details: dict) -> None:
     _log.info("Backing off {wait:0.1f} seconds after {tries} tries...".format(**details))
 
 
+@throttled_deck_scraper
 @DeckScraper.registered
 class DeckstatsDeckScraper(DeckScraper):
     """Scraper of Deckstats decklist page.
