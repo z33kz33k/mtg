@@ -150,6 +150,9 @@ class Node:
     def __str__(self) -> str:
         return self.name
 
+    def __bool__(self) -> bool:
+        return True
+
     # NOTE: nodes are unique and hashable as long as only their 'path' is considered
     def __eq__(self, other: Self) -> bool:
         if isinstance(other, Node):

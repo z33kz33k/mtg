@@ -44,6 +44,7 @@ from mtg.yt.data import ScrapingSession, load_channel, load_channels, retrieve_i
 from mtg.yt.data.structures import CHANNEL_URL_TEMPLATE, Channel, SerializedDeck, \
     VIDEO_URL_TEMPLATE, Video
 from mtg.yt.expand import LinksExpander
+from mtg.yt.ptfix import Retriever
 
 # from yt_dlp import YoutubeDL  # works, but with enormous downtimes (ca. 40s per channel)
 
@@ -53,8 +54,8 @@ DEAD_THRESHOLD = 2000  # days (ca. 5.5 yrs) - only used in gsheet to trim dead f
 VIDEOS_COUNT = 100  # default max number of videos to scrape on regular basis
 
 
-class PytubeError(ScrapingError):
-    """Raised on unexpected states of data obtained with pytube.
+class MissingVideoPublishTime(ScrapingError):
+    """Raised on pytubefix failing to retrieve video publish time.
     """
 
 
@@ -159,14 +160,17 @@ class VideoScraper:
 
     def _get_pytube(self) -> pytubefix.YouTube:
         data = pytubefix.YouTube(self.url, use_oauth=True, allow_oauth_cache=True)
+        # DEBUG
+        r = Retriever(data)
+        ret = r._retrieve_title()
         if not data.publish_date:
-            raise PytubeError(
-                "pytube data missing publish date", scraper=type(self), url=self.url)
+            raise MissingVideoPublishTime(
+                "pytubefix data missing publish date", scraper=type(self), url=self.url)
         return data
 
     @backoff.on_exception(
         backoff.expo,
-        (Timeout, HTTPError, RemoteDisconnected, PytubeError, urllib.error.HTTPError),
+        (Timeout, HTTPError, RemoteDisconnected, MissingVideoPublishTime, urllib.error.HTTPError),
         max_time=300)
     def _get_pytube_with_backoff(self) -> pytubefix.YouTube:
         return self._get_pytube()
@@ -185,7 +189,7 @@ class VideoScraper:
             self._pytube = self._get_pytube()
         except (RemoteDisconnected, ScrapingError) as e:
             _log.warning(
-                f"`pytube` had a hiccup ({e}). Retrying with backoff (60 seconds max)...")
+                f"pytubefix had a hiccup ({e}). Retrying with backoff (60 seconds max)...")
             self._pytube = self._get_pytube_with_backoff()
         self._save_pytube_data()
 
@@ -593,16 +597,17 @@ class ChannelScraper:
         self._videos, scraper = [], None
         for i, vid in enumerate(video_ids, start=1):
             _log.info(
-                f"Scraping video {i}/{len(video_ids)}: 'https://www.youtube.com/watch?v={vid}'...")
+                f"Scraping video {i}/{len(video_ids)}: '{VIDEO_URL_TEMPLATE.format(vid)}'...")
             scraper = VideoScraper(vid)
             try:
                 scraper.scrape()
             except pytubefix.exceptions.VideoPrivate:
-                _log.warning(f"Skipping private video: 'https://www.youtube.com/watch?v={vid}'...")
+                _log.warning(f"Skipping private video: '{VIDEO_URL_TEMPLATE.format(vid)}'...")
                 continue
-            except PytubeError:
-                _log.warning(f"Skipping video that caused pytube to fail (probably private or "
-                             f"otherwise unavailable): 'https://www.youtube.com/watch?v={vid}'...")
+            except MissingVideoPublishTime:
+                _log.warning(
+                    f"Skipping video that pytubefix failed to retrieve a publish time for: "
+                    f"'{VIDEO_URL_TEMPLATE.format(vid)}'...")
                 continue
             self._videos.append(scraper.data)
             self._cooloff_manager.bump_video()
