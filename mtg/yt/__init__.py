@@ -10,6 +10,7 @@
 import json
 import logging
 import re
+import traceback
 import urllib.error
 from datetime import datetime
 from functools import cached_property
@@ -680,6 +681,7 @@ def scrape_channel_videos(channel_id: str, *video_ids: str) -> bool:
             ch.dump()
     except Exception as err:
         _log.error(f"Scraping of channel {channel_id!r} failed with: {err!r}")
+        _log.error(traceback.format_exc())
         return False
 
     return True
@@ -715,6 +717,7 @@ def scrape_channels(
                     ch.dump()
             except Exception as err:
                 _log.error(f"Scraping of channel {id_!r} failed with: {err!r}. Skipping...")
+                _log.error(traceback.format_exc())
 
 
 def scrape_fresh(

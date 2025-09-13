@@ -161,6 +161,7 @@ class EdhrecAverageDeckScraper(DeckScraper):
         url = strip_url_query(url)
         return url.replace("/commanders/", "/average-decks/")
 
+    # TODO: check why this doesn't work (url: https://edhrec.com/average-decks/yore-tiller)
     @override
     def _is_soft_404_error(self) -> bool:
         return self._soup.find(
