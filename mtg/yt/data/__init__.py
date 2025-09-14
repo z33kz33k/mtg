@@ -209,7 +209,7 @@ def update_readme_with_deck_data() -> None:
     """
     _log.info("Updating README.md with aggregated deck data...")
     today = datetime.today()
-    dt = today.strftime(f"%d{get_ordinal_suffix(today.day)} %b %Y")
+    dt = today.strftime(f"%d{get_ordinal_suffix(today.day)} %b %Y").lstrip("0")
     fmt_c, src_c = get_aggregate_deck_data()
     table_lines = fmt_c.markdown("Format").splitlines() + [""] + src_c.markdown(
         "Source").splitlines() + [""]

@@ -162,7 +162,7 @@ class VideoScraper:
         data = pytubefix.YouTube(self.url, use_oauth=True, allow_oauth_cache=True)
         # DEBUG
         r = Retriever(data)
-        ret = r._retrieve_title()
+        ret = r._retrieve_keywords()
         if not data.publish_date:
             raise MissingVideoPublishTime(
                 "pytubefix data missing publish date", scraper=type(self), url=self.url)
@@ -557,6 +557,28 @@ class ChannelScraper:
     #         return info.get('title'), info.get('channel_follower_count'), info.get(
     #             'description'), info.get('tags')
 
+    @staticmethod
+    def _get_double_quotes_keywords_tags(tag_text: str) -> list[str]:
+        """Parse passed tag string into tags.
+
+        Example string:
+            `"Magic the gathering" MTG "magic arena" arena "mtg arena" standard brawl commander edh deck "standard deck" "how to" "card game" "deck build" pioneer histori...`
+        """
+        tags = []
+        tokens = [t for t in tag_text.split('"') if t]
+        # tokens that start with whitespace after splitting by double-quotes and filtering
+        # for empty strings are actually multiple tags and need further splitting
+        for t in tokens:
+            if t.startswith(" "):
+                t = t.strip()
+                if " " in t:
+                    tags.extend(t.split())
+                else:
+                    tags.append(t)
+            else:
+                tags.append(t)
+        return tags
+
     def _fetch_info_with_selenium(
             self) -> tuple[str | None, int | None, str | None, list[str] | None]:
         soup, _, _ = fetch_dynamic_soup(self.url, self.XPATH, consent_xpath=self.CONSENT_XPATH)
@@ -566,15 +588,26 @@ class ChannelScraper:
         title_tag = soup.find('meta', property='og:title') or soup.find('title')
         if title_tag:
             title = title_tag.get('content', title_tag.text.replace(
-                ' - YouTube', '').strip()) if title_tag else None
+                ' - YouTube', '').strip())
 
         # description (from <meta name="description">)
         if description_tag := soup.find('meta', {'name': 'description'}):
-            description = description_tag.get('content', None) if description_tag else None
+            description = description_tag.get('content', None)
 
         # tags (from <meta name="keywords">)
         if keywords_tag := soup.find('meta', {'name': 'keywords'}):
-            tags = [tag.strip() for tag in keywords_tag['content'].split(',')]
+            if tag_text := keywords_tag.get("content", ""):
+                if '"' in tag_text:
+                    tags = self._get_double_quotes_keywords_tags(tag_text)
+                elif ", " in tag_text:
+                    tags = tag_text.split(", ")
+                else:
+                    tags = [tag_text]
+            else:
+                tags = []
+            # discard any unfinished tag
+            if tags and tags[-1].endswith('...'):
+                tags.pop()
 
         # subscribers
         if count_text := soup.find(
