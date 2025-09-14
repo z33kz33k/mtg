@@ -42,8 +42,8 @@ class StreamdeckerDeckScraper(DeckScraper):
         *_, decklist_id = self.url.split("/")
         try:
             json_data = fetch_json(self.API_URL_TEMPLATE.format(decklist_id))
-        except ReadTimeout:
-            raise ScrapingError("API request timed out", scraper=type(self), url=self.url)
+        except ReadTimeout as rt:
+            raise ScrapingError("API request timed out", scraper=type(self), url=self.url) from rt
         if not json_data or not json_data.get("data") or json_data["data"] == {"deck": {}}:
             raise ScrapingError("No deck data", scraper=type(self), url=self.url)
         return json_data["data"]

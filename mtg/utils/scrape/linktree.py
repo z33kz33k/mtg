@@ -78,9 +78,9 @@ class LinktreeScraper:
         self._json_data = self._get_json()
         try:
             self._account_id = self._json_data["account"]["id"]
-        except KeyError:
+        except KeyError as ke:
             raise ScrapingError(
-                "Account ID missing from JSON data", scraper=type(self), url=self.url)
+                "Account ID missing from JSON data", scraper=type(self), url=self.url) from ke
         self._links = self._get_links()
         self._data = self._get_data()
 

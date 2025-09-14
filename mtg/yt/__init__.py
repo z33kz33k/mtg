@@ -474,12 +474,12 @@ class ChannelScraper:
         try:
             for ch_data in scrapetube.get_channel(channel_id=self._id, limit=limit):
                 yield ch_data["videoId"]
-        except OSError:
-            raise ValueError(f"Invalid channel ID: {self._id!r}")
-        except json.decoder.JSONDecodeError:
+        except OSError as ose:
+            raise ValueError(f"Invalid channel ID: {self._id!r}") from ose
+        except json.decoder.JSONDecodeError as jde:
             raise ScrapingError(
                 "scrapetube failed with JSON error. This channel probably doesn't exist "
-                "anymore", scraper=type(self), url=self.url)
+                "anymore", scraper=type(self), url=self.url) from jde
 
     def _get_unscraped_video_ids(
             self, limit=10,

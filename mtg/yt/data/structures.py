@@ -104,7 +104,6 @@ class Video:
         return to_json(self.as_dict)
 
     @property
-    @override
     def as_dict(self) -> Json:
         data = asdict(self)
         del data["scrape_time"]
@@ -239,7 +238,6 @@ class Channel:
         return to_json(self.as_dict)
 
     @property
-    @override
     def as_dict(self) -> Json:
         data = asdict(self)
         data["videos"] = [v.as_dict for v in self.videos]

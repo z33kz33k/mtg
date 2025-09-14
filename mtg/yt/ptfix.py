@@ -17,13 +17,12 @@ import pytubefix.exceptions
 from mtg.utils.json import Node
 
 
-@dataclass
+@dataclass(frozen=True)
 class PytubeData:
     author: str
     description: str
     title: str
     keywords: list[str]
-    publish_time: datetime
     views: int
 
 
@@ -36,11 +35,11 @@ class Retriever:
     def __init__(self, pytube: pytubefix.YouTube) -> None:
         self._pytube = pytube
         if not self._pytube.vid_info:
-            raise PytubefixError(f"pytubefix 'vid_info' dict unavailable for video: "
-                                 f"{self._pytube.watch_url!r}")
+            raise PytubefixError(
+                f"pytubefix 'vid_info' dict unavailable for video: {self._pytube.watch_url!r}")
         if not self._pytube.vid_details:
-            raise PytubefixError(f"pytubefix 'vid_details' dict unavailable for video: "
-                                 f"{self._pytube.watch_url!r}")
+            raise PytubefixError(
+                f"pytubefix 'vid_details' dict unavailable for video: {self._pytube.watch_url!r}")
         self._nvi, self._nvd = Node(self._pytube.vid_info), Node(self._pytube.vid_details)
 
     def _retrieve_author(self) -> str:
@@ -83,8 +82,14 @@ class Retriever:
             return title.data
         if title := self._nvd.find(lambda n: n.path.endswith(path)):
             return title.data
-        raise PytubefixError(f"Unable to retrieve description data for: {self._pytube.watch_url!r}")
+        raise PytubefixError(f"Unable to retrieve title data for: {self._pytube.watch_url!r}")
 
-
-
-
+    # def _retrieve_keywords(self) -> list[str]:
+    #     if keywords := self._pytube.vid_info.get('videoDetails', {}).get('keywords'):
+    #         return keywords
+    #     path = "['videoDescriptionHeaderRenderer']['title']['runs'][0]['text']"
+    #     if title := self._nvi.find(lambda n: n.path.endswith(path)):
+    #         return title.data
+    #     if title := self._nvd.find(lambda n: n.path.endswith(path)):
+    #         return title.data
+    #     raise PytubefixError(f"Unable to retrieve title data for: {self._pytube.watch_url!r}")

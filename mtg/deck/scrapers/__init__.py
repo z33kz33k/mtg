@@ -167,8 +167,9 @@ class DeckScraper(DeckParser):
             try:
                 self._soup, _, self._clipboard = fetch_dynamic_soup(
                     self.url, **self.SELENIUM_PARAMS)
-            except TimeoutException:
-                raise ScrapingError(self._selenium_timeout_msg, scraper=type(self), url=self.url)
+            except TimeoutException as te:
+                raise ScrapingError(
+                    self._selenium_timeout_msg, scraper=type(self), url=self.url) from te
         else:
             self._soup = fetch_soup(self.url, self.HEADERS)
 

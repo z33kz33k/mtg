@@ -9,9 +9,10 @@
 """
 import contextlib
 import json
+import re
 from collections import OrderedDict
 from datetime import date, datetime
-from typing import Any, Callable, Generator, Iterator, Self
+from typing import Any, Callable, Generator, Iterator, Literal, Self
 
 from mtg import Json, READABLE_TIMESTAMP_FORMAT
 
@@ -182,6 +183,8 @@ class Node:
         """Traverse the tree from this node downwards and yield all nodes that satisfy
         ``predicate`` along the way. If no predicate is provided, all sub-nodes are yielded.
 
+        Note that this node in not included in the traversal.
+
         Args:
             predicate: function that evaluates the traversed tree node to a boolean value
 
@@ -195,7 +198,7 @@ class Node:
             yield from child.find_all(predicate)
 
     def find(self, predicate: Callable[[Self], bool]) -> Self | None:
-        """Find the first node within subtree that satisfies ``predicate`` or None.
+        """Find the first node within this node's subtree that satisfies ``predicate`` or None.
 
         Args:
             predicate: function that evaluates the traversed tree node to a boolean value
@@ -205,16 +208,65 @@ class Node:
         """
         return next(self.find_all(predicate), None)
 
-    def find_by_path(self, path: str, strict=False) -> Self | None:
-        """Find the first node within subtree by its structural path.
+    def find_all_by_path(
+            self, path: str,
+            mode: Literal["exact", "start", "end", "partial", "regex"] = "exact"
+        ) -> Generator[Self, None, None]:
+        """Find all nodes within this node's subtree by their structural path.
+
+        Modes:
+            * "exact": path is matched, if it is equal to the node's path
+            * "start": path is matched, if it starts the node's path
+            * "end": path is matched, if it ends the node's path
+            * "partial": path is matched, if it is a substring of the node's path
+            * "regex": path is matched as a regular expression against the node's path
 
         Args:
-            path: structural path to test
-            strict: if True, only a full match is enough, else a partial one is OK
+            path: structural path to test, e.g.: "['descriptionBodyText']['runs'][0]['text']"
+            mode: how to match the path
+
+        Returns:
+            a generator of all matched tree nodes
         """
-        if strict:
-            return self.find(lambda n: n.path == path)
-        return self.find(lambda n: path in n.path)
+        match mode:
+            case "exact":
+                return self.find_all(lambda n: n.path == path)
+            case "start":
+                return self.find_all(lambda n: n.path.startswith(path))
+            case "end":
+                return self.find_all(lambda n: n.path.endswith(path))
+            case "partial":
+                return self.find_all(lambda n: path in n.path)
+            case "regex":
+                try:
+                    pattern = re.compile(path)
+                except re.error as exc:
+                    raise ValueError(f"Invalid regex pattern: {path!r}") from exc
+                return self.find_all(lambda n: bool(pattern.search(n.path)))
+            case _:
+                raise ValueError(f"Unrecognized mode {mode!r}")
+
+    def find_by_path(
+            self, path: str,
+            mode: Literal["exact", "start", "end", "partial", "regex"] = "exact"
+        ) -> Self | None:
+        """Find the first node within this node's subtree by its structural path.
+
+        Modes:
+            * "exact": path is matched, if it is equal to the node's path
+            * "start": path is matched, if it starts the node's path
+            * "end": path is matched, if it ends the node's path
+            * "partial": path is matched, if it is a substring of the node's path
+            * "regex": path is matched as a regular expression against the node's path
+
+        Args:
+            path: structural path to test, e.g.: "['descriptionBodyText']['runs'][0]['text']"
+            mode: how to match the path
+
+        Returns:
+            tree node or None if it cannot be found
+        """
+        return next(self.find_all_by_path(path, mode), None)
 
     @property
     def text_nodes(self) -> Generator[Self, None, None]:
