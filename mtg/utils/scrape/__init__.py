@@ -512,6 +512,51 @@ def find_links(
     return sorted(links)
 
 
+def _parse_double_quoted_keywords(kw_text: str) -> list[str]:
+    """Parse passed keyword string into keywords.
+
+    Example string:
+        `"Magic the gathering" MTG "magic arena" arena "mtg arena" standard brawl commander edh deck "standard deck" "how to" "card game" "deck build" pioneer histori...`
+    """
+    keywords = []
+    tokens = [t for t in kw_text.split('"') if t]
+    # tokens that start with whitespace after splitting by double-quotes and filtering
+    # for empty strings are actually multiple keywords and need further splitting
+    for t in tokens:
+        if t.startswith(" "):
+            t = t.strip()
+            if " " in t:
+                keywords.extend(t.split())
+            else:
+                keywords.append(t)
+        else:
+            keywords.append(t)
+    return keywords
+
+
+def parse_keywords_from_tag(tag: Tag) -> list[str]:
+    """Parse passed tag's content attribute string for keyword string tokens.
+
+    Expected string should fall into two categories:
+        * with keywords separated by whitespace and multiword keywords surrounded in double-quotes
+          e.g.: `"Magic the gathering" MTG "magic arena" arena "mtg arena" histori...`
+        * with comma-separated keywords, e.g.: `video, sharing, camera phone, video phone, free`
+    """
+    if kw_text := tag.get("content", ""):
+        if '"' in kw_text:
+            keywords = _parse_double_quoted_keywords(kw_text)
+        elif ", " in kw_text:
+            keywords = kw_text.split(", ")
+        else:
+            keywords = [kw_text]
+    else:
+        keywords = []
+    # discard any unfinished keyword
+    if keywords and keywords[-1].endswith('...'):
+        keywords.pop()
+    return keywords
+
+
 def _wayback_predicate(soup: BeautifulSoup | None) -> bool:
     if soup and "Error connecting to database" in str(soup):
         _log.warning(

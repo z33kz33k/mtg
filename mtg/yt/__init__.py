@@ -37,7 +37,7 @@ from mtg.utils import extract_float, find_longest_seqs, from_iterable, logging_d
     multiply_by_symbol, timed
 from mtg.utils.files import getdir, sanitize_filename
 from mtg.utils.scrape import ScrapingError, extract_url, http_requests_counted, \
-    throttled, unshorten
+    parse_keywords_from_tag, throttled, unshorten
 from mtg.utils.scrape.dynamic import fetch_dynamic_soup
 from mtg.utils.scrape.linktree import LinktreeScraper
 from mtg.yt.data import ScrapingSession, load_channel, load_channels, retrieve_ids
@@ -162,7 +162,7 @@ class VideoScraper:
         data = pytubefix.YouTube(self.url, use_oauth=True, allow_oauth_cache=True)
         # DEBUG
         r = Retriever(data)
-        ret = r._retrieve_title()
+        ret = r._retrieve_keywords()
         if not data.publish_date:
             raise MissingVideoPublishTime(
                 "pytubefix data missing publish date", scraper=type(self), url=self.url)
@@ -566,15 +566,15 @@ class ChannelScraper:
         title_tag = soup.find('meta', property='og:title') or soup.find('title')
         if title_tag:
             title = title_tag.get('content', title_tag.text.replace(
-                ' - YouTube', '').strip()) if title_tag else None
+                ' - YouTube', '').strip())
 
         # description (from <meta name="description">)
         if description_tag := soup.find('meta', {'name': 'description'}):
-            description = description_tag.get('content', None) if description_tag else None
+            description = description_tag.get('content', None)
 
         # tags (from <meta name="keywords">)
         if keywords_tag := soup.find('meta', {'name': 'keywords'}):
-            tags = [tag.strip() for tag in keywords_tag['content'].split(',')]
+            tags = parse_keywords_from_tag(keywords_tag)
 
         # subscribers
         if count_text := soup.find(
