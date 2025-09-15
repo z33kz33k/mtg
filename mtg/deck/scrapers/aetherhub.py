@@ -23,8 +23,6 @@ from mtg.utils.scrape import ScrapingError, strip_url_query
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://aetherhub.com"
-
-
 URL_HOOKS = (
     # regular deck
     UrlHook(
@@ -49,6 +47,7 @@ URL_HOOKS = (
         ('"aetherhub.com/article/"', ),
     ),
 )
+CONSENT_XPATH = '//button[@class="ncmp__btn" and contains(text(), "Accept")]'
 
 
 # TODO: scrape the meta
@@ -124,6 +123,12 @@ class AetherhubDeckScraper(DeckScraper):
         "Vintage": ("vintage", Mode.BO3),
         "Commander": ("commander", Mode.BO3),
         "Oathbreaker": ("oathbreaker", Mode.BO3),
+    }
+    SELENIUM_PARAMS = {  # override
+        "xpath": '//div[@class="row"]',
+        "wait_for_all": True,
+        "consent_xpath": CONSENT_XPATH,
+        "wait_for_consent_disappearance": False
     }
 
     @staticmethod
@@ -250,7 +255,6 @@ class AetherhubWriteupDeckScraper(AetherhubDeckScraper):
         return AetherhubDeckTagParser(deck_tag, self._metadata)
 
 
-CONSENT_XPATH = '//button[@class="ncmp__btn" and contains(text(), "Accept")]'
 
 
 @DeckUrlsContainerScraper.registered
@@ -329,6 +333,11 @@ class AetherhubArticleScraper(HybridContainerScraper):
     """
     CONTAINER_NAME = "Aetherhub article"  # override
     CONTAINER_SCRAPERS = AetherhubUserScraper, AetherhubEventScraper  # override
+    SELENIUM_PARAMS = {  # override
+        "xpath": '//div[@id="article-text"]',
+        "consent_xpath": CONSENT_XPATH,
+        "wait_for_consent_disappearance": False
+    }
 
     @staticmethod
     @override

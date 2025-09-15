@@ -44,7 +44,7 @@ from mtg.yt.data import ScrapingSession, load_channel, load_channels, retrieve_i
 from mtg.yt.data.structures import CHANNEL_URL_TEMPLATE, Channel, SerializedDeck, \
     VIDEO_URL_TEMPLATE, Video
 from mtg.yt.expand import LinksExpander
-from mtg.yt.ptfix import Retriever
+from mtg.yt.ptfix import PytubeData, PytubeWrapper
 
 # from yt_dlp import YoutubeDL  # works, but with enormous downtimes (ca. 40s per channel)
 
@@ -158,30 +158,32 @@ class VideoScraper:
         self._comment, self._channel_id = None, None
         self._pytube, self._data = None, None
 
-    def _get_pytube(self) -> pytubefix.YouTube:
-        data = pytubefix.YouTube(self.url, use_oauth=True, allow_oauth_cache=True)
-        # DEBUG
-        r = Retriever(data)
-        ret = r._retrieve_keywords()
-        if not data.publish_date:
+    def _get_pytube(self) -> PytubeWrapper:
+        try:
+            pytube = pytubefix.YouTube(self.url, use_oauth=True, allow_oauth_cache=True)
+        except pytubefix.exceptions.RegexMatchError as rme:
+            raise ValueError(f"Invalid video ID: {self._id!r}") from rme
+        if not pytube.publish_date:
             raise MissingVideoPublishTime(
-                "pytubefix data missing publish date", scraper=type(self), url=self.url)
-        return data
+                "pytubefix data missing publish time", scraper=type(self), url=self.url)
+        wrapper = PytubeWrapper(pytube)
+        wrapper.retrieve()
+        return wrapper
 
     @backoff.on_exception(
         backoff.expo,
         (Timeout, HTTPError, RemoteDisconnected, MissingVideoPublishTime, urllib.error.HTTPError),
         max_time=300)
-    def _get_pytube_with_backoff(self) -> pytubefix.YouTube:
+    def _get_pytube_with_backoff(self) -> PytubeWrapper:
         return self._get_pytube()
 
     def _save_pytube_data(self) -> None:
-        self._author = self._pytube.author
-        self._description = self._pytube.description
-        self._title = self._pytube.title
-        self._keywords = self._pytube.keywords
-        self._publish_time = self._pytube.publish_date
-        self._views = self._pytube.views
+        self._author = self._pytube.data.author
+        self._description = self._pytube.data.description
+        self._title = self._pytube.data.title
+        self._keywords = self._pytube.data.keywords
+        self._publish_time = self._pytube.publish_time
+        self._views = self._pytube.data.views
         self._channel_id = self._pytube.channel_id
 
     def _scrape_video(self) -> None:
@@ -406,7 +408,8 @@ class VideoScraper:
             return None
 
         pattern = r'(\d+(?:\.\d+)?)\s*([KMB]?)\s*subscribers'
-        match = re.search(pattern, self._pytube.embed_html)
+        match = re.search(pattern, self._pytube.embed_html) or re.search(
+            pattern, self._pytube.watch_html)
 
         if match:
             # extract the number and suffix from the match
