@@ -69,6 +69,8 @@ def to_eng_url(url: str, first_non_lang_segment: str) -> str:
     return url.replace(f"/{lang}/", "/en-us/")
 
 
+# there's an alternative approach of using the API, e.g.:
+# https://mtg.cardsrealm.com/en-us/app/getDeckById?deck_id=357787
 @DeckScraper.registered
 class CardsrealmDeckScraper(DeckScraper):
     """Scraper of Cardsrealm decklist page.
@@ -218,7 +220,8 @@ class CardsrealmRegularTournamentScraper(DeckUrlsContainerScraper):
     """
     SELENIUM_PARAMS = {  # override
         "xpath": "//button[text()='show deck']",
-        "consent_xpath": '//button[@id="ez-accept-all"]'
+        # "consent_xpath": '//button[@id="ez-accept-all"]'
+        "consent_xpath": '//p[text()="Consent"]'
     }
     CONTAINER_NAME = "Cardsrealm regular tournament"  # override
     DECK_SCRAPERS = CardsrealmDeckScraper,  # override

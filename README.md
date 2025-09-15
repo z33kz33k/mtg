@@ -160,16 +160,16 @@ YT videos descriptions).
 ![Most popular channels](assets/channels.jpg)
 
 ### Scraped decks breakdown
-**15th Sep 2025**
+**16th Sep 2025**
 | No | Format | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | commander       | 82133 |    37.87 % |
-| 2  | standard        | 51583 |    23.78 % |
+| 1  | commander       | 82133 |    37.85 % |
+| 2  | standard        | 51583 |    23.77 % |
 | 3  | modern          | 22565 |    10.40 % |
-| 4  | pauper          | 13558 |     6.25 % |
+| 4  | pauper          | 13643 |     6.29 % |
 | 5  | pioneer         | 12432 |     5.73 % |
 | 6  | brawl           |  6435 |     2.97 % |
-| 7  | legacy          |  5738 |     2.65 % |
+| 7  | legacy          |  5738 |     2.64 % |
 | 8  | historic        |  3500 |     1.61 % |
 | 9  | undefined       |  3163 |     1.46 % |
 | 10 | explorer        |  2519 |     1.16 % |
@@ -187,19 +187,19 @@ YT videos descriptions).
 | 22 | oldschool       |    79 |     0.04 % |
 | 23 | future          |    54 |     0.02 % |
 | 24 | predh           |    13 |     0.01 % |
-|  | TOTAL           | 216885 | 100.00 %|
+|  | TOTAL           | 216970 | 100.00 %|
 
 | No | Source | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | moxfield.com           | 89206 |    41.13 % |
-| 2  | mtgo.com               | 25759 |    11.88 % |
+| 1  | moxfield.com           | 89206 |    41.11 % |
+| 2  | mtgo.com               | 25759 |    11.87 % |
 | 3  | arena.decklist         | 19307 |     8.90 % |
 | 4  | aetherhub.com          | 13216 |     6.09 % |
 | 5  | mtggoldfish.com        | 12456 |     5.74 % |
-| 6  | archidekt.com          |  7625 |     3.52 % |
+| 6  | archidekt.com          |  7625 |     3.51 % |
 | 7  | mtgdecks.net           |  7426 |     3.42 % |
 | 8  | topdeck.gg             |  6947 |     3.20 % |
-| 9  | mtg.cardsrealm.com     |  4355 |     2.01 % |
+| 9  | mtg.cardsrealm.com     |  4440 |     2.05 % |
 | 10 | mtgcircle.com          |  4334 |     2.00 % |
 | 11 | mtga.untapped.gg       |  4177 |     1.93 % |
 | 12 | melee.gg               |  3772 |     1.74 % |
@@ -243,4 +243,4 @@ YT videos descriptions).
 | 50 | mtgarena.pro           |     3 |     0.00 % |
 | 51 | mtgotraders.com        |     1 |     0.00 % |
 | 52 | playingmtg.com         |     1 |     0.00 % |
-|  | TOTAL                  | 216885 | 100.00 %|
+|  | TOTAL                  | 216970 | 100.00 %|

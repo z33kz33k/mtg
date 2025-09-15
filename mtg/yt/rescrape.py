@@ -191,7 +191,8 @@ def rescrape_videos(
 
 
 def rescrape_by_date(
-        *chids: str, after: date | None = None,  before: date | None = None) -> None:
+        *chids: str, after: date | None = None, before: date | None = None,
+        video_filter: Callable[[Video], bool] = lambda _: True) -> None:
     """Re-scrape videos across all specified channels but only those scraped before/after the
     specified threshold dates (or inbetween them).
 
@@ -201,21 +202,28 @@ def rescrape_by_date(
         *chids: channel IDs
         after: scrape videos after or equal to this date (if specified)
         before: scrape videos before this date (if specified)
+        video_filter: optionally, additional video-filtering predicate
     """
     if after and before:
         rescrape_videos(
             *chids,
-            video_filter=lambda v: v.scrape_time and before > v.scrape_time.date() >= after
+            video_filter=lambda v: v.scrape_time
+                                   and before > v.scrape_time.date() >= after
+                                   and video_filter(v)
         )
     elif after:
         rescrape_videos(
             *chids,
-            video_filter=lambda v: v.scrape_time and v.scrape_time.date() >= after
+            video_filter=lambda v: v.scrape_time
+                                   and v.scrape_time.date() >= after
+                                   and video_filter(v)
         )
     elif before:
         rescrape_videos(
             *chids,
-            video_filter=lambda v: v.scrape_time and before > v.scrape_time.date()
+            video_filter=lambda v: v.scrape_time
+                                   and before > v.scrape_time.date()
+                                   and video_filter(v)
         )
     else:
         raise ValueError("At least one threshold date must be specified")

@@ -95,9 +95,10 @@ def get_data(
             script_tag, 'self.__next_f.push(', '|||dummy|||', end_processor=lambda t: t[:-1])
         data = json.loads(js_data[1][start_pos:])
         return retriever(data)
-    except (AttributeError, KeyError):
+    except (AttributeError, KeyError) as err:
         raise ScrapingError(
-            "Failed data extraction from <script> tag's JavaScript", scraper=scraper, url=url)
+            "Failed data extraction from <script> tag's JavaScript",
+            scraper=scraper, url=url) from err
 
 
 @throttled_deck_scraper
