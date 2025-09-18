@@ -49,7 +49,11 @@ def _get_json(
     return data
 
 
-def _get_decks_data(json_data: Json) -> Json:
+def _get_decks_data(
+        json_data: Json,
+        scraper: Type[DeckScraper] | Type[DecksJsonContainerScraper], url: str) -> Json:
+    if not "decklists" in json_data:
+        raise ScrapingError("No decklists data", scraper=scraper, url=url)
     return json_data["decklists"]
 
 
@@ -157,7 +161,7 @@ class MtgoDeckScraper(DeckScraper):
     @override
     def _get_data_from_soup(self) -> Json:
         json_data = _get_json(self._soup, type(self), self.url)
-        decks_data = _get_decks_data(json_data)
+        decks_data = _get_decks_data(json_data, type(self), self.url)
         deck_data = from_iterable(decks_data, lambda d: d["player"] == self._player_name)
         if not deck_data:
             raise ScrapingError(
@@ -202,7 +206,7 @@ class MtgoEventScraper(DecksJsonContainerScraper):
     @override
     def _collect(self) -> list[Json]:
         json_data = _get_json(self._soup, type(self), self.url)
-        decks_data = _get_decks_data(json_data)
+        decks_data = _get_decks_data(json_data, type(self), self.url)
         if rank_data := json_data.get("final_rank"):
             _process_ranks(rank_data, *decks_data)
         self._metadata.update(_get_event_metadata(json_data))

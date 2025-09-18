@@ -37,6 +37,7 @@ AVOIDED_DIR = OUTPUT_DIR / "avoided"
 LOG_DIR = VAR_DIR / "logs" if (VAR_DIR / "logs").exists() else Path(os.getcwd())
 README = Path(os.getcwd()) / "README.md"
 SECRETS = json.loads(Path("secrets.json").read_text(encoding="utf-8"))
+LOG_SIZE = 1024*1024*20  # 20MB
 
 
 _logging_initialized = False
@@ -60,7 +61,7 @@ def init_log() -> None:
         root_logger = logging.getLogger()
         root_logger.setLevel(log_level)
         formatter = logging.Formatter(log_format)
-        handler = RotatingFileHandler(logfile, maxBytes=1024*1024*10, backupCount=10)
+        handler = RotatingFileHandler(logfile, maxBytes=LOG_SIZE, backupCount=10)
         handler.setFormatter(formatter)
         handler.setLevel(log_level)
         root_logger.addHandler(handler)

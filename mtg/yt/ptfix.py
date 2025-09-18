@@ -123,18 +123,23 @@ class PytubeWrapper:
         with contextlib.suppress(KeyError, pytubefix.exceptions.PytubeFixError):
             if self._pytube.views is not None and self._pytube.views != "unknown":
                 return self._pytube.views
-        path = ("['videoMetadataRenderer']['viewCount']['videoViewCountRenderer']['view"
-                "Count']['simpleText']")
-        if node := self._nvd.find_by_path(path, mode="end"):
-            return extract_int(node.data) if node.data != "No views" else 0
+        higher_path = "['videoMetadataRenderer']['viewCount']['videoViewCountRenderer']['viewCount']"
+        if higher_node := self._nvd.find_by_path(higher_path, mode="end"):
+            if "simpleText" in higher_node.data:
+                data = higher_node.data["simpleText"]
+                return extract_int(data) if data != "No views" else 0
+            # views have status 'waiting'
+            if node := higher_node.find_by_path("['runs'][0]['text']", mode="end"):
+                return extract_int(node.data) if node.data != "No views" else 0
+            # members-only video
+            if higher_node.data == {}:
+                return 0
         path = "['videoDescriptionHeaderRenderer']['views']['simpleText']"
         if node := self._nvd.find_by_path(path, mode="end"):
             return extract_int(node.data) if node.data != "No views" else 0
-        # views have status 'waiting'
-        path = ("['videoMetadataRenderer']['viewCount']['videoViewCountRenderer']['view"
-                "Count']['runs'][0]['text']")
-        if node := self._nvd.find_by_path(path, mode="end"):
-            return extract_int(node.data) if node.data != "No views" else 0
+        if self._nvd.find(
+                lambda n: isinstance(n.data, str) and n.data in ("Members only", "Members first")):
+            return 0
         # no views
         if node := self._nvd.find_by_path("['videoMetadataRenderer']['viewCountText']", mode="end"):
             if node.data == {}:
