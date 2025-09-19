@@ -10,6 +10,7 @@
 import logging
 from typing import Type, override
 
+import backoff
 import dateutil.parser
 from bs4 import BeautifulSoup
 
@@ -38,6 +39,7 @@ HEADERS = {
 }
 
 
+@backoff.on_exception(backoff.expo, ScrapingError, max_time=90)
 def _get_json(
         soup: BeautifulSoup,
         scraper: Type[DeckScraper] | Type[DecksJsonContainerScraper], url: str) -> Json:
@@ -46,15 +48,9 @@ def _get_json(
         lambda s: s.rstrip().rstrip(";"))
     if data is None:
         raise ScrapingError("Nothing extracted from JavaScript", scraper=scraper, url=url)
-    return data
-
-
-def _get_decks_data(
-        json_data: Json,
-        scraper: Type[DeckScraper] | Type[DecksJsonContainerScraper], url: str) -> Json:
-    if not "decklists" in json_data:
+    if not "decklists" in data:
         raise ScrapingError("No decklists data", scraper=scraper, url=url)
-    return json_data["decklists"]
+    return data
 
 
 def _process_ranks(rank_data: Json, *decks_data: Json) -> None:
@@ -161,7 +157,7 @@ class MtgoDeckScraper(DeckScraper):
     @override
     def _get_data_from_soup(self) -> Json:
         json_data = _get_json(self._soup, type(self), self.url)
-        decks_data = _get_decks_data(json_data, type(self), self.url)
+        decks_data = json_data["decklists"]
         deck_data = from_iterable(decks_data, lambda d: d["player"] == self._player_name)
         if not deck_data:
             raise ScrapingError(
@@ -206,7 +202,7 @@ class MtgoEventScraper(DecksJsonContainerScraper):
     @override
     def _collect(self) -> list[Json]:
         json_data = _get_json(self._soup, type(self), self.url)
-        decks_data = _get_decks_data(json_data, type(self), self.url)
+        decks_data = json_data["decklists"]
         if rank_data := json_data.get("final_rank"):
             _process_ranks(rank_data, *decks_data)
         self._metadata.update(_get_event_metadata(json_data))
