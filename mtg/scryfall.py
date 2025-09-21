@@ -1296,29 +1296,28 @@ def find_card(
     return from_iterable(data, predicate)
 
 
-# hashmap based lookups
-_NAME_MAP, _SCRYFALL_ID_MAP, _COLLECTOR_NUMBER_MAP = {}, {}, {}
-_ORACLE_ID_MAP, _TCGPLAYER_ID_MAP, _CARDMARKET_ID_MAP, _MTGO_ID_MAP = {}, {}, {}, {}
+# cached lookups
+_names_cache, _scryfall_ids_cache, _collector_numbers_cache = {}, {}, {}
+_oracle_ids_cache, _tcgplayer_ids_cache, _cardmarket_ids_cache, _mtgo_ids_cache = {}, {}, {}, {}
 
 
-@timed("building card lookup maps")
-def _build_maps() -> None:
-    global _NAME_MAP, _SCRYFALL_ID_MAP, _COLLECTOR_NUMBER_MAP
-    _log.info("Mapping the cards for fast lookups...")
+@timed("caching cards for fast lookups")
+def _cache_cards() -> None:
+    _log.info("Caching cards for fast lookups...")
     for card in bulk_data():
-        _NAME_MAP[unidecode(card.name).casefold()] = card
+        _names_cache[unidecode(card.name).casefold()] = card
         if card.is_multifaced:
-            _NAME_MAP[unidecode(card.first_face_name).casefold()] = card
-            _NAME_MAP[unidecode(card.second_face_name).casefold()] = card
-        _SCRYFALL_ID_MAP[card.id] = card
-        _ORACLE_ID_MAP[card.id] = card
+            _names_cache[unidecode(card.first_face_name).casefold()] = card
+            _names_cache[unidecode(card.second_face_name).casefold()] = card
+        _scryfall_ids_cache[card.id] = card
+        _oracle_ids_cache[card.id] = card
         if card.tcgplayer_id is not None:
-            _TCGPLAYER_ID_MAP[card.tcgplayer_id] = card
+            _tcgplayer_ids_cache[card.tcgplayer_id] = card
         if card.cardmarket_id is not None:
-            _CARDMARKET_ID_MAP[card.cardmarket_id] = card
+            _cardmarket_ids_cache[card.cardmarket_id] = card
         if card.mtgo_id is not None:
-            _MTGO_ID_MAP[card.mtgo_id] = card
-        _COLLECTOR_NUMBER_MAP[(card.set, card.collector_number)] = card
+            _mtgo_ids_cache[card.mtgo_id] = card
+        _collector_numbers_cache[(card.set, card.collector_number)] = card
 
 
 @lru_cache(maxsize=None)
@@ -1366,10 +1365,9 @@ def find_by_name(card_name: str, query_api=True) -> Card | None:
 
     Case-insensitive. Calls Scryfall API on failure to find card in the bulk data.
     """
-    global _NAME_MAP
-    if not _NAME_MAP:
-        _build_maps()
-    if card := _NAME_MAP.get(unidecode(card_name).casefold()):
+    if not _names_cache:
+        _cache_cards()
+    if card := _names_cache.get(unidecode(card_name).casefold()):
         return card
     return query_api_for_card(card_name) if query_api else None
 
@@ -1377,65 +1375,58 @@ def find_by_name(card_name: str, query_api=True) -> Card | None:
 def find_by_words(*words: str) -> set[Card]:
     """Return a set of cards that contain all provided words in their name.
     """
-    global _NAME_MAP
-    if not _NAME_MAP:
-        _build_maps()
-    return {v for k, v in _NAME_MAP.items() if all(w.lower() in k.lower() for w in words)}
+    if not _names_cache:
+        _cache_cards()
+    return {v for k, v in _names_cache.items() if all(w.lower() in k.lower() for w in words)}
 
 
 def find_by_scryfall_id(scryfall_id: str) -> Card | None:
     """Return a card designated BY provided ``scryfall_id`` or `None`.
     """
-    global _SCRYFALL_ID_MAP
-    if not _SCRYFALL_ID_MAP:
-        _build_maps()
-    return _SCRYFALL_ID_MAP.get(scryfall_id)
+    if not _scryfall_ids_cache:
+        _cache_cards()
+    return _scryfall_ids_cache.get(scryfall_id)
 
 
 def find_by_oracle_id(oracle_id: str) -> Card | None:
     """Return a card designated BY provided ``oracle_id`` or `None`.
     """
-    global _ORACLE_ID_MAP
-    if not _ORACLE_ID_MAP:
-        _build_maps()
-    return _ORACLE_ID_MAP.get(oracle_id)
+    if not _oracle_ids_cache:
+        _cache_cards()
+    return _oracle_ids_cache.get(oracle_id)
 
 
 def find_by_tcgplayer_id(tcgplayer_id: int) -> Card | None:
     """Return a card designated BY provided ``tcgplayer_id`` or `None`.
     """
-    global _TCGPLAYER_ID_MAP
-    if not _TCGPLAYER_ID_MAP:
-        _build_maps()
-    return _TCGPLAYER_ID_MAP.get(tcgplayer_id)
+    if not _tcgplayer_ids_cache:
+        _cache_cards()
+    return _tcgplayer_ids_cache.get(tcgplayer_id)
 
 
 def find_by_cardmarket_id(cardmarket_id: int) -> Card | None:
     """Return a card designated BY provided ``cardmarket_id`` or `None`.
     """
-    global _CARDMARKET_ID_MAP
-    if not _CARDMARKET_ID_MAP:
-        _build_maps()
-    return _CARDMARKET_ID_MAP.get(cardmarket_id)
+    if not _cardmarket_ids_cache:
+        _cache_cards()
+    return _cardmarket_ids_cache.get(cardmarket_id)
 
 
 def find_by_mtgo_id(mtgo_id: int) -> Card | None:
     """Return a card designated BY provided ``mtgo_id`` or `None`.
     """
-    global _MTGO_ID_MAP
-    if not _MTGO_ID_MAP:
-        _build_maps()
-    return _MTGO_ID_MAP.get(mtgo_id)
+    if not _mtgo_ids_cache:
+        _cache_cards()
+    return _mtgo_ids_cache.get(mtgo_id)
 
 
 def find_by_collector_number(set_code: str, collector_number: str | int) -> Card | None:
     """Return a card designated by provided ``set_code`` and ``collector_number`` or `None` if it
     cannot be found.
     """
-    global _COLLECTOR_NUMBER_MAP
-    if not _COLLECTOR_NUMBER_MAP:
-        _build_maps()
-    return _COLLECTOR_NUMBER_MAP.get((set_code.lower(), collector_number))
+    if not _collector_numbers_cache:
+        _cache_cards()
+    return _collector_numbers_cache.get((set_code.lower(), collector_number))
 
 
 class ColorIdentityDistribution:

@@ -30,6 +30,7 @@ from mtg.utils.scrape import fetch_soup
 from mtg.yt.data.structures import CHANNEL_URL_TEMPLATE, Channel, Video
 
 _log = logging.getLogger(__name__)
+_channels_cache: dict[str, Channel] = {}
 
 
 def get_channels_count() -> int:
@@ -63,9 +64,16 @@ def channels_batch(start_row=2, batch_size: int | None = None) -> Iterator[str]:
     return itertools.islice(retrieve_ids(), start_idx, end_idx)
 
 
+def clear_cache() -> None:
+    _channels_cache.clear()
+
+
 def load_channel(channel_id: str) -> Channel:
     """Load all earlier scraped data for a channel designated by the provided ID.
     """
+    if channel :=  _channels_cache.get(channel_id):
+        return channel
+
     channel_dir = getdir(CHANNELS_DIR / channel_id)
     _log.info(f"Loading channel data from: '{channel_dir}'...")
     files = [f for f in channel_dir.iterdir() if f.is_file() and f.suffix.lower() == ".json"]
@@ -93,7 +101,7 @@ def load_channel(channel_id: str) -> Channel:
 
     videos.sort(key=attrgetter("publish_time"), reverse=True)
 
-    return Channel(
+    channel = Channel(
         id=channels[0].id,
         title=channels[0].title,
         description=channels[0].description,
@@ -102,6 +110,8 @@ def load_channel(channel_id: str) -> Channel:
         scrape_time=channels[0].scrape_time,
         videos=videos,
     )
+    _channels_cache[channel_id] = channel
+    return channel
 
 
 def load_channels() -> Generator[Channel, None, None]:

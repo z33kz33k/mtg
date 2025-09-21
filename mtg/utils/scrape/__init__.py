@@ -239,7 +239,6 @@ def http_requests_counted(operation="") -> Callable:
     def decorate(func: Callable) -> Callable:
         @wraps(func)
         def wrapper(*args, **kwargs):
-            global _http_requests_count
             initial_count = _http_requests_count
             result = func(*args, **kwargs)
             requests_made = _http_requests_count - initial_count
