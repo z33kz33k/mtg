@@ -73,14 +73,14 @@ class Node:
     """A tree-building wrapper on dict/list deserialized from JSON.
     """
     @property
-    def parents(self) -> tuple[Self, ...]:
-        return self._parents
+    def ancestors(self) -> tuple[Self, ...]:
+        return self._ancestors
 
     @property
     def parent(self) -> Self | None:
-        if not self.parents:
+        if not self.ancestors:
             return None
-        return self.parents[0]
+        return self.ancestors[0]
 
     @property
     def key(self) -> str | int:
@@ -106,7 +106,7 @@ class Node:
 
     @property
     def path(self) -> str:
-        return self.build_path(*self.parents[::-1], self)
+        return self.build_path(*self.ancestors[::-1], self)
 
     @property
     def is_leaf(self) -> bool:
@@ -114,7 +114,7 @@ class Node:
 
     @property
     def is_root(self) -> bool:
-        return not self.parents
+        return not self.ancestors
 
     @property
     def next_sibling(self) -> Self | None:
@@ -134,15 +134,15 @@ class Node:
         except IndexError:
             return None
 
-    def __init__(self, data: Json, *parents: Self, key: str | int | None = None) -> None:
-        self._data, self._parents, self._key = data, parents, key
+    def __init__(self, data: Json, *ancestors: Self, key: str | int | None = None) -> None:
+        self._data, self._ancestors, self._key = data, ancestors, key
         self._children = self._get_children()
 
     def _get_children(self) -> tuple[Self, ...]:
         if isinstance(self.data, dict):
-            return tuple(Node(d, self, *self.parents, key=k) for k, d in self.data.items())
+            return tuple(Node(d, self, *self.ancestors, key=k) for k, d in self.data.items())
         if isinstance(self.data, list):
-            return tuple(Node(d, self, *self.parents, key=i) for i, d in enumerate(self.data))
+            return tuple(Node(d, self, *self.ancestors, key=i) for i, d in enumerate(self.data))
         return ()
 
     def __len__(self) -> int:

@@ -54,12 +54,12 @@ def fetch_dynamic_soup(
     If specified, attempt at clicking the located element first is made and two soup objects are
     returned (with state before and after the click).
 
-    If consent XPath is specified (it should point to a clickable consent button), then its
+    If consent XPath is specified and points to a clickable consent element, then its
     presence first is checked and, if confirmed, consent is clicked before attempting any other
     action.
 
     If specified, a copy-to-clipboard element is clicked and the contents of the clipboard are
-    return as the third object.
+    returned as the third object.
 
     If specified, an attempt to scroll the whole page down is performed before anything other
     than optional consent clicking.
@@ -84,45 +84,41 @@ def fetch_dynamic_soup(
         clicked)
     """
     with webdriver.Chrome() as driver:
-        try:
-            _log.info(f"Webdriving using Chrome to: '{url}'...")
-            driver.get(url)
+        _log.info(f"Webdriving using Chrome to: '{url}'...")
+        driver.get(url)
 
-            if consent_xpath:
-                if wait_for_consent_disappearance:
-                    accept_consent(driver, consent_xpath)
-                else:
-                    accept_consent_without_wait(driver, consent_xpath)
+        if consent_xpath:
+            if wait_for_consent_disappearance:
+                accept_consent(driver, consent_xpath)
+            else:
+                accept_consent_without_wait(driver, consent_xpath)
 
-            if scroll_down:
-                time.sleep(1)
-                scroll_down_by_offset(driver, times=scroll_down_times)
-                scroll_down_with_end(driver, delay=scroll_down_delay)
+        if scroll_down:
+            time.sleep(1)
+            scroll_down_by_offset(driver, times=scroll_down_times)
+            scroll_down_with_end(driver, delay=scroll_down_delay)
 
-            element = _wait_for_elements(
-                driver, xpath, *halt_xpaths, wait_for_all=wait_for_all, timeout=timeout)
+        element = _wait_for_elements(
+            driver, xpath, *halt_xpaths, wait_for_all=wait_for_all, timeout=timeout)
 
-            verb = "are" if wait_for_all else "is"
-            if not element:
-                raise NoSuchElementException(
-                    f"Element(s) specified by {xpath!r} {verb} not present")
-            _log.info(f"Page has been loaded and XPath-specified element(s) {verb} present")
+        verb = "are" if wait_for_all else "is"
+        if not element:
+            raise NoSuchElementException(
+                f"Element(s) specified by {xpath!r} {verb} not present")
+        _log.info(f"Page has been loaded and XPath-specified element(s) {verb} present")
 
-            page_source, soup2 = driver.page_source, None
-            if click:
-                element = element[0] if isinstance(element, list) else element
-                element.click()
-                soup2 = BeautifulSoup(driver.page_source, "lxml")
-            soup = BeautifulSoup(page_source, "lxml")
+        page_source, soup2 = driver.page_source, None
+        if click:
+            element = element[0] if isinstance(element, list) else element
+            element.click()
+            soup2 = BeautifulSoup(driver.page_source, "lxml")
+        soup = BeautifulSoup(page_source, "lxml")
 
-            clipboard = None
-            if clipboard_xpath:
-                clipboard = click_for_clipboard(driver, clipboard_xpath)
+        clipboard = None
+        if clipboard_xpath:
+            clipboard = click_for_clipboard(driver, clipboard_xpath)
 
-            return soup, soup2, clipboard
-
-        except TimeoutException:
-            raise  # FIXME: this is redundant
+        return soup, soup2, clipboard
 
 
 @timed("fetching JSON with Selenium")

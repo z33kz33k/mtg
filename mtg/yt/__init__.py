@@ -152,7 +152,7 @@ class VideoScraper:
         self._decklists_manager = DecklistsStateManager()
         self._cooloff_manager = CoolOffManager()
         self._id = video_id
-        # description and title is also available in scrapetube data on Channel level
+        # description and title is also available in scrapetube data on Channel abstraction layer
         self._author, self._description, self._title = None, None, None
         self._keywords, self._publish_time, self._views = None, None, None
         self._comment, self._channel_id = None, None
@@ -714,9 +714,9 @@ def scrape_channels(
         soft_limit: if True, extend the limit indefinitely unless not exactly met
     """
     with ScrapingSession() as session:
-        for i, id_ in enumerate(chids, start=1):
+        for i, chid in enumerate(chids, start=1):
             try:
-                ch = ChannelScraper(id_)
+                ch = ChannelScraper(chid)
                 _log.info(f"Scraping channel {i}/{len(chids)}: {ch.url_title_text()}...")
                 ch.scrape(
                     videos, only_newer_than_last_scraped=only_newer_than_last_scraped,
@@ -724,7 +724,7 @@ def scrape_channels(
                 if ch.data:
                     ch.dump()
             except Exception as err:
-                _log.error(f"Scraping of channel {id_!r} failed with: {err!r}. Skipping...")
+                _log.error(f"Scraping of channel {chid!r} failed with: {err!r}. Skipping...")
                 _log.error(traceback.format_exc())
 
 

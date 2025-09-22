@@ -17,7 +17,8 @@ from mtg import DECKS_DIR, FILENAME_TIMESTAMP_FORMAT, PathLike
 from mtg.deck.export import Exporter, FORMATS as EXPORT_FORMATS
 from mtg.utils import logging_disabled
 from mtg.utils.files import getdir, sanitize_filename
-from mtg.yt.data import get_channels_count, load_channels
+from mtg.yt import retrieve_ids
+from mtg.yt.data import load_channels
 from mtg.yt.data.structures import Channel
 
 
@@ -51,7 +52,8 @@ def dump_decks(
     timestamp = datetime.now().strftime(FILENAME_TIMESTAMP_FORMAT)
     dstdir = dstdir or DECKS_DIR / "yt" / timestamp
     dstdir = getdir(dstdir)
-    channels = [*tqdm(load_channels(), total=get_channels_count(), desc="Loading channels data...")]
+    chids = retrieve_ids()
+    channels = [*tqdm(load_channels(*chids), total=len(chids), desc="Loading channels data...")]
     total = sum(len(ch.decks) for ch in channels)
     with logging_disabled():
         for exporter, channel_dir in tqdm(

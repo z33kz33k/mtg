@@ -11,7 +11,7 @@ import itertools
 import logging
 import shutil
 from collections import defaultdict
-from datetime import datetime, date
+from datetime import date, datetime
 from pathlib import Path
 from typing import Callable
 
@@ -24,8 +24,8 @@ from mtg.utils.files import getdir, getfile
 from mtg.utils.json import from_json, to_json
 from mtg.utils.scrape import http_requests_counted
 from mtg.yt import scrape_channel_videos
-from mtg.yt.data import ScrapingSession, get_channels_count, load_channel, load_channels, \
-    retrieve_ids
+from mtg.yt.data import ScrapingSession, load_channel, load_channels, retrieve_ids, \
+    retrieve_video_data
 from mtg.yt.data.structures import DataPath, Video
 
 _log = logging.getLogger(__name__)
@@ -40,7 +40,8 @@ def find_orphans() -> dict[str, list[str]]:
         extended form) in the channel data.
     """
     regular_ids, extended_ids = {}, {}
-    for ch in tqdm(load_channels(), total=get_channels_count(), desc="Loading channels data..."):
+    chids = retrieve_ids()
+    for ch in tqdm(load_channels(*chids), total=len(chids), desc="Loading channels data..."):
         for v in ch.videos:
             for deck in v.decks:
                 path_regular = DataPath(ch.id, v.id, deck.decklist_id)
@@ -147,8 +148,7 @@ def rescrape_missing_decklists() -> None:
         return
 
     with ScrapingSession() as session:
-        manager = UrlsStateManager()
-        manager.ignore_scraped = True
+        session.urls_manager.ignore_scraped = True
         for i, (channel_id, video_ids) in enumerate(channels.items(), start=1):
             _log.info(
                 f"Re-scraping ==> {i}/{len(channels)} <== channel for missing decklists data...")
@@ -169,25 +169,19 @@ def rescrape_videos(
         video_filter: video-filtering predicate
     """
     chids = chids or retrieve_ids()
-    channels = defaultdict(list)
-    for chid in tqdm(chids, total=len(chids), desc="Retrieving video data per channel..."):
-        with logging_disabled():
-            ch = load_channel(chid)
-        vids = [v.id for v in ch.videos if video_filter(v)]
-        if vids:
-            channels[chid].extend(vids)
+    channels = retrieve_video_data(*chids, video_filter=video_filter)
 
     if not channels:
         _log.info("No videos found that needed re-scraping")
         return
 
-    with ScrapingSession():
-        manager = UrlsStateManager()
-        manager.ignore_scraped_within_current_video, manager.ignore_failed = True, True
-        for i, (channel_id, video_ids) in enumerate(channels.items(), start=1):
+    with ScrapingSession() as session:
+        session.urls_manager.ignore_scraped_within_current_video = True
+        session.urls_manager.ignore_failed = True
+        for i, (channel_id, videos) in enumerate(channels.items(), start=1):
             _log.info(
-                f"Re-scraping {len(video_ids)} video(s) of ==> {i}/{len(channels)} <== channel...")
-            _process_videos(channel_id, *video_ids)
+                f"Re-scraping {len(videos)} video(s) of ==> {i}/{len(channels)} <== channel...")
+            _process_videos(channel_id, *[v.id for v in videos])
 
 
 def rescrape_by_date(

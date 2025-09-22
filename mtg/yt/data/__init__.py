@@ -65,6 +65,8 @@ def channels_batch(start_row=2, batch_size: int | None = None) -> Iterator[str]:
 
 
 def clear_cache() -> None:
+    """Clear loaded channels' cache.
+    """
     _channels_cache.clear()
 
 
@@ -114,23 +116,26 @@ def load_channel(channel_id: str) -> Channel:
     return channel
 
 
-def load_channels() -> Generator[Channel, None, None]:
-    """Load channel data for all channels recorded in a private Google Sheet.
+def load_channels(*channel_ids: str) -> Generator[Channel, None, None]:
+    """Load channel data for specified IDs.
+
+    If nothing is specified, all known channels are considered.
     """
+    chids = channel_ids or retrieve_ids()
     with logging_disabled():
-        for id_ in retrieve_ids():
-            yield load_channel(id_)
+        for chid in chids:
+            yield load_channel(chid)
 
 
 def update_gsheet() -> None:
     """Update "channels" Google Sheets worksheet with the currently scraped data.
     """
-    data, ids = [], retrieve_ids()
-    for id_ in tqdm(ids, total=len(ids), desc="Loading channels data..."):
-        url = CHANNEL_URL_TEMPLATE.format(id_)
+    data, chids = [], retrieve_ids()
+    for chid in tqdm(chids, total=len(chids), desc="Loading channels data..."):
+        url = CHANNEL_URL_TEMPLATE.format(chid)
         try:
             with logging_disabled():
-                ch = load_channel(id_)
+                ch = load_channel(chid)
             formats = sorted(ch.deck_formats.items(), key=itemgetter(1), reverse=True)
             formats = [pair[0] for pair in formats]
             deck_sources = sorted(ch.deck_sources.items(), key=itemgetter(1), reverse=True)
@@ -153,12 +158,12 @@ def update_gsheet() -> None:
                 ", ".join(ch.domains),
             ])
         except FileNotFoundError:
-            _log.warning(f"Channel data for ID {id_!r} not found. Skipping...")
+            _log.warning(f"Channel data for ID {chid!r} not found. Skipping...")
             data.append(
                 ["NOT AVAILABLE", url, "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A",
                  "N/A", "N/A", "N/A", "N/A", "N/A"])
         except AttributeError as err:
-            _log.warning(f"Corrupted Channel data for ID {id_!r}: {err}. Skipping...")
+            _log.warning(f"Corrupted Channel data for ID {chid!r}: {err}. Skipping...")
             data.append(
                 ["NOT AVAILABLE", url, "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A",
                  "N/A", "N/A", "N/A", "N/A", "N/A"])
@@ -169,6 +174,18 @@ def update_gsheet() -> None:
 class ScrapingSession:
     """Context manager to ensure proper state management during scraping.
     """
+    @property
+    def urls_manager(self) -> UrlsStateManager:
+        return self._urls_manager
+
+    @property
+    def decklists_manager(self) -> DecklistsStateManager:
+        return self._decklists_manager
+
+    @property
+    def cooloff_manager(self) -> CoolOffManager:
+        return self._cooloff_manager
+
     def __init__(self) -> None:
         self._urls_manager, self._decklists_manager = UrlsStateManager(), DecklistsStateManager()
         self._cooloff_manager = CoolOffManager()
@@ -195,9 +212,10 @@ class ScrapingSession:
 def get_aggregate_deck_data() -> tuple[Counter, Counter]:
     """Get aggregated deck data across all channels.
     """
+    chids = retrieve_ids()
     decks = [
         d for ch
-        in tqdm(load_channels(), total=get_channels_count(), desc="Loading channels data...")
+        in tqdm(load_channels(*chids), total=len(chids), desc="Loading channels data...")
         for d in ch.decks]
     fmts = []
     for d in decks:
@@ -302,9 +320,10 @@ def find_dangling_decklists() -> dict[str, str]:
     manager.load()
     loaded_regular, loaded_extended = manager.regular, manager.extended
     dangling, scraped_regular, scraped_extended = {}, set(), set()
+    chids = retrieve_ids()
     decks = [
         d for ch
-        in tqdm(load_channels(), total=get_channels_count(), desc="Loading channels data...")
+        in tqdm(load_channels(*chids), total=len(chids), desc="Loading channels data...")
         for d in ch.decks]
     for d in decks:
         scraped_regular.add(d.decklist_id)
@@ -380,12 +399,10 @@ def retrieve_video_data(
     """
     chids = chids or retrieve_ids()
     channels = defaultdict(list)
-    for chid in tqdm(chids, total=len(chids), desc="Retrieving video data per channel..."):
-        with logging_disabled():
-            ch = load_channel(chid)
+    for ch in tqdm(load_channels(*chids), total=len(chids), desc="Loading channels data..."):
         videos = [v for v in ch.videos if video_filter(v)]
         if videos:
-            channels[chid].extend(videos)
+            channels[ch.id].extend(videos)
     return channels
 
 
