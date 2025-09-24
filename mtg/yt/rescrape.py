@@ -223,7 +223,7 @@ def rescrape_by_date(
         raise ValueError("At least one threshold date must be specified")
 
 
-def rescrape_by_urls_pool(urls_pool: set[str], *chids: str) -> None:
+def rescrape_by_urls_pool(urls_pool: set[str], *chids: str, exact=True) -> None:
     """Re-scrape videos across all specified channels but only those that feature URLs present in
     ``urls_pool``.
 
@@ -232,10 +232,23 @@ def rescrape_by_urls_pool(urls_pool: set[str], *chids: str) -> None:
     Args:
         urls_pool: set of URLs to filter against
         *chids: channel IDs
+        exact: if True only exact match counts, else partial match is enough
     """
+    def check_partial(video: Video) -> bool:
+        for featured_url in video.featured_urls:
+            for pool_url in urls_pool:
+                if pool_url in featured_url:
+                    return True
+        return False
+
+    if exact:
+        rescrape_videos(
+            *chids,
+            video_filter=lambda v: any(l in urls_pool for l in v.featured_urls)
+        )
     rescrape_videos(
         *chids,
-        video_filter=lambda v: any(l in urls_pool for l in v.featured_urls)
+        video_filter=lambda v: check_partial(v)
     )
 
 

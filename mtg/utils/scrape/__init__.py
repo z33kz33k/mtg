@@ -321,6 +321,9 @@ def dissect_js(
         end_processor: Callable[[str], str] | None = None,
         left_split_on_start_hook=False) -> Json | None:
     """Dissect JSON from JavaScript in ``tag``.
+
+    If the passed tag is not a <script>, then it will be searched for in the tag's descendants
+    by containment of the passed hooks in their text values.
     """
     if tag.name == "script":
         script_tag = tag
