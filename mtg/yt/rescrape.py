@@ -223,7 +223,7 @@ def rescrape_by_date(
         raise ValueError("At least one threshold date must be specified")
 
 
-def rescrape_by_urls_pool(urls_pool: set[str], *chids: str, exact=True) -> None:
+def rescrape_by_urls_pool(urls_pool: set[str], *chids: str, exact=False) -> None:
     """Re-scrape videos across all specified channels but only those that feature URLs present in
     ``urls_pool``.
 

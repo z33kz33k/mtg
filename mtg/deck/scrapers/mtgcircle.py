@@ -23,7 +23,7 @@ from mtg.utils.json import Node
 from mtg.utils.scrape import ScrapingError, dissect_js
 
 _log = logging.getLogger(__name__)
-THROTTLING = DeckScraper.THROTTLING * 2
+_THROTTLING = DeckScraper.THROTTLING * 2
 
 
 class MtgCircleDeckJsonParser(JsonBasedDeckParser):
@@ -107,11 +107,12 @@ class MtgCircleVideoDeckScraper(DeckScraper):
     """Scraper of MTGCircle video decklist page.
     """
     DATA_FROM_SOUP = True  # override
-    THROTTLING = THROTTLING  # override
+    THROTTLING = _THROTTLING * 2  # override
     SELENIUM_PARAMS = {  # override
         "xpath": "//script[contains(text(), 'cards') and contains(text(), 'deckPos') and "
                  "contains(text(), 'mainDeck') and contains(text(), 'name') and contains(text(), "
-                 "'quantity')]"
+                 "'quantity')]",
+        "headers": {"Referer": "https://www.youtube.com/"}  # FIXME: try passing a cookie (#443)
     }
 
     @staticmethod
@@ -196,7 +197,7 @@ class MtgCircleArticleScraper(HybridContainerScraper):
     """
     CONTAINER_NAME = "MTGCircle article"  # override
     JSON_BASED_DECK_PARSER = MtgCircleDeckJsonParser  # override
-    THROTTLING = THROTTLING  # override
+    THROTTLING = _THROTTLING  # override
     SELENIUM_PARAMS = MtgCircleVideoDeckScraper.SELENIUM_PARAMS  # override
 
     @staticmethod

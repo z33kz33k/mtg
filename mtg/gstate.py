@@ -138,9 +138,8 @@ class UrlsStateManager(_Singleton):
         dst.write_text(
             json.dumps({k: sorted(v) for k, v in self.failed.items()}, indent=4,
                        ensure_ascii=False), encoding="utf-8")
-        _log.info(
-            f"Total of {self.failed_count - self._initial_failed_count:,} newly failed decklist "
-            f"URLs added to the global repository to be avoided in the future")
+        delta = self.failed_count - self._initial_failed_count
+        _log.info(f"Total pool of previously failed decklist URLs changed by: {delta:,}")
 
     # used by the scraping session on finish
     def reset(self) -> None:  # override

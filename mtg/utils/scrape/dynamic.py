@@ -38,7 +38,7 @@ SCROLL_DOWN_TIMES = 50
 def fetch_dynamic_soup(
         url: str,
         xpath: str,
-        *halt_xpaths,
+        *halt_xpaths: str,
         click=False,
         wait_for_all=False,
         consent_xpath="",
@@ -47,6 +47,7 @@ def fetch_dynamic_soup(
         scroll_down=False,
         scroll_down_delay=0.0,
         scroll_down_times=SCROLL_DOWN_TIMES,
+        headers: dict[str, str] | None = None,
         timeout=SELENIUM_TIMEOUT) -> tuple[BeautifulSoup, BeautifulSoup | None, str | None]:
     """Return BeautifulSoup object(s) from dynamically rendered page source at ``url`` using
     Selenium WebDriver that waits for presence of an element specified by ``xpath``.
@@ -76,6 +77,7 @@ def fetch_dynamic_soup(
         scroll_down: if True, scroll the page down before returning the soups
         scroll_down_delay: delay in seconds after scrolling to the bottom
         scroll_down_times: times the scroll down is performed (before going to the end)
+        headers: optionally, request headers to inject
         timeout: timeout used in attempted actions (consent timeout is halved)
 
     Returns:
@@ -85,6 +87,14 @@ def fetch_dynamic_soup(
     """
     with webdriver.Chrome() as driver:
         _log.info(f"Webdriving using Chrome to: '{url}'...")
+
+        if headers:
+            driver.execute_cdp_cmd(
+                'Network.setExtraHTTPHeaders',
+                {'headers': headers}
+            )
+            driver.execute_cdp_cmd("Network.enable", {})
+
         driver.get(url)
 
         if consent_xpath:
