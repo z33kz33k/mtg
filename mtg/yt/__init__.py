@@ -141,6 +141,10 @@ class VideoScraper:
     def data(self) -> Video | None:
         return self._data
 
+    @property
+    def channel_id(self) -> str | None:
+        return self._channel_id
+
     def __init__(self, video_id: str) -> None:
         """Initialize.
 
@@ -280,7 +284,7 @@ class VideoScraper:
             return []
         if not comments:
             return []
-        author_comments = [c for c in comments if c["channel"] == self._channel_id]
+        author_comments = [c for c in comments if c["channel"] == self.channel_id]
         return [line for c in author_comments for line in c["text"].splitlines()]
 
     def _process_deck(self, link: str) -> Deck | None:
@@ -513,17 +517,9 @@ class ChannelScraper:
             self, limit=10,
             only_newer_than_last_scraped=True,
             soft_limit=False) -> list[str]:
-        """Return a list of not yet scraped video IDs.
+        """Return a list of yet unscraped videos' IDs of this channel.
 
-        The ``limit`` parameter is only to not overload scrapetube with requests. The default
-        behavior is to extend it as needed (so long as it's exactly met). That means that all
-        freshly posted videos of channels with unusually high number of regularly posted material
-        are still scraped in their totality.
-
-        Args:
-            limit: maximum number of video IDs to return
-            only_newer_than_last_scraped: if True, only return video IDs newer than the most recently scraped
-            soft_limit: if True, extend the limit indefinitely unless not exactly met
+        See scrape() for the description of the parameters.
         """
         video_ids = self._get_unscraped_video_ids(limit, only_newer_than_last_scraped)
         if not soft_limit:
@@ -612,6 +608,11 @@ class ChannelScraper:
                     f"Skipping video that pytubefix failed to retrieve a publish time for: "
                     f"'{VIDEO_URL_TEMPLATE.format(vid)}'...")
                 continue
+            if scraper.channel_id != self._id:
+                _log.warning(
+                    f"Skipping video with a wrong channel ID: {scraper.channel_id!r} != "
+                    f"{self._id!r}")
+                continue
             self._videos.append(scraper.data)
             self._cooloff_manager.bump_video()
 
@@ -634,12 +635,29 @@ class ChannelScraper:
 
     @timed("channel scraping", precision=2)
     def scrape_videos(self, *video_ids: str) -> None:
+        """Scrape videos of this channel according to the passed IDs.
+        """
         self._scrape_videos(*video_ids)
 
     @timed("channel scraping", precision=2)
     def scrape(self, limit=10, only_newer_than_last_scraped=True, soft_limit=False) -> None:
-        video_ids = self.get_unscraped_video_ids(
-            limit, only_newer_than_last_scraped=only_newer_than_last_scraped, soft_limit=soft_limit)
+        """Scrape yet unscraped videos of this channel.
+
+        The parameters of this method guard against scraping the whole channel with potentially
+        an enormous number of featured videos (think LegenVD with 2.2K, CGB with 3.7K,
+        or MTGGoldfish with 7.4K).
+
+        If ``soft_limit`` is set to True, then the limit is extended as needed (so long as it's
+        exactly met). This is useful for scraping channels with unusually high number of
+        regularly posted material. In this scenario, the ``only_newer_than_last_scraped`` flag
+        should be set to True, otherwise the whole channel is going to be scraped.
+
+        Args:
+            limit: maximum number of video to attempt scraping
+            only_newer_than_last_scraped: if True, only scrape videos newer than the recently scraped
+            soft_limit: if True, extend the videos limit indefinitely (unless not exactly met)
+        """
+        video_ids = self.get_unscraped_video_ids(limit, only_newer_than_last_scraped, soft_limit)
         text = self.url_title_text()
         if not video_ids:
             _log.info(f"Channel data for {text} already up to date")
@@ -699,7 +717,7 @@ def scrape_channel_videos(channel_id: str, *video_ids: str) -> bool:
 @timed("channels scraping", precision=1)
 def scrape_channels(
         *chids: str,
-        videos=25,
+        videos_limit=25,
         only_newer_than_last_scraped=True,
         soft_limit=False) -> None:
     """Scrape YouTube channels as specified in a session.
@@ -709,7 +727,7 @@ def scrape_channels(
 
     Args:
         chids: IDs of channels to scrape
-        videos: number of videos to scrape per channel
+        videos_limit: number of videos to scrape per channel
         only_newer_than_last_scraped: if True, only scrape videos newer than the last one scraped
         soft_limit: if True, extend the limit indefinitely unless not exactly met
     """
@@ -718,9 +736,7 @@ def scrape_channels(
             try:
                 ch = ChannelScraper(chid)
                 _log.info(f"Scraping channel {i}/{len(chids)}: {ch.url_title_text()}...")
-                ch.scrape(
-                    videos, only_newer_than_last_scraped=only_newer_than_last_scraped,
-                    soft_limit=soft_limit)
+                ch.scrape(videos_limit, only_newer_than_last_scraped, soft_limit)
                 if ch.data:
                     ch.dump()
             except Exception as err:
@@ -728,8 +744,7 @@ def scrape_channels(
                 _log.error(traceback.format_exc())
 
 
-def scrape_fresh(
-        videos=VIDEOS_COUNT, only_newer_than_last_scraped=True, only_deck_fresh=True) -> None:
+def scrape_fresh(only_deck_fresh=True) -> None:
     """Scrape those YouTube channels saved in a private Google Sheet that are not active,
     dormant nor abandoned.
     """
@@ -749,12 +764,10 @@ def scrape_fresh(
     text = "fresh and deck-fresh" if only_deck_fresh else "fresh"
     _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
-        *ids, videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped,
-        soft_limit=True)
+        *ids, videos_limit=VIDEOS_COUNT, only_newer_than_last_scraped=True, soft_limit=True)
 
 
-def scrape_active(
-        videos=VIDEOS_COUNT, only_newer_than_last_scraped=True, only_deck_fresh=True) -> None:
+def scrape_active(only_deck_fresh=True) -> None:
     """Scrape those YouTube channels saved in a private Google Sheet that are active.
     """
     ids, retrieved = [], retrieve_ids()
@@ -771,12 +784,10 @@ def scrape_active(
     text = "active and deck-fresh" if only_deck_fresh else "active"
     _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
-        *ids, videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped,
-        soft_limit=True)
+        *ids, videos_limit=VIDEOS_COUNT, only_newer_than_last_scraped=True, soft_limit=True)
 
 
-def scrape_dormant(
-        videos=VIDEOS_COUNT, only_newer_than_last_scraped=True, only_deck_fresh=True) -> None:
+def scrape_dormant(only_deck_fresh=True) -> None:
     """Scrape those YouTube channels saved in a private Google Sheet that are dormant.
     """
     ids, retrieved = [], retrieve_ids()
@@ -793,12 +804,10 @@ def scrape_dormant(
     text = "dormant and deck-fresh" if only_deck_fresh else "dormant"
     _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
-        *ids, videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped,
-        soft_limit=True)
+        *ids, videos_limit=VIDEOS_COUNT, only_newer_than_last_scraped=True, soft_limit=True)
 
 
-def scrape_abandoned(
-        videos=VIDEOS_COUNT, only_newer_than_last_scraped=True, only_deck_fresh=True) -> None:
+def scrape_abandoned(only_deck_fresh=True) -> None:
     """Scrape those YouTube channels saved in a private Google Sheet that are abandoned.
     """
     ids, retrieved = [], retrieve_ids()
@@ -815,12 +824,10 @@ def scrape_abandoned(
     text = "abandoned and deck-fresh" if only_deck_fresh else "abandoned"
     _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
-        *ids, videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped,
-        soft_limit=True)
+        *ids, videos_limit=VIDEOS_COUNT, only_newer_than_last_scraped=True, soft_limit=True)
 
 
-def scrape_deck_stale(
-        videos=VIDEOS_COUNT, only_newer_than_last_scraped=True, only_fresh_or_active=True) -> None:
+def scrape_deck_stale(only_fresh_or_active=True) -> None:
     """Scrape those YouTube channels saved in a private Google Sheet that are considered
     deck-stale.
     """
@@ -838,12 +845,10 @@ def scrape_deck_stale(
     text = "deck-stale and fresh/active" if only_fresh_or_active else "deck-stale"
     _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
-        *ids, videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped,
-        soft_limit=True)
+        *ids, videos_limit=VIDEOS_COUNT, only_newer_than_last_scraped=True, soft_limit=True)
 
 
-def scrape_very_deck_stale(
-        videos=VIDEOS_COUNT, only_newer_than_last_scraped=True, only_fresh_or_active=True) -> None:
+def scrape_very_deck_stale(only_fresh_or_active=True) -> None:
     """Scrape those YouTube channels saved in a private Google Sheet that are considered
     very deck-stale.
     """
@@ -861,12 +866,10 @@ def scrape_very_deck_stale(
     text = "very deck-stale and fresh/active" if only_fresh_or_active else "very deck-stale"
     _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
-        *ids, videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped,
-        soft_limit=True)
+        *ids, videos_limit=VIDEOS_COUNT, only_newer_than_last_scraped=True, soft_limit=True)
 
 
-def scrape_excessively_deck_stale(
-        videos=VIDEOS_COUNT, only_newer_than_last_scraped=True, only_fresh_or_active=True) -> None:
+def scrape_excessively_deck_stale(only_fresh_or_active=True) -> None:
     """Scrape those YouTube channels saved in a private Google Sheet that are considered
     excessively deck-stale.
     """
@@ -885,16 +888,14 @@ def scrape_excessively_deck_stale(
         "excessively deck-stale")
     _log.info(f"Scraping {len(ids)} {text} channel(s)...")
     scrape_channels(
-        *ids, videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped,
-        soft_limit=True)
+        *ids, videos_limit=VIDEOS_COUNT, only_newer_than_last_scraped=True, soft_limit=True)
 
 
-def scrape_all(videos=VIDEOS_COUNT, only_newer_than_last_scraped=True) -> None:
-    scrape_fresh(videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
-    scrape_active(videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
-    scrape_dormant(videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
-    scrape_abandoned(videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
-    scrape_deck_stale(videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
-    scrape_very_deck_stale(videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
-    scrape_excessively_deck_stale(
-        videos=videos, only_newer_than_last_scraped=only_newer_than_last_scraped)
+def scrape_all() -> None:
+    scrape_fresh()
+    scrape_active()
+    scrape_dormant()
+    scrape_abandoned()
+    scrape_deck_stale()
+    scrape_very_deck_stale()
+    scrape_excessively_deck_stale()
