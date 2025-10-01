@@ -101,8 +101,9 @@ def get_data(
             scraper=scraper, url=url) from err
 
 
-@throttled_deck_scraper
-@DeckScraper.registered
+# FIXME: #443
+# @throttled_deck_scraper
+# @DeckScraper.registered
 class MtgCircleVideoDeckScraper(DeckScraper):
     """Scraper of MTGCircle video decklist page.
     """
@@ -165,8 +166,9 @@ class MtgCircleVideoDeckScraper(DeckScraper):
         pass
 
 
-@throttled_deck_scraper
-@DeckScraper.registered
+# FIXME: #443
+# @throttled_deck_scraper
+# @DeckScraper.registered
 class MtgCircleRegularDeckScraper(MtgCircleVideoDeckScraper):
     """Scraper of MTGCircle regular decklist page.
     """
@@ -191,7 +193,8 @@ class MtgCircleRegularDeckScraper(MtgCircleVideoDeckScraper):
         return deck.data
 
 
-@HybridContainerScraper.registered
+# FIXME: #443
+# @HybridContainerScraper.registered
 class MtgCircleArticleScraper(HybridContainerScraper):
     """Scraper of MTGCircle article page.
     """

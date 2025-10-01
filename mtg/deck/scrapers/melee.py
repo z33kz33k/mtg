@@ -83,18 +83,27 @@ class MeleeGgDeckScraper(DeckScraper):
             self._update_fmt(fmt)
 
     def _normalize_decklist(self) -> None:
-        before, after = self._decklist.split("MainDeck")
-        self._decklist = "Deck\n" + after.strip() + "\n" + before.strip()
+        parts = self._decklist.split("\n\n")
+        new_parts = ["", "", "", ""]
+        for part in parts:
+            if part.startswith("Commander"):
+                new_parts[0] = part
+            elif part.startswith("Companion"):
+                new_parts[1] = part
+            elif part.startswith("Deck"):
+                new_parts[2] = part
+            elif part.startswith("Sideboard"):
+                new_parts[3] = part
+        self._decklist = "\n\n".join([p for p in new_parts if p])
 
     @override
     def _parse_deck(self) -> None:
         decklist_tag = self._soup.select_one("pre#decklist-text")
         if not decklist_tag:
             raise ScrapingError("Decklist tag not found", scraper=type(self), url=self.url)
-        self._decklist = decklist_tag.text.replace("\r\n", "\n").strip()
-        if self._decklist.startswith("Sideboard"):
-            self._normalize_decklist()
-
+        self._decklist = decklist_tag.text.replace(
+            "\r\n", "\n").replace("MainDeck", "Deck").strip()
+        self._normalize_decklist()
 
 @DeckUrlsContainerScraper.registered
 class MeleeGgTournamentScraper(DeckUrlsContainerScraper):

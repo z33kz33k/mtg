@@ -28,7 +28,7 @@ YT videos descriptions).
     * [youtube-comment-downloader](https://github.com/egbertbouman/youtube-comment-downloader) 
 * Parsing those descriptions (or author's comments) for decks:    
     * Pasted text decklists in Arena/MTGO format are parsed into Deck objects
-    * Links to decklist sites are scraped into Deck objects. 45 sites are supported so far:
+    * Links to decklist sites are scraped into Deck objects. 43 sites are supported so far:
         * [17Lands](https://www.17lands.com)
         * [Aetherhub](https://aetherhub.com)
         * [Archidekt](https://archidekt.com)
@@ -43,7 +43,6 @@ YT videos descriptions).
         * [Flexslot](https://flexslot.gg)
         * [Goldfish](https://www.mtggoldfish.com)
         * [Hareruya](https://www.hareruyamtg.com/en/)
-        * [LigaMagic](https://www.ligamagic.com.br/?view=home) _(with caveats)_
         * [MagicVille](https://magic-ville.com/fr/index.php)
         * [ManaBox](https://manabox.app)
         * [ManaStack](https://manastack.com/home)
@@ -52,7 +51,6 @@ YT videos descriptions).
         * [Moxfield](https://www.moxfield.com)
         * [MTGArena.Pro](https://mtgarena.pro)
         * [MTGAZone](https://mtgazone.com)
-        * [MTGCircle](https://mtgcircle.com)
         * [MTGDecks.net](https://mtgdecks.net)
         * [MTGJSON](https://mtgjson.com)
         * MTGMeta.io _(defunct, scraped via Wayback Machine)_
@@ -73,7 +71,10 @@ YT videos descriptions).
         * [TCGRocks](https://tcgrocks.com)
         * [TopDeck](https://topdeck.gg)
         * [TopDecked](https://www.topdecked.com)
-        * [Untapped](https://mtga.untapped.gg) 
+        * [Untapped](https://mtga.untapped.gg)
+    * 2 sites are only partially supported (parsing logic in place, too hostile for being scraped):
+        * [LigaMagic](https://www.ligamagic.com.br/?view=home)
+        * [MTGCircle](https://mtgcircle.com)
     * 4 more decklist sites in plans 
     * Both Aetherhub decklist types featured in YT videos are supported: regular deck and write-up deck
     * Both Archidekt decklist types featured in YT videos are supported: regular deck and snapshot deck
@@ -82,8 +83,6 @@ YT videos descriptions).
     * All Untapped decklist types featured in YT videos are supported: regular, profile and meta deck
     * Both old TCGPlayer site and TCGPlayer Infinite are supported
     * Both international and native Hareruya sites are supported 
-    * LigaMagic is the only sore spot that demands from me investing in scraping APIs to bypass 
-      their CloudFlare protection and be fully supported (anyway, the logic to scrape them is already in place)
     * All those mentioned above work even if they are behind shortener links and need unshortening first
     * Sites that need it are scraped using [Selenium](https://github.com/SeleniumHQ/Selenium)
     * Link trees posted in descriptions/comments are expanded
@@ -160,24 +159,24 @@ YT videos descriptions).
 ![Most popular channels](assets/channels.jpg)
 
 ### Scraped decks breakdown
-**27th Sep 2025**
+**1st Oct 2025**
 | No | Format | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | commander       | 83355 |    37.53 % |
-| 2  | standard        | 53044 |    23.88 % |
-| 3  | modern          | 23159 |    10.43 % |
-| 4  | pauper          | 14096 |     6.35 % |
-| 5  | pioneer         | 12875 |     5.80 % |
-| 6  | brawl           |  6734 |     3.03 % |
-| 7  | legacy          |  5989 |     2.70 % |
-| 8  | historic        |  3573 |     1.61 % |
-| 9  | undefined       |  3209 |     1.44 % |
+| 1  | commander       | 83450 |    37.53 % |
+| 2  | standard        | 53103 |    23.88 % |
+| 3  | modern          | 23212 |    10.44 % |
+| 4  | pauper          | 14099 |     6.34 % |
+| 5  | pioneer         | 12882 |     5.79 % |
+| 6  | brawl           |  6739 |     3.03 % |
+| 7  | legacy          |  5995 |     2.70 % |
+| 8  | historic        |  3581 |     1.61 % |
+| 9  | undefined       |  3216 |     1.45 % |
 | 10 | explorer        |  2519 |     1.13 % |
-| 11 | duel            |  2379 |     1.07 % |
-| 12 | timeless        |  2219 |     1.00 % |
+| 11 | duel            |  2381 |     1.07 % |
+| 12 | timeless        |  2222 |     1.00 % |
 | 13 | paupercommander |  2149 |     0.97 % |
-| 14 | premodern       |  1511 |     0.68 % |
-| 15 | irregular       |  1438 |     0.65 % |
+| 14 | premodern       |  1513 |     0.68 % |
+| 15 | irregular       |  1440 |     0.65 % |
 | 16 | alchemy         |  1332 |     0.60 % |
 | 17 | vintage         |  1160 |     0.52 % |
 | 18 | oathbreaker     |   404 |     0.18 % |
@@ -187,30 +186,30 @@ YT videos descriptions).
 | 22 | oldschool       |    83 |     0.04 % |
 | 23 | future          |    57 |     0.03 % |
 | 24 | predh           |    13 |     0.01 % |
-|  | TOTAL           | 222090 | 100.00 %|
+|  | TOTAL           | 222342 | 100.00 %|
 
 | No | Source | Count | Percentage |
 |:---|:-----|------:|-----------:|
-| 1  | moxfield.com           | 90895 |    40.93 % |
-| 2  | mtgo.com               | 27231 |    12.26 % |
-| 3  | arena.decklist         | 19822 |     8.93 % |
-| 4  | aetherhub.com          | 13346 |     6.01 % |
-| 5  | mtggoldfish.com        | 12653 |     5.70 % |
-| 6  | archidekt.com          |  7718 |     3.48 % |
-| 7  | mtgdecks.net           |  7454 |     3.36 % |
-| 8  | topdeck.gg             |  7110 |     3.20 % |
+| 1  | moxfield.com           | 90970 |    40.91 % |
+| 2  | mtgo.com               | 27231 |    12.25 % |
+| 3  | arena.decklist         | 19867 |     8.94 % |
+| 4  | aetherhub.com          | 13351 |     6.00 % |
+| 5  | mtggoldfish.com        | 12667 |     5.70 % |
+| 6  | archidekt.com          |  7728 |     3.48 % |
+| 7  | mtgdecks.net           |  7454 |     3.35 % |
+| 8  | topdeck.gg             |  7154 |     3.22 % |
 | 9  | mtgcircle.com          |  4669 |     2.10 % |
 | 10 | mtg.cardsrealm.com     |  4585 |     2.06 % |
-| 11 | mtga.untapped.gg       |  4322 |     1.95 % |
-| 12 | melee.gg               |  3797 |     1.71 % |
+| 11 | mtga.untapped.gg       |  4329 |     1.95 % |
+| 12 | melee.gg               |  3840 |     1.73 % |
 | 13 | tcgplayer.com          |  3674 |     1.65 % |
-| 14 | tappedout.net          |  2026 |     0.91 % |
-| 15 | streamdecker.com       |  1901 |     0.86 % |
+| 14 | tappedout.net          |  2028 |     0.91 % |
+| 15 | streamdecker.com       |  1901 |     0.85 % |
 | 16 | magic.gg               |  1783 |     0.80 % |
 | 17 | mtgtop8.com            |  1752 |     0.79 % |
 | 18 | hareruyamtg.com        |   976 |     0.44 % |
 | 19 | magic.wizards.com      |   772 |     0.35 % |
-| 20 | mtgazone.com           |   757 |     0.34 % |
+| 20 | mtgazone.com           |   761 |     0.34 % |
 | 21 | deckstats.net          |   625 |     0.28 % |
 | 22 | flexslot.gg            |   573 |     0.26 % |
 | 23 | starcitygames.com      |   528 |     0.24 % |
@@ -221,7 +220,7 @@ YT videos descriptions).
 | 28 | magic-ville.com        |   226 |     0.10 % |
 | 29 | topdecked.com          |   212 |     0.10 % |
 | 30 | edhrec.com             |   200 |     0.09 % |
-| 31 | manabox.app            |   186 |     0.08 % |
+| 31 | manabox.app            |   189 |     0.09 % |
 | 32 | channelfireball.com    |   171 |     0.08 % |
 | 33 | coolstuffinc.com       |   134 |     0.06 % |
 | 34 | paupermtg.com          |   133 |     0.06 % |
@@ -243,4 +242,4 @@ YT videos descriptions).
 | 50 | mtgarena.pro           |     3 |     0.00 % |
 | 51 | mtgotraders.com        |     1 |     0.00 % |
 | 52 | playingmtg.com         |     1 |     0.00 % |
-|  | TOTAL                  | 222090 | 100.00 %|
+|  | TOTAL                  | 222342 | 100.00 %|
