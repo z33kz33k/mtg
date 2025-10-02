@@ -317,7 +317,7 @@ def extract_url(text: str, https=True) -> str | None:
 
 
 def dissect_js(
-        tag: Tag, start_hook: str, end_hook: str,
+        tag: Tag, start_hook: str, end_hook="",
         end_processor: Callable[[str], str] | None = None,
         left_split_on_start_hook=False) -> Json | None:
     """Dissect JSON from JavaScript in ``tag``.
@@ -328,18 +328,28 @@ def dissect_js(
     if tag.name == "script":
         script_tag = tag
     else:
-        script_tag = tag.find("script", string=lambda s: s and start_hook in s and end_hook in s)
+        if end_hook:
+            script_tag = tag.find(
+                "script", string=lambda s: s and start_hook in s and end_hook in s)
+        else:
+            script_tag = tag.find(
+                "script", string=lambda s: s and start_hook in s)
     if not script_tag:
         return None
+
     text = script_tag.text
     if left_split_on_start_hook:
         _, first = text.split(start_hook, maxsplit=1)
     else:
         *_, first = text.split(start_hook)
-    second, *_ = first.split(end_hook)
+    if end_hook:
+        second, *_ = first.split(end_hook)
+        json_text = second
+    else:
+        json_text = first
     if end_processor:
-        second = end_processor(second)
-    return json.loads(second)
+        json_text = end_processor(json_text)
+    return json.loads(json_text)
 
 
 def strip_url_query(url: str, keep_fragment=False) -> str:
