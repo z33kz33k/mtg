@@ -77,6 +77,9 @@ class PytubeWrapper:
         path = "['videoOwnerRenderer']['title']['simpleText']"
         if author := self._nvd.find_by_path(path, mode="end"):
             return author.data
+        path = "['playerOverlayReplayRenderer']['shortBylineText']['runs'][0]['text']"
+        if author := self._nvd.find_by_path(path, mode="end"):
+            return author.data
         raise PytubefixError(f"Unable to retrieve author data for: {self._pytube.watch_url!r}")
 
     def _retrieve_description(self) -> str:
