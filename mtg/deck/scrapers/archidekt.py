@@ -101,6 +101,14 @@ class ArchidektDeckScraper(DeckScraper):
             self._metadata["tags"] = self.sanitize_metadata_deck_tags(tags)
 
     def _parse_card_json(self, card_json: Json) -> None:
+        # filter tokens (#449)
+        if card_json.get("setType") == "token":
+            return
+        if types := card_json.get("types"):
+            if "Token" in types:
+                return
+        if card_json.get("layout") == "token":
+            return
         name = card_json["name"]
         quantity = card_json["qty"]
         set_code = card_json["setCode"]
