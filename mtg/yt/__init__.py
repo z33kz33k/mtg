@@ -37,7 +37,7 @@ from mtg.utils import extract_float, find_longest_seqs, from_iterable, logging_d
     multiply_by_symbol, timed
 from mtg.utils.files import getdir, sanitize_filename
 from mtg.utils.scrape import ScrapingError, extract_url, http_requests_counted, \
-    parse_keywords_from_tag, throttled, unshorten
+    parse_keywords_from_tag, throttle, throttled, unshorten
 from mtg.utils.scrape.dynamic import fetch_dynamic_soup
 from mtg.utils.scrape.linktree import LinktreeScraper
 from mtg.yt.data import ScrapingSession, load_channel, load_channels, retrieve_ids
@@ -488,6 +488,19 @@ class ChannelScraper:
                 "scrapetube failed with JSON error. This channel probably doesn't exist "
                 "anymore", scraper=type(self), url=self.url) from jde
 
+    def _process_vids(
+            self, limit: int, last_scraped_id: str | None,
+            scraped_ids: list[str] | list[str]) -> tuple[int, list[str]]:
+        video_ids, scraped_ids = [], set(scraped_ids)
+        count = 0
+        for vid in self.video_ids(limit=limit):
+            count += 1
+            if vid == last_scraped_id:
+                break
+            elif vid not in scraped_ids:
+                video_ids.append(vid)
+        return count, video_ids
+
     def _get_unscraped_video_ids(
             self, limit=10,
             only_newer_than_last_scraped=True) -> list[str]:
@@ -497,19 +510,15 @@ class ChannelScraper:
         else:
             last_scraped_id = scraped_ids[0] if only_newer_than_last_scraped else None
 
-        video_ids, scraped_ids = [], set(scraped_ids)
-        count = 0
-        for vid in self.video_ids(limit=limit):
-            count += 1
-            if vid == last_scraped_id:
-                break
-            elif vid not in scraped_ids:
-                video_ids.append(vid)
-
+        count, video_ids = self._process_vids(limit, last_scraped_id, scraped_ids)
         if not count:
-            raise MissingChannelData(
-                "scrapetube failed to yield any video IDs. Are you sure the channel has a 'Videos' "
-                "tab?", self._title, url=self.url)
+            _log.warning("scrapetube failed to yield any video IDs. Retrying...")
+            throttle(0.3, 0.1)
+            count, video_ids = self._process_vids(limit, last_scraped_id, scraped_ids)
+            if not count:
+                raise MissingChannelData(
+                    "scrapetube failed to yield any video IDs even after a re-try. "
+                    "Are you sure the channel has a 'Videos' tab?", self._title, url=self.url)
 
         return video_ids
 
