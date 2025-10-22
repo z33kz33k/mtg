@@ -415,9 +415,9 @@ def clean_up(move=True) -> None:
     Channels are removed from the sheet (or moved to another one) on a regular basis for variety of
     reasons. Either they were scraped only temporarily or they enter state that warrants it.
     This happens when they:
-        * got abandoned
-        * got deck-stale
-        * got deleted entirely or deleted all their content or deleted only their Videos tab
+        * pass an arbitrary threshold for staleness (aka get abandoned)
+        * pass an arbitrary threshold for deck-staleness
+        * author deletes them entirely, or they delete all their content, or they delete only their Videos tab
     """
     ids = set(retrieve_ids())
     for chdir in [d for d in CHANNELS_DIR.iterdir() if d.is_dir()]:
@@ -435,3 +435,11 @@ def clean_up(move=True) -> None:
     manager.load_failed()
     manager.prune_failed(ids)
     manager.dump_failed()
+
+
+def clear_update() -> None:
+    """Clear the caches and update the Google Sheet and README.md with the deck data in one go.
+    """
+    clear_cache()
+    update_gsheet()
+    update_readme_with_deck_data()
