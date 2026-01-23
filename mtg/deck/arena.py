@@ -2,7 +2,7 @@
 
     mtg.deck.arena
     ~~~~~~~~~~~~~~
-    Parse Arena/MTGO decklist text format.
+    Parse Arena/MTGO decklist text format into Deck objects.
 
     @author: z33k
 
@@ -436,7 +436,7 @@ class IllFormedArenaDecklist(ParsingError):
 
 
 class ArenaParser(DeckParser):
-    """Parser of text decklists in Arena/MTGO format.
+    """Parse a text decklist in Arena/MTGO format into a Deck object.
     """
     MAX_CARD_QUANTITY = 50
 

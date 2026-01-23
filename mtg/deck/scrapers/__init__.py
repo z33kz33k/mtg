@@ -48,7 +48,51 @@ class UrlHook:
     limit: int = 200
 
 
-class TagBasedDeckParser(DeckParser):
+class NestedDeckParser(DeckParser):
+    """Abstract deck parser with a sub-paser embedded within itself.
+
+    This classic Decorator pattern resembling approach enables using an alternative parsing
+    strategy in the sub-parser (e.g. text decklist based) - or, assuming arbitrary levels of
+    nesting, an arbitrary number of such strategies can be employed.
+    """
+    def __init__(self, metadata: Json | None = None) -> None:
+        super().__init__(metadata)
+        self._decklist: str | None = None
+        self._sub_parser: Self | None = None  # delegate parsing if needed
+
+    @abstractmethod
+    @override
+    def _pre_parse(self) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    @override
+    def _parse_metadata(self) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    @override
+    def _parse_deck(self) -> None:
+        raise NotImplementedError
+
+    def _get_sub_parser(self) -> Self | None:
+        """Return a sub-parser object to delegate deck-parsing to.
+
+        By default, return an Arena/MGTO text decklist parser if the decklist is available.
+        """
+        if self._decklist:
+            return ArenaParser(self._decklist, self._metadata)
+        return None
+
+    @override
+    def _build_deck(self) -> Deck | None:
+        self._sub_parser = self._get_sub_parser()
+        if self._sub_parser:
+            return self._sub_parser.parse()  # delegate
+        return super()._build_deck()
+
+
+class TagBasedDeckParser(NestedDeckParser):
     """Abstract HTML tag based deck parser.
 
     HTML tag based parsers process a single, decklist and metadata holding, HTML tag extracted
@@ -72,14 +116,8 @@ class TagBasedDeckParser(DeckParser):
     def _parse_deck(self) -> None:
         raise NotImplementedError
 
-    @override
-    def _get_sub_parser(self) -> ArenaParser | None:
-        if self._decklist:
-            return ArenaParser(self._decklist, self._metadata)
-        return None
 
-
-class JsonBasedDeckParser(DeckParser):
+class JsonBasedDeckParser(NestedDeckParser):
     """Abstract JSON data based deck parser.
 
     JSON data based parsers process a single, decklist and metadata holding, piece of JSON data
@@ -104,14 +142,8 @@ class JsonBasedDeckParser(DeckParser):
     def _parse_deck(self) -> None:
         raise NotImplementedError
 
-    @override
-    def _get_sub_parser(self) -> DeckParser | None:
-        if self._decklist:
-            return ArenaParser(self._decklist, self._metadata)
-        return None
 
-
-class DeckScraper(DeckParser):
+class DeckScraper(NestedDeckParser):
     """Abstract deck scraper.
 
     Deck scrapers process a single, decklist and metadata holding, URL and return a Deck
@@ -178,12 +210,6 @@ class DeckScraper(DeckParser):
 
     def _get_data_from_soup(self) -> Json:
         raise NotImplementedError
-
-    @override
-    def _get_sub_parser(self) -> DeckParser | None:
-        if self._decklist:
-            return ArenaParser(self._decklist, self._metadata)
-        return None
 
     def _is_page_inaccessible(self) -> bool:
         return False
@@ -322,7 +348,7 @@ class ContainerScraper(DeckScraper):
     def _post_init(self) -> None:
         self._metadata["container_url"] = self.url
 
-    # DeckParser API
+    # DeckScraper API
     @staticmethod
     @abstractmethod
     @override

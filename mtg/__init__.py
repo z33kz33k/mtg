@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Dict, List, Union
 
 __appname__ = __name__
-__version__ = "0.8"
+__version__ = "0.9"
 __description__ = "Scrape data on MtG decks."
 __author__ = "z33k"
 __license__ = "MIT License"

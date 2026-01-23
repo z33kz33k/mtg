@@ -84,6 +84,8 @@ class Soft404Error(ScrapingError):
         super().__init__(message, scraper, url)
 
 
+# FIXME: this aren't all HTTP requests done so the name is misleading, a "fetches done" or
+#  something like this would be better
 _http_requests_count = 0
 
 
@@ -181,7 +183,7 @@ class Throttling:
     def __mul__(self, factor: float) -> Self:
         return Throttling(self.delay * factor, self.offset * factor)
 
-    def __imul__(self, factor) -> Self:
+    def __imul__(self, factor: float) -> Self:
         return Throttling(self.delay * factor, self.offset * factor)
 
     def __iter__(self) -> Iterator[float]:
@@ -411,7 +413,7 @@ def get_path_segments(url: str) -> list[str]:
 
     E.g. supplying 'https://www.hareruyamtg.com/decks/1043414?utm_source=video' results in:
         ["decks", "1043414"]
-        and supplying 'https://www.hareruyamtg.com' or 'https://www.hareruyamtg.com' results in: []
+        and supplying 'https://www.hareruyamtg.com' or 'https://www.hareruyamtg.com/' results in: []
     """
     try:
         path = urllib.parse.urlsplit(url).path.strip("/")

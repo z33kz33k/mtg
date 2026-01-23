@@ -981,6 +981,8 @@ JAPANESE_FORMATS = {
 
 class DeckParser(ABC):
     """Abstract base deck parser.
+
+    Parses input data into a Deck object.
     """
     @property
     def fmt(self) -> str:
@@ -991,8 +993,6 @@ class DeckParser(ABC):
         self._state = _ParsingState()
         self._maindeck, self._sideboard = [], []
         self._commander, self._partner_commander, self._companion = None, None, None
-        self._sub_parser: Self | None = None
-        self._decklist: str | None = None
 
     def _set_commander(self, card: Card) -> None:
         if not card.commander_suitable:
@@ -1103,22 +1103,13 @@ class DeckParser(ABC):
 
     @abstractmethod
     def _parse_deck(self) -> None:
-        """Parse the input data for a text decklist or playsets of Card objects.
+        """Parse the input data for deck data.
         """
         raise NotImplementedError
 
-    def _get_sub_parser(self) -> Self | None:
-        """Return a sub-parser object.
-        """
-        return None
-
     def _build_deck(self) -> Deck | None:
-        """Build a Deck object from a text decklist or aggregated playsets of Card objects and
-        return it.
+        """Build a Deck object from the parsed deck data and return it.
         """
-        self._sub_parser = self._get_sub_parser()
-        if self._sub_parser:
-            return self._sub_parser.parse()
         return Deck(
             self._maindeck, self._sideboard, self._commander, self._partner_commander,
             self._companion, self._metadata)
@@ -1129,7 +1120,7 @@ class DeckParser(ABC):
         This happens in four distinct and defined stages:
             * pre-parsing
             * parsing metadata from the input data
-            * parsing the decklist or playsets of Card objects
+            * parsing deck data from the input data
             * building a Deck object
 
         Args:
