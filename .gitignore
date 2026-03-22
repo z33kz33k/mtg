@@ -8,6 +8,8 @@
 /archive
 *secrets.json
 *service_account.json
+/.aider*
+.aider*
 *api_creds.json
 *api_key.txt
 /mtg/data/**
