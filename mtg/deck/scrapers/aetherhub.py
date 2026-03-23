@@ -279,7 +279,9 @@ class AetherhubUserScraper(DeckUrlsContainerScraper):
     @override
     def sanitize_url(url: str) -> str:
         url = strip_url_query(url)
-        if not url.lower().endswith("/decks"):
+        # links like: https://aetherhub.com/User/LegenVD/Decks/Standard-BO1 are already OK
+        # links like: https://aetherhub.com/User/LegenVD/ need sanitization
+        if "/decks/" not in url.lower() and not url.lower().endswith("/decks"):
             return f"{url}/decks"
         return url
 

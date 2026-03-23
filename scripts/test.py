@@ -22,32 +22,41 @@ TEST_URLS = [
     'https://aetherhub.com/Deck/tmnt-boros-ascension',
     'https://aetherhub.com/Decks/Writeups/Traditional-Standard/shenanigans-two-day-dec-21-22-std-rcq',
     'https://aetherhub.com/User/LegenVD',
+    'https://aetherhub.com/User/LegenVD/Decks/Standard-BO1',
     'https://aetherhub.com/Events/Standard/10838',
     'https://aetherhub.com/Article/Theros-Beyond-Death-Fresh-new-decks',
+    'https://aetherhub.com/Article/An-Aetherhub-Power-Panel-Breaks-Down-Mythic-Championship-V',
+    'https://aetherhub.com/Article/First-Tournament-decklists-post-Oko-ban',
     'https://archidekt.com/decks/16069812/zombie_horde',
-    'https://archidekt.com/snapshots/88820',
+    'https://archidekt.com/snapshots/47613',
     'https://archidekt.com/folders/541877',
     'https://archidekt.com/u/tauna',
     'https://archidekt.com/user/5879',
     'https://archidekt.com/search/decks?owner=BacaIhau&ownerexact=true',
-    # CURATED ABOVE / UNCURATED BELOW
-    'https://burnmana.com/en/mtg-decks/standard/mono-red-aggro/fced354d-9a02-4c2b-abc0-f74393f65301',
-    'https://blog.cardkingdom.com/author/kgregory/',
+    'https://app.cardboard.live/shared-deck/e75ebecd-6bec-11ec-8b34-12f15ef2af51?channel_id=38054155',
+    'https://www.cardhoarder.com/d/kpy674jn6ekerj5',
     'https://blog.cardkingdom.com/river-song-commander-deck-tech/',
+    'https://blog.cardkingdom.com/author/kgregory/',
     'https://www.cardmarket.com/en/Insight/Articles/quest-for-the-best-pioneer-deck-ever',
     'https://www.cardmarket.com/en/Insight/Writers/tobi-henke',
+    'https://mtg.cardsrealm.com/en-us/decks/io11-bg-harvest?utm_source=monarchs&utm_medium=affiliate&utm_campaign=podcast',
+    'https://mtg.cardsrealm.com/en-us/decks/folder/1l7-pauper',
+    'https://mtg.cardsrealm.com/en-us/profile/mateus-queiroz-n35/decks',
+    'https://mtg.cardsrealm.com/en-us/meta-decks/pauper/tournaments/1k27j-pauper-royale-220',
+    'https://mtg.cardsrealm.com/en-us/tournament/1k27j-pauper-royale-220',
+    'https://mtg.cardsrealm.com/en-us/articles/explorer-mono-blue-tempo-deck-tech-sideboard-guide',
     'https://cardsrealm.com/en-us/articles/author/humberto2151',
     'https://cardsrealm.com/en-us/articles/search/?keyword=humberto2151',
-    'https://blog.cardsphere.com/sphere-of-influence-july-11-2025/',
-    'https://www.channelfireball.com/article/MTG-Deck-Guide-Standard-Gruul-Aggro/bd06ac65-bb14-442c-aed5-cb9195861496/',
-    'https://www.channelfireball.com/author/Frank-Karsten/7f203152-211a-478d-8fee-464c2aeca2cd',
     'https://www.channelfireball.com/magic-the-gathering/deck/Timeless-Grixis/481595?external=undefined',
     'https://www.channelfireball.com/magic-the-gathering/decks/player/Martin%20Juza',
+    'https://www.channelfireball.com/author/Frank-Karsten/7f203152-211a-478d-8fee-464c2aeca2cd',
+    'https://www.channelfireball.com/article/MTG-Deck-Guide-Standard-Gruul-Aggro/bd06ac65-bb14-442c-aed5-cb9195861496/',
     'https://commandersherald.com/araumi-of-the-dead-tide-pauper-commander/',
     'https://commandersherald.com/author/cody-collins/',
-    'https://commandersherald.com/author/tyler-bucks/',
-    'https://www.coolstuffinc.com/a/?action=search&page=1&author%5B%5D=Carlos%20Gutierrez',
     'https://www.coolstuffinc.com/a/matthewlotti-02142025-skeletal-swindling-with-tinybones-bauble-burglar-in-commander',
+    'https://www.coolstuffinc.com/a/jimdavis-05152023-a-new-two-card-infinite-combo-in-standard',
+    # CURATED ABOVE / UNCURATED BELOW
+    'https://www.coolstuffinc.com/a/?action=search&page=1&author%5B%5D=Carlos%20Gutierrez',
     'https://cyclesgaming.com/ephara-god-of-the-polis-u-w-flash/',
     'https://deckbox.org/communities/mtg_competitive_events/events/1989',
     'https://deckbox.org/users/Odekar',
@@ -89,9 +98,6 @@ TEST_URLS = [
     'https://www.manatraders.com/decks?format_id=4&search_name=kasa',
     'https://melee.gg/Profile/Index/MAJH81996',
     'https://moxfield.com/decks/public?q=eyJmaWx0ZXIiOiJwb2cyNTAxIn0%3D',
-    'https://mtg.cardsrealm.com/en-us/decks/folder/1l7-pauper',
-    'https://mtg.cardsrealm.com/en-us/meta-decks/Pauper/grixis-burn',
-    'https://mtg.cardsrealm.com/en-us/profile/mateus-queiroz-n35/decks',
     'https://mtgazone.com/author/mtghero/',
     'https://mtgcircle.com/articles/standard-banner-goblins',
     'https://mtgcircle.com/creators/numbskull/articles',
@@ -128,13 +134,16 @@ TEST_URLS = [
     'https://topdeck.gg/deck/jeweled-lotus-lattenkamp-2025/VXJvfKI8RrPtKdYYC2zMBbuAPgu1',
     'https://topdeck.gg/profile/XThcd3jrjqTHleEtnr9FAm3kIIv1',
     'https://ultimateguard.com/en/blog/a-breakdown-of-standard-gruul-vs-dimir-midrange-magic-the-gathering-seth-manfield',
+    # UNSUPPORTED
+    'https://burnmana.com/en/mtg-decks/standard/mono-red-aggro/fced354d-9a02-4c2b-abc0-f74393f65301',
+    'https://app.cardboard.live/s/anzidmtg',
+    'https://blog.cardsphere.com/sphere-of-influence-july-11-2025/',
 ]
 
 
 def test_scrapers():
     """Test all registered scrapers with known valid URLs.
     """
-
     passed, failed, unsupported = [], [], []
     for i, url in enumerate(TEST_URLS, start=1):
         print(f"Testing {i}/{len(TEST_URLS)} URL: {url!r}...")

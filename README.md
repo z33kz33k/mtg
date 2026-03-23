@@ -96,9 +96,9 @@ YT videos descriptions).
       These include:
         * Aetherhub users, events and articles
         * Archidekt folders and users
-        * Cardsrealm profiles, folders, tournaments, articles, authors and article searches
         * [CardKingdom](https://blog.cardkingdom.com) articles and authors 
         * [Cardmarket](https://www.cardmarket.com/) articles and writers
+        * Cardsrealm profiles, folders, tournaments, articles, authors and article searches
         * ChannelFireball players, articles and authors
         * [Commander's Herald](https://commandersherald.com) articles and authors
         * [CoolStuffInc](https://www.coolstuffinc.com) articles and authors
