@@ -12,7 +12,7 @@
     cards with potentially multiple printings, this means that some printings-specific data may
     be 'lost in translation' (e.g. during deck conversions).
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import itertools

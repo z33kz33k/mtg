@@ -2,9 +2,9 @@
 
     scripts.test.py
     ~~~~~~~~~~~~~~~
-    Script to test validity of scraping logic against live website structure using known valid URLs.
+    Script to test validity of the scraping logic against live websites using known valid URLs.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import sys
@@ -29,7 +29,7 @@ TEST_URLS = [
     'https://aetherhub.com/Article/First-Tournament-decklists-post-Oko-ban',
     'https://archidekt.com/decks/16069812/zombie_horde',
     'https://archidekt.com/snapshots/47613',
-    'https://archidekt.com/folders/541877',
+    'https://archidekt.com/folders/42773?orderBy=name&dir=asc',
     'https://archidekt.com/u/tauna',
     'https://archidekt.com/user/5879',
     'https://archidekt.com/search/decks?owner=BacaIhau&ownerexact=true',
@@ -52,44 +52,42 @@ TEST_URLS = [
     'https://www.channelfireball.com/author/Frank-Karsten/7f203152-211a-478d-8fee-464c2aeca2cd',
     'https://www.channelfireball.com/article/MTG-Deck-Guide-Standard-Gruul-Aggro/bd06ac65-bb14-442c-aed5-cb9195861496/',
     'https://commandersherald.com/araumi-of-the-dead-tide-pauper-commander/',
+    'https://commandersherald.com/dueling-deck-techs-equipment/',
     'https://commandersherald.com/author/cody-collins/',
     'https://www.coolstuffinc.com/a/matthewlotti-02142025-skeletal-swindling-with-tinybones-bauble-burglar-in-commander',
     'https://www.coolstuffinc.com/a/jimdavis-05152023-a-new-two-card-infinite-combo-in-standard',
-    # CURATED ABOVE / UNCURATED BELOW
     'https://www.coolstuffinc.com/a/?action=search&page=1&author%5B%5D=Carlos%20Gutierrez',
     'https://cyclesgaming.com/ephara-god-of-the-polis-u-w-flash/',
-    'https://deckbox.org/communities/mtg_competitive_events/events/1989',
+    'https://cyclesgaming.com/keeping-modern-janky-duskmourn-glimmers/',
+    'https://deckbox.org/sets/3581335',
     'https://deckbox.org/users/Odekar',
+    'https://deckbox.org/communities/mtg_competitive_events/events/1989',
     'https://deckstats.net/decks/231485/4286921-captain-n-ghathrod',
+    'https://deckstats.net/decks/115134/1283677-kaya-s-scourge',
     'https://deckstats.net/decks/30513',
-    'https://www.dicebreaker.com/games/magic-the-gathering-game/best-games/best-mtg-arena-decks',
-    'https://draftsim.com/author/darthjacen/',
+    'https://deckstats.net/decks/30513/?lng=it',
+    'https://deckstats.net/decks/202938/?lng=fr',
     'https://draftsim.com/decks/polymorph/',
+    'https://draftsim.com/author/darthjacen/',
     'https://draftsim.com/fynn-edh-deck/',
-    'https://edhrec.com/articles/author/angelo-guerrera',
-    'https://edhrec.com/articles/living-energy-precon-review-aetherdrift',
-    'https://edhrec.com/articles/search/tyler%20bucks',
+    'https://draftsim.com/mtg-dft-commander-decks/',
+    'https://edhrec.com/deckpreview/mgRcVo95TJj9ztl2dHMBPw',
     'https://edhrec.com/average-decks/honest-rutstein',
-    'https://edhrec.com/deckpreview/2thhi8X4wLtsTVlV9oNiuw',
+    'https://edhrec.com/articles/search/tyler%20bucks',
+    'https://edhrec.com/articles/author/angelo-guerrera',
     'https://articles.edhrec.com/author/joseph-schultz',
+    'https://edhrec.com/articles/living-energy-precon-review-aetherdrift',
     'https://edhtop16.com/commander/Niv-Mizzet%2C%20Visionary',
     'https://edhtop16.com/tournament/Mh2edH1jY19LaTovso33',
     'https://edhtop16.com/tournament/landfall-3er-clasificatorio-al-nacional-de-cedh',
-    'https://www.fanfinity.gg/blog/5-modern-decks-supercharged-with-final-fantasy/'
-    'https://flexslot.gg/article/6503fb35-55d9-45ad-b7ec-250e2a154577',
-    'https://flexslot.gg/sideboards/7861',
+    'https://flexslot.gg/decks/243fc88f-1fca-41ae-a81a-9503347ce85c',
     'https://flexslot.gg/u/YungDingo',
+    'https://flexslot.gg/sideboards/7861',
+    'https://flexslot.gg/articles/a3222f36-64f1-43b1-9b5a-94dffa76459a',
+    # CURATED ABOVE / UNCURATED BELOW
     'https://www.hareruyamtg.com/en/deck/result?player=pg8',
     'https://article.hareruyamtg.com/article/91861/?lang=en',
     'https://article.hareruyamtg.com/article/author/piotrglogowski_en/?lang=en',
-    'https://www.hipstersofthecoast.com/2025/03/jundjund-a-dandan-variant-for-midrange-players/',
-    'https://infinite.tcgplayer.com/article/What-is-Dand%C3%A2n-MTG-s-Forgetful-Fish-Format/7d6590b5-8e78-44f5-92c6-511049676fea/',
-    'https://infinite.tcgplayer.com/author/Critical-Role',
-    'https://infinite.tcgplayer.com/magic-the-gathering/decks/advanced-search?author=SBMTGDev&p=1',
-    'https://infinite.tcgplayer.com/magic-the-gathering/decks/player/SBMTGDev',
-    'https://infinite.tcgplayer.com/magic-the-gathering/events/event/MTGO%20Standard%20Challenge%2032%20-%2011-12-2024',
-    'https://krakenthemeta.com/deck-view?deckId=S4s10xy9vDTErG4jJ8kY',
-    'https://magic.facetofacegames.com/f2f-tour-halifax-2025-modern-super-qualifier-top-8-decklists/',
     'https://magic.wizards.com/en/news/archive?author=1iuVapWGRdDkVKUHT2xffq',
     'https://magic.wizards.com/en/news/feature/upgrading-the-miracle-worker-duskmourn-house-of-horror-commander-deck',
     'https://magicblogs.de/blog/9893-in-a-land-before-the-monkey-aggro-5-5-sliver/',
@@ -126,6 +124,11 @@ TEST_URLS = [
     'https://articles.starcitygames.com/author/john-hall/',
     'https://tappedout.net/mtg-decks/14-11-17-modern-bant',
     'https://tcgrocks.com/mtg/deck-builder/embed/627c8696-51db-4f09-8c28-5f263f8713e1',
+    'https://infinite.tcgplayer.com/article/What-is-Dand%C3%A2n-MTG-s-Forgetful-Fish-Format/7d6590b5-8e78-44f5-92c6-511049676fea/',
+    'https://infinite.tcgplayer.com/author/Critical-Role',
+    'https://infinite.tcgplayer.com/magic-the-gathering/decks/advanced-search?author=SBMTGDev&p=1',
+    'https://infinite.tcgplayer.com/magic-the-gathering/decks/player/SBMTGDev',
+    'https://infinite.tcgplayer.com/magic-the-gathering/events/event/MTGO%20Standard%20Challenge%2032%20-%2011-12-2024',
     'https://www.thegamer.com/magic-the-gathering-mtg-braids-cabal-minion-commander-deck-guide/',
     'https://thegathering.gg/neat-decking-11-23/',
     'https://thegathering.gg/standard-decks/gruul-aggro/',
@@ -138,6 +141,11 @@ TEST_URLS = [
     'https://burnmana.com/en/mtg-decks/standard/mono-red-aggro/fced354d-9a02-4c2b-abc0-f74393f65301',
     'https://app.cardboard.live/s/anzidmtg',
     'https://blog.cardsphere.com/sphere-of-influence-july-11-2025/',
+    'https://www.dicebreaker.com/games/magic-the-gathering-game/best-games/best-mtg-arena-decks',
+    'https://magic.facetofacegames.com/f2f-tour-halifax-2025-modern-super-qualifier-top-8-decklists/',
+    'https://www.fanfinity.gg/blog/5-modern-decks-supercharged-with-final-fantasy/'
+    'https://www.hipstersofthecoast.com/2025/03/jundjund-a-dandan-variant-for-midrange-players/',
+    'https://krakenthemeta.com/deck-view?deckId=S4s10xy9vDTErG4jJ8kY',
 ]
 
 

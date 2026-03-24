@@ -4,7 +4,7 @@
     ~~~~~~~~~~~
     Handle MTG Wiki data.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 from bs4 import BeautifulSoup

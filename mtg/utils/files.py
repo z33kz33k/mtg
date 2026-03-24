@@ -4,7 +4,7 @@
     ~~~~~~~~~~~~~~~
     Files-related utilities.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import os

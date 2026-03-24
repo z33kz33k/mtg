@@ -7,7 +7,7 @@
     ChannelFireball is a TCG Player subsidiary since 2022. As such, its webpages use TCG Player's
     backend.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import logging

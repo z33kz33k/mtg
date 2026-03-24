@@ -4,7 +4,7 @@
     ~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape defunct MTGMeta.io decklists (using Wayback Machine).
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import logging

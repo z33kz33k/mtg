@@ -4,7 +4,7 @@
     ~~~~~~~~~~~~~~~~
     Utilities for scraping.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import contextlib

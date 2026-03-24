@@ -4,7 +4,7 @@
     ~~~~~~~~~~~~~~~~~
     Script to download updated data files and update the README.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import sys

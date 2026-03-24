@@ -4,7 +4,7 @@
     ~~~~~~~~~~~~~~
     Utilities for JSON handling.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import contextlib

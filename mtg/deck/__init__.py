@@ -4,7 +4,7 @@
     ~~~~~~~~
     Parse data into Deck objects.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import contextlib

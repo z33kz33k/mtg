@@ -4,7 +4,7 @@
     ~~~~~~~~~~~~
     Try to retrieve video details from pytubefix data more robustly than pytubefix does.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import contextlib

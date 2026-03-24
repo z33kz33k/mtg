@@ -6,7 +6,7 @@
 
     Magic.gg is an official WotC eSports site focused on MTG Arena that covers also tabletop play.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import logging

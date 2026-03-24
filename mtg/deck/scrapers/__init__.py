@@ -4,7 +4,7 @@
     ~~~~~~~~~~~~~~~~~
     Abstract deck scrapers.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import logging

@@ -4,7 +4,7 @@
     ~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape EDHTop16 decklist containers.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import contextlib

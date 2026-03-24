@@ -4,7 +4,7 @@
     ~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape MTG Arena Zone decklists.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import contextlib

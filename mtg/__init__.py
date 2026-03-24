@@ -4,7 +4,7 @@
     ~~~
     Root package.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import json

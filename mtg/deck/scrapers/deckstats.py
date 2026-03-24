@@ -4,7 +4,7 @@
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Deckstats decklists.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import itertools

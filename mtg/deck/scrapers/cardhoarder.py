@@ -4,7 +4,7 @@
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Cardhoarder decklists.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import json

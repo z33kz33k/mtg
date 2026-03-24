@@ -4,7 +4,7 @@
     ~~~~~~~~~~~~~~~~
     Dump channels' deck data.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 from datetime import datetime

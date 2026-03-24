@@ -4,7 +4,7 @@
     ~~~~~~~~~~~~~~~~~~~~~~~~
     Utilities for scraping of dynamic sites.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import json

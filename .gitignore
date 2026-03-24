@@ -1,4 +1,3 @@
-/.idea
 /data
 /temp
 /research
@@ -8,8 +7,6 @@
 /archive
 *secrets.json
 *service_account.json
-/.aider*
-.aider*
 *api_creds.json
 *api_key.txt
 /mtg/data/**
@@ -17,8 +14,13 @@ run.py
 tests.py
 fetch*.py
 
+# Aider and othe AI-related
+/.aider*
+.aider*
+
 # PyCharm project
 .idea
+/.idea
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

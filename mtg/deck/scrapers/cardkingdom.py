@@ -4,7 +4,7 @@
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape decklists featured on CardKingdom Blog.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import logging

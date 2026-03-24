@@ -1,6 +1,10 @@
 # mtg
 Scrape data on MtG decks.
 
+### Update
+
+TMNT almost killed this project.
+
 ### Description
 
 This is a hobby project.

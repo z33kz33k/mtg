@@ -4,7 +4,7 @@
     ~~~~~~~~~~~~~~~
     Re-scrape designated videos.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import itertools

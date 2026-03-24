@@ -4,7 +4,7 @@
     ~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Commander's Herald decklists.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import logging

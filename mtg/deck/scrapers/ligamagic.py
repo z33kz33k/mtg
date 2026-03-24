@@ -6,7 +6,7 @@
 
     Note: experimental (requires use of scraping APIs to bypass CloudFlare).
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import logging

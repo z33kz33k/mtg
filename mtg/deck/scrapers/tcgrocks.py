@@ -7,7 +7,7 @@
     TCGRocks is a sister site of MTGRocks and its decklists are sometimes featured in MTGRocks
     articles.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import contextlib

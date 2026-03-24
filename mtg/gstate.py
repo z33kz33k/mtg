@@ -6,7 +6,7 @@
 
     Note: 'global' is not a valid name for a Python module (hence 'gstate').
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import json

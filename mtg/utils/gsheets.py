@@ -4,7 +4,7 @@
     ~~~~~~~~~~~~~~~~
     Google Sheets as backend/frontend.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import logging

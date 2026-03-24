@@ -3,7 +3,7 @@
     ~~~~~~~~~~~~~~~
     Export deck data to various file formats (and import it back).
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import logging

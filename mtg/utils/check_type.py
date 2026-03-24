@@ -6,7 +6,7 @@
     Validate types of input arguments of decorated functions (or methods).
     This module provides only basic type validation based on `isinstance()` check.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 from functools import wraps

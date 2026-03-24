@@ -4,7 +4,7 @@
     ~~~~~~~~~~~~~~~~~~~~~~
     Data structures.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 from dataclasses import asdict, astuple, dataclass, field, fields

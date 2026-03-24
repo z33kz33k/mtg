@@ -4,7 +4,7 @@
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Aetherhub decklists.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import logging
@@ -253,8 +253,6 @@ class AetherhubWriteupDeckScraper(AetherhubDeckScraper):
         if not deck_tag:
             raise ScrapingError("Deck tag not found", scraper=type(self), url=self.url)
         return AetherhubDeckTagParser(deck_tag, self._metadata)
-
-
 
 
 @DeckUrlsContainerScraper.registered

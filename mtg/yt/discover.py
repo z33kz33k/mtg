@@ -4,7 +4,7 @@
     ~~~~~~~~~~~~~~~
     Discover new YouTube channels to scrape.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import logging

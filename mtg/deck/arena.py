@@ -4,7 +4,7 @@
     ~~~~~~~~~~~~~~
     Parse Arena/MTGO decklist text format into Deck objects.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import logging

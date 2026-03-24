@@ -6,7 +6,7 @@
 
     MTGRocks uses a third-party provider (MTGDecks.net) for its articles' decklists.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import json

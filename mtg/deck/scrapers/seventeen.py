@@ -4,7 +4,7 @@
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape 17Lands decklists.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import logging

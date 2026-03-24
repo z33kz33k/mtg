@@ -4,7 +4,7 @@
     ~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape TopDeck.gg decklist containers.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import logging

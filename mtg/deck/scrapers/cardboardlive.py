@@ -4,7 +4,7 @@
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape CardBoard Live decklists.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import logging

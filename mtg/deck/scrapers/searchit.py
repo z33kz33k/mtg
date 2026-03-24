@@ -4,7 +4,7 @@
     ~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape MTGSearch.it decklists.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import contextlib

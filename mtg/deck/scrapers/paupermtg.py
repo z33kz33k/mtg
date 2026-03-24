@@ -4,7 +4,7 @@
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape PauperMTG decklists.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import logging

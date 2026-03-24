@@ -4,7 +4,7 @@
     ~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape Cycles Gaming decklists.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import contextlib

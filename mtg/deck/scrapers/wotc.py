@@ -4,7 +4,7 @@
     ~~~~~~~~~~~~~~~~~~~~~~
     Scrape the official WotC site's decklists.
 
-    @author: z33k
+    @author: mazz3rr
 
 """
 import logging
