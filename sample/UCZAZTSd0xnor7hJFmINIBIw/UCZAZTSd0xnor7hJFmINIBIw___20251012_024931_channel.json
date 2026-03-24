@@ -1,0 +1,54 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.Upload schedule for Maj...",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 358000,
+    "scrape_time": "2025-10-12 02:49:31",
+    "videos": [
+        {
+            "id": "wrFOyAYjViE",
+            "author": "MTGGoldfish",
+            "title": "Boros Modify Just Wanted an Origin Story",
+            "description": "Boros Modified is a fun little aggro variant that is in Standard thanks to a cheap little Saga about a Spider...\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-boros-modify-just-wanted-an-origin-story\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7381053#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/hN4b5\n◼ Purchase this deck (Magic Online): http://mtg.fish/ELHkf\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-10-11 08:00:05",
+            "views": 6107,
+            "decks": [
+                {
+                    "metadata": {
+                        "format": "standard",
+                        "author": "TheAsianAvenger",
+                        "date": "2025-10-07",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-boros-modify-just-wanted-an-origin-story",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-boros-modify-just-wanted-an-origin-story",
+                        "name": "Origins"
+                    },
+                    "decklist_id": "bc12c21d-0d9b-9f9d-4083-48494e7e0eeb",
+                    "decklist_extended_id": "fd76032b-3edc-9b89-a7c0-3fcb5169a56c"
+                },
+                {
+                    "metadata": {
+                        "format": "standard",
+                        "author": "TheAsianAvenger",
+                        "date": "2025-10-07",
+                        "url": "https://www.mtggoldfish.com/deck/7381053",
+                        "name": "Origins"
+                    },
+                    "decklist_id": "bc12c21d-0d9b-9f9d-4083-48494e7e0eeb",
+                    "decklist_extended_id": "fd76032b-3edc-9b89-a7c0-3fcb5169a56c"
+                }
+            ]
+        }
+    ]
+}

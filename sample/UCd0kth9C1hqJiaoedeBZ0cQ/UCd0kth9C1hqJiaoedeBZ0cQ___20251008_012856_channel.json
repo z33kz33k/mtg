@@ -1,0 +1,90 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.This channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "",
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "deck build",
+        "edh",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "pioneer",
+        "standard",
+        "standard deck"
+    ],
+    "subscribers": 141000,
+    "scrape_time": "2025-10-08 01:28:56",
+    "videos": [
+        {
+            "id": "T_eHNd6B6YI",
+            "author": "LegenVD",
+            "title": "Putting the tempo back in Standard.",
+            "description": "Magic: The Gathering Arena gameplay with a budget friendly monoblue tempo deck, ft. Belion, the Parched (Hydro-Man, Fluid Felon) in Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:38 - Match 1 \n11:12 - Match 2\n17:39 - Match 3\n20:34 - Match 4\n29:39 - Match 5\n32:53 - Match 6\n41:08 - Match 7\n\nDecklist:\nhttps://aetherhub.com/Deck/mono-blue-hydro-tempo\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGxSpiderMan #mtg #magicthegathering #MTGOM1",
+            "keywords": [
+                "lvd",
+                "legend",
+                "mtg",
+                "mtga",
+                "mtg arena",
+                "magic the gathering",
+                "deck",
+                "decks",
+                "gameplay",
+                "guide",
+                "Standard MTG",
+                "standard deck",
+                "standard",
+                "new standard",
+                "spiderman",
+                "mtg spiderman",
+                "omenpaths",
+                "through the omenpaths",
+                "spiderman deck",
+                "spider-man",
+                "blue",
+                "superior spider-man",
+                "monoblue",
+                "tempo",
+                "tempo deck",
+                "counter",
+                "counterspell",
+                "draw",
+                "budget",
+                "budget friendly",
+                "cheap",
+                "curiosity",
+                "flying",
+                "faerie",
+                "faerie deck"
+            ],
+            "publish_time": "2025-10-07 09:00:46",
+            "views": 11244,
+            "decks": [
+                {
+                    "metadata": {
+                        "format": "standard",
+                        "name": "Mono-Blue Hydro Tempo",
+                        "author": "LegenVD",
+                        "date": "2025-10-05",
+                        "url": "https://aetherhub.com/Deck/mono-blue-hydro-tempo",
+                        "mode": "Bo1",
+                        "archetype": "aggro",
+                        "views": 598,
+                        "exports": 256,
+                        "comments": 0
+                    },
+                    "decklist_id": "c2f9eb9b-08a5-73cc-2be3-a0c0278f567d",
+                    "decklist_extended_id": "54b6290e-3f68-c4c3-dc1a-cb4d15bff2ca"
+                }
+            ]
+        }
+    ]
+}

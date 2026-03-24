@@ -1,0 +1,58 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": null,
+    "tags": null,
+    "subscribers": 351000,
+    "scrape_time": "2025-08-08 03:39:12",
+    "videos": [
+        {
+            "id": "7EHQCxBaZBI",
+            "url": "https://www.youtube.com/watch?v=7EHQCxBaZBI",
+            "author": "MTGGoldfish",
+            "title": "Will This Spacecraft Help Discard Decks Burn Enough?",
+            "description": "Sunset Saboteur is looking to station the Entropic Battlecruiser! Discard decks got a ton of new tools but are they good enough??\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-will-this-spacecraft-help-discard-decks-burn-enough\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7266320#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/V4Z7h\n◼ Purchase this deck (Magic Online): http://mtg.fish/pSEfG\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-08-07 08:00:06",
+            "views": 11103,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-08-01",
+                        "format": "standard",
+                        "name": "Dimir Discard",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7266320"
+                    },
+                    "decklist_id": "48d10fc3-60c7-f40b-5fff-24839820d33c",
+                    "decklist_extended_id": "703d0281-4bbd-0043-4c7a-5cd4a7ae83d2"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-will-this-spacecraft-help-discard-decks-burn-enough",
+                        "date": "2025-08-01",
+                        "format": "standard",
+                        "name": "Dimir Discard",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-will-this-spacecraft-help-discard-decks-burn-enough"
+                    },
+                    "decklist_id": "48d10fc3-60c7-f40b-5fff-24839820d33c",
+                    "decklist_extended_id": "703d0281-4bbd-0043-4c7a-5cd4a7ae83d2"
+                }
+            ]
+        }
+    ]
+}

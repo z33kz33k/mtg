@@ -1,0 +1,52 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.Upload schedule for Maj...",
+    "tags": [
+        "\"Magic the Gathering\" MTG mtggoldfish"
+    ],
+    "subscribers": 354000,
+    "scrape_time": "2025-08-29 02:59:54",
+    "videos": [
+        {
+            "id": "tfhTaNFmlO8",
+            "author": "MTGGoldfish",
+            "title": "Jund em Out With Artifacts",
+            "description": "This isn't your typical Jund Em' Out deck but it does play with Biotech Specialist and Rottenmouth Viper!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-jund-em-out-with-artifacts\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7302952#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/5Xb2Y\n◼ Purchase this deck (Magic Online): http://mtg.fish/FH5hv\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-08-28 08:00:06",
+            "views": 9747,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-jund-em-out-with-artifacts",
+                        "date": "2025-08-22",
+                        "format": "standard",
+                        "name": "Jund Em OUt",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-jund-em-out-with-artifacts"
+                    },
+                    "decklist_id": "62865900-fa2e-195c-be19-58408151fd95",
+                    "decklist_extended_id": "b005b0fe-d8a0-f4c9-d39b-4a58dee39a57"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-08-22",
+                        "format": "standard",
+                        "name": "Jund Em OUt",
+                        "url": "https://www.mtggoldfish.com/deck/7302952"
+                    },
+                    "decklist_id": "62865900-fa2e-195c-be19-58408151fd95",
+                    "decklist_extended_id": "b005b0fe-d8a0-f4c9-d39b-4a58dee39a57"
+                }
+            ]
+        }
+    ]
+}

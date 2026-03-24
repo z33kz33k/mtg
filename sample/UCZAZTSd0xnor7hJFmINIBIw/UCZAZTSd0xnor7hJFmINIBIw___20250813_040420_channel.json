@@ -1,0 +1,78 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": null,
+    "tags": null,
+    "subscribers": 352000,
+    "scrape_time": "2025-08-13 04:04:20",
+    "videos": [
+        {
+            "id": "4rtD-Wush9M",
+            "url": "https://www.youtube.com/watch?v=4rtD-Wush9M",
+            "author": "MTGGoldfish",
+            "title": "Avatar Brings Lessons, Allies and a Ton of Bending to MTG  Avatar the Last Airbender Spoilers",
+            "description": "Avatar: the Last Airbender x Magic: the Gathering doesn't release until November,  but we got a bunch of early spoilers today and they look awesome!\n\nNeed Avatar Cards? https://www.cardkingdom.com/mtggoldfish\n\nNeed more spoilers? https://www.mtgpreviews.com\n\n#MTG #Magicthegathering #mtgspoilers \n\n0:00 Start\n1:13 Waterbending\n6:29 Firebending\n11:00 Aribending\n15:02 Earthbending\n22:51 Redirect Lightning\n26:12 Allies\n28:58 Sokka\n31:05 Momo\n33:00 Fated Firepower\n37:07 The Rise of Sozin\n43:33 Lands, Promos and More",
+            "keywords": [
+                "MTG",
+                "MTG Arena",
+                "MTGGoldfish",
+                "Magic: the Gathering"
+            ],
+            "publish_time": "2025-08-12 14:55:47",
+            "views": 8101,
+            "sources": [
+                "www.cardkingdom.com",
+                "www.mtgpreviews.com"
+            ],
+            "decks": []
+        },
+        {
+            "id": "NyawkJYzHmU",
+            "url": "https://www.youtube.com/watch?v=NyawkJYzHmU",
+            "author": "MTGGoldfish",
+            "title": "Azure Beastbinder Dominates Post Rotation",
+            "description": "Do you love Azure Beastbinder? Well, its the perfect card in the current standard! It does it all for Dimir. Check this out if you're looking for a competitive deck.\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-azure-beastbinder-dominates-post-rotation\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7276602#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/JOHai\n◼ Purchase this deck (Magic Online): http://mtg.fish/N73fW\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-08-12 08:00:05",
+            "views": 8903,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-azure-beastbinder-dominates-post-rotation",
+                        "date": "2025-08-07",
+                        "format": "standard",
+                        "name": "Beastbinder",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-azure-beastbinder-dominates-post-rotation"
+                    },
+                    "decklist_id": "c94da742-37f2-1d8b-56f7-58697ec11cd4",
+                    "decklist_extended_id": "1aafa533-b815-fd6c-59eb-8960aa80c605"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-08-07",
+                        "format": "standard",
+                        "name": "Beastbinder",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7276602"
+                    },
+                    "decklist_id": "c94da742-37f2-1d8b-56f7-58697ec11cd4",
+                    "decklist_extended_id": "1aafa533-b815-fd6c-59eb-8960aa80c605"
+                }
+            ]
+        }
+    ]
+}

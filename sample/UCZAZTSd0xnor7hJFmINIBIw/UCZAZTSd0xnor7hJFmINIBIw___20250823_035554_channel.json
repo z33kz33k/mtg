@@ -1,0 +1,60 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.Upload schedule for Maj...",
+    "tags": [
+        "\"Magic the Gathering\" MTG mtggoldfish"
+    ],
+    "subscribers": 353000,
+    "scrape_time": "2025-08-23 03:55:54",
+    "videos": [
+        {
+            "id": "YzkOH2afszY",
+            "url": "https://www.youtube.com/watch?v=YzkOH2afszY",
+            "author": "MTGGoldfish",
+            "title": "The Pinnacle of Modern Affinity  Much Abrew",
+            "description": "What crazy things can Pinnacle Emissary do in Modern Affinity? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/much-abrew-pinnacle-affinity-modern\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7278843#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/CrFDH\n◼ Purchase this deck (Magic Online): http://mtg.fish/edxKr\n\n#MTG\n#MagicTheGathering\n#MTGO\n#MTGModernl\n\n0:00 Start\n4:27 Match 1\n15:17 Match 2\n21:00 Match 3\n36:53 Match 4\n42:50 Match 5",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTGO",
+                "Magic Online",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-08-22 08:00:09",
+            "views": 15130,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "pepeteam",
+                        "date": "2025-08-08",
+                        "format": "modern",
+                        "name": "Pinnacle Affinity",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7278843"
+                    },
+                    "decklist_id": "b5a0cdb1-41da-22fc-f69e-749300109ddd",
+                    "decklist_extended_id": "eb12bd9b-300e-770c-46f1-8687c34a4c28"
+                },
+                {
+                    "metadata": {
+                        "author": "pepeteam",
+                        "container_url": "https://www.mtggoldfish.com/articles/much-abrew-pinnacle-affinity-modern",
+                        "date": "2025-08-08",
+                        "format": "modern",
+                        "name": "Pinnacle Affinity",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/much-abrew-pinnacle-affinity-modern"
+                    },
+                    "decklist_id": "b5a0cdb1-41da-22fc-f69e-749300109ddd",
+                    "decklist_extended_id": "eb12bd9b-300e-770c-46f1-8687c34a4c28"
+                }
+            ]
+        }
+    ]
+}

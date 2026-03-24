@@ -1,0 +1,68 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.This channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "\"Magic the gathering\" MTG gameplay standard \"card game\" strategy \"magic arena\" arena \"mtg arena\" historic tutorial \"how to\" tips mythic deck educational braw..."
+    ],
+    "subscribers": 141000,
+    "scrape_time": "2025-09-03 02:05:35",
+    "videos": [
+        {
+            "id": "k-8JV7ELt2g",
+            "author": "LegenVD",
+            "title": "Devouring all my own lands for value.",
+            "description": "Magic: The Gathering Arena gameplay with a ramp deck, ft. Famished Worldsire in Edge of Eternities Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:58 - Match 1 \n12:23 - Match 2\n19:43 - Match 3\n27:14 - Match 4\n30:43 - Match 5\n37:35 - Match 6\n\nDecklist:\nhttps://aetherhub.com/Deck/famished-worldsire-combo\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGEternities #mtg #magicthegathering",
+            "keywords": [
+                "lvd",
+                "legend",
+                "mtg",
+                "mtga",
+                "mtg arena",
+                "magic the gathering",
+                "deck",
+                "decks",
+                "gameplay",
+                "guide",
+                "Standard MTG",
+                "standard deck",
+                "standard",
+                "new standard",
+                "edge of eternities",
+                "eternity",
+                "eoe",
+                "eoe standard",
+                "worldsire",
+                "landfall",
+                "ramp",
+                "lumra",
+                "vineslasher",
+                "combo",
+                "combo deck",
+                "jank",
+                "famished",
+                "devour"
+            ],
+            "publish_time": "2025-09-02 09:01:16",
+            "views": 8169,
+            "decks": [
+                {
+                    "metadata": {
+                        "format": "standard",
+                        "author": "LegenVD",
+                        "date": "2025-09-02",
+                        "url": "https://aetherhub.com/Deck/famished-worldsire-combo",
+                        "mode": "Bo1",
+                        "name": "Famished Worldsire Combo",
+                        "archetype": "combo",
+                        "views": 388,
+                        "exports": 124,
+                        "comments": 0
+                    },
+                    "decklist_id": "3623b164-f352-357f-355e-6500ff68f3a1",
+                    "decklist_extended_id": "09bb9878-6987-4451-c493-a3e74bb0900e"
+                }
+            ]
+        }
+    ]
+}

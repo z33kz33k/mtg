@@ -1,0 +1,86 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.This channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "",
+        "MTG",
+        "Magic the gathering",
+        "arena",
+        "brawl",
+        "card game",
+        "commander",
+        "deck",
+        "deck build",
+        "edh",
+        "how to",
+        "magic arena",
+        "mtg arena",
+        "pioneer",
+        "standard",
+        "standard deck"
+    ],
+    "subscribers": 141000,
+    "scrape_time": "2025-09-27 02:31:07",
+    "videos": [
+        {
+            "id": "ZIQ_EDSyL_M",
+            "author": "LegenVD",
+            "title": "The secret strategy to building Affinity.",
+            "description": "Magic: The Gathering Arena gameplay with an artifact affinity deck, ft. Fizik, Etherium Mechanic (Iron Spider, Stark Upgrade) in Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n05:10 - Match 1 \n10:34 - Match 2\n14:49 - Match 3\n25:53 - Match 4\n30:17 - Match 5\n34:10 - Match 6\n\nDecklist:\nhttps://aetherhub.com/Deck/iron-spider-affinity\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGxSpiderMan #mtg #magicthegathering #MTGOM1",
+            "keywords": [
+                "lvd",
+                "legend",
+                "mtg",
+                "mtga",
+                "mtg arena",
+                "magic the gathering",
+                "deck",
+                "decks",
+                "gameplay",
+                "guide",
+                "Standard MTG",
+                "standard deck",
+                "standard",
+                "new standard",
+                "spiderman",
+                "mtg spiderman",
+                "omenpaths",
+                "through the omenpaths",
+                "spiderman deck",
+                "spider-man",
+                "blue",
+                "white",
+                "affinity",
+                "artifact",
+                "artifact affinity",
+                "artifact deck",
+                "iron spider",
+                "fizzik",
+                "giantcraft helm",
+                "tentacles",
+                "doc ock"
+            ],
+            "publish_time": "2025-09-26 09:01:11",
+            "views": 10433,
+            "decks": [
+                {
+                    "metadata": {
+                        "format": "standard",
+                        "author": "LegenVD",
+                        "date": "2025-09-26",
+                        "url": "https://aetherhub.com/Deck/iron-spider-affinity",
+                        "mode": "Bo1",
+                        "name": "Iron Spider Affinity",
+                        "archetype": "midrange",
+                        "views": 472,
+                        "exports": 159,
+                        "comments": 0
+                    },
+                    "decklist_id": "312f2906-bb23-cd54-b656-c5f1a917d1d8",
+                    "decklist_extended_id": "ffdc5a92-3fba-996f-a6d0-a5736775f2c3"
+                }
+            ]
+        }
+    ]
+}

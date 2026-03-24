@@ -1,0 +1,54 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.Upload schedule for Maj...",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 356000,
+    "scrape_time": "2025-09-28 02:09:47",
+    "videos": [
+        {
+            "id": "Xd5Fg7nl4Wc",
+            "author": "MTGGoldfish",
+            "title": "You've Heard of Hate-Bears but What about Hate-Spiders?",
+            "description": "On this week's episode of WHAT IF?... What if hate-bears were actually hate-spiders? We've even got the Anti-Venom/Verilax \"combo\" in With Great Power/Chosen by Valgavoth!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-you-ve-heard-of-hate-bears-but-what-about-hate-spiders\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7358794#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/pvEId\n◼ Purchase this deck (Magic Online): http://mtg.fish/Z24DH\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-09-27 08:00:04",
+            "views": 7356,
+            "decks": [
+                {
+                    "metadata": {
+                        "format": "standard",
+                        "author": "TheAsianAvenger",
+                        "date": "2025-09-24",
+                        "url": "https://www.mtggoldfish.com/deck/7358794",
+                        "name": "Hate-Spiders"
+                    },
+                    "decklist_id": "c1253481-ac28-c06c-7eda-d0067335b891",
+                    "decklist_extended_id": "14b7222c-87ff-2f57-fa4a-4fdb5e2de232"
+                },
+                {
+                    "metadata": {
+                        "format": "standard",
+                        "author": "TheAsianAvenger",
+                        "date": "2025-09-24",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-you-ve-heard-of-hate-bears-but-what-about-hate-spiders",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-you-ve-heard-of-hate-bears-but-what-about-hate-spiders",
+                        "name": "Hate-Spiders"
+                    },
+                    "decklist_id": "c1253481-ac28-c06c-7eda-d0067335b891",
+                    "decklist_extended_id": "14b7222c-87ff-2f57-fa4a-4fdb5e2de232"
+                }
+            ]
+        }
+    ]
+}

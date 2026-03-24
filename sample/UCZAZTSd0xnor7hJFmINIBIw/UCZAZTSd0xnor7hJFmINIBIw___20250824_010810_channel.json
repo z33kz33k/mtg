@@ -1,0 +1,60 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.Upload schedule for Maj...",
+    "tags": [
+        "\"Magic the Gathering\" MTG mtggoldfish"
+    ],
+    "subscribers": 353000,
+    "scrape_time": "2025-08-24 01:08:10",
+    "videos": [
+        {
+            "id": "wuBtUA5kW0c",
+            "url": "https://www.youtube.com/watch?v=wuBtUA5kW0c",
+            "author": "MTGGoldfish",
+            "title": "Who Dares to Play Merfolk in Standard? I Do!",
+            "description": "Merfolk have constantly been brought back but haven't been good in a long time. This deck will definitely make our opponents respect the typal enough to consider Merfolk a tier 2 deck\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-who-dares-to-play-merfolk-in-standard-i-do\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7297271#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/J4Q7B\n◼ Purchase this deck (Magic Online): http://mtg.fish/f82HB\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-08-23 08:00:06",
+            "views": 8001,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-who-dares-to-play-merfolk-in-standard-i-do",
+                        "date": "2025-08-19",
+                        "format": "standard",
+                        "name": "merfolk",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-who-dares-to-play-merfolk-in-standard-i-do"
+                    },
+                    "decklist_id": "0bc3bad0-3eef-98d4-9784-7317230f03e0",
+                    "decklist_extended_id": "d154d59b-6a79-8d4b-acde-3180604afafd"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-08-19",
+                        "format": "standard",
+                        "name": "merfolk",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7297271"
+                    },
+                    "decklist_id": "0bc3bad0-3eef-98d4-9784-7317230f03e0",
+                    "decklist_extended_id": "d154d59b-6a79-8d4b-acde-3180604afafd"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,58 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": null,
+    "tags": null,
+    "subscribers": 352000,
+    "scrape_time": "2025-08-15 02:37:00",
+    "videos": [
+        {
+            "id": "IZQlOf6pddQ",
+            "url": "https://www.youtube.com/watch?v=IZQlOf6pddQ",
+            "author": "MTGGoldfish",
+            "title": "What Happens If A Tarmogoyf Goes to Space?",
+            "description": "LHURGOYFS IN SPACE would be a pretty sweet horror movie but since we don't have that, we'll just have to make Cosmogoyf work in Standard!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards 9and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-what-happens-if-a-tarmogoyf-goes-to-space\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7278025#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/DVGxo\n◼ Purchase this deck (Magic Online): http://mtg.fish/FawgX\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-08-14 08:00:07",
+            "views": 10126,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-what-happens-if-a-tarmogoyf-goes-to-space",
+                        "date": "2025-08-08",
+                        "format": "standard",
+                        "name": "Cosmogoyf",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-what-happens-if-a-tarmogoyf-goes-to-space"
+                    },
+                    "decklist_id": "1570f0a8-e044-0fb3-dc9f-20bc3c06eaf9",
+                    "decklist_extended_id": "5058278d-7d0e-f127-aa7a-5c5a1f43450d"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-08-08",
+                        "format": "standard",
+                        "name": "Cosmogoyf",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7278025"
+                    },
+                    "decklist_id": "1570f0a8-e044-0fb3-dc9f-20bc3c06eaf9",
+                    "decklist_extended_id": "5058278d-7d0e-f127-aa7a-5c5a1f43450d"
+                }
+            ]
+        }
+    ]
+}

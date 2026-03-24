@@ -1,0 +1,79 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": null,
+    "tags": null,
+    "subscribers": 140000,
+    "scrape_time": "2025-08-15 02:30:31",
+    "videos": [
+        {
+            "id": "kuUKzUrG0to",
+            "url": "https://www.youtube.com/watch?v=kuUKzUrG0to",
+            "author": "LegenVD",
+            "title": "I'm willing to make this sacrifice.",
+            "description": "Magic: The Gathering Arena gameplay with Hearthhull, the Worldseed as commander in Brawl. \n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro\n03:20 - Deck Tech\n12:35 - vs Jenova, Ancient Calamity\n18:35 - vs Gideon of the Trials\n28:23 - vs Tifa Lockhart\n33:34 - vs Pantlaza, Sun-Favored\n36:19 - vs Elas il-Kor, Sadistic Pilgrim\n41:10 - vs Clive, Ifrit's Dominant\n46:45 - vs Loot, the Key to Everything\n52:47 - vs Kotis, the Fangkeeper\n\nDecklist:\nhttps://aetherhub.com/Deck/hearthhull-the-worldseed-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtgeternities  #mtg #magicthegathering",
+            "keywords": [
+                "azusa",
+                "black",
+                "brawl",
+                "commander",
+                "deck",
+                "decks",
+                "destroy",
+                "edge of eternity",
+                "edh",
+                "eoe",
+                "eternity",
+                "gameplay",
+                "green",
+                "guide",
+                "hearthhull",
+                "hearthhull commander",
+                "hearthhull edh",
+                "hearthull",
+                "jund",
+                "land destruction",
+                "landfall",
+                "landfall deck",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "red",
+                "sacrifice",
+                "spacecraft",
+                "station",
+                "strip mine",
+                "worldseed"
+            ],
+            "publish_time": "2025-08-14 09:01:18",
+            "views": 10049,
+            "sources": [
+                "aetherhub.com",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-08-14",
+                        "exports": 141,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Hearthhull, the Worldseed Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/hearthhull-the-worldseed-brawl",
+                        "views": 477
+                    },
+                    "decklist_id": "85906a35-e4dc-72c7-8bc5-f0681e1e9f7a",
+                    "decklist_extended_id": "a23f324c-929e-d2cf-f7a7-4627705261cb"
+                }
+            ]
+        }
+    ]
+}

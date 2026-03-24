@@ -1,0 +1,54 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.Upload schedule for Maj...",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 357000,
+    "scrape_time": "2025-10-07 02:58:34",
+    "videos": [
+        {
+            "id": "HxEnk7ItRiw",
+            "author": "MTGGoldfish",
+            "title": "Is It Actually Possible to Win by Warping Infinitely? | Against the Odds",
+            "description": "What are the odds of warping our way into infinite life, mana, and drain in Standard? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/against-the-odds-infinite-warp-combo-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7310763#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/0z1HQ\n◼ Purchase this deck (Magic Online): http://mtg.fish/2bFn9\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#mtgstandard \n\n0:00 Start \n5:15 Games",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-10-06 08:00:09",
+            "views": 20719,
+            "decks": [
+                {
+                    "metadata": {
+                        "format": "standard",
+                        "author": "SaffronOlive",
+                        "date": "2025-08-27",
+                        "url": "https://www.mtggoldfish.com/deck/7310763",
+                        "name": "Infinite Warp"
+                    },
+                    "decklist_id": "42c65b82-1552-8202-53f3-9abe6f707b27",
+                    "decklist_extended_id": "5eb4f30f-ccc5-529c-db14-89cf09b07a3c"
+                },
+                {
+                    "metadata": {
+                        "format": "standard",
+                        "author": "SaffronOlive",
+                        "date": "2025-08-27",
+                        "container_url": "https://www.mtggoldfish.com/articles/against-the-odds-infinite-warp-combo-standard",
+                        "url": "https://www.mtggoldfish.com/articles/against-the-odds-infinite-warp-combo-standard",
+                        "name": "Infinite Warp"
+                    },
+                    "decklist_id": "42c65b82-1552-8202-53f3-9abe6f707b27",
+                    "decklist_extended_id": "5eb4f30f-ccc5-529c-db14-89cf09b07a3c"
+                }
+            ]
+        }
+    ]
+}

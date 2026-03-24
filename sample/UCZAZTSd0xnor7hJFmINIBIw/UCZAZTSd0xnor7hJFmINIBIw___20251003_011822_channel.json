@@ -1,0 +1,54 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.Upload schedule for Maj...",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 357000,
+    "scrape_time": "2025-10-03 01:18:22",
+    "videos": [
+        {
+            "id": "c9a3BlwF38U",
+            "author": "MTGGoldfish",
+            "title": "Scarlet Spider and Lizard Team Up!?",
+            "description": "Scarlet Spider and The Lizard just made green based stompy decks a bunch of new tools!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-scarlet-spider-and-lizard-team-up\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7349389#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/pa1BL\n◼ Purchase this deck (Magic Online): http://mtg.fish/3aP9C\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-10-02 08:00:07",
+            "views": 6686,
+            "decks": [
+                {
+                    "metadata": {
+                        "format": "standard",
+                        "author": "TheAsianAvenger",
+                        "date": "2025-09-18",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-scarlet-spider-and-lizard-team-up",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-scarlet-spider-and-lizard-team-up",
+                        "name": "Scarlet Spider!"
+                    },
+                    "decklist_id": "8da2024d-d4ea-4521-d5b8-a0a94fe693a8",
+                    "decklist_extended_id": "74e41fa8-7d0b-aa5c-0393-edc7a5df0bbc"
+                },
+                {
+                    "metadata": {
+                        "format": "standard",
+                        "author": "TheAsianAvenger",
+                        "date": "2025-09-18",
+                        "url": "https://www.mtggoldfish.com/deck/7349389",
+                        "name": "Scarlet Spider!"
+                    },
+                    "decklist_id": "8da2024d-d4ea-4521-d5b8-a0a94fe693a8",
+                    "decklist_extended_id": "74e41fa8-7d0b-aa5c-0393-edc7a5df0bbc"
+                }
+            ]
+        }
+    ]
+}

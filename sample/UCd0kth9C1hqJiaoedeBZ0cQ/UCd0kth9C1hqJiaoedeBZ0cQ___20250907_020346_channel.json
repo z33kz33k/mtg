@@ -1,0 +1,69 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.This channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "\"Magic the gathering\" MTG \"magic arena\" arena \"mtg arena\" standard brawl commander edh deck \"standard deck\" \"how to\" \"card game\" \"deck build\" pioneer histori..."
+    ],
+    "subscribers": 141000,
+    "scrape_time": "2025-09-07 02:03:46",
+    "videos": [
+        {
+            "id": "kBgEen3GJvw",
+            "author": "LegenVD",
+            "title": "Playing the ultimate RNG deck.",
+            "description": "Magic: The Gathering Arena gameplay with a Random Encounter deck in Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:48 - Match 1 \n11:08 - Match 2\n14:26 - Match 3\n18:03 - Match 4\n22:40 - Match 5\n27:47 - Match 6\n\nDecklist:\nhttps://aetherhub.com/Deck/gruul-random-encounter\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGEternities #mtg #magicthegathering",
+            "keywords": [
+                "lvd",
+                "legend",
+                "mtg",
+                "mtga",
+                "mtg arena",
+                "magic the gathering",
+                "deck",
+                "decks",
+                "gameplay",
+                "guide",
+                "Standard MTG",
+                "standard deck",
+                "standard",
+                "new standard",
+                "edge of eternities",
+                "eternity",
+                "eoe",
+                "eoe standard",
+                "red",
+                "green",
+                "gruul",
+                "random encounter",
+                "rng",
+                "rngesus",
+                "surprise",
+                "overlord",
+                "ramp",
+                "dragon",
+                "terror of the peaks"
+            ],
+            "publish_time": "2025-09-05 09:01:23",
+            "views": 19349,
+            "decks": [
+                {
+                    "metadata": {
+                        "format": "standard",
+                        "author": "LegenVD",
+                        "date": "2025-09-05",
+                        "url": "https://aetherhub.com/Deck/gruul-random-encounter",
+                        "mode": "Bo1",
+                        "name": "Gruul Random Encounter",
+                        "archetype": "midrange",
+                        "views": 908,
+                        "exports": 406,
+                        "comments": 0
+                    },
+                    "decklist_id": "9a3bc0a0-9d9a-5f87-57ea-8282bc6eff52",
+                    "decklist_extended_id": "4ef4714c-d488-a783-1d4d-1d7ca65d4b72"
+                }
+            ]
+        }
+    ]
+}

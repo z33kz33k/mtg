@@ -1,0 +1,82 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.This channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "\"Magic the gathering\" MTG gameplay standard \"card game\" strategy \"magic arena\" arena \"mtg arena\" historic tutorial \"how to\" tips mythic deck educational braw..."
+    ],
+    "subscribers": 140000,
+    "scrape_time": "2025-08-21 03:07:31",
+    "videos": [
+        {
+            "id": "ypN7b4zKB2Q",
+            "url": "https://www.youtube.com/watch?v=ypN7b4zKB2Q",
+            "author": "LegenVD",
+            "title": "This card is banned in Commander.",
+            "description": "Magic: The Gathering Arena gameplay with a mongreen elf deck, ft. Rofellos, Llanowar Emissary as commander in Brawl. \n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro \n01:52 - Deck Tech \n08:09 - vs Ketramose, the New Dawn\n11:46 - vs Sami, Wildcat Captain\n15:40 - vs Y'shtola, Night's Blessed\n21:36 - vs Tifa Lockhart\n30:44 - vs Ulalek, Fused Atrocity\n34:14 - vs The Necrobloom\n41:04 - vs Sarkhan, Dragon Ascendant\n44:36 - vs Jenova, Ancient Calamity\n47:20 - vs Nahiri, Forged in Fury \n\nDecklist:\nhttps://aetherhub.com/Deck/rofellos-llanowar-emissary-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtgeternities  #mtg #magicthegathering",
+            "keywords": [
+                "banned",
+                "brawl",
+                "combo",
+                "commander",
+                "deck",
+                "decks",
+                "denizen",
+                "edge of eternity",
+                "edh",
+                "elf",
+                "elf deck",
+                "elves",
+                "eoe",
+                "eternity",
+                "forest",
+                "gameplay",
+                "green",
+                "guide",
+                "infinite",
+                "ivy lane",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "monogreen",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "ramp",
+                "ramp deck",
+                "rofellos",
+                "rofellos brawl",
+                "rofellos commander",
+                "rofellos edh",
+                "scurry oak",
+                "titan"
+            ],
+            "publish_time": "2025-08-20 09:01:40",
+            "views": 11771,
+            "sources": [
+                "aetherhub.com",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-08-20",
+                        "exports": 215,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Rofellos, Llanowar Emissary Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/rofellos-llanowar-emissary-brawl",
+                        "views": 437
+                    },
+                    "decklist_id": "f28f3822-d2ec-eb60-7953-c82d5c88478c",
+                    "decklist_extended_id": "0310989b-48fb-3ef5-1c69-43184945ce66"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,60 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.Upload schedule for Maj...",
+    "tags": [
+        "\"Magic the Gathering\" MTG mtggoldfish"
+    ],
+    "subscribers": 353000,
+    "scrape_time": "2025-08-19 02:59:30",
+    "videos": [
+        {
+            "id": "w-aswqmtobU",
+            "url": "https://www.youtube.com/watch?v=w-aswqmtobU",
+            "author": "MTGGoldfish",
+            "title": "I Built an Artifact Machine to Explode Munitions  Budget Magic",
+            "description": "Weapons Manufacturing is one of the coolest cards from Edge of Eternities. Can we build a machine to sac artifacts and kill our opponent by exploding Munitions all over them? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish \n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/budget-magic-i-built-an-artifact-machine-to-explode-munitions-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7264275#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/2gilo\n◼ Purchase this deck (Magic Online): http://mtg.fish/iXFCG\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#mtgstandard \n\n0:00 Start\n4:57 Match 1\n17:26 Match 2\n28:55 Match 3\n38:10 Match 4\n43:35 Match 5",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-08-18 08:00:09",
+            "views": 21997,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-07-30",
+                        "format": "standard",
+                        "name": "Artifact Sac Machine",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7264275"
+                    },
+                    "decklist_id": "54dbc8de-e3b3-50a8-3348-20f3285f7440",
+                    "decklist_extended_id": "87ac539f-c429-c5be-7ef2-d0119160f9cd"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/budget-magic-i-built-an-artifact-machine-to-explode-munitions-standard",
+                        "date": "2025-07-30",
+                        "format": "standard",
+                        "name": "Artifact Sac Machine",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/budget-magic-i-built-an-artifact-machine-to-explode-munitions-standard"
+                    },
+                    "decklist_id": "54dbc8de-e3b3-50a8-3348-20f3285f7440",
+                    "decklist_extended_id": "87ac539f-c429-c5be-7ef2-d0119160f9cd"
+                }
+            ]
+        }
+    ]
+}

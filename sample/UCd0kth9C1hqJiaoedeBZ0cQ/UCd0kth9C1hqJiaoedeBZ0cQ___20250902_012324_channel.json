@@ -1,0 +1,70 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.This channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "\"Magic the gathering\" MTG gameplay standard \"card game\" strategy \"magic arena\" arena \"mtg arena\" historic tutorial \"how to\" tips mythic deck educational braw..."
+    ],
+    "subscribers": 141000,
+    "scrape_time": "2025-09-02 01:23:24",
+    "videos": [
+        {
+            "id": "IEN5_r_sDXM",
+            "author": "LegenVD",
+            "title": "Warping a space Dragon for lethal.",
+            "description": "Magic: The Gathering Arena gameplay with a Boros Burn deck, ft. Nova Hellkite in Edge of Eternities Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:07 - Match 1 \n08:29 - Match 2\n13:16 - Match 3\n16:50 - Match 4\n24:22 - Match 5\n26:00 - Match 6\n30:14 - Match 7\n35:08 - Match 8\n38:53 - Match 9\n\nDecklist:\nhttps://aetherhub.com/Deck/eoe-boros-burn\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGEternities #mtg #magicthegathering",
+            "keywords": [
+                "lvd",
+                "legend",
+                "mtg",
+                "mtga",
+                "mtg arena",
+                "magic the gathering",
+                "deck",
+                "decks",
+                "gameplay",
+                "guide",
+                "Standard MTG",
+                "standard deck",
+                "standard",
+                "new standard",
+                "edge of eternities",
+                "eternity",
+                "eoe",
+                "eoe standard",
+                "red",
+                "white",
+                "boros",
+                "burn",
+                "boros burn",
+                "warp",
+                "void",
+                "hellkite",
+                "nemesis",
+                "haste",
+                "boros charm",
+                "aggro"
+            ],
+            "publish_time": "2025-09-01 09:00:36",
+            "views": 8330,
+            "decks": [
+                {
+                    "metadata": {
+                        "format": "standard",
+                        "author": "LegenVD",
+                        "date": "2025-09-01",
+                        "url": "https://aetherhub.com/Deck/eoe-boros-burn",
+                        "mode": "Bo1",
+                        "name": "EoE Boros Burn",
+                        "archetype": "aggro",
+                        "views": 804,
+                        "exports": 343,
+                        "comments": 0
+                    },
+                    "decklist_id": "05e2d847-4dce-bd5a-b5cd-1dc940f04789",
+                    "decklist_extended_id": "60847675-59b1-2958-0f85-2ad6cfe238dc"
+                }
+            ]
+        }
+    ]
+}

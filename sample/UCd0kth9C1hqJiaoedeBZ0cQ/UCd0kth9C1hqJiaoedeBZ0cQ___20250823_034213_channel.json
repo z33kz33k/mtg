@@ -1,0 +1,79 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.This channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "\"Magic the gathering\" MTG gameplay standard \"card game\" strategy \"magic arena\" arena \"mtg arena\" historic tutorial \"how to\" tips mythic deck educational braw..."
+    ],
+    "subscribers": 140000,
+    "scrape_time": "2025-08-23 03:42:13",
+    "videos": [
+        {
+            "id": "6EocgCmGW-M",
+            "url": "https://www.youtube.com/watch?v=6EocgCmGW-M",
+            "author": "LegenVD",
+            "title": "We're the bad guys now.",
+            "description": "Magic: The Gathering Arena gameplay with an Azorius control deck, ft. Consult the Star Charts in Edge of Eternities Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:17 - Match 1 \n09:25 - Match 2\n21:37 - Match 3\n36:16 - Match 4\n40:15 - Match 5\n\nDecklist:\nhttps://aetherhub.com/Deck/eoe-azorius-control\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGEternities #mtg #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "azorius",
+                "blue",
+                "consult",
+                "control",
+                "control deck",
+                "counter",
+                "deck",
+                "decks",
+                "edge of eternities",
+                "eoe",
+                "eoe standard",
+                "eternity",
+                "gameplay",
+                "guide",
+                "kicker",
+                "legend",
+                "lvd",
+                "magic the gathering",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "new standard",
+                "removal",
+                "remove",
+                "standard",
+                "standard control",
+                "standard deck",
+                "star",
+                "sweeper",
+                "white",
+                "wrath"
+            ],
+            "publish_time": "2025-08-22 09:00:10",
+            "views": 12613,
+            "sources": [
+                "aetherhub.com",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "control",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-08-22",
+                        "exports": 249,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "EoE Azorius Control",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/eoe-azorius-control",
+                        "views": 633
+                    },
+                    "decklist_id": "536b8d24-56bd-0c2a-8ffc-3408825ea5c4",
+                    "decklist_extended_id": "446b35be-bef4-5c3e-68eb-a1e159223b12"
+                }
+            ]
+        }
+    ]
+}

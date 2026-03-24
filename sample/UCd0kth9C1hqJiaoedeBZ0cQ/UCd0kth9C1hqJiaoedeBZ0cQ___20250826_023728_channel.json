@@ -1,0 +1,90 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.This channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "\"Magic the gathering\" MTG gameplay standard \"card game\" strategy \"magic arena\" arena \"mtg arena\" historic tutorial \"how to\" tips mythic deck educational braw..."
+    ],
+    "subscribers": 141000,
+    "scrape_time": "2025-08-26 02:37:28",
+    "videos": [
+        {
+            "id": "u7ENWugzS5Q",
+            "url": "https://www.youtube.com/watch?v=u7ENWugzS5Q",
+            "author": "LegenVD",
+            "title": "Playing every Tarmogoyf.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a Jund Goyf deck in Historic. \n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n06:49 - Match 1\n11:24 - Match 2\n17:39 - Match 3\n30:41 - Match 4\n34:11 - Match 5\n39:16 - Match 6\n46:25 - Match 7\n\nDecklist: \nhttps://aetherhub.com/Deck/historic-jund-goyfs\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtg #magicthegathering",
+            "keywords": [
+                "LVD",
+                "LegenVD",
+                "MTG",
+                "anthology",
+                "arena",
+                "arena historic",
+                "barrowgoyf",
+                "black",
+                "card game",
+                "card types",
+                "cards",
+                "commentary",
+                "deck",
+                "deck tech",
+                "disa",
+                "gameplay",
+                "goyf",
+                "goyf deck",
+                "graveyard",
+                "green",
+                "grist",
+                "guide",
+                "historic",
+                "jund",
+                "kindred",
+                "legend",
+                "live",
+                "lvd",
+                "magic",
+                "magic arena",
+                "magic the gathering",
+                "mill",
+                "mtg arena",
+                "multiplayer",
+                "nethergoyf",
+                "online",
+                "pyrogoyf",
+                "red",
+                "strategy",
+                "tarmogoyf",
+                "tips",
+                "w6",
+                "wrenn"
+            ],
+            "publish_time": "2025-08-25 09:01:27",
+            "views": 10546,
+            "sources": [
+                "aetherhub.com",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-08-25",
+                        "exports": 47,
+                        "format": "historic",
+                        "mode": "Bo1",
+                        "name": "Historic Jund Goyfs",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/historic-jund-goyfs",
+                        "views": 278
+                    },
+                    "decklist_id": "aa6abcc8-8730-5018-fd6a-04ca0537c0d6",
+                    "decklist_extended_id": "b366087f-a6ed-8757-9b98-096085808ffb"
+                }
+            ]
+        }
+    ]
+}

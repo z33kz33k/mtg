@@ -1,0 +1,165 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.This channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "\"Magic the gathering\" MTG gameplay standard \"card game\" strategy \"magic arena\" arena \"mtg arena\" historic tutorial \"how to\" tips mythic deck educational braw..."
+    ],
+    "subscribers": 141000,
+    "scrape_time": "2025-09-05 01:15:06",
+    "videos": [
+        {
+            "id": "D5740P13xik",
+            "author": "LegenVD",
+            "title": "How to get all Yargle Day achievements.",
+            "description": "Completing all of the Yargle Day achievements on Magic: The Gathering Arena to claim The Bargler title.\n\nPatreon: https://www.patreon.com/LegenVD\n\n0:00:00 - Intro\n0:05:45 - Class of '9/3\n0:14:40 - A Frog of Culture\n0:27:12 - Death by Vanilla - First Attempt\n0:33:21 - Death by Vanilla - Second Attempt\n0:44:15 - Eat the World \n\nDecklists:\n\nClass of '9/3 - Pioneer\nhttps://aetherhub.com/Deck/yargle-day---class-of-93\n\nA Frog of Culture - Brawl\nhttps://aetherhub.com/Deck/yargle-day---a-frog-of-culture\n\nA Frog of Culture - Budget Brawl\nhttps://aetherhub.com/Deck/yargle-day---a-frog-of-culture-budget\n\nDeath by Vanilla - Standard\nhttps://aetherhub.com/Deck/yargle-day---death-by-vanilla-1\n\nDeath by Vanilla - Historic\nhttps://aetherhub.com/Deck/yargle-day---death-by-vanilla-2\n\nEat the World - Brawl\nhttps://aetherhub.com/Deck/yargle-day---eat-the-world\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtg #magicthegathering #yargle",
+            "keywords": [
+                "gameplay",
+                "magic",
+                "magic the gathering",
+                "card game",
+                "online",
+                "strategy",
+                "guide",
+                "cards",
+                "deck",
+                "deck tech",
+                "LVD",
+                "lvd",
+                "LegenVD",
+                "legend",
+                "live",
+                "tips",
+                "multiplayer",
+                "commentary",
+                "MTG",
+                "mtg arena",
+                "magic arena",
+                "arena",
+                "educational",
+                "mtg",
+                "mtga",
+                "decks",
+                "historic brawl",
+                "commander",
+                "edh",
+                "brawl deck",
+                "pioneer",
+                "historic",
+                "yargle",
+                "yargle day",
+                "achievement",
+                "achievements",
+                "how to",
+                "eat the world",
+                "class of 93",
+                "frog of culture",
+                "dominaria",
+                "glutton",
+                "urborg",
+                "bargler",
+                "the bargler"
+            ],
+            "publish_time": "2025-09-04 09:00:18",
+            "views": 8700,
+            "decks": [
+                {
+                    "metadata": {
+                        "format": "historic",
+                        "author": "LegenVD",
+                        "date": "2025-09-04",
+                        "url": "https://aetherhub.com/Deck/yargle-day---death-by-vanilla-2",
+                        "mode": "Bo1",
+                        "name": "Yargle Day - Death by Vanilla #2",
+                        "custom_theme": "jank",
+                        "views": 488,
+                        "exports": 256,
+                        "comments": 0
+                    },
+                    "decklist_id": "160cb1f6-f793-cd4e-c438-5b616cf6f777",
+                    "decklist_extended_id": "ced0d707-0bf0-f9dc-cb70-d5a977b582f7"
+                },
+                {
+                    "metadata": {
+                        "format": "brawl",
+                        "author": "LegenVD",
+                        "date": "2025-09-04",
+                        "url": "https://aetherhub.com/Deck/yargle-day---a-frog-of-culture-budget",
+                        "mode": "Bo3",
+                        "name": "Yargle Day - A Frog of Culture (Budget)",
+                        "custom_theme": "jank",
+                        "views": 439,
+                        "exports": 151,
+                        "comments": 0
+                    },
+                    "decklist_id": "c5af1760-9177-3111-4536-a675a14640cf",
+                    "decklist_extended_id": "ca162a75-7853-040d-3e78-16c1c1a20363"
+                },
+                {
+                    "metadata": {
+                        "format": "brawl",
+                        "author": "LegenVD",
+                        "date": "2025-09-04",
+                        "url": "https://aetherhub.com/Deck/yargle-day---a-frog-of-culture",
+                        "mode": "Bo3",
+                        "name": "Yargle Day - A Frog of Culture",
+                        "custom_theme": "jank",
+                        "views": 590,
+                        "exports": 324,
+                        "comments": 0
+                    },
+                    "decklist_id": "92f47c82-6a30-d3d1-f431-a9961848692d",
+                    "decklist_extended_id": "59e7ffc7-ad82-fa63-1e79-344e606e3e70"
+                },
+                {
+                    "metadata": {
+                        "format": "brawl",
+                        "author": "LegenVD",
+                        "date": "2025-09-04",
+                        "url": "https://aetherhub.com/Deck/yargle-day---eat-the-world",
+                        "mode": "Bo3",
+                        "name": "Yargle Day - Eat the World",
+                        "custom_theme": "jank",
+                        "views": 668,
+                        "exports": 335,
+                        "comments": 0
+                    },
+                    "decklist_id": "bef5b1b6-bf2d-0b69-f021-d0ecd7c3fab3",
+                    "decklist_extended_id": "41ca60e1-4cb6-020f-6794-2798e102b2e1"
+                },
+                {
+                    "metadata": {
+                        "format": "pioneer",
+                        "author": "LegenVD",
+                        "date": "2025-09-04",
+                        "url": "https://aetherhub.com/Deck/yargle-day---class-of-93",
+                        "mode": "Bo3",
+                        "name": "Yargle Day - Class of 93",
+                        "custom_theme": "jank",
+                        "views": 914,
+                        "exports": 592,
+                        "comments": 0
+                    },
+                    "decklist_id": "38119c3f-47f1-0043-abbb-95050572b4c9",
+                    "decklist_extended_id": "146a871f-742b-5134-d0fe-68a377a0325c"
+                },
+                {
+                    "metadata": {
+                        "format": "standard",
+                        "author": "LegenVD",
+                        "date": "2025-09-04",
+                        "url": "https://aetherhub.com/Deck/yargle-day---death-by-vanilla-1",
+                        "mode": "Bo1",
+                        "name": "Yargle Day - Death by Vanilla #1",
+                        "custom_theme": "jank",
+                        "views": 682,
+                        "exports": 374,
+                        "comments": 0
+                    },
+                    "decklist_id": "9d50883a-a7da-a0a6-db5f-f9219526b3d3",
+                    "decklist_extended_id": "d81ee14a-7b36-65c0-2f45-c0a3eead6ba1"
+                }
+            ]
+        }
+    ]
+}

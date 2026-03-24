@@ -1,0 +1,54 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.Upload schedule for Maj...",
+    "tags": [
+        "MTG",
+        "Magic the Gathering",
+        "mtggoldfish"
+    ],
+    "subscribers": 356000,
+    "scrape_time": "2025-09-16 02:42:29",
+    "videos": [
+        {
+            "id": "AFM1YjGBpIM",
+            "author": "MTGGoldfish",
+            "title": "Mono-Blue Towns | $20 Budget Magic",
+            "description": "Can PuPu UFO, Travel the Overworld, and a bunch of Towns keep up in Standard on just a $20 budget? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/budget-magic-20-mono-blue-towns-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7307263#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/nAKac\n◼ Purchase this deck (Magic Online): http://mtg.fish/dZmSv\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#mtgstandard \n\n0:00 Start\n4:53 Match 1\n18:30 Match 2\n26:11 Match 3\n47:50 Match 4\n1:02:45 Match 5",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-09-15 08:00:08",
+            "views": 23764,
+            "decks": [
+                {
+                    "metadata": {
+                        "format": "standard",
+                        "author": "SaffronOlive",
+                        "date": "2025-08-25",
+                        "url": "https://www.mtggoldfish.com/deck/7307263",
+                        "name": "$20 Mono-Blue Towns"
+                    },
+                    "decklist_id": "88f279ef-a699-1ca7-02fa-1bd3a57a6d06",
+                    "decklist_extended_id": "9ba26700-9933-e4ff-bd73-eb2e6a02d987"
+                },
+                {
+                    "metadata": {
+                        "format": "standard",
+                        "author": "SaffronOlive",
+                        "date": "2025-08-25",
+                        "container_url": "https://www.mtggoldfish.com/articles/budget-magic-20-mono-blue-towns-standard",
+                        "url": "https://www.mtggoldfish.com/articles/budget-magic-20-mono-blue-towns-standard",
+                        "name": "$20 Mono-Blue Towns"
+                    },
+                    "decklist_id": "88f279ef-a699-1ca7-02fa-1bd3a57a6d06",
+                    "decklist_extended_id": "9ba26700-9933-e4ff-bd73-eb2e6a02d987"
+                }
+            ]
+        }
+    ]
+}

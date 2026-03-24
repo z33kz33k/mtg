@@ -1,0 +1,97 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.This channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "\"Magic the gathering\" MTG gameplay standard \"card game\" strategy \"magic arena\" arena \"mtg arena\" historic tutorial \"how to\" tips mythic deck educational braw..."
+    ],
+    "subscribers": 141000,
+    "scrape_time": "2025-08-27 02:38:27",
+    "videos": [
+        {
+            "id": "hge3jdVLHTM",
+            "url": "https://www.youtube.com/watch?v=hge3jdVLHTM",
+            "author": "LegenVD",
+            "title": "This five color Eldrazi deck is actually colorless.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with an Eldrazi deck, featuring Ulalek, Fused Atrocity as commander in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00:00 - Intro\n00:02:39 - Deck Tech\n00:10:51 - vs Wrenn and Six\n00:21:56 - vs Rofellos, Llanowar Emissary\n00:27:49 - vs Nicol Bolas, God-Pharaoh\n00:32:39 - vs Codie, Vociferous Codex\n00:41:43 - vs Imoti, Celebrant of Bounty\n00:50:23 - vs Mauhúr, Uruk-hai Captain\n\nDecklist: \nhttps://aetherhub.com/Deck/ulalek-fused-atrocity-colorless-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtgeternities  #mtg #magicthegathering",
+            "keywords": [
+                "LVD",
+                "LegenVD",
+                "MTG",
+                "arena",
+                "arena historic",
+                "brawl deck",
+                "card game",
+                "cards",
+                "colorless",
+                "commander",
+                "commentary",
+                "deck",
+                "deck tech",
+                "decks",
+                "edh",
+                "educational",
+                "eldrazi ramp",
+                "eldrazi titans",
+                "emrakul",
+                "five color",
+                "gameplay",
+                "guide",
+                "historic",
+                "historic brawl",
+                "kozilek",
+                "labyrinth",
+                "legend",
+                "live",
+                "lvd",
+                "magic",
+                "magic arena",
+                "magic the gathering",
+                "mh3",
+                "modern",
+                "modern horizons 3",
+                "monument",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "multiplayer",
+                "online",
+                "ramp",
+                "strategy",
+                "tips",
+                "ugin",
+                "ulalaek",
+                "ulalaek edh",
+                "ulalek brawl",
+                "ulalek commander",
+                "ulamog"
+            ],
+            "publish_time": "2025-08-26 09:01:09",
+            "views": 11142,
+            "sources": [
+                "aetherhub.com",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-08-26",
+                        "exports": 206,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Ulalek, Fused Atrocity Colorless Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/ulalek-fused-atrocity-colorless-brawl",
+                        "views": 462
+                    },
+                    "decklist_id": "6a9625df-4b97-ca16-16c8-d83bad97d53f",
+                    "decklist_extended_id": "41e0b883-cd2e-6836-e4da-36fb8d44f9ab"
+                }
+            ]
+        }
+    ]
+}

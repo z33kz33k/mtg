@@ -1,0 +1,52 @@
+{
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.Upload schedule for Maj...",
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "scrape_time": "2025-09-01 02:24:21",
+    "subscribers": 354000,
+    "tags": [
+        "\"Magic the Gathering\" MTG mtggoldfish"
+    ],
+    "title": "MTGGoldfish",
+    "videos": [
+        {
+            "author": "MTGGoldfish",
+            "decks": [
+                {
+                    "decklist_extended_id": "e71b6092-fc05-b2ce-900c-3be3f687a4c1",
+                    "decklist_id": "71c12397-6b75-3c1e-eff5-33c4ca13f699",
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-the-leviathans-are-coming",
+                        "date": "2025-08-25",
+                        "format": "standard",
+                        "name": "Simic Leviathan",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-the-leviathans-are-coming"
+                    }
+                },
+                {
+                    "decklist_extended_id": "e71b6092-fc05-b2ce-900c-3be3f687a4c1",
+                    "decklist_id": "71c12397-6b75-3c1e-eff5-33c4ca13f699",
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-08-25",
+                        "format": "standard",
+                        "name": "Simic Leviathan",
+                        "url": "https://www.mtggoldfish.com/deck/7306677"
+                    }
+                }
+            ],
+            "description": "Summoning Leviathan is going to be a blast as it'll join other leviathans like Sin, Starwinder, and other sea creatures!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-the-leviathans-are-coming\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7306677#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/JvSqC\n◼ Purchase this deck (Magic Online): http://mtg.fish/8jtQF\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "id": "Q2nYjQGf-As",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-08-30 19:00:05",
+            "title": "THE LEVIATHANS ARE COMING!",
+            "views": 15840
+        }
+    ]
+}

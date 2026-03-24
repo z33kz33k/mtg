@@ -1,0 +1,76 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": null,
+    "tags": null,
+    "subscribers": 140000,
+    "scrape_time": "2025-08-12 02:39:14",
+    "videos": [
+        {
+            "id": "lGddUSJOMbo",
+            "url": "https://www.youtube.com/watch?v=lGddUSJOMbo",
+            "author": "LegenVD",
+            "title": "How to get fast gains.",
+            "description": "Magic: The Gathering Arena gameplay with a monowhite lifegain deck, ft. Haliya, Guided by Light in Edge of Eternities Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n03:57 - Match 1\n06:51 - Match 2\n12:43 - Match 3\n20:10 - Match 4\n23:25 - Match 5\n27:18 - Match 6\n29:37 - Match 7\n36:09 - Match 8\n44:01 - Match 9\n\nDecklist:\nhttps://aetherhub.com/Deck/eoe-monowhite-lifegain\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGEternities #mtg #magicthegathering",
+            "keywords": [
+                "Standard MTG",
+                "channeler",
+                "deck",
+                "decks",
+                "edge of eternities",
+                "eoe",
+                "eoe standard",
+                "eternity",
+                "exemplar of light",
+                "gain life",
+                "gameplay",
+                "guide",
+                "haliya",
+                "legend",
+                "leyline",
+                "life",
+                "lifegain",
+                "lifegain deck",
+                "linden",
+                "lvd",
+                "magic the gathering",
+                "monowhite",
+                "mtg",
+                "mtg arena",
+                "mtga",
+                "new standard",
+                "pridemate",
+                "standard",
+                "standard deck",
+                "warp",
+                "white"
+            ],
+            "publish_time": "2025-08-11 09:18:50",
+            "views": 10336,
+            "sources": [
+                "aetherhub.com",
+                "creativecommons.org",
+                "www.patreon.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-08-12",
+                        "exports": 457,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "EoE Monowhite Lifegain",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/eoe-monowhite-lifegain",
+                        "views": 923
+                    },
+                    "decklist_id": "9c77d0d2-7a2d-2afb-97f0-facaa0b35718",
+                    "decklist_extended_id": "be841e79-34a2-6fd0-4f46-9d9d1836bc64"
+                }
+            ]
+        }
+    ]
+}

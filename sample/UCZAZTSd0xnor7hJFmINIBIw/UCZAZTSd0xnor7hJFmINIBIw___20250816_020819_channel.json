@@ -1,0 +1,58 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": null,
+    "tags": null,
+    "subscribers": 352000,
+    "scrape_time": "2025-08-16 02:08:19",
+    "videos": [
+        {
+            "id": "vvLln9iVo-s",
+            "url": "https://www.youtube.com/watch?v=vvLln9iVo-s",
+            "author": "MTGGoldfish",
+            "title": "How Good is Tezzeret, Cruel Captain?  Much Abrew",
+            "description": "How good is Tezzeret, Cruel Captain in Edge of Eternities Standard? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/much-abrew-bant-tezzertor-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7275548#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/wekZA\n◼ Purchase this deck (Magic Online): http://mtg.fish/2Igrh\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#mtgstandard \n\n0:00 Start\n5:01 Games",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-08-15 08:00:07",
+            "views": 19426,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-08-06",
+                        "format": "standard",
+                        "name": "Bant Tezzerator",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7275548"
+                    },
+                    "decklist_id": "a203761f-8818-cddb-0ee0-8ea173155fea",
+                    "decklist_extended_id": "714e43df-400a-8335-e3b0-54736d8bb2fa"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/much-abrew-bant-tezzertor-standard",
+                        "date": "2025-08-06",
+                        "format": "standard",
+                        "name": "Bant Tezzerator",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/much-abrew-bant-tezzertor-standard"
+                    },
+                    "decklist_id": "a203761f-8818-cddb-0ee0-8ea173155fea",
+                    "decklist_extended_id": "714e43df-400a-8335-e3b0-54736d8bb2fa"
+                }
+            ]
+        }
+    ]
+}

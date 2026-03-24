@@ -1,0 +1,58 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": null,
+    "tags": null,
+    "subscribers": 352000,
+    "scrape_time": "2025-08-11 02:19:03",
+    "videos": [
+        {
+            "id": "TsIcRuJRPGY",
+            "url": "https://www.youtube.com/watch?v=TsIcRuJRPGY",
+            "author": "MTGGoldfish",
+            "title": "I'm Trying to Find the New Tezzeret a Home",
+            "description": "Tezzeret, Cruel Captain is too sweet of a planeswalker to not find a home. This is one of the many Tezzeret decks I wanted to try out. Maybe Marketback Walker + Syr Vondam could be sweet!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-i-m-trying-to-find-the-new-tezzeret-a-home\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7267897#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/s1JMT\n◼ Purchase this deck (Magic Online): http://mtg.fish/RhqNY\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Gameplay",
+                "MTG",
+                "MTG Arena",
+                "Magic Arena",
+                "Magic the Gathering"
+            ],
+            "publish_time": "2025-08-09 08:00:05",
+            "views": 15671,
+            "sources": [
+                "mtg.fish",
+                "www.cardkingdom.com",
+                "www.mtggoldfish.com"
+            ],
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-i-m-trying-to-find-the-new-tezzeret-a-home",
+                        "date": "2025-08-02",
+                        "format": "standard",
+                        "name": "TEZZ VON DAM",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-i-m-trying-to-find-the-new-tezzeret-a-home"
+                    },
+                    "decklist_id": "0bd55f1a-70d2-8aed-c0dc-e41995e3a7ed",
+                    "decklist_extended_id": "3700b1b9-3ca0-5c96-36eb-8d33224c9758"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-08-02",
+                        "format": "standard",
+                        "name": "TEZZ VON DAM",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7267897"
+                    },
+                    "decklist_id": "0bd55f1a-70d2-8aed-c0dc-e41995e3a7ed",
+                    "decklist_extended_id": "3700b1b9-3ca0-5c96-36eb-8d33224c9758"
+                }
+            ]
+        }
+    ]
+}
