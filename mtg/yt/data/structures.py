@@ -11,7 +11,7 @@ from dataclasses import asdict, astuple, dataclass, field, fields
 from datetime import date, datetime
 from functools import cached_property, lru_cache
 from operator import attrgetter
-from typing import Self, override
+from typing import Self
 
 from mtg import Json
 from mtg.deck import Deck
@@ -34,8 +34,9 @@ EXCESSIVELY_DECK_STALE_THRESHOLD = 150  # videos
 @dataclass
 class SerializedDeck:
     metadata: Json
-    decklist_id: str
-    decklist_extended_id: str
+    # TODO: hashes are not needed with db
+    decklist_hash: str
+    decklist_with_printings_hash: str
 
     def __hash__(self) -> int:
         return hash(self.json)
@@ -52,12 +53,13 @@ class SerializedDeck:
         return Deck.url_to_source(self.metadata.get("url"))
 
     @lru_cache
-    def deck(self, extended=True) -> Deck | None:
+    def deck(self, with_printings=True) -> Deck | None:
         manager = DecklistsStateManager()
         if not manager.is_loaded:
             manager.load()
         decklist = manager.retrieve(
-            self.decklist_extended_id) if extended else manager.retrieve(self.decklist_id)
+            self.decklist_with_printings_hash) if with_printings else manager.retrieve(
+            self.decklist_hash)
         if not decklist:
             return None
         return ArenaParser(decklist, self.metadata).parse()
@@ -253,13 +255,14 @@ class Channel:
         return cls(**data)
 
 
+# TODO: not needed with db
 @dataclass(frozen=True)
 class DataPath:
     """Structural path to a channel/video/decklist in the channel data.
     """
     channel_id: str
     video_id: str | None = None
-    decklist_id: str | None = None
+    decklist_hash: str | None = None
 
     def __str__(self) -> str:
         return breadcrumbs(*[crumb for crumb in astuple(self) if crumb])

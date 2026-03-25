@@ -15,10 +15,10 @@ from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from typing import Dict, List, Union
 
-__appname__ = __name__
-__version__ = "0.9"
+__appname__ = f"{__name__}_decks"
+__version__ = "0.10"
 __description__ = "Scrape data on MtG decks."
-__author__ = "z33k"
+__author__ = "mazz3rr"
 __license__ = "MIT License"
 
 # type aliases
@@ -29,15 +29,23 @@ type PathLike = str | Path
 FILENAME_TIMESTAMP_FORMAT = "%Y%m%d_%H%M%S"
 READABLE_TIMESTAMP_FORMAT = "%Y-%m-%d %H:%M:%S"
 SECONDS_IN_YEAR = 365.25 * 24 * 60 * 60  # with leap years
-VAR_DIR = Path(os.getcwd()) / "var"
-DATA_DIR = VAR_DIR / "data"
+
+HOME_DIR = Path.home() / f".{__appname__}"
+if not HOME_DIR.exists():
+    HOME_DIR.mkdir(parents=True)
+LOG_DIR = HOME_DIR / "logs"
+if not LOG_DIR.exists():
+    LOG_DIR.mkdir(parents=True)
+LOG_SIZE = 1024*1024*20  # 20MB
+SECRETS = json.loads((HOME_DIR / "secrets.json").read_text(encoding="utf-8"))
+
+ROOT_DIR = Path(__file__).parent
+VAR_DIR = ROOT_DIR / "var"
+DATA_DIR = VAR_DIR / "mtg_data"
 OUTPUT_DIR = VAR_DIR / "output"
 DECKS_DIR = OUTPUT_DIR / "decks"
 WITHDRAWN_DIR = OUTPUT_DIR / "withdrawn"
-LOG_DIR = VAR_DIR / "logs" if (VAR_DIR / "logs").exists() else Path(os.getcwd())
-README = Path(os.getcwd()) / "README.md"
-SECRETS = json.loads(Path("secrets.json").read_text(encoding="utf-8"))
-LOG_SIZE = 1024*1024*20  # 20MB
+README = ROOT_DIR / "README.md"
 
 
 _logging_initialized = False

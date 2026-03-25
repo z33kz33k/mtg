@@ -31,38 +31,40 @@ from mtg.yt.data.structures import DataPath, Video
 _log = logging.getLogger(__name__)
 
 
+# TODO: use db
 def find_orphans() -> dict[str, list[str]]:
     """Check the scraped channels data for any decklists missing in the global decklist
     repositories and return their structural paths.
 
     Returns:
-        A dictionary of string paths pointing to the orphaned decklists (both in regular and
-        extended form) in the channel data.
+        A dictionary of string paths pointing to the orphaned decklists (both in simplified and
+        detailed form) in the channel data.
     """
-    regular_ids, extended_ids = {}, {}
+    regular_ids, wirth_printings_ids = {}, {}
     chids = retrieve_ids()
     for ch in tqdm(load_channels(*chids), total=len(chids), desc="Loading channels data..."):
         for v in ch.videos:
             for deck in v.decks:
-                path_regular = DataPath(ch.id, v.id, deck.decklist_id)
-                path_extended = DataPath(ch.id, v.id, deck.decklist_extended_id)
-                regular_ids[deck.decklist_id] = path_regular
-                extended_ids[deck.decklist_extended_id] = path_extended
+                path_regular = DataPath(ch.id, v.id, deck.decklist_hash)
+                path_with_printings = DataPath(ch.id, v.id, deck.decklist_with_printings_hash)
+                regular_ids[deck.decklist_hash] = path_regular
+                wirth_printings_ids[deck.decklist_with_printings_hash] = path_with_printings
 
     manager = DecklistsStateManager()
     manager.reset()
     manager.load()
-    loaded_regular, loaded_extended = manager.regular, manager.extended
+    loaded_regular, loaded_with_printings = manager.regular, manager.with_printings
     regular_orphans = {r for r in regular_ids if r not in loaded_regular}
-    extended_orphans = {e for e in extended_ids if e not in loaded_extended}
+    with_printings_orphans = {e for e in wirth_printings_ids if e not in loaded_with_printings}
 
     _log.info(
-        f"Found {len(regular_orphans):,} orphaned regular decklist(s) and {len(extended_orphans):,}"
-        f" orphaned extended decklist(s)")
+        f"Found {len(regular_orphans):,} orphaned regular decklist(s) and"
+        f" {len(with_printings_orphans):,} orphaned decklist(s) with printings")
 
     return {
         "regular_orphans": sorted({str(regular_ids[r]) for r in regular_orphans}),
-        "extended_orphans": sorted({str(extended_ids[e]) for e in extended_orphans}),
+        "with_printings_orphans": sorted(
+            {str(wirth_printings_ids[e]) for e in with_printings_orphans}),
     }
 
 

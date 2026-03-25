@@ -417,8 +417,8 @@ def digest(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
-def getid(text: str) -> str:
-    """Turn ``text`` into a unique identifier resembling Scryfall ones.
+def get_hash(text: str) -> str:
+    """Turn ``text`` into a unique hash identifier resembling Scryfall ones.
     """
     sha = digest(text)[:32]
     id_ = []

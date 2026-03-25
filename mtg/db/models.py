@@ -1,6 +1,6 @@
 """
 
-    ntg.yt.data.models.py
+    mtg.yt.data.models.py
     ~~~~~~~~~~~~~~~~~~~~~
     SQLAlchemy models.
 

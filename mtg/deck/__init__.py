@@ -27,7 +27,7 @@ from mtg.scryfall import (
     find_by_mtgo_id, find_by_name, find_by_oracle_id,
     find_by_scryfall_id, find_by_tcgplayer_id, find_sets,
     query_api_for_card)
-from mtg.lib import ParsingError, from_iterable, getid, getrepr, remove_furigana, type_checker
+from mtg.lib import ParsingError, from_iterable, get_hash, getrepr, remove_furigana, type_checker
 from mtg.lib.json import to_json
 from mtg.lib.scrape import get_netloc_domain
 
@@ -747,36 +747,36 @@ class Deck:
         self._metadata.update(data)
 
     @staticmethod
-    def _to_playset_line(playset: list[Card], extended=False) -> str:
+    def _to_playset_line(playset: list[Card], with_printings=False) -> str:
         card = playset[0]
         card_name = card.name.replace(
             SCRYFALL_MULTIFACE_SEPARATOR,
             ARENA_MULTIFACE_SEPARATOR) if card.is_multifaced else card.name
         line = f"{len(playset)} {card_name}"
-        if extended:
+        if with_printings:
             line += f" ({card.set.upper()}) {card.collector_number}"
         return line
 
-    def _build_decklist(self, extended=True, about=True) -> str:
+    def _build_decklist(self, with_printings=True, about=True) -> str:
         lines = []
         if about and self.metadata.get("name"):
             lines += ["About", f'Name {self.metadata["name"]}', ""]
         if self.commander:
             playset = aggregate(self.commander)[self.commander]
-            lines += ["Commander", self._to_playset_line(playset, extended=extended)]
+            lines += ["Commander", self._to_playset_line(playset, with_printings=with_printings)]
             if self.partner_commander:
                 playset = aggregate(self.partner_commander)[self.partner_commander]
-                lines += [self._to_playset_line(playset, extended=extended)]
+                lines += [self._to_playset_line(playset, with_printings=with_printings)]
             lines += [""]
         if self.companion:
             playset = aggregate(self.companion)[self.companion]
-            lines += ["Companion", self._to_playset_line(playset, extended=extended), ""]
+            lines += ["Companion", self._to_playset_line(playset, with_printings=with_printings), ""]
         deck_playsets = sorted(
             (playset for playset in aggregate(*self.maindeck).values()),
             key=lambda l: l[0].name)
         lines += [
             "Deck",
-            *[self._to_playset_line(playset, extended=extended) for playset
+            *[self._to_playset_line(playset, with_printings=with_printings) for playset
               in deck_playsets]
         ]
         if self.sideboard:
@@ -786,26 +786,26 @@ class Deck:
             lines += [
                 "",
                 "Sideboard",
-                *[self._to_playset_line(playset, extended=extended) for playset
+                *[self._to_playset_line(playset, with_printings=with_printings) for playset
                   in side_playsets]
             ]
         return "\n".join(lines)
 
     @cached_property
     def decklist(self) -> str:
-        return self._build_decklist(extended=False, about=False)
+        return self._build_decklist(with_printings=False, about=False)
 
     @property
-    def decklist_id(self) -> str:
-        return getid(self.decklist)
+    def decklist_hash(self) -> str:
+        return get_hash(self.decklist)
 
     @cached_property
-    def decklist_extended(self) -> str:
-        return self._build_decklist(extended=True, about=False)
+    def decklist_with_printings(self) -> str:
+        return self._build_decklist(with_printings=True, about=False)
 
     @property
-    def decklist_extended_id(self) -> str:
-        return getid(self.decklist_extended)
+    def decklist_with_printings_hash(self) -> str:
+        return get_hash(self.decklist_with_printings)
 
     @cached_property
     def json(self) -> str:
@@ -813,8 +813,8 @@ class Deck:
         """
         data = {
             "metadata": self.metadata,
-            "decklist_id": self.decklist_id,
-            "decklist_extended_id": self.decklist_extended_id,
+            "decklist_hash": self.decklist_hash,
+            "decklist_with_printings": self.decklist_with_printings_hash,
         }
         return to_json(data, sort_dictionaries=True)
 

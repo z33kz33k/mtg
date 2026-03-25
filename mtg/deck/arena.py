@@ -40,15 +40,15 @@ class PlaysetLine:
     INVERTED_PATTERN = re.compile(
         rf"^{_FIRST_CHAR}{_REST_CHARS}\sx?\s?\d{{1,3}}$", re.UNICODE
     )
-    # Extended: '4 トリックスター、ザレス・サン (ZNR) 242'
-    EXTENDED_PATTERN = re.compile(
+    # With printings: '4 トリックスター、ザレス・サン (ZNR) 242'
+    WITH_PRINTINGS_PATTERN = re.compile(
         rf"^\d{{1,3}}\s?x?\s{_FIRST_CHAR}{_REST_CHARS}\s+\([A-Za-z\d]{{3,6}}\)\s+[A-Za-z\d]{{1,6}}",
         re.UNICODE
     )
 
     @property
-    def is_extended(self) -> bool:
-        return self._is_extended
+    def is_with_printings(self) -> bool:
+        return self._is_with_printings
 
     @property
     def is_inverted(self) -> bool:
@@ -73,12 +73,12 @@ class PlaysetLine:
     def __init__(self, line: str) -> None:
         line = ArenaParser.sanitize_card_name(line)
         regular_match = self.PATTERN.match(line)
-        extended_match = self.EXTENDED_PATTERN.match(line)
+        with_printings_match = self.WITH_PRINTINGS_PATTERN.match(line)
         inverted_match = self.INVERTED_PATTERN.match(line)
-        self._is_extended = extended_match is not None
+        self._is_with_printings = with_printings_match is not None
         self._is_inverted = inverted_match is not None
-        if self.is_extended:
-            matched_text = extended_match.group(0)
+        if self.is_with_printings:
+            matched_text = with_printings_match.group(0)
         elif self.is_inverted:
             matched_text = inverted_match.group(0)
         else:
@@ -89,7 +89,7 @@ class PlaysetLine:
         else:
             quantity, rest = matched_text.split(maxsplit=1)
         self._quantity = extract_int(quantity)
-        if self.is_extended:
+        if self.is_with_printings:
             self._name, rest = rest.split("(")
             self._name = self._name.strip()
             self._set_code, rest = rest.split(")")
@@ -99,12 +99,12 @@ class PlaysetLine:
             if "(" in self.name and ")" in self.name and (self.name and self.name[-1].isdigit()):
                 _log.warning(
                     f"{self.name!r} looks fishy for a card name. It seems like {line!r} Arena line "
-                    f"is in extended format and hasn't been recognized as such by the parser")
+                    f"is in format with printings and hasn't been recognized as such by the parser")
         self._name = self._name.replace(ARENA_MULTIFACE_SEPARATOR, SCRYFALL_MULTIFACE_SEPARATOR)
 
     def __repr__(self) -> str:
         pairs = [("quantity", self.quantity), ("name", self.name)]
-        if self.is_extended:
+        if self.is_with_printings:
             pairs += [("setcode", self.set_code), ("collector_number", self.collector_number)]
         return getrepr(self.__class__, *pairs)
 
@@ -116,7 +116,7 @@ class PlaysetLine:
 
     def to_playset(self) -> list[Card]:
         set_and_collector_number = (
-            self.set_code, self.collector_number) if self.is_extended else None
+            self.set_code, self.collector_number) if self.is_with_printings else None
         try:
             return DeckParser.get_playset(DeckParser.find_card(
                 self.name, set_and_collector_number), self.quantity)
@@ -129,7 +129,7 @@ class PlaysetLine:
 def _is_playset_line(line: str) -> bool:
     return bool(PlaysetLine.PATTERN.match(line)) or bool(
         PlaysetLine.INVERTED_PATTERN.match(line)) or bool(
-        PlaysetLine.EXTENDED_PATTERN.match(line))
+        PlaysetLine.WITH_PRINTINGS_PATTERN.match(line))
 
 
 def _is_inverted_playset_line(line: str) -> bool:

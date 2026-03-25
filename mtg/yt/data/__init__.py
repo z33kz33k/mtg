@@ -314,27 +314,27 @@ def find_dangling_decklists() -> dict[str, str]:
     scraped data.
 
     Returns:
-        a mapping of decklist ID to decklists
+        a mapping of decklist hashes to decklists
     """
     manager = DecklistsStateManager()
     manager.reset()
     manager.load()
-    loaded_regular, loaded_extended = manager.regular, manager.extended
-    dangling, scraped_regular, scraped_extended = {}, set(), set()
+    loaded_regular, loaded_with_printings = manager.regular, manager.with_printings
+    dangling, scraped_regular, scraped_with_printings = {}, set(), set()
     chids = retrieve_ids()
     decks = [
         d for ch
         in tqdm(load_channels(*chids), total=len(chids), desc="Loading channels data...")
         for d in ch.decks]
     for d in decks:
-        scraped_regular.add(d.decklist_id)
-        scraped_extended.add(d.decklist_extended_id)
-    for decklist_id in loaded_regular:
-        if decklist_id not in scraped_regular:
-            dangling[decklist_id] = loaded_regular[decklist_id]
-    for decklist_id in loaded_extended:
-        if decklist_id not in scraped_extended:
-            dangling[decklist_id] = loaded_extended[decklist_id]
+        scraped_regular.add(d.decklist_hash)
+        scraped_with_printings.add(d.decklist_with_printings_hash)
+    for decklist_hash in loaded_regular:
+        if decklist_hash not in scraped_regular:
+            dangling[decklist_hash] = loaded_regular[decklist_hash]
+    for decklist_hash in loaded_with_printings:
+        if decklist_hash not in scraped_with_printings:
+            dangling[decklist_hash] = loaded_with_printings[decklist_hash]
     _log.info(f"Found {len(dangling):,} dangling decklist(s)")
     return dangling
 

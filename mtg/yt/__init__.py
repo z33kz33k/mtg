@@ -369,9 +369,9 @@ class VideoScraper:
                 decks.update(scraper.scrape_decks())
 
         for deck in decks:
-            self._decklists_manager.add_regular(deck.decklist_id, deck.decklist)
-            self._decklists_manager.add_extended(
-                deck.decklist_extended_id, deck.decklist_extended)
+            self._decklists_manager.add_regular(deck.decklist_hash, deck.decklist)
+            self._decklists_manager.add_with_printings(
+                deck.decklist_with_printings_hash, deck.decklist_with_printings)
 
         return sorted(decks)
 
@@ -403,7 +403,7 @@ class VideoScraper:
             self._publish_time,
             self._views,
             self._comment,
-            [SerializedDeck(d.metadata, d.decklist_id, d.decklist_extended_id) for d in self._decks]
+            [SerializedDeck(d.metadata, d.decklist_hash, d.decklist_with_printings_hash) for d in self._decks]
         )
 
     def get_channel_subscribers(self) -> int | None:

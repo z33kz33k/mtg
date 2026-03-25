@@ -126,12 +126,12 @@ class Exporter:
             name += f"Event{self.NAME_SEP}{event_name}{self.NAME_SEP}"
         return sanitize_filename(self._remove_trailing_name_sep(name))
 
-    def to_arena(self, dstdir: PathLike = "", extended=True) -> None:
+    def to_arena(self, dstdir: PathLike = "", with_printings=True) -> None:
         """Export deck to a MTGA deckfile text format (as a .txt file).
 
         Args:
             dstdir: optionally, the destination directory (if not provided CWD is used)
-            extended: optionally, include the card's set and collector number (default: True)
+            with_printings: optionally, include the card's set and collector number (default: True)
         """
         dstdir = dstdir or OUTPUT_DIR / "arena"
         dstdir = getdir(dstdir)
@@ -139,21 +139,21 @@ class Exporter:
         dst = Path(truncate_path(str(dst)))
         _log.info(f"Exporting deck to: '{dst}'...")
         dst.write_text(
-            self._deck.decklist_extended if extended else self._deck.decklist, encoding="utf-8")
+            self._deck.decklist_with_printings if with_printings else self._deck.decklist, encoding="utf-8")
 
-    def to_json(self, dstdir: PathLike = "", extended=True) -> None:
+    def to_json(self, dstdir: PathLike = "", with_printings=True) -> None:
         """Export deck to a .json file.
 
-        JSON exported to file holds the whole decklist (in regular or extended format) and not only
-        IDs.
+        JSON exported to file holds the whole decklist (in simplified or detailed format) and not
+        only IDs.
 
         Args:
             dstdir: optionally, the destination directory (if not provided CWD is used)
-            extended: optionally, include in decklist the card's set and collector number (default: True)
+            with_printings: optionally, include in decklist the card's set and collector number (default: True)
         """
         data = {
             "metadata": self._deck.metadata,
-            "decklist": self._deck.decklist_extended if extended else self._deck.decklist,
+            "decklist": self._deck.decklist_with_printings if with_printings else self._deck.decklist,
         }
         data = to_json(data, sort_dictionaries=True)
         dstdir = dstdir or OUTPUT_DIR / "json"

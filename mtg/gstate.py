@@ -23,8 +23,8 @@ from mtg.lib.scrape import throttle_with_countdown
 _log = logging.getLogger(__name__)
 
 CHANNELS_DIR = OUTPUT_DIR / "channels"
-REGULAR_DECKLISTS_FILE = CHANNELS_DIR / "regular_decklists.json"
-EXTENDED_DECKLISTS_FILE = CHANNELS_DIR / "extended_decklists.json"
+DECKLISTS_FILE = CHANNELS_DIR / "decklists.json"
+DECKLISTS_WITH_PRINTINGS_FILE = CHANNELS_DIR / "decklists_with_printings.json"
 FAILED_URLS_FILE = CHANNELS_DIR / "failed_urls.json"
 
 
@@ -121,6 +121,7 @@ class UrlsStateManager(_Singleton):
         self._failed.update(
             {k: {url.removesuffix("/").lower() for url in v} for k, v in data.items()})
 
+    # TODO: use db
     def load_failed(self) -> None:
         if self._initial_failed_count:
             _log.warning("Failed URLs already loaded")
@@ -200,7 +201,7 @@ class DecklistsStateManager(_Singleton):
     """State manager for decklists stored separately from deck data.
 
     MTGO/Arena text format decklists mapped to their hash digest IDs are stored in two files: one
-    for regular decklists and the second for decklists in 'extended' form (i.e. where each line
+    for regular decklists and the second for decklists in detailed form (i.e. where each line
     specifies also a set code and card's collector number - this detail makes a deck specific in
     terms of card prints).
 
@@ -213,8 +214,8 @@ class DecklistsStateManager(_Singleton):
         return dict(self._regular)
 
     @property
-    def extended(self) -> dict[str, str]:
-        return dict(self._extended)
+    def with_printings(self) -> dict[str, str]:
+        return dict(self._with_printings)
 
     @property
     def is_loaded(self) -> bool:
@@ -222,58 +223,58 @@ class DecklistsStateManager(_Singleton):
 
     def reset(self) -> None:  # override
         self._regular: dict[str, str] = {}
-        self._extended: dict[str, str] = {}
-        self._initial_regular_count, self._initial_extended_count = 0, 0
+        self._with_printings: dict[str, str] = {}
+        self._initial_regular_count, self._initial_with_printings_count = 0, 0
         self._is_loaded = False
 
     def load(self) -> None:
         if self.is_loaded:
             _log.warning("Decklists already loaded")
             return
-        regular_src, extended_src = getfile(REGULAR_DECKLISTS_FILE), getfile(
-            EXTENDED_DECKLISTS_FILE)
+        regular_src, with_printings_src = getfile(DECKLISTS_FILE), getfile(
+            DECKLISTS_WITH_PRINTINGS_FILE)
         self._regular = json.loads(regular_src.read_text(encoding="utf-8"))
         self._initial_regular_count = len(self._regular)
         _log.info(
             f"Loaded {self._initial_regular_count:,} regular decklist(s) from the global "
             f"repository")
-        self._extended = json.loads(extended_src.read_text(encoding="utf-8"))
-        self._initial_extended_count = len(self._extended)
+        self._with_printings = json.loads(with_printings_src.read_text(encoding="utf-8"))
+        self._initial_with_printings_count = len(self._with_printings)
         self._is_loaded = True
         _log.info(
-            f"Loaded {self._initial_extended_count:,} extended decklist(s) from the global "
-            f"repository")
+            f"Loaded {self._initial_with_printings_count:,} decklist(s) with printings from the "
+            f"global repository")
 
     def dump(self) -> None:
-        regular_dst, extended_dst = Path(REGULAR_DECKLISTS_FILE), Path(EXTENDED_DECKLISTS_FILE)
-        regular_count, extended_count = len(self._regular), len(self._extended)
+        regular_dst, with_printings_dst = Path(DECKLISTS_FILE), Path(DECKLISTS_WITH_PRINTINGS_FILE)
+        regular_count, with_printings_count = len(self._regular), len(self._with_printings)
         _log.info(f"Dumping {regular_count:,} decklist(s) to '{regular_dst}'...")
         regular_dst.write_text(
             json.dumps(self._regular, indent=4, ensure_ascii=False), encoding="utf-8")
-        _log.info(f"Dumping {extended_count:,} decklist(s) to '{extended_dst}'...")
-        extended_dst.write_text(
-            json.dumps(self._extended, indent=4, ensure_ascii=False),encoding="utf-8")
+        _log.info(f"Dumping {with_printings_count:,} decklist(s) to '{with_printings_dst}'...")
+        with_printings_dst.write_text(
+            json.dumps(self._with_printings, indent=4, ensure_ascii=False),encoding="utf-8")
         regular_delta = regular_count - self._initial_regular_count
-        extended_delta = extended_count - self._initial_extended_count
+        with_printings_delta = with_printings_count - self._initial_with_printings_count
         _log.info(
             f"Total of {abs(regular_delta):,} unique regular "
             f"decklist(s) {'subtracted from' if regular_delta < 0 else 'added to'} the global "
             f"repository")
         _log.info(
-            f"Total of {abs(extended_delta):,} unique extended "
-            f"decklist(s) {'subtracted from' if extended_delta < 0 else 'added to'} the global "
+            f"Total of {abs(with_printings_delta):,} unique decklist(s) with printings"
+            f" {'subtracted from' if with_printings_delta < 0 else 'added to'} the global "
             f"repository")
 
-    def add_regular(self, decklist_id: str, decklist: str) -> None:
-        self._regular[decklist_id] = decklist
+    def add_regular(self, decklist_hash: str, decklist: str) -> None:
+        self._regular[decklist_hash] = decklist
 
-    def add_extended(self, decklist_id: str, decklist: str) -> None:
-        self._extended[decklist_id] = decklist
+    def add_with_printings(self, decklist_hash: str, decklist: str) -> None:
+        self._with_printings[decklist_hash] = decklist
 
     def retrieve(self, decklist_id: str) -> str | None:
-        if not self._regular or not self._extended:
+        if not self._regular or not self._with_printings:
             _log.warning("No decklists. Are you sure you loaded them?")
-        return self._regular.get(decklist_id) or self._extended.get(decklist_id)
+        return self._regular.get(decklist_id) or self._with_printings.get(decklist_id)
 
     def prune(self, filter_: Callable[[str], bool]) -> None:
         """Prune all decklists that match the given filter.
@@ -282,7 +283,7 @@ class DecklistsStateManager(_Singleton):
             filter_: a function that takes a decklist ID and returns a boolean.
         """
         self._regular = {k: v for k, v in self._regular.items() if not filter_(k)}
-        self._extended = {k: v for k, v in self._extended.items() if not filter_(k)}
+        self._with_printings = {k: v for k, v in self._with_printings.items() if not filter_(k)}
 
 
 class CoolOffManager(_Singleton):
