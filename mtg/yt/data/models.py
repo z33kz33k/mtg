@@ -23,14 +23,14 @@ class Base(DeclarativeBase):
 snapshot_tags = Table(
     "snapshot_tags",
     Base.metadata,
-    Column("snapshot_id", Integer, ForeignKey("snapshots.id")),
-    Column("tag_id", Integer, ForeignKey("tags.id"))
+    Column("snapshot_id", Integer, ForeignKey("snapshots.id"), primary_key=True),
+    Column("tag_id", Integer, ForeignKey("tags.id"), primary_key=True)
 )
 video_keywords = Table(
     "video_keywords",
     Base.metadata,
-    Column("video_id", Integer, ForeignKey("videos.id")),
-    Column("tag_id", Integer, ForeignKey('tags.id'))
+    Column("video_id", Integer, ForeignKey("videos.id"), primary_key=True),
+    Column("tag_id", Integer, ForeignKey('tags.id'), primary_key=True)
 )
 
 
@@ -42,9 +42,13 @@ class Channel(Base):
     __tablename__ = "channels"
 
     id: Mapped[int] = mapped_column(primary_key=True)
+
     yt_id: Mapped[str] = mapped_column(String(24), unique=True, nullable=False, index=True)
+    # withdrawn from further scraping activities
+    is_withdrawn: Mapped[bool] = mapped_column(nullable=False, default=False)
 
     snapshots: Mapped[list["Snapshot"]] = relationship(back_populates="channel")
+    failed_urls: Mapped[list["FailedUrl"]] = relationship(back_populates="channel")
 
 
 class Snapshot(Base):
@@ -83,9 +87,9 @@ class Video(Base):
     __tablename__ = "videos"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    yt_id: Mapped[str] = mapped_column(String(11), nullable=False, index=True)
     snapshot_id: Mapped[int] = mapped_column(ForeignKey("snapshots.id"))
 
+    yt_id: Mapped[str] = mapped_column(String(11), nullable=False, index=True)
     title: Mapped[str | None]
     description: Mapped[str] = mapped_column(Text, nullable=False)
     publish_time: Mapped[datetime] = mapped_column(nullable=False)
@@ -103,10 +107,11 @@ class Tag(Base):
     __tablename__ = "tags"
 
     id: Mapped[int] = mapped_column(primary_key=True)
+
     # YT enforces a 500-character limit on a channel tag or a video keyword, but that pertains to
     # the whole space- or comma-delimited tag string and not for individual tags/keywords
     # (which ARE recommended to be only 30-characters long)
-    name: Mapped[str] = mapped_column(Text, unique=True, index=True)
+    text: Mapped[str] = mapped_column(Text, unique=True, index=True)
 
     snapshots: Mapped[list["Snapshot"]] = relationship(
         secondary=snapshot_tags, back_populates='tags')
@@ -143,6 +148,7 @@ class Decklist(Base):
     __tablename__ = "decklists"
 
     id: Mapped[int] = mapped_column(primary_key=True)
+
     text: Mapped[str] = mapped_column(Text)
 
     decks: Mapped[list["Deck"]] = relationship(back_populates="decklist")
@@ -157,6 +163,20 @@ class DecklistWithPrintings(Base):
     __tablename__ = "decklists_with_printings"
 
     id: Mapped[int] = mapped_column(primary_key=True)
+
     text: Mapped[str] = mapped_column(Text)
 
     decks: Mapped[list["Deck"]] = relationship(back_populates="decklist_with_printings")
+
+
+class FailedUrl(Base):
+    """Represents a decklist URL marked as failed (to be withdrawn from further scraping).
+    """
+    __tablename__ = "failed_urls"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    channel_id: Mapped[int] = mapped_column(ForeignKey("channels.id"))
+
+    text: Mapped[str] = mapped_column(Text, nullable=False)
+
+    channel: Mapped["Channel"] = relationship(back_populates="failed_urls")

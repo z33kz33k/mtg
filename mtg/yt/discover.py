@@ -94,7 +94,7 @@ def discover_new_channels(
         case _:
             raise ValueError(f"Unsupported search option: {option!r}")
 
-    retrieved_ids, chids = {*retrieve_ids(), *retrieve_ids("avoided")}, set()
+    retrieved_ids, chids = {*retrieve_ids(), *retrieve_ids("withdrawn")}, set()
     results = []
     search = CustomSearch(query, pref)
     while True:

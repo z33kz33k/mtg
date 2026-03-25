@@ -21,7 +21,7 @@ from typing import Self, Type
 
 from tqdm import tqdm
 
-from mtg import AVOIDED_DIR, FILENAME_TIMESTAMP_FORMAT, READABLE_TIMESTAMP_FORMAT, README
+from mtg import WITHDRAWN_DIR, FILENAME_TIMESTAMP_FORMAT, READABLE_TIMESTAMP_FORMAT, README
 from mtg.gstate import CHANNELS_DIR, CoolOffManager, DecklistsStateManager, UrlsStateManager
 from mtg.lib import Counter, get_ordinal_suffix, logging_disabled, naive_utc_now as utcnow
 from mtg.lib.files import getdir
@@ -411,7 +411,7 @@ def clean_up(move=True) -> None:
     """Clean up channels data.
 
     Channels that are no longer present in the private Google Sheet are either removed or moved to
-    "avoided" directory.
+    "withdrawn" directory.
 
     Channels are removed from the sheet (or moved to another one) on a regular basis for variety of
     reasons. Either they were scraped only temporarily or they enter state that warrants it.
@@ -424,7 +424,7 @@ def clean_up(move=True) -> None:
     for chdir in [d for d in CHANNELS_DIR.iterdir() if d.is_dir()]:
         if chdir.name not in ids:
             if move:
-                dst = AVOIDED_DIR /  chdir.name
+                dst = WITHDRAWN_DIR / chdir.name
                 if dst.is_dir():
                     shutil.rmtree(dst)
                 _log.info(f"Moving channel data from '{chdir}' to '{dst}'...")
