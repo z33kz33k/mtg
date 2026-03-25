@@ -15,7 +15,7 @@ from requests import ReadTimeout
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper
 from mtg.scryfall import Card
-from mtg.utils.scrape import ScrapingError, fetch_json, strip_url_query
+from mtg.lib.scrape import ScrapingError, fetch_json, strip_url_query
 
 _log = logging.getLogger(__name__)
 

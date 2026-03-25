@@ -12,7 +12,7 @@ import logging
 from typing import override
 
 from mtg.deck.scrapers import DeckScraper
-from mtg.utils.scrape import ScrapingError, strip_url_query
+from mtg.lib.scrape import ScrapingError, strip_url_query
 
 _log = logging.getLogger(__name__)
 

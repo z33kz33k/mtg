@@ -16,8 +16,8 @@ import dateutil.parser
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.scryfall import Card
-from mtg.utils import from_iterable
-from mtg.utils.scrape import ScrapingError, find_links, prepend_url, strip_url_query
+from mtg.lib import from_iterable
+from mtg.lib.scrape import ScrapingError, find_links, prepend_url, strip_url_query
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://mtgstocks.com"

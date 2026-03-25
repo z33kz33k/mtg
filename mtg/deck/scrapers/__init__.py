@@ -22,11 +22,11 @@ from mtg import Json
 from mtg.deck import CardNotFound, Deck, DeckParser, InvalidDeck
 from mtg.deck.arena import ArenaParser
 from mtg.gstate import UrlsStateManager
-from mtg.utils import ParsingError, register_type, timed
-from mtg.utils.scrape import InaccessiblePage, ScrapingError, Soft404Error, fetch_soup, find_links, \
+from mtg.lib import ParsingError, register_type, timed
+from mtg.lib.scrape import InaccessiblePage, ScrapingError, Soft404Error, fetch_soup, find_links, \
     prepend_url
-from mtg.utils.scrape import Throttling, throttle
-from mtg.utils.scrape.dynamic import fetch_dynamic_soup
+from mtg.lib.scrape import Throttling, throttle
+from mtg.lib.scrape.dynamic import fetch_dynamic_soup
 
 _log = logging.getLogger(__name__)
 

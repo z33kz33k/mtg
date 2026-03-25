@@ -18,7 +18,7 @@ from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckUrlsContainerScraper, UrlHook
 from mtg.deck.scrapers.topdeck import check_unexpected_urls
-from mtg.utils.scrape import ScrapingError, dissect_js, strip_url_query
+from mtg.lib.scrape import ScrapingError, dissect_js, strip_url_query
 
 _log = logging.getLogger(__name__)
 URL_HOOKS = (

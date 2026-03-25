@@ -18,8 +18,8 @@ from mtg import Json
 from mtg.deck import Mode
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
     TagBasedDeckParser, UrlHook, throttled_deck_scraper
-from mtg.utils import extract_float, extract_int, from_iterable
-from mtg.utils.scrape import ScrapingError, strip_url_query
+from mtg.lib import extract_float, extract_int, from_iterable
+from mtg.lib.scrape import ScrapingError, strip_url_query
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://aetherhub.com"

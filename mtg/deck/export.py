@@ -14,9 +14,9 @@ from mtg import OUTPUT_DIR, PathLike
 from mtg.deck import CardNotFound, Deck, DeckParser, Mode
 from mtg.deck.arena import ArenaParser, IllFormedArenaDecklist, is_arena_decklist
 from mtg.scryfall import Card, aggregate, set_cards
-from mtg.utils import ParsingError, from_iterable
-from mtg.utils.files import getdir, getfile, sanitize_filename, truncate_path
-from mtg.utils.json import from_json as deserialize_json, to_json
+from mtg.lib import ParsingError, from_iterable
+from mtg.lib.files import getdir, getfile, sanitize_filename, truncate_path
+from mtg.lib.json import from_json as deserialize_json, to_json
 
 _log = logging.getLogger(__name__)
 FORMATS = "arena", "forge", "json", "xmage"

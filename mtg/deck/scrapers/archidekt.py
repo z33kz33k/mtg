@@ -15,7 +15,7 @@ from typing import override
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, UrlHook, \
     folder_container_scraper
-from mtg.utils.scrape import find_links, strip_url_query
+from mtg.lib.scrape import find_links, strip_url_query
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://archidekt.com"

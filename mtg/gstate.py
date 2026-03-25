@@ -16,9 +16,9 @@ from pathlib import Path
 from typing import Callable
 
 from mtg import OUTPUT_DIR
-from mtg.utils.check_type import type_checker
-from mtg.utils.files import getfile
-from mtg.utils.scrape import throttle_with_countdown
+from mtg.lib.check_type import type_checker
+from mtg.lib.files import getfile
+from mtg.lib.scrape import throttle_with_countdown
 
 _log = logging.getLogger(__name__)
 

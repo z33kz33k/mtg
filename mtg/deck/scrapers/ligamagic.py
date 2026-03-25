@@ -20,8 +20,8 @@ from mtg import Json
 from mtg import SECRETS
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.scryfall import Card
-from mtg.utils import extract_int
-from mtg.utils.scrape import ScrapingError, fetch_soup, url_decode
+from mtg.lib import extract_int
+from mtg.lib.scrape import ScrapingError, fetch_soup, url_decode
 
 _log = logging.getLogger(__name__)
 _API_KEY = SECRETS["zenrows"]["api_key"]

@@ -18,8 +18,8 @@ from mtg import HybridContainerScraper, Json, SECRETS
 from mtg.deck.scrapers import Collected, DeckScraper, DeckUrlsContainerScraper, JsonBasedDeckParser, \
     TagBasedDeckParser, UrlHook, throttled_deck_scraper
 from mtg.deck.scrapers.goldfish import HEADERS as GOLDFISH_HEADERS
-from mtg.utils import ParsingError, extract_int
-from mtg.utils.scrape import ScrapingError, find_next_sibling_tag, get_path_segments, \
+from mtg.lib import ParsingError, extract_int
+from mtg.lib.scrape import ScrapingError, find_next_sibling_tag, get_path_segments, \
     get_query_values, is_more_than_root_path, fetch_json, strip_url_query, fetch
 
 _log = logging.getLogger(__name__)

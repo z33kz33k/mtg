@@ -16,8 +16,8 @@ from bs4 import NavigableString, Tag
 from mtg import Json, SECRETS
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.scryfall import Card
-from mtg.utils import extract_int
-from mtg.utils.scrape import ScrapingError
+from mtg.lib import extract_int
+from mtg.lib.scrape import ScrapingError
 
 _log = logging.getLogger(__name__)
 

@@ -22,9 +22,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, \
     HybridContainerScraper, UrlHook, folder_container_scraper
-from mtg.utils import timed
-from mtg.utils.scrape import ScrapingError, dissect_js, get_path_segments, strip_url_query
-from mtg.utils.scrape.dynamic import SELENIUM_TIMEOUT, accept_consent
+from mtg.lib import timed
+from mtg.lib.scrape import ScrapingError, dissect_js, get_path_segments, strip_url_query
+from mtg.lib.scrape.dynamic import SELENIUM_TIMEOUT, accept_consent
 
 _log = logging.getLogger(__name__)
 NEGATIVE_DOMAINS = (

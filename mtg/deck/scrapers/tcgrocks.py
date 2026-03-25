@@ -20,8 +20,8 @@ import dateutil.parser
 from mtg import Json
 from mtg.deck.arena import normalize_decklist
 from mtg.deck.scrapers import DeckScraper
-from mtg.utils.json import Node
-from mtg.utils.scrape import ScrapingError, strip_url_query
+from mtg.lib.json import Node
+from mtg.lib.scrape import ScrapingError, strip_url_query
 
 _log = logging.getLogger(__name__)
 

@@ -14,10 +14,11 @@ import random
 import re
 import time
 import urllib.parse
+from collections.abc import Callable, Iterator
 from dataclasses import dataclass
 from datetime import date, datetime
 from functools import wraps
-from typing import Callable, Iterator, Self, Type
+from typing import Self, Type
 
 import backoff
 import brotli
@@ -32,8 +33,8 @@ from wayback import WaybackClient
 from wayback.exceptions import MementoPlaybackError, WaybackException, WaybackRetryError
 
 from mtg import Json
-from mtg.utils import timed
-from mtg.utils.check_type import type_checker
+from mtg.lib import timed
+from mtg.lib.check_type import type_checker
 
 _log = logging.getLogger(__name__)
 REQUESTS_TIMEOUT = 15.0  # seconds

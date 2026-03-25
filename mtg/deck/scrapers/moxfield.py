@@ -17,8 +17,8 @@ from mtg import Json
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, \
     folder_container_scraper, throttled_deck_scraper
 from mtg.scryfall import Card
-from mtg.utils.scrape import ScrapingError, Soft404Error, strip_url_query
-from mtg.utils.scrape.dynamic import fetch_dynamic_soup, fetch_selenium_json
+from mtg.lib.scrape import ScrapingError, Soft404Error, strip_url_query
+from mtg.lib.scrape.dynamic import fetch_dynamic_soup, fetch_selenium_json
 
 _log = logging.getLogger(__name__)
 

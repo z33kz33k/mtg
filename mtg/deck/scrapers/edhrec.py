@@ -19,9 +19,9 @@ from bs4 import BeautifulSoup, Tag
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper, HybridContainerScraper, TagBasedDeckParser, UrlHook
 from mtg.scryfall import Card
-from mtg.utils import ParsingError
-from mtg.utils.scrape import ScrapingError, find_links, prepend_url, strip_url_query
-from mtg.utils.scrape import fetch_soup
+from mtg.lib import ParsingError
+from mtg.lib.scrape import ScrapingError, find_links, prepend_url, strip_url_query
+from mtg.lib.scrape import fetch_soup
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://edhrec.com"

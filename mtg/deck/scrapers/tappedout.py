@@ -18,8 +18,8 @@ from requests import Response
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, \
     folder_container_scraper, throttled_deck_scraper
-from mtg.utils import extract_int, get_date_from_ago_text
-from mtg.utils.scrape import ScrapingError, fetch, fetch_json, fetch_soup, prepend_url, \
+from mtg.lib import extract_int, get_date_from_ago_text
+from mtg.lib.scrape import ScrapingError, fetch, fetch_json, fetch_soup, prepend_url, \
     strip_url_query, throttle
 
 _log = logging.getLogger(__name__)

@@ -9,8 +9,9 @@
     @author: mazz3rr
 
 """
+from collections.abc import Callable, Iterable
 from functools import wraps
-from typing import Any, Callable, Iterable, Type
+from typing import Any, Type
 
 
 # type aliases

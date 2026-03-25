@@ -18,8 +18,8 @@ from mtg.deck import Deck, Mode
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
     TagBasedDeckParser, UrlHook, throttled_deck_scraper
 from mtg.scryfall import all_formats
-from mtg.utils import ParsingError, extract_int, timed
-from mtg.utils.scrape import ScrapingError, http_requests_counted, strip_url_query, \
+from mtg.lib import ParsingError, extract_int, timed
+from mtg.lib.scrape import ScrapingError, http_requests_counted, strip_url_query, \
     fetch_throttled_soup
 
 _log = logging.getLogger(__name__)

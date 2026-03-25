@@ -9,18 +9,18 @@
 """
 import json
 import logging
+from collections.abc import Callable
 from datetime import UTC, datetime
-from typing import Callable, Type, override
+from typing import Type, override
 
 from bs4 import BeautifulSoup, Tag
 
 from mtg import Json
-from mtg.deck.scrapers import DeckScraper, HybridContainerScraper, JsonBasedDeckParser, \
-    throttled_deck_scraper
+from mtg.deck.scrapers import DeckScraper, HybridContainerScraper, JsonBasedDeckParser
+from mtg.lib import from_iterable
+from mtg.lib.json import Node
+from mtg.lib.scrape import ScrapingError, dissect_js
 from mtg.scryfall import Card, all_formats
-from mtg.utils import from_iterable
-from mtg.utils.json import Node
-from mtg.utils.scrape import ScrapingError, dissect_js
 
 _log = logging.getLogger(__name__)
 _THROTTLING = DeckScraper.THROTTLING * 2

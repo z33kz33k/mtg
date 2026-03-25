@@ -19,8 +19,8 @@ from bs4 import Tag
 from mtg import Json
 from mtg.deck.scrapers import ContainerScraper, HybridContainerScraper, \
     get_folder_container_scrapers
-from mtg.utils.json import Node
-from mtg.utils.scrape import ScrapingError, is_more_than_root_path, strip_url_query
+from mtg.lib.json import Node
+from mtg.lib.scrape import ScrapingError, is_more_than_root_path, strip_url_query
 
 _log = logging.getLogger(__name__)
 

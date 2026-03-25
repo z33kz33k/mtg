@@ -14,8 +14,8 @@ import dateutil.parser
 
 from mtg import SECRETS
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
-from mtg.utils import from_iterable
-from mtg.utils.scrape import ScrapingError, find_links
+from mtg.lib import from_iterable
+from mtg.lib.scrape import ScrapingError, find_links
 
 _log = logging.getLogger(__name__)
 

@@ -14,7 +14,7 @@ from bs4 import Tag
 
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, UrlHook
 from mtg.scryfall import COMMANDER_FORMATS, Card
-from mtg.utils.scrape import ScrapingError, strip_url_query
+from mtg.lib.scrape import ScrapingError, strip_url_query
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://deckbox.org"

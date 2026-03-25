@@ -17,8 +17,8 @@ from mtg import Json
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
     TagBasedDeckParser
 from mtg.scryfall import Card
-from mtg.utils import extract_float
-from mtg.utils.scrape import ScrapingError, dissect_js, find_links, fetch_wayback_soup, strip_url_query
+from mtg.lib import extract_float
+from mtg.lib.scrape import ScrapingError, dissect_js, find_links, fetch_wayback_soup, strip_url_query
 
 _log = logging.getLogger(__name__)
 

@@ -16,7 +16,7 @@ from bs4 import BeautifulSoup, Tag
 from mtg import Json, SECRETS
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, DecksJsonContainerScraper, \
     HybridContainerScraper, JsonBasedDeckParser, UrlHook
-from mtg.utils.scrape import InaccessiblePage, ScrapingError, is_more_than_root_path, \
+from mtg.lib.scrape import InaccessiblePage, ScrapingError, is_more_than_root_path, \
     fetch_json, strip_url_query
 
 _log = logging.getLogger(__name__)

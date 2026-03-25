@@ -9,19 +9,20 @@
 """
 import json
 import logging
+from collections.abc import Iterator
 from datetime import datetime
-from typing import Generator, Literal, override
+from typing import Literal, override
 
 from tqdm import tqdm
 
-from mtg import DECKS_DIR, FILENAME_TIMESTAMP_FORMAT, Json, PathLike
+from mtg import DECKS_DIR, Json, PathLike
 from mtg.deck import Deck
 from mtg.deck.export import Exporter, FORMATS as EXPORT_FORMATS
 from mtg.deck.scrapers import DeckScraper
+from mtg.lib import get_timestamp, logging_disabled, timed
+from mtg.lib.files import getdir
+from mtg.lib.scrape import ScrapingError, fetch_json, fetch_soup
 from mtg.scryfall import Card
-from mtg.utils import logging_disabled, timed
-from mtg.utils.files import getdir
-from mtg.utils.scrape import ScrapingError, fetch_soup, fetch_json
 
 _log = logging.getLogger(__name__)
 URL = "https://mtgjson.com/api/v5/decks/"
@@ -107,7 +108,7 @@ class Scraper:
         return set()
 
     @timed("scraping MTGJSON API deck page")
-    def scrape(self, *mtgjson_deck_links: str) -> Generator[Deck | None, None, None]:
+    def scrape(self, *mtgjson_deck_links: str) -> Iterator[Deck | None]:
         """Scrape MTGJSON API deck page for decks yielding one at a time.
 
         Decks not deemed Constructed-valid ones are ignored.
@@ -130,7 +131,7 @@ class Scraper:
         """Export all Constructed decks available in MTGJSON API decks page to ```dstdir``` in the
         format provided.
         """
-        timestamp = datetime.now().strftime(FILENAME_TIMESTAMP_FORMAT)
+        timestamp = get_timestamp(filename=True)
         dstdir = dstdir or DECKS_DIR / "mtgjson" / timestamp
         dstdir = getdir(dstdir)
         with logging_disabled():

@@ -15,8 +15,8 @@ from bs4 import Tag
 
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.scryfall import Card
-from mtg.utils.scrape import ScrapingError, find_links, strip_url_query
-from mtg.utils.scrape import fetch_soup
+from mtg.lib.scrape import ScrapingError, find_links, strip_url_query
+from mtg.lib.scrape import fetch_soup
 
 _log = logging.getLogger(__name__)
 

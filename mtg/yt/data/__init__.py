@@ -13,20 +13,21 @@ import logging
 import shutil
 import sys
 from collections import defaultdict
+from collections.abc import Callable, Iterator
 from datetime import datetime
 from operator import attrgetter, itemgetter
 from types import TracebackType
-from typing import Callable, Generator, Iterator, Self, Type
+from typing import Self, Type
 
 from tqdm import tqdm
 
 from mtg import AVOIDED_DIR, FILENAME_TIMESTAMP_FORMAT, READABLE_TIMESTAMP_FORMAT, README
 from mtg.gstate import CHANNELS_DIR, CoolOffManager, DecklistsStateManager, UrlsStateManager
-from mtg.utils import Counter, get_ordinal_suffix, logging_disabled
-from mtg.utils.files import getdir
-from mtg.utils.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
-from mtg.utils.json import from_json
-from mtg.utils.scrape import fetch_soup
+from mtg.lib import Counter, get_ordinal_suffix, logging_disabled, naive_utc_now as utcnow
+from mtg.lib.files import getdir
+from mtg.lib.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
+from mtg.lib.json import from_json
+from mtg.lib.scrape import fetch_soup
 from mtg.yt.data.structures import CHANNEL_URL_TEMPLATE, Channel, Video
 
 _log = logging.getLogger(__name__)
@@ -116,7 +117,7 @@ def load_channel(channel_id: str) -> Channel:
     return channel
 
 
-def load_channels(*channel_ids: str) -> Generator[Channel, None, None]:
+def load_channels(*channel_ids: str) -> Iterator[Channel]:
     """Load channel data for specified IDs.
 
     If nothing is specified, all known channels are considered.
@@ -282,7 +283,7 @@ def remove_channel_data(*range_: datetime | str) -> None:
         range_: start (and, optionally, end) of the time range
     """
     if len(range_) == 1:
-        start, end = range_[0], datetime.now()
+        start, end = range_[0], utcnow()
     elif len(range_) == 2:
         start, end = range_
     else:

@@ -17,9 +17,9 @@ from mtg import Json
 from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser
 from mtg.gstate import DecklistsStateManager
-from mtg.utils import Counter, breadcrumbs
-from mtg.utils.json import to_json
-from mtg.utils.scrape import extract_url, get_netloc_domain
+from mtg.lib import Counter, breadcrumbs
+from mtg.lib.json import to_json
+from mtg.lib.scrape import extract_url, get_netloc_domain
 
 VIDEO_URL_TEMPLATE = "https://www.youtube.com/watch?v={}"
 CHANNEL_URL_TEMPLATE = "https://www.youtube.com/channel/{}"

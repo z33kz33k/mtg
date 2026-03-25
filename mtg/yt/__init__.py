@@ -12,10 +12,9 @@ import logging
 import re
 import traceback
 import urllib.error
-from datetime import datetime
+from collections.abc import Iterator
 from functools import cached_property
 from http.client import RemoteDisconnected
-from typing import Generator
 
 import backoff
 import pytubefix
@@ -32,14 +31,14 @@ from mtg.deck.scrapers import DeckParser, DeckScraper, DeckTagsContainerScraper,
     DeckUrlsContainerScraper, DecksJsonContainerScraper, HybridContainerScraper, \
     get_throttled_deck_scrapers
 from mtg.gstate import CHANNELS_DIR, CoolOffManager, DecklistsStateManager, UrlsStateManager
-from mtg.scryfall import all_formats
-from mtg.utils import extract_float, find_longest_seqs, from_iterable, logging_disabled, \
-    multiply_by_symbol, timed
-from mtg.utils.files import getdir, sanitize_filename
-from mtg.utils.scrape import ScrapingError, extract_url, http_requests_counted, \
+from mtg.lib import extract_float, find_longest_seqs, from_iterable, logging_disabled, \
+    multiply_by_symbol, naive_utc_now as utcnow, timed
+from mtg.lib.files import getdir, sanitize_filename
+from mtg.lib.scrape import ScrapingError, extract_url, http_requests_counted, \
     parse_keywords_from_tag, throttle, throttled, unshorten
-from mtg.utils.scrape.dynamic import fetch_dynamic_soup
-from mtg.utils.scrape.linktree import LinktreeScraper
+from mtg.lib.scrape.dynamic import fetch_dynamic_soup
+from mtg.lib.scrape.linktree import LinktreeScraper
+from mtg.scryfall import all_formats
 from mtg.yt.data import ScrapingSession, load_channel, load_channels, retrieve_ids
 from mtg.yt.data.structures import CHANNEL_URL_TEMPLATE, Channel, SerializedDeck, \
     VIDEO_URL_TEMPLATE, Video
@@ -477,7 +476,7 @@ class ChannelScraper:
         except FileNotFoundError:
             self._earlier_data = None
 
-    def video_ids(self, limit=10) -> Generator[str, None, None]:
+    def video_ids(self, limit=10) -> Iterator[str]:
         try:
             for ch_data in scrapetube.get_channel(channel_id=self._id, limit=limit):
                 yield ch_data["videoId"]
@@ -596,7 +595,7 @@ class ChannelScraper:
         return title, count, description, tags
 
     def _scrape_videos(self, *video_ids: str) -> None:
-        self._scrape_time = datetime.now()
+        self._scrape_time = utcnow()
         self._title, self._subscribers, self._description, self._tags = self._fetch_info_with_selenium()
 
         text = self.url_title_text()

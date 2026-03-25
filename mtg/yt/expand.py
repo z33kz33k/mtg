@@ -14,8 +14,8 @@ from requests import ConnectionError, HTTPError, ReadTimeout
 from selenium.common import TimeoutException
 
 from mtg.gstate import UrlsStateManager
-from mtg.utils.scrape import dissect_js, fetch
-from mtg.utils.scrape.dynamic import fetch_dynamic_soup
+from mtg.lib.scrape import dissect_js, fetch
+from mtg.lib.scrape.dynamic import fetch_dynamic_soup
 
 
 _log = logging.getLogger(__name__)

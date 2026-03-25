@@ -7,16 +7,16 @@
     @author: mazz3rr
 
 """
-from datetime import datetime
+from collections.abc import Iterator
 from pathlib import Path
-from typing import Generator, Literal
+from typing import Literal
 
 from tqdm import tqdm
 
-from mtg import DECKS_DIR, FILENAME_TIMESTAMP_FORMAT, PathLike
+from mtg import DECKS_DIR, PathLike
 from mtg.deck.export import Exporter, FORMATS as EXPORT_FORMATS
-from mtg.utils import logging_disabled
-from mtg.utils.files import getdir, sanitize_filename
+from mtg.lib import get_timestamp, logging_disabled
+from mtg.lib.files import getdir, sanitize_filename
 from mtg.yt import retrieve_ids
 from mtg.yt.data import load_channels
 from mtg.yt.data.structures import Channel
@@ -24,7 +24,7 @@ from mtg.yt.data.structures import Channel
 
 def _dump_data_gen(
         channels: list[Channel],
-        dstdir: Path) -> Generator[tuple[Exporter | None, Path], None, None]:
+        dstdir: Path) -> Iterator[tuple[Exporter | None, Path]]:
     seen_decks = {}
     for channel in channels:
         if title := channel.title:
@@ -49,7 +49,7 @@ def dump_decks(
     """
     if fmt not in EXPORT_FORMATS:
         raise ValueError(f"Invalid dump format: {fmt!r}. Must be one of: {EXPORT_FORMATS}")
-    timestamp = datetime.now().strftime(FILENAME_TIMESTAMP_FORMAT)
+    timestamp = get_timestamp(filename=True)
     dstdir = dstdir or DECKS_DIR / "yt" / timestamp
     dstdir = getdir(dstdir)
     chids = retrieve_ids()

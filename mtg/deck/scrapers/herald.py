@@ -15,7 +15,7 @@ from bs4 import Tag
 
 from mtg import Json, SECRETS
 from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser, UrlHook
-from mtg.utils.scrape import ScrapingError, is_more_than_root_path, strip_url_query
+from mtg.lib.scrape import ScrapingError, is_more_than_root_path, strip_url_query
 
 _log = logging.getLogger(__name__)
 HEADERS = {

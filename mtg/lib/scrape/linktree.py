@@ -37,7 +37,7 @@ import backoff
 from requests import ReadTimeout, HTTPError, ConnectionError
 
 from mtg import Json
-from mtg.utils.scrape import ScrapingError, fetch_soup, strip_url_query, fetch
+from mtg.lib.scrape import ScrapingError, fetch_soup, strip_url_query, fetch
 
 _log = logging.getLogger(__name__)
 

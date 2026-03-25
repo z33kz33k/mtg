@@ -16,7 +16,7 @@ from mtg import Json
 from mtg.deck import ARENA_MULTIFACE_SEPARATOR, CardNotFound, DeckParser
 from mtg.scryfall import COMMANDER_FORMATS, Card, \
     MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, query_api_for_card
-from mtg.utils import ParsingError, extract_int, getrepr, is_foreign, sanitize_whitespace
+from mtg.lib import ParsingError, extract_int, getrepr, is_foreign, sanitize_whitespace
 
 _log = logging.getLogger(__name__)
 

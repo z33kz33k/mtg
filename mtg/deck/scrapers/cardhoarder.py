@@ -15,7 +15,7 @@ import dateutil.parser
 
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper, UrlHook
-from mtg.utils.scrape import ScrapingError, dissect_js, strip_url_query
+from mtg.lib.scrape import ScrapingError, dissect_js, strip_url_query
 
 _log = logging.getLogger(__name__)
 

@@ -20,8 +20,8 @@ from mtg.deck.arena import ArenaParser
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
     TagBasedDeckParser
 from mtg.scryfall import COMMANDER_FORMATS
-from mtg.utils import ParsingError, extract_int, from_iterable, sanitize_whitespace
-from mtg.utils.scrape import ScrapingError, strip_url_query
+from mtg.lib import ParsingError, extract_int, from_iterable, sanitize_whitespace
+from mtg.lib.scrape import ScrapingError, strip_url_query
 
 _log = logging.getLogger(__name__)
 

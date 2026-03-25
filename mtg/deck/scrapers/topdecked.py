@@ -24,9 +24,9 @@ from mtg.deck import CardNotFound, Deck, InvalidDeck
 from mtg.deck.arena import IllFormedArenaDecklist, PlaysetLine
 from mtg.deck.scrapers import DeckScraper
 from mtg.scryfall import COMMANDER_FORMATS
-from mtg.utils import ParsingError, extract_float, get_date_from_ago_text
-from mtg.utils.scrape import ScrapingError, strip_url_query
-from mtg.utils.scrape.dynamic import SELENIUM_TIMEOUT, click_for_clipboard
+from mtg.lib import ParsingError, extract_float, get_date_from_ago_text
+from mtg.lib.scrape import ScrapingError, strip_url_query
+from mtg.lib.scrape.dynamic import SELENIUM_TIMEOUT, click_for_clipboard
 
 _log = logging.getLogger(__name__)
 

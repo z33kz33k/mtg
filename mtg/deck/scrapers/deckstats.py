@@ -19,7 +19,7 @@ from requests import Response
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, UrlHook, throttled_deck_scraper
 from mtg.scryfall import Card
-from mtg.utils.scrape import ScrapingError, dissect_js, fetch_json, strip_url_query, \
+from mtg.lib.scrape import ScrapingError, dissect_js, fetch_json, strip_url_query, \
     throttle, fetch
 
 _log = logging.getLogger(__name__)

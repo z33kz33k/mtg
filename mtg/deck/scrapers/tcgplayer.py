@@ -23,9 +23,9 @@ from mtg import Json, SECRETS
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, DecksJsonContainerScraper, \
     HybridContainerScraper, JsonBasedDeckParser
 from mtg.scryfall import Card
-from mtg.utils import extract_int
-from mtg.utils.scrape import ScrapingError, fetch_json, strip_url_query, throttle
-from mtg.utils.scrape.dynamic import SCROLL_DOWN_TIMES, fetch_dynamic_soup
+from mtg.lib import extract_int
+from mtg.lib.scrape import ScrapingError, fetch_json, strip_url_query, throttle
+from mtg.lib.scrape.dynamic import SCROLL_DOWN_TIMES, fetch_dynamic_soup
 
 _log = logging.getLogger(__name__)
 HEADERS = {

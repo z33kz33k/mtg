@@ -13,10 +13,11 @@ import logging
 import re
 from abc import ABC, abstractmethod
 from collections import Counter
+from collections.abc import Iterator, Iterable
 from enum import Enum, auto
 from functools import cached_property
 from operator import attrgetter, itemgetter
-from typing import Any, Iterable, Iterator, Self
+from typing import Any, Self
 
 from mtg import Json
 from mtg.scryfall import (
@@ -26,9 +27,9 @@ from mtg.scryfall import (
     find_by_mtgo_id, find_by_name, find_by_oracle_id,
     find_by_scryfall_id, find_by_tcgplayer_id, find_sets,
     query_api_for_card)
-from mtg.utils import ParsingError, from_iterable, getid, getrepr, remove_furigana, type_checker
-from mtg.utils.json import to_json
-from mtg.utils.scrape import get_netloc_domain
+from mtg.lib import ParsingError, from_iterable, getid, getrepr, remove_furigana, type_checker
+from mtg.lib.json import to_json
+from mtg.lib.scrape import get_netloc_domain
 
 _log = logging.getLogger(__name__)
 ARENA_MULTIFACE_SEPARATOR = " /// "  # this is different from Scryfall data where they use: ' // '

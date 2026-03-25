@@ -15,8 +15,8 @@ from bs4 import Tag
 from mtg import Json
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
 from mtg.scryfall import Card
-from mtg.utils import from_iterable, get_date_from_ago_text, get_date_from_month_text
-from mtg.utils.scrape import ScrapingError, fetch_soup, fetch_json, strip_url_query
+from mtg.lib import from_iterable, get_date_from_ago_text, get_date_from_month_text
+from mtg.lib.scrape import ScrapingError, fetch_soup, fetch_json, strip_url_query
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://pennydreadfulmagic.com"

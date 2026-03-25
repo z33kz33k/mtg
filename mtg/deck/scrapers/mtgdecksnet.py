@@ -18,9 +18,9 @@ from mtg.deck import Deck
 from mtg.deck.arena import ArenaParser, normalize_decklist
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
     TagBasedDeckParser
-from mtg.utils import ParsingError
-from mtg.utils.scrape import ScrapingError, find_previous_sibling_tag
-from mtg.utils.scrape import strip_url_query
+from mtg.lib import ParsingError
+from mtg.lib.scrape import ScrapingError, find_previous_sibling_tag
+from mtg.lib.scrape import strip_url_query
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://mtgdecks.net"

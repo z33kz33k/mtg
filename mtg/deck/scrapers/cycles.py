@@ -16,7 +16,7 @@ from bs4 import NavigableString, Tag
 
 from mtg import Json
 from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser, UrlHook
-from mtg.utils.scrape import is_more_than_root_path, strip_url_query
+from mtg.lib.scrape import is_more_than_root_path, strip_url_query
 
 _log = logging.getLogger(__name__)
 URL_HOOKS = (

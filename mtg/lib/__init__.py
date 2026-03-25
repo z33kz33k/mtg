@@ -14,18 +14,18 @@ import itertools
 import logging
 import re
 from collections import Counter as PyCounter
-from datetime import date, timedelta
-from datetime import datetime
+from collections.abc import Callable, Generator, Iterable, Sequence
+from datetime import UTC, date, datetime, timedelta
 from functools import wraps
-from typing import Any, Callable, Generator, Iterable, Protocol, Sequence, Type
+from typing import Any, Protocol, Type
 
 import dateutil.parser
 from contexttimer import Timer
 from dateutil.relativedelta import relativedelta
 from lingua import Language, LanguageDetectorBuilder
 
-from mtg import FILENAME_TIMESTAMP_FORMAT
-from mtg.utils.check_type import type_checker, uniform_type_checker
+from mtg import FILENAME_TIMESTAMP_FORMAT, READABLE_TIMESTAMP_FORMAT
+from mtg.lib.check_type import type_checker, uniform_type_checker
 
 _log = logging.getLogger(__name__)
 
@@ -160,7 +160,7 @@ def get_date_from_month_text(month_text: str) -> date | None:
     Month text may or may not include a valid year, e.g. 'June 27th 2021' or 'June 27th'. In case
     it's missing a current year is assumed.
     """
-    current_year = datetime.now().year
+    current_year = naive_utc_now().year
     # clean the input string by removing ordinal suffixes
     cleaned_month_text = month_text.replace(
         'st', '').replace('nd', '').replace('rd', '').replace('th', '')
@@ -271,12 +271,6 @@ def breadcrumbs(*crumbs: str) -> str:
         `/foo/bar/fiz/baz`
     """
     return "/" + "/".join(crumbs)
-
-
-def timestamp(format_=FILENAME_TIMESTAMP_FORMAT) -> str:
-    """Return timestamp string according to the datetime ``format_`` supplied.
-    """
-    return datetime.now().strftime(format_)
 
 
 class ParsingError(ValueError):
@@ -527,3 +521,16 @@ def register_type(
     if parent_type and not issubclass(registered_type, parent_type):
         raise TypeError(f"Not a subclass of {parent_type.__name__}: {registered_type!r}")
     registry.add(registered_type)
+
+
+def naive_utc_now() -> datetime:
+    """Return a naive UTC datetime object of now.
+    """
+    return datetime.now(UTC).replace(tzinfo=None)
+
+
+def get_timestamp(filename=False) -> str:
+    """Return timestamp string in either a more human-readable format or one suitable for filenames.
+    """
+    fmt = FILENAME_TIMESTAMP_FORMAT if filename else READABLE_TIMESTAMP_FORMAT
+    return naive_utc_now().strftime(fmt)

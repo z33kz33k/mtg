@@ -17,8 +17,8 @@ from bs4 import Tag
 from mtg import Json
 from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser
 from mtg.scryfall import COMMANDER_FORMATS
-from mtg.utils import ParsingError, from_iterable
-from mtg.utils.scrape import ScrapingError, strip_url_query
+from mtg.lib import ParsingError, from_iterable
+from mtg.lib.scrape import ScrapingError, strip_url_query
 
 _log = logging.getLogger(__name__)
 

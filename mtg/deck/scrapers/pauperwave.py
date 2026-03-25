@@ -15,7 +15,7 @@ from bs4 import Tag
 
 from mtg import Json
 from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser
-from mtg.utils.scrape import ScrapingError, is_more_than_root_path, parse_non_english_month_date, \
+from mtg.lib.scrape import ScrapingError, is_more_than_root_path, parse_non_english_month_date, \
     strip_url_query
 
 _log = logging.getLogger(__name__)

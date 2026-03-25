@@ -11,8 +11,9 @@ import contextlib
 import json
 import re
 from collections import OrderedDict
+from collections.abc import Callable, Iterator
 from datetime import date, datetime
-from typing import Any, Callable, Generator, Iterator, Literal, Self
+from typing import Any, Literal, Self
 
 from mtg import Json, READABLE_TIMESTAMP_FORMAT
 
@@ -179,7 +180,7 @@ class Node:
     # recursive
     def find_all(
             self,
-            predicate: Callable[[Self], bool] = lambda _: True) -> Generator[Self, None, None]:
+            predicate: Callable[[Self], bool] = lambda _: True) -> Iterator[Self]:
         """Traverse the tree from this node downwards and yield all nodes that satisfy
         ``predicate`` along the way. If no predicate is provided, all sub-nodes are yielded.
 
@@ -210,8 +211,7 @@ class Node:
 
     def find_all_by_path(
             self, path: str,
-            mode: Literal["exact", "start", "end", "partial", "regex"] = "exact"
-        ) -> Generator[Self, None, None]:
+            mode: Literal["exact", "start", "end", "partial", "regex"] = "exact") -> Iterator[Self]:
         """Find all nodes within this node's subtree by their structural path.
 
         Modes:
@@ -269,5 +269,5 @@ class Node:
         return next(self.find_all_by_path(path, mode), None)
 
     @property
-    def text_nodes(self) -> Generator[Self, None, None]:
+    def text_nodes(self) -> Iterator[Self]:
         return self.find_all(lambda n: isinstance(n.data, str))

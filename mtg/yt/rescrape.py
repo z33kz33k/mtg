@@ -11,20 +11,20 @@ import itertools
 import logging
 import shutil
 from collections import defaultdict
-from datetime import date, datetime
+from collections.abc import Callable
+from datetime import date
 from pathlib import Path
-from typing import Callable
 
 from tqdm import tqdm
 
 from mtg import OUTPUT_DIR, PathLike
-from mtg.gstate import CHANNELS_DIR, DecklistsStateManager, UrlsStateManager
-from mtg.utils import logging_disabled, timed
-from mtg.utils.files import getdir, getfile
-from mtg.utils.json import from_json, to_json
-from mtg.utils.scrape import http_requests_counted
+from mtg.gstate import CHANNELS_DIR, DecklistsStateManager
+from mtg.lib import naive_utc_now as utcnow, timed
+from mtg.lib.files import getdir, getfile
+from mtg.lib.json import from_json, to_json
+from mtg.lib.scrape import http_requests_counted
 from mtg.yt import scrape_channel_videos
-from mtg.yt.data import ScrapingSession, load_channel, load_channels, retrieve_ids, \
+from mtg.yt.data import ScrapingSession, load_channels, retrieve_ids, \
     retrieve_video_data
 from mtg.yt.data.structures import DataPath, Video
 
@@ -108,7 +108,7 @@ def find_channel_files(channel_id: str, *video_ids: str) -> list[str]:
 def backup_channel_files(chid: str, *files: PathLike) -> None:
     """Backup channel data files.
     """
-    now = datetime.now()
+    now = utcnow()
     timestamp = f"{now.year}{now.month:02}{now.day:02}"
     backup_root = getdir(OUTPUT_DIR / "_archive" / "channels")
     backup_path, counter = backup_root / timestamp / chid, itertools.count(1)

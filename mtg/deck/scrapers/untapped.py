@@ -14,10 +14,10 @@ from typing import override
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 
 from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
-from mtg.utils import extract_float, extract_int
-from mtg.utils.scrape import ScrapingError, find_next_sibling_tag
-from mtg.utils.scrape import strip_url_query
-from mtg.utils.scrape.dynamic import fetch_dynamic_soup
+from mtg.lib import extract_float, extract_int
+from mtg.lib.scrape import ScrapingError, find_next_sibling_tag
+from mtg.lib.scrape import strip_url_query
+from mtg.lib.scrape.dynamic import fetch_dynamic_soup
 
 _log = logging.getLogger(__name__)
 CONSENT_XPATH = '//button[contains(@class, "fc-button fc-cta-consent") and @aria-label="Consent"]'

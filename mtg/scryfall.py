@@ -22,13 +22,14 @@ import math
 import re
 from asyncio.exceptions import TimeoutError as AsyncIoTimeoutError
 from collections import defaultdict, namedtuple
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass
 from datetime import date
 from enum import Enum
 from functools import cached_property, lru_cache
 from pprint import pprint
 from types import EllipsisType
-from typing import Callable, Iterable, Self
+from typing import Self
 
 import scrython
 from aiohttp.client_exceptions import ContentTypeError, ServerTimeoutError
@@ -37,9 +38,9 @@ from unidecode import unidecode
 
 from mtg import DATA_DIR, Json
 from mtg.mtgwiki import CLASSES, RACES
-from mtg.utils import from_iterable, getfloat, getint, getrepr, timed
-from mtg.utils.files import download_file, getdir
-from mtg.utils.scrape import throttle
+from mtg.lib import from_iterable, getfloat, getint, getrepr, timed
+from mtg.lib.files import download_file, getdir
+from mtg.lib.scrape import throttle
 
 _log = logging.getLogger(__name__)
 CARDS_FILENAME = "scryfall_cards.json"

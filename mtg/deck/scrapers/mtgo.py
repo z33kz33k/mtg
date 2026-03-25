@@ -17,8 +17,8 @@ from bs4 import BeautifulSoup
 from mtg import Json, SECRETS
 from mtg.deck.scrapers import DeckScraper, DecksJsonContainerScraper, JsonBasedDeckParser
 from mtg.scryfall import all_formats
-from mtg.utils import from_iterable, get_ordinal_suffix
-from mtg.utils.scrape import ScrapingError, dissect_js, strip_url_query
+from mtg.lib import from_iterable, get_ordinal_suffix
+from mtg.lib.scrape import ScrapingError, dissect_js, strip_url_query
 
 _log = logging.getLogger(__name__)
 HEADERS = {
