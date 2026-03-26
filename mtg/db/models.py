@@ -48,7 +48,8 @@ class Channel(Base):
     is_withdrawn: Mapped[bool] = mapped_column(nullable=False, default=False)
 
     snapshots: Mapped[list["Snapshot"]] = relationship(back_populates="channel")
-    failed_urls: Mapped[list["FailedUrl"]] = relationship(back_populates="channel")
+    failed_urls: Mapped[list["FailedUrl"]] = relationship(
+        back_populates="channel", cascade="all, delete-orphan")
 
 
 class Snapshot(Base):
@@ -70,9 +71,7 @@ class Snapshot(Base):
 
     channel: Mapped["Channel"] = relationship(back_populates='snapshots')
     videos: Mapped[list["Video"]] = relationship(back_populates='snapshot')
-    tags: Mapped[list["Tag"]] = relationship(
-        secondary=snapshot_tags, back_populates='snapshots',
-        cascade="all, delete-orphan")
+    tags: Mapped[list["Tag"]] = relationship(secondary=snapshot_tags, back_populates='snapshots')
 
 
 class Video(Base):
@@ -133,10 +132,8 @@ class Deck(Base):
     json_metadata: Mapped[dict] = mapped_column(JSON)  # needs to be different from `Base.metadata`
 
     video: Mapped["Video"] = relationship(back_populates="decks")
-    decklist: Mapped["Decklist"] = relationship(
-        back_populates="decks", cascade="all, delete-orphan")
-    decklist_with_printings: Mapped["DecklistWithPrintings"] = relationship(
-        back_populates="decks", cascade="all, delete-orphan")
+    decklist: Mapped["Decklist"] = relationship(back_populates="decks")
+    decklist_with_printings: Mapped["DecklistWithPrintings"] = relationship(back_populates="decks")
 
 
 class Decklist(Base):
@@ -180,3 +177,6 @@ class FailedUrl(Base):
     text: Mapped[str] = mapped_column(Text, nullable=False)
 
     channel: Mapped["Channel"] = relationship(back_populates="failed_urls")
+
+
+# TODO: an event listener to delete orphaned decklists: https://x.com/i/grok/share/e5d2d23d74d848ca863f840c7890f380

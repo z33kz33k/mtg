@@ -37,11 +37,11 @@ LOG_DIR = HOME_DIR / "logs"
 if not LOG_DIR.exists():
     LOG_DIR.mkdir(parents=True)
 LOG_SIZE = 1024*1024*20  # 20MB
+DATA_DIR = HOME_DIR / "mtg_data"
 SECRETS = json.loads((HOME_DIR / "secrets.json").read_text(encoding="utf-8"))
 
-ROOT_DIR = Path(__file__).parent
+ROOT_DIR = Path(__file__).parent.parent
 VAR_DIR = ROOT_DIR / "var"
-DATA_DIR = VAR_DIR / "mtg_data"
 OUTPUT_DIR = VAR_DIR / "output"
 DECKS_DIR = OUTPUT_DIR / "decks"
 WITHDRAWN_DIR = OUTPUT_DIR / "withdrawn"
