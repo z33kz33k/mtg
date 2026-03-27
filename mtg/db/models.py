@@ -12,8 +12,6 @@ from datetime import datetime
 from sqlalchemy import Column, ForeignKey, Integer, JSON, String, Table, Text
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
-from mtg.lib import naive_utc_now as utcnow
-
 
 class Base(DeclarativeBase):
     pass
@@ -43,9 +41,9 @@ class Channel(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
 
-    yt_id: Mapped[str] = mapped_column(String(24), unique=True, nullable=False, index=True)
+    yt_id: Mapped[str] = mapped_column(String(24), unique=True, index=True)
     # withdrawn from further scraping activities
-    is_withdrawn: Mapped[bool] = mapped_column(nullable=False, default=False)
+    is_withdrawn: Mapped[bool] = mapped_column(default=False)
 
     snapshots: Mapped[list["Snapshot"]] = relationship(back_populates="channel")
     failed_urls: Mapped[list["FailedUrl"]] = relationship(
@@ -67,7 +65,7 @@ class Snapshot(Base):
     title: Mapped[str | None]
     description: Mapped[str | None]
     subscribers: Mapped[int | None]
-    scrape_time: Mapped[datetime] = mapped_column(default=utcnow, unique=True, nullable=False)
+    scrape_time: Mapped[datetime] = mapped_column(unique=True)
 
     channel: Mapped["Channel"] = relationship(back_populates='snapshots')
     videos: Mapped[list["Video"]] = relationship(back_populates='snapshot')
@@ -88,10 +86,10 @@ class Video(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     snapshot_id: Mapped[int] = mapped_column(ForeignKey("snapshots.id"))
 
-    yt_id: Mapped[str] = mapped_column(String(11), nullable=False, index=True)
+    yt_id: Mapped[str] = mapped_column(String(11), index=True)
     title: Mapped[str | None]
-    description: Mapped[str] = mapped_column(Text, nullable=False)
-    publish_time: Mapped[datetime] = mapped_column(nullable=False)
+    description: Mapped[str] = mapped_column(Text)
+    publish_time: Mapped[datetime] = mapped_column()
     views: Mapped[int | None]
 
     snapshot: Mapped["Snapshot"] = relationship(back_populates='videos')
@@ -125,45 +123,29 @@ class Deck(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     video_id: Mapped[int] = mapped_column(ForeignKey("videos.id"))
-    decklist_id: Mapped[int] = mapped_column(ForeignKey("decklists.id"))
-    decklist_with_printings_id: Mapped[int] = mapped_column(
-        ForeignKey("decklists_with_printings.id"))
+    decklist_id: Mapped[int | None] = mapped_column(ForeignKey("decklists.id"))
 
     json_metadata: Mapped[dict] = mapped_column(JSON)  # needs to be different from `Base.metadata`
 
     video: Mapped["Video"] = relationship(back_populates="decks")
     decklist: Mapped["Decklist"] = relationship(back_populates="decks")
-    decklist_with_printings: Mapped["DecklistWithPrintings"] = relationship(back_populates="decks")
 
 
 class Decklist(Base):
-    """Represents a decklist without printings specified, e.g. with lines like
-    "4 Authority of the Consuls".
+    """Represents a text decklist in simplified format (with no printings specified), e.g. with
+    lines like "4 Authority of the Consuls".
 
-    This is also called "plain text" or simplified format.
+    This is also called "plain text" or simplified format and is different from a detailed one
+    with lines like "4 Authority of the Consuls (FDN) 137".
     """
     __tablename__ = "decklists"
 
     id: Mapped[int] = mapped_column(primary_key=True)
 
+    hash: Mapped[str] = mapped_column(String(44), index=True, unique=True)
     text: Mapped[str] = mapped_column(Text)
 
     decks: Mapped[list["Deck"]] = relationship(back_populates="decklist")
-
-
-class DecklistWithPrintings(Base):
-    """Represents a decklist with printings specified, e.g. with lines like
-    "4 Authority of the Consuls (FDN) 137".
-
-    This is also called Arena or detailed format.
-    """
-    __tablename__ = "decklists_with_printings"
-
-    id: Mapped[int] = mapped_column(primary_key=True)
-
-    text: Mapped[str] = mapped_column(Text)
-
-    decks: Mapped[list["Deck"]] = relationship(back_populates="decklist_with_printings")
 
 
 class FailedUrl(Base):

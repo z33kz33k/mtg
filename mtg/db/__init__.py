@@ -10,7 +10,7 @@
 from sqlalchemy import exists, select
 from sqlalchemy.orm import Session
 
-from db.models import Base
+from mtg.db.models import Base
 
 
 # https://x.com/i/grok/share/1c53708fb9b148ba885ce61556618b5e

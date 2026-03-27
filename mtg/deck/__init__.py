@@ -797,7 +797,7 @@ class Deck:
 
     @property
     def decklist_hash(self) -> str:
-        return get_hash(self.decklist)
+        return get_hash(self.decklist, truncation=40, sep="-")
 
     @cached_property
     def decklist_with_printings(self) -> str:
@@ -805,7 +805,7 @@ class Deck:
 
     @property
     def decklist_with_printings_hash(self) -> str:
-        return get_hash(self.decklist_with_printings)
+        return get_hash(self.decklist_with_printings, truncation=40, sep="-")
 
     @cached_property
     def json(self) -> str:

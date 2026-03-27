@@ -411,22 +411,37 @@ class Counter(PyCounter):
         return "\n".join(markdown)
 
 
-def digest(text: str) -> str:
+def get_hash(text: str, truncation=0, sep="", legacy=False) -> str:
     """Return SHA-256 hash of ``text``.
-    """
-    return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
-
-def get_hash(text: str) -> str:
-    """Turn ``text`` into a unique hash identifier resembling Scryfall ones.
+    Args:
+        text: text to hash
+        truncation: number of characters to truncate to (default: no truncation)
+        sep: character separator (after each 8th character - for increased readability (default: no separator))
+        legacy: do it the old way for legacy reasons
     """
-    sha = digest(text)[:32]
-    id_ = []
-    for i, ch in enumerate(sha):
-        if i == 8 or i == 12 or i == 16 or i == 20:
-            id_.append("-")
-        id_.append(ch)
-    return "".join(id_)
+    truncation = 0 if truncation < 0 else truncation
+    sha = hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+    if legacy:  # FIXME: to be removed when #50 is finished
+        h = sha[:32]
+        res = []
+        for i, ch in enumerate(h):
+            if i == 8 or i == 12 or i == 16 or i == 20:
+                res.append("-")
+            res.append(ch)
+        return "".join(res)
+
+    if truncation:
+        sha = sha[:truncation]
+    if sep:
+        res = []
+        for i, ch in enumerate(sha):
+            if i > 0 and i % 8 == 0:
+                res.append(sep)
+            res.append(ch)
+        sha = "".join(res)
+    return sha
 
 
 class Comparable(Protocol):

@@ -9,8 +9,8 @@
     Mind that for local lookups it only downloads "Oracle Cards" bulk data (see:
     https://scryfall.com/docs/api/bulk-data for details) and falls back on calling Scryfall API
     only on lookup failures. As Oracle Cards data contains only the most recent version of
-    cards with potentially multiple printings, this means that some printings-specific data may
-    be 'lost in translation' (e.g. during deck conversions).
+    cards with potentially multiple printings, this means printing-specific data (if scraped) is
+    'lost in translation'.
 
     @author: mazz3rr
 

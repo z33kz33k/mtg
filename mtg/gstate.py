@@ -197,6 +197,7 @@ class UrlsStateManager(_Singleton):
         return url.removesuffix("/").lower() in self._failed.get(self.current_channel, set())
 
 
+# FIXME: tracking printings-specific decklists while using Oracle Bulk Data is of no use
 class DecklistsStateManager(_Singleton):
     """State manager for decklists stored separately from deck data.
 
