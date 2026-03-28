@@ -10,8 +10,8 @@
 from bs4 import BeautifulSoup
 from bs4.element import Tag
 
-from mtg import DATA_DIR
-from mtg.lib import from_iterable
+from mtg.constants import DATA_DIR
+from mtg.lib.common import from_iterable
 from mtg.lib.files import download_file
 
 FILENAME = "creature_type.html"

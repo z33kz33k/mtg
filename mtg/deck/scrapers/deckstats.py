@@ -16,11 +16,12 @@ import backoff
 from bs4 import BeautifulSoup
 from requests import Response
 
-from mtg import Json
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, UrlHook, throttled_deck_scraper
+from mtg.constants import Json
+from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper, throttled_deck_scraper
+from mtg.lib.scrape.core import ScrapingError, dissect_js, fetch, fetch_json, strip_url_query, \
+    throttle
 from mtg.scryfall import Card
-from mtg.lib.scrape import ScrapingError, dissect_js, fetch_json, strip_url_query, \
-    throttle, fetch
+from mtg.yt.discover import UrlHook
 
 _log = logging.getLogger(__name__)
 URL_HOOKS = (

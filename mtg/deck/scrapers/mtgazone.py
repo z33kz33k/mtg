@@ -14,12 +14,12 @@ from typing import override
 
 from bs4 import Tag
 
-from mtg import Json
-from mtg.deck import Deck, Mode
-from mtg.deck.scrapers import DeckScraper, HybridContainerScraper, TagBasedDeckParser
+from mtg.constants import Json
+from mtg.deck.parse import TagBasedDeckParser
+from mtg.deck.scrapers.abc import DeckScraper, HybridContainerScraper
+from mtg.lib.common import ParsingError, extract_int, from_iterable, timed
+from mtg.lib.scrape.core import ScrapingError, fetch_soup, is_more_than_root_path, strip_url_query
 from mtg.scryfall import ARENA_FORMATS, Card
-from mtg.lib import ParsingError, extract_int, from_iterable, timed
-from mtg.lib.scrape import ScrapingError, fetch_soup, is_more_than_root_path, strip_url_query
 
 _log = logging.getLogger(__name__)
 

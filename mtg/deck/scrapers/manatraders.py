@@ -11,9 +11,9 @@ import json
 import logging
 from typing import override
 
-from mtg import Json
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
-from mtg.lib.scrape import ScrapingError, prepend_url, strip_url_query
+from mtg.constants import Json
+from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper
+from mtg.lib.scrape.core import ScrapingError, prepend_url, strip_url_query
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://www.manatraders.com"

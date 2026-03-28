@@ -19,13 +19,14 @@ from httpcore import ReadTimeout
 from requests import HTTPError
 from selenium.common import TimeoutException
 
-from mtg import Json, SECRETS
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, DecksJsonContainerScraper, \
-    HybridContainerScraper, JsonBasedDeckParser
-from mtg.scryfall import Card
-from mtg.lib import extract_int
-from mtg.lib.scrape import ScrapingError, fetch_json, strip_url_query, throttle
+from mtg.constants import Json, SECRETS
+from mtg.deck.parse import JsonBasedDeckParser
+from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper, DecksJsonContainerScraper, \
+    HybridContainerScraper
+from mtg.lib.common import extract_int
+from mtg.lib.scrape.core import ScrapingError, fetch_json, strip_url_query, throttle
 from mtg.lib.scrape.dynamic import SCROLL_DOWN_TIMES, fetch_dynamic_soup
+from mtg.scryfall import Card
 
 _log = logging.getLogger(__name__)
 HEADERS = {

@@ -16,12 +16,14 @@ from typing import Type, override
 import dateutil.parser
 from bs4 import BeautifulSoup, Tag
 
-from mtg import Json
-from mtg.deck.scrapers import DeckScraper, HybridContainerScraper, TagBasedDeckParser, UrlHook
+from mtg.constants import Json
+from mtg.deck.parse import TagBasedDeckParser
+from mtg.deck.scrapers.abc import DeckScraper, HybridContainerScraper
+from mtg.lib.common import ParsingError
+from mtg.lib.scrape.core import ScrapingError, fetch_soup, find_links, prepend_url, \
+    strip_url_query
 from mtg.scryfall import Card
-from mtg.lib import ParsingError
-from mtg.lib.scrape import ScrapingError, find_links, prepend_url, strip_url_query
-from mtg.lib.scrape import fetch_soup
+from mtg.yt.discover import UrlHook
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://edhrec.com"

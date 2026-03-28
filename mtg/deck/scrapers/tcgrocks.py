@@ -17,11 +17,11 @@ from typing import override
 
 import dateutil.parser
 
-from mtg import Json
+from mtg.constants import Json
 from mtg.deck.arena import normalize_decklist
-from mtg.deck.scrapers import DeckScraper
+from mtg.deck.scrapers.abc import DeckScraper
 from mtg.lib.json import Node
-from mtg.lib.scrape import ScrapingError, strip_url_query
+from mtg.lib.scrape.core import ScrapingError, strip_url_query
 
 _log = logging.getLogger(__name__)
 

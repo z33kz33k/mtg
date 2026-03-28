@@ -1,16 +1,18 @@
 """
 
-    mtg.db
-    ~~~~~~
-    Database package.
+    mtg.data.db
+    ~~~~~~~~~~~
+    Handle database operations.
 
     @author: mazz3rr
 
 """
 from sqlalchemy import exists, select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import DeclarativeBase, Session
 
-from mtg.db.models import Base
+
+class Base(DeclarativeBase):
+    pass
 
 
 # https://x.com/i/grok/share/1c53708fb9b148ba885ce61556618b5e
@@ -27,4 +29,3 @@ def exists_in_table(session: Session, model: type[Base], **filters) -> bool:
         )
     )
     return session.scalar(stmt) is True
-

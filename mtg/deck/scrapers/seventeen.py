@@ -12,10 +12,10 @@ from typing import override
 
 from requests import ReadTimeout
 
-from mtg import Json
-from mtg.deck.scrapers import DeckScraper
+from mtg.constants import Json
+from mtg.deck.scrapers.abc import DeckScraper
+from mtg.lib.scrape.core import ScrapingError, fetch_json, strip_url_query
 from mtg.scryfall import Card
-from mtg.lib.scrape import ScrapingError, fetch_json, strip_url_query
 
 _log = logging.getLogger(__name__)
 

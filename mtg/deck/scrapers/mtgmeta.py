@@ -13,12 +13,14 @@ from typing import override
 import dateutil.parser
 from bs4 import Tag
 
-from mtg import Json
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
-    TagBasedDeckParser
+from mtg.constants import Json
+from mtg.deck.parse import TagBasedDeckParser
+from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper
+from mtg.lib.common import extract_float
+from mtg.lib.scrape.core import ScrapingError, dissect_js, find_links, \
+    strip_url_query
+from mtg.lib.scrape.wayback import fetch_wayback_soup
 from mtg.scryfall import Card
-from mtg.lib import extract_float
-from mtg.lib.scrape import ScrapingError, dissect_js, find_links, fetch_wayback_soup, strip_url_query
 
 _log = logging.getLogger(__name__)
 

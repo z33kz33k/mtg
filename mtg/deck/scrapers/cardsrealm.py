@@ -19,12 +19,13 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-from mtg import Json
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, \
-    HybridContainerScraper, UrlHook, folder_container_scraper
-from mtg.lib import timed
-from mtg.lib.scrape import ScrapingError, dissect_js, get_path_segments, strip_url_query
+from mtg.constants import Json
+from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
+    folder_container_scraper
+from mtg.lib.common import timed
+from mtg.lib.scrape.core import ScrapingError, dissect_js, get_path_segments, strip_url_query
 from mtg.lib.scrape.dynamic import SELENIUM_TIMEOUT, accept_consent
+from mtg.yt.discover import UrlHook
 
 _log = logging.getLogger(__name__)
 NEGATIVE_DOMAINS = (

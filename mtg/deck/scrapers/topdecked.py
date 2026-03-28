@@ -20,13 +20,13 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-from mtg.deck import CardNotFound, Deck, InvalidDeck
 from mtg.deck.arena import IllFormedArenaDecklist, PlaysetLine
-from mtg.deck.scrapers import DeckScraper
-from mtg.scryfall import COMMANDER_FORMATS
-from mtg.lib import ParsingError, extract_float, get_date_from_ago_text
-from mtg.lib.scrape import ScrapingError, strip_url_query
+from mtg.deck.parse import CardNotFound, InvalidDeck
+from mtg.deck.scrapers.abc import DeckScraper
+from mtg.lib.common import ParsingError, extract_float, get_date_from_ago_text
+from mtg.lib.scrape.core import ScrapingError, strip_url_query
 from mtg.lib.scrape.dynamic import SELENIUM_TIMEOUT, click_for_clipboard
+from mtg.scryfall import COMMANDER_FORMATS
 
 _log = logging.getLogger(__name__)
 

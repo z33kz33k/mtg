@@ -12,10 +12,10 @@ from typing import override
 
 import dateutil.parser
 
-from mtg import Json
-from mtg.deck.scrapers import DeckScraper
+from mtg.constants import Json
+from mtg.deck.scrapers.abc import DeckScraper
+from mtg.lib.scrape.core import ScrapingError, dissect_js
 from mtg.scryfall import Card
-from mtg.lib.scrape import ScrapingError, dissect_js
 
 _log = logging.getLogger(__name__)
 ALT_DOMAIN = "mtga.cc"

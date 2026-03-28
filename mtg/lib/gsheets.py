@@ -1,7 +1,7 @@
 """
 
-    mtg.utils.sheets
-    ~~~~~~~~~~~~~~~~
+    mtg.lib.gsheets
+    ~~~~~~~~~~~~~~~
     Google Sheets as backend/frontend.
 
     @author: mazz3rr
@@ -12,7 +12,7 @@ import logging
 import gspread
 import gspread.utils
 
-from mtg.lib import timed
+from mtg.lib.common import timed
 from mtg.lib.check_type import type_checker
 
 _log = logging.getLogger(__name__)

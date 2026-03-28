@@ -1,7 +1,7 @@
 """
 
-    mtg.yt.data.structures
-    ~~~~~~~~~~~~~~~~~~~~~~
+    mtg.data.structures
+    ~~~~~~~~~~~~~~~~~~~
     Data structures.
 
     @author: mazz3rr
@@ -13,13 +13,13 @@ from functools import cached_property, lru_cache
 from operator import attrgetter
 from typing import Self
 
-from mtg import Json
-from mtg.deck import Deck
+from mtg.constants import Json
 from mtg.deck.arena import ArenaParser
+from mtg.deck.parse import Deck
 from mtg.gstate import DecklistsStateManager
-from mtg.lib import Counter, breadcrumbs
+from mtg.lib.common import Counter, breadcrumbs
 from mtg.lib.json import to_json
-from mtg.lib.scrape import extract_url, get_netloc_domain
+from mtg.lib.scrape.core import extract_url, get_netloc_domain
 
 VIDEO_URL_TEMPLATE = "https://www.youtube.com/watch?v={}"
 CHANNEL_URL_TEMPLATE = "https://www.youtube.com/channel/{}"

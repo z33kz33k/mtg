@@ -13,11 +13,13 @@ from typing import override
 import dateutil.parser
 from bs4 import BeautifulSoup, Tag
 
-from mtg import Json, SECRETS
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, DecksJsonContainerScraper, \
-    HybridContainerScraper, JsonBasedDeckParser, UrlHook
-from mtg.lib.scrape import InaccessiblePage, ScrapingError, is_more_than_root_path, \
-    fetch_json, strip_url_query
+from mtg.constants import Json, SECRETS
+from mtg.deck.parse import JsonBasedDeckParser
+from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper, DecksJsonContainerScraper, \
+    HybridContainerScraper
+from mtg.yt.discover import UrlHook
+from mtg.lib.scrape.core import InaccessiblePage, ScrapingError, fetch_json, \
+    is_more_than_root_path, strip_url_query
 
 _log = logging.getLogger(__name__)
 HEADERS = {

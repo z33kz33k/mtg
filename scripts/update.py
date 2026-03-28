@@ -1,7 +1,7 @@
 """
 
-    scripts.update.py
-    ~~~~~~~~~~~~~~~~~
+    scripts.update
+    ~~~~~~~~~~~~~~
     Script to download updated data files and update the README.
 
     @author: mazz3rr

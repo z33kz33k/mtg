@@ -12,11 +12,11 @@ from typing import override
 
 import regex as re
 
-from mtg import Json
-from mtg.deck import ARENA_MULTIFACE_SEPARATOR, CardNotFound, DeckParser
+from mtg.constants import Json
+from mtg.deck.parse import ARENA_MULTIFACE_SEPARATOR, CardNotFound, DeckParser
+from mtg.lib.common import ParsingError, extract_int, getrepr, is_foreign, sanitize_whitespace
 from mtg.scryfall import COMMANDER_FORMATS, Card, \
     MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, query_api_for_card
-from mtg.lib import ParsingError, extract_int, getrepr, is_foreign, sanitize_whitespace
 
 _log = logging.getLogger(__name__)
 
@@ -31,7 +31,6 @@ _REST_CHARS = r'[\w\s\'\"&/,.!:_\-（）\u3000-\u303F\p{Han}\p{Hiragana}\p{Katak
 class PlaysetLine:
     """A line of text in MtG Arena decklist format that denotes a card playset.
     """
-
     # Regular: '4 トリックスター、ザレス・サン'
     PATTERN = re.compile(
         rf"^\d{{1,3}}\s?x?\s{_FIRST_CHAR}{_REST_CHARS}", re.UNICODE

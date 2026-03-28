@@ -1,7 +1,7 @@
 """
 
-    mtg.utils.files
-    ~~~~~~~~~~~~~~~
+    mtg.lib.files
+    ~~~~~~~~~~~~~
     Files-related utilities.
 
     @author: mazz3rr
@@ -17,7 +17,7 @@ from time import sleep
 import requests
 from tqdm import tqdm
 
-from mtg import PathLike
+from mtg.constants import PathLike
 from mtg.lib.check_type import type_checker
 
 _log = getLogger(__name__)

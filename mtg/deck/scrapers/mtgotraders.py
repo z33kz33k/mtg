@@ -11,10 +11,10 @@ import logging
 from datetime import datetime
 from typing import override
 
-from mtg import Json
-from mtg.deck.scrapers import DeckScraper
+from mtg.constants import Json
+from mtg.deck.scrapers.abc import DeckScraper
+from mtg.lib.scrape.core import fetch_json
 from mtg.scryfall import Card
-from mtg.lib.scrape import fetch_json
 
 _log = logging.getLogger(__name__)
 

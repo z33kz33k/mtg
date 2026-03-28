@@ -1,8 +1,8 @@
 """
 
-    mtg.deck
+    mtg.data
     ~~~~~~~~
-    Decks and deck's handling.
+    Data package.
 
     @author: mazz3rr
 

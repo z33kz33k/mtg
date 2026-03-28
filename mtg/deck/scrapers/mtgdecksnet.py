@@ -13,14 +13,12 @@ from typing import override
 import dateutil.parser
 from bs4 import Tag
 
-from mtg import Json
-from mtg.deck import Deck
-from mtg.deck.arena import ArenaParser, normalize_decklist
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
-    TagBasedDeckParser
-from mtg.lib import ParsingError
-from mtg.lib.scrape import ScrapingError, find_previous_sibling_tag
-from mtg.lib.scrape import strip_url_query
+from mtg.constants import Json
+from mtg.deck.arena import normalize_decklist
+from mtg.deck.parse import TagBasedDeckParser
+from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper
+from mtg.lib.common import ParsingError
+from mtg.lib.scrape.core import ScrapingError, find_previous_sibling_tag, strip_url_query
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://mtgdecks.net"

@@ -12,10 +12,10 @@ import logging
 from datetime import datetime
 from typing import override
 
-from mtg import Json
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, UrlHook, \
-    folder_container_scraper
-from mtg.lib.scrape import find_links, strip_url_query
+from mtg.constants import Json
+from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper, folder_container_scraper
+from mtg.lib.scrape.core import find_links, strip_url_query
+from mtg.yt.discover import UrlHook
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://archidekt.com"

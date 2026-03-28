@@ -1,8 +1,8 @@
 """
 
-    mtg.utils.scrape.dynamic
-    ~~~~~~~~~~~~~~~~~~~~~~~~
-    Utilities for scraping of dynamic sites.
+    mtg.lib.scrape.dynamic
+    ~~~~~~~~~~~~~~~~~~~~~~
+    Utilities for scraping dynamic sites.
 
     @author: mazz3rr
 
@@ -24,8 +24,8 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
-from mtg import Json
-from mtg.lib import timed
+from mtg.constants import Json
+from mtg.lib.common import timed
 
 _log = logging.getLogger(__name__)
 SELENIUM_TIMEOUT = 20.0  # seconds

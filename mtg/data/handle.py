@@ -1,8 +1,8 @@
 """
 
-    mtg.yt.data
-    ~~~~~~~~~~~
-    Handle YouTube data.
+    mtg.data.handle
+    ~~~~~~~~~~~~~~~
+    Handle scraped data.
 
     @author: mazz3rr
 
@@ -13,22 +13,22 @@ import logging
 import shutil
 import sys
 from collections import defaultdict
-from collections.abc import Callable, Iterator
 from datetime import datetime
 from operator import attrgetter, itemgetter
 from types import TracebackType
-from typing import Self, Type
+from typing import Callable, Iterator, Self, Type
 
 from tqdm import tqdm
 
-from mtg import WITHDRAWN_DIR, FILENAME_TIMESTAMP_FORMAT, READABLE_TIMESTAMP_FORMAT, README
+from mtg.constants import FILENAME_TIMESTAMP_FORMAT, READABLE_TIMESTAMP_FORMAT, README, \
+    WITHDRAWN_DIR
+from mtg.data.structures import CHANNEL_URL_TEMPLATE, Channel, Video
 from mtg.gstate import CHANNELS_DIR, CoolOffManager, DecklistsStateManager, UrlsStateManager
-from mtg.lib import Counter, get_ordinal_suffix, logging_disabled, naive_utc_now as utcnow
+from mtg.lib.common import Counter, get_ordinal_suffix, logging_disabled, naive_utc_now as utcnow
 from mtg.lib.files import getdir
 from mtg.lib.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
 from mtg.lib.json import from_json
-from mtg.lib.scrape import fetch_soup
-from mtg.yt.data.structures import CHANNEL_URL_TEMPLATE, Channel, Video
+from mtg.lib.scrape.core import fetch_soup
 
 _log = logging.getLogger(__name__)
 _channels_cache: dict[str, Channel] = {}

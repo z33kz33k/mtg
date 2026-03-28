@@ -1,7 +1,7 @@
 """
 
-    mtg.yt.data.load.py
-    ~~~~~~~~~~~~~~~~~~~
+    mtg.data.load
+    ~~~~~~~~~~~~~
     Load scraped data from JSON to the database.
 
     @author: mazz3rr
@@ -9,29 +9,21 @@
 """
 import itertools
 import json
+import logging
 from pathlib import Path
 
-from sqlalchemy import create_engine, select
+from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from tqdm import tqdm
 
-from mtg import HOME_DIR, WITHDRAWN_DIR
-from mtg.lib import get_hash
-from mtg.db import exists_in_table
+from mtg.constants import APP_DIR, WITHDRAWN_DIR
+from mtg.data.db import exists_in_table
+from mtg.data.models import (Base, Channel, Decklist, FailedUrl, Tag)
 from mtg.gstate import CHANNELS_DIR, DECKLISTS_FILE, FAILED_URLS_FILE
-from mtg.db.models import (
-    Base,
-    Channel,
-    Snapshot,
-    Video,
-    Tag,
-    Deck,
-    Decklist,
-    FailedUrl
-)
+from mtg.lib.common import get_hash
 
-
-DB_PATH = HOME_DIR / "scraped_data.db"
+_log = logging.getLogger(__name__)
+DB_PATH = APP_DIR / "scraped_data.db"
 
 
 class Loader:
@@ -56,6 +48,7 @@ class Loader:
         return data
 
     def _populate_channels(self) -> None:
+        _log.info("Populating channels...")
         with Session(self._engine) as session:
             for chid in self._channels_jsons:
                 session.add(Channel(yt_id=chid))
@@ -65,6 +58,7 @@ class Loader:
             session.commit()
 
     def _populate_failed_urls(self) -> None:
+        _log.info("Populating failed URLs...")
         with Session(self._engine) as session:
             for chid, urls in self._failed_urls_json.items():
                 if exists_in_table(session, Channel, yt_id=chid):
@@ -73,6 +67,7 @@ class Loader:
             session.commit()
 
     def _populate_decklists(self) -> None:
+        _log.info("Populating decklists...")
         with Session(self._engine) as session:
             for decklist in self._decklists_json.values():
                 sha = get_hash(decklist, truncation=40, sep="-")
@@ -80,6 +75,7 @@ class Loader:
         session.commit()
 
     def _populate_tags(self) -> None:
+        _log.info("Populating tags...")
         tags = set()
         for snapshot in itertools.chain(*self._channels_jsons.values()):
             for tag in snapshot.get("tags", []):
@@ -91,6 +87,20 @@ class Loader:
             for tag in tags:
                 session.add(Tag(text=tag))
         session.commit()
+
+    # def _populate_snapshots(self) -> None:
+    #     _log.info("Populating snapshots...")
+    #     with Session(self._engine) as session:
+    #         for chid, snapshots in self._channels_jsons.items():
+    #             for snapshot in snapshots:
+    #                 session.add(Snapshot(
+    #                     channel_id=chid,
+    #                     title=snapshot.get("title"),
+    #                     description=snapshot.get("description"),
+    #                     subscribers=snapshot.get("subscribers"),
+    #                     scrape_time=(snapshot["scrape_time"]),
+    #                 ))
+
 
     def load(self) -> None:
         self._populate_channels()

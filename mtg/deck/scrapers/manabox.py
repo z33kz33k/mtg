@@ -13,7 +13,7 @@ from typing import override
 import dateutil.parser
 from bs4 import Tag
 
-from mtg.deck.scrapers import DeckScraper
+from mtg.deck.scrapers.abc import DeckScraper
 from mtg.scryfall import Card
 
 _log = logging.getLogger(__name__)

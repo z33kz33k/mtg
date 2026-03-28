@@ -1,7 +1,7 @@
 """
 
-    mtg.utils.check_type
-    ~~~~~~~~~~~~~~~~~~~~
+    mtg.lib.check_type
+    ~~~~~~~~~~~~~~~~~~
     Type checking decorators.
     Validate types of input arguments of decorated functions (or methods).
     This module provides only basic type validation based on `isinstance()` check.
@@ -104,6 +104,7 @@ def assert_output_not_none(func: Function | Method) -> Function | Method:
     return wrap
 
 
+# TODO: investigate (again?) if `is_method` is really necessary
 def type_checker(
         *positional_types: Type, is_method=False, none_allowed=False,
         **keyword_types: Type) -> Function | Method:

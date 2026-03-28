@@ -12,9 +12,10 @@ from typing import override
 
 from bs4 import Tag
 
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, UrlHook
+from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper
+from mtg.lib.scrape.core import ScrapingError, strip_url_query
 from mtg.scryfall import COMMANDER_FORMATS, Card
-from mtg.lib.scrape import ScrapingError, strip_url_query
+from mtg.yt.discover import UrlHook
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://deckbox.org"

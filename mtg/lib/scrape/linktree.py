@@ -1,7 +1,7 @@
 """
 
-    mtg.utils.linktree
-    ~~~~~~~~~~~~~~~~~~
+    mtg.lib.scrape.linktree
+    ~~~~~~~~~~~~~~~~~~~~~~~
     linktr.ee scraper based on: https://github.com/Touexe/LinkTreeScraper and heavily adapted to
     suit my needs.
 
@@ -36,8 +36,8 @@ from datetime import UTC, datetime
 import backoff
 from requests import ReadTimeout, HTTPError, ConnectionError
 
-from mtg import Json
-from mtg.lib.scrape import ScrapingError, fetch_soup, strip_url_query, fetch
+from mtg.constants import Json
+from mtg.lib.scrape.core import ScrapingError, fetch, fetch_soup, strip_url_query
 
 _log = logging.getLogger(__name__)
 

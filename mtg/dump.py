@@ -1,7 +1,7 @@
 """
 
-    mtg.yt.data.dump
-    ~~~~~~~~~~~~~~~~
+    mtg.dump
+    ~~~~~~~~
     Dump channels' deck data.
 
     @author: mazz3rr
@@ -13,13 +13,12 @@ from typing import Literal
 
 from tqdm import tqdm
 
-from mtg import DECKS_DIR, PathLike
+from mtg.constants import DECKS_DIR, PathLike
+from mtg.data.handle import load_channels, retrieve_ids
+from mtg.data.structures import Channel
 from mtg.deck.export import Exporter, FORMATS as EXPORT_FORMATS
-from mtg.lib import get_timestamp, logging_disabled
+from mtg.lib.common import get_timestamp, logging_disabled
 from mtg.lib.files import getdir, sanitize_filename
-from mtg.yt import retrieve_ids
-from mtg.yt.data import load_channels
-from mtg.yt.data.structures import Channel
 
 
 def _dump_data_gen(

@@ -17,16 +17,15 @@ from pathlib import Path
 
 from tqdm import tqdm
 
-from mtg import OUTPUT_DIR, PathLike
+from mtg.constants import OUTPUT_DIR, PathLike
+from mtg.data.handle import ScrapingSession, load_channels, retrieve_ids, retrieve_video_data
+from mtg.data.structures import DataPath, Video
 from mtg.gstate import CHANNELS_DIR, DecklistsStateManager
-from mtg.lib import naive_utc_now as utcnow, timed
+from mtg.lib.common import naive_utc_now as utcnow, timed
 from mtg.lib.files import getdir, getfile
 from mtg.lib.json import from_json, to_json
-from mtg.lib.scrape import http_requests_counted
-from mtg.yt import scrape_channel_videos
-from mtg.yt.data import ScrapingSession, load_channels, retrieve_ids, \
-    retrieve_video_data
-from mtg.yt.data.structures import DataPath, Video
+from mtg.lib.scrape.core import http_requests_counted
+from mtg.yt.scrape import scrape_channel_videos
 
 _log = logging.getLogger(__name__)
 

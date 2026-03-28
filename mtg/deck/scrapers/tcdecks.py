@@ -13,11 +13,12 @@ from typing import override
 
 from bs4 import NavigableString, Tag
 
-from mtg import Json, SECRETS
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
+from mtg.constants import Json
+from mtg.constants import SECRETS
+from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper
 from mtg.scryfall import Card
-from mtg.lib import extract_int
-from mtg.lib.scrape import ScrapingError
+from mtg.lib.common import extract_int
+from mtg.lib.scrape.core import ScrapingError
 
 _log = logging.getLogger(__name__)
 
