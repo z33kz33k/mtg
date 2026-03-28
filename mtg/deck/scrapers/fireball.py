@@ -13,12 +13,12 @@
 import logging
 from typing import override
 
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, DecksJsonContainerScraper, \
-    HybridContainerScraper, UrlHook
+from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper, DecksJsonContainerScraper, \
+    HybridContainerScraper
 from mtg.deck.scrapers.tcgplayer import (
-    TcgPlayerInfiniteArticleScraper, TcgPlayerInfiniteDeckScraper,
-    TcgPlayerInfinitePlayerScraper, TcgPlayerInfiniteAuthorScraper)
-
+    TcgPlayerInfiniteArticleScraper, TcgPlayerInfiniteAuthorScraper, TcgPlayerInfiniteDeckScraper,
+    TcgPlayerInfinitePlayerScraper)
+from mtg.yt.discover import UrlHook
 
 # NOTE: As of Feb 25th, TCGPlayer seems to have recently withdrawn special ChannelFireball-specific
 # API domain: 'cfg-infinite-api.tcgplayer.com' that the scrapers below used to utilize. Now there's

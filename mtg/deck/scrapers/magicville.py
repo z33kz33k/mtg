@@ -10,9 +10,9 @@
 import logging
 from typing import override
 
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
-from mtg.lib import get_date_from_french_ago_text
-from mtg.lib.scrape import ScrapingError
+from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper
+from mtg.lib.common import get_date_from_french_ago_text
+from mtg.lib.scrape.core import ScrapingError
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://www.magic-ville.com/fr/decks/"

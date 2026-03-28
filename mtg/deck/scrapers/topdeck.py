@@ -10,16 +10,16 @@
 import logging
 from typing import Type, override
 
-from bs4 import BeautifulSoup, Tag
 import dateutil.parser
+from bs4 import BeautifulSoup, Tag
 
-from mtg import HybridContainerScraper, Json
-from mtg.deck import DeckParser
+from mtg.constants import Json
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import ContainerScraper, DeckScraper, DecksJsonContainerScraper, \
-    JsonBasedDeckParser
-from mtg.lib import ParsingError, decode_escapes, extract_int
-from mtg.lib.scrape import ScrapingError, fetch_json, strip_url_query
+from mtg.deck.parse import DeckParser, JsonBasedDeckParser
+from mtg.deck.scrapers.abc import ContainerScraper, DeckScraper, DecksJsonContainerScraper, \
+    HybridContainerScraper
+from mtg.lib.common import ParsingError, decode_escapes, extract_int
+from mtg.lib.scrape.core import ScrapingError, fetch_json, strip_url_query
 
 _log = logging.getLogger(__name__)
 

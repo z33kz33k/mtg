@@ -15,11 +15,12 @@ from typing import Type, override
 
 from bs4 import BeautifulSoup, Tag
 
-from mtg import Json
-from mtg.deck.scrapers import DeckScraper, HybridContainerScraper, JsonBasedDeckParser
-from mtg.lib import from_iterable
+from mtg.constants import Json
+from mtg.deck.parse import JsonBasedDeckParser
+from mtg.deck.scrapers.abc import DeckScraper, HybridContainerScraper
+from mtg.lib.common import from_iterable
 from mtg.lib.json import Node
-from mtg.lib.scrape import ScrapingError, dissect_js
+from mtg.lib.scrape.core import ScrapingError, dissect_js
 from mtg.scryfall import Card, all_formats
 
 _log = logging.getLogger(__name__)

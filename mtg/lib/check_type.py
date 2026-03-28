@@ -1,6 +1,6 @@
 """
 
-    mtg.utils.check_type
+    mtg.lib.check_type
     ~~~~~~~~~~~~~~~~~~~~
     Type checking decorators.
     Validate types of input arguments of decorated functions (or methods).

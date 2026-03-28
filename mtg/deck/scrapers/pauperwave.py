@@ -13,10 +13,11 @@ from typing import override
 
 from bs4 import Tag
 
-from mtg import Json
-from mtg.deck.scrapers import HybridContainerScraper, TagBasedDeckParser
-from mtg.lib.scrape import ScrapingError, is_more_than_root_path, parse_non_english_month_date, \
-    strip_url_query
+from mtg.constants import Json
+from mtg.deck.parse import TagBasedDeckParser
+from mtg.deck.scrapers.abc import HybridContainerScraper
+from mtg.lib.scrape.core import ScrapingError, is_more_than_root_path, \
+    parse_non_english_month_date, strip_url_query
 
 _log = logging.getLogger(__name__)
 

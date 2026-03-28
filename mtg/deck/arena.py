@@ -12,11 +12,12 @@ from typing import override
 
 import regex as re
 
-from mtg import Json
-from mtg.deck import ARENA_MULTIFACE_SEPARATOR, CardNotFound, DeckParser
+from mtg.constants import Json
+from mtg.deck import ARENA_MULTIFACE_SEPARATOR, CardNotFound
+from mtg.deck.parse import DeckParser
 from mtg.scryfall import COMMANDER_FORMATS, Card, \
     MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, query_api_for_card
-from mtg.lib import ParsingError, extract_int, getrepr, is_foreign, sanitize_whitespace
+from mtg.lib.common import ParsingError, extract_int, getrepr, is_foreign, sanitize_whitespace
 
 _log = logging.getLogger(__name__)
 

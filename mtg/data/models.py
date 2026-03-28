@@ -1,7 +1,7 @@
 """
 
-    mtg.yt.data.models.py
-    ~~~~~~~~~~~~~~~~~~~~~
+    mtg.data.models
+    ~~~~~~~~~~~~~~~
     SQLAlchemy models.
 
     @author: mazz3rr
@@ -10,12 +10,9 @@
 from datetime import datetime
 
 from sqlalchemy import Column, ForeignKey, Integer, JSON, String, Table, Text
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-
-class Base(DeclarativeBase):
-    pass
-
+from mtg.data.db import Base
 
 # association tables for many-to-many relationships
 snapshot_tags = Table(
@@ -156,7 +153,7 @@ class FailedUrl(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     channel_id: Mapped[int] = mapped_column(ForeignKey("channels.id"))
 
-    text: Mapped[str] = mapped_column(Text, nullable=False)
+    text: Mapped[str] = mapped_column(Text)
 
     channel: Mapped["Channel"] = relationship(back_populates="failed_urls")
 

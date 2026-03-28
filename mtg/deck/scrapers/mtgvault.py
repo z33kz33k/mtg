@@ -13,10 +13,9 @@ from typing import override
 import dateutil.parser
 from bs4 import Tag
 
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
+from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper
 from mtg.scryfall import Card
-from mtg.lib.scrape import ScrapingError, find_links, strip_url_query
-from mtg.lib.scrape import fetch_soup
+from mtg.lib.scrape.core import ScrapingError, fetch_soup, find_links, strip_url_query
 
 _log = logging.getLogger(__name__)
 

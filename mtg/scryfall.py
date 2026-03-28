@@ -36,11 +36,11 @@ from aiohttp.client_exceptions import ContentTypeError, ServerTimeoutError
 from tqdm import tqdm
 from unidecode import unidecode
 
-from mtg import DATA_DIR, Json
-from mtg.mtgwiki import CLASSES, RACES
-from mtg.lib import from_iterable, getfloat, getint, getrepr, timed
+from mtg.constants import DATA_DIR, Json
+from mtg.lib.common import from_iterable, getfloat, getint, getrepr, timed
 from mtg.lib.files import download_file, getdir
-from mtg.lib.scrape import throttle
+from mtg.lib.scrape.core import throttle
+from mtg.mtgwiki import CLASSES, RACES
 
 _log = logging.getLogger(__name__)
 CARDS_FILENAME = "scryfall_cards.json"

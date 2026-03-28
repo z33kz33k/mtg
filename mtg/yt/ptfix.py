@@ -15,9 +15,9 @@ import pytubefix
 import pytubefix.exceptions
 from bs4 import BeautifulSoup
 
-from mtg.lib import extract_int
+from mtg.lib.common import extract_int
 from mtg.lib.json import Node
-from mtg.lib.scrape import parse_keywords_from_tag
+from mtg.lib.scrape.core import parse_keywords_from_tag
 
 
 @dataclass

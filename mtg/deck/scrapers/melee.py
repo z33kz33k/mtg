@@ -12,10 +12,10 @@ from typing import override
 
 import dateutil.parser
 
-from mtg import SECRETS
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper
-from mtg.lib import from_iterable
-from mtg.lib.scrape import ScrapingError, find_links
+from mtg.constants import SECRETS
+from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper
+from mtg.lib.common import from_iterable
+from mtg.lib.scrape.core import ScrapingError, find_links
 
 _log = logging.getLogger(__name__)
 

@@ -10,11 +10,13 @@ import logging
 from pathlib import Path
 from typing import Literal
 
-from mtg import OUTPUT_DIR, PathLike
-from mtg.deck import CardNotFound, Deck, DeckParser, Mode
+from mtg.constants import PathLike
+from mtg.constants import OUTPUT_DIR
+from mtg.deck import CardNotFound, Deck, Mode
+from mtg.deck.parse import DeckParser
 from mtg.deck.arena import ArenaParser, IllFormedArenaDecklist, is_arena_decklist
 from mtg.scryfall import Card, aggregate, set_cards
-from mtg.lib import ParsingError, from_iterable
+from mtg.lib.common import ParsingError, from_iterable
 from mtg.lib.files import getdir, getfile, sanitize_filename, truncate_path
 from mtg.lib.json import from_json as deserialize_json, to_json
 

@@ -2,21 +2,21 @@
 
     mtg.yt.expand
     ~~~~~~~~~~~~~
-    Expand URls for deck-scraping.
+    Expand links in YT videos descriptions for deck-scraping.
 
     @author: mazz3rr
 
 """
 import logging
+
 import backoff
 from bs4 import Tag
 from requests import ConnectionError, HTTPError, ReadTimeout
 from selenium.common import TimeoutException
 
 from mtg.gstate import UrlsStateManager
-from mtg.lib.scrape import dissect_js, fetch
+from mtg.lib.scrape.core import dissect_js, fetch
 from mtg.lib.scrape.dynamic import fetch_dynamic_soup
-
 
 _log = logging.getLogger(__name__)
 

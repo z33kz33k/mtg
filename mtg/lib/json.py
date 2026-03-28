@@ -1,6 +1,6 @@
 """
 
-    mtg.utils.json
+    mtg.lib.json
     ~~~~~~~~~~~~~~
     Utilities for JSON handling.
 
@@ -15,7 +15,8 @@ from collections.abc import Callable, Iterator
 from datetime import date, datetime
 from typing import Any, Literal, Self
 
-from mtg import Json, READABLE_TIMESTAMP_FORMAT
+from mtg.constants import Json
+from mtg.constants import READABLE_TIMESTAMP_FORMAT
 
 
 def serialize_dates(obj: Any) -> str:

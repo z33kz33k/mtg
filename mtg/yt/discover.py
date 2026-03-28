@@ -8,12 +8,12 @@
 
 """
 import logging
+from dataclasses import dataclass
 from typing import Literal
 
 from youtubesearchpython import CustomSearch, VideoSortOrder, VideoUploadDateFilter
 
-from mtg.yt import retrieve_ids
-
+from mtg.data.handle import retrieve_ids
 
 _log = logging.getLogger(__name__)
 _QUERY_EXCLUDES = (
@@ -116,3 +116,20 @@ def discover_new_channels(
     _log.info(f"Found {len(chids)} new channel(s) among {len(results)} checked result(s)")
 
     return sorted(chids), found_links, [r["link"] for r in results]
+
+
+# TODO: make default limit a shared global constant
+@dataclass(frozen=True)
+class UrlHook:
+    """Encapsulate data needed for discovering new YT deck-featuring channels with queries to
+    Google servers.
+
+        positives - positive elements of a query, e .g. "mtg" and  "decklist" in "mtg decklist"
+        negatives - negative elements of a query, e.g. "-fab" and "-yugioh" in "mtg decklist -fab -yugioh"
+        limit - maximum number of videos for 'youtubesearchpython' to return when querying Google
+                servers (default maybe too low for a popular site like Archidekt or Goldfish,
+                this needs to be estimated after testing)
+    """
+    positives: tuple[str, ...]
+    negatives: tuple[str, ...] = ()
+    limit: int = 200

@@ -13,12 +13,12 @@ from typing import override
 
 import dateutil.parser
 
-from mtg import Json
-from mtg.deck import Deck
+from mtg.constants import Json
 from mtg.deck.arena import ArenaParser
-from mtg.deck.scrapers import DeckUrlsContainerScraper, UrlHook
+from mtg.deck.scrapers.abc import DeckUrlsContainerScraper
 from mtg.deck.scrapers.topdeck import check_unexpected_urls
-from mtg.lib.scrape import ScrapingError, dissect_js, strip_url_query
+from mtg.lib.scrape.core import ScrapingError, dissect_js, strip_url_query
+from mtg.yt.discover import UrlHook
 
 _log = logging.getLogger(__name__)
 URL_HOOKS = (

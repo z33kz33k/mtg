@@ -14,12 +14,13 @@ from typing import override
 import dateutil.parser
 from bs4 import Tag
 
-from mtg import Json
-from mtg.deck import Mode
-from mtg.deck.scrapers import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
-    TagBasedDeckParser, UrlHook, throttled_deck_scraper
-from mtg.lib import extract_float, extract_int, from_iterable
-from mtg.lib.scrape import ScrapingError, strip_url_query
+from mtg.constants import Json
+from mtg.deck.parse import Mode, TagBasedDeckParser
+from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
+    throttled_deck_scraper
+from mtg.lib.common import extract_float, extract_int, from_iterable
+from mtg.lib.scrape.core import ScrapingError, strip_url_query
+from mtg.yt.discover import UrlHook
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://aetherhub.com"

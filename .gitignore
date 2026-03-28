@@ -9,7 +9,6 @@
 *service_account.json
 *api_creds.json
 *api_key.txt
-/mtg/data/**
 run.py
 tests.py
 fetch*.py

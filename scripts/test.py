@@ -1,7 +1,7 @@
 """
 
-    scripts.test.py
-    ~~~~~~~~~~~~~~~
+    scripts.test
+    ~~~~~~~~~~~~
     Script to test validity of the scraping logic against live websites using known valid URLs.
 
     @author: mazz3rr
@@ -9,9 +9,9 @@
 """
 import sys
 
-from mtg.deck.scrapers import ContainerScraper, DeckScraper, DeckTagsContainerScraper, \
-    DecksJsonContainerScraper, HybridContainerScraper
-
+from mtg.deck.scrapers.abc import ContainerScraper, DeckTagsContainerScraper, \
+    DecksJsonContainerScraper
+from mtg import DeckScraper, HybridContainerScraper
 
 # TODO: make this work async (group URLs into batches and run concurrently)
 

@@ -10,8 +10,9 @@
 import logging
 from typing import override
 
-from mtg.deck.scrapers import DeckScraper, UrlHook
-from mtg.lib.scrape import strip_url_query
+from mtg.deck.scrapers.abc import DeckScraper
+from mtg.lib.scrape.core import strip_url_query
+from mtg.yt.discover import UrlHook
 
 _log = logging.getLogger(__name__)
 CLIPBOARD_XPATH = "//span[text()='Export to Arena']"

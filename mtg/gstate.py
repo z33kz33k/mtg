@@ -15,10 +15,10 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Callable
 
-from mtg import OUTPUT_DIR
+from mtg.constants import OUTPUT_DIR
 from mtg.lib.check_type import type_checker
 from mtg.lib.files import getfile
-from mtg.lib.scrape import throttle_with_countdown
+from mtg.lib.scrape.core import throttle_with_countdown
 
 _log = logging.getLogger(__name__)
 

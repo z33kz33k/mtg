@@ -16,11 +16,11 @@ from typing import Type, override
 import dateutil.parser
 from bs4 import Tag
 
-from mtg import Json
-from mtg.deck.scrapers import ContainerScraper, HybridContainerScraper, \
+from mtg.constants import Json
+from mtg.deck.scrapers.abc import ContainerScraper, HybridContainerScraper, \
     get_folder_container_scrapers
 from mtg.lib.json import Node
-from mtg.lib.scrape import ScrapingError, is_more_than_root_path, strip_url_query
+from mtg.lib.scrape.core import ScrapingError, is_more_than_root_path, strip_url_query
 
 _log = logging.getLogger(__name__)
 

@@ -13,9 +13,10 @@ from typing import override
 
 import dateutil.parser
 
-from mtg import Json
-from mtg.deck.scrapers import DeckScraper, UrlHook
-from mtg.lib.scrape import ScrapingError, dissect_js, strip_url_query
+from mtg.constants import Json
+from mtg.deck.scrapers.abc import DeckScraper
+from mtg.lib.scrape.core import ScrapingError, dissect_js, strip_url_query
+from mtg.yt.discover import UrlHook
 
 _log = logging.getLogger(__name__)
 

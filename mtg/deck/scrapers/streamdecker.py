@@ -13,10 +13,10 @@ from typing import override
 
 from requests import ReadTimeout
 
-from mtg import Json
-from mtg.deck.scrapers import DeckUrlsContainerScraper, DeckScraper
-from mtg.lib import get_date_from_ago_text
-from mtg.lib.scrape import ScrapingError, fetch_json, strip_url_query
+from mtg.constants import Json
+from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper
+from mtg.lib.common import get_date_from_ago_text
+from mtg.lib.scrape.core import ScrapingError, fetch_json, strip_url_query
 
 _log = logging.getLogger(__name__)
 
