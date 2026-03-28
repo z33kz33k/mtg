@@ -28,20 +28,16 @@ from mtg.constants import FILENAME_TIMESTAMP_FORMAT, Json, PathLike
 from mtg.data.handle import ScrapingSession, load_channel, retrieve_ids
 from mtg.data.structures import CHANNEL_URL_TEMPLATE, Channel, SerializedDeck, VIDEO_URL_TEMPLATE, \
     Video
-from mtg.deck import Deck
-from mtg.deck.parse import DeckParser
 from mtg.deck.arena import ArenaParser, LinesParser
+from mtg.deck.core import Deck, DeckParser
 from mtg.deck.scrapers.abc import DeckTagsContainerScraper, DecksJsonContainerScraper, \
     get_throttled_deck_scrapers
 from mtg.gstate import CHANNELS_DIR, CoolOffManager, DecklistsStateManager, UrlsStateManager
 from mtg.lib.common import extract_float, find_longest_seqs, from_iterable, logging_disabled, \
-    multiply_by_symbol, \
-    naive_utc_now as utcnow, timed
+    multiply_by_symbol, naive_utc_now as utcnow, timed
 from mtg.lib.files import getdir, sanitize_filename
 from mtg.lib.scrape.core import ScrapingError, extract_url, http_requests_counted, \
-    parse_keywords_from_tag, throttle, \
-    throttled, \
-    unshorten
+    parse_keywords_from_tag, throttle, throttled, unshorten
 from mtg.lib.scrape.dynamic import fetch_dynamic_soup
 from mtg.lib.scrape.linktree import LinktreeScraper
 from mtg.scryfall import all_formats

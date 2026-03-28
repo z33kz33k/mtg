@@ -15,7 +15,7 @@ from typing import Self
 
 from mtg.constants import Json
 from mtg.deck.arena import ArenaParser
-from mtg.deck.parse import Deck
+from mtg.deck.core import Deck
 from mtg.gstate import DecklistsStateManager
 from mtg.lib.common import Counter, breadcrumbs
 from mtg.lib.json import to_json
@@ -34,7 +34,6 @@ EXCESSIVELY_DECK_STALE_THRESHOLD = 150  # videos
 @dataclass
 class SerializedDeck:
     metadata: Json
-    # TODO: hashes are not needed with db
     decklist_hash: str
     decklist_with_printings_hash: str
 
