@@ -40,6 +40,17 @@ class MissedDecklist(RuntimeError):
 
 class Loader:
     """Load scraped data from JSON to the database.
+
+    This loader assumes JSON data to load is already present in pre-defined destinations.
+
+    1. Regular channels data is assumed to be present inside CHANNELS_DIR within
+        sub-folders named with a channel YT ID - each keeping a channel's snapshot JSON file of
+        format as seen in `samples` directory.
+    2. Decklists and failed URLs data is assumed to also live inside CHANNELS_DIR in their
+        dedicated JSONs (DECKLISTS_FILE and FAILED_URLS_FILE).
+    3. Withdrawn channels data is assumed to be present inside WITHDRAWN_DIR within
+        sub-folders named with a channel YT ID. Contents of those folders is irrelevant as only
+        the IDs are saved to db.
     """
     def __init__(self) -> None:
         self._channels_jsons = self._load_channels(CHANNELS_DIR)
@@ -118,7 +129,9 @@ class Loader:
                 channel = session.scalars(stmt).one()
 
                 # snapshots
-                snapshots.sort(key=itemgetter("scrape_time"))
+                # newest first, as we want to de-duplicate videos
+                # (so, the newest stay and the older go)
+                snapshots.sort(key=itemgetter("scrape_time"), reverse=True)
                 for snapshot_data in snapshots:
                     snapshot = Snapshot(
                         title=snapshot_data["title"],

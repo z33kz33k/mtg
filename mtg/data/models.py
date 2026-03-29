@@ -4,6 +4,16 @@
     ~~~~~~~~~~~~~~~
     SQLAlchemy models.
 
+    The most defining characteristic of the employed scheme is this: there's a cascading multi
+    one-to-many relationship coming all the way from a Channel (via Snapshot and Video) to a Deck
+    and then in reverse direction (many-to-one) from a Deck to a Decklist.
+
+    Then, there are two many-to-many relationships between a Tag and a Snapshot and between a Tag
+    and a Video (in this context "tags" being called "keywords"). Those are handled by
+    association tables.
+
+    Then, there is a single relationship one-to-many between a Channel and a FailedUrl.
+
     @author: mazz3rr
 
 """
@@ -45,7 +55,8 @@ class Channel(Base):
     # withdrawn from further scraping activities
     is_withdrawn: Mapped[bool] = mapped_column(default=False)
 
-    snapshots: Mapped[list["Snapshot"]] = relationship(back_populates="channel")
+    snapshots: Mapped[list["Snapshot"]] = relationship(
+        back_populates="channel", cascade="all, delete-orphan")
     failed_urls: Mapped[list["FailedUrl"]] = relationship(
         back_populates="channel", cascade="all, delete-orphan")
 
@@ -68,15 +79,16 @@ class Snapshot(Base):
     scrape_time: Mapped[datetime]
 
     channel: Mapped["Channel"] = relationship(back_populates='snapshots')
-    videos: Mapped[list["Video"]] = relationship(back_populates='snapshot')
+    videos: Mapped[list["Video"]] = relationship(
+        back_populates='snapshot', cascade="all, delete-orphan")
     tags: Mapped[list["Tag"]] = relationship(secondary=snapshot_tags, back_populates='snapshots')
 
 
 class Video(Base):
     """Represents a video data scraped for a singular channel snapshot.
 
-    If various snapshots scrape the same videos multiple times there will be multiple records
-    with the same video ID and (potentially only slightly) different data in this table.
+    Can't be duplicated in terms of YT ID. As videos can be routinely re-scraped, this means that
+    a re-scraped one has to replace the older one.
 
     Note: "author" field isn't included as it's guaranteed to be the same as a title of the
     scraped channel (so, can be taken from the snapshot).
@@ -86,7 +98,11 @@ class Video(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     snapshot_id: Mapped[int] = mapped_column(ForeignKey("snapshots.id"))
 
-    yt_id: Mapped[str] = mapped_column(String(11), index=True)
+    # sqlite_on_conflict_unique="REPLACE" means that updates with conflicting YT IDs will cause
+    # the old row to be deleted and replaced by a new row
+    # more on this: https://share.google/aimode/qfK5RNT74Bs3MwQ9E
+    yt_id: Mapped[str] = mapped_column(
+        String(11), unique=True, index=True, sqlite_on_conflict_unique="REPLACE")
     title: Mapped[str]
     description: Mapped[str] = mapped_column(Text)
     publish_time: Mapped[datetime] = mapped_column()
@@ -137,8 +153,8 @@ class Decklist(Base):
     """Represents a text decklist in simplified format (with no printings specified), e.g. with
     lines like "4 Authority of the Consuls".
 
-    This is also called "plain text" or simplified format and is different from a detailed one
-    with lines like "4 Authority of the Consuls (FDN) 137".
+    This is also called "plain text" or simplified format and is different from a detailed or
+    "Arena" one - that specifies printings - with lines like "4 Authority of the Consuls (FDN) 137".
     """
     __tablename__ = "decklists"
 
@@ -147,6 +163,7 @@ class Decklist(Base):
     hash: Mapped[str] = mapped_column(String(44), index=True, unique=True)
     text: Mapped[str] = mapped_column(Text)
 
+    # decklists orphaned by decks are deleted with an event listener defined in db.py
     decks: Mapped[list["Deck"]] = relationship(back_populates="decklist")
 
 
