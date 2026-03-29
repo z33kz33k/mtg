@@ -811,7 +811,7 @@ class Deck:
             "decklist_hash": self.decklist_hash,
             "decklist_with_printings": self.decklist_with_printings_hash,
         }
-        return to_json(data, sort_dictionaries=True)
+        return to_json(data, sort_data=True)
 
 
 class _ParsingStates(Enum):

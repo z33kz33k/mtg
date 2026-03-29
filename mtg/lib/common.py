@@ -39,6 +39,9 @@ def seconds2readable(seconds: float) -> str:
 def timed(operation="", precision=3) -> Callable:
     """Add time measurement to the decorated operation.
 
+    Specifying 'precision' as zero renders a human-readable time suitable for long periods.
+    Specifying a numbers renders time in seconds with the specified precision.
+
     Args:
         operation: name of the time-measured operation (default is function's name)
         precision: precision of the time measurement in seconds (decides output text formatting)
@@ -543,8 +546,13 @@ def naive_utc_now() -> datetime:
     return datetime.now(UTC).replace(tzinfo=None)
 
 
-def get_timestamp(filename=False) -> str:
+def get_timestamp(filename=True, dt: datetime | None = None) -> str:
     """Return timestamp string in either a more human-readable format or one suitable for filenames.
+
+    Args:
+        filename: if True, returns a filename-suitable string, and human-readable one otherwise
+        dt: datetime to be formatted (default: a naive UTC datetime of now)
     """
     fmt = FILENAME_TIMESTAMP_FORMAT if filename else READABLE_TIMESTAMP_FORMAT
-    return naive_utc_now().strftime(fmt)
+    dt = dt or naive_utc_now()
+    return dt.strftime(fmt)

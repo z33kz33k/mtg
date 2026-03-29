@@ -151,7 +151,7 @@ class Loader:
                     # videos
                     videos = sorted(snapshot_data["videos"], key=itemgetter("publish_time"))
                     for video_data in videos:
-                        # deduplicate videos
+                        # de-duplicate videos
                         if video_data["id"] in video_yt_ids:
                             continue
                         else:
@@ -182,7 +182,7 @@ class Loader:
                             snapshot.videos.append(video)
 
                             for decklist_text, json_metadata in pending:
-                                # deduplicate decklists
+                                # de-duplicate decklists
                                 sha = get_hash(decklist_text, 40, sep="-")
                                 decklist = decklist_map.get(sha)
                                 if decklist is None:
@@ -210,7 +210,7 @@ class Loader:
             _log.warning(f"{len(missed_decklist_paths)} couldn't be resolved. Video data containing "
                          f"them was skipped from loading: {missed_decklist_paths}.")
 
-    @timed("Loading scraped data to database")
+    @timed("loading scraped data to database")
     def load(self) -> None:
         """Populate database with the loaded data.
         """

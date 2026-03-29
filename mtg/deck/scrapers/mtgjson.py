@@ -131,7 +131,7 @@ class Scraper:
         """Export all Constructed decks available in MTGJSON API decks page to ```dstdir``` in the
         format provided.
         """
-        timestamp = get_timestamp(filename=True)
+        timestamp = get_timestamp()
         dstdir = dstdir or DECKS_DIR / "mtgjson" / timestamp
         dstdir = getdir(dstdir)
         with logging_disabled():

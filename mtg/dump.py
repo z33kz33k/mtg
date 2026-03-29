@@ -48,7 +48,7 @@ def dump_decks(
     """
     if fmt not in EXPORT_FORMATS:
         raise ValueError(f"Invalid dump format: {fmt!r}. Must be one of: {EXPORT_FORMATS}")
-    timestamp = get_timestamp(filename=True)
+    timestamp = get_timestamp()
     dstdir = dstdir or DECKS_DIR / "yt" / timestamp
     dstdir = getdir(dstdir)
     chids = retrieve_ids()
