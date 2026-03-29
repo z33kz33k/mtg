@@ -30,11 +30,23 @@ _log = logging.getLogger(__name__)
 class Dumper:
     SNAPSHOT_FILE_TEMPLATE = "{channel_yt_id}___{scrape_time}.json"
 
+    @property
+    def _channels_dir(self) -> Path:
+        dir_ = self._dump_dir / "channels"
+        dir_.mkdir(parents=True, exist_ok=True)
+        return dir_
+
+    @property
+    def _withdrawn_dir(self) -> Path:
+        dir_ = self._dump_dir / "withdrawn"
+        dir_.mkdir(parents=True, exist_ok=True)
+        return dir_
+
     def __init__(self) -> None:
         self._dump_dir: Path | None = None
 
     def _dump_failed_urls(self) -> None:
-        dst = self._dump_dir / "failed_urls.json"
+        dst = self._channels_dir / "failed_urls.json"
         _log.info(f"Dumping failed URLs data to {dst}...")
 
         data: defaultdict[str, list[str]] = defaultdict(list)
@@ -47,7 +59,7 @@ class Dumper:
         _log.info(f"{len(list(itertools.chain([lst for lst in data.values()]))):,} URLs dumped.")
 
     def _dump_decklists(self) -> None:
-        dst = self._dump_dir / "decklists.json"
+        dst = self._channels_dir / "decklists.json"
         _log.info(f"Dumping decklists data to {dst}...")
         data: dict[str, str] = {}
         with Session(ENGINE) as session:
@@ -58,8 +70,19 @@ class Dumper:
         dst.write_text(to_json(data, sort_data=True))
         _log.info(f"{len(list(data)):,} decklists dumped.")
 
+    def _dump_withdrawn(self) -> None:
+        _log.info(f"Dumping withdrawn channels to {self._withdrawn_dir}...")
+        count = 0
+        with Session(ENGINE) as session:
+            stmt = select(Channel).where(Channel.is_withdrawn == True)
+            for withdrawn in session.scalars(stmt):
+                dst_dir = self._withdrawn_dir / withdrawn.yt_id
+                dst_dir.mkdir(parents=True, exist_ok=True)
+                count += 1
+        _log.info(f"Dumped {count:,} withdrawn channels.")
+
     def _get_channel_dir(self, channel_yt_id: str) -> Path:
-        dir_ = self._dump_dir / channel_yt_id
+        dir_ = self._channels_dir / channel_yt_id
         dir_.mkdir(parents=True, exist_ok=True)
         return dir_
 
@@ -123,6 +146,7 @@ class Dumper:
         self._dump_dir.mkdir(parents=True, exist_ok=True)
         self._dump_failed_urls()
         self._dump_decklists()
+        self._dump_withdrawn()
         self._dump_channels()
 
 
