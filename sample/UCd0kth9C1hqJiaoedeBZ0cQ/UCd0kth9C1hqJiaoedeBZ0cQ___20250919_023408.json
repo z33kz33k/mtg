@@ -1,0 +1,87 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.This channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "standard",
+        "brawl",
+        "mtg arena",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "deck build",
+        "magic arena",
+        "arena",
+        "edh",
+        "standard deck",
+        "commander",
+        "pioneer",
+        "how to",
+        "MTG"
+    ],
+    "subscribers": 141000,
+    "scrape_time": "2025-09-19 02:34:08",
+    "videos": [
+        {
+            "id": "aHYt1O7gzmc",
+            "title": "Spiders have entered Standard.",
+            "description": "Magic: The Gathering Arena gameplay with a five color spider deck, ft. Scions of the Ur-Spider (Cosmic Spider-Man) in Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n05:29 - Match 1 \n09:24 - Match 2\n16:24 - Match 3\n23:49 - Match 4\n30:29 - Match 5\n36:35 - Match 6\n\nDecklist:\nhttps://aetherhub.com/Deck/five-color-spiders\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGxSpiderMan #mtg #magicthegathering #MTGOM1",
+            "keywords": [
+                "spectacular",
+                "fateweaver",
+                "gameplay",
+                "through the omenpaths",
+                "peter parker",
+                "mary jane",
+                "lvd",
+                "cosmic spiderman",
+                "5c spiders",
+                "legend",
+                "standard spiders",
+                "mtga",
+                "decks",
+                "guide",
+                "Standard MTG",
+                "standard",
+                "mtg spiderman",
+                "arachne",
+                "Radioactive Spider",
+                "mtg",
+                "mtg arena",
+                "spider woman",
+                "spider-man",
+                "scions of the ur-spider",
+                "spider punk",
+                "spiderman deck",
+                "deck",
+                "new standard",
+                "standard deck",
+                "spider ham",
+                "omenpaths",
+                "spiderman",
+                "spider deck",
+                "spider byte",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-09-18 09:40:15",
+            "views": 14364,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-09-18",
+                        "exports": 18,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Five Color Spiders",
+                        "url": "https://aetherhub.com/Deck/five-color-spiders",
+                        "views": 129
+                    },
+                    "decklist_hash": "93a6902d-ea1e040a-0520e5c5-20dff8bc-b4e2601d"
+                }
+            ]
+        }
+    ]
+}

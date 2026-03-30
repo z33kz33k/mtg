@@ -1,0 +1,70 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": null,
+    "tags": [],
+    "subscribers": 140000,
+    "scrape_time": "2025-08-08 03:29:31",
+    "videos": [
+        {
+            "id": "DsI4oLpPmsU",
+            "title": "This tech broke azorius artifacts.",
+            "description": "Magic: The Gathering Arena gameplay with an Azorius Artifact deck, ft. The Fire Crystal in Edge of Eternities Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n06:58 - Match 1 \n16:20 - Match 2\n25:52 - Match 3\n31:26 - Match 4\n35:13 - Match 5\n38:46 - Match 6\n42:28 - Match 7\n\nDecklist:\nhttps://aetherhub.com/Deck/eoe-azorius-artifacts\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGEternities #mtg #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "lvd",
+                "edge of eternities",
+                "starcage",
+                "exile",
+                "legend",
+                "repurposing",
+                "white",
+                "mtga",
+                "blue",
+                "artifact deck",
+                "decks",
+                "guide",
+                "Standard MTG",
+                "standard",
+                "eternity",
+                "simulacrum",
+                "mtg",
+                "mtg arena",
+                "synthesizer",
+                "haste",
+                "deck",
+                "artifacts",
+                "new standard",
+                "eoe",
+                "bay",
+                "battlefront",
+                "eoe standard",
+                "standard deck",
+                "azorius",
+                "standard artifacts",
+                "construct",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-08-07 09:00:25",
+            "views": 13695,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "control",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-08-07",
+                        "exports": 222,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "EoE Azorius Artifacts",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/eoe-azorius-artifacts",
+                        "views": 675
+                    },
+                    "decklist_hash": "9ca7729a-822d858e-61f966dd-e3fe2a62-ad4788a8"
+                }
+            ]
+        }
+    ]
+}

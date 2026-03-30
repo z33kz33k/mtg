@@ -1,0 +1,92 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "aetherdrift",
+        "mtg foundations",
+        "educational",
+        "historic",
+        "explorer",
+        "standard",
+        "brawl",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "how to",
+        "tips",
+        "MTG",
+        "foundations"
+    ],
+    "subscribers": 134000,
+    "scrape_time": "2025-02-20 01:09:17",
+    "videos": [
+        {
+            "id": "SMgs8HNRbqY",
+            "title": "Punishing greedy Timeless decks.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a monored prison deck, ft. Chrome Mox in Timeless. \n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n05:01 - Match 1\n09:56 - Match 2\n14:04 - Match 3\n21:29 - Match 4\n26:20 - Match 5\n31:10 - Match 6\n35:01 - Match 7\n37:25 - Match 8\n42:32 - Match 9\n\nDecklist: \nhttps://aetherhub.com/Deck/timeless-monored-prison\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtg #mtgaetherdrift #aetherdrift",
+            "keywords": [
+                "gameplay",
+                "prison deck",
+                "monored control",
+                "lvd",
+                "belcher",
+                "prototype",
+                "rabblemaster",
+                "legend",
+                "goblin",
+                "mtga",
+                "labyrinth",
+                "decks",
+                "guide",
+                "eldrazi",
+                "best deck",
+                "mtg",
+                "mtg arena",
+                "monored",
+                "lock",
+                "blood moon",
+                "deck",
+                "timeless",
+                "emerge",
+                "charbelcher",
+                "prison",
+                "chalice",
+                "ugin",
+                "fury",
+                "magic the gathering",
+                "timeless deck"
+            ],
+            "publish_time": "2025-02-19 09:00:39",
+            "views": 11939,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "control",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-02-19",
+                        "exports": 62,
+                        "format": "timeless",
+                        "mode": "Bo1",
+                        "name": "Timeless Monored Prison",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/timeless-monored-prison",
+                        "views": 244
+                    },
+                    "decklist_hash": "4aab5c7c-1d5ebba3-72bc5c37-976f6960-b7ceb85f"
+                }
+            ]
+        }
+    ]
+}

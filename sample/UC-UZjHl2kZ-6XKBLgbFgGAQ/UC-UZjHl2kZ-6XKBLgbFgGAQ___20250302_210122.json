@@ -1,0 +1,197 @@
+{
+    "id": "UC-UZjHl2kZ-6XKBLgbFgGAQ",
+    "title": "CovertGoBlue",
+    "description": "The One in Best-of-One\n\n",
+    "tags": [
+        "mtga",
+        "mtg",
+        "mtg arena",
+        "covertgo",
+        "magic the gathering"
+    ],
+    "subscribers": 241000,
+    "scrape_time": "2025-03-02 21:01:22",
+    "videos": [
+        {
+            "id": "HnkehId4p50",
+            "title": "Throwing Down with our MagicCon Chicago Decks! - WPCS 147",
+            "description": "The crew gear up for MagicCon Chicago and practice their Commander decks for a fun, memorable weekend with friends. Did you see the crew there? Catch a game with any of them? Let us know in the comments below!\n\nDecklists:\nShea: https://moxfield.com/decks/xrcdjQ-uwECvkpvBWy6XUA\nBen: https://moxfield.com/decks/xcecFw885UiNvyahATDHbw\nBlake: https://moxfield.com/decks/8P8Qydw01kKalp8FCkDrzw\nCGB: https://moxfield.com/decks/HQr28m4HkUasV7CuFWcoVQ\n\nSponsors\n\nCoolStuffInc.com Promo Code CGB5 - https://www.coolstuffinc.com/cgb\nDragon Shield Coupon Code CGB5 - https://dragonshield.com/?ref=CGB\nDripShop.live - https://join.dripshop.live/CovertGoBlue\nMoxfield - https://www.moxfield.com/users/CovertGoBlue\n\nDiscord - https://discord.gg/MXt3DEP\nInstagram - https://www.instagram.com/covertgoblue/\n\nCredits\n\nWritten and performed by Daniel Wagner, aka CovertGoBlue\nLogo design by HolyMTG - HolyMTG@gmail.com Twitter @HolyMTG\n© CovertGoBlue Entertainment, LLC\n\n#cgb #mtgcommander  #magicthegathering",
+            "keywords": [
+                "Deck",
+                "gameplay",
+                "MTG Cards",
+                "Covert Go",
+                "Covert Go MTG",
+                "Covert Go Blue",
+                "aetherdrift",
+                "duskmourn",
+                "mtga",
+                "Best MTG Deck",
+                "decks",
+                "New Deck",
+                "guide",
+                "CGB Magic the Gathering",
+                "dft mtg",
+                "fdn cards",
+                "mtg",
+                "mtg arena",
+                "covertgo",
+                "CGB Deck",
+                "mtg aetherdrift",
+                "covertgo mtg",
+                "fdn mtg",
+                "MTG Deck",
+                "deck",
+                "CovertGoBlue",
+                "aetherdrift standard",
+                "aetherdrift mtg",
+                "New Cards",
+                "Gameplay",
+                "Best Deck",
+                "CGB",
+                "Mythic",
+                "mtg arena new set",
+                "foundations",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-03-02 09:00:26",
+            "views": 4702,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "WorstPossibleCommander",
+                        "comments": 0,
+                        "date": "2025-03-02",
+                        "description": "https://youtu.be/HnkehId4p50",
+                        "edh_bracket": 2,
+                        "format": "commander",
+                        "hubs": [
+                            {
+                                "description": "A strategy that revolves around +1/+1 counters.",
+                                "name": "+1/+1 Counters"
+                            },
+                            {
+                                "description": "Casual decks are not meant for competitive game play.",
+                                "name": "Casual"
+                            },
+                            {
+                                "description": "A white, red, and green deck.",
+                                "name": "Naya (RGW)"
+                            },
+                            {
+                                "description": "This deck is no longer maintained by the owner and most likely won't see changed any time soon.",
+                                "name": "Unmaintained"
+                            },
+                            {
+                                "description": "This deck is webcam-friendly because it does not physically interact with its opponents cards.",
+                                "name": "Webcam Friendly"
+                            }
+                        ],
+                        "likes": 0,
+                        "name": "WPCS #147",
+                        "source": "moxfield.com",
+                        "url": "https://moxfield.com/decks/8P8Qydw01kKalp8FCkDrzw",
+                        "views": 15
+                    },
+                    "decklist_hash": "3a164d56-217166ab-7fb1ba89-a4918c57-68030f86"
+                },
+                {
+                    "metadata": {
+                        "author": "WorstPossibleCommander",
+                        "comments": 0,
+                        "date": "2025-03-02",
+                        "description": "https://youtu.be/HnkehId4p50",
+                        "edh_bracket": 2,
+                        "format": "commander",
+                        "hubs": [
+                            {
+                                "description": "A deck focused on playing cards like Blood Artist that gain you life while your opponents lose life.",
+                                "name": "Aristocrats"
+                            },
+                            {
+                                "description": "Casual decks are not meant for competitive game play.",
+                                "name": "Casual"
+                            },
+                            {
+                                "description": "A blue, black, and red deck.",
+                                "name": "Grixis (UBR)"
+                            },
+                            {
+                                "description": "A deck that is themed around a specific creature type (e.g., Goblin, etc). Formally tribal & typal.",
+                                "name": "Kindred"
+                            },
+                            {
+                                "description": "This deck is no longer maintained by the owner and most likely won't see changed any time soon.",
+                                "name": "Unmaintained"
+                            },
+                            {
+                                "description": "This deck is webcam-friendly because it does not physically interact with its opponents cards.",
+                                "name": "Webcam Friendly"
+                            }
+                        ],
+                        "likes": 0,
+                        "name": "WPCS #147",
+                        "source": "moxfield.com",
+                        "url": "https://moxfield.com/decks/xrcdjQ-uwECvkpvBWy6XUA",
+                        "views": 148
+                    },
+                    "decklist_hash": "2f42e839-46bdee27-a3dc4f9d-5e7f2a9b-c5aa4df7"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "container_url": "https://www.moxfield.com/users/CovertGoBlue",
+                        "date": "2025-03-02",
+                        "edh_bracket": 2,
+                        "format": "standard",
+                        "likes": 0,
+                        "name": "UW Control Pro tour Aetherdrift",
+                        "source": "moxfield.com",
+                        "url": "https://moxfield.com/decks/IXMW_KmkQUqQN4m9C0nfnw",
+                        "views": 19
+                    },
+                    "decklist_hash": "60afeb0b-e3026cf7-b71aea47-b0beddac-ba44fa3e"
+                },
+                {
+                    "metadata": {
+                        "author": "WorstPossibleCommander",
+                        "comments": 0,
+                        "date": "2025-03-02",
+                        "description": "https://youtu.be/HnkehId4p50",
+                        "edh_bracket": 2,
+                        "format": "commander",
+                        "hubs": [
+                            {
+                                "description": "A white, black, and green deck.",
+                                "name": "Abzan (WBG)"
+                            },
+                            {
+                                "description": "Casual decks are not meant for competitive game play.",
+                                "name": "Casual"
+                            },
+                            {
+                                "description": "A deck that wins by putting all of an opponents library into their graveyard as quick as possible.",
+                                "name": "Mill"
+                            },
+                            {
+                                "description": "This deck is no longer maintained by the owner and most likely won't see changed any time soon.",
+                                "name": "Unmaintained"
+                            },
+                            {
+                                "description": "This deck is webcam-friendly because it does not physically interact with its opponents cards.",
+                                "name": "Webcam Friendly"
+                            }
+                        ],
+                        "likes": 0,
+                        "name": "WPCS #147",
+                        "source": "moxfield.com",
+                        "url": "https://moxfield.com/decks/xcecFw885UiNvyahATDHbw",
+                        "views": 84
+                    },
+                    "decklist_hash": "2ac2d880-6bd4b03b-8549f1a5-79e3804f-ddab9bb3"
+                }
+            ]
+        }
+    ]
+}

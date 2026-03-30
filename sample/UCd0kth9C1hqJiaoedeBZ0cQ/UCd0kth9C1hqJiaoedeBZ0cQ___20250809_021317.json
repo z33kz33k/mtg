@@ -1,0 +1,61 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": null,
+    "tags": [],
+    "subscribers": 140000,
+    "scrape_time": "2025-08-09 02:13:17",
+    "videos": [
+        {
+            "id": "0aQ8wKCORaA",
+            "title": "This card is terrible, you shouldn't play it.",
+            "description": "Magic: The Gathering Arena gameplay with Infinite Guideline Station as commander in Brawl. \n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro\n02:58 - Deck Tech\n11:41 - vs Thalia and The Gitrog Monster\n21:52 - vs The Mycotyrant\n28:25 - vs Surrak, Elusive Hunter\n35:18 - vs The Infamous Cruelclaw\n40:43 - vs Gretchen Titchwillow\n49:32 - vs Chulane, Teller of Tales\n54:23 - vs Kuja, Genome Sorcerer\n\nDecklist:\nhttps://aetherhub.com/Deck/infinite-guideline-station-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtgeternities  #mtg #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "multicolor",
+                "spacecraft",
+                "lvd",
+                "niv mizzet",
+                "rainbow",
+                "legend",
+                "mtga",
+                "decks",
+                "guide",
+                "eternity",
+                "brawl",
+                "mtg",
+                "mtg arena",
+                "guideline",
+                "deck",
+                "eoe",
+                "station",
+                "edge of eternity",
+                "five color",
+                "edh",
+                "commander",
+                "infinte",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-08-08 09:00:03",
+            "views": 17086,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "custom_theme": "jank",
+                        "date": "2025-08-08",
+                        "exports": 118,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Infinite Guideline Station Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/infinite-guideline-station-brawl",
+                        "views": 411
+                    },
+                    "decklist_hash": "3c7a075c-a1ced9f8-6f06beaa-510e55bc-a7cb65b8"
+                }
+            ]
+        }
+    ]
+}

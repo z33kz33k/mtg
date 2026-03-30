@@ -1,0 +1,92 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "dragonstorm",
+        "educational",
+        "historic",
+        "explorer",
+        "standard",
+        "brawl",
+        "tarkir",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "how to",
+        "tips",
+        "MTG"
+    ],
+    "subscribers": 135000,
+    "scrape_time": "2025-03-26 01:49:23",
+    "videos": [
+        {
+            "id": "RwVDeGEZbaw",
+            "title": "I'm too scared to play it.",
+            "description": "Magic: The Gathering Arena gameplay with a Fear of Infinity graveyard deck in Aetherdrift Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:25 - Match 1\n11:19 - Match 2\n20:36 - Match 3\n29:06 - Match 4\n33:01 - Match 5\n40:33 - Match 6\n\nDecklist:\nhttps://aetherhub.com/Deck/fear-of-infinity-combo\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #aetherdrift #mtgaetherdrift #mtgdft #mtg #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "red",
+                "lvd",
+                "aetherdrift",
+                "legend",
+                "mtga",
+                "decks",
+                "guide",
+                "artist talent",
+                "Standard MTG",
+                "standard",
+                "mtg",
+                "bargain",
+                "mtg arena",
+                "mtg aetherdrift",
+                "plant",
+                "deck",
+                "new standard",
+                "infinity",
+                "green",
+                "aetherdrift standard",
+                "graveyard",
+                "eerie",
+                "standard deck",
+                "jund",
+                "black",
+                "roots",
+                "insidious",
+                "fear",
+                "dft",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-03-25 10:00:29",
+            "views": 18064,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-03-25",
+                        "exports": 460,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Fear of Infinity Combo",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/fear-of-infinity-combo",
+                        "views": 1066
+                    },
+                    "decklist_hash": "2f4a2cd5-2f932f33-9a780fc8-544966bf-6781d3db"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,65 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": null,
+    "tags": [],
+    "subscribers": 140000,
+    "scrape_time": "2025-08-07 01:28:40",
+    "videos": [
+        {
+            "id": "H4KlnkTmWkE",
+            "title": "This deck goes at the speed of light.",
+            "description": "Magic: The Gathering Arena gameplay with Tannuk, Steadfast Second as commander in Brawl. \n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro\n01:42 - Deck Tech\n09:29 - vs Chulane, Teller of Tales\n14:15 - vs Y'shtola, Night's Blessed\n22:31 - vs Tatyova, Benthic Druid\n28:34 - vs Kutzil, Malamet Exemplar\n34:47 - vs Hearthhull, the Worldseed\n41:39 - vs Baral, Chief of Compliance\n43:52 - vs Sauron, the Dark Lord\n48:37 - vs The Gitrog Monster\n50:18 - vs Muldrotha, the Gravetide\n55:12 - vs Dawnsire, Sunstar Dreadnought\n58:26 - vs Elspeth, Storm Slayer\n1:03:27 - vs Jan Jansen, Chaos Crafter\n1:06:31 - vs Meria, Scholar of Antiquity\n1:11:50 - vs Winter, Misanthropic Guide\n\nDecklist:\nhttps://aetherhub.com/Deck/tannuk-steadfast-second-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtgeternities  #mtg #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "red",
+                "tannuk",
+                "lvd",
+                "exile",
+                "legend",
+                "mtga",
+                "decks",
+                "guide",
+                "tannuk brawl",
+                "eternity",
+                "tannuk edh",
+                "pilot",
+                "brawl",
+                "mtg",
+                "tannuk warp",
+                "warp",
+                "mtg arena",
+                "monored",
+                "haste",
+                "deck",
+                "eoe",
+                "tannuk commander",
+                "edge of eternity",
+                "kavu",
+                "edh",
+                "commander",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-08-06 09:05:22",
+            "views": 12098,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-08-06",
+                        "exports": 183,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Tannuk, Steadfast Second Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/tannuk-steadfast-second-brawl",
+                        "views": 447
+                    },
+                    "decklist_hash": "abfa0325-0929f50a-57728b4d-cf975041-2939e0ef"
+                }
+            ]
+        }
+    ]
+}

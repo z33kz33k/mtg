@@ -1,0 +1,53 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "Magic the Gathering",
+        "MTG",
+        "mtggoldfish"
+    ],
+    "subscribers": 350000,
+    "scrape_time": "2025-07-21 02:42:17",
+    "videos": [
+        {
+            "id": "pFgn1P6VSC4",
+            "title": "WTF Arena, Just Let ME Do The Thing...  Brewer's Kitchen",
+            "description": "Brewer's Kitchen fights the Arena interface to resolve an infinite combo that takes way too much clicking \n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/wtf-arena-just-let-me-do-the-thing-brewer-s-kitchen\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7214324#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/qk5tY\n◼ Purchase this deck (Magic Online): http://mtg.fish/Fav2H\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGHistoric",
+            "keywords": [
+                "Magic the Gathering",
+                "Magic Arena",
+                "Gameplay",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-07-20 08:00:02",
+            "views": 26943,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "Brewer's Kitchen",
+                        "date": "2025-07-04",
+                        "format": "historic",
+                        "name": "Good Luck Doing This On Arena",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7214324"
+                    },
+                    "decklist_hash": "d3210984-de4339b0-481f0549-3b53d076-c34ee273"
+                },
+                {
+                    "metadata": {
+                        "author": "Brewer's Kitchen",
+                        "container_url": "https://www.mtggoldfish.com/articles/wtf-arena-just-let-me-do-the-thing-brewer-s-kitchen",
+                        "date": "2025-07-04",
+                        "format": "historic",
+                        "name": "Good Luck Doing This On Arena",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/wtf-arena-just-let-me-do-the-thing-brewer-s-kitchen"
+                    },
+                    "decklist_hash": "d3210984-de4339b0-481f0549-3b53d076-c34ee273"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,53 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "Magic the Gathering",
+        "MTG",
+        "mtggoldfish"
+    ],
+    "subscribers": 348000,
+    "scrape_time": "2025-06-26 02:32:37",
+    "videos": [
+        {
+            "id": "Nmyq5gOlEoI",
+            "title": "I Summon Primal Odin (and it's pretty sweet)  Against the Odds",
+            "description": "What are the odds of winning with one attack from Summon: Primal Odin in Final Fantasy Standard? Let's find out!\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/against-the-odds-summon-primal-odin-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7166535#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/EC5nW\n◼ Purchase this deck (Magic Online): http://mtg.fish/HaY7p\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#mtgstandard \n\n0:00 Start\n5:22 Match 1\n13:15 Match 2\n26:40 Match 3\n35:56 Match 4\n46:42 Match 5",
+            "keywords": [
+                "Magic the Gathering",
+                "Magic Arena",
+                "Gameplay",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-06-25 08:00:07",
+            "views": 26334,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-06-11",
+                        "format": "standard",
+                        "name": "Summon: Primal Odin",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7166535"
+                    },
+                    "decklist_hash": "65cdbad5-2e8cf79f-8307648b-ba30070e-d4594fbd"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/against-the-odds-summon-primal-odin-standard",
+                        "date": "2025-06-11",
+                        "format": "standard",
+                        "name": "Summon: Primal Odin",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/against-the-odds-summon-primal-odin-standard"
+                    },
+                    "decklist_hash": "65cdbad5-2e8cf79f-8307648b-ba30070e-d4594fbd"
+                }
+            ]
+        }
+    ]
+}

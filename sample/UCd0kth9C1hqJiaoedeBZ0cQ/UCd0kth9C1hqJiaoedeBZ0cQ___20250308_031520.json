@@ -1,0 +1,82 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "aetherdrift",
+        "mtg foundations",
+        "educational",
+        "historic",
+        "explorer",
+        "standard",
+        "brawl",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "how to",
+        "tips",
+        "MTG",
+        "foundations"
+    ],
+    "subscribers": 135000,
+    "scrape_time": "2025-03-08 03:15:20",
+    "videos": [
+        {
+            "id": "m-xyjiy0YPw",
+            "title": "Don't Open, Eldrazi Inside.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a colorless ramp deck, ft. The Aetherspark in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro \n02:03 - Deck Tech\n09:25 - vs Tovolar, DIre Overlord\n21:16 - vs Ajani, the Greathearted\n30:04 - vs Breya, Etherium Shaper\n43:51 - vs Isshin, Two Heavens as One\n46:47 - vs Karametra, God of Harvests\n50:52 - vs Korvold, Fae-Cursed King\n56:00 - vs Chandra, Hope's Beacon\n\nDecklist: \nhttps://aetherhub.com/Deck/the-aetherspark-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtg  #mtgarena #magicthegathering",
+            "keywords": [
+                "aetherspark commander",
+                "gameplay",
+                "lvd",
+                "aetherdrift",
+                "legend",
+                "aetherspark",
+                "mtga",
+                "decks",
+                "guide",
+                "brawl",
+                "mtg",
+                "mtg arena",
+                "brawl deck",
+                "historic brawl",
+                "deck",
+                "aetherspark brawl",
+                "aetherspark edh",
+                "edh",
+                "commander",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-03-07 09:01:04",
+            "views": 16662,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-03-07",
+                        "exports": 188,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "The Aetherspark Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/the-aetherspark-brawl",
+                        "views": 452
+                    },
+                    "decklist_hash": "1149ae8a-ceda9ed4-bf923c92-1ca1edeb-33665cf2"
+                }
+            ]
+        }
+    ]
+}

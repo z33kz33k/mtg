@@ -1,0 +1,92 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "aetherdrift",
+        "mtg foundations",
+        "educational",
+        "historic",
+        "explorer",
+        "standard",
+        "brawl",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "how to",
+        "tips",
+        "MTG",
+        "foundations"
+    ],
+    "subscribers": 134000,
+    "scrape_time": "2025-02-13 01:57:19",
+    "videos": [
+        {
+            "id": "AsMaDe_dPao",
+            "title": "How to break Monument to Endurance.",
+            "description": "Magic: The Gathering Arena gameplay with a blue/red discard control deck, ft. Monument to Endurance in Aetherdrift Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n03:31 - Match 1\n12:35 - Match 2\n19:42 - Match 3\n28:12 - Match 4\n32:15 - Match 5\n\nDecklist:\nhttps://aetherhub.com/Deck/monument-to-art\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #aetherdrift #mtgaetherdrift #mtgdft #mtg #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "red",
+                "lvd",
+                "aetherdrift",
+                "legend",
+                "izzet",
+                "control",
+                "mtga",
+                "discard",
+                "blue",
+                "artist",
+                "decks",
+                "guide",
+                "new",
+                "Standard MTG",
+                "standard",
+                "mtg",
+                "discard deck",
+                "mtg arena",
+                "talent",
+                "mtg aetherdrift",
+                "deck",
+                "new standard",
+                "aetherdrift standard",
+                "standard deck",
+                "monument",
+                "explosion",
+                "artifact",
+                "dft",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-02-12 09:00:11",
+            "views": 14859,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "control",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-02-12",
+                        "exports": 235,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Monument to Art",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/monument-to-art",
+                        "views": 449
+                    },
+                    "decklist_hash": "e26e8f08-1f7a5f8e-df6181f6-a5dad56f-807caa68"
+                }
+            ]
+        }
+    ]
+}

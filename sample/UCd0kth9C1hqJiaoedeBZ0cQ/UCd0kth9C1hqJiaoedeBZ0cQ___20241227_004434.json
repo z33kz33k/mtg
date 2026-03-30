@@ -1,0 +1,86 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "mtg foundations",
+        "educational",
+        "historic",
+        "explorer",
+        "standard",
+        "brawl",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "how to",
+        "tips",
+        "MTG",
+        "foundations"
+    ],
+    "subscribers": 133000,
+    "scrape_time": "2024-12-27 00:44:34",
+    "videos": [
+        {
+            "id": "KwLg4BuVJC8",
+            "title": "I make a lot of +1+1 counters in this video.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a monogreen +1/+1 counter deck, featuring Nissa, Voice of Zendikar as commander in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n0:00:00 - Intro \n0:01:23 - Deck Tech\n0:08:50 - vs Loot, the Key to Everything\n0:16:45 - vs Nicol Bolas, God-Pharaoh\n0:27:35 - vs Karametra, God of Harvests\n0:36:47 - vs Muldrotha, the Gravetide\n0:46:21 - vs Vadrok, Apex of Thunder\n0:52:08 - vs Tatyova, Benthic Druid\n0:57:56 - vs The Mycosynth\n1:04:33 - vs Tinybones, Bauble Burglar\n1:10:08 - vs The First Sliver\n1:13:37 - vs The Scarab God\n1:21:18 - vs Jaxis, the Troublemaker\n\nDecklist: \nhttps://aetherhub.com/Deck/nissa-voice-of-zendikar-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtg  #mtgarena #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "lvd",
+                "legend",
+                "+1/+1",
+                "+1/+1 counter",
+                "mtga",
+                "decks",
+                "guide",
+                "nissa commander",
+                "brawl",
+                "mtg",
+                "mtg arena",
+                "nissa brawl",
+                "brawl deck",
+                "counter deck",
+                "historic brawl",
+                "deck",
+                "green",
+                "nissa",
+                "edh",
+                "commander",
+                "monogreen",
+                "nissa edh",
+                "counters deck",
+                "magic the gathering"
+            ],
+            "publish_time": "2024-12-26 09:00:18",
+            "views": 9948,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2024-12-26",
+                        "exports": 80,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Nissa, Voice of Zendikar Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/nissa-voice-of-zendikar-brawl",
+                        "views": 151
+                    },
+                    "decklist_hash": "05600b18-0563632c-45cb5e11-fe2ffec3-66474846"
+                }
+            ]
+        }
+    ]
+}

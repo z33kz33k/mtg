@@ -1,0 +1,92 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "dragonstorm",
+        "educational",
+        "historic",
+        "explorer",
+        "standard",
+        "brawl",
+        "tarkir",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "how to",
+        "tips",
+        "MTG"
+    ],
+    "subscribers": 135000,
+    "scrape_time": "2025-04-01 02:41:13",
+    "videos": [
+        {
+            "id": "L339pZuhX0Y",
+            "title": "Getting back on the saddle.",
+            "description": "Magic: The Gathering Arena gameplay with a Mount & Vehicle deck ft. Guardian Sunmare in Aetherdrift Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:18 - Match 1\n11:46 - Match 2\n12:47 - Match 3\n18:50 - Match 4\n24:35 - Match 5\n29:47 - Match 6\n34:00 - Match 7\n\nDecklist:\nhttps://aetherhub.com/Deck/naya-horses\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #aetherdrift #mtgaetherdrift #mtgdft #mtg #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "red",
+                "lvd",
+                "sunmare",
+                "aetherdrift",
+                "legend",
+                "horses",
+                "horse",
+                "midrange",
+                "white",
+                "mtga",
+                "vehicle",
+                "decks",
+                "guide",
+                "Standard MTG",
+                "standard",
+                "crew",
+                "mtg",
+                "saddle",
+                "horse deck",
+                "mtg arena",
+                "mount",
+                "mtg aetherdrift",
+                "deck",
+                "new standard",
+                "green",
+                "aetherdrift standard",
+                "standard deck",
+                "naya",
+                "dft",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-03-31 09:00:25",
+            "views": 12867,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-03-31",
+                        "exports": 295,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Naya Horses",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/naya-horses",
+                        "views": 596
+                    },
+                    "decklist_hash": "b926c1bd-e8dbdd5c-d08bc099-d5be5526-f99da344"
+                }
+            ]
+        }
+    ]
+}

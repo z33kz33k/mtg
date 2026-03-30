@@ -1,0 +1,65 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "Magic the Gathering",
+        "MTG",
+        "mtggoldfish"
+    ],
+    "subscribers": 342000,
+    "scrape_time": "2025-04-15 01:53:16",
+    "videos": [
+        {
+            "id": "JKm4j85Y7MM",
+            "title": "$76 Demon Stompy   Budget Magic",
+            "description": "Does Rot-Curse Rakshasa mean that Demon Stompy can be a thing in Standard on a budget? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/budget-magic-76-demon-stompy-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7029040#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/c5JnM\n◼ Purchase this deck (Magic Online): http://mtg.fish/GdAMy\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Magic the Gathering",
+                "Magic Arena",
+                "Gameplay",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-04-14 08:00:07",
+            "views": 21240,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/budget-magic-76-demon-stompy-standard",
+                        "date": "2025-04-10",
+                        "format": "standard",
+                        "name": "Ultra-Budget Demon Stompy",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/budget-magic-76-demon-stompy-standard"
+                    },
+                    "decklist_hash": "e89821bf-b76ecd8b-6be9684b-d5fce981-d579493c"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/budget-magic-76-demon-stompy-standard",
+                        "date": "2025-04-09",
+                        "format": "standard",
+                        "name": "Demon Stompy",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/budget-magic-76-demon-stompy-standard"
+                    },
+                    "decklist_hash": "2c298536-01152f9d-7b80378a-f158ae12-2c3d1183"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-04-09",
+                        "format": "standard",
+                        "name": "Demon Stompy",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7029040"
+                    },
+                    "decklist_hash": "2c298536-01152f9d-7b80378a-f158ae12-2c3d1183"
+                }
+            ]
+        }
+    ]
+}

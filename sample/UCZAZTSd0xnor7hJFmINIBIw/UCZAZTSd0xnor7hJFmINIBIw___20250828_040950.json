@@ -1,0 +1,49 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.Upload schedule for Maj...",
+    "tags": [
+        "\"Magic the Gathering\" MTG mtggoldfish"
+    ],
+    "subscribers": 354000,
+    "scrape_time": "2025-08-28 04:09:50",
+    "videos": [
+        {
+            "id": "LAz43Hi5g3k",
+            "title": "16 Goyfs  Against the Odds",
+            "description": "Tarmogoyf might not be what it used to be, but what if it has a bunch of friends?\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/against-the-odds-16-goyfs-historic\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7300008#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/xCbtk\n◼ Purchase this deck (Magic Online): http://mtg.fish/gV4vQ\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#mtghistoric \n\n0:00 Start\n5:35 Match 1\n23:58 Match 2\n39:20 Match 3\n50:38 Match 4\n1:07:15 Match 5",
+            "keywords": [
+                "Magic the Gathering",
+                "Magic Arena",
+                "Gameplay",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-08-27 08:00:07",
+            "views": 27679,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/against-the-odds-16-goyfs-historic",
+                        "date": "2025-08-20",
+                        "format": "historic",
+                        "name": "16 Goyfs",
+                        "url": "https://www.mtggoldfish.com/articles/against-the-odds-16-goyfs-historic"
+                    },
+                    "decklist_hash": "67effdea-7eb3ad9a-ba730772-0f7bb46a-d8a14de6"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-08-20",
+                        "format": "historic",
+                        "name": "16 Goyfs",
+                        "url": "https://www.mtggoldfish.com/deck/7300008"
+                    },
+                    "decklist_hash": "67effdea-7eb3ad9a-ba730772-0f7bb46a-d8a14de6"
+                }
+            ]
+        }
+    ]
+}

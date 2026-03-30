@@ -1,0 +1,93 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "dragonstorm",
+        "educational",
+        "historic",
+        "explorer",
+        "standard",
+        "brawl",
+        "tarkir",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "how to",
+        "tips",
+        "MTG"
+    ],
+    "subscribers": 136000,
+    "scrape_time": "2025-04-12 02:34:08",
+    "videos": [
+        {
+            "id": "ipme27dtKvo",
+            "title": "How to octuple your tokens.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a monowhite tokens deck, ft. Elspeth, Storm Slayer in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro\n01:52 - Deck Tech\n09:21 - vs Felothar, Dawn of the Abzan\n22:32 - vs Helga, Skittish Seer\n29:35 - vs Nicol Bolas, God-Pharaoh\n35:04 - vs Ugin, Eye of the Storms\n38:56 - vs Juri, Master of the Revue\n44:02 - vs Elenda, Saint of Dusk \n49:06 - vs Gonti, Night Minister \n53:17 - vs Yorion, Sky Nomad \n55:51 - vs Ral, Crackling Wit \n1:00:57 - vs Marwyn, the Nurturer \n1:05:56 - vs Elspeth, Storm Slayer\n\nDecklist: \nhttps://aetherhub.com/Deck/elspeth-storm-slayer-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #tarkir #mtg #mtgtarkir #mtgtdm #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "lvd",
+                "dragonstorm",
+                "legend",
+                "planeswalker",
+                "white",
+                "mtga",
+                "elspeth edh",
+                "decks",
+                "guide",
+                "elspeth",
+                "double",
+                "mtg",
+                "tarkir",
+                "mtg arena",
+                "brawl deck",
+                "historic brawl",
+                "deck",
+                "tdm",
+                "elspeth brawl",
+                "octuple",
+                "tokens",
+                "edh",
+                "commander",
+                "quadruple",
+                "token deck",
+                "tokens deck",
+                "monowhite",
+                "ramp",
+                "elspeth commander",
+                "tarkir dragonstorm",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-04-11 09:01:13",
+            "views": 14983,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-04-11",
+                        "exports": 210,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Elspeth, Storm Slayer Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/elspeth-storm-slayer-brawl",
+                        "views": 481
+                    },
+                    "decklist_hash": "03f8c4d0-4b652351-3c733b46-293d9f7f-faffa659"
+                }
+            ]
+        }
+    ]
+}

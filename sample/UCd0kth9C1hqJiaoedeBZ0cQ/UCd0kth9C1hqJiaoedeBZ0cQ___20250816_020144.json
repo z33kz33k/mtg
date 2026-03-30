@@ -1,0 +1,69 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": null,
+    "tags": [],
+    "subscribers": 140000,
+    "scrape_time": "2025-08-16 02:01:44",
+    "videos": [
+        {
+            "id": "Z5ITnhYOVyo",
+            "title": "My spells get a 200+ mana discount.",
+            "description": "Magic: The Gathering Arena gameplay with a Temur Battlecrier combo deck, ft. Devastating Onslaught in Edge of Eternities Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n06:10 - Match 1\n11:57 - Match 2\n18:42 - Match 3\n26:24 - Match 4\n29:54 - Match 5\n34:21 - Match 6\n39:42 - Match 7\n\nDecklist:\nhttps://aetherhub.com/Deck/temur-battlecrier-combo\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGEternities #mtg #magicthegathering",
+            "keywords": [
+                "temur",
+                "dragonhawk",
+                "gameplay",
+                "red",
+                "battlecrier",
+                "lvd",
+                "edge of eternities",
+                "legend",
+                "clone",
+                "onslaught",
+                "mtga",
+                "blue",
+                "draw",
+                "decks",
+                "guide",
+                "Standard MTG",
+                "ferocious",
+                "combo",
+                "standard",
+                "eternity",
+                "mtg",
+                "mtg arena",
+                "trailblazer",
+                "devastating",
+                "deck",
+                "new standard",
+                "eoe",
+                "copy",
+                "green",
+                "eoe standard",
+                "standard deck",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-08-15 09:00:57",
+            "views": 10308,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-08-15",
+                        "exports": 171,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Temur Battlecrier Combo",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/temur-battlecrier-combo",
+                        "views": 506
+                    },
+                    "decklist_hash": "2b55cde0-08fc9d88-906f8209-c13aef68-c7deb904"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,51 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.Upload schedule for Maj...",
+    "tags": [
+        "Magic the Gathering",
+        "MTG",
+        "mtggoldfish"
+    ],
+    "subscribers": 356000,
+    "scrape_time": "2025-09-25 03:12:50",
+    "videos": [
+        {
+            "id": "U-S_qg7DT5c",
+            "title": "I Was Chosen by Valgavoth to Live Forever! | Against the Odds",
+            "description": "What are the odds of living forever in Standard by putting With Great Power... on an indestructible creature like Ketramose? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/against-the-odds-with-great-power-comes-never-dying-to-damage-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7350052#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/5lbFf\n◼ Purchase this deck (Magic Online): http://mtg.fish/fOz5Y\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#mtgstandard \n\n0:00 Start\n5:12 Games",
+            "keywords": [
+                "Magic the Gathering",
+                "Magic Arena",
+                "Gameplay",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-09-24 08:00:08",
+            "views": 25150,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-09-18",
+                        "format": "standard",
+                        "name": "With Great Power...",
+                        "url": "https://www.mtggoldfish.com/deck/7350052"
+                    },
+                    "decklist_hash": "5e66f343-92740f05-8ea1c189-a6e870d4-5507f2dc"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/against-the-odds-with-great-power-comes-never-dying-to-damage-standard",
+                        "date": "2025-09-18",
+                        "format": "standard",
+                        "name": "With Great Power...",
+                        "url": "https://www.mtggoldfish.com/articles/against-the-odds-with-great-power-comes-never-dying-to-damage-standard"
+                    },
+                    "decklist_hash": "5e66f343-92740f05-8ea1c189-a6e870d4-5507f2dc"
+                }
+            ]
+        }
+    ]
+}

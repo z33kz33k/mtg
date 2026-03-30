@@ -1,0 +1,51 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.Upload schedule for Maj...",
+    "tags": [
+        "Magic the Gathering",
+        "MTG",
+        "mtggoldfish"
+    ],
+    "subscribers": 356000,
+    "scrape_time": "2025-09-17 02:45:25",
+    "videos": [
+        {
+            "id": "Hwk77joyIT4",
+            "title": "Why Hasn't Anybody Tried This Vivi Deck?",
+            "description": "Everybody keeps talking about Vivi but nobody is trying this version of Vivi on the ladder when its one of the more ambitious builds :)\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-why-hasn-t-anybody-tried-this-vivi-deck\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7336340#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/9CtUi\n◼ Purchase this deck (Magic Online): http://mtg.fish/xo9Gy\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Magic the Gathering",
+                "Magic Arena",
+                "Gameplay",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-09-16 08:00:07",
+            "views": 12623,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-09-10",
+                        "format": "standard",
+                        "name": "The One True ViVi Deck",
+                        "url": "https://www.mtggoldfish.com/deck/7336340"
+                    },
+                    "decklist_hash": "d5ab7526-c9276928-5d052ae3-148aa5f0-df7ef669"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-why-hasn-t-anybody-tried-this-vivi-deck",
+                        "date": "2025-09-10",
+                        "format": "standard",
+                        "name": "The One True ViVi Deck",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-why-hasn-t-anybody-tried-this-vivi-deck"
+                    },
+                    "decklist_hash": "d5ab7526-c9276928-5d052ae3-148aa5f0-df7ef669"
+                }
+            ]
+        }
+    ]
+}

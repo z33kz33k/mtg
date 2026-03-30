@@ -1,0 +1,53 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "Magic the Gathering",
+        "MTG",
+        "mtggoldfish"
+    ],
+    "subscribers": 337000,
+    "scrape_time": "2025-02-16 10:37:48",
+    "videos": [
+        {
+            "id": "lHseJf8PtNA",
+            "title": "How to Properly Cook Loot",
+            "description": "Loot is absurdly busted as a creature or in a cauldron. Combine that with the exhaust value engine, this deck can get pretty aggressive!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardgkindom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-how-to-properly-cook-loot\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6906882#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/7Uk0I\n◼ Purchase this deck (Magic Online): http://mtg.fish/qNc8T\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Magic the Gathering",
+                "Magic Arena",
+                "Gameplay",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-02-15 08:00:04",
+            "views": 15574,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-02-06",
+                        "format": "standard",
+                        "name": "Loot",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6906882"
+                    },
+                    "decklist_hash": "5b68d95f-cb9ac327-0349870a-da2519cc-21d06d68"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-how-to-properly-cook-loot",
+                        "date": "2025-02-06",
+                        "format": "standard",
+                        "name": "Loot",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-how-to-properly-cook-loot"
+                    },
+                    "decklist_hash": "5b68d95f-cb9ac327-0349870a-da2519cc-21d06d68"
+                }
+            ]
+        }
+    ]
+}

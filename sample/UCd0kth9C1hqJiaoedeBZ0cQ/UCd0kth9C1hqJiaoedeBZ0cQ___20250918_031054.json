@@ -1,0 +1,81 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.This channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "standard",
+        "brawl",
+        "mtg arena",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "deck build",
+        "magic arena",
+        "arena",
+        "edh",
+        "standard deck",
+        "commander",
+        "pioneer",
+        "how to",
+        "MTG"
+    ],
+    "subscribers": 141000,
+    "scrape_time": "2025-09-18 03:10:54",
+    "videos": [
+        {
+            "id": "zeY9X6BWXEY",
+            "title": "The game ended before it even started.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a no land combo deck, ft. Goblin Charbelcher and Balustrade Spy in Timeless. \n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n03:59 - Match 1\n07:01 - Match 2\n08:13 - Match 3\n17:39 - Match 4\n20:42 - Match 5\n21:54 - Match 6\n30:55 - Match 7\n34:18 - Match 8 \n\nDecklist: \nhttps://aetherhub.com/Deck/no-land-combo\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtg #mtgeternities #edgeofeternities",
+            "keywords": [
+                "grief",
+                "gameplay",
+                "oracle",
+                "lvd",
+                "legend",
+                "mtga",
+                "decks",
+                "guide",
+                "combo",
+                "turn 1 win",
+                "mtg",
+                "mtg arena",
+                "sacrifice",
+                "balustrade spy",
+                "thoracle",
+                "turn one",
+                "mdfc",
+                "turn 1",
+                "deck",
+                "eoe",
+                "thassa",
+                "reanimate",
+                "timeless",
+                "charbelcher",
+                "lantern",
+                "fury",
+                "magic the gathering",
+                "no land",
+                "timeless deck"
+            ],
+            "publish_time": "2025-09-17 09:02:00",
+            "views": 13660,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-09-17",
+                        "exports": 39,
+                        "format": "timeless",
+                        "mode": "Bo1",
+                        "name": "No Land Combo",
+                        "url": "https://aetherhub.com/Deck/no-land-combo",
+                        "views": 218
+                    },
+                    "decklist_hash": "5a718c51-a725b424-7ab6e269-d1eb2bed-49fa1c5b"
+                }
+            ]
+        }
+    ]
+}

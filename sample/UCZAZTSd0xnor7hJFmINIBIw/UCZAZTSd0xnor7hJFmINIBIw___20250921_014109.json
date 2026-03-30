@@ -1,0 +1,51 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.Upload schedule for Maj...",
+    "tags": [
+        "Magic the Gathering",
+        "MTG",
+        "mtggoldfish"
+    ],
+    "subscribers": 356000,
+    "scrape_time": "2025-09-21 01:41:09",
+    "videos": [
+        {
+            "id": "2uHcteEsAbM",
+            "title": "Genemorph Imago Might Be the New Simic Hotness",
+            "description": "There's a new Simic legendary we may have overlooked that has popped up in Standard!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic; the Gathering cards (and help support the show) at https;//www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-genemorph-imago-might-be-the-new-simic-hotness\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7346602#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/Sh8xo\n◼ Purchase this deck (Magic Online): http://mtg.fish/GxrSb\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Magic the Gathering",
+                "Magic Arena",
+                "Gameplay",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-09-20 08:00:04",
+            "views": 8953,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-genemorph-imago-might-be-the-new-simic-hotness",
+                        "date": "2025-09-16",
+                        "format": "standard",
+                        "name": "General Lmaogo",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-genemorph-imago-might-be-the-new-simic-hotness"
+                    },
+                    "decklist_hash": "fa6f1ce0-78b8fc5c-cc4b6a1a-6d085cfe-145977dd"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-09-16",
+                        "format": "standard",
+                        "name": "General Lmaogo",
+                        "url": "https://www.mtggoldfish.com/deck/7346602"
+                    },
+                    "decklist_hash": "fa6f1ce0-78b8fc5c-cc4b6a1a-6d085cfe-145977dd"
+                }
+            ]
+        }
+    ]
+}

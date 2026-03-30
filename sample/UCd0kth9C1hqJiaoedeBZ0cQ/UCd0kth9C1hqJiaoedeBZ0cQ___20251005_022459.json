@@ -1,0 +1,83 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.This channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "standard",
+        "brawl",
+        "mtg arena",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "deck build",
+        "magic arena",
+        "arena",
+        "edh",
+        "standard deck",
+        "commander",
+        "pioneer",
+        "how to",
+        "MTG"
+    ],
+    "subscribers": 141000,
+    "scrape_time": "2025-10-05 02:24:59",
+    "videos": [
+        {
+            "id": "Uf3h2VWMd0g",
+            "title": "Swapping the graveyard with the battlefield.",
+            "description": "Magic: The Gathering Arena gameplay with a reanimator deck, ft. Kavaero, Mind-Bitten (Superior Spiderman) and Bringer of the Last Gift in Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:57 - Match 1 \n12:24 - Match 2\n17:33 - Match 3\n23:42 - Match 4\n26:28 - Match 5\n30:02 - Match 6\n33:13 - Match 7\n42:15 - Match 8\n51:57 - Match 9 \n\nDecklist:\nhttps://aetherhub.com/Deck/bringer-of-the-last-gift-reanimator\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGxSpiderMan #mtg #magicthegathering #MTGOM1",
+            "keywords": [
+                "gameplay",
+                "through the omenpaths",
+                "mill",
+                "reanimator",
+                "lvd",
+                "legend",
+                "mtga",
+                "blue",
+                "decks",
+                "guide",
+                "Standard MTG",
+                "standard",
+                "sultai",
+                "mtg spiderman",
+                "mtg",
+                "mtg arena",
+                "living death",
+                "spider-man",
+                "kavaero",
+                "spiderman deck",
+                "last gift",
+                "deck",
+                "new standard",
+                "green",
+                "superior spider-man",
+                "graveyard",
+                "standard deck",
+                "black",
+                "omenpaths",
+                "spiderman",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-10-03 09:00:58",
+            "views": 18410,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-10-03",
+                        "exports": 338,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Bringer of the Last Gift Reanimator",
+                        "url": "https://aetherhub.com/Deck/bringer-of-the-last-gift-reanimator",
+                        "views": 879
+                    },
+                    "decklist_hash": "e22ee717-728ff6b7-bef309c7-80b37d48-a27c1338"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,90 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "aetherdrift",
+        "mtg foundations",
+        "educational",
+        "historic",
+        "explorer",
+        "standard",
+        "brawl",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "how to",
+        "tips",
+        "MTG",
+        "foundations"
+    ],
+    "subscribers": 135000,
+    "scrape_time": "2025-03-01 02:24:23",
+    "videos": [
+        {
+            "id": "_sBoRitCGRs",
+            "title": "The results are ... explosive.",
+            "description": "Magic: The Gathering Arena gameplay with a blue/red artifact combo deck ft. Radiant Lotus in Aetherdrift Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n05:14 - Match 1\n11:30 - Match 2\n17:37 - Match 3\n21:05 - Match 4\n29:00 - Match 5\n33:17 - Match 6\n37:13 - Match 7\n40:14 - Match 8\n\nDecklist:\nhttps://aetherhub.com/Deck/lotus-boom-combo\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #aetherdrift #mtgaetherdrift #mtgdft #mtg #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "boom",
+                "red",
+                "radiant lotus",
+                "lvd",
+                "aetherdrift",
+                "legend",
+                "izzet",
+                "mtga",
+                "blue",
+                "decks",
+                "repurpose",
+                "guide",
+                "boommobile",
+                "Standard MTG",
+                "combo",
+                "standard",
+                "mtg",
+                "mtg arena",
+                "mtg aetherdrift",
+                "synthesizer",
+                "deck",
+                "new standard",
+                "bay",
+                "aetherdrift standard",
+                "standard deck",
+                "dft",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-02-28 09:00:44",
+            "views": 13504,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-02-28",
+                        "exports": 121,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Lotus Boom Combo",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/lotus-boom-combo",
+                        "views": 447
+                    },
+                    "decklist_hash": "eb3fdbf4-9c905151-b340a8d4-c3a5309e-14676e9b"
+                }
+            ]
+        }
+    ]
+}

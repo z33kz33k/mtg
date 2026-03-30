@@ -1,0 +1,92 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "educational",
+        "FINAL FANTASY",
+        "historic",
+        "standard",
+        "brawl",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "pioneer",
+        "how to",
+        "tips",
+        "MTG",
+        "final fantasy"
+    ],
+    "subscribers": 138000,
+    "scrape_time": "2025-06-12 01:23:14",
+    "videos": [
+        {
+            "id": "iiROmusVXeM",
+            "title": "The best way to equip this commander.",
+            "description": "Magic: The Gathering Arena gameplay with a Naya equipment deck, ft. Cloud, Ex-SOLDIER from FINAL FANTASY in Brawl. \n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro\n01:47 - Deck Tech\n09:26 - Match 1\n15:18 - Match 2\n23:01 - Match 3\n29:44 - Match 4\n31:45 - Match 5\n39:33 - Match 6\n45:01 - Match 7\n46:43 - Match 8\n49:25 - Match 9\n54:52 - Match 10\n57:43 - Match 11\n1:04:42 - Match 12\n\nDecklist:\nhttps://aetherhub.com/Deck/cloud-ex-soldier-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGxFINALFANTASY #mtg #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "red",
+                "cloud edh",
+                "FIN",
+                "lvd",
+                "legend",
+                "white",
+                "mtga",
+                "ff",
+                "decks",
+                "equipment deck",
+                "guide",
+                "FINAL FANTASY",
+                "brawl",
+                "FF",
+                "mtg",
+                "cloud brawl",
+                "equip",
+                "mtg arena",
+                "deck",
+                "buster sword",
+                "green",
+                "equipment",
+                "hammer",
+                "edh",
+                "cloud commander",
+                "commander",
+                "sword",
+                "final fantasy",
+                "naya",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-06-11 09:01:13",
+            "views": 11481,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-06-11",
+                        "exports": 237,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Cloud, Ex-SOLDIER Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/cloud-ex-soldier-brawl",
+                        "views": 527
+                    },
+                    "decklist_hash": "938368bd-d64bdbc3-f7a0c456-11a5e541-8f0885db"
+                }
+            ]
+        }
+    ]
+}

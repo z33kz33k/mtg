@@ -1,0 +1,91 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "mtg foundations",
+        "educational",
+        "historic",
+        "explorer",
+        "standard",
+        "brawl",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "how to",
+        "tips",
+        "MTG",
+        "foundations"
+    ],
+    "subscribers": 132000,
+    "scrape_time": "2024-12-05 00:58:51",
+    "videos": [
+        {
+            "id": "jBKVFPtWrmc",
+            "title": "Fynn is back in Standard ?!",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a black/green Deathtouch poison deck, ft. Fynn, the Fangbearer in Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n03:45 - Match 1\n07:38 - Match 2\n09:34 - Match 3\n14:32 - Match 4\n15:07 - Match 5\n19:48 - Match 6\n24:18 - Match 7\n27:24 - Match 8\n29:03 - Match 9\n34:30 - Match 10\n36:23 - Match 11\n40:05 - Match 12\n\nDecklist:\nhttps://aetherhub.com/Deck/fynn-toxic-deathtouch\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtgfoundations #mtgfdn #mtg #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "standard toxic",
+                "lvd",
+                "fdn",
+                "standard poison",
+                "legend",
+                "mtg foundations",
+                "poison deck",
+                "mtga",
+                "decks",
+                "guide",
+                "fynn deck",
+                "Standard MTG",
+                "fangbearer",
+                "standard",
+                "mtg",
+                "mtg arena",
+                "deathtouch",
+                "toxic deck",
+                "deck",
+                "new standard",
+                "fnd",
+                "green",
+                "poison",
+                "standard deck",
+                "foundations standard",
+                "black",
+                "toxic",
+                "foundations",
+                "magic the gathering"
+            ],
+            "publish_time": "2024-12-04 09:00:43",
+            "views": 13095,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2024-12-04",
+                        "exports": 316,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Fynn Toxic Deathtouch",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/fynn-toxic-deathtouch",
+                        "views": 441
+                    },
+                    "decklist_hash": "ef9c0b86-fc331f8f-a60b5507-b19b6868-508222db"
+                }
+            ]
+        }
+    ]
+}

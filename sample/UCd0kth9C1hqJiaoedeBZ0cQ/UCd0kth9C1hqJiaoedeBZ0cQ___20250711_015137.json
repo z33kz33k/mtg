@@ -1,0 +1,91 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "educational",
+        "FINAL FANTASY",
+        "historic",
+        "standard",
+        "brawl",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "pioneer",
+        "how to",
+        "tips",
+        "MTG",
+        "final fantasy"
+    ],
+    "subscribers": 139000,
+    "scrape_time": "2025-07-11 01:51:37",
+    "videos": [
+        {
+            "id": "o5dpYfH9QFQ",
+            "title": "This deck is Legendary.",
+            "description": "Magic: The Gathering Arena gameplay with a Legendary deck, ft. Serah Farron as commander in Brawl. \n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro\n01:12 - Deck Tech\n07:56 - vs Vivi Ornitier\n13:01 - vs Bristly Bill, Spine Sower\n19:00 - vs Judge Magister Gabranth\n27:51 - vs Elspeth, Storm Slayer\n34:27 - vs Clive, Ifrit's Dominant\n40:04 - vs Choco, Seeker of Paradise\n45:38 - vs Kellan, Inquisitive Prodigy\n51:11 - vs Aragorn, the Uniter\n55:52 - vs Felothar, Dawn of the Abzan\n59:25 - vs Minwu, White Mage\n1:04:15 - vs Terra, Magical Adept\n1:07:41 - vs Betor, Kin to All\n\nDecklist:\nhttps://aetherhub.com/Deck/serah-farron-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGxFINALFANTASY #mtg #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "FIN",
+                "lvd",
+                "selesnya",
+                "serah commander",
+                "legend",
+                "white",
+                "mtga",
+                "ff",
+                "decks",
+                "serah edh",
+                "guide",
+                "FINAL FANTASY",
+                "legends",
+                "brawl",
+                "FF",
+                "mtg",
+                "mtg arena",
+                "legend deck",
+                "serah FF",
+                "serah brawl",
+                "deck",
+                "green",
+                "Crystallized Serah",
+                "edh",
+                "commander",
+                "aggro",
+                "legendary",
+                "final fantasy",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-07-10 09:01:24",
+            "views": 14716,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-07-10",
+                        "exports": 264,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Serah Farron Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/serah-farron-brawl",
+                        "views": 903
+                    },
+                    "decklist_hash": "9147b778-ffb10cbb-1555c08d-28207507-a788eed1"
+                }
+            ]
+        }
+    ]
+}

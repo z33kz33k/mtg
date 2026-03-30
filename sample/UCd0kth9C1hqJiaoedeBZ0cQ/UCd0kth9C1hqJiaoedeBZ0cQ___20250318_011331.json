@@ -1,0 +1,92 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "aetherdrift",
+        "mtg foundations",
+        "educational",
+        "historic",
+        "explorer",
+        "standard",
+        "brawl",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "how to",
+        "tips",
+        "MTG",
+        "foundations"
+    ],
+    "subscribers": 135000,
+    "scrape_time": "2025-03-18 01:13:31",
+    "videos": [
+        {
+            "id": "KU6xOCquIgE",
+            "title": "Going prehistoric in Standard.",
+            "description": "Magic: The Gathering Arena gameplay with a Red/Green Dinosaur deck in Aetherdrift Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n06:02 - Match 1\n09:32 - Match 2\n17:04 - Match 3\n19:03 - Match 4\n25:11 - Match 5\n29:27 - Match 6\n32:20 - Match 7\n34:24 - Match 8\n\nDecklist:\nhttps://aetherhub.com/Deck/aetherdrift-dinosaurs\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #aetherdrift #mtgaetherdrift #mtgdft #mtg #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "dinosaurs",
+                "red",
+                "lvd",
+                "aetherdrift",
+                "legend",
+                "mtga",
+                "decks",
+                "dinosaur deck",
+                "guide",
+                "Standard MTG",
+                "standard",
+                "gruul",
+                "mtg",
+                "mtg arena",
+                "mtg aetherdrift",
+                "dinosaur",
+                "haste",
+                "deck",
+                "new standard",
+                "rex",
+                "green",
+                "dino",
+                "aetherdrift standard",
+                "ghalta",
+                "standard deck",
+                "aggro",
+                "ramp",
+                "dft",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-03-17 10:00:30",
+            "views": 11703,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-03-17",
+                        "exports": 377,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Aetherdrift Dinosaurs",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/aetherdrift-dinosaurs",
+                        "views": 894
+                    },
+                    "decklist_hash": "7b190e00-ba932c5c-92dea65f-5b92f75e-156e3608"
+                }
+            ]
+        }
+    ]
+}

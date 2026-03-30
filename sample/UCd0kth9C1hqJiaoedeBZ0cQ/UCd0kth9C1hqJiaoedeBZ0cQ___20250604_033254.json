@@ -1,0 +1,91 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "educational",
+        "FINAL FANTASY",
+        "historic",
+        "standard",
+        "brawl",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "pioneer",
+        "how to",
+        "tips",
+        "MTG",
+        "final fantasy"
+    ],
+    "subscribers": 137000,
+    "scrape_time": "2025-06-04 03:32:54",
+    "videos": [
+        {
+            "id": "tqLsU0nRvY0",
+            "title": "This common bends the rules of Magic.",
+            "description": "Magic: The Gathering Arena gameplay with a combo deck ft. Trumpeting Carnosaur and Temur Tawnyback in Dragonstorm Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:13 - Match 1\n06:33 - Match 2\n10:21 - Match 3\n13:12 - Match 4\n15:07 - Match 5\n20:30 - Match 6\n24:45 - Match 7\n28:44 - Match 8\n31:08 - Match 9\n\nDecklist:\nhttps://aetherhub.com/Deck/carnosaur-cascade-combo\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #tarkir #mtg #mtgtarkir #mtgtdm #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "carnosaur",
+                "red",
+                "tarkir standard",
+                "trumpeting",
+                "lvd",
+                "dragonstorm",
+                "legend",
+                "tdm standard",
+                "mtga",
+                "blue",
+                "decks",
+                "guide",
+                "Standard MTG",
+                "duplicate",
+                "combo",
+                "standard",
+                "cascade",
+                "mtg",
+                "tarkir",
+                "mtg arena",
+                "deck",
+                "tdm",
+                "new standard",
+                "green",
+                "discover",
+                "tawnyback",
+                "standard deck",
+                "tarkir dragonstorm",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-06-03 09:01:33",
+            "views": 17532,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-06-03",
+                        "exports": 398,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Carnosaur Cascade Combo",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/carnosaur-cascade-combo",
+                        "views": 1308
+                    },
+                    "decklist_hash": "5684ec9c-18a93f9a-f543eba6-c1d4b02e-3beb9c1d"
+                }
+            ]
+        }
+    ]
+}

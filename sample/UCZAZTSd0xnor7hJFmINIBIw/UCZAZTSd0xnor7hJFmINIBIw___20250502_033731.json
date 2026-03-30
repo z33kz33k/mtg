@@ -1,0 +1,53 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "Magic the Gathering",
+        "MTG",
+        "mtggoldfish"
+    ],
+    "subscribers": 343000,
+    "scrape_time": "2025-05-02 03:37:31",
+    "videos": [
+        {
+            "id": "n7FCZP8xqZg",
+            "title": "Elesh Norn, Rhinos, and Birds",
+            "description": "Behind every Praetor is a Rhino and Swan? Lets see how much Elesh Norn enjoys Tarkir's Rhinos!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-elesh-norn-rhinos-and-birds\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7069043#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/3nDqy\n◼ Purchase this deck (Magic Online): \n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Magic the Gathering",
+                "Magic Arena",
+                "Gameplay",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-05-01 08:00:04",
+            "views": 16182,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-elesh-norn-rhinos-and-birds",
+                        "date": "2025-04-28",
+                        "format": "standard",
+                        "name": "Bird n Rhino",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-elesh-norn-rhinos-and-birds"
+                    },
+                    "decklist_hash": "350785c2-31f6ff19-54508ee4-16b629ad-7b7a591a"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-04-28",
+                        "format": "standard",
+                        "name": "Bird n Rhino",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7069043"
+                    },
+                    "decklist_hash": "350785c2-31f6ff19-54508ee4-16b629ad-7b7a591a"
+                }
+            ]
+        }
+    ]
+}

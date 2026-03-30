@@ -1,0 +1,49 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": null,
+    "tags": [],
+    "subscribers": 352000,
+    "scrape_time": "2025-08-14 02:37:45",
+    "videos": [
+        {
+            "id": "Af1CTEKiezo",
+            "title": "Teaching Arena Zoomers About Strip Mine  Against the Odds",
+            "description": "Wizards put Strip Mine on MTG Arena for some reason, and you know what that means...\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/against-the-odds-teaching-arena-zoomers-about-strip-mine-timeless\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7265361#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/WNu4T\n◼ Purchase this deck (Magic Online): http://mtg.fish/lLnDN\n\n#MTG\n#MagicTheGathering\n#MTGO\n#mtgtimeless \n\n0:00 Start\n4:23 Match 1\n17:16 Match 2\n27:06 Match 3\n36:00 Match 4\n42:51 Match 5",
+            "keywords": [
+                "Magic the Gathering",
+                "Magic Arena",
+                "Gameplay",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-08-13 08:00:07",
+            "views": 35605,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-07-31",
+                        "format": "timeless",
+                        "name": "Teaching Arena Zoomers about Strip Mine",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7265361"
+                    },
+                    "decklist_hash": "7144dbf6-5a726550-a9a96eda-23bfd71f-dbb3110a"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/against-the-odds-teaching-arena-zoomers-about-strip-mine-timeless",
+                        "date": "2025-07-31",
+                        "format": "timeless",
+                        "name": "Teaching Arena Zoomers about Strip Mine",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/against-the-odds-teaching-arena-zoomers-about-strip-mine-timeless"
+                    },
+                    "decklist_hash": "7144dbf6-5a726550-a9a96eda-23bfd71f-dbb3110a"
+                }
+            ]
+        }
+    ]
+}

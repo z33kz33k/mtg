@@ -1,0 +1,51 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.Upload schedule for Maj...",
+    "tags": [
+        "Magic the Gathering",
+        "MTG",
+        "mtggoldfish"
+    ],
+    "subscribers": 356000,
+    "scrape_time": "2025-09-20 02:19:44",
+    "videos": [
+        {
+            "id": "3qWto-jE7SE",
+            "title": "When All Your Creatures are a Planeswalker, Actually | Much Abrew",
+            "description": "What if you could turn all of your creatures into Grist, the Hunger Tide and then use them to make infinite Insects? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/much-abrew-grist-s-first-day-of-class-historic\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7339383#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/xXVAy\n◼ Purchase this deck (Magic Online): http://mtg.fish/Zlnpd\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#mtghistoric \n\n0:00 Start\n5:28 Match 1\n12:16 Match 2\n25:33 Match 3\n36:28 Match 4\n45:22 Match 5",
+            "keywords": [
+                "Magic the Gathering",
+                "Magic Arena",
+                "Gameplay",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-09-19 08:00:15",
+            "views": 17755,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-09-11",
+                        "format": "historic",
+                        "name": "Grist's First Day of Class",
+                        "url": "https://www.mtggoldfish.com/deck/7339383"
+                    },
+                    "decklist_hash": "8529f96b-80e001ab-84eeceec-92d3fc2b-a1240566"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/much-abrew-grist-s-first-day-of-class-historic",
+                        "date": "2025-09-11",
+                        "format": "historic",
+                        "name": "Grist's First Day of Class",
+                        "url": "https://www.mtggoldfish.com/articles/much-abrew-grist-s-first-day-of-class-historic"
+                    },
+                    "decklist_hash": "8529f96b-80e001ab-84eeceec-92d3fc2b-a1240566"
+                }
+            ]
+        }
+    ]
+}

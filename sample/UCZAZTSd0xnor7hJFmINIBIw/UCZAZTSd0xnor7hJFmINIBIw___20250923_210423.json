@@ -1,0 +1,88 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.Upload schedule for Maj...",
+    "tags": [
+        "Magic the Gathering",
+        "MTG",
+        "mtggoldfish"
+    ],
+    "subscribers": 356000,
+    "scrape_time": "2025-09-23 21:04:23",
+    "videos": [
+        {
+            "id": "1XrORbgYAxM",
+            "title": "The More Cards I Discard the More Damage I Deal | $55 Budget Magic",
+            "description": "Hobgoblin, Mantled Marauder is one of the scariest uncommons from Spider-Man, potentially dealing tons of damage with haste, so let's discard some cards!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/budget-magic-50-izzet-hobgoblin-discard-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7343762#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/Uvluk\n◼ Purchase this deck (Magic Online): http://mtg.fish/pxs5D\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Magic the Gathering",
+                "Magic Arena",
+                "Gameplay",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-09-22 08:00:10",
+            "views": 35243,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/budget-magic-50-izzet-hobgoblin-discard-standard",
+                        "date": "2025-09-14",
+                        "format": "standard",
+                        "name": "Izzet Discard",
+                        "url": "https://www.mtggoldfish.com/articles/budget-magic-50-izzet-hobgoblin-discard-standard"
+                    },
+                    "decklist_hash": "2e91d402-90c6d79e-0d4d00ac-ee238923-89a3a262"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-09-14",
+                        "format": "standard",
+                        "name": "Izzet Discard",
+                        "url": "https://www.mtggoldfish.com/deck/7343762"
+                    },
+                    "decklist_hash": "2e91d402-90c6d79e-0d4d00ac-ee238923-89a3a262"
+                }
+            ]
+        },
+        {
+            "id": "HzPpWY7G40Y",
+            "title": "Green Goblin & Doc Ock's Villainous Standard Plans!",
+            "description": "Norman Osborn and Doctor Octopus are looking to take their Villainous game plan to Standard. Also, Fleem rules.\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-green-goblin-doc-ock-s-villainous-standard-plans\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7349253#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/UcOY5\n◼ Purchase this deck (Magic Online): http://mtg.fish/cXIY3\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Magic the Gathering",
+                "Magic Arena",
+                "Gameplay",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-09-23 08:00:06",
+            "views": 4848,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-green-goblin-doc-ock-s-villainous-standard-plans",
+                        "date": "2025-09-18",
+                        "format": "standard",
+                        "name": "VILLAINOUS",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-green-goblin-doc-ock-s-villainous-standard-plans"
+                    },
+                    "decklist_hash": "b7bd6450-e3783bed-ea7c8308-409e29bd-d847566d"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-09-18",
+                        "format": "standard",
+                        "name": "VILLAINOUS",
+                        "url": "https://www.mtggoldfish.com/deck/7349253"
+                    },
+                    "decklist_hash": "b7bd6450-e3783bed-ea7c8308-409e29bd-d847566d"
+                }
+            ]
+        }
+    ]
+}

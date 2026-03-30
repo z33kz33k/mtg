@@ -1,0 +1,49 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.Upload schedule for Maj...",
+    "tags": [
+        "\"Magic the Gathering\" MTG mtggoldfish"
+    ],
+    "subscribers": 354000,
+    "scrape_time": "2025-08-30 04:18:16",
+    "videos": [
+        {
+            "id": "rJYin5EsnjM",
+            "title": "I Built a Deck to Never Lose to Vivi Cauldron  Much Abrew",
+            "description": "Is an endless stream of annoying tax cards and some targeted hate the answer to Vivi Cauldron in Standard? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/much-abrew-death-and-taxes-in-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7287613#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/1W7RO\n◼ Purchase this deck (Magic Online): \n\n#MTG\n#MagicTheGathering\n#MagicArena\n#mtgstandard \n\n0:00 Start\n4:25 Match 1\n14:41 Match 2\n21:54 Match 3\n33:48 Match 4\n45:27 Match 5",
+            "keywords": [
+                "Magic the Gathering",
+                "Magic Arena",
+                "Gameplay",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-08-29 08:00:10",
+            "views": 24924,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-08-13",
+                        "format": "standard",
+                        "name": "Death and Taxes",
+                        "url": "https://www.mtggoldfish.com/deck/7287613"
+                    },
+                    "decklist_hash": "edfab9dd-cc28a004-d8ce3016-2e126e38-4303c73c"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/much-abrew-death-and-taxes-in-standard",
+                        "date": "2025-08-13",
+                        "format": "standard",
+                        "name": "Death and Taxes",
+                        "url": "https://www.mtggoldfish.com/articles/much-abrew-death-and-taxes-in-standard"
+                    },
+                    "decklist_hash": "edfab9dd-cc28a004-d8ce3016-2e126e38-4303c73c"
+                }
+            ]
+        }
+    ]
+}

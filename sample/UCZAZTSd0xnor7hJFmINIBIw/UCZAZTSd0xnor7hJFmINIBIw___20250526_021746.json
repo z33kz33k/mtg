@@ -1,0 +1,92 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "Magic the Gathering",
+        "MTG",
+        "mtggoldfish"
+    ],
+    "subscribers": 345000,
+    "scrape_time": "2025-05-26 02:17:46",
+    "videos": [
+        {
+            "id": "FTZH8uiv_8c",
+            "title": "Does Anybody Remember Selesnya?",
+            "description": "Toolbox decks are always fun as every decision is extremely rewarding or punishing! Thanks to Brightglass Gearhulk, this Selesnya deck is loaded with utility cards to help us pick apart this Artifact and Enchantment filled meta! \n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkigndom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-does-anybody-remember-selesnya\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7120611#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/U4qzm\n◼ Purchase this deck (Magic Online): http://mtg.fish/yisxL\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Magic the Gathering",
+                "Magic Arena",
+                "Gameplay",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-05-24 19:00:03",
+            "views": 19607,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-05-22",
+                        "format": "standard",
+                        "name": "selesnya?",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7120611"
+                    },
+                    "decklist_hash": "1d2dda6e-2f3fdc91-72933068-8049f93d-71362590"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-does-anybody-remember-selesnya",
+                        "date": "2025-05-22",
+                        "format": "standard",
+                        "name": "selesnya?",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-does-anybody-remember-selesnya"
+                    },
+                    "decklist_hash": "1d2dda6e-2f3fdc91-72933068-8049f93d-71362590"
+                }
+            ]
+        },
+        {
+            "id": "TGLYcJBkrxo",
+            "title": "Bounce EVERYTHING (Yes, Even the Lands)  Brewer's Kitchen",
+            "description": "Brewer's Kitchen bounces absolutely everything\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/bounce-everything-yes-even-the-lands-brewer-s-kitchen\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7117956#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/crAbk\n◼ Purchase this deck (Magic Online): http://mtg.fish/nlUju\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGHistoric",
+            "keywords": [
+                "Magic the Gathering",
+                "Magic Arena",
+                "Gameplay",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-05-25 08:00:02",
+            "views": 23121,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "Brewer's Kitchen",
+                        "date": "2025-05-20",
+                        "format": "historic",
+                        "name": "Bounce EVERYTHING",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7117956"
+                    },
+                    "decklist_hash": "60800f2b-11782e8a-6e56bc43-0c00b499-ffeaa8f1"
+                },
+                {
+                    "metadata": {
+                        "author": "Brewer's Kitchen",
+                        "container_url": "https://www.mtggoldfish.com/articles/bounce-everything-yes-even-the-lands-brewer-s-kitchen",
+                        "date": "2025-05-20",
+                        "format": "historic",
+                        "name": "Bounce EVERYTHING",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/bounce-everything-yes-even-the-lands-brewer-s-kitchen"
+                    },
+                    "decklist_hash": "60800f2b-11782e8a-6e56bc43-0c00b499-ffeaa8f1"
+                }
+            ]
+        }
+    ]
+}

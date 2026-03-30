@@ -1,0 +1,93 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "aetherdrift",
+        "mtg foundations",
+        "educational",
+        "historic",
+        "explorer",
+        "standard",
+        "brawl",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "how to",
+        "tips",
+        "MTG",
+        "foundations"
+    ],
+    "subscribers": 135000,
+    "scrape_time": "2025-03-12 02:07:53",
+    "videos": [
+        {
+            "id": "OORWyKrL18Y",
+            "title": "I made a godlike keyword soup.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a Soulflayer deck ft. Ketramose in Explorer. \n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n05:40 - Match 1\n16:30 - Match 2\n18:14 - Match 3\n23:47 - Match 4\n28:25 - Match 5\n31:57 - Match 6\n37:42 - Match 7\n\nDecklist:\nhttps://aetherhub.com/Deck/abzan-ketramose-soulflayer\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtg #magicthegathering #mtgaetherdrift",
+            "keywords": [
+                "gameplay",
+                "lvd",
+                "delve",
+                "exile",
+                "legend",
+                "soulflayer",
+                "white",
+                "mtga",
+                "scavengers",
+                "decks",
+                "indestructible",
+                "guide",
+                "explorer",
+                "hexproof",
+                "mtg",
+                "pioneer deck",
+                "mtg arena",
+                "abzan",
+                "deck",
+                "keyword",
+                "green",
+                "urborg",
+                "zetalpa",
+                "lifelink",
+                "graveyard",
+                "ketramose",
+                "pioneer masters",
+                "pioneer",
+                "black",
+                "double strike",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-03-11 10:00:24",
+            "views": 12022,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-03-11",
+                        "exports": 64,
+                        "format": "explorer",
+                        "mode": "Bo1",
+                        "name": "Abzan Ketramose Soulflayer",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/abzan-ketramose-soulflayer",
+                        "views": 284
+                    },
+                    "decklist_hash": "d76c5f58-9f3df158-2d9222c7-80441338-7570cd57"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,82 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.This channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "\"Magic the gathering\" MTG gameplay standard \"card game\" strategy \"magic arena\" arena \"mtg arena\" historic tutorial \"how to\" tips mythic deck educational braw..."
+    ],
+    "subscribers": 141000,
+    "scrape_time": "2025-08-29 02:54:19",
+    "videos": [
+        {
+            "id": "jzXjOHx7Tjo",
+            "title": "This card was a mistake.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a combo deck, featuring Val, Marooned Surveyor as commander in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro\n02:45 - Deck Tech\n08:56 - vs Marchesa, Dealer of Death\n13:10 - vs Tannuk, Memorial Ensign\n19:39 - vs Saruman of Many Colors\n30:00 - vs Vivi Ornitier\n34:41 - vs Ulalek, Fused Atrocity\n39:38 - vs Hearthhull, the Worldseed\n41:27 - vs Nahiri, Heir of the Ancients\n45:35 - vs Rona, Herald of Invasion\n\nDecklist: \nhttps://aetherhub.com/Deck/val-marooned-surveyor-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtgeternities  #mtg #magicthegathering",
+            "keywords": [
+                "moon dancer",
+                "gameplay",
+                "marooned",
+                "red",
+                "lvd",
+                "legend",
+                "deck tech",
+                "val",
+                "Trelasarra",
+                "LegenVD",
+                "educational",
+                "white",
+                "mtga",
+                "decks",
+                "guide",
+                "arena historic",
+                "historic",
+                "combo",
+                "tutor",
+                "magic",
+                "mtg",
+                "mtg arena",
+                "LVD",
+                "brawl deck",
+                "lifegain",
+                "multiplayer",
+                "strategy",
+                "cards",
+                "historic brawl",
+                "deck",
+                "combo deck",
+                "card game",
+                "green",
+                "alchemy",
+                "magic arena",
+                "arena",
+                "live",
+                "edh",
+                "commander",
+                "online",
+                "commentary",
+                "tips",
+                "MTG",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-08-28 09:01:18",
+            "views": 9336,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-08-28",
+                        "exports": 103,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Val, Marooned Surveyor Brawl",
+                        "url": "https://aetherhub.com/Deck/val-marooned-surveyor-brawl",
+                        "views": 323
+                    },
+                    "decklist_hash": "6cc3ecff-5c421151-47e8317f-05853a46-05b4f331"
+                }
+            ]
+        }
+    ]
+}

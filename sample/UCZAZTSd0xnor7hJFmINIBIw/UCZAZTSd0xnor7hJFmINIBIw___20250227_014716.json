@@ -1,0 +1,92 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "Magic the Gathering",
+        "MTG",
+        "mtggoldfish"
+    ],
+    "subscribers": 338000,
+    "scrape_time": "2025-02-27 01:47:16",
+    "videos": [
+        {
+            "id": "yft68NGT3xM",
+            "title": "Riverchurn Crab Mill Might Be Good?",
+            "description": "Riverchurn Monument and a ton of crabs might be what Mill needs to move up on the playability charts?!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-riverchurn-crab-mill-might-be-good\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6932047#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/6paDi\n◼ Purchase this deck (Magic Online): http://mtg.fish/ixmdf\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Magic the Gathering",
+                "Magic Arena",
+                "Gameplay",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-02-25 08:00:09",
+            "views": 24068,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-02-19",
+                        "format": "standard",
+                        "name": "Crab Churn",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6932047"
+                    },
+                    "decklist_hash": "452dc648-0d06e164-ca834d5b-b04129cc-12158fd1"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-riverchurn-crab-mill-might-be-good",
+                        "date": "2025-02-19",
+                        "format": "standard",
+                        "name": "Crab Churn",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-riverchurn-crab-mill-might-be-good"
+                    },
+                    "decklist_hash": "452dc648-0d06e164-ca834d5b-b04129cc-12158fd1"
+                }
+            ]
+        },
+        {
+            "id": "qdLElJsYyrQ",
+            "title": "Birthing Pod, but for Artifacts  Against the Odds",
+            "description": "What are the odds of winning in Aetherdrift Standard by using Repurposing Bay to tutor up some wild artifacts? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/against-the-odds-repurposing-bay-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6915063#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/ZcnBt\n◼ Purchase this deck (Magic Online): http://mtg.fish/PAiJr\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#mtgstandard \n\n0:00 Start\n5:20 Games",
+            "keywords": [
+                "Magic the Gathering",
+                "Magic Arena",
+                "Gameplay",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-02-26 08:00:06",
+            "views": 25174,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/against-the-odds-repurposing-bay-standard",
+                        "date": "2025-02-10",
+                        "format": "standard",
+                        "name": "Repurposing Bay",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/against-the-odds-repurposing-bay-standard"
+                    },
+                    "decklist_hash": "41550159-fdadb222-27ddcb4a-de84be68-e021031e"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-02-10",
+                        "format": "standard",
+                        "name": "Repurposing Bay",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6915063"
+                    },
+                    "decklist_hash": "41550159-fdadb222-27ddcb4a-de84be68-e021031e"
+                }
+            ]
+        }
+    ]
+}

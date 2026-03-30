@@ -1,0 +1,83 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.This channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "standard",
+        "brawl",
+        "mtg arena",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "deck build",
+        "magic arena",
+        "arena",
+        "edh",
+        "standard deck",
+        "commander",
+        "pioneer",
+        "how to",
+        "MTG"
+    ],
+    "subscribers": 141000,
+    "scrape_time": "2025-09-26 02:02:48",
+    "videos": [
+        {
+            "id": "s8bAMcK1U9c",
+            "title": "This deck got even more broken.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a Strip Mine land destruction deck, ft.Crop Rotation and Exploration in Timeless. \n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:54 - Match 1\n08:15 - Match 2\n16:15 - Match 3\n23:57 - Match 4\n29:30 - Match 5\n31:30 - Match 6\n34:26 - Match 7\n36:33 - Match 8\n\nDecklist: \nhttps://aetherhub.com/Deck/turbo-strip-mine-land-destruction\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtg #mtgeternities",
+            "keywords": [
+                "ancient tomb",
+                "gameplay",
+                "prison deck",
+                "banned",
+                "lvd",
+                "edge of eternities",
+                "legend",
+                "mtga",
+                "decks",
+                "icetill explorer",
+                "exploration",
+                "guide",
+                "extra land",
+                "mtg",
+                "land destruction",
+                "mtg arena",
+                "deck",
+                "strip mine",
+                "eoe",
+                "turbo strip mine",
+                "timeless",
+                "green",
+                "prison",
+                "monogreen",
+                "turbo",
+                "ramp",
+                "crop rotation",
+                "stellar sights",
+                "magic the gathering",
+                "azusa",
+                "timeless deck"
+            ],
+            "publish_time": "2025-09-25 09:01:36",
+            "views": 11300,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-09-25",
+                        "exports": 86,
+                        "format": "timeless",
+                        "mode": "Bo1",
+                        "name": "Turbo Strip Mine Land Destruction",
+                        "url": "https://aetherhub.com/Deck/turbo-strip-mine-land-destruction",
+                        "views": 268
+                    },
+                    "decklist_hash": "1f263e53-26c52602-e823d73b-4d7d7663-578a10c4"
+                }
+            ]
+        }
+    ]
+}

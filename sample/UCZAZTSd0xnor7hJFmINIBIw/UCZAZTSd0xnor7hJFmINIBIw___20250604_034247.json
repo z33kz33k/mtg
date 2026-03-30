@@ -1,0 +1,53 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "Magic the Gathering",
+        "MTG",
+        "mtggoldfish"
+    ],
+    "subscribers": 346000,
+    "scrape_time": "2025-06-04 03:42:47",
+    "videos": [
+        {
+            "id": "A3B5YxGQfLA",
+            "title": "Dimir Oculus Works in Older Formats, Why Not Standard?",
+            "description": "Dimir Oculus works nicely in older formats but what about Standard?\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) a https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-dimir-oculus-works-in-older-formats-why-not-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7140985#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/0Tft5\n◼ Purchase this deck (Magic Online): http://mtg.fish/4MqAe\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Magic the Gathering",
+                "Magic Arena",
+                "Gameplay",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-06-03 08:00:06",
+            "views": 11625,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-05-31",
+                        "format": "standard",
+                        "name": "Dimir Oculus Vren",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7140985"
+                    },
+                    "decklist_hash": "a34cafba-98a1be41-dc0e85af-e44218c0-810ca6ca"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-dimir-oculus-works-in-older-formats-why-not-standard",
+                        "date": "2025-05-31",
+                        "format": "standard",
+                        "name": "Dimir Oculus Vren",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-dimir-oculus-works-in-older-formats-why-not-standard"
+                    },
+                    "decklist_hash": "a34cafba-98a1be41-dc0e85af-e44218c0-810ca6ca"
+                }
+            ]
+        }
+    ]
+}

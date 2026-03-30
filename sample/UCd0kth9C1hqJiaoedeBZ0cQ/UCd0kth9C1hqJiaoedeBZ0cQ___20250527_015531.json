@@ -1,0 +1,90 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "educational",
+        "FINAL FANTASY",
+        "historic",
+        "standard",
+        "brawl",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "pioneer",
+        "how to",
+        "tips",
+        "MTG",
+        "final fantasy"
+    ],
+    "subscribers": 137000,
+    "scrape_time": "2025-05-27 01:55:31",
+    "videos": [
+        {
+            "id": "n4unaSCrUms",
+            "title": "I refuse to pay for my equip costs.",
+            "description": "Magic: The Gathering Arena gameplay with a boros equipment deck in Tarkir Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n03:28 - Match 1\n07:30 - Match 2\n11:48 - Match 3\n15:02 - Match 4\n16:45 - Match 5\n20:12 - Match 6 \n23:55 - Match 7\n27:10 - Match 8\n30:43 - Match 9\n35:11 - Match 10\n38:29 - Match 11\n41:13 - Match 12\n\nDecklist:\nhttps://aetherhub.com/Deck/tarkir-boros-equipment\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #tarkir #mtg #mtgtarkir #mtgtdm #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "red",
+                "tarkir standard",
+                "lvd",
+                "dragonstorm",
+                "legend",
+                "aetherspark",
+                "tdm standard",
+                "axe",
+                "white",
+                "mtga",
+                "nahiri",
+                "decks",
+                "equipment deck",
+                "guide",
+                "boros",
+                "Standard MTG",
+                "standard",
+                "mtg",
+                "tarkir",
+                "mtg arena",
+                "astor",
+                "deck",
+                "tdm",
+                "new standard",
+                "equipment",
+                "standard deck",
+                "tarkir dragonstorm",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-05-26 09:01:18",
+            "views": 14660,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-05-26",
+                        "exports": 328,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Tarkir Boros Equipment",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/tarkir-boros-equipment",
+                        "views": 816
+                    },
+                    "decklist_hash": "bb82b398-0d97cc57-c06ca374-ef935aac-0db02581"
+                }
+            ]
+        }
+    ]
+}

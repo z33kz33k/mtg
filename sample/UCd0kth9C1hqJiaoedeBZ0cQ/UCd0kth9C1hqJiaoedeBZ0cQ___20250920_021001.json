@@ -1,0 +1,87 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.This channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "standard",
+        "brawl",
+        "mtg arena",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "deck build",
+        "magic arena",
+        "arena",
+        "edh",
+        "standard deck",
+        "commander",
+        "pioneer",
+        "how to",
+        "MTG"
+    ],
+    "subscribers": 141000,
+    "scrape_time": "2025-09-20 02:10:01",
+    "videos": [
+        {
+            "id": "b3jeo1M0bGQ",
+            "title": "The green goblin is actually grixis.",
+            "description": "Magic: The Gathering Arena gameplay with a Grixis Green Goblin Mayhem deck, ft. Fleem, Goben's Creation in Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n08:05 - Match 1 \n12:51 - Match 2\n16:48 - Match 3\n20:57 - Match 4\n26:43 - Match 5\n31:36 - Match 6\n37:20 - Match 7\n42:39 - Match 8\n\nDecklist:\nhttps://aetherhub.com/Deck/green-goblin-grixis-mayhem\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGxSpiderMan #mtg #magicthegathering #MTGOM1",
+            "keywords": [
+                "gameplay",
+                "through the omenpaths",
+                "red",
+                "lvd",
+                "grixis mayhem",
+                "legend",
+                "standard mayhem",
+                "goben",
+                "goblin",
+                "standard spiders",
+                "madness",
+                "mtga",
+                "discard",
+                "blue",
+                "green goblin",
+                "decks",
+                "guide",
+                "Standard MTG",
+                "standard",
+                "mtg spiderman",
+                "mtg",
+                "mtg arena",
+                "grixis",
+                "spiderman deck",
+                "deck",
+                "mako",
+                "new standard",
+                "fleem",
+                "standard deck",
+                "black",
+                "omenpaths",
+                "mayhem",
+                "spiderman",
+                "spider deck",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-09-19 09:01:11",
+            "views": 9590,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-09-19",
+                        "exports": 7,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Green Goblin Grixis Mayhem",
+                        "url": "https://aetherhub.com/Deck/green-goblin-grixis-mayhem",
+                        "views": 105
+                    },
+                    "decklist_hash": "230f7b06-d6c68b48-36b0af18-ed1e37b7-afae9d37"
+                }
+            ]
+        }
+    ]
+}
