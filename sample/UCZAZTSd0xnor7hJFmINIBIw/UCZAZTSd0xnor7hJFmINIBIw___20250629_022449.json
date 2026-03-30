@@ -1,0 +1,53 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "Magic the Gathering",
+        "MTG",
+        "mtggoldfish"
+    ],
+    "subscribers": 348000,
+    "scrape_time": "2025-06-29 02:24:49",
+    "videos": [
+        {
+            "id": "9RVfG0P4BW8",
+            "title": "Cecil's Last Ride",
+            "description": "Standard has it's own version of Death's Shadow thanks to Cecil and the Last Ride. Let's see if we can lose a ton of life without losing the game!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-cecil-s-last-ride\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7194399#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/Hownr\n◼ Purchase this deck (Magic Online): http://mtg.fish/q08T5\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Magic the Gathering",
+                "Magic Arena",
+                "Gameplay",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-06-28 08:00:06",
+            "views": 12846,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-06-24",
+                        "format": "standard",
+                        "name": "Last Ride",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7194399"
+                    },
+                    "decklist_hash": "c7b6d9b0-01b95ae1-b8011762-18b205ef-acc8fab1"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-cecil-s-last-ride",
+                        "date": "2025-06-24",
+                        "format": "standard",
+                        "name": "Last Ride",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-cecil-s-last-ride"
+                    },
+                    "decklist_hash": "c7b6d9b0-01b95ae1-b8011762-18b205ef-acc8fab1"
+                }
+            ]
+        }
+    ]
+}

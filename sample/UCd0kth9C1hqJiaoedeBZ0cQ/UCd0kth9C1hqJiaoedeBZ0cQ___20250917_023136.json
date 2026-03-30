@@ -1,0 +1,83 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.This channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "standard",
+        "brawl",
+        "mtg arena",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "deck build",
+        "magic arena",
+        "arena",
+        "edh",
+        "standard deck",
+        "commander",
+        "pioneer",
+        "how to",
+        "MTG"
+    ],
+    "subscribers": 141000,
+    "scrape_time": "2025-09-17 02:31:36",
+    "videos": [
+        {
+            "id": "TqjMF5cuFMY",
+            "title": "The unluckiest game of Magic.",
+            "description": "Magic: The Gathering Arena gameplay with a monoblack Void deck, ft. Sunset Saboteur and Elegy Acolyte in Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n05:01 - Match 1 \n09:29 - Match 2\n12:55 - Match 3\n17:18 - Match 4\n21:57 - Match 5\n23:46 - Match 6\n28:07 - Match 7\n30:59 - Match 8\n38:46 - Match 9\n\nDecklist:\nhttps://aetherhub.com/Deck/monoblack-void\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGEternities #mtg #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "lvd",
+                "monoblack",
+                "edge of eternities",
+                "void",
+                "legend",
+                "midrange",
+                "mtga",
+                "decks",
+                "guide",
+                "Standard MTG",
+                "standard",
+                "eternity",
+                "mtg",
+                "unlucky",
+                "warp",
+                "mtg arena",
+                "flood",
+                "deck",
+                "new standard",
+                "eoe",
+                "eoe standard",
+                "lifelink",
+                "saboteur",
+                "bat",
+                "removal",
+                "standard deck",
+                "aggro",
+                "black",
+                "acolyte",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-09-16 09:01:01",
+            "views": 12573,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-09-16",
+                        "exports": 106,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Monoblack Void",
+                        "url": "https://aetherhub.com/Deck/monoblack-void",
+                        "views": 315
+                    },
+                    "decklist_hash": "cc91e220-24924006-a3315054-9213f06f-b67a5609"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,49 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.Upload schedule for Maj...",
+    "tags": [
+        "\"Magic the Gathering\" MTG mtggoldfish"
+    ],
+    "subscribers": 354000,
+    "scrape_time": "2025-09-01 02:24:21",
+    "videos": [
+        {
+            "id": "Q2nYjQGf-As",
+            "title": "THE LEVIATHANS ARE COMING!",
+            "description": "Summoning Leviathan is going to be a blast as it'll join other leviathans like Sin, Starwinder, and other sea creatures!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-the-leviathans-are-coming\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7306677#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/JvSqC\n◼ Purchase this deck (Magic Online): http://mtg.fish/8jtQF\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Magic the Gathering",
+                "Magic Arena",
+                "Gameplay",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-08-30 19:00:05",
+            "views": 15840,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-the-leviathans-are-coming",
+                        "date": "2025-08-25",
+                        "format": "standard",
+                        "name": "Simic Leviathan",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-the-leviathans-are-coming"
+                    },
+                    "decklist_hash": "71c12397-6b753c1e-eff533c4-ca13f699-70a27fa2"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-08-25",
+                        "format": "standard",
+                        "name": "Simic Leviathan",
+                        "url": "https://www.mtggoldfish.com/deck/7306677"
+                    },
+                    "decklist_hash": "71c12397-6b753c1e-eff533c4-ca13f699-70a27fa2"
+                }
+            ]
+        }
+    ]
+}

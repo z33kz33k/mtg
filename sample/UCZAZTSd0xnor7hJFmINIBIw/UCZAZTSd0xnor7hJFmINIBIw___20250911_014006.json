@@ -1,0 +1,102 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.Upload schedule for Maj...",
+    "tags": [
+        "\"Magic the Gathering\" MTG mtggoldfish"
+    ],
+    "subscribers": 355000,
+    "scrape_time": "2025-09-11 01:40:06",
+    "videos": [
+        {
+            "id": "QL-vsVwxP9I",
+            "title": "Spider-man is a Bad Magic Set, but Does it Matter?",
+            "description": "Saffron thinks the Spider-man set is bad, here is why, how Wizards can fix the issues in the future, and why the set's quality might not actually matter.\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n#MTG #MagictheGathering #spiderman #opinion",
+            "keywords": [
+                "Magic: the Gathering",
+                "MTGGoldfish",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-09-08 08:00:05",
+            "views": 119188,
+            "decks": []
+        },
+        {
+            "id": "hEGlxfM49B4",
+            "title": "Temur Dragon Spawns!",
+            "description": "In a world of aggression and Vivi, its time we take to the skies with this Temur Dragonback Assault deck!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-temur-dragon-spawns\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7327017#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/mDswB\n◼ Purchase this deck (Magic Online): http://mtg.fish/P0ScQ\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Magic the Gathering",
+                "Magic Arena",
+                "Gameplay",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-09-09 10:59:02",
+            "views": 18231,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-09-04",
+                        "format": "standard",
+                        "name": "temur dragon assault",
+                        "url": "https://www.mtggoldfish.com/deck/7327017"
+                    },
+                    "decklist_hash": "e3915257-5bc4d6e3-eaa837f6-d8bb2c20-92ac9944"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-temur-dragon-spawns",
+                        "date": "2025-09-04",
+                        "format": "standard",
+                        "name": "temur dragon assault",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-temur-dragon-spawns"
+                    },
+                    "decklist_hash": "e3915257-5bc4d6e3-eaa837f6-d8bb2c20-92ac9944"
+                }
+            ]
+        },
+        {
+            "id": "0Z4_oCsoYz8",
+            "title": "Teaching Arena Zoomers About Magic's Most Annoying Deck Eggs  Against the Odds",
+            "description": "Eggs might be Modern's all-time most hated archetype, known for boring opponents to death. Can we make it work on Arena and teach a new generation of Magic players the joy of sitting around and watching your opponent play Magic?\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldlfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/against-the-odds-teaching-arena-zoomers-about-eggs-brawl\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7294708#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/AIflp\n◼ Purchase this deck (Magic Online): http://mtg.fish/KJPIA\n\n#MTG\n#MagicTheGathering\n#MTGBrawl",
+            "keywords": [
+                "Magic the Gathering",
+                "Magic Arena",
+                "Gameplay",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-09-10 08:00:09",
+            "views": 25122,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "custom_theme": "Sami, Wildcat Captain",
+                        "date": "2025-08-17",
+                        "format": "brawl",
+                        "name": "Sami, Wildcat Captain",
+                        "url": "https://www.mtggoldfish.com/deck/7294708"
+                    },
+                    "decklist_hash": "9fb4a0b5-f327a299-bff7522b-3733436f-38aafa7c"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/against-the-odds-teaching-arena-zoomers-about-eggs-brawl",
+                        "custom_theme": "Sami, Wildcat Captain",
+                        "date": "2025-08-17",
+                        "format": "brawl",
+                        "name": "Sami, Wildcat Captain",
+                        "url": "https://www.mtggoldfish.com/articles/against-the-odds-teaching-arena-zoomers-about-eggs-brawl"
+                    },
+                    "decklist_hash": "9fb4a0b5-f327a299-bff7522b-3733436f-38aafa7c"
+                }
+            ]
+        }
+    ]
+}

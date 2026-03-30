@@ -1,0 +1,91 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "dragonstorm",
+        "educational",
+        "historic",
+        "explorer",
+        "standard",
+        "brawl",
+        "tarkir",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "how to",
+        "tips",
+        "MTG"
+    ],
+    "subscribers": 137000,
+    "scrape_time": "2025-05-08 02:12:32",
+    "videos": [
+        {
+            "id": "fmfUHOlvcZw",
+            "title": "Temur stompy has a new Queen.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a Temur stompy deck, ft. Eshki, Temur's Roar as commander in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro\n01:16 - Deck Tech\n06:56 - vs Alania, Divergent Storm \n14:52 - vs The Gitrog, Ravenous Ride \n23:44 - vs Krydle of Baldur's Gate \n30:06 - vs Sidisi, Brood Tyrant \n34:59 - vs Kroxa, Titan of Death's Hunger \n40:38 - vs Sab-Sunen, Luxa Embodied \n42:31 - vs Mitotic Ultimus \n47:56 - vs Lam, Storm Crane Elder\n50:34 - vs Zoraline, Cosmos Caller \n\nDecklist: \nhttps://aetherhub.com/Deck/eshki-temurs-roar-\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #tarkir #mtg #mtgtarkir #mtgtdm #magicthegathering",
+            "keywords": [
+                "eshki",
+                "temur",
+                "gameplay",
+                "red",
+                "lvd",
+                "roar",
+                "dragonstorm",
+                "legend",
+                "stompy",
+                "mtga",
+                "blue",
+                "eshki commander",
+                "draw",
+                "decks",
+                "eshki edh",
+                "guide",
+                "mtg",
+                "tarkir",
+                "mtg arena",
+                "brawl deck",
+                "eshki brawl",
+                "historic brawl",
+                "deck",
+                "tdm",
+                "green",
+                "edh",
+                "commander",
+                "4 power",
+                "tarkir dragonstorm",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-05-07 09:01:06",
+            "views": 13037,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-05-07",
+                        "exports": 130,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Eshki, Temur's Roar Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/eshki-temurs-roar-",
+                        "views": 352
+                    },
+                    "decklist_hash": "7dbcaa62-256b3b69-10b16f0b-9e996340-2eb910c8"
+                }
+            ]
+        }
+    ]
+}

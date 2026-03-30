@@ -1,0 +1,93 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "dragonstorm",
+        "educational",
+        "historic",
+        "explorer",
+        "standard",
+        "brawl",
+        "tarkir",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "how to",
+        "tips",
+        "MTG"
+    ],
+    "subscribers": 135000,
+    "scrape_time": "2025-04-04 01:37:45",
+    "videos": [
+        {
+            "id": "DqLZoSjVmlk",
+            "title": "Siegebreaking Tarkir Standard.",
+            "description": "Magic: The Gathering Arena gameplay with a Siegebreaker deck in Dragonstorm Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:55 - Match 1\n07:55 - Match 2\n19:37 - Match 3\n25:18 - Match 4\n31:37 - Match 5\n39:12 - Match 6\n\nDecklist:\nhttps://aetherhub.com/Deck/four-color-siegebreaker\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #tarkir #mtg #mtgtarkir #mtgtdm #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "red",
+                "tarkir standard",
+                "lvd",
+                "prototype",
+                "dragonstorm",
+                "legend",
+                "tdm standard",
+                "mardu",
+                "white",
+                "mtga",
+                "decks",
+                "guide",
+                "Standard MTG",
+                "standard",
+                "mtg",
+                "siegebreaker",
+                "tarkir",
+                "mtg arena",
+                "siege",
+                "abzan",
+                "deck",
+                "tdm",
+                "new standard",
+                "green",
+                "four color",
+                "attack",
+                "standard deck",
+                "black",
+                "rhino",
+                "tarkir dragonstorm",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-04-03 09:00:17",
+            "views": 12409,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-04-03",
+                        "exports": 12,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Four Color Siegebreaker",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/four-color-siegebreaker",
+                        "views": 212
+                    },
+                    "decklist_hash": "d2763db7-cc0078a6-2a7127fe-dbd223e0-8face693"
+                }
+            ]
+        }
+    ]
+}

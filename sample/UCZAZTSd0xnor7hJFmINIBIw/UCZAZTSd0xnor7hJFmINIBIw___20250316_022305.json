@@ -1,0 +1,65 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "Magic the Gathering",
+        "MTG",
+        "mtggoldfish"
+    ],
+    "subscribers": 339000,
+    "scrape_time": "2025-03-16 02:23:05",
+    "videos": [
+        {
+            "id": "FwCKBd2g4Sc",
+            "title": "How Bad is Red Without Monstrous Rage?",
+            "description": "Its kind of a hot topic about if red can go on without Monstrous Rage or not. Lets take a look at how the aggro deck would fair without their absurdly busted combat trick.\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-how-bad-is-red-without-monstrous-rage\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6979543#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/3KVRS\n◼ Purchase this deck (Magic Online): http://mtg.fish/yeTLJ\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Magic the Gathering",
+                "Magic Arena",
+                "Gameplay",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-03-15 08:00:03",
+            "views": 10065,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-how-bad-is-red-without-monstrous-rage",
+                        "date": "2025-03-13",
+                        "format": "standard",
+                        "name": "Rageless Boros",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-how-bad-is-red-without-monstrous-rage"
+                    },
+                    "decklist_hash": "b2e32675-1241e0dc-f0874ebd-19b71c38-616e3ceb"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-how-bad-is-red-without-monstrous-rage",
+                        "date": "2025-03-13",
+                        "format": "standard",
+                        "name": "Rageless Red",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-how-bad-is-red-without-monstrous-rage"
+                    },
+                    "decklist_hash": "fbff02fc-b46bc232-d48d50bd-5a5feaeb-63aaf265"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-03-13",
+                        "format": "standard",
+                        "name": "Rageless Red",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6979543"
+                    },
+                    "decklist_hash": "fbff02fc-b46bc232-d48d50bd-5a5feaeb-63aaf265"
+                }
+            ]
+        }
+    ]
+}

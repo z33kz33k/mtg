@@ -1,0 +1,67 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.This channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "\"Magic the gathering\" MTG gameplay standard \"card game\" strategy \"magic arena\" arena \"mtg arena\" historic tutorial \"how to\" tips mythic deck educational braw..."
+    ],
+    "subscribers": 141000,
+    "scrape_time": "2025-08-30 03:28:15",
+    "videos": [
+        {
+            "id": "MGFLYf1FtYk",
+            "title": "You don't want to anger a Lhurgoyf.",
+            "description": "Magic: The Gathering Arena gameplay with a Cosmogoyf combo deck in Pioneer, ft. Demonic Bargain.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n03:43 - Match 1\n06:52 - Match 2\n10:33 - Match 3\n16:38 - Match 4\n22:39 - Match 5\n25:28 - Match 6 \n30:14 - Match 7\n35:00 - Match 8\n\nDecklist:\nhttps://aetherhub.com/Deck/jund-cosmogoyf-combo\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGEternities #mtg #magicthegathering #mtgpioneer",
+            "keywords": [
+                "temur",
+                "gameplay",
+                "red",
+                "lvd",
+                "battle rage",
+                "demonic bargain",
+                "exile",
+                "legend",
+                "midrange",
+                "mtga",
+                "decks",
+                "guide",
+                "explorer",
+                "combo",
+                "tutor",
+                "mtg",
+                "bargain",
+                "pioneer deck",
+                "mtg arena",
+                "deck",
+                "green",
+                "pioneer mtg",
+                "goyf",
+                "tbr",
+                "jund",
+                "pioneer",
+                "black",
+                "cosmogoyf",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-08-29 09:00:40",
+            "views": 7899,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-08-29",
+                        "exports": 36,
+                        "format": "pioneer",
+                        "mode": "Bo3",
+                        "name": "Jund Cosmogoyf Combo",
+                        "url": "https://aetherhub.com/Deck/jund-cosmogoyf-combo",
+                        "views": 213
+                    },
+                    "decklist_hash": "ea124ad5-93a4296a-e057dc9f-f5c09903-9ca5d4ce"
+                }
+            ]
+        }
+    ]
+}

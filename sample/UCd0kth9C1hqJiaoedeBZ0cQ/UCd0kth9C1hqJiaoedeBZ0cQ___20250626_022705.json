@@ -1,0 +1,91 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "educational",
+        "FINAL FANTASY",
+        "historic",
+        "standard",
+        "brawl",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "pioneer",
+        "how to",
+        "tips",
+        "MTG",
+        "final fantasy"
+    ],
+    "subscribers": 138000,
+    "scrape_time": "2025-06-26 02:27:05",
+    "videos": [
+        {
+            "id": "qVG3Cxo8FRE",
+            "title": "He's devoted to drawing a lot of cards.",
+            "description": "Magic: The Gathering Arena gameplay with a monored devotion deck, ft.  Clive, Ifrit's Dominant in Brawl. \n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro\n02:33 - Deck Tech\n07:42 - vs Elenda, Saint of Dusk\n16:07 - vs Rocco, Street Chef\n27:26 - vs Vorinclex\n34:05 - vs Atraxa, Praetors' Voice\n41:51 - vs The Gitrog Monster\n46:27 - vs Kenrith, the Returned King\n53:06 - vs Lonis, Cryptozoologist\n\nDecklist:\nhttps://aetherhub.com/Deck/clive-ifrits-dominant-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGxFINALFANTASY #mtg #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "red",
+                "clive brawl",
+                "clive edh",
+                "FIN",
+                "lvd",
+                "legend",
+                "ifrit",
+                "mtga",
+                "ff",
+                "devotion",
+                "draw",
+                "decks",
+                "guide",
+                "FINAL FANTASY",
+                "brawl",
+                "FF",
+                "mtg",
+                "value",
+                "mtg arena",
+                "monored devotion",
+                "monored",
+                "deck",
+                "clive commander",
+                "clive",
+                "edh",
+                "commander",
+                "ramp",
+                "final fantasy",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-06-25 09:01:29",
+            "views": 13522,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-06-25",
+                        "exports": 243,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Clive, Ifrit's Dominant Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/clive-ifrits-dominant-brawl",
+                        "views": 557
+                    },
+                    "decklist_hash": "69b7bcdb-d5f67834-0204f83b-9a53325f-c3fd51b2"
+                }
+            ]
+        }
+    ]
+}

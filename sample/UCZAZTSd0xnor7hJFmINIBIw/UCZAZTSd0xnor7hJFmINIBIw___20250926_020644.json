@@ -1,0 +1,51 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.Upload schedule for Maj...",
+    "tags": [
+        "Magic the Gathering",
+        "MTG",
+        "mtggoldfish"
+    ],
+    "subscribers": 356000,
+    "scrape_time": "2025-09-26 02:06:44",
+    "videos": [
+        {
+            "id": "r9FXXm4RnUo",
+            "title": "Mister Negative Life Swapping",
+            "description": "It would be a shame if I lowered all of my health and then used Mister Negative to swap our health totals ....\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-mister-negative-life-swapping\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7349254#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/z6oXQ\n◼ Purchase this deck (Magic Online): http://mtg.fish/KJpH2\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Magic the Gathering",
+                "Magic Arena",
+                "Gameplay",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-09-25 08:00:05",
+            "views": 11869,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-09-18",
+                        "format": "standard",
+                        "name": "Negative Esper",
+                        "url": "https://www.mtggoldfish.com/deck/7349254"
+                    },
+                    "decklist_hash": "bc87bfd3-762c1259-f8d1b895-7621ba64-c0779872"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-mister-negative-life-swapping",
+                        "date": "2025-09-18",
+                        "format": "standard",
+                        "name": "Negative Esper",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-mister-negative-life-swapping"
+                    },
+                    "decklist_hash": "bc87bfd3-762c1259-f8d1b895-7621ba64-c0779872"
+                }
+            ]
+        }
+    ]
+}

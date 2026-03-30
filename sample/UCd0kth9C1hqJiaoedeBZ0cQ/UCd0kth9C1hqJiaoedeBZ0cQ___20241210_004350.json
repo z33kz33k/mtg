@@ -1,0 +1,92 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "mtg foundations",
+        "educational",
+        "historic",
+        "explorer",
+        "standard",
+        "brawl",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "how to",
+        "tips",
+        "MTG",
+        "foundations"
+    ],
+    "subscribers": 133000,
+    "scrape_time": "2024-12-10 00:43:50",
+    "videos": [
+        {
+            "id": "pLSvQNSn8tQ",
+            "title": "The Delve mechanic was a mistake.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with sultai Neoform, ft. Tasigur and Atraxa in Explorer. \n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:02 - Match 1\n10:11 - Match 2\n17:59 - Match 3\n26:35 - Match 4\n31:27 - Match 5\n\nDecklist:\nhttps://aetherhub.com/Deck/neoform-atraxa\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtg #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "mill",
+                "lvd",
+                "delve",
+                "legend",
+                "atraxa",
+                "neoform",
+                "white",
+                "mtga",
+                "blue",
+                "domain",
+                "decks",
+                "guide",
+                "explorer",
+                "combo",
+                "sultai",
+                "mtg",
+                "tasigur",
+                "pioneer deck",
+                "mtg arena",
+                "leyline",
+                "deck",
+                "combo deck",
+                "green",
+                "enigmatic pioneer",
+                "graveyard",
+                "pioneer masters",
+                "pioneer",
+                "black",
+                "neoform combo",
+                "magic the gathering"
+            ],
+            "publish_time": "2024-12-09 09:00:48",
+            "views": 10869,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2024-12-09",
+                        "exports": 28,
+                        "format": "explorer",
+                        "mode": "Bo1",
+                        "name": "Neoform Atraxa",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/neoform-atraxa",
+                        "views": 118
+                    },
+                    "decklist_hash": "d665d270-7a5afbf7-1e4738de-f88a022d-3c43d15b"
+                }
+            ]
+        }
+    ]
+}

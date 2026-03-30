@@ -1,0 +1,92 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "mtg foundations",
+        "educational",
+        "historic",
+        "explorer",
+        "standard",
+        "brawl",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "how to",
+        "tips",
+        "MTG",
+        "foundations"
+    ],
+    "subscribers": 132000,
+    "scrape_time": "2024-11-21 01:19:17",
+    "videos": [
+        {
+            "id": "Pv74tzFI7kU",
+            "title": "This Standard combo is straight fire!",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a dragons deck, ft. Sarkhan and Twinflame Tyrant in Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n05:58 - Match 1\n11:06 - Match 2\n16:13 - Match 3\n19:31 - Match 4\n26:02 - Match 5\n30:03 - Match 6\n34:21 - Match 7\n36:44 - Match 8\n41:16 - Match 9\n44:40 - Match 10\n\nDecklist:\nhttps://aetherhub.com/Deck/foundations-jeskai-dragons\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtgfoundations #mtgfdn #mtg #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "red",
+                "lvd",
+                "fdn",
+                "legend",
+                "mtg foundations",
+                "jeskai",
+                "white",
+                "mtga",
+                "blue",
+                "twinflame",
+                "decks",
+                "guide",
+                "Standard MTG",
+                "combo",
+                "standard",
+                "mtg",
+                "sarkhan",
+                "mtg arena",
+                "fire",
+                "standard dragons",
+                "deck",
+                "standard combo",
+                "new standard",
+                "fnd",
+                "dragon deck",
+                "dragons",
+                "standard deck",
+                "foundations standard",
+                "foundations",
+                "magic the gathering"
+            ],
+            "publish_time": "2024-11-20 09:00:34",
+            "views": 14531,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2024-11-20",
+                        "exports": 284,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Foundations Jeskai Dragons",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/foundations-jeskai-dragons",
+                        "views": 505
+                    },
+                    "decklist_hash": "6bf29ea3-03afc7f8-311a3f00-7db1d3c7-6479dc88"
+                }
+            ]
+        }
+    ]
+}

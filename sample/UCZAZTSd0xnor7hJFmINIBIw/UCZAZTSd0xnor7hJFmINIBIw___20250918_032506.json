@@ -1,0 +1,50 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.Upload schedule for Maj...",
+    "tags": [
+        "Magic the Gathering",
+        "MTG",
+        "mtggoldfish"
+    ],
+    "subscribers": 356000,
+    "scrape_time": "2025-09-18 03:25:06",
+    "videos": [
+        {
+            "id": "kEl01vAjxD8",
+            "title": "The Sneakiest Flying Spaghetti Monster Ever | Against the Odds",
+            "description": "Yesterday Wizards added Emrakul, the Aeons Torn to MTG Arena without telling anyone, so we play it on turn one against opponent's who probably don't know it even exists!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/against-the-odds-the-sneakiest-flying-spaghetti-monster-ever-timeless\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7347649#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/urciS\n◼ Purchase this deck (Magic Online): http://mtg.fish/Ob1pG\n\n#MTG\n#MagicTheGathering\n#mtgtimeless \n\n0:00 Start\n4:54 Match 1\n10:52 Match 2\n19:05 Match 3\n30:50 Match 4\n42:13 Match 5",
+            "keywords": [
+                "Magic: the Gathering",
+                "MTGGoldfish",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-09-17 08:00:08",
+            "views": 26347,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/against-the-odds-the-sneakiest-flying-spaghetti-monster-ever-timeless",
+                        "date": "2025-09-16",
+                        "format": "timeless",
+                        "name": "Turn 1 Emrakul",
+                        "url": "https://www.mtggoldfish.com/articles/against-the-odds-the-sneakiest-flying-spaghetti-monster-ever-timeless"
+                    },
+                    "decklist_hash": "04a0bfef-dbc0a469-967d2b0e-e5ccadd4-58de637b"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-09-16",
+                        "format": "timeless",
+                        "name": "Turn 1 Emrakul",
+                        "url": "https://www.mtggoldfish.com/deck/7347649"
+                    },
+                    "decklist_hash": "04a0bfef-dbc0a469-967d2b0e-e5ccadd4-58de637b"
+                }
+            ]
+        }
+    ]
+}

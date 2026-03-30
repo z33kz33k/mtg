@@ -1,0 +1,63 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": null,
+    "tags": [],
+    "subscribers": 140000,
+    "scrape_time": "2025-08-13 03:58:03",
+    "videos": [
+        {
+            "id": "VHZG51YgcDo",
+            "title": "These lands are taking over the format.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with an Eldrazi ramp deck, ft. Eldrazi Temple in Timeless. \n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n06:12 - Match 1\n10:05 - Match 2\n16:08 - Match 3\n22:58 - Match 4\n31:42 - Match 5\n38:56 - Match 6\n48:11 - Match 7\n\nDecklist: \nhttps://aetherhub.com/Deck/timeless-eldrazi\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtg #mtgeternities #edgeofeternities",
+            "keywords": [
+                "ancient tomb",
+                "gameplay",
+                "lvd",
+                "nulldrifter",
+                "legend",
+                "eldrazi deck",
+                "mtga",
+                "blue",
+                "decks",
+                "guide",
+                "eldrazi",
+                "mtg",
+                "mtg arena",
+                "colorless",
+                "deck",
+                "strip mine",
+                "eoe",
+                "timeless",
+                "green",
+                "mycospawn",
+                "eldrazi temple",
+                "chalice",
+                "ramp",
+                "magic the gathering",
+                "timeless eldrazi",
+                "timeless deck"
+            ],
+            "publish_time": "2025-08-12 09:00:48",
+            "views": 15138,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-08-12",
+                        "exports": 88,
+                        "format": "timeless",
+                        "mode": "Bo1",
+                        "name": "Timeless Eldrazi",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/timeless-eldrazi",
+                        "views": 376
+                    },
+                    "decklist_hash": "d54fb172-c9535960-90ff5642-d136cd0e-d6ed1a91"
+                }
+            ]
+        }
+    ]
+}

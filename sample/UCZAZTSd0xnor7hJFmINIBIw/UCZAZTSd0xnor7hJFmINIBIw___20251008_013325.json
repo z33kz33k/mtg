@@ -1,0 +1,51 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.Upload schedule for Maj...",
+    "tags": [
+        "Magic the Gathering",
+        "MTG",
+        "mtggoldfish"
+    ],
+    "subscribers": 358000,
+    "scrape_time": "2025-10-08 01:33:25",
+    "videos": [
+        {
+            "id": "I2aH-8_4uaI",
+            "title": "Cloning Cheap Creatures is How Simic Gets Aggro",
+            "description": "Jackal, Genius Geneticist/Druneth and cloning an army of little guys is making the ladder feel Simic's aggression!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-cloning-cheap-creatures-is-how-simic-gets-aggro\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7372105#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/fvl57\n◼ Purchase this deck (Magic Online): http://mtg.fish/59lFO\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Magic the Gathering",
+                "Magic Arena",
+                "Gameplay",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-10-07 08:00:07",
+            "views": 7467,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-cloning-cheap-creatures-is-how-simic-gets-aggro",
+                        "date": "2025-10-02",
+                        "format": "standard",
+                        "name": "Jackal",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-cloning-cheap-creatures-is-how-simic-gets-aggro"
+                    },
+                    "decklist_hash": "3aa48415-307ecd4c-b70e6921-edbb46c7-46e378ad"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-10-02",
+                        "format": "standard",
+                        "name": "Jackal",
+                        "url": "https://www.mtggoldfish.com/deck/7372105"
+                    },
+                    "decklist_hash": "3aa48415-307ecd4c-b70e6921-edbb46c7-46e378ad"
+                }
+            ]
+        }
+    ]
+}

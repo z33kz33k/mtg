@@ -1,0 +1,88 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.Upload schedule for Maj...",
+    "tags": [
+        "Magic the Gathering",
+        "MTG",
+        "mtggoldfish"
+    ],
+    "subscribers": 357000,
+    "scrape_time": "2025-10-05 02:36:04",
+    "videos": [
+        {
+            "id": "QELUUWlIyXw",
+            "title": "Mono-Black Devotion, but Morlun Makes it Good | Much Abrew",
+            "description": "Did Gray Merchant of Asphodel just get its new best friend in Morlun, Devourer of Spiders (probably better know as Luis, Pompus Pillager)? Let's find out!\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/much-abrew-devoted-to-louie-pioneer\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7360890#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/uGXD6\n◼ Purchase this deck (Magic Online): http://mtg.fish/IQnRG\n\n#MTG\n#MagicTheGathering\n#MTGO\n#MTGPioneer\n\n0:00 Start\n5:01 Match 1\n12:08 Match 2\n21:45 Match 3\n35:35 Match 4\n40:50 Match 5",
+            "keywords": [
+                "Magic the Gathering",
+                "Magic Arena",
+                "Gameplay",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-10-03 08:00:19",
+            "views": 43546,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-09-25",
+                        "format": "pioneer",
+                        "name": "Devoted to Louie",
+                        "url": "https://www.mtggoldfish.com/deck/7360890"
+                    },
+                    "decklist_hash": "51f6dd47-980f755c-8f0440d6-9dcd3277-c282ea88"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/much-abrew-devoted-to-louie-pioneer",
+                        "date": "2025-09-25",
+                        "format": "pioneer",
+                        "name": "Devoted to Louie",
+                        "url": "https://www.mtggoldfish.com/articles/much-abrew-devoted-to-louie-pioneer"
+                    },
+                    "decklist_hash": "51f6dd47-980f755c-8f0440d6-9dcd3277-c282ea88"
+                }
+            ]
+        },
+        {
+            "id": "CprKZawrImw",
+            "title": "Iron Spider/Fizik is The New Steel Overseer",
+            "description": "Steel Overseer was great for Affinity of old but thanks to Iron Spider / Fizik, we may have a new piece for artifact aggro decks!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-iron-spider-fizik-is-the-new-steel-overseer\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7360243#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/roOpW\n◼ Purchase this deck (Magic Online): http://mtg.fish/yD8YP\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Magic the Gathering",
+                "Magic Arena",
+                "Gameplay",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-10-04 08:00:05",
+            "views": 7923,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-iron-spider-fizik-is-the-new-steel-overseer",
+                        "date": "2025-09-25",
+                        "format": "standard",
+                        "name": "Fizik/Iron Spider Affinity",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-iron-spider-fizik-is-the-new-steel-overseer"
+                    },
+                    "decklist_hash": "f26e08d9-0dbe0b71-60390602-3563a697-4d60f763"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-09-25",
+                        "format": "standard",
+                        "name": "Fizik/Iron Spider Affinity",
+                        "url": "https://www.mtggoldfish.com/deck/7360243"
+                    },
+                    "decklist_hash": "f26e08d9-0dbe0b71-60390602-3563a697-4d60f763"
+                }
+            ]
+        }
+    ]
+}

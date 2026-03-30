@@ -1,0 +1,66 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "Magic the Gathering",
+        "MTG",
+        "mtggoldfish"
+    ],
+    "subscribers": 344000,
+    "scrape_time": "2025-05-18 01:52:44",
+    "videos": [
+        {
+            "id": "DwGcyKEX0JE",
+            "title": "I Name Horse with Roaming Throne in Standard...  Much Abrew",
+            "description": "Is it actually possible to combo off with Guardian Sunmare in Standard by naming \"Horse\" with Roaming Throne? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/much-abrew-guardian-sunmare-combo-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7054984#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/d62UC\n◼ Purchase this deck (Magic Online): http://mtg.fish/iL4mw\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Magic: the Gathering",
+                "MTGGoldfish",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-05-16 19:00:06",
+            "views": 39157,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "Platinum Mythic Ranked Player",
+                        "date": "2025-04-22",
+                        "format": "standard",
+                        "name": "Guardian Sunmare",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7054984"
+                    },
+                    "decklist_hash": "4a5a0c9a-17f9fc9c-9766aedc-4058c545-cf59196c"
+                },
+                {
+                    "metadata": {
+                        "author": "Platinum Mythic Ranked Player",
+                        "container_url": "https://www.mtggoldfish.com/articles/much-abrew-guardian-sunmare-combo-standard",
+                        "date": "2025-04-22",
+                        "format": "standard",
+                        "name": "Guardian Sunmare",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/much-abrew-guardian-sunmare-combo-standard"
+                    },
+                    "decklist_hash": "4a5a0c9a-17f9fc9c-9766aedc-4058c545-cf59196c"
+                }
+            ]
+        },
+        {
+            "id": "LzNllK-UORU",
+            "title": "How Busted is Buster Sword? Do You Eat Instant Ramen?  Daily MTG Final Fantasy Spoilers",
+            "description": "Today in Final Fantasy we finally get Buster Sword, Instant Ramen comes to Magic, we get a wild Knight Saga and a new red mythic sweeper! Let's discuss!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkigndom.com/mtggoldfish\n\nMore spoilers: https://www.mtgpreviews.com\n\n#MTG #Magicthegathering #mtgspoilers #finalfantasy",
+            "keywords": [
+                "Magic: the Gathering",
+                "MTGGoldfish",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-05-17 07:33:25",
+            "views": 28385,
+            "decks": []
+        }
+    ]
+}

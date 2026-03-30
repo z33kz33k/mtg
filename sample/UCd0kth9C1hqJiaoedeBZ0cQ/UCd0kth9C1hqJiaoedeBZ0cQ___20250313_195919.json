@@ -1,0 +1,90 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "aetherdrift",
+        "mtg foundations",
+        "educational",
+        "historic",
+        "explorer",
+        "standard",
+        "brawl",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "how to",
+        "tips",
+        "MTG",
+        "foundations"
+    ],
+    "subscribers": 135000,
+    "scrape_time": "2025-03-13 19:59:19",
+    "videos": [
+        {
+            "id": "V9Ji4kWc6VE",
+            "title": "Lobotomizing my opponents.",
+            "description": "Magic: The Gathering Arena gameplay with a Stone Brain control deck in Aetherdrift Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n03:22 - Match 1\n15:25 - Match 2\n30:44 - Match 3\n32:03 - Match 4\n39:19 - Match 5\n\nDecklist:\nhttps://aetherhub.com/Deck/stone-brain-control\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #aetherdrift #mtgaetherdrift #mtgdft #mtg #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "brain",
+                "lvd",
+                "aetherdrift",
+                "legend",
+                "control",
+                "white",
+                "mtga",
+                "decks",
+                "guide",
+                "Standard MTG",
+                "standard",
+                "mazemind",
+                "mtg",
+                "mtg arena",
+                "mtg aetherdrift",
+                "deck",
+                "new standard",
+                "aetherdrift standard",
+                "orzhov",
+                "cranial",
+                "standard deck",
+                "extraction",
+                "lobotomy",
+                "black",
+                "stone brain",
+                "dft",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-03-13 10:00:36",
+            "views": 3802,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "control",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-03-13",
+                        "exports": 60,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Stone Brain Control",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/stone-brain-control",
+                        "views": 250
+                    },
+                    "decklist_hash": "d64a1743-eed8135c-6951eace-0c8ba9dd-e78397aa"
+                }
+            ]
+        }
+    ]
+}

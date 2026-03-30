@@ -1,0 +1,92 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "educational",
+        "FINAL FANTASY",
+        "historic",
+        "standard",
+        "brawl",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "pioneer",
+        "how to",
+        "tips",
+        "MTG",
+        "final fantasy"
+    ],
+    "subscribers": 137000,
+    "scrape_time": "2025-05-24 03:51:16",
+    "videos": [
+        {
+            "id": "gTRxlSKjYM4",
+            "title": "He only wants one thing and it's disgusting.",
+            "description": "Magic: The Gathering Arena gameplay with a monogreen elf deck, ft. Craterhoof Behemoth in Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n02:34 - Match 1 \n07:23 - Match 2\n10:53 - Match 3\n14:20 - Match 4\n16:49 - Match 5\n22:07 - Match 6\n25:02 - Match 7\n27:16 - Match 8\n31:46 - Match 9\n38:16 - Match 10\n41:31 - Match 11\n\nDecklist:\nhttps://aetherhub.com/Deck/monogreen-elves-craterhoof\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #tarkir #mtg #mtgtarkir #mtgtdm #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "archdruid",
+                "tarkir standard",
+                "lvd",
+                "dragonstorm",
+                "legend",
+                "tdm standard",
+                "mtga",
+                "llanowar",
+                "genesis wave",
+                "decks",
+                "guide",
+                "elf deck",
+                "Standard MTG",
+                "craterhoof",
+                "standard",
+                "mtg",
+                "tarkir",
+                "mtg arena",
+                "elves",
+                "fierce empath",
+                "deck",
+                "tdm",
+                "new standard",
+                "behemoth",
+                "green",
+                "standard deck",
+                "monogreen",
+                "ramp",
+                "tarkir dragonstorm",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-05-23 09:01:13",
+            "views": 16467,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-05-23",
+                        "exports": 348,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Monogreen Elves Craterhoof",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/monogreen-elves-craterhoof",
+                        "views": 872
+                    },
+                    "decklist_hash": "cdf8d764-e8acf940-a67e394b-d9ad5d6c-42560dd0"
+                }
+            ]
+        }
+    ]
+}

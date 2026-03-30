@@ -1,0 +1,143 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "aetherdrift",
+        "mtg foundations",
+        "educational",
+        "historic",
+        "explorer",
+        "standard",
+        "brawl",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "how to",
+        "tips",
+        "MTG",
+        "foundations"
+    ],
+    "subscribers": 135000,
+    "scrape_time": "2025-02-27 01:34:44",
+    "videos": [
+        {
+            "id": "AYJduP0gR18",
+            "title": "The ultimate Chandra deck on Arena.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a monored Chandra superfriends deck in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro \n01:43 - Deck Tech\n09:59 - vs Adeline, Resplendent Cather\n17:20 - vs Tasigur, the Golden Fang\n25:23 - vs Nicol Bolas, the Ravager\n33:41 - vs Hashaton, Scarab's Fist\n38:42 - vs Kaalia of the Vast\n44:43 - vs Glarb, Calamity's Augur\n50:32 - vs The Jolly Balloon Man\n57:18 - vs Imoti, Celebrant of Bounty\n1:00:55 - vs Skithiryx, the Blight Dragon\n1:04:49  - vs Domri, Anarch of Bolas\n\nDecklist: \nhttps://aetherhub.com/Deck/oops-all-chandra-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtg  #mtgarena #magicthegathering #mtgaetherdrift #aetherdrift",
+            "keywords": [
+                "gameplay",
+                "red",
+                "lvd",
+                "aetherdrift",
+                "legend",
+                "control",
+                "planeswalker",
+                "mtga",
+                "decks",
+                "guide",
+                "oops",
+                "mtg",
+                "mtg arena",
+                "brawl deck",
+                "monored",
+                "superfriends",
+                "historic brawl",
+                "deck",
+                "chandra",
+                "all chandra",
+                "edh",
+                "commander",
+                "control deck",
+                "dft",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-02-25 09:30:02",
+            "views": 31870,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "control",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-02-25",
+                        "exports": 325,
+                        "format": "standardbrawl",
+                        "mode": "Bo3",
+                        "name": "Oops All Chandra Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/oops-all-chandra-brawl",
+                        "views": 787
+                    },
+                    "decklist_hash": "4ebc7abf-f2f1e339-e372b3dd-d27976e5-3818cf8b"
+                }
+            ]
+        },
+        {
+            "id": "S3pIa19cdYI",
+            "title": "I see why people like this deck.",
+            "description": "Magic: The Gathering Arena gameplay with a blue/black bounce deck in Aetherdrift Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n03:55 - Match 1\n10:38 - Match 2\n13:37 - Match 3\n17:30 - Match 4\n22:24 - Match 5\n27:07 - Match 6\n31:58 - Match 7\n36:20 - Match 8\n39:16 - Match 9\n41:42 - Match 10\n47:30 - Match 11\n52:15 - Match 12\n\nDecklist:\nhttps://aetherhub.com/Deck/aetherdrift-dimir-bounce\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #aetherdrift #mtgaetherdrift #mtgdft #mtg #magicthegathering",
+            "keywords": [
+                "bounce",
+                "gameplay",
+                "ninjutsu",
+                "lvd",
+                "dimir",
+                "aetherdrift",
+                "legend",
+                "mtga",
+                "blue",
+                "decks",
+                "guide",
+                "drown",
+                "Standard MTG",
+                "dimir bounce",
+                "standard",
+                "mtg",
+                "value",
+                "mtg arena",
+                "mtg aetherdrift",
+                "pixie",
+                "deck",
+                "new standard",
+                "drowner",
+                "aetherdrift standard",
+                "standard deck",
+                "black",
+                "kaito",
+                "dft",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-02-26 09:00:37",
+            "views": 12709,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-02-26",
+                        "exports": 350,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Aetherdrift Dimir Bounce",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/aetherdrift-dimir-bounce",
+                        "views": 918
+                    },
+                    "decklist_hash": "a2203282-dc174b8d-b3158c9b-3ec05a36-c683aead"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,92 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "aetherdrift",
+        "mtg foundations",
+        "educational",
+        "historic",
+        "explorer",
+        "standard",
+        "brawl",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "how to",
+        "tips",
+        "MTG",
+        "foundations"
+    ],
+    "subscribers": 135000,
+    "scrape_time": "2025-02-25 02:35:44",
+    "videos": [
+        {
+            "id": "Jom1jG5Ar3c",
+            "title": "Even the undead can't resist.",
+            "description": "Magic: The Gathering Arena gameplay with a black/green graveyard deck in Aetherdrift Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n05:02 - Match 1\n10:21 - Match 2\n20:14 - Match 3\n26:57 - Match 4\n34:04 - Match 5\n40:16 - Match 6\n44:10 - Match 7\n50:04 - Match 8\n\nDecklist:\nhttps://aetherhub.com/Deck/aetherdrift-golgari-graveyard\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #aetherdrift #mtgaetherdrift #mtgdft #mtg #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "pro tour",
+                "mill",
+                "lvd",
+                "aetherdrift",
+                "legend",
+                "beanstalk",
+                "golgari",
+                "cycling",
+                "beans",
+                "mtga",
+                "decks",
+                "guide",
+                "Standard MTG",
+                "selfmill",
+                "standard",
+                "mtg",
+                "mtg arena",
+                "mtg aetherdrift",
+                "deck",
+                "new standard",
+                "green",
+                "graveyard deck",
+                "aetherdrift standard",
+                "graveyard",
+                "standard deck",
+                "black",
+                "insect",
+                "dft",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-02-24 09:00:21",
+            "views": 15370,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-02-24",
+                        "exports": 286,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Aetherdrift Golgari Graveyard",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/aetherdrift-golgari-graveyard",
+                        "views": 682
+                    },
+                    "decklist_hash": "2f5ee36c-43b49d7e-52fde44c-4bb15fe2-8f345840"
+                }
+            ]
+        }
+    ]
+}

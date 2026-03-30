@@ -1,0 +1,81 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.This channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "\"Magic the gathering\" MTG gameplay standard \"card game\" strategy \"magic arena\" arena \"mtg arena\" historic tutorial \"how to\" tips mythic deck educational braw..."
+    ],
+    "subscribers": 141000,
+    "scrape_time": "2025-09-04 03:29:49",
+    "videos": [
+        {
+            "id": "aZSGDNTAbps",
+            "title": "Dual wielding the new Swords.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a monowhite equipment deck, featuring Cloud, Midgar Mercenary in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n0:00:00 - Intro\n0:02:43 - Deck Tech\n0:11:56 - vs Arwen, Mortal Queen\n0:22:29 - vs Cloud, Midgar Mercenary\n0:28:11 - vs Meria, Scholar of Antiquity\n0:43:21 - vs Rhys the Redeemed\n0:51:16 - vs Glarb, Calamity's Augur\n0:57:38 - vs Tiamat\n1:00:37 - vs Ugin, Eye of the Storms\n\nDecklist: \nhttps://aetherhub.com/Deck/cloud-midgar-mercenary-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtgeternities  #mtg #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "swords",
+                "cloud edh",
+                "lvd",
+                "legend",
+                "deck tech",
+                "protection",
+                "LegenVD",
+                "educational",
+                "white",
+                "mtga",
+                "decks",
+                "guide",
+                "stonefroge",
+                "tutor",
+                "magic",
+                "mtg",
+                "cloud brawl",
+                "mtg arena",
+                "LVD",
+                "brawl deck",
+                "multiplayer",
+                "strategy",
+                "cards",
+                "dual wield",
+                "historic brawl",
+                "anthology",
+                "deck",
+                "card game",
+                "equipment",
+                "magic arena",
+                "arena",
+                "live",
+                "edh",
+                "cloud commander",
+                "commander",
+                "online",
+                "monowhite",
+                "commentary",
+                "sword",
+                "tips",
+                "MTG",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-09-03 09:00:03",
+            "views": 9089,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-09-03",
+                        "exports": 97,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Cloud, Midgar Mercenary Brawl",
+                        "url": "https://aetherhub.com/Deck/cloud-midgar-mercenary-brawl",
+                        "views": 306
+                    },
+                    "decklist_hash": "0ea729de-bd0c964f-05c55911-ca3e0789-03a17058"
+                }
+            ]
+        }
+    ]
+}

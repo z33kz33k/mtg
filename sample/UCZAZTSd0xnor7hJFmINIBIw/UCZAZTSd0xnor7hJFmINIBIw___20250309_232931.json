@@ -1,0 +1,53 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "Magic the Gathering",
+        "MTG",
+        "mtggoldfish"
+    ],
+    "subscribers": 338000,
+    "scrape_time": "2025-03-09 23:29:31",
+    "videos": [
+        {
+            "id": "HnmYxO31dr0",
+            "title": "Basri Cat Catastrophe",
+            "description": "There's a new Basri card and he sure does love his cats!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-basri-cat-catastrophe\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6961611#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/W2Tia\n◼ Purchase this deck (Magic Online): http://mtg.fish/7mwjX\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Magic the Gathering",
+                "Magic Arena",
+                "Gameplay",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-03-08 08:00:06",
+            "views": 18912,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-basri-cat-catastrophe",
+                        "date": "2025-03-05",
+                        "format": "standard",
+                        "name": "Basri Cats",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-basri-cat-catastrophe"
+                    },
+                    "decklist_hash": "b45e6c03-7c1281b6-ecde0fdb-2c47eb11-1bd8dd78"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-03-05",
+                        "format": "standard",
+                        "name": "Basri Cats",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6961611"
+                    },
+                    "decklist_hash": "b45e6c03-7c1281b6-ecde0fdb-2c47eb11-1bd8dd78"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,69 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": null,
+    "tags": [],
+    "subscribers": 140000,
+    "scrape_time": "2025-08-14 02:28:39",
+    "videos": [
+        {
+            "id": "YrEEVWekQEM",
+            "title": "They instantly regretted milling me.",
+            "description": "Magic: The Gathering Arena gameplay with a red/white Extinguisher Battleship reanimator deck in Edge of Eternities Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:35 - Match 1\n13:35 - Match 2\n19:55 - Match 3\n25:30 - Match 4\n30:48 - Match 5\n40:22 - Match 6\n42:16 - Match 7\n\nDecklist:\nhttps://aetherhub.com/Deck/battleship-reanimator\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGEternities #mtg #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "red",
+                "reanimator",
+                "lvd",
+                "edge of eternities",
+                "tune up",
+                "starcage",
+                "legend",
+                "flagship",
+                "control",
+                "white",
+                "mtga",
+                "discard",
+                "decks",
+                "guide",
+                "boros",
+                "Standard MTG",
+                "combo",
+                "standard",
+                "eternity",
+                "mtg",
+                "mtg arena",
+                "deck",
+                "new standard",
+                "eoe",
+                "extinguisher",
+                "eoe standard",
+                "standard deck",
+                "battleship",
+                "daretti",
+                "artifact",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-08-13 09:30:13",
+            "views": 13397,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "control",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-08-13",
+                        "exports": 131,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Battleship Reanimator",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/battleship-reanimator",
+                        "views": 412
+                    },
+                    "decklist_hash": "4206ff3d-64faaeaf-1e18520c-e8f0a356-83aea543"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,91 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "mtg foundations",
+        "educational",
+        "historic",
+        "explorer",
+        "standard",
+        "brawl",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "how to",
+        "tips",
+        "MTG",
+        "foundations"
+    ],
+    "subscribers": 134000,
+    "scrape_time": "2025-01-17 02:26:44",
+    "videos": [
+        {
+            "id": "8kHKq53R3wg",
+            "title": "The next level Domain deck.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a Zur Overlord Domain deck in Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n02:54 - Match 1\n10:45 - Match 2\n22:21 - Match 3\n30:16 - Match 4\n34:19 - Match 5\n\nDecklist:\nhttps://aetherhub.com/Deck/4c-zur-overlords\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtgfoundations #mtgfdn #mtg #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "overlords",
+                "lvd",
+                "fdn",
+                "legend",
+                "mtg foundations",
+                "mtga",
+                "leyline binding",
+                "domain",
+                "decks",
+                "guide",
+                "Standard MTG",
+                "standard",
+                "hexproof",
+                "domain deck",
+                "mtg",
+                "mtg arena",
+                "enchantments",
+                "zur",
+                "schemer",
+                "deck",
+                "new standard",
+                "fnd",
+                "zur overlords",
+                "overlord deck",
+                "standard deck",
+                "foundations standard",
+                "avatar",
+                "foundations",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-01-16 09:00:16",
+            "views": 12490,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-01-16",
+                        "exports": 283,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "4c Zur Overlords",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/4c-zur-overlords",
+                        "views": 436
+                    },
+                    "decklist_hash": "69945fbd-879e31ad-99861ea0-b0bab8cf-d427a95e"
+                }
+            ]
+        }
+    ]
+}

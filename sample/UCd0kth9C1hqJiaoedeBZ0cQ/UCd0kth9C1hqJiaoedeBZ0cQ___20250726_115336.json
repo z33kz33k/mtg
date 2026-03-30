@@ -1,0 +1,126 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": null,
+    "tags": [],
+    "subscribers": 139000,
+    "scrape_time": "2025-07-26 11:53:36",
+    "videos": [
+        {
+            "id": "1yT_qcCzw04",
+            "title": "I'm sending Dinosaurs into space.",
+            "description": "Magic: The Gathering Arena gameplay with a Naya spacecraft survival combo deck in Edge of Eternities Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n06:48 - Match 1\n11:15 - Match 2\n13:53 - Match 3\n20:00 - Match 4\n21:37 - Match 5\n30:23 - Match 6\n32:24 - Match 7\n\nDecklist:\nhttps://aetherhub.com/Deck/spacecraft-survival\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGEternities #mtg #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "survival",
+                "kona",
+                "spacecraft",
+                "red",
+                "lvd",
+                "edge of eternities",
+                "legend",
+                "white",
+                "rip",
+                "mtga",
+                "decks",
+                "space",
+                "guide",
+                "Standard MTG",
+                "combo",
+                "standard",
+                "eternity",
+                "mtg",
+                "beastie",
+                "mtg arena",
+                "deck",
+                "new standard",
+                "eoe",
+                "station",
+                "green",
+                "eoe standard",
+                "ghalta",
+                "standard deck",
+                "anzrag",
+                "naya",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-07-24 09:00:06",
+            "views": 32432,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-07-24",
+                        "exports": 57,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Spacecraft Survival",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/spacecraft-survival",
+                        "views": 557
+                    },
+                    "decklist_hash": "d36aa759-1ea25865-1057b9c7-214a3a5c-553cf54a"
+                }
+            ]
+        },
+        {
+            "id": "PHpX_taW7ss",
+            "title": "This new +1+1 counter card is broken.",
+            "description": "Magic: The Gathering Arena gameplay with a monogreen +1/+1 counter deck, featuring Ouroboroid in Edge of Eternities Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n07:33 - Match 1\n10:58 - Match 2\n17:46 - Match 3\n20:22 - Match 4\n24:53 - Match 5\n28:31 - Match 6\n33:11 - Match 7\n\nDecklist:\nhttps://aetherhub.com/Deck/monogreen-ouroboroid-counters\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGEternities #mtg #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "lvd",
+                "edge of eternities",
+                "bristly",
+                "legend",
+                "warden",
+                "ouroboros",
+                "stompy",
+                "brushwagg",
+                "mtga",
+                "ouroboroid",
+                "decks",
+                "guide",
+                "Standard MTG",
+                "bill",
+                "standard",
+                "eternity",
+                "mtg",
+                "mtg arena",
+                "talent",
+                "deck",
+                "new standard",
+                "eoe",
+                "green",
+                "eoe standard",
+                "counters",
+                "standard deck",
+                "monogreen",
+                "aggro",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-07-25 09:00:46",
+            "views": 28451,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-07-25",
+                        "exports": 72,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Monogreen Ouroboroid Counters",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/monogreen-ouroboroid-counters",
+                        "views": 445
+                    },
+                    "decklist_hash": "dc5e4f95-cc92ba1a-b1ae29d7-2b8739ed-cf954ed6"
+                }
+            ]
+        }
+    ]
+}

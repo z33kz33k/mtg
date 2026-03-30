@@ -1,0 +1,53 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "Magic the Gathering",
+        "MTG",
+        "mtggoldfish"
+    ],
+    "subscribers": 346000,
+    "scrape_time": "2025-05-31 13:57:50",
+    "videos": [
+        {
+            "id": "Ygym5BSqT9E",
+            "title": "2+ Hours of Mardu Control Burn to Fall Asleep To  Much Abrew",
+            "description": "Is an endless piles of burn-y removal spells the solution to Standard's aggro problem? Let's do some grinding with Mardu Burn Control and find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/much-abrew-2-hours-of-mardu-control-burn-to-fall-asleep-to\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7123887#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/R9fM4\n◼ Purchase this deck (Magic Online): http://mtg.fish/OyUD1\n\n#MTG\n#MagicTheGathering\n#magicarena \n#mtgstandard \n\n0:00 Start\n4:14 Match 1\n33:00 Match 2\n52:51 Match 1\n1:14:22 Match 4\n1:35:10 Match 5",
+            "keywords": [
+                "Magic the Gathering",
+                "Magic Arena",
+                "Gameplay",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-05-30 19:00:09",
+            "views": 20600,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/much-abrew-2-hours-of-mardu-control-burn-to-fall-asleep-to",
+                        "date": "2025-05-23",
+                        "format": "standard",
+                        "name": "Mardu Control Burn",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/much-abrew-2-hours-of-mardu-control-burn-to-fall-asleep-to"
+                    },
+                    "decklist_hash": "541673ac-8e9fe06c-640ae872-7ed7c0a3-36172ff6"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-05-23",
+                        "format": "standard",
+                        "name": "Mardu Control Burn",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7123887"
+                    },
+                    "decklist_hash": "541673ac-8e9fe06c-640ae872-7ed7c0a3-36172ff6"
+                }
+            ]
+        }
+    ]
+}

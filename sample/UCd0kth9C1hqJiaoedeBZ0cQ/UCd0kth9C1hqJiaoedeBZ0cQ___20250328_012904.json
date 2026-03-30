@@ -1,0 +1,86 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "dragonstorm",
+        "educational",
+        "historic",
+        "explorer",
+        "standard",
+        "brawl",
+        "tarkir",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "how to",
+        "tips",
+        "MTG"
+    ],
+    "subscribers": 135000,
+    "scrape_time": "2025-03-28 01:29:04",
+    "videos": [
+        {
+            "id": "YXDJKRfazuw",
+            "title": "I can't stop hurting myself.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a Grixis Shadow deck in Timeless. \n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:30 - Match 1\n09:58 - Match 2\n13:36 - Match 3\n22:37 - Match 4\n27:31 - Match 5\n32:20 - Match 6\n35:38 - Match 7\n\nDecklist: \nhttps://aetherhub.com/Deck/deaths-shadows-last-ride\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtg #mtgaetherdrift #aetherdrift",
+            "keywords": [
+                "gameplay",
+                "red",
+                "lvd",
+                "battle rage",
+                "shadow",
+                "legend",
+                "oculus",
+                "mtga",
+                "discard",
+                "last ride",
+                "blue",
+                "decks",
+                "guide",
+                "best deck",
+                "mtg",
+                "mtg arena",
+                "grixis",
+                "deck",
+                "reanimate",
+                "timeless",
+                "grixis shadow",
+                "death's shadow",
+                "black",
+                "magic the gathering",
+                "timeless deck"
+            ],
+            "publish_time": "2025-03-27 10:00:38",
+            "views": 10852,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "control",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-03-26",
+                        "exports": 23,
+                        "format": "timeless",
+                        "mode": "Bo1",
+                        "name": "Death's Shadow's Last Ride",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/deaths-shadows-last-ride",
+                        "views": 159
+                    },
+                    "decklist_hash": "e4270c8e-1253fbdd-1a907c28-e538bf74-0f0c12c9"
+                }
+            ]
+        }
+    ]
+}

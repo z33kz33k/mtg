@@ -1,0 +1,92 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "educational",
+        "FINAL FANTASY",
+        "historic",
+        "standard",
+        "brawl",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "pioneer",
+        "how to",
+        "tips",
+        "MTG",
+        "final fantasy"
+    ],
+    "subscribers": 138000,
+    "scrape_time": "2025-06-25 02:46:03",
+    "videos": [
+        {
+            "id": "xMVd70NyFGY",
+            "title": "This commander is ... busted.",
+            "description": "Magic: The Gathering Arena gameplay with a monogreen landfall aggro deck, ft. Tifa Lockhart in Brawl. \n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro\n01:41 - Deck Tech\n07:25 - vs Pantlaza,Sun-Favored\n11:32 - vs Unesh, Criosphinx Sovereign\n17:45 - vs Extus, Oriq Overlord\n22:20 - vs Vivi Ornitier\n27:13 - vs Rhys the Redeemed\n30:27 - vs Terra, Magical Adept\n34:29 - vs Rigo Streetwise Mentor\n37:11 - vs Tsagan, Raider Warlord\n41:09 - vs Kaya, Spirit's Justice\n43:19 - vs Vivi Ornitier\n52:43 - vs Tifa Lockhart\n\nDecklist:\nhttps://aetherhub.com/Deck/tifa-lockhart-landfall-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGxFINALFANTASY #mtg #magicthegathering",
+            "keywords": [
+                "landfall",
+                "gameplay",
+                "FIN",
+                "lvd",
+                "tifa",
+                "legend",
+                "mtga",
+                "ff",
+                "tifa edh",
+                "decks",
+                "otk",
+                "guide",
+                "FINAL FANTASY",
+                "combo",
+                "brawl",
+                "busted",
+                "FF",
+                "mtg",
+                "mtg arena",
+                "pump",
+                "tifa brawl",
+                "tifa lockhart",
+                "deck",
+                "tifa commander",
+                "green",
+                "edh",
+                "commander",
+                "monogreen",
+                "ramp",
+                "final fantasy",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-06-24 09:01:26",
+            "views": 14027,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-06-24",
+                        "exports": 302,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Tifa Lockhart Landfall Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/tifa-lockhart-landfall-brawl",
+                        "views": 656
+                    },
+                    "decklist_hash": "d10b10fb-7e0899d6-7051e284-5d07ddaf-00c977b2"
+                }
+            ]
+        }
+    ]
+}

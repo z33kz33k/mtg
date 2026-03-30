@@ -1,0 +1,67 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "Magic the Gathering",
+        "MTG",
+        "mtggoldfish"
+    ],
+    "subscribers": 340000,
+    "scrape_time": "2025-03-24 02:45:41",
+    "videos": [
+        {
+            "id": "8cP7AtOwOgg",
+            "title": "Gonti Makes Everything a Ragavan",
+            "description": "Ragavan is a powerful 1-cost unit and now we're going to spend well beyond one mana to recreate ate it in standard with Gonti, Night Minister!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-gonti-makes-everything-a-ragavan\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6991165#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/nVQXl\n◼ Purchase this deck (Magic Online): http://mtg.fish/eTAQx\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Magic the Gathering",
+                "Magic Arena",
+                "Gameplay",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-03-22 19:00:08",
+            "views": 23407,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-03-19",
+                        "format": "standard",
+                        "name": "Build A Ragavan",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6991165"
+                    },
+                    "decklist_hash": "5e221955-cc1225c8-399357d1-9760c7f5-c1824765"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-gonti-makes-everything-a-ragavan",
+                        "date": "2025-03-19",
+                        "format": "standard",
+                        "name": "Build A Ragavan",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-gonti-makes-everything-a-ragavan"
+                    },
+                    "decklist_hash": "5e221955-cc1225c8-399357d1-9760c7f5-c1824765"
+                }
+            ]
+        },
+        {
+            "id": "nPp3fdsxVyE",
+            "title": "Cheating in Magic is Getting Out of Hand",
+            "description": "Today we look at one of the most blatant cheats I've seen and talk about why cheating is on the rise and how we can stop it.\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n#MTG #magicthegathering #cheating",
+            "keywords": [
+                "Magic: the Gathering",
+                "MTGGoldfish",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-03-23 10:11:45",
+            "views": 72620,
+            "decks": []
+        }
+    ]
+}

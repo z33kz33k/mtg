@@ -9,6 +9,7 @@
 """
 import itertools
 import logging
+import sys
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
@@ -21,7 +22,7 @@ from tqdm import tqdm
 
 from mtg.constants import OUTPUT_DIR
 from mtg.data.db import ENGINE
-from mtg.data.models import Channel, Decklist, FailedUrl, Snapshot
+from mtg.data.models import Channel, Decklist, FailedUrl
 from mtg.lib.common import get_timestamp, timed
 from mtg.lib.json import to_json
 
@@ -30,24 +31,33 @@ _log = logging.getLogger(__name__)
 
 class Dumper:
     SNAPSHOT_FILE_TEMPLATE = "{channel_yt_id}___{scrape_time}.json"
+    DEFAULT_WORKERS = 12
 
     @property
-    def _channels_dir(self) -> Path:
+    def channels_dir(self) -> Path:
         dir_ = self._dump_dir / "channels"
         dir_.mkdir(parents=True, exist_ok=True)
         return dir_
 
     @property
-    def _withdrawn_dir(self) -> Path:
+    def withdrawn_dir(self) -> Path:
         dir_ = self._dump_dir / "withdrawn"
         dir_.mkdir(parents=True, exist_ok=True)
         return dir_
 
+    @property
+    def workers_count(self) -> int:
+        if not self._channels_yt_ids:
+            return self.DEFAULT_WORKERS
+        return self.DEFAULT_WORKERS if self.DEFAULT_WORKERS <= len(
+            self._channels_yt_ids) else len(self._channels_yt_ids)
+
     def __init__(self) -> None:
+        self._channels_yt_ids: tuple[str, ...] | None = None
         self._dump_dir: Path | None = None
 
     def _dump_failed_urls(self) -> None:
-        dst = self._channels_dir / "failed_urls.json"
+        dst = self.channels_dir / "failed_urls.json"
         _log.info(f"Dumping failed URLs data to {dst}...")
 
         data: defaultdict[str, list[str]] = defaultdict(list)
@@ -60,8 +70,9 @@ class Dumper:
         _log.info(f"{len(list(itertools.chain([lst for lst in data.values()]))):,} URLs dumped.")
 
     def _dump_decklists(self) -> None:
-        dst = self._channels_dir / "decklists.json"
+        dst = self.channels_dir / "decklists.json"
         _log.info(f"Dumping decklists data to {dst}...")
+
         data: dict[str, str] = {}
         with Session(ENGINE) as session:
             stmt = select(Decklist)
@@ -72,18 +83,18 @@ class Dumper:
         _log.info(f"{len(list(data)):,} decklists dumped.")
 
     def _dump_withdrawn(self) -> None:
-        _log.info(f"Dumping withdrawn channels to {self._withdrawn_dir}...")
+        _log.info(f"Dumping withdrawn channels to {self.withdrawn_dir}...")
         count = 0
         with Session(ENGINE) as session:
             stmt = select(Channel).where(Channel.is_withdrawn == True)
             for withdrawn in session.scalars(stmt):
-                dst_dir = self._withdrawn_dir / withdrawn.yt_id
+                dst_dir = self.withdrawn_dir / withdrawn.yt_id
                 dst_dir.mkdir(parents=True, exist_ok=True)
                 count += 1
         _log.info(f"Dumped {count:,} withdrawn channels.")
 
     def _get_channel_dir(self, channel_yt_id: str) -> Path:
-        dir_ = self._channels_dir / channel_yt_id
+        dir_ = self.channels_dir / channel_yt_id
         dir_.mkdir(parents=True, exist_ok=True)
         return dir_
 
@@ -95,6 +106,8 @@ class Dumper:
         snapshots_count = 0
         with Session(ENGINE) as session:
             channel = session.get(Channel, channel_id)
+            if channel is None:
+                return 0
 
             for snapshot in channel.snapshots:
                 snapshot_dst = self._get_snapshot_file(
@@ -125,7 +138,7 @@ class Dumper:
 
                     for deck in video.decks:
                         deck_data = {
-                            "metadata": deck.json_metadata,
+                            "metadata": deck.json_metadata or {},
                             "decklist_hash": deck.decklist.hash,
                         }
                         video_data["decks"].append(deck_data)
@@ -143,10 +156,15 @@ class Dumper:
         # cheap) in the main thread and then channel gets retrieved and processed in its own
         # session within each thread
         with Session(ENGINE) as session:
-            channels_count = session.scalar(select(func.count()).select_from(Channel))
-            channel_ids = session.scalars(select(Channel.id)).all()
+            if self._channels_yt_ids:
+                channels_count = len(self._channels_yt_ids)
+                channel_ids = session.scalars(
+                    select(Channel.id).where(Channel.yt_id.in_(self._channels_yt_ids))).all()
+            else:
+                channels_count = session.scalar(select(func.count()).select_from(Channel))
+                channel_ids = session.scalars(select(Channel.id)).all()
 
-        with ThreadPoolExecutor(max_workers=12) as executor:
+        with ThreadPoolExecutor(max_workers=self.workers_count) as executor:
             futures = [executor.submit(self._process_channel, chid) for chid in channel_ids]
 
             with tqdm(total=channels_count, desc="Dumping channels...") as pbar:
@@ -157,7 +175,15 @@ class Dumper:
         _log.info(f"Dumped {snapshots_count:,} snapshots of {channels_count:,} channels.")
 
     @timed("dumping scraped data to JSON", precision=0)
-    def dump(self) -> None:
+    def dump(self, *channels: str) -> None:
+        """Dump scraped data to JSON.
+
+        Optionally, narrow dumped channels to only those specified.
+
+        Args:
+            channels: YouTube IDs of channels to dump (all if not specified)
+        """
+        self._channels_yt_ids = channels
         self._dump_dir = OUTPUT_DIR / f"dump_{get_timestamp()}"
         self._dump_dir.mkdir(parents=True, exist_ok=True)
         self._dump_failed_urls()
@@ -167,4 +193,4 @@ class Dumper:
 
 
 if __name__ == '__main__':
-    Dumper().dump()
+    Dumper().dump(*sys.argv[1:])

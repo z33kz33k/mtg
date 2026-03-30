@@ -1,0 +1,92 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "educational",
+        "historic",
+        "standard",
+        "brawl",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "pioneer",
+        "how to",
+        "tips",
+        "MTG",
+        "final fantasy"
+    ],
+    "subscribers": 137000,
+    "scrape_time": "2025-05-17 03:35:50",
+    "videos": [
+        {
+            "id": "z6oho9OFHW4",
+            "title": "This deck has a secret backup plan.",
+            "description": "Magic: The Gathering Arena gameplay with a black/green counters deck, ft. Warden of the Grove in Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:12 - Match 1\n10:27 - Match 2\n14:55 - Match 3\n21:15 - Match 4\n26:34 - Match 5\n32:26 - Match 6\n37:06 - Match 7\n42:02 - Match 8\n46:40 - Match 9\n\nDecklist:\nhttps://aetherhub.com/Deck/golgari-grove-counters\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #tarkir #mtg #mtgtarkir #mtgtdm #magicthegathering",
+            "keywords": [
+                "grove",
+                "gameplay",
+                "tarkir standard",
+                "tumblewag",
+                "lvd",
+                "dragonstorm",
+                "legend",
+                "warden",
+                "golgari",
+                "tdm standard",
+                "mtga",
+                "decks",
+                "guide",
+                "Standard MTG",
+                "standard",
+                "mtg",
+                "tarkir",
+                "saddle",
+                "mtg arena",
+                "talent",
+                "counter deck",
+                "deck",
+                "tdm",
+                "new standard",
+                "ozolith",
+                "green",
+                "poison",
+                "counters",
+                "standard deck",
+                "black",
+                "tarkir dragonstorm",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-05-16 09:01:40",
+            "views": 17151,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-05-16",
+                        "exports": 322,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Golgari Grove Counters",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/golgari-grove-counters",
+                        "views": 847
+                    },
+                    "decklist_hash": "3997c0ed-41185578-1d7d1201-66cf8a02-eb0bbaeb"
+                }
+            ]
+        }
+    ]
+}

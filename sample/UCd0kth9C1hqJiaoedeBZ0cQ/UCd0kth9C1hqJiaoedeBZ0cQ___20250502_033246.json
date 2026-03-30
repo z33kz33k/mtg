@@ -1,0 +1,93 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "dragonstorm",
+        "educational",
+        "historic",
+        "explorer",
+        "standard",
+        "brawl",
+        "tarkir",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "how to",
+        "tips",
+        "MTG"
+    ],
+    "subscribers": 136000,
+    "scrape_time": "2025-05-02 03:32:46",
+    "videos": [
+        {
+            "id": "LUOIAMzeXmM",
+            "title": "Monastery Mentor's Mentor is ...",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with Lam, Storm Crane Elder as commander in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro\n02:28 - Deck Tech\n10:39 - vs Ygra, Eater of All\n13:31 - vs Kotis, the Fangkeeper \n28:30 - vs Narset, Jeskai Waymaster\n35:28 - vs Bruna, the Fading Light\n40:45 - vs Kotis, the Fangkeeper\n44:00 - vs Itzquinth, Firstborn of Gishath \n47:12 - vs Tatyova, Benthic Druid \n54:47 - vs Kotis, the Fangkeeper \n\nDecklist: \nhttps://aetherhub.com/Deck/lam-storm-crane-elder-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #tarkir #mtg #mtgtarkir #mtgtdm #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "lam brawl",
+                "prowess",
+                "lvd",
+                "elder",
+                "dragonstorm",
+                "legend",
+                "monk",
+                "white",
+                "mtga",
+                "decks",
+                "guide",
+                "combo",
+                "monastery mentor",
+                "mtg",
+                "lam",
+                "tarkir",
+                "mtg arena",
+                "brawl deck",
+                "historic brawl",
+                "deck",
+                "tdm",
+                "edh",
+                "commander",
+                "storm",
+                "monowhite",
+                "ramp",
+                "tarkir dragonstorm",
+                "artifact",
+                "matryoshka",
+                "ugin",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-05-01 09:26:48",
+            "views": 15351,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-05-01",
+                        "exports": 175,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Lam, Storm Crane Elder Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/lam-storm-crane-elder-brawl",
+                        "views": 501
+                    },
+                    "decklist_hash": "ade897c4-f4d2a548-67fc7636-c8b8bc96-a226ef81"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,92 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "mtg foundations",
+        "educational",
+        "historic",
+        "explorer",
+        "standard",
+        "brawl",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "how to",
+        "tips",
+        "MTG",
+        "foundations"
+    ],
+    "subscribers": 133000,
+    "scrape_time": "2025-01-01 02:34:10",
+    "videos": [
+        {
+            "id": "eSNkzQoysBg",
+            "title": "The craziest brawl deck of the year.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a cascade combo deck, featuring Monstrous Vortex and Imoti as commander in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro \n01:23 - Deck Tech\n08:37 - vs Rosheen, Roaring Prophet\n18:28 - vs Anzrag, the Quake-Mole\n24:56 - vs Vren, the Relentless\n28:09 - vs Emmara, Soul of the Accord\n38:29 - vs Miirym, Sentinel Wyrm\n43:49 - vs Glarb, Calamity's Augur\n52:24 - vs Rakdos, the Muscle\n54:24 - vs Nicol Bolas, the Ravager\n\nDecklist: \nhttps://aetherhub.com/Deck/imoti-monstrous-vortex-combo\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtg  #mtgarena #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "lvd",
+                "prototype",
+                "discover deck",
+                "legend",
+                "plot",
+                "mtga",
+                "discover combo",
+                "channel",
+                "blue",
+                "imoti commander",
+                "decks",
+                "guide",
+                "room",
+                "combo",
+                "cascade deck",
+                "cascade",
+                "mtg",
+                "mtg arena",
+                "brawl deck",
+                "historic brawl",
+                "deck",
+                "green",
+                "discover",
+                "edh",
+                "commander",
+                "imoti edh",
+                "monstrous vortex",
+                "simic",
+                "imoti brawl",
+                "magic the gathering"
+            ],
+            "publish_time": "2024-12-31 09:00:45",
+            "views": 14426,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2024-12-31",
+                        "exports": 262,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Imoti Monstrous Vortex Combo",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/imoti-monstrous-vortex-combo",
+                        "views": 412
+                    },
+                    "decklist_hash": "a98c8ce6-005a3530-a00f5a21-9debd52a-63957a53"
+                }
+            ]
+        }
+    ]
+}

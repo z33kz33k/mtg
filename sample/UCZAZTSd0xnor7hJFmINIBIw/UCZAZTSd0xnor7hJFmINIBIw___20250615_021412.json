@@ -1,0 +1,53 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "Magic the Gathering",
+        "MTG",
+        "mtggoldfish"
+    ],
+    "subscribers": 347000,
+    "scrape_time": "2025-06-15 02:14:12",
+    "videos": [
+        {
+            "id": "_R3_mzAAX20",
+            "title": "Aerith Joins Soul Sisters",
+            "description": "Soul Sisters is a beloved archetype by many and thanks to Aerith, this deck is loaded with Ajani's Pridemate effects. Hopefully, she can outlast Standard better than she did with Sephiroth.\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-aerith-joins-soul-sisters\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7151764#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/byhKw\n◼ Purchase this deck (Magic Online): http://mtg.fish/CGXO8\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Magic the Gathering",
+                "Magic Arena",
+                "Gameplay",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-06-14 08:00:04",
+            "views": 13116,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-aerith-joins-soul-sisters",
+                        "date": "2025-06-05",
+                        "format": "standard",
+                        "name": "Don't Fight Here, You'll Ruin the Flowers!",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-aerith-joins-soul-sisters"
+                    },
+                    "decklist_hash": "2ef7baf4-9d48635b-56e9547a-22d32b89-a20cbfc5"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-06-05",
+                        "format": "standard",
+                        "name": "Don't Fight Here, You'll Ruin the Flowers!",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/7151764"
+                    },
+                    "decklist_hash": "2ef7baf4-9d48635b-56e9547a-22d32b89-a20cbfc5"
+                }
+            ]
+        }
+    ]
+}

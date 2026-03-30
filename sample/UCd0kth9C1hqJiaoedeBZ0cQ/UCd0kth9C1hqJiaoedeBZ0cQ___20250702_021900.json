@@ -1,0 +1,284 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "educational",
+        "FINAL FANTASY",
+        "historic",
+        "standard",
+        "brawl",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "pioneer",
+        "how to",
+        "tips",
+        "MTG",
+        "final fantasy"
+    ],
+    "subscribers": 138000,
+    "scrape_time": "2025-07-02 02:19:00",
+    "videos": [
+        {
+            "id": "35EayfNY2Cs",
+            "title": "10+ decks for post-ban Standard.",
+            "description": "Discussing the Magic: The Gathering ban announcement and showcasing decks to tackle the new Standard meta.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Banned Cards\n09:45 - Gruul Delirium \n11:26 - Vivi Cauldron\n12:57 - Jeskai Oculus\n14:17 - Azorius Artifacts\n15:07 - Monowhite Lifegain\n16:12 - Monoblack Demons\n18:02 - Selesnya Rabbits\n18:48 - Monored Aggro\n20:02 - Dino Reanimator\n21:51 - Tyvar Roots\n23:13 - Jeskai Control\n24:04 - Rakdos Lizards\n25:47 - Orzhov Bats\n\nGruul Delirium - https://aetherhub.com/Deck/ff-gruul-delirium-\nhttps://www.youtube.com/watch?v=p00YYPlubYs\n\nVivi Cauldron - https://aetherhub.com/Deck/ff-vivi-cauldron\nhttps://www.youtube.com/watch?v=s4Z16Hohmbs\n\nJeskai Oculus - https://aetherhub.com/Deck/ff-jeskai-oculus\nhttps://www.youtube.com/watch?v=PHqPqpONGWg\n\nAzorius Artifacts - https://aetherhub.com/Deck/ff-azorius-artifacts\nhttps://www.youtube.com/watch?v=g1kj6t4mfhk\n\nMonowhite Lifegain - https://aetherhub.com/Deck/ff-monowhite-lifegain\nhttps://www.youtube.com/watch?v=nES2ALch7vQ\n\nMonoblack Demons - https://aetherhub.com/Deck/ff-monoblack-demons\nhttps://www.youtube.com/watch?v=CW91zRyF9XE\n\nSelesnya Rabbits - https://aetherhub.com/Deck/ff-selesnya-rabbits\nhttps://www.youtube.com/watch?v=z43UQN49NaQ\n\nMonored Aggro - https://aetherhub.com/Deck/ff-monored-aggro\n\nDino Reanimator - https://aetherhub.com/Deck/ff-dino-reanimator\nhttps://www.youtube.com/watch?v=TDUJZHIPxh4\n\nTyvar Roots - https://aetherhub.com/Deck/ff-tyvar-roots\nhttps://www.youtube.com/watch?v=u3s-4uUa51Q\n\nJeskai Control - https://aetherhub.com/Deck/ff-jeskai-control\nhttps://www.youtube.com/watch?v=_ZZfG2j6cB8\n\nRakdos Lizards - https://aetherhub.com/Deck/ff-lizard-aggro\nhttps://www.youtube.com/watch?v=kNcLj4TCIXw\n\nOrzhov Bats - https://aetherhub.com/Deck/ff-orzhov-bats\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGxFINALFANTASY #mtg #magicthegathering",
+            "keywords": [
+                "standard ban",
+                "gameplay",
+                "new decks",
+                "banned",
+                "FIN",
+                "lvd",
+                "new meta",
+                "rotation",
+                "FF Standard",
+                "legend",
+                "FINAL FANTASY standard",
+                "ban",
+                "ff deck",
+                "mtga",
+                "ff",
+                "decks",
+                "guide",
+                "FINAL FANTASY",
+                "FIN standard",
+                "Standard MTG",
+                "standard",
+                "FF",
+                "mtg",
+                "mtg arena",
+                "banned list",
+                "deck",
+                "new standard",
+                "standard deck",
+                "post-ban",
+                "final fantasy",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-07-01 11:49:00",
+            "views": 18127,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-07-01",
+                        "exports": 116,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "FF Monored Aggro",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/ff-monored-aggro",
+                        "views": 304
+                    },
+                    "decklist_hash": "a828e9ae-5cd4a5fc-cdd00e76-dcfdf4c6-59cae4cf"
+                },
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-07-01",
+                        "exports": 134,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "FF Lizard Aggro",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/ff-lizard-aggro",
+                        "views": 315
+                    },
+                    "decklist_hash": "6db715ec-b1359223-47b2bdc7-d302400e-c5ecd54c"
+                },
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-07-01",
+                        "exports": 202,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "FF Gruul Delirium",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/ff-gruul-delirium-",
+                        "views": 415
+                    },
+                    "decklist_hash": "f4a951c9-8a582ef6-4deefb8e-f3281dee-f3251013"
+                },
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-07-01",
+                        "exports": 159,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "FF Jeskai Oculus",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/ff-jeskai-oculus",
+                        "views": 334
+                    },
+                    "decklist_hash": "bcbb33b0-0dcfce18-bb8d1d1d-4cf6f898-eb925122"
+                },
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-07-01",
+                        "exports": 149,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "FF Orzhov Bats",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/ff-orzhov-bats",
+                        "views": 371
+                    },
+                    "decklist_hash": "c06fca4f-356caab4-316825ce-7f7d8acd-4626d9d8"
+                },
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-07-01",
+                        "exports": 160,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "FF Vivi Cauldron",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/ff-vivi-cauldron",
+                        "views": 373
+                    },
+                    "decklist_hash": "cb8fbc8f-0cbed27e-e38b6333-bfc8f276-5bab008d"
+                },
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-07-01",
+                        "exports": 143,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "FF Monowhite Lifegain",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/ff-monowhite-lifegain",
+                        "views": 349
+                    },
+                    "decklist_hash": "72414cef-3739b634-b71fcdbb-ca19b65e-884ae817"
+                },
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-07-01",
+                        "exports": 98,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "FF Tyvar Roots",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/ff-tyvar-roots",
+                        "views": 266
+                    },
+                    "decklist_hash": "ebac036a-d81ac950-284777c9-a74b0e95-5e8a758c"
+                },
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-07-01",
+                        "exports": 88,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "FF Selesnya Rabbits",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/ff-selesnya-rabbits",
+                        "views": 237
+                    },
+                    "decklist_hash": "570434b6-66dfd2bd-83e9aa99-b22806b1-a1a15bb2"
+                },
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-07-01",
+                        "exports": 123,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "FF Monoblack Demons",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/ff-monoblack-demons",
+                        "views": 340
+                    },
+                    "decklist_hash": "ba3eb6dc-2feb3e01-ec131869-8f95639b-3acb7cca"
+                },
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-07-01",
+                        "exports": 193,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "FF Azorius Artifacts",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/ff-azorius-artifacts",
+                        "views": 436
+                    },
+                    "decklist_hash": "49fea487-022e3f37-ac496ad4-60236990-4376291a"
+                },
+                {
+                    "metadata": {
+                        "archetype": "control",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-07-01",
+                        "exports": 131,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "FF Jeskai Control",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/ff-jeskai-control",
+                        "views": 356
+                    },
+                    "decklist_hash": "5cc921b9-cb894b3a-45ef55ab-47b456af-cdd3e6da"
+                },
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-07-01",
+                        "exports": 137,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "FF Dino Reanimator",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/ff-dino-reanimator",
+                        "views": 342
+                    },
+                    "decklist_hash": "5fe7dae1-58c81cb7-d5826d2e-78d198cc-877cd66f"
+                }
+            ]
+        }
+    ]
+}

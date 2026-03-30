@@ -1,0 +1,93 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "mtg foundations",
+        "educational",
+        "historic",
+        "explorer",
+        "standard",
+        "brawl",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "how to",
+        "tips",
+        "MTG",
+        "foundations"
+    ],
+    "subscribers": 133000,
+    "scrape_time": "2024-12-21 02:12:19",
+    "videos": [
+        {
+            "id": "G4TSvdshbeM",
+            "title": "Playing every new Oath enchantment.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a four color superfriends planeswalker deck, featuring Atraxa, Praetors' Voice as commander in Brawl.\n\nPatreon: https://www.patreon.com/LegenVD\n\n0:00:00 - Intro \n0:01:39 - Deck Tech\n0:09:50 - vs Mythweaver Poq\n0:15:10 - vs Voja, Jaws of the Conclave\n0:22:32 - vs Harbin, Vanguard Aviator\n0:31:14 - vs Nicol Bolas, God-Pharaoh\n0:34:34 - vs Radagast the Brown\n0:46:32 - vs Merry, Eqauire of Rohan\n0:54:38 - vs Slimefoot and Squee\n0:59:53 - vs Sorin, Imperious Bloodlord\n\nDecklist: \nhttps://aetherhub.com/Deck/atraxa-oath-superfriends-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\n\"Egmont Overture\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtg  #mtgarena #magicthegathering",
+            "keywords": [
+                "atraxa deck",
+                "gameplay",
+                "lvd",
+                "doubling season",
+                "legend",
+                "atraxa",
+                "white",
+                "mtga",
+                "blue",
+                "decks",
+                "guide",
+                "mtg",
+                "mtg arena",
+                "brawl deck",
+                "planeswalker deck",
+                "superfriends",
+                "historic brawl",
+                "planewalker",
+                "deck",
+                "ultimate",
+                "teferi",
+                "green",
+                "oath",
+                "proliferate",
+                "atraxa edh",
+                "atraxa commander",
+                "praetors voice",
+                "edh",
+                "commander",
+                "black",
+                "oaths",
+                "magic the gathering"
+            ],
+            "publish_time": "2024-12-20 09:00:22",
+            "views": 17616,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2024-12-20",
+                        "exports": 239,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Atraxa Oath Superfriends Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/atraxa-oath-superfriends-brawl",
+                        "views": 312
+                    },
+                    "decklist_hash": "ca09fdec-ca17c0ee-a0baf79b-44e4552d-721dbe50"
+                }
+            ]
+        }
+    ]
+}

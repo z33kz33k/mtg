@@ -36,6 +36,7 @@ def seconds2readable(seconds: float) -> str:
     return f"{hours}h:{minutes:02}m:{seconds:02}s"
 
 
+# TODO: precision should be automatic (based on elapsed time) by default
 def timed(operation="", precision=3) -> Callable:
     """Add time measurement to the decorated operation.
 

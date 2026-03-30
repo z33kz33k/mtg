@@ -1,0 +1,91 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "dragonstorm",
+        "educational",
+        "historic",
+        "explorer",
+        "standard",
+        "brawl",
+        "tarkir",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "how to",
+        "tips",
+        "MTG"
+    ],
+    "subscribers": 136000,
+    "scrape_time": "2025-04-15 01:48:47",
+    "videos": [
+        {
+            "id": "xRtqm-Q2oJU",
+            "title": "This angel is unbeatable.",
+            "description": "Magic: The Gathering Arena gameplay with an Angel combo deck, ft. Perennation in Tarkir Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n03:33 - Match 1 \n10:09 - Match 2\n20:01 - Match 3\n25:20 - Match 4\n29:28 - Match 5\n35:31 - Match 6\n39:49 - Match 7\n\nDecklist:\nhttps://aetherhub.com/Deck/perennation-angel\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #tarkir #mtg #mtgtarkir #mtgtdm #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "tarkir standard",
+                "angel",
+                "reanimator",
+                "lvd",
+                "dragonstorm",
+                "legend",
+                "eternal dawn",
+                "tdm standard",
+                "white",
+                "mtga",
+                "decks",
+                "guide",
+                "Standard MTG",
+                "standard",
+                "mtg",
+                "tarkir",
+                "mtg arena",
+                "can't lose",
+                "abzan",
+                "deck",
+                "tdm",
+                "new standard",
+                "perennation",
+                "green",
+                "platinum angel",
+                "standard deck",
+                "black",
+                "tarkir dragonstorm",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-04-14 09:01:25",
+            "views": 15395,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "combo",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-04-14",
+                        "exports": 163,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Perennation Angel",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/perennation-angel",
+                        "views": 507
+                    },
+                    "decklist_hash": "e6b9bcb8-6f008a2f-6a6ad435-85794c41-e0a12305"
+                }
+            ]
+        }
+    ]
+}

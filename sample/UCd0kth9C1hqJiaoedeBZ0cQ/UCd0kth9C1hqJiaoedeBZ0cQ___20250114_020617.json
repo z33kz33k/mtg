@@ -1,0 +1,92 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "mtg foundations",
+        "educational",
+        "historic",
+        "explorer",
+        "standard",
+        "brawl",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "how to",
+        "tips",
+        "MTG",
+        "foundations"
+    ],
+    "subscribers": 134000,
+    "scrape_time": "2025-01-14 02:06:17",
+    "videos": [
+        {
+            "id": "hTGeo5iMayY",
+            "title": "Monored Goblins in Standard ?!",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a monored Goblin deck in Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n02:38 - Match 1\n11:24 - Match 2\n22:50 - Match 3\n24:46 - Match 4\n33:16 - Match 5\n36:24 - Match 6\n\nDecklist:\nhttps://aetherhub.com/Deck/foundations-monored-goblins\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtgfoundations #mtgfdn #mtg #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "red",
+                "lvd",
+                "fdn",
+                "legend",
+                "mtg foundations",
+                "goblin",
+                "scamp",
+                "mtga",
+                "pirates",
+                "krenko",
+                "decks",
+                "guide",
+                "Standard MTG",
+                "standard",
+                "hordemaster",
+                "mtg",
+                "mtg arena",
+                "burn",
+                "monored",
+                "deck",
+                "new standard",
+                "firebrand",
+                "goblin deck",
+                "fnd",
+                "goblins",
+                "standard deck",
+                "foundations standard",
+                "aggro",
+                "foundations",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-01-13 09:00:45",
+            "views": 11414,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-01-13",
+                        "exports": 123,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Foundations Monored Goblins",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/foundations-monored-goblins",
+                        "views": 329
+                    },
+                    "decklist_hash": "a645c74c-60413c3d-12f6ba16-6a537d70-23fccf90"
+                }
+            ]
+        }
+    ]
+}

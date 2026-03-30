@@ -1,0 +1,51 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.Upload schedule for Maj...",
+    "tags": [
+        "Magic the Gathering",
+        "MTG",
+        "mtggoldfish"
+    ],
+    "subscribers": 358000,
+    "scrape_time": "2025-10-10 03:02:02",
+    "videos": [
+        {
+            "id": "R4SWTQp6B_g",
+            "title": "Burning Our Opponent with The Top of Our Deck",
+            "description": "Duskmourn's Claim aka The Parker Luck might help turn Mono black Annex into  a silly burn deck!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/single-scoop-burning-our-opponent-with-the-top-of-our-deck\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/7377532#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/qoteQ\n◼ Purchase this deck (Magic Online): http://mtg.fish/boDFt\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#MTGStandard",
+            "keywords": [
+                "Magic the Gathering",
+                "Magic Arena",
+                "Gameplay",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-10-09 08:45:03",
+            "views": 9476,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "date": "2025-10-05",
+                        "format": "standard",
+                        "name": "Duskmourn's Luck",
+                        "url": "https://www.mtggoldfish.com/deck/7377532"
+                    },
+                    "decklist_hash": "c11439cb-874ada3f-7b3238d4-91991ab1-c048df04"
+                },
+                {
+                    "metadata": {
+                        "author": "TheAsianAvenger",
+                        "container_url": "https://www.mtggoldfish.com/articles/single-scoop-burning-our-opponent-with-the-top-of-our-deck",
+                        "date": "2025-10-05",
+                        "format": "standard",
+                        "name": "Duskmourn's Luck",
+                        "url": "https://www.mtggoldfish.com/articles/single-scoop-burning-our-opponent-with-the-top-of-our-deck"
+                    },
+                    "decklist_hash": "c11439cb-874ada3f-7b3238d4-91991ab1-c048df04"
+                }
+            ]
+        }
+    ]
+}

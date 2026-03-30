@@ -1,0 +1,91 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "educational",
+        "FINAL FANTASY",
+        "historic",
+        "standard",
+        "brawl",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "pioneer",
+        "how to",
+        "tips",
+        "MTG",
+        "final fantasy"
+    ],
+    "subscribers": 139000,
+    "scrape_time": "2025-07-20 02:05:36",
+    "videos": [
+        {
+            "id": "86SiD4MkR8Y",
+            "title": "Combining the two most hated archetypes.",
+            "description": "Magic: The Gathering Arena gameplay with a lifegain mill deck, ft. Hope Estheim as commander in Brawl. \n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro\n01:42 - Deck Tech\n09:27 - vs Gyruda, Doom of Depths\n14:34 - vs Gishath, Sun's Avatar\n19:19 - vs Helga, Skittish Seer\n25:47 - vs Cloud, Ex-SOLDIER\n31:35 - vs Felothar, Dawn of the Abzan\n42:40 - vs Arius, Flyby Trawler\n\nDecklist:\nhttps://aetherhub.com/Deck/hope-estheim-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGxFINALFANTASY #mtg #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "hope brawl",
+                "mill",
+                "FIN",
+                "lvd",
+                "hope estheim",
+                "legend",
+                "white",
+                "mtga",
+                "ff",
+                "blue",
+                "decks",
+                "guide",
+                "FINAL FANTASY",
+                "brawl",
+                "FF",
+                "mtg",
+                "mtg arena",
+                "lifegain",
+                "mill deck",
+                "hope commander",
+                "deck",
+                "hope",
+                "hope edh",
+                "edh",
+                "commander",
+                "azorius",
+                "lifegain deck",
+                "final fantasy",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-07-18 09:00:13",
+            "views": 30455,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-07-18",
+                        "exports": 319,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Hope Estheim Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/hope-estheim-brawl",
+                        "views": 865
+                    },
+                    "decklist_hash": "4605e600-31df3425-ac9c52d3-36064def-20ce7e97"
+                }
+            ]
+        }
+    ]
+}

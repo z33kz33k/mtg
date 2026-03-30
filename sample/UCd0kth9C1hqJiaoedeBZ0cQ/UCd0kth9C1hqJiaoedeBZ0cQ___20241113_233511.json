@@ -1,0 +1,89 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "mtg foundations",
+        "educational",
+        "historic",
+        "explorer",
+        "standard",
+        "brawl",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "how to",
+        "tips",
+        "MTG",
+        "foundations"
+    ],
+    "subscribers": 132000,
+    "scrape_time": "2024-11-13 23:35:11",
+    "videos": [
+        {
+            "id": "7_gATYejJKM",
+            "title": "This throne is fit for a king.",
+            "description": "Magic: The Gathering Arena deck tech & gameplay with a monowhite cat deck, featuring Roaming Throne, Skyknight Squire and Arahbo, the First Fang from Foundations in Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:31 - Match 1\n09:35 - Match 2\n16:07 - Match 3\n24:35 - Match 4\n32:17 - Match 5\n37:06 - Match 6\n41:23 - Match 7\n\nDecklist:\nhttps://aetherhub.com/Deck/foundations-cats\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtgfoundations #mtgfdn #mtg #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "lvd",
+                "cats",
+                "caracal",
+                "fdn",
+                "legend",
+                "mtg foundations",
+                "arahbo",
+                "white",
+                "mtga",
+                "decks",
+                "guide",
+                "Standard MTG",
+                "standard",
+                "mtg",
+                "mtg arena",
+                "deck",
+                "new standard",
+                "standard cats",
+                "fnd",
+                "regal",
+                "cat deck",
+                "standard deck",
+                "foundations standard",
+                "skyknight",
+                "monowhite",
+                "foundations",
+                "magic the gathering"
+            ],
+            "publish_time": "2024-11-13 09:06:47",
+            "views": 9875,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2024-11-13",
+                        "exports": 298,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Foundations Cats",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/foundations-cats",
+                        "views": 497
+                    },
+                    "decklist_hash": "97c58bf9-f56b9881-bba6d528-bfe03a73-ca71b03c"
+                }
+            ]
+        }
+    ]
+}

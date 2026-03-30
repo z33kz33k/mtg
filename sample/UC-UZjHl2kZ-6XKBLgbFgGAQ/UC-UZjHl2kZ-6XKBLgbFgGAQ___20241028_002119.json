@@ -1,0 +1,922 @@
+{
+    "id": "UC-UZjHl2kZ-6XKBLgbFgGAQ",
+    "title": "CovertGoBlue",
+    "description": "The One in Best-of-One\n\n",
+    "tags": [
+        "mtga",
+        "mtg",
+        "mtg arena",
+        "covertgo",
+        "magic the gathering"
+    ],
+    "subscribers": 225000,
+    "scrape_time": "2024-10-28 00:21:19",
+    "videos": [
+        {
+            "id": "DCMU6SeKg88",
+            "title": "Standard HATES UB Poison control",
+            "description": "A blue black control deck for standard mtg arena mythic bo1 ladder that uses poison as a wincon\n\nDecklist - https://www.moxfield.com/decks/OjbT2Rh5kkSmbTSr-eCRDA\n\nSponsors\n\nCoolStuffInc.com Promo Code CGB5 - https://www.coolstuffinc.com/cgb\nUltimate Guard - https://tinyurl.com/UGCGB\nDripShop.live - https://join.dripshop.live/CovertGoBlue\nMoxfield - https://www.moxfield.com/users/CovertGoBlue\n\nDiscord - https://discord.gg/MXt3DEP\nInstagram - https://www.instagram.com/covertgoblue/\n\nCredits\n\nWritten and performed by Daniel Wagner, aka CovertGoBlue\nEdited by @libmae_\nLogo design by HolyMTG - HolyMTG@gmail.com Twitter @HolyMTG\n© CovertGoBlue Entertainment, LLC\n\n#cgb #mtgarena #mtgstandard #dimir",
+            "keywords": [
+                "Deck",
+                "gameplay",
+                "dsk early access",
+                "MTG Cards",
+                "dimir poison",
+                "Covert Go",
+                "Covert Go MTG",
+                "dimir",
+                "Covert Go Blue",
+                "early access",
+                "duskmourn",
+                "mtga",
+                "dimir control",
+                "Best MTG Deck",
+                "decks",
+                "New Deck",
+                "guide",
+                "duskmourn standard",
+                "CGB Magic the Gathering",
+                "dsk mtg",
+                "dsk cards",
+                "mtg",
+                "mtg arena",
+                "covertgo",
+                "duskmourn early access",
+                "CGB Deck",
+                "covertgo mtg",
+                "MTG Deck",
+                "deck",
+                "ub control",
+                "CovertGoBlue",
+                "new cards",
+                "New Cards",
+                "Gameplay",
+                "Best Deck",
+                "dsk",
+                "CGB",
+                "Mythic",
+                "mtg arena new set",
+                "blb mtg arena",
+                "magic the gathering"
+            ],
+            "publish_time": "2024-10-24 09:00:13",
+            "views": 42986,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-21",
+                        "format": "standard",
+                        "likes": 1,
+                        "name": "dimir poison",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/OjbT2Rh5kkSmbTSr-eCRDA",
+                        "views": 2578
+                    },
+                    "decklist_hash": "052e285a-e8e81d95-881a07ef-47e5c1dd-1491a6b9"
+                }
+            ]
+        },
+        {
+            "id": "iMLfJuDMLgw",
+            "title": "Standard LOVES Golgari Demon Midrange",
+            "description": "Thank you Helix for sponsoring! Visit https://helixsleep.com/covertgoblue to get 20% off your Helix mattress. Offers subject to change. #helixsleep\n\nDecklist - https://www.moxfield.com/decks/-PZyATFXsEquOUaXLeV2DQ\n\nSponsors\n\nCoolStuffInc.com Promo Code CGB5 - https://www.coolstuffinc.com/cgb\nUltimate Guard - https://tinyurl.com/UGCGB\nDripShop.live - https://join.dripshop.live/CovertGoBlue\nMoxfield - https://www.moxfield.com/users/CovertGoBlue\n\nDiscord - https://discord.gg/MXt3DEP\nInstagram - https://www.instagram.com/covertgoblue/\n\nCredits\n\nWritten and performed by Daniel Wagner, aka CovertGoBlue\nEdited by @libmae_\nLogo design by HolyMTG - HolyMTG@gmail.com Twitter @HolyMTG\n© CovertGoBlue Entertainment, LLC\n\n#cgb #mtgarena #mtgstandard #golgari #ad",
+            "keywords": [
+                "Deck",
+                "gameplay",
+                "dsk early access",
+                "MTG Cards",
+                "Covert Go",
+                "Covert Go MTG",
+                "Covert Go Blue",
+                "early access",
+                "golgari",
+                "duskmourn",
+                "gb",
+                "mtga",
+                "Best MTG Deck",
+                "decks",
+                "New Deck",
+                "guide",
+                "duskmourn standard",
+                "CGB Magic the Gathering",
+                "dsk mtg",
+                "dsk cards",
+                "mtg",
+                "mtg arena",
+                "covertgo",
+                "duskmourn early access",
+                "CGB Deck",
+                "covertgo mtg",
+                "MTG Deck",
+                "deck",
+                "CovertGoBlue",
+                "new cards",
+                "golgari demons",
+                "New Cards",
+                "Gameplay",
+                "golgari midrange",
+                "Best Deck",
+                "dsk",
+                "CGB",
+                "Mythic",
+                "mtg arena new set",
+                "blb mtg arena",
+                "magic the gathering"
+            ],
+            "publish_time": "2024-10-25 09:00:47",
+            "views": 44304,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-07-30",
+                        "format": "standard",
+                        "likes": 9,
+                        "name": "White/Red Mice 🐭 BLB Standard 2.0",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/uAgy2aSc0kOcnNb2P7KWzQ",
+                        "views": 6001
+                    },
+                    "decklist_hash": "e8f02574-4485dc83-1c8a979b-31f507a7-890ef54f"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-07-24",
+                        "format": "standard",
+                        "likes": 3,
+                        "name": "RW Mice BLB early access",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/JB3K853iw0Wa7lga4C6C1A",
+                        "views": 4378
+                    },
+                    "decklist_hash": "6ff0a0eb-3941ec1b-8496aa9a-d27cd7ec-ed94b29f"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-07-30",
+                        "format": "standard",
+                        "likes": 13,
+                        "name": "Frogs in Standard 🐸 BLB",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/0O1EBnCdDUu-oDpUUhPXaw",
+                        "views": 6415
+                    },
+                    "decklist_hash": "b93e6575-dd89c711-ed21d5e8-05d0ae40-6bc9290a"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-07-25",
+                        "format": "brawl",
+                        "likes": 2,
+                        "name": "Tamiyo MH3 Brawl",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/DARKy-IO8UigD3UNQTQlWQ",
+                        "views": 1801
+                    },
+                    "decklist_hash": "6e12e8e6-87b834b8-5a2205d4-c5727b9a-4c6eac6a"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-07-31",
+                        "format": "standard",
+                        "likes": 4,
+                        "name": "Otters 🦦 BLB Standard",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/1Ihzx0FBskGNakY3H6RlUA",
+                        "views": 4228
+                    },
+                    "decklist_hash": "941d6b42-8f0ad132-98df6694-31acecc9-fef9f270"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-07",
+                        "format": "standard",
+                        "likes": 4,
+                        "name": "MTGA eyeball pile",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/zNPMqVCk-0en926fo9JPhA",
+                        "views": 1626
+                    },
+                    "decklist_hash": "308b99db-f82d8a42-28e95409-af974bd1-b1ce0346"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-21",
+                        "format": "standard",
+                        "likes": 1,
+                        "name": "dimir poison",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/OjbT2Rh5kkSmbTSr-eCRDA",
+                        "views": 2577
+                    },
+                    "decklist_hash": "052e285a-e8e81d95-881a07ef-47e5c1dd-1491a6b9"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-07-24",
+                        "format": "standard",
+                        "likes": 10,
+                        "name": "BR Lizards 🦎 BLB Early Access",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/Mj2Szsv1oUWVEEYjooXFvA",
+                        "views": 5462
+                    },
+                    "decklist_hash": "086ae121-3ebaa485-458102e0-94fa900d-9bea2afa"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-07-24",
+                        "format": "standard",
+                        "likes": 9,
+                        "name": "WG Rabbits 🐰 BLB Early Access",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/0uRZbi-ly02hgndA0mEqbw",
+                        "views": 6069
+                    },
+                    "decklist_hash": "1403ae2e-8ea85155-a2006774-c626deb7-13dd7f1f"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-17",
+                        "format": "alchemy",
+                        "likes": 1,
+                        "name": "Alchemy Bats and Fear of Ridicule",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/pMcxKjaZSk-NGdcchGTsIw",
+                        "views": 720
+                    },
+                    "decklist_hash": "5b6acc96-c1a84c69-32d1bbfb-bcdc7446-c20ab80e"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-07-25",
+                        "format": "brawl",
+                        "likes": 1,
+                        "name": "Satya Brawl MH3 edition",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/Vr1F7hgRSkugvjZXrWm8hA",
+                        "views": 825
+                    },
+                    "decklist_hash": "ed25c960-9c26cd3a-176aa14c-31b36d8d-62f39c58"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-08-09",
+                        "format": "brawl",
+                        "likes": 3,
+                        "name": "Baylen Combo | Brawl BLB",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/NTX7Rkv86EKFzqsm5QfOBA",
+                        "views": 2517
+                    },
+                    "decklist_hash": "47cbcf30-c41be644-1a05af1d-53f66ce5-ca4a49fb"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-07-31",
+                        "format": "standard",
+                        "likes": 4,
+                        "name": "Squirrels 🐿️  BLB Standard",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/HHnbpqSZWEmxVuRHtLl7xA",
+                        "views": 3539
+                    },
+                    "decklist_hash": "a1942a3f-a7d88223-08565f50-509d5624-c7371cae"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-22",
+                        "format": "standard",
+                        "likes": 1,
+                        "name": "sol ring in standard",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/j3m15Zoni0Sf9Z0X-f5bIw",
+                        "views": 666
+                    },
+                    "decklist_hash": "e42b8142-c2c8d7c3-0f3e1b80-4d558e50-fcb54e85"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-09-20",
+                        "format": "commander",
+                        "likes": 2,
+                        "name": "My Bumbleflower",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/BXTsLPE-MUqWEn2GC_D6EQ",
+                        "views": 768
+                    },
+                    "decklist_hash": "9ac3f899-94081058-0d869bd9-7f9ace69-e5d6dc92"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 1,
+                        "date": "2024-07-31",
+                        "format": "standard",
+                        "likes": 2,
+                        "name": "UW Control | no wincons | BLB Standard",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/XwUPexNzD0mfWppDWU7S2g",
+                        "views": 4556
+                    },
+                    "decklist_hash": "afc9f330-d8ec4b37-b7b5227e-7703edc0-5b815685"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 2,
+                        "date": "2024-09-24",
+                        "format": "standard",
+                        "likes": 10,
+                        "name": "Slasher Black",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/bpZVmpVDxUOLgAzzmscxOA",
+                        "views": 4624
+                    },
+                    "decklist_hash": "93e80eeb-c0e65098-d204132c-84d1d0fd-c8aafc6b"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-09-03",
+                        "format": "standard",
+                        "likes": 2,
+                        "name": "White Rabbits",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/krNpExFWRkG5EKjWTGA0Mg",
+                        "views": 1371
+                    },
+                    "decklist_hash": "9592b0e2-2f128241-69e4a001-090f6855-581150c1"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-08-01",
+                        "format": "brawl",
+                        "likes": 26,
+                        "name": "Flubs 2.0 (WAY BETTER) Brawl in Bloomburrow",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/gtSL0ptvy0m_JAFOgBCMfw",
+                        "views": 7439
+                    },
+                    "decklist_hash": "d94421b3-629506fd-9f191a0d-3df22bd5-fa0db143"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-08-08",
+                        "format": "standard",
+                        "likes": 4,
+                        "name": "GB Planeswalker Combo | BLB Standard",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/4h5IcBFBTkuOJVynExGrcg",
+                        "views": 3421
+                    },
+                    "decklist_hash": "0953f074-c8df0870-24629186-0da3b8c7-e9385feb"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-07-24",
+                        "format": "standard",
+                        "likes": 1,
+                        "name": "Rats | BLB Early Access",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/QuviNi2fc0-PPQvn6sl2kQ",
+                        "views": 2161
+                    },
+                    "decklist_hash": "fe8e1142-bc1e6f1a-72f4e8ec-757491d8-f382e0ad"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 1,
+                        "date": "2024-07-25",
+                        "format": "standard",
+                        "likes": 3,
+                        "name": "UW Elk Control 💙 BLB Early Access",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/bxjgnufUaEahzRQ6L1RCCw",
+                        "views": 3393
+                    },
+                    "decklist_hash": "35fc6dbd-6982f93c-368eeefc-d085d770-c1320200"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-22",
+                        "format": "standard",
+                        "likes": 2,
+                        "name": "golgari midrange",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/-PZyATFXsEquOUaXLeV2DQ",
+                        "views": 2179
+                    },
+                    "decklist_hash": "2c4dc391-63d91510-862657c5-523509ea-24c96c9b"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-07-31",
+                        "format": "brawl",
+                        "likes": 2,
+                        "name": "Flubs | Brawl | BLB",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/3zJHhlNzVkCyrpG8iiA1eA",
+                        "views": 1763
+                    },
+                    "decklist_hash": "524d5e6a-e9e866fd-8cd0c263-b03db9de-e3de3aa8"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-09-23",
+                        "format": "commander",
+                        "likes": 2,
+                        "name": "karazikar secret lair shill",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/Edt7kt8vR024s-JNsAjNOQ",
+                        "views": 306
+                    },
+                    "decklist_hash": "69afadce-067cd8ff-9163684f-de221110-9e32a671"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-08-13",
+                        "format": "standard",
+                        "likes": 3,
+                        "name": "Mono White Mount Value | Standard BLB",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/EmpfUnxMzkC74bh7sc3eJw",
+                        "views": 1874
+                    },
+                    "decklist_hash": "d76cdc7c-bd28ff24-402ea305-dcaea322-6f6c686f"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-08-07",
+                        "format": "standard",
+                        "likes": 1,
+                        "name": "UB Control | BLB Standard",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/O5bBnigrSESjPVOe_2g-dA",
+                        "views": 4479
+                    },
+                    "decklist_hash": "95445e5a-062ce19f-00e4e2cf-36c7a233-bd4fa89a"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-08-28",
+                        "format": "brawl",
+                        "likes": 1,
+                        "name": "Indris the Storm Bolt | Brawl BLB-A",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/jwTTpatarUaGf8EFwKnyVw",
+                        "views": 719
+                    },
+                    "decklist_hash": "3646098f-00e94870-f065b6a4-e1d6b90f-16519915"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-08-06",
+                        "format": "standard",
+                        "likes": 2,
+                        "name": "BW midrange MTGO challenge 1 \\ BLB Standard",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/mUhRqJx6R0WgF7Q9zKlv9A",
+                        "views": 7097
+                    },
+                    "decklist_hash": "6b165fc1-86af1961-aaf84a6e-bf03bc08-a83cdc53"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-07-25",
+                        "format": "standard",
+                        "likes": 3,
+                        "name": "BG Turtle 🐢 BLB Early Access",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/DjAFUOWpOEaJHFiGk1cGPA",
+                        "views": 5248
+                    },
+                    "decklist_hash": "1824d21d-68935c2b-e2694357-3902ca3d-c51df713"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-09-08",
+                        "format": "commander",
+                        "likes": 4,
+                        "name": "Wilhelt, the Rotcleaver Innistrad Champs",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/j1ILH31ZDUi-oens2hqh3g",
+                        "views": 1294
+                    },
+                    "decklist_hash": "4e8fd038-5820ab40-40f73e69-c8fab46a-d84fbf88"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-13",
+                        "format": "commander",
+                        "likes": 2,
+                        "name": "The Master of Keys",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/ccUqVNyf7EiBTTgf2BzALA",
+                        "views": 253
+                    },
+                    "decklist_hash": "f42c00c6-e9ca5489-ad7e3b69-549e5b67-b01b9332"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-01",
+                        "format": "standard",
+                        "likes": 3,
+                        "name": "Eerie Enchantments",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/XI4vJ1Teb0eIba604SmB7w",
+                        "views": 2022
+                    },
+                    "decklist_hash": "61f6b835-4873532f-4f3835d4-9aaa28ce-2abb13b3"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-09-23",
+                        "format": "commander",
+                        "likes": 3,
+                        "name": "Astarion secret lair shill",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/3ell73ZYGkmkqK2wmq7QDA",
+                        "views": 527
+                    },
+                    "decklist_hash": "7d660de6-b12ae6ce-dff3baa2-3ea313a4-63bf8138"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-09-18",
+                        "format": "standard",
+                        "likes": 4,
+                        "name": "Mindskinner Mill",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/AXa7LBq1AUOBsv4mHyMpzQ",
+                        "views": 2719
+                    },
+                    "decklist_hash": "3d9d5cbc-34af8f13-91def273-5bf09e04-805b3ce3"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-09-10",
+                        "format": "standard",
+                        "likes": 3,
+                        "name": "Temur Ramp | BO1 mtga",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/EqPuR7nCpUGYt34eA36wjw",
+                        "views": 1259
+                    },
+                    "decklist_hash": "b1c092b8-2ad0d944-d201eb79-ac25f47b-987b2966"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-07-31",
+                        "format": "standard",
+                        "likes": 4,
+                        "name": "R/G Raccoon Ramp 🦝 BLB Standard",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/piKfC1sgwUSYA3X7CXMEXg",
+                        "views": 4495
+                    },
+                    "decklist_hash": "7bf241be-e80d727a-658b904b-2cc00c2d-9b6a9b76"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-09-23",
+                        "format": "commander",
+                        "likes": 2,
+                        "name": "xanathar secret lair shill",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/c0wjLG_5TkuyoiBcfyWAVA",
+                        "views": 531
+                    },
+                    "decklist_hash": "16d62711-99b3d151-a8aa8b35-692eed1c-15ccc725"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-09-23",
+                        "format": "commander",
+                        "likes": 2,
+                        "name": "Karlach Fury of Avernus secret lair edh",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/WgpQRr-SgEq4xuUycWIw7g",
+                        "views": 455
+                    },
+                    "decklist_hash": "ca1c64d5-958f6f7b-b88e897f-ee005990-5f4253b4"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-08-13",
+                        "format": "standard",
+                        "likes": 2,
+                        "name": "Reennact Combo | BLB Standard",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/dJFx6O0S3USdRyNpds7MOw",
+                        "views": 2399
+                    },
+                    "decklist_hash": "432378d8-2ec9aa36-2322412e-3344d40b-9218dfb9"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-08-07",
+                        "format": "standard",
+                        "likes": 3,
+                        "name": "5c Ramp | BLB Standard",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/xhHxsLCfIE6GG9Pdy6MPxg",
+                        "views": 3414
+                    },
+                    "decklist_hash": "a24aa73f-c84f04f5-ea21dbd6-8ebe305f-10aba5da"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-08",
+                        "format": "commander",
+                        "likes": 3,
+                        "name": "niko shard machine",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/drg4y2z24UixxKt6pY3-8A",
+                        "views": 500
+                    },
+                    "decklist_hash": "6ab13bf2-70edbda1-2dcd81f0-10c38afa-fca7c0de"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-14",
+                        "format": "standard",
+                        "likes": 1,
+                        "name": "4c Reanimator",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/tfNdPFXOKU2pFA820gvgpA",
+                        "views": 977
+                    },
+                    "decklist_hash": "ed2a1c20-40805c4b-3e7676b6-bff93f90-a2846419"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 1,
+                        "date": "2024-08-12",
+                        "format": "commander",
+                        "likes": 6,
+                        "name": "Leo aka Leonardo Da Vinci aka super serial version",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/ULVVRaRWJkaJ89k1_HWnRA",
+                        "views": 942
+                    },
+                    "decklist_hash": "138a99e7-3d7c60d5-fa6f00d4-384a2f8a-2d6252e4"
+                },
+                {
+                    "metadata": {
+                        "author": "CovertGoBlue",
+                        "comments": 0,
+                        "date": "2024-10-15",
+                        "format": "commander",
+                        "likes": 2,
+                        "name": "marina vendrell rooms edh",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/7GPMBSj1TEmrDZFGsuHuJg",
+                        "views": 275
+                    },
+                    "decklist_hash": "df36955c-faaaf572-51e957a1-567d956b-a49bc304"
+                }
+            ]
+        },
+        {
+            "id": "ZufLHzEvl2g",
+            "title": "RELENTLESS  The story of Garruk",
+            "description": "The origins of Garruk, mtg's first planeswalker.\n\nJoin - https://tinyurl.com/mesafalcon\nCovertGoBlue HQ - https://www.coolstuffinc.com/cgb\nTwitter - https://twitter.com/covertgoblue\nDiscord - https://discord.gg/MXt3DEP\nInstagram - https://www.instagram.com/covertgoblue/\n\nSponsors:\nCoolStuffInc.com Promo Code CGB5 - https://www.coolstuffinc.com/cgb\nUltimate Guard - https://tinyurl.com/UGCGB\n-------------------------------------------------------------------\n\nCredits\n\nPerformed by Gina Wagner, aka CovertGoGina\nEditing and writing, @eddiethech5481\nLogo design by HolyMTG - HolyMTG@gmail.com Twitter @HolyMTG\n© CovertGoBlue Entertainment, LLC\n\n#magicthegathering  #mtgstory #mtglore",
+            "keywords": [
+                "gameplay",
+                "aetherhub",
+                "backstory",
+                "magic story",
+                "tolarien community college",
+                "game knights",
+                "planeswalker",
+                "secret lair",
+                "shadows",
+                "mtga",
+                "summarize",
+                "summary",
+                "decks",
+                "otk",
+                "vorthos",
+                "guide",
+                "the command zone",
+                "trailer",
+                "anime",
+                "mtg",
+                "mtg arena",
+                "story",
+                "covertgo",
+                "covertgo mtg",
+                "mtg lore",
+                "mtg lore summary video",
+                "assassins creed",
+                "podcast",
+                "outlaws of thunder junction",
+                "mtg story",
+                "deck",
+                "eldraine",
+                "kellen",
+                "storyline",
+                "covertgolore",
+                "extra turns",
+                "edh",
+                "mtg arcanum",
+                "commander",
+                "series",
+                "otj",
+                "short",
+                "rhystic studies",
+                "magic the gathering"
+            ],
+            "publish_time": "2024-10-26 10:00:27",
+            "views": 4561,
+            "decks": []
+        },
+        {
+            "id": "zx3I1rqJpXA",
+            "title": "Our Halloween Episode! Valgavoth vs Braids vs Mothman vs Varina - WPCS #128",
+            "description": "Format - Commander / EDH\nNewest set - Duskmourn\n\nCommanders - \nValgavoth, Harrower of Souls\nLinda, Kandarian Queen\nBraids, Arisen Nightmare\nThe Wise Mothman\n\n\nDecklists:\nCGB: https://www.moxfield.com/decks/YjXCQszE2Eaiwi97YhcjdA\nBlake: https://www.moxfield.com/decks/N9wk8-ygh0SdiQ48EmRGWA\nAshlizzle: https://www.moxfield.com/decks/hTzCsy0MrEmoUvyUZctYWQ\nShea: https://www.moxfield.com/decks/yac04J-2AkSznCAdj-kH2g\n\nChapters\nIntro: 00:00\nGameplay: 56:35\nOutro: 55:07\n\nPromo Code WORST for 5% off at CoolStuffInc.com\nhttps://www.coolstuffinc.com/\n\nUltimate Guard - https://tinyurl.com/UGCGB\n\nDiscord - https://discord.gg/MXt3DEP\n\nTwitter:\nCGB: @covertgoblue\nBlake: @blake_mtg\nBen: @GreedLordMTG\nShea: @TheWorstShea\n\nTitle Music by Sam Plotkin - www.samplotkinmusic.com\nMusic by: Karl Casey @ White Bat Audio\nAdditional music by Rattlesnake\nLogo design by HolyMTG - HolyMTG@gmail.com Twitter @HolyMTG\nWorst Possible Commander Show Logo design by Brent Kruscke\n\nA commander show focused on bringing great in-person paper gameplay. This show features a consistent cast, including Covertgoblue. \n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\nPortions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#cgb #mtgcommander #mtg",
+            "keywords": [
+                "Deck",
+                "gameplay",
+                "dsk early access",
+                "MTG Cards",
+                "Covert Go",
+                "Covert Go MTG",
+                "Covert Go Blue",
+                "early access",
+                "duskmourn",
+                "mtga",
+                "Best MTG Deck",
+                "decks",
+                "New Deck",
+                "guide",
+                "duskmourn standard",
+                "CGB Magic the Gathering",
+                "dsk mtg",
+                "dsk cards",
+                "mtg",
+                "mtg arena",
+                "covertgo",
+                "duskmourn early access",
+                "CGB Deck",
+                "covertgo mtg",
+                "MTG Deck",
+                "deck",
+                "CovertGoBlue",
+                "new cards",
+                "New Cards",
+                "Gameplay",
+                "Best Deck",
+                "dsk",
+                "CGB",
+                "Mythic",
+                "mtg arena new set",
+                "blb mtg arena",
+                "magic the gathering"
+            ],
+            "publish_time": "2024-10-27 09:00:57",
+            "views": 11995,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "WorstPossibleCommander",
+                        "comments": 0,
+                        "date": "2024-10-27",
+                        "format": "commander",
+                        "likes": 0,
+                        "name": "WPCS #128",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/hTzCsy0MrEmoUvyUZctYWQ",
+                        "views": 0
+                    },
+                    "decklist_hash": "fe150d45-c7b764c0-cdad7537-ac5fb2af-0d197ca3"
+                },
+                {
+                    "metadata": {
+                        "author": "WorstPossibleCommander",
+                        "comments": 0,
+                        "date": "2024-10-27",
+                        "format": "commander",
+                        "likes": 0,
+                        "name": "WPCS #128",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/yac04J-2AkSznCAdj-kH2g",
+                        "views": 0
+                    },
+                    "decklist_hash": "f6ba4ef0-dade9ddc-590f8f1b-2e357bb8-dbf4fa3a"
+                },
+                {
+                    "metadata": {
+                        "author": "WorstPossibleCommander",
+                        "comments": 0,
+                        "date": "2024-10-27",
+                        "format": "commander",
+                        "likes": 0,
+                        "name": "WPCS #128",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/N9wk8-ygh0SdiQ48EmRGWA",
+                        "views": 0
+                    },
+                    "decklist_hash": "8ed3c6ec-251e6036-60618e91-b7a9f1ce-83f70258"
+                },
+                {
+                    "metadata": {
+                        "author": "WorstPossibleCommander",
+                        "comments": 0,
+                        "date": "2024-10-27",
+                        "format": "commander",
+                        "likes": 0,
+                        "name": "WPCS #128",
+                        "source": "www.moxfield.com",
+                        "url": "https://www.moxfield.com/decks/YjXCQszE2Eaiwi97YhcjdA",
+                        "views": 0
+                    },
+                    "decklist_hash": "41794fe7-88f8d64f-d1e28421-d6995ac6-a5b67c08"
+                }
+            ]
+        }
+    ]
+}

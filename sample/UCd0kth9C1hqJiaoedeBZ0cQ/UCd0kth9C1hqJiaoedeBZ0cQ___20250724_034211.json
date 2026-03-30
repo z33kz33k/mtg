@@ -1,0 +1,116 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": null,
+    "tags": [],
+    "subscribers": 139000,
+    "scrape_time": "2025-07-24 03:42:11",
+    "videos": [
+        {
+            "id": "SpuRul9IZrM",
+            "title": "This commander is to die for.",
+            "description": "Magic: The Gathering Arena gameplay with Sephiroth, Fabled SOLDIER as commander in Brawl. \n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Intro\n02:17 - Deck Tech\n09:14 - vs Ureni of the Unwritten\n17:44 - vs Bartz and Boko\n25:15 - vs Adeline, Resplendent Cathar\n34:42 - vs Glarb, Calamity's Augur\n38:27 - vs Vivi Ornitier\n42:52 - vs Tifa Lockhart\n47:09 - vs Omnath, Locus of the Roil\n56:29 - vs Sin, Spira's Punishment\n57:23 - vs Vivien, Monster's Advocate\n\nDecklist:\nhttps://aetherhub.com/Deck/sephiroth-sacrifice-brawl\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #MTGxFINALFANTASY #mtg #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "FIN",
+                "lvd",
+                "monoblack",
+                "legend",
+                "mtga",
+                "ff",
+                "decks",
+                "guide",
+                "FINAL FANTASY",
+                "brawl",
+                "sephiroth brawl",
+                "FF",
+                "mtg",
+                "mtg arena",
+                "sacrifice",
+                "sephiroth",
+                "deck",
+                "edh",
+                "commander",
+                "black",
+                "sephiroth commander",
+                "final fantasy",
+                "sephiroth edh",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-07-22 09:00:51",
+            "views": 23825,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "midrange",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-07-22",
+                        "exports": 463,
+                        "format": "brawl",
+                        "mode": "Bo3",
+                        "name": "Sephiroth Sacrifice Brawl",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/sephiroth-sacrifice-brawl",
+                        "views": 1093
+                    },
+                    "decklist_hash": "cfd6104f-1e3e3a53-9060e9eb-eef5943c-5910d073"
+                }
+            ]
+        },
+        {
+            "id": "CcCHK2698G0",
+            "title": "Cloud has a new favorite weapon.",
+            "description": "Magic: The Gathering Arena gameplay with a boros hammer equipment deck in Pioneer, ft. Cloud, Midgar Mercenary.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:38 - Match 1\n06:18 - Match 2\n11:49 - Match 3\n13:51 - Match 4\n16:38 - Match 5\n18:53 - Match 6 \n25:27 - Match 7\n\nDecklist:\nhttps://aetherhub.com/Deck/boros-hammer-cloud\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #mtg #mtgfinalfantasy #magicthegathering #mtgpioneer",
+            "keywords": [
+                "gameplay",
+                "sigarda",
+                "red",
+                "lvd",
+                "legend",
+                "white",
+                "mtga",
+                "ff",
+                "decks",
+                "equipment deck",
+                "guide",
+                "boros",
+                "explorer",
+                "pioneer equipment",
+                "mtg",
+                "pioneer deck",
+                "mtg arena",
+                "deck",
+                "cloud",
+                "equipment",
+                "colossus",
+                "pioneer mtg",
+                "hammer",
+                "pioneer",
+                "pioneer hammer",
+                "final fantasy",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-07-23 09:00:29",
+            "views": 14157,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "aggro",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-07-23",
+                        "exports": 77,
+                        "format": "pioneer",
+                        "mode": "Bo3",
+                        "name": "Boros Hammer Cloud",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/boros-hammer-cloud",
+                        "views": 359
+                    },
+                    "decklist_hash": "8d91f2ad-ef82ea08-d76ef1c0-29b2e48b-dfd0d419"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,93 @@
+{
+    "id": "UCd0kth9C1hqJiaoedeBZ0cQ",
+    "title": "LegenVD",
+    "description": "Magic the Gathering strategy videos with a focus on the digital Magic Arena.\nThis channel is supported by its fans on Patreon: https://www.patreon.com/LegenVD",
+    "tags": [
+        "mythic",
+        "gameplay",
+        "tutorial",
+        "aetherdrift",
+        "mtg foundations",
+        "educational",
+        "historic",
+        "explorer",
+        "standard",
+        "brawl",
+        "mtg arena",
+        "strategy",
+        "Magic the gathering",
+        "deck",
+        "card game",
+        "timeless",
+        "magic arena",
+        "arena",
+        "edh",
+        "commander",
+        "how to",
+        "tips",
+        "MTG",
+        "foundations"
+    ],
+    "subscribers": 134000,
+    "scrape_time": "2025-02-19 02:09:21",
+    "videos": [
+        {
+            "id": "qehQ8DC6L7Q",
+            "title": "Where did your deck go?",
+            "description": "Magic: The Gathering Arena gameplay with a grixis mill deck, ft. Riverchurn Monument in Aetherdrift Standard.\n\nPatreon: https://www.patreon.com/LegenVD\n\n00:00 - Deck Tech\n04:48 - Match 1\n08:05 - Match 2\n12:59 - Match 3\n17:12 - Match 4\n24:52 - Match 5\n28:27 - Match 6\n33:09 - Match 7\n\nDecklist:\nhttps://aetherhub.com/Deck/grixis-riverchurn-mill\n\n\"Movement Proposition\" Kevin MacLeod (incompetech.com)\nLicensed under Creative Commons: By Attribution 4.0 License\nhttp://creativecommons.org/licenses/by/4.0/\n\nUnofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.\n\n#mtgarena #aetherdrift #mtgaetherdrift #mtgdft #mtg #magicthegathering",
+            "keywords": [
+                "gameplay",
+                "red",
+                "mill",
+                "lvd",
+                "aetherdrift",
+                "legend",
+                "control",
+                "mtga",
+                "blue",
+                "decks",
+                "guide",
+                "Standard MTG",
+                "combo",
+                "standard",
+                "mtg",
+                "mindbreaker",
+                "mtg arena",
+                "grixis",
+                "mtg aetherdrift",
+                "exhaust",
+                "standard mill",
+                "mill deck",
+                "deck",
+                "new standard",
+                "aetherdrift standard",
+                "standard deck",
+                "black",
+                "jace",
+                "riverchurn",
+                "dft",
+                "magic the gathering"
+            ],
+            "publish_time": "2025-02-18 09:01:07",
+            "views": 17426,
+            "decks": [
+                {
+                    "metadata": {
+                        "archetype": "control",
+                        "author": "LegenVD",
+                        "comments": 0,
+                        "date": "2025-02-18",
+                        "exports": 473,
+                        "format": "standard",
+                        "mode": "Bo1",
+                        "name": "Grixis Riverchurn Mill",
+                        "source": "aetherhub.com",
+                        "url": "https://aetherhub.com/Deck/grixis-riverchurn-mill",
+                        "views": 865
+                    },
+                    "decklist_hash": "b93d3646-bb7784b9-cae5aef8-1ced1357-a47c10fb"
+                }
+            ]
+        }
+    ]
+}

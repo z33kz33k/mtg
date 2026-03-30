@@ -1,0 +1,65 @@
+{
+    "id": "UCZAZTSd0xnor7hJFmINIBIw",
+    "title": "MTGGoldfish",
+    "description": "Magic the Gathering decks, reviews and product openings! The official channel for MTGGoldfish. Visit us at http://www.mtggoldfish.com.\n\nUpload schedule for Major Series:\nSunday: Meme or Dream? \nMonday: Budget Magic, MTGGoldfish Podcast\nTuesday: Arena Series with Crim\nWednesday: Against the Odds\nThursday: Arena Series with Crim\nFriday: Much Abrew About Nothing\nSaturday: Arena Series with Crim",
+    "tags": [
+        "Magic the Gathering",
+        "MTG",
+        "mtggoldfish"
+    ],
+    "subscribers": 339000,
+    "scrape_time": "2025-03-13 03:01:29",
+    "videos": [
+        {
+            "id": "GYfBr9wAX7U",
+            "title": "How Will You Win If You Can Never Deal Damage?  Against the Odds",
+            "description": "What are the odds of winning with Standard Turbo Fog by never taking damage as we work our way to max speed with crimelands to mill our opponent out with Aether Syphon? Let's find out!\n\nToday's video is brought to you by Card Kingdom. You can pick up some Magic: the Gathering cards (and help support the show) at https://www.cardkingdom.com/mtggoldfish\n\n► Read more about this deck (full article): https://www.mtggoldfish.com/articles/against-the-odds-turbo-fog-standard\n► View this deck with the latest prices: https://www.mtggoldfish.com/deck/6958927#paper\n\n◼ Purchase this deck (paper): http://mtg.fish/UJFjB\n◼ Purchase this deck (Magic Online): http://mtg.fish/NftKL\n\n#MTG\n#MagicTheGathering\n#MagicArena\n#mtgstandard \n\n0:00 Start\n5:44: Match 1\n27:55 Match 2\n32:12 Updates\n37:20 Match 3\n53:22 Match 4\n59:46 Match 5",
+            "keywords": [
+                "Magic the Gathering",
+                "Magic Arena",
+                "Gameplay",
+                "MTG Arena",
+                "MTG"
+            ],
+            "publish_time": "2025-03-12 08:00:08",
+            "views": 30751,
+            "decks": [
+                {
+                    "metadata": {
+                        "author": "kacyhasthecandy",
+                        "container_url": "https://www.mtggoldfish.com/articles/against-the-odds-turbo-fog-standard",
+                        "date": "2025-02-28",
+                        "format": "standard",
+                        "name": "straight foggin it",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/against-the-odds-turbo-fog-standard"
+                    },
+                    "decklist_hash": "0bd53c5f-18bf210a-cad02f39-87ac2912-8784abcf"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "container_url": "https://www.mtggoldfish.com/articles/against-the-odds-turbo-fog-standard",
+                        "date": "2025-03-03",
+                        "format": "standard",
+                        "name": "Turbo Fog 2.0",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/articles/against-the-odds-turbo-fog-standard"
+                    },
+                    "decklist_hash": "6076d132-d6ce5864-bed8f106-eaa87cf0-fa065fe2"
+                },
+                {
+                    "metadata": {
+                        "author": "SaffronOlive",
+                        "date": "2025-03-03",
+                        "format": "standard",
+                        "name": "Turbo Fog 2.0",
+                        "source": "www.mtggoldfish.com",
+                        "url": "https://www.mtggoldfish.com/deck/6958927"
+                    },
+                    "decklist_hash": "6076d132-d6ce5864-bed8f106-eaa87cf0-fa065fe2"
+                }
+            ]
+        }
+    ]
+}
