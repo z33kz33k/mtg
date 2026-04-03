@@ -18,7 +18,9 @@ from mtg.deck.core import Deck, Mode
 from mtg.deck.abc import TagBasedDeckParser
 from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
     throttled_deck_scraper
-from mtg.lib.common import ParsingError, extract_int, timed
+from mtg.lib.common import ParsingError
+from mtg.lib.numbers import extract_int
+from mtg.lib.time import timed
 from mtg.lib.scrape.core import ScrapingError, fetch_throttled_soup, http_requests_counted, \
     strip_url_query
 from mtg.scryfall import all_formats

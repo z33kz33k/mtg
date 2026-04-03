@@ -23,7 +23,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from mtg.deck.arena import IllFormedArenaDecklist, PlaysetLine
 from mtg.deck.core import CardNotFound, Deck, InvalidDeck
 from mtg.deck.scrapers.abc import DeckScraper
-from mtg.lib.common import ParsingError, extract_float, get_date_from_ago_text
+from mtg.lib.common import ParsingError
+from mtg.lib.numbers import extract_float
+from mtg.lib.time import get_date_from_ago_text
 from mtg.lib.scrape.core import ScrapingError, strip_url_query
 from mtg.lib.scrape.dynamic import SELENIUM_TIMEOUT, click_for_clipboard
 from mtg.scryfall import COMMANDER_FORMATS

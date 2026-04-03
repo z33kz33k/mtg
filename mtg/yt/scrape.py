@@ -33,8 +33,9 @@ from mtg.deck.core import Deck, DeckParser
 from mtg.deck.scrapers.abc import DeckTagsContainerScraper, DecksJsonContainerScraper, \
     get_throttled_deck_scrapers
 from mtg.gstate import CHANNELS_DIR, CoolOffManager, DecklistsStateManager, UrlsStateManager
-from mtg.lib.common import extract_float, find_longest_seqs, from_iterable, logging_disabled, \
-    multiply_by_symbol, naive_utc_now as utcnow, timed
+from mtg.lib.common import find_longest_seqs, from_iterable, logging_disabled
+from mtg.lib.numbers import extract_float, multiply_by_symbol
+from mtg.lib.time import naive_utc_now as utcnow, timed
 from mtg.lib.files import getdir, sanitize_filename
 from mtg.lib.scrape.core import ScrapingError, extract_url, http_requests_counted, \
     parse_keywords_from_tag, throttle, throttled, unshorten

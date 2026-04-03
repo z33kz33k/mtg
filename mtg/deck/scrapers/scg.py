@@ -17,7 +17,9 @@ from bs4 import Tag
 from mtg.constants import Json
 from mtg.deck.abc import TagBasedDeckParser
 from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper
-from mtg.lib.common import ParsingError, extract_int, from_iterable, sanitize_whitespace
+from mtg.lib.common import ParsingError, from_iterable
+from mtg.lib.text import sanitize_whitespace
+from mtg.lib.numbers import extract_int
 from mtg.lib.scrape.core import ScrapingError, strip_url_query
 from mtg.scryfall import COMMANDER_FORMATS
 

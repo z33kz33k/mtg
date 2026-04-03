@@ -19,7 +19,9 @@ from mtg.deck.core import DeckParser
 from mtg.deck.abc import JsonBasedDeckParser
 from mtg.deck.scrapers.abc import ContainerScraper, DeckScraper, DecksJsonContainerScraper, \
     HybridContainerScraper
-from mtg.lib.common import ParsingError, decode_escapes, extract_int
+from mtg.lib.common import ParsingError
+from mtg.lib.text import decode_escapes
+from mtg.lib.numbers import extract_int
 from mtg.lib.scrape.core import ScrapingError, fetch_json, strip_url_query
 
 _log = logging.getLogger(__name__)

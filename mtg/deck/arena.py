@@ -14,7 +14,9 @@ import regex as re
 
 from mtg.constants import Json
 from mtg.deck.core import ARENA_MULTIFACE_SEPARATOR, CardNotFound, DeckParser
-from mtg.lib.common import ParsingError, extract_int, getrepr, is_foreign, sanitize_whitespace
+from mtg.lib.common import ParsingError
+from mtg.lib.text import getrepr, is_foreign, sanitize_whitespace
+from mtg.lib.numbers import extract_int
 from mtg.scryfall import COMMANDER_FORMATS, Card, \
     MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, query_api_for_card
 

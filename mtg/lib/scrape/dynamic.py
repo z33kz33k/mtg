@@ -25,7 +25,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
 from mtg.constants import Json
-from mtg.lib.common import timed
+from mtg.lib.time import timed
 
 _log = logging.getLogger(__name__)
 SELENIUM_TIMEOUT = 20.0  # seconds

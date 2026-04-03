@@ -14,7 +14,8 @@ from typing import override
 from bs4 import Tag
 
 from mtg.deck.scrapers.abc import DeckScraper
-from mtg.lib.common import extract_int, sanitize_whitespace
+from mtg.lib.text import sanitize_whitespace
+from mtg.lib.numbers import extract_int
 from mtg.lib.scrape.core import strip_url_query
 from mtg.scryfall import Card
 

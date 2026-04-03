@@ -21,7 +21,7 @@ from mtg.constants import OUTPUT_DIR, PathLike
 from mtg.data.handle import ScrapingSession, load_channels, retrieve_ids, retrieve_video_data
 from mtg.data.structures import DataPath, Video
 from mtg.gstate import CHANNELS_DIR, DecklistsStateManager
-from mtg.lib.common import naive_utc_now as utcnow, timed
+from mtg.lib.time import naive_utc_now as utcnow, timed
 from mtg.lib.files import getdir, getfile
 from mtg.lib.json import from_json, to_json
 from mtg.lib.scrape.core import http_requests_counted

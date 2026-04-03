@@ -18,7 +18,7 @@ from bs4 import BeautifulSoup, Tag
 
 from mtg.constants import Json, SECRETS
 from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper
-from mtg.lib.common import extract_int
+from mtg.lib.numbers import extract_int
 from mtg.lib.scrape.core import ScrapingError, fetch_soup, url_decode
 from mtg.scryfall import Card
 

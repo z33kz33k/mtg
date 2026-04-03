@@ -18,7 +18,9 @@ from mtg.constants import Json
 from mtg.deck.abc import TagBasedDeckParser
 from mtg.deck.core import Deck, Mode
 from mtg.deck.scrapers.abc import DeckScraper, HybridContainerScraper
-from mtg.lib.common import ParsingError, extract_int, from_iterable, timed
+from mtg.lib.common import ParsingError, from_iterable
+from mtg.lib.numbers import extract_int
+from mtg.lib.time import timed
 from mtg.lib.scrape.core import ScrapingError, fetch_soup, is_more_than_root_path, strip_url_query
 from mtg.scryfall import ARENA_FORMATS, Card
 

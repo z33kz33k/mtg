@@ -17,7 +17,8 @@ from mtg.constants import DECKS_DIR, PathLike
 from mtg.data.handle import load_channels, retrieve_ids
 from mtg.data.structures import Channel
 from mtg.deck.export import Exporter, FORMATS as EXPORT_FORMATS
-from mtg.lib.common import get_timestamp, logging_disabled
+from mtg.lib.common import logging_disabled
+from mtg.lib.time import get_timestamp
 from mtg.lib.files import getdir, sanitize_filename
 
 

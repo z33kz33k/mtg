@@ -19,7 +19,8 @@ from mtg.constants import DECKS_DIR, Json, PathLike
 from mtg.deck.export import Exporter, FORMATS as EXPORT_FORMATS
 from mtg.deck.core import Deck
 from mtg.deck.scrapers.abc import DeckScraper
-from mtg.lib.common import get_timestamp, logging_disabled, timed
+from mtg.lib.common import logging_disabled
+from mtg.lib.time import get_timestamp, timed
 from mtg.lib.files import getdir
 from mtg.lib.scrape.core import ScrapingError, fetch_json, fetch_soup
 from mtg.scryfall import Card

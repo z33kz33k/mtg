@@ -20,7 +20,8 @@ from mtg.constants import Json
 from mtg.deck.core import CardNotFound, Deck, InvalidDeck
 from mtg.deck.abc import JsonBasedDeckParser, NestedDeckParser, TagBasedDeckParser
 from mtg.gstate import UrlsStateManager
-from mtg.lib.common import ParsingError, register_type, timed
+from mtg.lib.common import ParsingError, register_type
+from mtg.lib.time import timed
 from mtg.lib.scrape.core import InaccessiblePage, ScrapingError, Soft404Error, Throttling, \
     fetch_soup, find_links, prepend_url, throttle
 from mtg.lib.scrape.dynamic import fetch_dynamic_soup
