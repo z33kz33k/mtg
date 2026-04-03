@@ -10,7 +10,7 @@
 from functools import partial
 
 from sqlalchemy import create_engine, event, exists, func, select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, sessionmaker
 
 from mtg.constants import APP_DIR
 from mtg.data.models import Base, Deck, Decklist
@@ -65,4 +65,6 @@ ENGINE = create_engine(
     f"sqlite:///{DB_PATH}",
     json_serializer=partial(to_json, sort_dictionaries=True, indent=None)
 )
+DefaultSession = sessionmaker(ENGINE)
+NoAutoFlushSession = sessionmaker(ENGINE, autoflush=False)
 Base.metadata.create_all(ENGINE)

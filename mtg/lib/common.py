@@ -36,21 +36,33 @@ def seconds2readable(seconds: float) -> str:
     return f"{hours}h:{minutes:02}m:{seconds:02}s"
 
 
-# TODO: precision should be automatic (based on elapsed time) by default
-def timed(operation="", precision=3) -> Callable:
+def _get_precision(elapsed: float) -> int:
+    if elapsed < 1:
+        return 4
+    if elapsed < 10:
+        return 3
+    elif elapsed < 60:
+        return 2
+    elif elapsed < 120:
+        return 1
+    return 0
+
+
+def timed(operation="", precision: int | None = None) -> Callable:
     """Add time measurement to the decorated operation.
 
+    Not specifying 'precision' means it will be set automatically according to elapsed time.
     Specifying 'precision' as zero renders a human-readable time suitable for long periods.
     Specifying a numbers renders time in seconds with the specified precision.
 
     Args:
         operation: name of the time-measured operation (default is function's name)
-        precision: precision of the time measurement in seconds (decides output text formatting)
+        precision: precision of the time measurement in seconds (default: automatic)
 
     Returns:
         the decorated function
     """
-    if precision < 0:
+    if precision is not None and precision < 0:
         precision = 0
 
     def decorator(func: Callable) -> Callable:
@@ -59,14 +71,15 @@ def timed(operation="", precision=3) -> Callable:
             with Timer() as t:
                 result = func(*args, **kwargs)
             activity = operation or f"'{func.__name__}()'"
+            new_precision = _get_precision(t.elapsed) if precision is None else precision
             time = seconds2readable(t.elapsed)
-            if not precision:
+            if not new_precision:
                 _log.info(f"Completed {activity} in {time}")
-            elif precision == 1:
-                _log.info(f"Completed {activity} in {t.elapsed:.{precision}f} "
+            elif new_precision == 1:
+                _log.info(f"Completed {activity} in {t.elapsed:.{new_precision}f} "
                           f"second(s) ({time})")
             else:
-                _log.info(f"Completed {activity} in {t.elapsed:.{precision}f} "
+                _log.info(f"Completed {activity} in {t.elapsed:.{new_precision}f} "
                           f"second(s)")
             return result
         return wrapper
@@ -236,7 +249,7 @@ def camel_case_split(text: str) -> list[str]:
     return [text[x:y] for x, y in zip(upper_chars_indices, upper_chars_indices[1:]) if x < y]
 
 
-def totuple(lst: list) -> tuple:
+def totuple(lst: list) -> tuple:  # recursive
     """Convert ``lst`` and any list it contains (no matter the nesting level) recursively to tuple.
 
     Taken from:
@@ -245,7 +258,7 @@ def totuple(lst: list) -> tuple:
     return tuple(totuple(i) if isinstance(i, list) else i for i in lst)
 
 
-def tolist(tpl: tuple) -> list:
+def tolist(tpl: tuple) -> list:  # recursive
     """Convert ``tpl`` and any tuple it contains (no matter the nesting level) recursively to list.
 
     Taken from and made in reverse:

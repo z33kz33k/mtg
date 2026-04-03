@@ -45,7 +45,7 @@ class SerializedDeck:
 
     @cached_property
     def json(self) -> str:
-        return to_json(asdict(self), sort_data=True)
+        return to_json(asdict(self), sort_dictionaries=True)
 
     @property
     def source(self) -> str:

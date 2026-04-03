@@ -313,9 +313,6 @@ class CoolOffManager(_Singleton):
         throttle_with_countdown(5 * 60)
         self._current_videos = 0
 
-    def bump_decks(self, decks: int) -> None:
-        self._total_decks += decks
-
     def bump_channel(self) -> None:
         self._total_channels += 1
 
@@ -324,3 +321,6 @@ class CoolOffManager(_Singleton):
         self._current_videos += 1
         if self._current_videos >= self.MAX_VIDEOS:
             self._cool_off()
+
+    def bump_decks(self, decks: int) -> None:
+        self._total_decks += decks

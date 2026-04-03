@@ -14,11 +14,10 @@ from operator import itemgetter
 from pathlib import Path
 
 from sqlalchemy import select
-from sqlalchemy.orm import Session
 from tqdm import tqdm
 
 from mtg.constants import WITHDRAWN_DIR
-from mtg.data.db import ENGINE
+from mtg.data.db import DefaultSession, NoAutoFlushSession
 from mtg.data.models import Channel, Deck, Decklist, FailedUrl, Snapshot, Tag, Video
 from mtg.data.structures import DataPath
 from mtg.gstate import CHANNELS_DIR, DECKLISTS_FILE, FAILED_URLS_FILE
@@ -72,17 +71,16 @@ class Loader:
 
     def _populate_channels(self) -> None:
         _log.info("Populating channels...")
-        with Session(ENGINE) as session:
+        with DefaultSession.begin() as session:
             for chid in self._channels_jsons:
                 session.add(Channel(yt_id=chid))
             session.flush()
             for chid in self._withdrawn_jsons:
                 session.add(Channel(yt_id=chid, is_withdrawn=True))
-            session.commit()
 
     def _populate_failed_urls(self) -> None:
         _log.info("Populating failed URLs...")
-        with Session(ENGINE) as session:
+        with DefaultSession.begin() as session:
             for chid, urls in self._failed_urls_json.items():
                 stmt = select(Channel).where(Channel.yt_id == chid)
                 if channel := session.scalars(stmt).first():
@@ -90,7 +88,6 @@ class Loader:
                         failed_url = FailedUrl(text=url)
                         channel.failed_urls.append(failed_url)
                         session.add(failed_url)
-            session.commit()
 
     def _populate_tags(self) -> None:
         _log.info("Populating tags...")
@@ -103,10 +100,9 @@ class Loader:
                 for kw in (video["keywords"] or []):
                     if kw:
                         tags.add(kw)
-        with Session(ENGINE) as session:
+        with DefaultSession.begin() as session:
             for tag in tags:
                 session.add(Tag(text=tag))
-            session.commit()
 
     def _match_decklist_to_deck_data(
             self, deck_data: dict, video_data: dict, chid: str) -> tuple[str, dict | None]:
@@ -121,7 +117,7 @@ class Loader:
     def _populate_snapshots(self) -> None:
         missed_decklist_paths: list[DataPath] = []
         video_yt_ids, decklist_map = set(), {}
-        with Session(ENGINE, autoflush=False) as session:
+        with NoAutoFlushSession.begin() as session:
             for chid, snapshots in tqdm(
                     self._channels_jsons.items(), total=len(self._channels_jsons),
                     desc="Populating channel snapshots..."):
@@ -203,8 +199,6 @@ class Loader:
                             missed_decklist_paths.append(e.datapath)
 
                 session.flush()  # per channel
-
-            session.commit()
 
         if missed_decklist_paths:
             _log.warning(f"{len(missed_decklist_paths)} couldn't be resolved. Video data containing "

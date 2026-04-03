@@ -17,11 +17,10 @@ from operator import attrgetter
 from pathlib import Path
 
 from sqlalchemy import func, select
-from sqlalchemy.orm import Session
 from tqdm import tqdm
 
 from mtg.constants import OUTPUT_DIR
-from mtg.data.db import ENGINE
+from mtg.data.db import DefaultSession
 from mtg.data.models import Channel, Decklist, FailedUrl
 from mtg.lib.common import get_timestamp, timed
 from mtg.lib.json import to_json
@@ -61,12 +60,12 @@ class Dumper:
         _log.info(f"Dumping failed URLs data to {dst}...")
 
         data: defaultdict[str, list[str]] = defaultdict(list)
-        with Session(ENGINE) as session:
+        with DefaultSession() as session:
             stmt = select(FailedUrl)
             for failed_url in session.scalars(stmt):
                 data[failed_url.channel.yt_id].append(failed_url.text)
 
-        dst.write_text(to_json(data, sort_data=True))
+        dst.write_text(to_json(data, sort_dictionaries=True))
         _log.info(f"{len(list(itertools.chain([lst for lst in data.values()]))):,} URLs dumped.")
 
     def _dump_decklists(self) -> None:
@@ -74,18 +73,18 @@ class Dumper:
         _log.info(f"Dumping decklists data to {dst}...")
 
         data: dict[str, str] = {}
-        with Session(ENGINE) as session:
+        with DefaultSession() as session:
             stmt = select(Decklist)
             for decklist in session.scalars(stmt):
                 data[decklist.hash] = decklist.text
 
-        dst.write_text(to_json(data, sort_data=True))
+        dst.write_text(to_json(data, sort_dictionaries=True))
         _log.info(f"{len(list(data)):,} decklists dumped.")
 
     def _dump_withdrawn(self) -> None:
         _log.info(f"Dumping withdrawn channels to {self.withdrawn_dir}...")
         count = 0
-        with Session(ENGINE) as session:
+        with DefaultSession() as session:
             stmt = select(Channel).where(Channel.is_withdrawn == True)
             for withdrawn in session.scalars(stmt):
                 dst_dir = self.withdrawn_dir / withdrawn.yt_id
@@ -104,7 +103,7 @@ class Dumper:
 
     def _process_channel(self, channel_id: int) -> int:
         snapshots_count = 0
-        with Session(ENGINE) as session:
+        with DefaultSession() as session:
             channel = session.get(Channel, channel_id)
             if channel is None:
                 return 0
@@ -155,7 +154,7 @@ class Dumper:
         # Session is not thread-safe so only channel IDs are pulled from the db (which is
         # cheap) in the main thread and then channel gets retrieved and processed in its own
         # session within each thread
-        with Session(ENGINE) as session:
+        with DefaultSession() as session:
             if self._channels_yt_ids:
                 channels_count = len(self._channels_yt_ids)
                 channel_ids = session.scalars(
@@ -174,7 +173,7 @@ class Dumper:
 
         _log.info(f"Dumped {snapshots_count:,} snapshots of {channels_count:,} channels.")
 
-    @timed("dumping scraped data to JSON", precision=0)
+    @timed("dumping scraped data to JSON")
     def dump(self, *channels: str) -> None:
         """Dump scraped data to JSON.
 
