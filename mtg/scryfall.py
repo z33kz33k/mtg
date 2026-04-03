@@ -37,7 +37,10 @@ from tqdm import tqdm
 from unidecode import unidecode
 
 from mtg.constants import DATA_DIR, Json
-from mtg.lib.common import from_iterable, getfloat, getint, getrepr, timed
+from mtg.lib.common import from_iterable
+from mtg.lib.text import getrepr
+from mtg.lib.numbers import getfloat, getint
+from mtg.lib.time import timed
 from mtg.lib.files import download_file, getdir
 from mtg.lib.scrape.core import throttle
 from mtg.mtgwiki import CLASSES, RACES

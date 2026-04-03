@@ -13,7 +13,7 @@ from datetime import datetime
 from typing import override
 
 from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper
-from mtg.lib.common import extract_int
+from mtg.lib.numbers import extract_int
 from mtg.lib.scrape.core import ScrapingError
 
 _log = logging.getLogger(__name__)

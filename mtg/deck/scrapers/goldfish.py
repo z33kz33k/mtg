@@ -18,7 +18,9 @@ from mtg.deck.core import Deck, Mode
 from mtg.deck.abc import TagBasedDeckParser
 from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
     throttled_deck_scraper
-from mtg.lib.common import ParsingError, extract_int, timed
+from mtg.lib.common import ParsingError
+from mtg.lib.numbers import extract_int
+from mtg.lib.time import timed
 from mtg.lib.scrape.core import ScrapingError, fetch_throttled_soup, http_requests_counted, \
     strip_url_query
 from mtg.scryfall import all_formats
@@ -308,7 +310,7 @@ class GoldfishAuthorScraper(HybridContainerScraper):
 
 
 @http_requests_counted("scraping meta decks")
-@timed("scraping meta decks", precision=1)
+@timed("scraping meta decks")
 def scrape_meta(fmt="standard") -> list[Deck]:
     fmt = fmt.lower()
     if fmt not in all_formats():

@@ -12,7 +12,7 @@ from bs4 import BeautifulSoup
 from wayback import WaybackClient
 from wayback.exceptions import MementoPlaybackError, WaybackException, WaybackRetryError
 
-from mtg.lib.common import timed
+from mtg.lib.time import timed
 from mtg.lib.scrape.core import _log
 
 

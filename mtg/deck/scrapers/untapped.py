@@ -14,7 +14,7 @@ from typing import override
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 
 from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper
-from mtg.lib.common import extract_float, extract_int
+from mtg.lib.numbers import extract_float, extract_int
 from mtg.lib.scrape.core import ScrapingError, find_next_sibling_tag, strip_url_query
 from mtg.lib.scrape.dynamic import fetch_dynamic_soup
 

@@ -19,7 +19,8 @@ from mtg.deck.core import Mode
 from mtg.deck.abc import TagBasedDeckParser
 from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
     throttled_deck_scraper
-from mtg.lib.common import extract_float, extract_int, from_iterable
+from mtg.lib.common import from_iterable
+from mtg.lib.numbers import extract_float, extract_int
 from mtg.lib.scrape.core import ScrapingError, strip_url_query
 from mtg.yt.discover import UrlHook
 

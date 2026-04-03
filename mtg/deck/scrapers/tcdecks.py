@@ -17,7 +17,7 @@ from mtg.constants import Json
 from mtg.constants import SECRETS
 from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper
 from mtg.scryfall import Card
-from mtg.lib.common import extract_int
+from mtg.lib.numbers import extract_int
 from mtg.lib.scrape.core import ScrapingError
 
 _log = logging.getLogger(__name__)

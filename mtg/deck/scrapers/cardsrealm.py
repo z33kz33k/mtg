@@ -22,7 +22,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from mtg.constants import Json
 from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
     folder_container_scraper
-from mtg.lib.common import timed
+from mtg.lib.time import timed
 from mtg.lib.scrape.core import ScrapingError, dissect_js, get_path_segments, strip_url_query
 from mtg.lib.scrape.dynamic import SELENIUM_TIMEOUT, accept_consent
 from mtg.yt.discover import UrlHook

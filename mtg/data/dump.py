@@ -22,7 +22,7 @@ from tqdm import tqdm
 from mtg.constants import OUTPUT_DIR
 from mtg.data.db import DefaultSession
 from mtg.data.models import Channel, Decklist, FailedUrl
-from mtg.lib.common import get_timestamp, timed
+from mtg.lib.time import get_timestamp, timed
 from mtg.lib.json import to_json
 
 _log = logging.getLogger(__name__)

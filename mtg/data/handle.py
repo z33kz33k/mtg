@@ -24,7 +24,9 @@ from mtg.constants import FILENAME_TIMESTAMP_FORMAT, READABLE_TIMESTAMP_FORMAT, 
     WITHDRAWN_DIR
 from mtg.data.structures import CHANNEL_URL_TEMPLATE, Channel, Video
 from mtg.gstate import CHANNELS_DIR, CoolOffManager, DecklistsStateManager, UrlsStateManager
-from mtg.lib.common import Counter, get_ordinal_suffix, logging_disabled, naive_utc_now as utcnow
+from mtg.lib.common import MarkdownTableCounter, logging_disabled
+from mtg.lib.numbers import get_ordinal_suffix
+from mtg.lib.time import naive_utc_now as utcnow
 from mtg.lib.files import getdir
 from mtg.lib.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
 from mtg.lib.json import from_json
@@ -210,7 +212,7 @@ class ScrapingSession:
         self._cooloff_manager.reset()
 
 
-def get_aggregate_deck_data() -> tuple[Counter, Counter]:
+def get_aggregate_deck_data() -> tuple[MarkdownTableCounter, MarkdownTableCounter]:
     """Get aggregated deck data across all channels.
     """
     chids = retrieve_ids()
@@ -227,9 +229,9 @@ def get_aggregate_deck_data() -> tuple[Counter, Counter]:
     delta = len(decks) - len(fmts)
     if delta > 0:
         fmts += ["undefined"] * delta
-    format_counter = Counter(fmts)
+    format_counter = MarkdownTableCounter(fmts)
     sources = [d.source for d in decks if d.source]
-    source_counter = Counter(sources)
+    source_counter = MarkdownTableCounter(sources)
     return format_counter, source_counter
 
 

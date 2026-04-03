@@ -21,7 +21,7 @@ from mtg.constants import OUTPUT_DIR, PathLike
 from mtg.data.handle import ScrapingSession, load_channels, retrieve_ids, retrieve_video_data
 from mtg.data.structures import DataPath, Video
 from mtg.gstate import CHANNELS_DIR, DecklistsStateManager
-from mtg.lib.common import naive_utc_now as utcnow, timed
+from mtg.lib.time import naive_utc_now as utcnow, timed
 from mtg.lib.files import getdir, getfile
 from mtg.lib.json import from_json, to_json
 from mtg.lib.scrape.core import http_requests_counted
@@ -134,7 +134,7 @@ def _process_videos(channel_id: str, *video_ids: str) -> None:
 
 
 @http_requests_counted("re-scraping videos")
-@timed("re-scraping videos", precision=1)
+@timed("re-scraping videos")
 def rescrape_missing_decklists() -> None:
     """Re-scrape those YT videos that contain decklists that are missing from global decklists
     repositories.
@@ -157,7 +157,7 @@ def rescrape_missing_decklists() -> None:
 
 
 @http_requests_counted("re-scraping videos")
-@timed("re-scraping videos", precision=1)
+@timed("re-scraping videos")
 def rescrape_videos(
         *chids: str, video_filter: Callable[[Video], bool] = lambda _: True) -> None:
     """Re-scrape videos across all specified channels. Optionally, define a video-filtering

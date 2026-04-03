@@ -17,7 +17,7 @@ from mtg.constants import Json
 from mtg.deck.arena import ArenaParser
 from mtg.deck.core import Deck
 from mtg.gstate import DecklistsStateManager
-from mtg.lib.common import Counter, breadcrumbs
+from mtg.lib.common import MarkdownTableCounter, breadcrumbs
 from mtg.lib.json import to_json
 from mtg.lib.scrape.core import extract_url, get_netloc_domain
 
@@ -147,12 +147,12 @@ class Channel:
         return {url for v in self.videos for url in v.deck_urls}
 
     @property
-    def deck_sources(self) -> Counter:
-        return Counter(d.source for d in self.decks)
+    def deck_sources(self) -> MarkdownTableCounter:
+        return MarkdownTableCounter(d.source for d in self.decks)
 
     @property
-    def deck_formats(self) -> Counter:
-        return Counter(d.metadata["format"] for d in self.decks if d.metadata.get("format"))
+    def deck_formats(self) -> MarkdownTableCounter:
+        return MarkdownTableCounter(d.metadata["format"] for d in self.decks if d.metadata.get("format"))
 
     @property
     def staleness(self) -> int | None:

@@ -21,7 +21,8 @@ from mtg.data.db import DefaultSession, NoAutoFlushSession
 from mtg.data.models import Channel, Deck, Decklist, FailedUrl, Snapshot, Tag, Video
 from mtg.data.structures import DataPath
 from mtg.gstate import CHANNELS_DIR, DECKLISTS_FILE, FAILED_URLS_FILE
-from mtg.lib.common import get_hash, timed
+from mtg.lib.text import get_hash
+from mtg.lib.time import timed
 from mtg.lib.json import from_json
 
 _log = logging.getLogger(__name__)

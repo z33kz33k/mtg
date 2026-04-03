@@ -19,7 +19,8 @@ from mtg.deck.abc import JsonBasedDeckParser, TagBasedDeckParser
 from mtg.deck.scrapers.abc import Collected, DeckScraper, DeckUrlsContainerScraper, \
     HybridContainerScraper, throttled_deck_scraper
 from mtg.deck.scrapers.goldfish import HEADERS as GOLDFISH_HEADERS
-from mtg.lib.common import ParsingError, extract_int
+from mtg.lib.common import ParsingError
+from mtg.lib.numbers import extract_int
 from mtg.lib.scrape.core import ScrapingError, fetch, fetch_json, find_next_sibling_tag, \
     get_path_segments, get_query_values, is_more_than_root_path, strip_url_query
 from mtg.yt.discover import UrlHook

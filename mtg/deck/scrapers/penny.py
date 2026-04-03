@@ -15,7 +15,8 @@ from bs4 import Tag
 from mtg.constants import Json
 from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper
 from mtg.scryfall import Card
-from mtg.lib.common import from_iterable, get_date_from_ago_text, get_date_from_month_text
+from mtg.lib.common import from_iterable
+from mtg.lib.time import get_date_from_ago_text, get_date_from_month_text
 from mtg.lib.scrape.core import ScrapingError, fetch_json, fetch_soup, strip_url_query
 
 _log = logging.getLogger(__name__)

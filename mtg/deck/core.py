@@ -20,7 +20,8 @@ from typing import Any, Iterable, Iterator, Self
 
 from mtg.constants import Json
 from mtg.lib.check_type import type_checker
-from mtg.lib.common import ParsingError, from_iterable, get_hash, getrepr, remove_furigana
+from mtg.lib.common import ParsingError, from_iterable
+from mtg.lib.text import get_hash, getrepr, remove_furigana
 from mtg.lib.json import to_json
 from mtg.lib.scrape.core import get_netloc_domain
 from mtg.scryfall import COMMANDER_FORMATS, Card, Color, \

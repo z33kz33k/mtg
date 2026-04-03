@@ -11,7 +11,7 @@ import logging
 from typing import override
 
 from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper
-from mtg.lib.common import get_date_from_ago_text
+from mtg.lib.time import get_date_from_ago_text
 from mtg.lib.scrape.core import ScrapingError, strip_url_query
 
 _log = logging.getLogger(__name__)

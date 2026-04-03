@@ -15,7 +15,7 @@ from bs4 import Tag
 
 from mtg.constants import Json
 from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper
-from mtg.lib.common import extract_float, extract_int
+from mtg.lib.numbers import extract_float, extract_int
 from mtg.lib.scrape.core import ScrapingError, find_links, find_next_sibling_tag, \
     is_more_than_root_path, prepend_url, strip_url_query
 from mtg.scryfall import Card

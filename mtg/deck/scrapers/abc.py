@@ -20,7 +20,8 @@ from mtg.constants import Json
 from mtg.deck.core import CardNotFound, Deck, InvalidDeck
 from mtg.deck.abc import JsonBasedDeckParser, NestedDeckParser, TagBasedDeckParser
 from mtg.gstate import UrlsStateManager
-from mtg.lib.common import ParsingError, register_type, timed
+from mtg.lib.common import ParsingError, register_type
+from mtg.lib.time import timed
 from mtg.lib.scrape.core import InaccessiblePage, ScrapingError, Soft404Error, Throttling, \
     fetch_soup, find_links, prepend_url, throttle
 from mtg.lib.scrape.dynamic import fetch_dynamic_soup
@@ -386,7 +387,7 @@ class DeckUrlsContainerScraper(ContainerScraper):
 
         return decks
 
-    @timed("container scraping", precision=2)
+    @timed("container scraping")
     @backoff.on_exception(
         backoff.expo, (ConnectionError, HTTPError, ReadTimeout), max_time=60)
     @override
@@ -447,7 +448,7 @@ class DeckTagsContainerScraper(ContainerScraper):
 
         return decks
 
-    @timed("container scraping", precision=2)
+    @timed("container scraping")
     @backoff.on_exception(
         backoff.expo, (ConnectionError, HTTPError, ReadTimeout), max_time=60)
     @override
@@ -508,7 +509,7 @@ class DecksJsonContainerScraper(ContainerScraper):
 
         return decks
 
-    @timed("container scraping", precision=2)
+    @timed("container scraping")
     @backoff.on_exception(
         backoff.expo, (ConnectionError, HTTPError, ReadTimeout), max_time=60)
     @override
@@ -639,7 +640,7 @@ class HybridContainerScraper(
 
         return decks
 
-    @timed("hybrid container scraping", precision=2)
+    @timed("hybrid container scraping")
     @backoff.on_exception(
         backoff.expo, (ConnectionError, HTTPError, ReadTimeout), max_time=60)
     @override

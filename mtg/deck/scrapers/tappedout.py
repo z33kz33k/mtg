@@ -18,7 +18,8 @@ from requests import Response
 from mtg.constants import Json
 from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper, folder_container_scraper, \
     throttled_deck_scraper
-from mtg.lib.common import extract_int, get_date_from_ago_text
+from mtg.lib.numbers import extract_int
+from mtg.lib.time import get_date_from_ago_text
 from mtg.lib.scrape.core import ScrapingError, fetch, fetch_json, fetch_soup, prepend_url, \
     strip_url_query, throttle
 

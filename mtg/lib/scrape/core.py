@@ -29,7 +29,7 @@ from urllib3 import Retry
 
 from mtg.constants import Json
 from mtg.lib.check_type import type_checker
-from mtg.lib.common import timed
+from mtg.lib.time import timed
 
 _log = logging.getLogger(__name__)
 

@@ -19,7 +19,8 @@ from selenium.common import TimeoutException
 from mtg.constants import Json
 from mtg.deck.abc import TagBasedDeckParser
 from mtg.deck.scrapers.abc import Collected, DeckScraper, DeckTagsContainerScraper
-from mtg.lib.common import ParsingError, sanitize_whitespace
+from mtg.lib.common import ParsingError
+from mtg.lib.text import sanitize_whitespace
 from mtg.lib.scrape.core import ScrapingError, strip_url_query
 from mtg.lib.scrape.dynamic import fetch_dynamic_soup
 

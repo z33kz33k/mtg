@@ -33,8 +33,9 @@ from mtg.deck.core import Deck, DeckParser
 from mtg.deck.scrapers.abc import DeckTagsContainerScraper, DecksJsonContainerScraper, \
     get_throttled_deck_scrapers
 from mtg.gstate import CHANNELS_DIR, CoolOffManager, DecklistsStateManager, UrlsStateManager
-from mtg.lib.common import extract_float, find_longest_seqs, from_iterable, logging_disabled, \
-    multiply_by_symbol, naive_utc_now as utcnow, timed
+from mtg.lib.common import find_longest_seqs, from_iterable, logging_disabled
+from mtg.lib.numbers import extract_float, multiply_by_symbol
+from mtg.lib.time import naive_utc_now as utcnow, timed
 from mtg.lib.files import getdir, sanitize_filename
 from mtg.lib.scrape.core import ScrapingError, extract_url, http_requests_counted, \
     parse_keywords_from_tag, throttle, throttled, unshorten
@@ -640,13 +641,13 @@ class ChannelScraper:
             text += f" [{', '.join(sources)}]"
         _log.info(f"Scraped *** {len(self.data.decks)} deck(s) *** in total for {text}")
 
-    @timed("channel scraping", precision=2)
+    @timed("channel scraping")
     def scrape_videos(self, *video_ids: str) -> None:
         """Scrape videos of this channel according to the passed IDs.
         """
         self._scrape_videos(*video_ids)
 
-    @timed("channel scraping", precision=2)
+    @timed("channel scraping")
     def scrape(self, limit=10, only_newer_than_last_scraped=True, soft_limit=False) -> None:
         """Scrape yet unscraped videos of this channel.
 
@@ -695,7 +696,7 @@ class ChannelScraper:
 
 
 @http_requests_counted("channel videos scraping")
-@timed("channel videos scraping", precision=1)
+@timed("channel videos scraping")
 def scrape_channel_videos(channel_id: str, *video_ids: str) -> bool:
     """Scrape specified videos of a YouTube channel in a session.
 
@@ -721,7 +722,7 @@ def scrape_channel_videos(channel_id: str, *video_ids: str) -> bool:
 
 
 @http_requests_counted("channels scraping")
-@timed("channels scraping", precision=1)
+@timed("channels scraping")
 def scrape_channels(
         *chids: str,
         videos_limit=25,
