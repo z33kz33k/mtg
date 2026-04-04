@@ -17,7 +17,6 @@ from contexttimer import Timer
 from dateutil.relativedelta import relativedelta
 
 from mtg.constants import FILENAME_TIMESTAMP_FORMAT, READABLE_TIMESTAMP_FORMAT
-from mtg.lib.check_type import type_checker
 
 _log = logging.getLogger(__name__)
 
@@ -29,16 +28,30 @@ def seconds2readable(seconds: float) -> str:
     return f"{hours}h:{minutes:02}m:{seconds:02}s"
 
 
-def _get_precision(elapsed: float) -> int:
-    if elapsed < 1:
+def _get_precision(seconds: float) -> int:
+    if seconds < 1:
         return 4
-    if elapsed < 10:
+    if seconds < 10:
         return 3
-    elif elapsed < 60:
+    elif seconds < 60:
         return 2
-    elif elapsed < 120:
+    elif seconds < 120:
         return 1
     return 0
+
+
+def get_formatted_time(seconds: float, precision: int | None = None) -> str:
+    """Return pre-formatted time string for the passed seconds.
+
+    Examples: '0h:03m:23s' (precision=0) or '29.75 second(s)' (precision=2). Precision,
+    if not supplied, is decided automatically, based on the passed time.
+    """
+    if precision is not None and precision < 0:
+        precision = 0
+    precision = _get_precision(seconds) if precision is None else precision
+    if not precision:
+        return seconds2readable(seconds)
+    return f"{seconds:.{precision}f} second(s)"
 
 
 def timed(operation="", precision: int | None = None) -> Callable:
@@ -55,31 +68,18 @@ def timed(operation="", precision: int | None = None) -> Callable:
     Returns:
         the decorated function
     """
-    if precision is not None and precision < 0:
-        precision = 0
-
     def decorator(func: Callable) -> Callable:
         @wraps(func)
         def wrapper(*args, **kwargs):
             with Timer() as t:
                 result = func(*args, **kwargs)
             activity = operation or f"'{func.__name__}()'"
-            new_precision = _get_precision(t.elapsed) if precision is None else precision
-            time = seconds2readable(t.elapsed)
-            if not new_precision:
-                _log.info(f"Completed {activity} in {time}")
-            elif new_precision == 1:
-                _log.info(f"Completed {activity} in {t.elapsed:.{new_precision}f} "
-                          f"second(s) ({time})")
-            else:
-                _log.info(f"Completed {activity} in {t.elapsed:.{new_precision}f} "
-                          f"second(s)")
+            _log.info(f"Completed {activity} in {get_formatted_time(t.elapsed, precision)}")
             return result
         return wrapper
     return decorator
 
 
-@type_checker(str)
 def get_date_from_ago_text(ago_text: str) -> date | None:
     """Parse 'ago' text (e.g. '2 days ago') into a Date object.
     """
@@ -103,7 +103,6 @@ def get_date_from_ago_text(ago_text: str) -> date | None:
     return None
 
 
-@type_checker(str)
 def get_date_from_french_ago_text(ago_text: str) -> date | None:
     """Parse French 'ago' text (e.g. '3 jours par') into a Date object.
 
@@ -130,7 +129,6 @@ def get_date_from_french_ago_text(ago_text: str) -> date | None:
     return None
 
 
-@type_checker(str)
 def get_date_from_month_text(month_text: str) -> date | None:
     """Parse 'month' text (e.g. 'June 27th') into a Date object.
 
