@@ -9,7 +9,7 @@
 """
 from functools import partial
 
-from sqlalchemy import create_engine, event, exists, func, select
+from sqlalchemy import create_engine, delete, event, exists, func, select
 from sqlalchemy.orm import Session, sessionmaker
 
 from mtg.constants import APP_DIR
@@ -53,23 +53,20 @@ def delete_orphan_decklist(mapper, connection, target: Deck) -> None:
     if target.decklist_id is None:
         return
 
-    session = Session.object_session(target)
-    if session is None:
-        return  # object was already detached, or we're in a weird state
-
     # count remaining Decks that still point to this Decklist
-    remaining_count = session.scalar(
-        select(func.count())
+    # (the DELETE for the current Deck has already been executed on the DB)
+    remaining_count = connection.execute(
+        select(func.count(1))
+        .select_from(Deck)
         .where(Deck.decklist_id == target.decklist_id)
-    )
+    ).scalar_one()
 
     if remaining_count == 0:
-        # load the Decklist (it should still exist at this point)
-        decklist = session.get(Decklist, target.decklist_id)
-        if decklist:
-            session.delete(decklist)
-            # note: we do NOT call session.commit() here
-            # the delete will be part of the current transaction/flush
+        # directly delete via SQL — no need to load the object into the session
+        connection.execute(
+            delete(Decklist).where(Decklist.id == target.decklist_id)
+        )
+        # the DELETE is automatically part of the current transaction
 
 
 # init database
