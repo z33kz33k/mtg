@@ -15,7 +15,7 @@ from typing import Self, Type
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from mtg.data.db import NoAutoFlushSession
+from mtg.data.db import NoAutoFlushSession, retrieve_or_create
 from mtg.data.models import Channel, FailedUrl, Snapshot, Video
 from mtg.lib.scrape.core import throttle_with_countdown
 from mtg.lib.time import get_formatted_time
@@ -118,17 +118,9 @@ class ScrapingSession:
     def current_snapshot(self) -> Snapshot | None:
         return self._usm.current_snapshot
 
-    @current_snapshot.setter
-    def current_snapshot(self, value: Snapshot | None) -> None:
-        self._usm.current_snapshot = value
-
     @property
     def current_video(self) -> Video | None:
         return self._usm.current_video
-
-    @current_video.setter
-    def current_video(self, value: Video | None) -> None:
-        self._usm.current_video = value
 
     @property
     def ignore_failed(self) -> bool:
@@ -159,6 +151,7 @@ class ScrapingSession:
         self._db_session = NoAutoFlushSession()
         self._usm = UrlsStateManager(self.db_session)
         self._cooloff = CoolOffManager()
+        self._current_channel: Channel | None = None
         return self
 
     def __exit__(
@@ -183,6 +176,10 @@ class ScrapingSession:
 
         self._usm = None
         self._cooloff = None
+
+    def set_channel(self, yt_id: str) -> None:
+        channel = retrieve_or_create(self._db_session, Channel, yt_id=yt_id)
+        self._current_channel = channel
 
     # UrlsStateManager API
     def is_scraped(self, url: str) -> bool:

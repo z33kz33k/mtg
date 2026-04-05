@@ -18,7 +18,6 @@ from typing import override
 import dateutil.parser
 
 from mtg.constants import Json
-from mtg.deck.arena import normalize_decklist
 from mtg.deck.scrapers.abc import DeckScraper
 from mtg.lib.json import Node
 from mtg.lib.scrape.core import ScrapingError, strip_url_query
@@ -78,6 +77,7 @@ class TcgRocksDeckScraper(DeckScraper):
         root = Node(self._data)
         mtg_node = root.find(lambda n: n.data == "mtg")
         decklist_node = mtg_node.next_sibling
-        if decklist_node is None or not decklist_node.data:
+        if decklist_node is None or not decklist_node.data or not isinstance(
+                decklist_node.data, str):
             raise ScrapingError("Decklist not found", scraper=type(self), url=self.url)
-        self._decklist = normalize_decklist(decklist_node.data, self.fmt or None)
+        self._decklist = decklist_node.data

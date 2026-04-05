@@ -724,7 +724,7 @@ class Deck:
 
     def __eq__(self, other: Self) -> bool:
         if not isinstance(other, Deck):
-            return False
+            return NotImplemented
         return self.json == other.json
 
     def __hash__(self) -> int:
@@ -741,6 +741,9 @@ class Deck:
     def update_metadata(self, **data: Any) -> None:
         self._metadata.update(data)
 
+    def replace_metadata(self, metadata: Json) -> None:
+        self._metadata = dict(metadata)
+
     @staticmethod
     def _to_playset_line(playset: list[Card], with_printings=False) -> str:
         card = playset[0]
@@ -752,6 +755,8 @@ class Deck:
             line += f" ({card.set.upper()}) {card.collector_number}"
         return line
 
+    # also normalizes playset order within sections
+    # still, "Commander" section keeps [commander, partner commander] order
     def _build_decklist(self, with_printings=True, about=True) -> str:
         lines = []
         if about and self.metadata.get("name"):
@@ -766,23 +771,21 @@ class Deck:
         if self.companion:
             playset = aggregate(self.companion)[self.companion]
             lines += ["Companion", self._to_playset_line(playset, with_printings=with_printings), ""]
-        deck_playsets = sorted(
-            (playset for playset in aggregate(*self.maindeck).values()),
-            key=lambda l: l[0].name)
+        deck_playsets = aggregate(*self.maindeck).values()
         lines += [
             "Deck",
-            *[self._to_playset_line(playset, with_printings=with_printings) for playset
-              in deck_playsets]
+            *sorted(
+                self._to_playset_line(playset, with_printings=with_printings)
+                for playset in deck_playsets)
         ]
         if self.sideboard:
-            side_playsets = sorted(
-                (playset for playset in aggregate(*self.sideboard).values()),
-                key=lambda l: l[0].name)
+            side_playsets = aggregate(*self.sideboard).values()
             lines += [
                 "",
                 "Sideboard",
-                *[self._to_playset_line(playset, with_printings=with_printings) for playset
-                  in side_playsets]
+                *sorted(
+                    self._to_playset_line(playset, with_printings=with_printings)
+                    for playset in side_playsets)
             ]
         return "\n".join(lines)
 
@@ -803,15 +806,17 @@ class Deck:
         return get_hash(self.decklist_with_printings, truncation=40, sep="-")
 
     @cached_property
+    def as_dict(self) -> Json:
+        return {
+            "metadata": self.metadata,
+            "decklist": self.decklist
+        }
+
+    @property
     def json(self) -> str:
         """Return a JSON representation of this deck.
         """
-        data = {
-            "metadata": self.metadata,
-            "decklist_hash": self.decklist_hash,
-            "decklist_with_printings": self.decklist_with_printings_hash,
-        }
-        return to_json(data, sort_dictionaries=True)
+        return to_json(self.as_dict, sort_dictionaries=True)
 
 
 class _ParsingStates(Enum):

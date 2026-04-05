@@ -21,8 +21,7 @@ from tqdm import tqdm
 
 from mtg.constants import CHANNELS_DIR, FILENAME_TIMESTAMP_FORMAT, READABLE_TIMESTAMP_FORMAT, \
     README_FILE, WITHDRAWN_DIR
-from mtg.data.structures import CHANNEL_URL_TEMPLATE, Channel, Video
-from mtg.session import DecklistsStateManager, UrlsStateManager
+from mtg.data.structures import CHANNEL_URL_TEMPLATE, ChannelData, VideoData
 from mtg.lib.common import MarkdownTableCounter, logging_disabled
 from mtg.lib.numbers import get_ordinal_suffix
 from mtg.lib.time import naive_utc_now as utcnow
@@ -32,7 +31,7 @@ from mtg.lib.json import from_json
 from mtg.lib.scrape.core import fetch_soup
 
 _log = logging.getLogger(__name__)
-_channels_cache: dict[str, Channel] = {}
+_channels_cache: dict[str, ChannelData] = {}
 
 
 def get_channels_count() -> int:
@@ -72,7 +71,7 @@ def clear_cache() -> None:
     _channels_cache.clear()
 
 
-def load_channel(channel_id: str) -> Channel:
+def load_channel(channel_id: str) -> ChannelData:
     """Load all earlier scraped data for a channel designated by the provided ID.
     """
     if channel :=  _channels_cache.get(channel_id):
@@ -90,7 +89,7 @@ def load_channel(channel_id: str) -> Channel:
         except json.JSONDecodeError:
             _log.critical(f"Failed to load channel data from: '{file}'")
             sys.exit(1)
-        channels.append(Channel.from_dict(data, sort_videos_by_publish_time=False))
+        channels.append(ChannelData.from_dict(data, sort_videos_by_publish_time=False))
     channels.sort(key=attrgetter("scrape_time"), reverse=True)
 
     videos_map = defaultdict(list)
@@ -105,7 +104,7 @@ def load_channel(channel_id: str) -> Channel:
 
     videos.sort(key=attrgetter("publish_time"), reverse=True)
 
-    channel = Channel(
+    channel = ChannelData(
         id=channels[0].id,
         title=channels[0].title,
         description=channels[0].description,
@@ -118,7 +117,7 @@ def load_channel(channel_id: str) -> Channel:
     return channel
 
 
-def load_channels(*channel_ids: str) -> Iterator[Channel]:
+def load_channels(*channel_ids: str) -> Iterator[ChannelData]:
     """Load channel data for specified IDs.
 
     If nothing is specified, all known channels are considered.
@@ -348,7 +347,8 @@ def fetch_channel_ids(*urls: str, only_new=True) -> list[str]:
 
 def retrieve_video_data(
         *chids: str,
-        video_filter: Callable[[Video], bool] = lambda _: True) -> defaultdict[str, list[Video]]:
+        video_filter: Callable[[VideoData], bool] = lambda _: True
+) -> defaultdict[str, list[VideoData]]:
     """Retrieve video data for specified channels. Optionally, define a video-filtering
     predicate.
 

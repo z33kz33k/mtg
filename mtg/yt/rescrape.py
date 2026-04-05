@@ -19,9 +19,9 @@ from tqdm import tqdm
 
 from mtg.constants import CHANNELS_DIR, OUTPUT_DIR, PathLike
 from mtg.data.common import load_channels, retrieve_ids, retrieve_video_data
-from mtg.data.structures import DataPath, Video
-from mtg.session import DecklistsStateManager, ScrapingSession
-from mtg.lib.time import naive_utc_now as utcnow, timed
+from mtg.data.structures import DataPath, VideoData
+from mtg.session import ScrapingSession
+from mtg.lib.time import naive_utc_now, timed
 from mtg.lib.files import getdir, getfile
 from mtg.lib.json import from_json, to_json
 from mtg.lib.scrape.core import http_requests_counted
@@ -109,7 +109,7 @@ def find_channel_files(channel_id: str, *video_ids: str) -> list[str]:
 def backup_channel_files(chid: str, *files: PathLike) -> None:
     """Backup channel data files.
     """
-    now = utcnow()
+    now = naive_utc_now()
     timestamp = f"{now.year}{now.month:02}{now.day:02}"
     backup_root = getdir(OUTPUT_DIR / "_archive" / "channels")
     backup_path, counter = backup_root / timestamp / chid, itertools.count(1)
@@ -159,7 +159,7 @@ def rescrape_missing_decklists() -> None:
 @http_requests_counted("re-scraping videos")
 @timed("re-scraping videos")
 def rescrape_videos(
-        *chids: str, video_filter: Callable[[Video], bool] = lambda _: True) -> None:
+        *chids: str, video_filter: Callable[[VideoData], bool] = lambda _: True) -> None:
     """Re-scrape videos across all specified channels. Optionally, define a video-filtering
     predicate.
 
@@ -187,7 +187,7 @@ def rescrape_videos(
 
 def rescrape_by_date(
         *chids: str, after: date | None = None, before: date | None = None,
-        video_filter: Callable[[Video], bool] = lambda _: True) -> None:
+        video_filter: Callable[[VideoData], bool] = lambda _: True) -> None:
     """Re-scrape videos across all specified channels but only those scraped before/after the
     specified threshold dates (or inbetween them).
 
@@ -235,7 +235,7 @@ def rescrape_by_urls_pool(urls_pool: set[str], *chids: str, exact=False) -> None
         *chids: channel IDs
         exact: if True only exact match counts, else partial match is enough
     """
-    def check_partial(video: Video) -> bool:
+    def check_partial(video: VideoData) -> bool:
         for featured_url in video.featured_urls:
             for pool_url in urls_pool:
                 if pool_url in featured_url:

@@ -2,21 +2,20 @@
 
     mtg.data.structures
     ~~~~~~~~~~~~~~~~~~~
-    Data structures.
+    Data structures for convenient consumption.
 
     @author: mazz3rr
 
 """
 from dataclasses import asdict, astuple, dataclass, field, fields
 from datetime import date, datetime
-from functools import cached_property, lru_cache
+from functools import cached_property
 from operator import attrgetter
 from typing import Self
 
 from mtg.constants import Json
 from mtg.deck.arena import ArenaParser
 from mtg.deck.core import Deck
-from mtg.session import DecklistsStateManager
 from mtg.lib.common import MarkdownTableCounter, breadcrumbs
 from mtg.lib.json import to_json
 from mtg.lib.scrape.core import extract_url, get_netloc_domain
@@ -32,40 +31,7 @@ EXCESSIVELY_DECK_STALE_THRESHOLD = 150  # videos
 
 
 @dataclass
-class SerializedDeck:
-    metadata: Json
-    decklist_hash: str
-    decklist_with_printings_hash: str
-
-    def __hash__(self) -> int:
-        return hash(self.json)
-
-    def __eq__(self, other: Self) -> bool:
-        return isinstance(other, type(self)) and self.json == other.json
-
-    @cached_property
-    def json(self) -> str:
-        return to_json(asdict(self), sort_dictionaries=True)
-
-    @property
-    def source(self) -> str:
-        return Deck.url_to_source(self.metadata.get("url"))
-
-    @lru_cache
-    def deck(self, with_printings=True) -> Deck | None:
-        manager = DecklistsStateManager()
-        if not manager.is_loaded:
-            manager.load()
-        decklist = manager.retrieve(
-            self.decklist_with_printings_hash) if with_printings else manager.retrieve(
-            self.decklist_hash)
-        if not decklist:
-            return None
-        return ArenaParser(decklist, self.metadata).parse()
-
-
-@dataclass
-class Video:
+class VideoData:
     id: str
     author: str
     title: str
@@ -74,7 +40,7 @@ class Video:
     publish_time: datetime
     views: int
     comment: str | None = None
-    decks: list[SerializedDeck] = field(default_factory=list)
+    decks: list[Deck] = field(default_factory=list)
     # injected from Channel
     scrape_time: datetime | None = None
 
@@ -100,42 +66,43 @@ class Video:
             get_netloc_domain(url).lower().removeprefix("www.") for url in self.featured_urls]
         return sorted({domain for domain in domains if domain})
 
-    @cached_property
-    def json(self) -> str:
-        return to_json(self.as_dict)
-
     @property
     def as_dict(self) -> Json:
         data = asdict(self)
         del data["scrape_time"]
         if not self.comment:
             del data["comment"]
+        data["decks"] = [d.as_dict for d in data["decks"]]
         return data
+
+    @cached_property
+    def json(self) -> str:
+        return to_json(self.as_dict)
 
     @classmethod
     def from_dict(cls, data: Json, scrape_time: datetime | None = None) -> Self:
         field_names = {f.name for f in fields(cls)}
         data = {k: v for k, v in data.items() if k in field_names}
-        data["decks"] = [SerializedDeck(**d) for d in data["decks"]]
+        data["decks"] = [ArenaParser(d["decklist"], d["metadata"]).parse() for d in data["decks"]]
         return cls(**data, scrape_time=scrape_time)
 
 
 @dataclass
-class Channel:
+class ChannelData:
     id: str
     title: str | None
     description: str | None
     tags: list[str] | None
     subscribers: int | None
     scrape_time: datetime
-    videos: list[Video]
+    videos: list[VideoData]
 
     @property
     def url(self) -> str:
         return CHANNEL_URL_TEMPLATE.format(self.id)
 
     @property
-    def decks(self) -> list[SerializedDeck]:
+    def decks(self) -> list[Deck]:
         return [d for v in self.videos for d in v.decks]
 
     @property
@@ -152,7 +119,8 @@ class Channel:
 
     @property
     def deck_formats(self) -> MarkdownTableCounter:
-        return MarkdownTableCounter(d.metadata["format"] for d in self.decks if d.metadata.get("format"))
+        return MarkdownTableCounter(
+            d.metadata["format"] for d in self.decks if d.metadata.get("format"))
 
     @property
     def staleness(self) -> int | None:
@@ -235,14 +203,14 @@ class Channel:
         return not (self.is_deck_stale or self.is_very_deck_stale or self.is_excessively_deck_stale)
 
     @cached_property
-    def json(self) -> str:
-        return to_json(self.as_dict)
-
-    @property
     def as_dict(self) -> Json:
         data = asdict(self)
         data["videos"] = [v.as_dict for v in self.videos]
         return data
+
+    @property
+    def json(self) -> str:
+        return to_json(self.as_dict)
 
     @classmethod
     def from_dict(cls, data: Json, sort_videos_by_publish_time=True) -> Self:
@@ -254,7 +222,6 @@ class Channel:
         return cls(**data)
 
 
-# TODO: not needed with db
 @dataclass(frozen=True)
 class DataPath:
     """Structural path to a channel/video/decklist in the channel data.

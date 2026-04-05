@@ -15,7 +15,7 @@ from tqdm import tqdm
 
 from mtg.constants import DECKS_DIR, PathLike
 from mtg.data.common import load_channels, retrieve_ids
-from mtg.data.structures import Channel
+from mtg.data.structures import ChannelData
 from mtg.deck.export import Exporter, FORMATS as EXPORT_FORMATS
 from mtg.lib.common import logging_disabled
 from mtg.lib.time import get_timestamp
@@ -23,7 +23,7 @@ from mtg.lib.files import getdir, sanitize_filename
 
 
 def _dump_data_gen(
-        channels: list[Channel],
+        channels: list[ChannelData],
         dstdir: Path) -> Iterator[tuple[Exporter | None, Path]]:
     seen_decks = {}
     for channel in channels:

@@ -12,6 +12,16 @@
     cards with potentially multiple printings, this means printing-specific data (if scraped) is
     'lost in translation'.
 
+    Also, bear in mind that this module doesn't care about "printed_name" and "printed_text"
+    properties that show up next to "name" and "oracle_text" in Scryfall data that is aware of
+    language-specific or platform-based card printings. This means that even for data pulled by
+    calls to the Scryfall API, not only scraped data that is specific in terms of cosmetic
+    printings, but also language-specific and platform-specific (like 'Through the Omenpaths'
+    cards) gets clobbered. That means that card specified in scraped data as "Kavaero,
+    Mind-Bitten" turns out to really be "Superior Spider-Man" at the end.
+
+    Thank WotC for this mess.
+
     @author: mazz3rr
 
 """
@@ -341,7 +351,7 @@ class CardFace:
 
     def __eq__(self, other: Self) -> bool:
         if not isinstance(other, CardFace):
-            return False
+            return NotImplemented
         left = self.name, self.mana_cost, self.type_line, self.oracle_text
         right = other.name, other.mana_cost, other.type_line, other.oracle_text
         return left == right
@@ -447,12 +457,20 @@ class Card:
     """Thin wrapper on Scryfall JSON data for a MtG card.
 
     Provides convenience access to the most important data pieces.
+
+    Card objects' equivalence depends on the Scryfall Card ID. This is different from a card's
+    "Oracle ID". Oracle ID tracks cards that are the same mechanically but different in terms of
+    their printings (be that cosmetic, language-based, or platform-based (like cards in Through the
+    Omenpaths)). Those cards have the same Oracle ID but different Scryfall Card ID.
+
+    For tests that are only interested in the mechanical equivalence, one should use
+    'is_oracle_equal()' method.
     """
     json: Json
 
     def __eq__(self, other: Self) -> bool:
         if not isinstance(other, Card):
-            return False
+            return NotImplemented
         return self.id == other.id
 
     def __hash__(self) -> int:
@@ -479,6 +497,12 @@ class Card:
         if self.is_multifaced and self.layout not in MULTIFACE_LAYOUTS:
             raise ScryfallError(
                 f"Invalid layout {self.layout!r} for a multiface card {self.name!r}")
+
+    # different printings of the same card have different 'id' but the same 'oracle_id'
+    def is_oracle_equal(self, other: Self) -> bool:
+        if isinstance(other, Card):
+            return self.oracle_id == other.oracle_id
+        return False
 
     @property
     def card_faces(self) -> list[CardFace]:
@@ -1015,7 +1039,7 @@ class SetData:
 
     def __eq__(self, other: Self) -> bool:
         if not isinstance(other, SetData):
-            return False
+            return NotImplemented
         return self.id == other.id
 
     def __hash__(self) -> int:

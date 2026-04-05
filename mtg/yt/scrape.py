@@ -26,23 +26,21 @@ from youtube_comment_downloader import SORT_BY_POPULAR, YoutubeCommentDownloader
 from mtg import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper
 from mtg.constants import CHANNELS_DIR, FILENAME_TIMESTAMP_FORMAT, Json, PathLike
 from mtg.data.common import load_channel, retrieve_ids
-from mtg.data.structures import CHANNEL_URL_TEMPLATE, Channel, SerializedDeck, VIDEO_URL_TEMPLATE, \
-    Video
+from mtg.data.structures import CHANNEL_URL_TEMPLATE, ChannelData, VIDEO_URL_TEMPLATE, VideoData
 from mtg.deck.arena import ArenaParser, LinesParser
 from mtg.deck.core import Deck, DeckParser
 from mtg.deck.scrapers.abc import DeckTagsContainerScraper, DecksJsonContainerScraper, \
     get_throttled_deck_scrapers
-from mtg.session import CoolOffManager, DecklistsStateManager, ScrapingSession, \
-    UrlsStateManager
-from mtg.lib.common import find_longest_seqs, from_iterable, logging_disabled
-from mtg.lib.numbers import extract_float, multiply_by_symbol
-from mtg.lib.time import naive_utc_now as utcnow, timed
+from mtg.lib.common import Noop, find_longest_seqs, from_iterable, logging_disabled
 from mtg.lib.files import getdir, sanitize_filename
+from mtg.lib.numbers import extract_float, multiply_by_symbol
 from mtg.lib.scrape.core import ScrapingError, extract_url, http_requests_counted, \
     parse_keywords_from_tag, throttle, throttled, unshorten
 from mtg.lib.scrape.dynamic import fetch_dynamic_soup
 from mtg.lib.scrape.linktree import LinktreeScraper
+from mtg.lib.time import naive_utc_now, timed
 from mtg.scryfall import all_formats
+from mtg.session import ScrapingSession
 from mtg.yt.expand import LinksExpander
 from mtg.yt.ptfix import PytubeWrapper
 
@@ -117,7 +115,7 @@ class VideoScraper:
 
     @property
     def url(self) -> str:
-        return VIDEO_URL_TEMPLATE.format(self._id)
+        return VIDEO_URL_TEMPLATE.format(self._yt_id)
 
     @cached_property
     def _desc_lines(self) -> list[str]:
@@ -138,24 +136,21 @@ class VideoScraper:
         return metadata
 
     @property
-    def data(self) -> Video | None:
+    def data(self) -> VideoData | None:
         return self._data
 
     @property
     def channel_id(self) -> str | None:
         return self._channel_id
 
-    def __init__(self, video_id: str) -> None:
+    def __init__(self, video_id: str, session: ScrapingSession | None) -> None:
         """Initialize.
 
         Args:
             video_id: unique string identifying a YouTube video (the part after `v=` in the URL)
         """
-        self._urls_manager = UrlsStateManager()
-        self._urls_manager.current_video = video_id
-        self._decklists_manager = DecklistsStateManager()
-        self._cooloff_manager = CoolOffManager()
-        self._id = video_id
+        self._yt_id = video_id
+        self._session = session or Noop
         # description and title is also available in scrapetube data on Channel abstraction layer
         self._author, self._description, self._title = None, None, None
         self._keywords, self._publish_time, self._views = None, None, None
@@ -166,7 +161,7 @@ class VideoScraper:
         try:
             pytube = pytubefix.YouTube(self.url, use_oauth=True, allow_oauth_cache=True)
         except pytubefix.exceptions.RegexMatchError as rme:
-            raise ValueError(f"Invalid video ID: {self._id!r}") from rme
+            raise ValueError(f"Invalid video ID: {self._yt_id!r}") from rme
         if not pytube.publish_date:
             raise MissingVideoPublishTime(
                 "pytubefix data missing publish time", scraper=type(self), url=self.url)
@@ -395,8 +390,8 @@ class VideoScraper:
     def scrape(self) -> None:
         self._scrape_video()
         self._scrape_decks()
-        self._data = Video(
-            self._id,
+        self._data = VideoData(
+            self._yt_id,
             self._author,
             self._title,
             self._description,
@@ -442,47 +437,26 @@ class ChannelScraper:
 
     @property
     def url(self) -> str:
-        return CHANNEL_URL_TEMPLATE.format(self._id)
+        return CHANNEL_URL_TEMPLATE.format(self._yt_id)
 
     @property
-    def tags(self) -> list[str] | None:
-        return sorted(set(self._tags)) if self._tags else None
-
-    @property
-    def data(self) -> Channel | None:
+    def data(self) -> ChannelData | None:
         return self._data
 
-    @property
-    def earlier_data(self) -> Channel | None:
-        return self._earlier_data
-
-    def __init__(self, channel_id: str) -> None:
-        self._id = channel_id
-        self._cooloff_manager = CoolOffManager()
-        self._urls_manager = UrlsStateManager()
-        self._urls_manager.current_snapshot = self._id
+    def __init__(self, channel_id: str, session: ScrapingSession | None) -> None:
+        self._yt_id = channel_id
+        self._session = session or Noop
         self._title, self._subscribers, self._description, self._tags = None, None, None, None
         self._scrape_time, self._videos = None, []
         self._data = None
-        self._handle_earlier_data()
-
-    def _handle_earlier_data(self) -> None:
-        try:
-            self._earlier_data = load_channel(self._id)
-            self._title, self._description, self._tags = (
-                self._earlier_data.title, self._earlier_data.description, self._earlier_data.tags)
-            self._urls_manager.update_scraped({self._id: self.earlier_data.deck_urls})
-            self._urls_manager.update_scraped(
-                {f"{self._id}/{v.id}": v.deck_urls for v in self.earlier_data.videos})
-        except FileNotFoundError:
-            self._earlier_data = None
+        self._session.set_channel(self._yt_id)
 
     def video_ids(self, limit=10) -> Iterator[str]:
         try:
-            for ch_data in scrapetube.get_channel(channel_id=self._id, limit=limit):
+            for ch_data in scrapetube.get_channel(channel_id=self._yt_id, limit=limit):
                 yield ch_data["videoId"]
         except OSError as ose:
-            raise ValueError(f"Invalid channel ID: {self._id!r}") from ose
+            raise ValueError(f"Invalid channel ID: {self._yt_id!r}") from ose
         except json.decoder.JSONDecodeError as jde:
             raise ScrapingError(
                 "scrapetube failed with JSON error. This channel probably doesn't exist "
@@ -596,11 +570,11 @@ class ChannelScraper:
         return title, count, description, tags
 
     def _scrape_videos(self, *video_ids: str) -> None:
-        self._scrape_time = utcnow()
-        self._title, self._subscribers, self._description, self._tags = self._fetch_info_with_selenium()
-
         text = self.url_title_text()
         _log.info(f"Scraping channel: {text}, {len(video_ids)} video(s)...")
+
+        self._scrape_time = naive_utc_now()
+        self._title, self._subscribers, self._description, self._tags = self._fetch_info_with_selenium()
 
         self._videos, scraper = [], None
         for i, vid in enumerate(video_ids, start=1):
@@ -617,21 +591,21 @@ class ChannelScraper:
                     f"Skipping video that pytubefix failed to retrieve a publish time for: "
                     f"'{VIDEO_URL_TEMPLATE.format(vid)}'...")
                 continue
-            if scraper.channel_id != self._id:
+            if scraper.channel_id != self._yt_id:
                 _log.warning(
                     f"Skipping video with a wrong channel ID: {scraper.channel_id!r} != "
-                    f"{self._id!r}")
+                    f"{self._yt_id!r}")
                 continue
             self._videos.append(scraper.data)
             self._cooloff_manager.bump_video()
 
         if not self._subscribers and scraper:
             self._subscribers = scraper.get_channel_subscribers()
-        self._data = Channel(
-            id=self._id,
+        self._data = ChannelData(
+            id=self._yt_id,
             title=self._title,
             description=self._description,
-            tags=self.tags,
+            tags=sorted(set(self._tags)) if self._tags else None,
             subscribers=self._subscribers,
             scrape_time=self._scrape_time,
             videos=self._videos,
@@ -647,6 +621,7 @@ class ChannelScraper:
         """Scrape videos of this channel according to the passed IDs.
         """
         self._scrape_videos(*video_ids)
+        self._session.bump_video()
 
     @timed("channel scraping")
     def scrape(self, limit=10, only_newer_than_last_scraped=True, soft_limit=False) -> None:
@@ -683,14 +658,14 @@ class ChannelScraper:
         if not self.data:
             _log.info("Nothing to dump")
             return
-        dstdir = dstdir or CHANNELS_DIR / self._id
+        dstdir = dstdir or CHANNELS_DIR / self._yt_id
         dstdir = getdir(dstdir)
         timestamp = self._scrape_time.strftime(FILENAME_TIMESTAMP_FORMAT)
-        filename = filename or f"{self._id}___{timestamp}_channel"
+        filename = filename or f"{self._yt_id}___{timestamp}_channel"
         dst = dstdir / f"{sanitize_filename(filename)}.json"
         _log.info(f"Exporting channel to: '{dst}'...")
         dst.write_text(self.data.json, encoding="utf-8")
-        self._cooloff_manager.bump_channel()
+
 
 
 # CONVENIENCE FUNCTIONS
@@ -705,8 +680,8 @@ def scrape_channel_videos(channel_id: str, *video_ids: str) -> bool:
     in global decklists repositories.
 
     Args:
-        channel_id: ID of a channel to scrape
-        *video_ids: IDs of videos to scrape
+        channel_id: YouTube ID of a channel to scrape
+        *video_ids: YouTube IDs of videos to scrape
     """
     try:
         ch = ChannelScraper(channel_id)

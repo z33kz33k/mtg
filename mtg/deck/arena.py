@@ -13,12 +13,12 @@ from typing import override
 import regex as re
 
 from mtg.constants import Json
-from mtg.deck.core import ARENA_MULTIFACE_SEPARATOR, CardNotFound, DeckParser
+from mtg.deck.core import ARENA_MULTIFACE_SEPARATOR, CardNotFound, Deck, DeckParser
 from mtg.lib.common import ParsingError
-from mtg.lib.text import getrepr, is_foreign, sanitize_whitespace
 from mtg.lib.numbers import extract_int
-from mtg.scryfall import COMMANDER_FORMATS, Card, \
-    MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, query_api_for_card
+from mtg.lib.text import get_hash, getrepr, is_foreign, sanitize_whitespace
+from mtg.scryfall import Card, MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, \
+    query_api_for_card
 
 _log = logging.getLogger(__name__)
 
@@ -152,7 +152,7 @@ def _is_section_line(line: str, *sections: str) -> bool:
     return bool(pattern.match(line))
 
 
-def _is_about_line(line: str) -> bool:
+def _is_about_header_line(line: str) -> bool:
     return _is_section_line(line, "About")
 
 
@@ -160,7 +160,7 @@ def _is_name_line(line: str) -> bool:
     return line.startswith("Name ")
 
 
-def _is_commander_line(line: str) -> bool:
+def _is_commander_header_line(line: str) -> bool:
     return _is_section_line(
         line,
         "Commander",
@@ -177,7 +177,7 @@ def _is_commander_line(line: str) -> bool:
     )
 
 
-def _is_companion_line(line: str) -> bool:
+def _is_companion_header_line(line: str) -> bool:
     return _is_section_line(
         line,
         "Companion",
@@ -194,7 +194,7 @@ def _is_companion_line(line: str) -> bool:
     )
 
 
-def _is_maindeck_line(line: str) -> bool:
+def _is_maindeck_header_line(line: str) -> bool:
     return _is_section_line(
         line,
         "Main",
@@ -217,7 +217,7 @@ def _is_maindeck_line(line: str) -> bool:
     )
 
 
-def _is_sideboard_line(line: str) -> bool:
+def _is_sideboard_header_line(line: str) -> bool:
     return _is_section_line(
         line,
         "Side",
@@ -239,11 +239,11 @@ def _is_sideboard_line(line: str) -> bool:
 
 
 def is_arena_line(line: str) -> bool:
-    if _is_maindeck_line(line) or _is_sideboard_line(line):
+    if _is_maindeck_header_line(line) or _is_sideboard_header_line(line):
         return True
-    elif _is_commander_line(line) or _is_companion_line(line):
+    elif _is_commander_header_line(line) or _is_companion_header_line(line):
         return True
-    elif _is_about_line(line) or _is_name_line(line):
+    elif _is_about_header_line(line) or _is_name_line(line):
         return True
     elif _is_playset_line(line):
         return True
@@ -288,15 +288,22 @@ class LinesParser:
         self._metadata, self._commander, self._companion = [], [], []
         self._maindeck, self._sideboard = [], []
 
+    # also normalizes playsets order within sections
     def _concatenate(self) -> None:
-        if self._commander and self._commander[0] != "Commander":
-            self._commander.insert(0, "Commander")
+        if self._commander:
+            if self._commander[0] != "Commander":
+                self._commander.insert(0, "Commander")
+            self._commander = self._commander[:1] + sorted(self._commander[1:])
         if self._companion and self._companion[0] != "Companion":
             self._companion.insert(0, "Companion")
-        if self._maindeck and self._maindeck[0] != "Deck":
-            self._maindeck.insert(0, "Deck")
-        if self._sideboard and self._sideboard[0] != "Sideboard":
-            self._sideboard.insert(0, "Sideboard")
+        if self._maindeck:
+            if self._maindeck[0] != "Deck":
+                self._maindeck.insert(0, "Deck")
+            self._maindeck = self._maindeck[:1] + sorted(self._maindeck[1:])
+        if self._sideboard:
+            if self._sideboard[0] != "Sideboard":
+                self._sideboard.insert(0, "Sideboard")
+            self._sideboard = self._sideboard[:1] + sorted(self._sideboard[1:])
         if self._commander == ["Commander"]:
             self._commander = []
         if self._companion == ["Companion"]:
@@ -343,18 +350,18 @@ class LinesParser:
         for line in lines:
             if is_arena_line(line):
                 self._blanks = 0
-            if _is_about_line(line):
+            if _is_about_header_line(line):
                 self._handle_header_line("About", self._metadata)
             elif _is_name_line(line):
                 if self._metadata == ["About"]:
                     self._metadata.append(line)
-            elif _is_commander_line(line):
+            elif _is_commander_header_line(line):
                 self._handle_header_line("Commander", self._commander)
-            elif _is_companion_line(line):
+            elif _is_companion_header_line(line):
                 self._handle_header_line("Companion", self._companion)
-            elif _is_maindeck_line(line):
+            elif _is_maindeck_header_line(line):
                 self._handle_header_line("Deck", self._maindeck)
-            elif _is_sideboard_line(line):
+            elif _is_sideboard_header_line(line):
                 if "Sideboard" not in self._sideboard:
                     if last_line and is_arena_line(last_line):
                         self._finish_section()
@@ -436,6 +443,20 @@ class IllFormedArenaDecklist(ParsingError):
     """
 
 
+def normalize_decklist(decklist: str) -> str:
+    """Return decklist with all section headers present and playset order within sections sorted
+    alphabetically.
+    """
+    lines = [sanitize_whitespace(l) for l in decklist.splitlines()]
+    decklists = LinesParser(*lines).parse(single_decklist_mode=True)
+    if not decklists:
+        raise IllFormedArenaDecklist("Not a well formed Arena/MTGO text decklist")
+    return decklists[0]
+
+
+_cached_decks: dict[str, Deck] = {}
+
+
 class ArenaParser(DeckParser):
     """Parse a text decklist in Arena/MTGO format into a Deck object.
     """
@@ -444,27 +465,13 @@ class ArenaParser(DeckParser):
     def __init__(self, decklist: str, metadata: Json | None = None) -> None:
         super().__init__(metadata)
         self._decklist = decklist
-        self._lines = [sanitize_whitespace(l) for l in self._decklist.splitlines()]
-        self._no_maindeck_line = not any(_is_maindeck_line(l) for l in self._lines)
-
-    def _handle_missing_commander_line(self):
-        if not any(_is_commander_line(l) for l in self._lines):
-            idx = None
-            for i, line in enumerate(self._lines):
-                if _is_maindeck_line(line):
-                    idx = i
-                    break
-            if idx in (1, 2) and all(_is_playset_line(l) for l in self._lines[:idx]):
-                self._lines.insert(0, "Commander")
+        self._decklist_hash: str | None = None
 
     @override
     def _pre_parse(self) -> None:
-        decklists = LinesParser(*self._lines).parse(single_decklist_mode=True)  # normalize lines
-        if not decklists:
-            raise IllFormedArenaDecklist("Not a well formed Arena/MTGO text decklist")
-        self._lines = decklists[0].splitlines()
-        # this shouldn't be theoretically needed now with LineParser normalization
-        self._handle_missing_commander_line()
+        self._decklist = normalize_decklist(self._decklist)
+        self._decklist_hash = get_hash(self._decklist, 40, sep="-")
+        self._should_parse = self._decklist_hash not in _cached_decks
 
     @override
     def _parse_metadata(self) -> None:
@@ -487,84 +494,42 @@ class ArenaParser(DeckParser):
 
     @override
     def _parse_deck(self) -> None:
-        for line in self._lines:
-            if _is_maindeck_line(line):
-                self._state.shift_to_maindeck()
-            elif _is_sideboard_line(line):
-                self._state.shift_to_sideboard()
-            elif _is_commander_line(line):
-                self._state.shift_to_commander()
-            elif _is_companion_line(line):
-                self._state.shift_to_companion()
-            elif _is_name_line(line):
-                self._metadata["name"] = line.removeprefix("Name ")
-            elif _is_playset_line(line):
-                if self._state.is_idle:
+        if self._should_parse:
+            for line in self._decklist.splitlines():
+                if _is_maindeck_header_line(line):
                     self._state.shift_to_maindeck()
+                elif _is_sideboard_header_line(line):
+                    self._state.shift_to_sideboard()
+                elif _is_commander_header_line(line):
+                    self._state.shift_to_commander()
+                elif _is_companion_header_line(line):
+                    self._state.shift_to_companion()
+                elif _is_name_line(line):
+                    self._metadata["name"] = line.removeprefix("Name ")
+                elif _is_playset_line(line):
+                    if self._state.is_idle:
+                        self._state.shift_to_maindeck()
 
-                playset = PlaysetLine(line).to_playset()
-                if self._quantity_exceeded(playset):
-                    continue
+                    playset = PlaysetLine(line).to_playset()
+                    if self._quantity_exceeded(playset):
+                        continue
 
-                if self._state.is_sideboard:
-                    self._sideboard.extend(playset)
-                elif self._state.is_commander:
-                    card = playset[0]
-                    # handle cases when there's a commander section's line but no maindeck one
-                    if self._no_maindeck_line:
-                        if self._partner_commander is None:
-                            if self._commander is not None and (
-                                    len(playset) > 1 or not card.is_partner):
-                                self._state.shift_to_maindeck()
-                                self._maindeck.extend(playset)
-                                continue
-                        else:
-                            self._state.shift_to_maindeck()
-                            self._maindeck.extend(playset)
-                            continue
-                    self._set_commander(card)
-                elif self._state.is_companion:
-                    self._companion = playset[0]
-                elif self._state.is_maindeck:
-                    self._maindeck.extend(playset)
+                    if self._state.is_sideboard:
+                        self._sideboard.extend(playset)
+                    elif self._state.is_commander:
+                        card = playset[0]
+                        self._set_commander(card)
+                    elif self._state.is_companion:
+                        self._companion = playset[0]
+                    elif self._state.is_maindeck:
+                        self._maindeck.extend(playset)
 
-
-# bar the sideboard to commander part, this is now covered by LineParser
-def normalize_decklist(decklist: str, fmt: str | None = None) -> str:
-    """Normalize simple text decklists that only feature card lines and a sideboard demarcated
-    by a blank line by adding proper section headers.
-
-    If sideboard has only 1-2 card lines, it is assumed to be the commander sideboard. For
-    additional certainty, one can pass a format string and then commander sideboard is assumed only
-    if the passed format agrees.
-    """
-    commander, maindeck, sideboard, sideboard_on = [], [], [], False
-    for line in decklist.splitlines():
-        if not line:
-            sideboard_on = True
-            continue
-        if sideboard_on:
-            sideboard.append(line)
-        else:
-            maindeck.append(line)
-
-    if len(sideboard) in (1, 2):
-        if fmt is None:
-            commander, sideboard = sideboard, commander
-        else:
-            if fmt in COMMANDER_FORMATS:
-                commander, sideboard = sideboard, commander
-
-    decklist = []
-    if commander:
-        decklist.append("Commander")
-        decklist.extend(commander)
-        decklist.append("")
-    decklist.append("Deck")
-    decklist.extend(maindeck)
-    if sideboard:
-        decklist.append("")
-        decklist.append("Sideboard")
-        decklist.extend(sideboard)
-
-    return "\n".join(decklist)
+    @override
+    def _build_deck(self) -> Deck | None:
+        if self._should_parse:
+            deck = super()._build_deck()
+            _cached_decks[self._decklist_hash] = deck
+            return deck
+        deck = _cached_decks[self._decklist_hash]
+        deck.replace_metadata(self._metadata)
+        return deck

@@ -11,7 +11,7 @@ import contextlib
 import itertools
 import logging
 from collections import Counter
-from typing import Callable, Iterable, Protocol, Sequence, Type
+from typing import Any, Callable, Iterable, Protocol, Sequence, Type
 
 _log = logging.getLogger(__name__)
 
@@ -184,3 +184,15 @@ def types_to_namestr(types: Iterable[Type]) -> str:
     """
     return ", ".join([fullqualname(t) for t in types])
 
+
+# Null Object Patter
+class Noop:
+    """Does nothing. Safe to call any method on it.
+
+    Use instead on `None` in scenarios where your object can be in either state (set on unset)
+    and you want to avoid constant `is None` tests code noise when using it.
+    """
+    def __getattr__(self, name: str) -> Any:
+        def noop(*args, **kwargs):
+            pass
+        return noop

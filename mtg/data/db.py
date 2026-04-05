@@ -33,6 +33,19 @@ def exists_in_table(session: Session, model: type[Base], **filters) -> bool:
     return session.scalar(stmt) is True
 
 
+def retrieve_or_create(session: Session, model: type[Base], **attrs) -> Base:
+    """Retrieve an instance of a model. If not present in the database, first create it.
+    """
+    stmt = select(model).filter_by(**attrs)
+    instance: Base | None = session.scalar(stmt)
+    if instance:
+        return instance
+    instance = model(**attrs)
+    session.add(instance)
+    session.flush()
+    return instance
+
+
 @event.listens_for(Deck, "after_delete")
 def delete_orphan_decklist(mapper, connection, target: Deck) -> None:
     """Delete Decklist if it has no more referencing Decks after a Deck is deleted.

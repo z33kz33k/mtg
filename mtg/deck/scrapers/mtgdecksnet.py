@@ -14,7 +14,6 @@ import dateutil.parser
 from bs4 import Tag
 
 from mtg.constants import Json
-from mtg.deck.arena import normalize_decklist
 from mtg.deck.abc import TagBasedDeckParser
 from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper
 from mtg.lib.common import ParsingError
@@ -65,7 +64,7 @@ class MtgDecksNetDeckTagParser(TagBasedDeckParser):
         decklist_tag = self._deck_tag.find("textarea", id="arena_deck")
         if not decklist_tag:
             raise ParsingError("Decklist tag not found")
-        self._decklist = normalize_decklist(decklist_tag.text.strip(), self.fmt)
+        self._decklist = decklist_tag.text.strip()
 
 
 # TODO: scrape the meta
