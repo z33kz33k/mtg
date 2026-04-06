@@ -16,7 +16,8 @@ from typing import Dict, List, Union
 type Json = Union[str, int, float, bool, datetime, date, None, Dict[str, "Json"], List["Json"]]
 type PathLike = str | Path
 
-APP_DIR = Path.home() / f".mtg_decks"
+APP_NAME = "mtg_decks"
+APP_DIR = Path.home() / f".{APP_NAME}"
 APP_DIR.mkdir(parents=True, exist_ok=True)
 DATA_DIR = APP_DIR / "mtg_data"
 SECRETS = json.loads((APP_DIR / "secrets.json").read_text(encoding="utf-8"))

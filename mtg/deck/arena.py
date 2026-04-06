@@ -109,22 +109,11 @@ class PlaysetLine:
             pairs += [("setcode", self.set_code), ("collector_number", self.collector_number)]
         return getrepr(self.__class__, *pairs)
 
-    def _handle_foreign(self) -> list[Card] | None:
-        if is_foreign(self.name):
-            if card := query_api_for_card(self.name, foreign=True):
-                return DeckParser.get_playset(card, self.quantity)
-        return None
-
     def to_playset(self) -> list[Card]:
         set_and_collector_number = (
             self.set_code, self.collector_number) if self.is_with_printings else None
-        try:
-            return DeckParser.get_playset(DeckParser.find_card(
-                self.name, set_and_collector_number), self.quantity)
-        except CardNotFound as cnf:
-            if cards := self._handle_foreign():
-                return cards
-            raise cnf
+        return DeckParser.get_playset(DeckParser.find_card(
+            self.name, set_and_collector_number), self.quantity)
 
 
 def _is_playset_line(line: str) -> bool:

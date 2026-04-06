@@ -26,7 +26,6 @@
 
 """
 import itertools
-import json
 import logging
 import math
 import re
@@ -42,61 +41,29 @@ from types import EllipsisType
 from typing import Self
 
 import scrython
-from aiohttp.client_exceptions import ContentTypeError, ServerTimeoutError
-from tqdm import tqdm
+from aiohttp.client_exceptions import ServerTimeoutError
+from scrython.base import ScrythonRequestHandler
 from unidecode import unidecode
 
-from mtg.constants import DATA_DIR, Json
+from mtg import __version__
+from mtg.constants import APP_NAME, Json
 from mtg.lib.common import from_iterable
-from mtg.lib.text import getrepr
 from mtg.lib.numbers import getfloat, getint
+from mtg.lib.text import getrepr
 from mtg.lib.time import timed
-from mtg.lib.files import download_file, getdir
-from mtg.lib.scrape.core import throttle
 from mtg.mtgwiki import CLASSES, RACES
 
+# TODO: this module needs a heavy redesign as I could use scrython's abstractions (like Card)
+#  instead of what very much looks like re-inventing the wheel
+
+
 _log = logging.getLogger(__name__)
-CARDS_FILENAME = "scryfall_cards.json"
-SETS_FILENAME = "scryfall_sets.json"
-API_QUERY_THROTTLE = 0.2
+ScrythonRequestHandler.set_user_agent(f'{APP_NAME}/{__version__} (https://github.com/mazz3rr/mtg)')
 
 
 class ScryfallError(ValueError):
     """Raised on invalid Scryfall data.
     """
-
-
-def download_scryfall_bulk_data() -> None:
-    """Download Scryfall 'Oracle Cards' bulk data JSON.
-    """
-    bd = scrython.BulkData()
-    data = bd.data()[0]  # retrieve 'Oracle Cards' data dict
-    url = data["download_uri"]
-    download_file(url, file_name=CARDS_FILENAME, dst_dir=DATA_DIR)
-
-
-@lru_cache  # pulling Scryfall data takes a few seconds
-def api_set(set_code: str) -> scrython.sets.Code | None:
-    try:
-        return scrython.sets.Code(code=set_code)
-    except scrython.ScryfallError:
-        return None
-
-
-def download_scryfall_set_data() -> None:
-    """Ask Scryfall API for set data and dump it as .json files.
-    """
-    progress = tqdm(
-        (api_set(code) for code in sorted(all_set_codes())), f"Downloading sets data...",
-        total=len(all_set_codes()))
-
-    data = []
-    for set_data in progress:
-        data.append(set_data.scryfallJson)
-
-    dst = DATA_DIR / SETS_FILENAME
-    with dst.open("w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2)
 
 
 MULTIFACE_SEPARATOR = " // "  # separates names of card's faces in multiface cards
@@ -106,6 +73,7 @@ MULTIFACE_LAYOUTS = (
     'double_faced_token',
     'flip',
     'modal_dfc',
+    'prepare',
     'reversible_card',
     'split',
     'transform'
@@ -371,6 +339,10 @@ class CardFace:
         return {*self.name.split()}
 
     @property
+    def printed_name(self) -> str | None:
+        return self.json.get("printed_name")
+
+    @property
     def mana_cost(self) -> str:
         return self.json["mana_cost"]
 
@@ -594,6 +566,10 @@ class Card:
         return self.json["layout"]
 
     @property
+    def lang(self) -> str:
+        return self.json["lang"]
+
+    @property
     def legalities(self) -> dict[str, str]:
         return self.json["legalities"]
 
@@ -637,6 +613,10 @@ class Card:
     @property
     def second_face_name(self) -> str:
         return self.card_faces[1].name if self.is_multifaced else self.name
+
+    @property
+    def printed_name(self) -> str | None:
+        return self.json.get("printed_name")
 
     @property
     def power(self) -> int | None:
@@ -807,6 +787,15 @@ class Card:
             [fmt for fmt, legality in self.legalities.items() if legality == "restricted"])
 
     @property
+    def is_localized(self) -> bool:
+        return self.lang != "en"
+
+    @property
+    def is_reflavored(self) -> bool:
+        # what "reflavored card" means: https://share.google/aimode/fx9FsoVa7svKc3J1v
+        return not self.is_localized and bool(self.printed_name)
+
+    @property
     def not_legal_anywhere(self) -> bool:
         return all(v == "not_legal" for v in self.legalities.values())
 
@@ -948,7 +937,7 @@ class Card:
                 f"{ALCHEMY_REBALANCE_INDICATOR}{cf.name}" for cf in self.card_faces)
         else:
             name = f"{ALCHEMY_REBALANCE_INDICATOR}{self.name}"
-        return find_by_name(name, query_api=False)
+        return find_by_name(name, fall_back_on_api=False)
 
     @cached_property
     def alchemy_rebalance_original(self) -> Self | None:
@@ -960,7 +949,7 @@ class Card:
             name = MULTIFACE_SEPARATOR.join(cf.name[2:] for cf in self.card_faces)
         else:
             name = self.name[2:]
-        return find_by_name(name, query_api=False)
+        return find_by_name(name, fall_back_on_api=False)
 
     @property
     def has_alchemy_rebalance(self) -> bool:
@@ -1109,14 +1098,7 @@ class SetData:
 def sets() -> set[SetData]:
     """Return Scryfall JSON set data as set of CardSet objects
     """
-    source = getdir(DATA_DIR) / SETS_FILENAME
-    if not source.exists():
-        raise FileNotFoundError(f"Scryfall sets data file is missing at: '{source}'")
-
-    with source.open() as f:
-        data = json.load(f)
-
-    return {SetData(set_data) for set_data in data}
+    return {SetData(set_data._scryfall_data) for set_data in scrython.sets.All().data}
 
 
 def find_sets(
@@ -1141,7 +1123,7 @@ def find_set_by_code(*set_codes: str, data: Iterable[SetData] | None = None) -> 
     """Return a MtG set designated by provided code or `None`.
     """
     data = data or sets()
-    return find_set(lambda s: s.set_code in {sc.lower() for sc in set_codes}, data)
+    return find_set(lambda s: s.code in {sc.lower() for sc in set_codes}, data)
 
 
 @lru_cache
@@ -1168,13 +1150,9 @@ def bulk_data(legal_only=True, non_token_only=True) -> set[Card]:
     Returns:
         set of Card objects
     """
-    source = getdir(DATA_DIR) / CARDS_FILENAME
-    if not source.exists():
-        download_scryfall_bulk_data()
-
-    with source.open() as f:
-        data = json.load(f)
-
+    print(f"Entering bulk_data(), legal_only={legal_only!r}, non_token_only={non_token_only!r}")
+    bulk = scrython.bulk_data.ByType(type='oracle_cards')
+    data = bulk.download(progress=True)
     cards = {Card(card_data) for card_data in data}
 
     if legal_only:
@@ -1331,6 +1309,7 @@ _oracle_ids_cache, _tcgplayer_ids_cache, _cardmarket_ids_cache, _mtgo_ids_cache 
 
 @timed("caching cards for fast lookups")
 def _cache_cards() -> None:
+    print(f"Entering _cache_cards(), _names_cache is {'empty' if _names_cache else 'populated'}")
     _log.info("Caching cards for fast lookups...")
     for card in bulk_data():
         _names_cache[unidecode(card.name).casefold()] = card
@@ -1348,56 +1327,89 @@ def _cache_cards() -> None:
         _collector_numbers_cache[(card.set, card.collector_number)] = card
 
 
+def _validate_query_result(queried_name: str, found_card: Card) -> bool:
+    normalized_name = unidecode(queried_name.lower())
+    if normalized_name == unidecode(found_card.name.lower()):
+        return True
+    if normalized_name in {unidecode(cf.name.lower()) for cf in found_card.card_faces}:
+        return True
+    if found_card.is_localized or found_card.is_reflavored:
+        if found_card.printed_name and normalized_name == unidecode(found_card.printed_name.lower()):
+            return True
+        card_faces_with_printed_names = {cf for cf in found_card.card_faces if cf.printed_name}
+        if normalized_name in {
+            unidecode(cf.printed_name.lower()) for cf in card_faces_with_printed_names}:
+            return True
+    return False
+
+
 @lru_cache(maxsize=None)
-def query_api_for_card(card_name: str, foreign=False) -> Card | None:
+def query_api_for_card(card_name: str) -> Card | None:
     """Query Scryfall API for a card designated by provided name.
+
+    The provided name doesn't need to be English. Foreign names only fail the 'exact' query,
+    but - if correct - are found in the 'fuzzy' mode. Mind that names of reflavored cards (like
+    those of Through the Omenpaths cards (e.g. "Kavaero, Mind-Bitten") also fail the 'exact'
+    query - even though they are English. Still, they pass in the 'fuzzy' mode - the same as
+    localized cards.
+
+    If the returned card has a different name then the queried one, this function ensures it's
+    either a localized or reflavored card case. Otherwise, it returns None and complains with
+    warning in the logs.
     """
     _log.info(f"Querying Scryfall for {card_name!r}...")
+    fail_hook = "HTTP Error 404: Not Found"
     try:
         try:
-            throttle(API_QUERY_THROTTLE)
-            result = scrython.cards.Search(q=f"!{card_name}", include_multilingual=foreign).data()
-        except (scrython.foundation.ScryfallError, ContentTypeError):
-            result = None
-        if not result:
-            throttle(API_QUERY_THROTTLE)
-            try:
-                result = scrython.cards.Search(q=card_name, include_multilingual=foreign).data()
-            except (scrython.foundation.ScryfallError, ContentTypeError):
+            result = scrython.cards.Named(exact=card_name, rate_limit_per_second=5)
+        except Exception as exc:
+            if fail_hook in str(exc):
                 result = None
-            if not result :
-                throttle(API_QUERY_THROTTLE)
-                try:
-                    result = scrython.cards.Named(fuzzy=card_name)
-                    return Card(dict(result.scryfallJson))
-                except (scrython.foundation.ScryfallError, ContentTypeError):
+            else:
+                raise
+        if not result:
+            try:
+                result = scrython.cards.Named(fuzzy=card_name, rate_limit_per_second=5)
+            except Exception as exc:
+                if fail_hook in str(exc):
                     result = None
-                if not result:
-                    throttle(API_QUERY_THROTTLE)
-                    try:
-                        result = scrython.cards.Named(fuzzy=unidecode(card_name))
-                        return Card(dict(result.scryfallJson))
-                    except (scrython.foundation.ScryfallError, ContentTypeError):
-                        return None
+                else:
+                    raise
+            if not result :
+                try:
+                    result = scrython.cards.Named(
+                        fuzzy=unidecode(card_name), rate_limit_per_second=5)
+                except Exception as exc:
+                    if fail_hook in str(exc):
+                        result = None
+                    else:
+                        raise
     except (ServerTimeoutError, AsyncIoTimeoutError):
         _log.warning("Scryfall API timed out")
         return None
 
-    if len(result) > 1:
-        result.sort(key=lambda card: date.fromisoformat(card["released_at"]), reverse=True)
-    return Card(dict(result[0]))
+    if result:
+        found = Card(result.to_dict())
+        if not _validate_query_result(card_name, found):
+            _log.warning(
+                f"Mismatched card found by Scryfall API query: {found.name!r} "
+                f"instead of {card_name!r}")
+            return None
+        return found
+
+    return None
 
 
-def find_by_name(card_name: str, query_api=True) -> Card | None:
+def find_by_name(card_name: str, fall_back_on_api=True) -> Card | None:
     """Return a card designated by provided name or `None`.
 
-    Case-insensitive. Calls Scryfall API on failure to find card in the bulk data.
+    Case-insensitive. By default, calls Scryfall API on failure to find card in the bulk data.
     """
     if not _names_cache:
         _cache_cards()
     if card := _names_cache.get(unidecode(card_name).casefold()):
         return card
-    return query_api_for_card(card_name) if query_api else None
+    return query_api_for_card(card_name) if fall_back_on_api else None
 
 
 def find_by_words(*words: str) -> set[Card]:

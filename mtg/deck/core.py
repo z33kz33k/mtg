@@ -1025,8 +1025,7 @@ class DeckParser(ABC):
             oracle_id="",
             tcgplayer_id: int | None = None,
             cardmarket_id: int | None = None,
-            mtgo_id: int | None = None,
-            foreign=False) -> Card:
+            mtgo_id: int | None = None) -> Card:
         """Find a MtG card designated by ``name`` and (optionally) other parameters.
 
         Raises:
@@ -1056,10 +1055,7 @@ class DeckParser(ABC):
         if mtgo_id is not None:
             if card := find_by_mtgo_id(mtgo_id):
                 return card
-        if foreign:
-            card = query_api_for_card(name, foreign=True)
-        else:
-            card = find_by_name(name)
+        card = find_by_name(name)
         if not card:
             if SCRYFALL_MULTIFACE_SEPARATOR in name:
                 truncated, *_ = name.split(SCRYFALL_MULTIFACE_SEPARATOR)
