@@ -563,7 +563,7 @@ class ChannelScraper:
             "span", string=lambda t: t and "subscriber" in t).text.removesuffix(
             " subscribers").removesuffix(" subscriber"):
             count = extract_float(count_text)
-            if count_text and count_text[-1] in {"K", "M", "B", "T"}:
+            if count_text[-1] in {"K", "M", "B", "T"}:
                 count = multiply_by_symbol(count, count_text[-1])
             count = int(count)
 

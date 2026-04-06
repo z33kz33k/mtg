@@ -756,18 +756,17 @@ class Deck:
         return line
 
     # also normalizes playset order within sections
-    # still, "Commander" section keeps [commander, partner commander] order
     def _build_decklist(self, with_printings=True, about=True) -> str:
         lines = []
         if about and self.metadata.get("name"):
             lines += ["About", f'Name {self.metadata["name"]}', ""]
         if self.commander:
             playset = aggregate(self.commander)[self.commander]
-            lines += ["Commander", self._to_playset_line(playset, with_printings=with_printings)]
+            commander_lines = [self._to_playset_line(playset, with_printings=with_printings)]
             if self.partner_commander:
                 playset = aggregate(self.partner_commander)[self.partner_commander]
-                lines += [self._to_playset_line(playset, with_printings=with_printings)]
-            lines += [""]
+                commander_lines += [self._to_playset_line(playset, with_printings=with_printings)]
+            lines += ["Commander", *sorted(commander_lines), ""]
         if self.companion:
             playset = aggregate(self.companion)[self.companion]
             lines += ["Companion", self._to_playset_line(playset, with_printings=with_printings), ""]
