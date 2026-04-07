@@ -119,7 +119,7 @@ class TopDeckBracketScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return strip_url_query(url)
 
     @override
@@ -239,7 +239,7 @@ class TopDeckProfileScraper(DecksJsonContainerScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         url = strip_url_query(url)
         return url.removesuffix("/stats")
 

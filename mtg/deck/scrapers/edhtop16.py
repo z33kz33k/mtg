@@ -50,7 +50,7 @@ class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
         return "edhtop16.com/tournament/" in url.lower()
 
     @staticmethod
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return strip_url_query(url)
 
     def _process_json(self, json_data: Json) -> Json:

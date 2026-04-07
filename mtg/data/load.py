@@ -186,7 +186,7 @@ class Loader:
                                 decklist = decklist_map.get(sha)
                                 if decklist is None:
                                     decklist = Decklist(
-                                        hash=get_hash(decklist_text, 40, sep="-"),
+                                        hash=sha,
                                         text=decklist_text
                                     )
                                     decklist_map[sha] = decklist

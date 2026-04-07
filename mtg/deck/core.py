@@ -20,7 +20,7 @@ from typing import Any, Iterable, Iterator, Self
 
 from mtg.constants import Json
 from mtg.lib.common import ParsingError, from_iterable
-from mtg.lib.text import get_hash, getrepr, remove_furigana
+from mtg.lib.text import get_hash, get_repr, remove_furigana
 from mtg.lib.json import to_json
 from mtg.lib.scrape.core import get_netloc_domain
 from mtg.scryfall import COMMANDER_FORMATS, Card, Color, \
@@ -350,7 +350,7 @@ class InvalidDeck(ParsingError):
     """
 
 
-def sanitize_deck_source(src: str) -> str:
+def normalize_deck_source(src: str) -> str:
     src = src.lower().removeprefix("www.")
     if "cardsrealm.com" in src:
         return "mtg.cardsrealm.com"
@@ -604,7 +604,7 @@ class Deck:
     def url_to_source(cls, url: str | None) -> str:
         if not url:
             return "arena.decklist"
-        return sanitize_deck_source(get_netloc_domain(url))
+        return normalize_deck_source(get_netloc_domain(url))
 
     def __init__(
             self, maindeck: Iterable[Card], sideboard: Iterable[Card] | None = None,
@@ -720,7 +720,7 @@ class Deck:
             reprs.append(("commander", str(self.commander)))
         if self.companion:
             reprs.append(("companion", str(self.companion)))
-        return getrepr(self.__class__, *reprs)
+        return get_repr(self.__class__, *reprs)
 
     def __eq__(self, other: Self) -> bool:
         if not isinstance(other, Deck):
@@ -886,7 +886,7 @@ class CardNotFound(ParsingError):
 
 
 # TODO: use Python's 'inflection' lib to handle key variants (#418)
-SANITIZED_FORMATS = {
+NORMALIZED_FORMATS = {
     "1v1 commander": "commander",
     "archon": "commander",
     "artisan historic": "historic",
@@ -1034,7 +1034,7 @@ class DeckParser(ABC):
         Returns:
             a Card object
         """
-        name = cls.sanitize_card_name(name)
+        name = cls.normalize_card_name(name)
         if set_and_collector_number:
             if card := find_by_collector_number(*set_and_collector_number):
                 # don't assume set/collector number data is always correct in the input data
@@ -1069,7 +1069,7 @@ class DeckParser(ABC):
         return [card] * quantity
 
     @staticmethod
-    def sanitize_card_name(text: str) -> str:
+    def normalize_card_name(text: str) -> str:
         text = text.replace("’", "'").replace("‑", "-").replace("꞉", ":")
         if "/" in text:
             text = text.replace(" / ", SCRYFALL_MULTIFACE_SEPARATOR).replace(
@@ -1138,7 +1138,7 @@ class DeckParser(ABC):
 
     def _update_fmt(self, fmt: str) -> None:
         fmt = fmt.strip().lower()
-        fmt = SANITIZED_FORMATS.get(fmt, fmt)
+        fmt = NORMALIZED_FORMATS.get(fmt, fmt)
         if fmt != self.fmt:
             if fmt in all_formats():
                 self._metadata["format"] = fmt
@@ -1161,8 +1161,8 @@ class DeckParser(ABC):
             self._metadata["custom_theme"] = name
 
     @staticmethod
-    def sanitize_metadata_deck_tags(deck_tags: list[str | Json]) -> list[str]:
-        sanitized = []
+    def normalize_metadata_deck_tags(deck_tags: list[str | Json]) -> list[str]:
+        normalized = []
         match deck_tags:
             case [*tags] if all(isinstance(t, str) for t in tags):
                 return sorted({t.lower() for t in tags})
@@ -1170,38 +1170,38 @@ class DeckParser(ABC):
                 for tag in tags:
                     match tag:
                         case {"name": name} if isinstance(name, str):
-                            sanitized.append(name.lower())
+                            normalized.append(name.lower())
                         case {"Name": name} if isinstance(name, str):
-                            sanitized.append(name.lower())
+                            normalized.append(name.lower())
                         case {"tag": name} if isinstance(name, str):
-                            sanitized.append(name.lower())
+                            normalized.append(name.lower())
                         case {"Tag": name} if isinstance(name, str):
-                            sanitized.append(name.lower())
+                            normalized.append(name.lower())
                         case {"deck_tag": name} if isinstance(name, str):
-                            sanitized.append(name.lower())
+                            normalized.append(name.lower())
                         case {"deckTag": name} if isinstance(name, str):
-                            sanitized.append(name.lower())
+                            normalized.append(name.lower())
                         case {"Deck Tag": name} if isinstance(name, str):
-                            sanitized.append(name.lower())
+                            normalized.append(name.lower())
                         case _:
                             _log.warning(f"Unexpected format of deck metadata tag: {tag!r}")
             case _:
                 _log.warning(f"Unexpected format of deck metadata tags: {deck_tags!r}")
 
-        return sorted(set(sanitized))
+        return sorted(set(normalized))
 
     @staticmethod
     def derive_format_from_words(*words: str, use_japanese=False) -> str | None:
         words = {w.lower() for w in words}
-        formats = {**SANITIZED_FORMATS, **JAPANESE_FORMATS} if use_japanese else SANITIZED_FORMATS
-        if sanitized_fmt := from_iterable(formats, lambda k: k in words):
-            return formats[sanitized_fmt]
+        formats = {**NORMALIZED_FORMATS, **JAPANESE_FORMATS} if use_japanese else NORMALIZED_FORMATS
+        if normalized_fmt := from_iterable(formats, lambda k: k in words):
+            return formats[normalized_fmt]
         return from_iterable(all_formats(), lambda w: w in words)
 
     @staticmethod
     def derive_format_from_text(text: str, use_japanese=False) -> str | None:
         counts, text = [], text.lower()
-        formats = {**SANITIZED_FORMATS, **JAPANESE_FORMATS} if use_japanese else SANITIZED_FORMATS
+        formats = {**NORMALIZED_FORMATS, **JAPANESE_FORMATS} if use_japanese else NORMALIZED_FORMATS
         for fmt_word in [*all_formats(), *formats]:
             count = text.count(fmt_word)
             if count:

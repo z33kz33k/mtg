@@ -87,7 +87,7 @@ class MtgDecksNetDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         url = strip_url_query(url)
         return url.removesuffix("/visual")
 
@@ -129,7 +129,7 @@ class MtgDecksNetTournamentScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return url.removesuffix("/").removesuffix("/winrates")
 
     @override
@@ -167,7 +167,7 @@ class MtgDecksNetArticleScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return strip_url_query(url)
 
     def _parse_article_metadata(self) -> None:

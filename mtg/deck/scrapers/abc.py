@@ -56,7 +56,7 @@ class DeckScraper(NestedDeckParser):
         self._validate_url(url)
         url = url.removesuffix("/")
         super().__init__(metadata)
-        self._url = self.sanitize_url(url)
+        self._url = self.normalize_url(url)
         self._soup: BeautifulSoup | None = None  # for HTML-based scraping
         self._clipboard: str | None  = None  # for Selenium-based scraping
         self._data: Json | None = None  # for JSON-based scraping
@@ -77,7 +77,7 @@ class DeckScraper(NestedDeckParser):
 
     # FIXME: this should be a classmethod to enable a re-use of the default logic in subclasses
     @staticmethod
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return url.removesuffix("/")
 
     def _fetch_soup(self) -> None:
@@ -362,11 +362,11 @@ class DeckUrlsContainerScraper(ContainerScraper):
             scraper = self._dispatch_deck_scraper(deck_url, self._metadata)
             if not scraper:
                 continue
-            sanitized_deck_url = scraper.sanitize_url(deck_url)
-            if self._urls_manager.is_scraped(sanitized_deck_url):
-                _log.info(f"Skipping already scraped deck URL: {sanitized_deck_url!r}...")
-            elif self._urls_manager.is_failed(sanitized_deck_url):
-                _log.info(f"Skipping already failed deck URL: {sanitized_deck_url!r}...")
+            normalized_deck_url = scraper.normalize_url(deck_url)
+            if self._urls_manager.is_scraped(normalized_deck_url):
+                _log.info(f"Skipping already scraped deck URL: {normalized_deck_url!r}...")
+            elif self._urls_manager.is_failed(normalized_deck_url):
+                _log.info(f"Skipping already failed deck URL: {normalized_deck_url!r}...")
             else:
                 throttle(*self.THROTTLING)
                 _log.info(f"Scraping deck {i}/{len(self._deck_urls)}...")
@@ -375,15 +375,15 @@ class DeckUrlsContainerScraper(ContainerScraper):
                     deck = scraper.scrape()
                 except ElementClickInterceptedException:
                     _log.warning("Unable to click on a deck link with Selenium. Skipping...")
-                    self._urls_manager.add_failed(sanitized_deck_url)
+                    self._urls_manager.add_failed(normalized_deck_url)
                     continue
                 if deck:
                     deck_name = f"{deck.name!r} deck" if deck.name else "Deck"
                     _log.info(f"{deck_name} scraped successfully")
                     decks.append(deck)
-                    self._urls_manager.add_scraped(sanitized_deck_url)
+                    self._urls_manager.add_scraped(normalized_deck_url)
                 else:
-                    self._urls_manager.add_failed(sanitized_deck_url)
+                    self._urls_manager.add_failed(normalized_deck_url)
 
         return decks
 
@@ -615,25 +615,25 @@ class HybridContainerScraper(
             if self.url in url:
                 continue  # avoid scraping self in infinite loop
             if scraper := self._dispatch_container_scraper(url, self._metadata):
-                sanitized_url = scraper.sanitize_url(url)
-                if self._urls_manager.is_scraped(sanitized_url):
+                normalized_url = scraper.normalize_url(url)
+                if self._urls_manager.is_scraped(normalized_url):
                     _log.info(
                         f"Skipping already scraped {scraper.short_name()} URL: "
-                        f"{sanitized_url!r}...")
-                elif self._urls_manager.is_failed(sanitized_url):
+                        f"{normalized_url!r}...")
+                elif self._urls_manager.is_failed(normalized_url):
                     _log.info(
                         f"Skipping already failed {scraper.short_name()} URL: "
-                        f"{sanitized_url!r}...")
+                        f"{normalized_url!r}...")
                 else:
                     _log.info(
                         f"Scraping container URL {i}/{len(self._container_urls)} "
                         f"({scraper.short_name()})...")
                     container_decks = scraper.scrape_decks()
                     if not container_decks:
-                        self._urls_manager.add_failed(sanitized_url)
+                        self._urls_manager.add_failed(normalized_url)
                     else:
                         decks += [d for d in container_decks if d not in decks]
-                        self._urls_manager.add_scraped(sanitized_url)
+                        self._urls_manager.add_scraped(normalized_url)
 
         for deck in decks:
             deck.update_metadata(outer_container_url=self.url)

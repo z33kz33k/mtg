@@ -88,7 +88,7 @@ class CardsrealmDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         url = strip_url_query(url)
         return to_eng_url(url, "decks")
 
@@ -146,7 +146,7 @@ class CardsrealmProfileScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         url = strip_url_query(url)
         return to_eng_url(url, "profile")
 
@@ -177,7 +177,7 @@ class CardsrealmFolderScraper(CardsrealmProfileScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         url = strip_url_query(url)
         return to_eng_url(url, "decks")
 
@@ -198,7 +198,7 @@ class CardsrealmMetaTournamentScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         url = strip_url_query(url)
         return to_eng_url(url, "meta-decks")
 
@@ -236,7 +236,7 @@ class CardsrealmRegularTournamentScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         url = strip_url_query(url)
         return to_eng_url(url, "tournament")
 
@@ -304,7 +304,7 @@ class CardsrealmArticleScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         url = strip_url_query(url)
         return to_eng_url(url, "articles")
 
@@ -334,8 +334,8 @@ class CardsrealmAuthorScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
-        return CardsrealmArticleScraper.sanitize_url(url)
+    def normalize_url(url: str) -> str:
+        return CardsrealmArticleScraper.normalize_url(url)
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
@@ -359,7 +359,7 @@ class CardsrealmArticleSearchScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return to_eng_url(url, "articles")
 
     @override

@@ -144,7 +144,7 @@ class AetherhubDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         url = strip_url_query(url)
         if "/gallery/" in url.lower():
             url = url.replace("/Gallery/", "/Public/").replace("/gallery/", "/public/")
@@ -247,7 +247,7 @@ class AetherhubWriteupDeckScraper(AetherhubDeckScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return strip_url_query(url)
 
     @override
@@ -278,7 +278,7 @@ class AetherhubUserScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         url = strip_url_query(url)
         # links like: https://aetherhub.com/User/LegenVD/Decks/Standard-BO1 are already OK
         # links like: https://aetherhub.com/User/LegenVD/ need sanitization
@@ -314,7 +314,7 @@ class AetherhubEventScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return strip_url_query(url)
 
     @override
@@ -349,7 +349,7 @@ class AetherhubArticleScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return strip_url_query(url)
 
     @override

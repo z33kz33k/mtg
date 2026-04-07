@@ -79,7 +79,7 @@ class InternationalHareruyaDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return url.replace("/ja/","/en/")
 
     @override
@@ -214,7 +214,7 @@ class JapaneseHareruyaDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         if "deck.hareruyamtg.com/deck/" in url:
             return url.replace("deck.hareruyamtg.com/deck/", "www.hareruyamtg.com/decks/")
         return url
@@ -427,7 +427,7 @@ def _get_article_metadata(article_soup: BeautifulSoup) -> Json:
     tag_tags = [
         t for t in article_soup.select('a[href*="/article/tag/"]')
         if t.attrs.get("rel") == ["tag"]]
-    tags = DeckScraper.sanitize_metadata_deck_tags([t.text.strip() for t in [*cat_tags, *tag_tags]])
+    tags = DeckScraper.normalize_metadata_deck_tags([t.text.strip() for t in [*cat_tags, *tag_tags]])
     if tags:
         metadata["article"]["tags"] = tags
     return metadata

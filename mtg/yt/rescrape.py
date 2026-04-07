@@ -22,7 +22,7 @@ from mtg.data.common import load_channels, retrieve_ids, retrieve_video_data
 from mtg.data.structures import DataPath, VideoData
 from mtg.session import ScrapingSession
 from mtg.lib.time import naive_utc_now, timed
-from mtg.lib.files import getdir, getfile
+from mtg.lib.files import get_dir, get_file
 from mtg.lib.json import from_json, to_json
 from mtg.lib.scrape.core import http_requests_counted
 from mtg.yt.scrape import scrape_channel_videos
@@ -70,7 +70,7 @@ def find_orphans() -> dict[str, list[str]]:
 def prune_channel_file(file: PathLike, *video_ids: str) -> None:
     """Prune specified videos from channel data at 'file'.
     """
-    file = getfile(file)
+    file = get_file(file)
     _log.info(f"Pruning {len(video_ids)} video(s) from '{file}'...")
     data = from_json(file.read_text(encoding="utf-8"))
     videos = data["videos"]
@@ -93,7 +93,7 @@ def find_channel_files(channel_id: str, *video_ids: str) -> list[str]:
     """Find channel data files containing specified videos.
     """
     video_ids = set(video_ids)
-    channel_dir = getdir(CHANNELS_DIR / channel_id)
+    channel_dir = get_dir(CHANNELS_DIR / channel_id)
     _log.info(f"Loading channel data from: '{channel_dir}'...")
     files = [f for f in channel_dir.iterdir() if f.is_file() and f.suffix.lower() == ".json"]
     if not files:
@@ -111,11 +111,11 @@ def backup_channel_files(chid: str, *files: PathLike) -> None:
     """
     now = naive_utc_now()
     timestamp = f"{now.year}{now.month:02}{now.day:02}"
-    backup_root = getdir(OUTPUT_DIR / "_archive" / "channels")
+    backup_root = get_dir(OUTPUT_DIR / "_archive" / "channels")
     backup_path, counter = backup_root / timestamp / chid, itertools.count(1)
     while backup_path.exists():
         backup_path = backup_root / timestamp /  f"{chid} ({next(counter)})"
-    backup_dir = getdir(backup_path)
+    backup_dir = get_dir(backup_path)
     for f in files:
         f = Path(f)
         dst = backup_dir / f.name

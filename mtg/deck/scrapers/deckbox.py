@@ -46,7 +46,7 @@ class DeckboxDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return strip_url_query(url)
 
     @override
@@ -117,7 +117,7 @@ class DeckboxUserScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return strip_url_query(url)
 
     @override
@@ -144,7 +144,7 @@ class DeckboxEventScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return strip_url_query(url)
 
     @override

@@ -48,8 +48,8 @@ from unidecode import unidecode
 from mtg import __version__
 from mtg.constants import APP_NAME, Json
 from mtg.lib.common import from_iterable
-from mtg.lib.numbers import getfloat, getint
-from mtg.lib.text import getrepr
+from mtg.lib.numbers import get_float, get_int
+from mtg.lib.text import get_repr
 from mtg.lib.time import timed
 from mtg.mtgwiki import CLASSES, RACES
 
@@ -393,7 +393,7 @@ class CardFace:
 
     @property
     def loyalty_int(self) -> int | None:
-        return getint(self.loyalty)
+        return get_int(self.loyalty)
 
     @property
     def has_special_loyalty(self) -> bool:
@@ -405,7 +405,7 @@ class CardFace:
 
     @property
     def power_int(self) -> int | None:
-        return getint(self.power)
+        return get_int(self.power)
 
     @property
     def has_special_power(self) -> bool:
@@ -417,7 +417,7 @@ class CardFace:
 
     @property
     def toughness_int(self) -> int | None:
-        return getint(self.toughness)
+        return get_int(self.toughness)
 
     @property
     def has_special_toughness(self) -> bool:
@@ -460,7 +460,7 @@ class Card:
         return text
 
     def __repr__(self) -> str:
-        return getrepr(
+        return get_repr(
             self.__class__, ("name", self.name), ("set", self.set),
             ("collector_number", self.collector_number), ("color", self.color.name),
             ("type_line", self.type_line))
@@ -525,7 +525,7 @@ class Card:
             `collector_number` can look like that:
                 {"12e", "67f", "233f", "A-268", "4e"}
         """
-        return getint(self.collector_number)
+        return get_int(self.collector_number)
 
     @property
     def formats(self) -> list[str]:
@@ -579,7 +579,7 @@ class Card:
 
     @property
     def loyalty_int(self) -> int | None:
-        return getint(self.loyalty)
+        return get_int(self.loyalty)
 
     @property
     def has_special_loyalty(self) -> bool:
@@ -627,7 +627,7 @@ class Card:
 
     @property
     def power_int(self) -> int | None:
-        return getint(self.power)
+        return get_int(self.power)
 
     @property
     def has_special_power(self) -> bool:
@@ -637,13 +637,13 @@ class Card:
     def price(self) -> float | None:
         """Return price in USD or `None` if unavailable.
         """
-        return getfloat(self.json["prices"].get("usd"))
+        return get_float(self.json["prices"].get("usd"))
 
     @property
     def price_tix(self) -> float | None:
         """Return price in MGTO's currency or `None` if unavailable.
         """
-        return getfloat(self.json["prices"].get("tix"))
+        return get_float(self.json["prices"].get("tix"))
 
     @property
     def rarity(self) -> Rarity:
@@ -702,7 +702,7 @@ class Card:
 
     @property
     def toughness_int(self) -> int | None:
-        return getint(self.toughness)
+        return get_int(self.toughness)
 
     @property
     def has_special_toughness(self) -> bool:
@@ -1043,7 +1043,7 @@ class SetData:
             ("set_type", self.set_type), ("card_count", self.card_count)]
         if self.block:
             reprs.append(("block", self.block))
-        return getrepr(self.__class__, *reprs)
+        return get_repr(self.__class__, *reprs)
 
     @property
     def name(self) -> str:
@@ -1358,32 +1358,22 @@ def query_api_for_card(card_name: str) -> Card | None:
     warning in the logs.
     """
     _log.info(f"Querying Scryfall for {card_name!r}...")
-    fail_hook = "HTTP Error 404: Not Found"
     try:
         try:
             result = scrython.cards.Named(exact=card_name, rate_limit_per_second=5)
-        except Exception as exc:
-            if fail_hook in str(exc):
-                result = None
-            else:
-                raise
+        except scrython.base.ScryfallError:
+            result = None
         if not result:
             try:
                 result = scrython.cards.Named(fuzzy=card_name, rate_limit_per_second=5)
-            except Exception as exc:
-                if fail_hook in str(exc):
-                    result = None
-                else:
-                    raise
+            except scrython.base.ScryfallError:
+                result = None
             if not result :
                 try:
                     result = scrython.cards.Named(
                         fuzzy=unidecode(card_name), rate_limit_per_second=5)
-                except Exception as exc:
-                    if fail_hook in str(exc):
-                        result = None
-                    else:
-                        raise
+                except scrython.base.ScryfallError:
+                    result = None
     except (ServerTimeoutError, AsyncIoTimeoutError):
         _log.warning("Scryfall API timed out")
         return None
@@ -1397,6 +1387,7 @@ def query_api_for_card(card_name: str) -> Card | None:
             return None
         return found
 
+    _log.warning(f"Scryfall API failed to found {card_name!r}")
     return None
 
 

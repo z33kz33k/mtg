@@ -62,7 +62,7 @@ class TopDeckedRegularDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return strip_url_query(url)
 
     def _process_metadata_with_selenium(self, driver: webdriver.Chrome) -> None:

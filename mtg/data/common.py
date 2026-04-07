@@ -25,7 +25,7 @@ from mtg.data.structures import CHANNEL_URL_TEMPLATE, ChannelData, VideoData
 from mtg.lib.common import MarkdownTableCounter, logging_disabled
 from mtg.lib.numbers import get_ordinal_suffix
 from mtg.lib.time import naive_utc_now as utcnow
-from mtg.lib.files import getdir
+from mtg.lib.files import get_dir
 from mtg.lib.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
 from mtg.lib.json import from_json
 from mtg.lib.scrape.core import fetch_soup
@@ -77,7 +77,7 @@ def load_channel(channel_id: str) -> ChannelData:
     if channel :=  _channels_cache.get(channel_id):
         return channel
 
-    channel_dir = getdir(CHANNELS_DIR / channel_id)
+    channel_dir = get_dir(CHANNELS_DIR / channel_id)
     _log.info(f"Loading channel data from: '{channel_dir}'...")
     files = [f for f in channel_dir.iterdir() if f.is_file() and f.suffix.lower() == ".json"]
     if not files:

@@ -15,7 +15,7 @@ from typing import Any, Type
 from lingua import Language, LanguageDetectorBuilder
 
 
-def getrepr(class_: Type, *name_value_pairs: tuple[str, Any]) -> str:
+def get_repr(class_: Type, *name_value_pairs: tuple[str, Any]) -> str:
     """Return ``__repr__`` string format: 'ClassName(name=value, ..., name_n=value_n)'
 
     Args:

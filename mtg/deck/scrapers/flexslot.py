@@ -120,7 +120,7 @@ class FlexslotDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return strip_url_query(url).removesuffix("/view")
 
     @override
@@ -157,8 +157,8 @@ class FlexslotSideboardScraper(DecksJsonContainerScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
-        return FlexslotDeckScraper.sanitize_url(url)
+    def normalize_url(url: str) -> str:
+        return FlexslotDeckScraper.normalize_url(url)
 
     @override
     def _pre_parse(self) -> None:
@@ -192,8 +192,8 @@ class FlexslotArticleScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
-        return FlexslotDeckScraper.sanitize_url(url)
+    def normalize_url(url: str) -> str:
+        return FlexslotDeckScraper.normalize_url(url)
 
     @override
     def _pre_parse(self) -> None:
@@ -220,7 +220,7 @@ class FlexslotArticleScraper(HybridContainerScraper):
         if likes := self._data.get("likes"):
             self._metadata.setdefault("article", {})["likes"] = likes
         if tags := self._data.get("tags"):
-            self._metadata.setdefault("article", {})["tags"] = self.sanitize_metadata_deck_tags(tags)
+            self._metadata.setdefault("article", {})["tags"] = self.normalize_metadata_deck_tags(tags)
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
@@ -252,7 +252,7 @@ class FlexslotUserScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return strip_url_query(url)
 
     @override

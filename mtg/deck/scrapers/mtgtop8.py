@@ -34,7 +34,7 @@ class MtgTop8DeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return url.removesuffix("/").replace("&switch=visual", "").replace(
             "&switch=text", "") + "&switch=text"
 
@@ -110,8 +110,8 @@ class MtgTop8EventScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
-        return MtgTop8DeckScraper.sanitize_url(url)
+    def normalize_url(url: str) -> str:
+        return MtgTop8DeckScraper.normalize_url(url)
 
     @override
     def _collect(self) -> list[str]:

@@ -14,7 +14,7 @@ from mtg.constants import OUTPUT_DIR, PathLike
 from mtg.deck.arena import ArenaParser, IllFormedArenaDecklist, is_arena_decklist
 from mtg.deck.core import CardNotFound, Deck, DeckParser, Mode
 from mtg.lib.common import ParsingError, from_iterable
-from mtg.lib.files import getdir, getfile, sanitize_filename, truncate_path
+from mtg.lib.files import get_dir, get_file, sanitize_filename, truncate_path
 from mtg.lib.json import from_json as deserialize_json, to_json
 from mtg.scryfall import Card, aggregate, set_cards
 
@@ -134,7 +134,7 @@ class Exporter:
             with_printings: optionally, include the card's set and collector number (default: True)
         """
         dstdir = dstdir or OUTPUT_DIR / "arena"
-        dstdir = getdir(dstdir)
+        dstdir = get_dir(dstdir)
         dst = dstdir / f"{self._filename}.txt"
         dst = Path(truncate_path(str(dst)))
         _log.info(f"Exporting deck to: '{dst}'...")
@@ -157,7 +157,7 @@ class Exporter:
         }
         data = to_json(data, sort_dictionaries=True)
         dstdir = dstdir or OUTPUT_DIR / "json"
-        dstdir = getdir(dstdir)
+        dstdir = get_dir(dstdir)
         dst = dstdir / f"{self._filename}.json"
         dst = Path(truncate_path(str(dst)))
         _log.info(f"Exporting deck to: '{dst}'...")
@@ -210,7 +210,7 @@ class Exporter:
             dstdir: optionally, the destination directory (if not provided CWD is used)
         """
         dstdir = dstdir or OUTPUT_DIR / "dck"
-        dstdir = getdir(dstdir)
+        dstdir = get_dir(dstdir)
         dst = dstdir / f"{self._filename}.dck"
         dst = Path(truncate_path(str(dst)))
         _log.info(f"Exporting deck to: '{dst}'...")
@@ -262,7 +262,7 @@ class Exporter:
             dstdir: optionally, the destination directory (if not provided CWD is used)
         """
         dstdir = dstdir or OUTPUT_DIR / "dck"
-        dstdir = getdir(dstdir)
+        dstdir = get_dir(dstdir)
         dst = dstdir / f"{self._filename}.dck"
         dst = Path(truncate_path(str(dst)))
         _log.info(f"Exporting deck to: '{dst}'...")
@@ -275,7 +275,7 @@ def from_arena(path: PathLike) -> Deck:
     Args:
         path: path to an Arena deck file
     """
-    file = getfile(path, ".txt")
+    file = get_file(path, ".txt")
     decklist = file.read_text(encoding="utf-8")
     if not is_arena_decklist(decklist):
         raise IllFormedArenaDecklist(f"Not an MTG Arena deck file: '{file}'")
@@ -306,7 +306,7 @@ def from_forge(path: PathLike) -> Deck:
     Args:
         path: path to a .dck file
     """
-    file = getfile(path, ".dck")
+    file = get_file(path, ".dck")
     commander, maindeck, sideboard, metadata = [], [], [], {}
     metadata_on, commander_on, maindeck_on, sideboard_on = False, False, False, False
     for line in file.read_text(encoding="utf-8").splitlines():
@@ -366,7 +366,7 @@ def from_xmage(path: PathLike) -> Deck:
     Args:
         path: path to a .dck file
     """
-    file = getfile(path, ".dck")
+    file = get_file(path, ".dck")
     commander, maindeck, sideboard, metadata = [], [], [], {}
     for line in file.read_text(encoding="utf-8").splitlines():
         if line.startswith("NAME:"):
@@ -404,7 +404,7 @@ def from_json(path: PathLike) -> Deck:
     Args:
         path: path to a JSON deckfile
     """
-    file = getfile(path, ".json")
+    file = get_file(path, ".json")
     data = deserialize_json(file.read_text(encoding="utf-8"))
     return ArenaParser(data["decklist"], data["metadata"]).parse()
 
@@ -452,13 +452,13 @@ def convert(
     """
     if fmt not in FORMATS:
         raise ValueError(f"Invalid conversion format: {fmt!r}. Must be one of: {FORMATS}")
-    file = getfile(src_path, ".dck", ".json", ".txt", suppress_errors=True)
+    file = get_file(src_path, ".dck", ".json", ".txt", suppress_errors=True)
     if file:
-        dst_dir = getdir(dst_dir) if dst_dir else file.parent
+        dst_dir = get_dir(dst_dir) if dst_dir else file.parent
         _convert_file(file, fmt, dst_dir)
     else:
-        folder = getdir(src_path, create_missing=False)
-        root = getdir(dst_dir) if dst_dir else folder
+        folder = get_dir(src_path, create_missing=False)
+        root = get_dir(dst_dir) if dst_dir else folder
         deckfiles = [
             f for f in folder.rglob("*")
             if f.is_file() and f.suffix.lower() in {".dck", ".json", ".txt"}]

@@ -22,7 +22,7 @@ from mtg.constants import PathLike
 _log = getLogger(__name__)
 
 
-def getdir(path: PathLike, create_missing=True) -> Path:
+def get_dir(path: PathLike, create_missing=True) -> Path:
     """Return a directory path at ``path``.
 
     Optionally, create the directory (and all its needed parents) if it's missing.
@@ -38,7 +38,7 @@ def getdir(path: PathLike, create_missing=True) -> Path:
     return dir_
 
 
-def getfile(path: PathLike, *extensions: str, suppress_errors=False) -> Path | None:
+def get_file(path: PathLike, *extensions: str, suppress_errors=False) -> Path | None:
     """Return a path to existing file at ``path``.
     """
     f = Path(path)
@@ -57,7 +57,7 @@ def recursive_removedir(dirpath: str, check_delay: int = 500) -> None:
     """Remove directory at ``dirpath`` and it contents recursively. Check after delay (default is
     500ms), if something still exists, list it.
     """
-    dir_ = getdir(dirpath, create_missing=False)
+    dir_ = get_dir(dirpath, create_missing=False)
     if dir_ is not None:
         shutil.rmtree(dir_, ignore_errors=True)
         sleep(check_delay / 1000)
@@ -88,7 +88,7 @@ def remove_by_ext(ext: str, destdir: str, recursive=False, opposite=False) -> in
         else:
             _log.warning(f"Unable to remove file: {f}.")
 
-    destdir = getdir(destdir)
+    destdir = get_dir(destdir)
     removed = []
     gb = "**/*" if recursive else "*"
     files = [f for f in destdir.glob(gb) if f.is_file()]
@@ -106,7 +106,7 @@ def remove_by_ext(ext: str, destdir: str, recursive=False, opposite=False) -> in
 def download_file(url: str, file_name="", dst_dir="") -> None:
     """Download a file at ``url`` to destination specified by ``file_name`` and ``dst_dir``.
 
-    Mostly, as suggested by GPT3.
+    Mostly, as suggested by GPT-3.
 
     Args:
         url: URL of the file to be downloaded.
@@ -121,7 +121,7 @@ def download_file(url: str, file_name="", dst_dir="") -> None:
     file_size = int(response.headers.get("Content-Length", 0))
     divisor = 1024
 
-    dst = Path(file_name) if not dst_dir else getdir(dst_dir) / file_name
+    dst = Path(file_name) if not dst_dir else get_dir(dst_dir) / file_name
     # create a progress bar object
     progress = tqdm(response.iter_content(divisor), f"Downloading '{dst.resolve()}'...",
                     total=file_size, unit="B", unit_scale=True, unit_divisor=divisor)

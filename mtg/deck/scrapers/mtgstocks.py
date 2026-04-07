@@ -40,7 +40,7 @@ class MtgStocksDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         url = strip_url_query(url)
         return url.replace("/visual/", "/")
 
@@ -104,7 +104,7 @@ class MtgStocksArticleScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return strip_url_query(url)
 
     def _collect_other_urls(self) -> list[str]:

@@ -82,7 +82,7 @@ class DeckstatsDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return strip_url_query(url)
 
     @backoff.on_predicate(
@@ -134,7 +134,7 @@ class DeckstatsDeckScraper(DeckScraper):
                 self._update_fmt(fmt)
         self._metadata["date"] = datetime.fromtimestamp(self._data["updated"], UTC).date()
         if tags := self._data.get("tags"):
-            self._metadata["tags"] = self.sanitize_metadata_deck_tags(tags)
+            self._metadata["tags"] = self.normalize_metadata_deck_tags(tags)
         if description := self._data.get("description"):
             self._metadata["description"] = description
 
@@ -192,7 +192,7 @@ class DeckstatsUserScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return strip_url_query(url)
 
     def _get_user_id(self) -> str:

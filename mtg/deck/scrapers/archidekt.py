@@ -66,7 +66,7 @@ class ArchidektDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return strip_url_query(url).replace("/image/", "/")
 
     # FIXME: Archidekt servers seem to respond with a real 404 response (at least at times)
@@ -98,7 +98,7 @@ class ArchidektDeckScraper(DeckScraper):
         if edh_bracket := self._data.get("edhBracket"):
             self._metadata["edh_bracket"] = edh_bracket
         if tags := self._data.get("deckTags"):
-            self._metadata["tags"] = self.sanitize_metadata_deck_tags(tags)
+            self._metadata["tags"] = self.normalize_metadata_deck_tags(tags)
 
     def _parse_card_json(self, card_json: Json) -> None:
         # filter tokens (#449)
@@ -154,7 +154,7 @@ class ArchidektFolderScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return strip_url_query(url)
 
     @override

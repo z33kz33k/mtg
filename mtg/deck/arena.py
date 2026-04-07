@@ -13,12 +13,11 @@ from typing import override
 import regex as re
 
 from mtg.constants import Json
-from mtg.deck.core import ARENA_MULTIFACE_SEPARATOR, CardNotFound, Deck, DeckParser
+from mtg.deck.core import ARENA_MULTIFACE_SEPARATOR, Deck, DeckParser
 from mtg.lib.common import ParsingError
 from mtg.lib.numbers import extract_int
-from mtg.lib.text import get_hash, getrepr, is_foreign, sanitize_whitespace
-from mtg.scryfall import Card, MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR, \
-    query_api_for_card
+from mtg.lib.text import get_hash, get_repr, sanitize_whitespace
+from mtg.scryfall import Card, MULTIFACE_SEPARATOR as SCRYFALL_MULTIFACE_SEPARATOR
 
 _log = logging.getLogger(__name__)
 
@@ -72,7 +71,7 @@ class PlaysetLine:
         return self._collector_number
 
     def __init__(self, line: str) -> None:
-        line = ArenaParser.sanitize_card_name(line)
+        line = ArenaParser.normalize_card_name(line)
         regular_match = self.PATTERN.match(line)
         with_printings_match = self.WITH_PRINTINGS_PATTERN.match(line)
         inverted_match = self.INVERTED_PATTERN.match(line)
@@ -107,7 +106,7 @@ class PlaysetLine:
         pairs = [("quantity", self.quantity), ("name", self.name)]
         if self.is_with_printings:
             pairs += [("setcode", self.set_code), ("collector_number", self.collector_number)]
-        return getrepr(self.__class__, *pairs)
+        return get_repr(self.__class__, *pairs)
 
     def to_playset(self) -> list[Card]:
         set_and_collector_number = (

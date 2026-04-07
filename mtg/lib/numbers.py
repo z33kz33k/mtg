@@ -33,7 +33,7 @@ def extract_int(text: str) -> int:
     return int(num)
 
 
-def getfloat(string: str | None) -> float | None:
+def get_float(string: str | None) -> float | None:
     """Interpret string as floating point number or, if not possible, return None.
     """
     if not string:
@@ -44,7 +44,7 @@ def getfloat(string: str | None) -> float | None:
         return None
 
 
-def getint(string: str | None) -> int | None:
+def get_int(string: str | None) -> int | None:
     """Interpret string as integer or, if not possible, return None.
     """
     if not string:
@@ -55,7 +55,7 @@ def getint(string: str | None) -> int | None:
         return None
 
 
-def getbool(string: str | None) -> bool | None:
+def get_bool(string: str | None) -> bool | None:
     """Interpret string as boolean value or, if not possible, return None
     """
     if not string:

@@ -32,7 +32,7 @@ from mtg.deck.core import Deck, DeckParser
 from mtg.deck.scrapers.abc import DeckTagsContainerScraper, DecksJsonContainerScraper, \
     get_throttled_deck_scrapers
 from mtg.lib.common import Noop, find_longest_seqs, from_iterable, logging_disabled
-from mtg.lib.files import getdir, sanitize_filename
+from mtg.lib.files import get_dir, sanitize_filename
 from mtg.lib.numbers import extract_float, multiply_by_symbol
 from mtg.lib.scrape.core import ScrapingError, extract_url, http_requests_counted, \
     parse_keywords_from_tag, throttle, throttled, unshorten
@@ -43,8 +43,6 @@ from mtg.scryfall import all_formats
 from mtg.session import ScrapingSession
 from mtg.yt.expand import LinksExpander
 from mtg.yt.ptfix import PytubeWrapper
-
-# from yt_dlp import YoutubeDL  # works, but with enormous downtimes (ca. 40s per channel)
 
 
 _log = logging.getLogger(__name__)
@@ -285,19 +283,19 @@ class VideoScraper:
     def _process_deck(self, link: str) -> Deck | None:
         deck = None
         if scraper := DeckScraper.from_url(link, self.deck_metadata):
-            sanitized_link = scraper.sanitize_url(link)
-            if self._urls_manager.is_scraped(sanitized_link):
-                _log.info(f"Skipping already scraped deck URL: {sanitized_link!r}...")
+            normalized_link = scraper.normalize_url(link)
+            if self._urls_manager.is_scraped(normalized_link):
+                _log.info(f"Skipping already scraped deck URL: {normalized_link!r}...")
                 return None
-            elif self._urls_manager.is_failed(sanitized_link):
-                _log.info(f"Skipping already failed deck URL: {sanitized_link!r}...")
+            elif self._urls_manager.is_failed(normalized_link):
+                _log.info(f"Skipping already failed deck URL: {normalized_link!r}...")
                 return None
             try:
                 deck = scraper.scrape(throttled=type(scraper) in get_throttled_deck_scrapers())
             except ReadTimeout:
                 _log.warning(f"Back-offed scraping of {link!r} failed with read timeout")
             if not deck:
-                self._urls_manager.add_failed(sanitized_link)
+                self._urls_manager.add_failed(normalized_link)
 
         if deck:
             deck_name = f"{deck.name!r} deck" if deck.name else "Deck"
@@ -351,16 +349,16 @@ class VideoScraper:
                     link, self.deck_metadata) or DeckTagsContainerScraper.from_url(
                 link, self.deck_metadata) or HybridContainerScraper.from_url(
                 link, self.deck_metadata):
-                sanitized_link = scraper.sanitize_url(link)
-                if self._urls_manager.is_scraped(sanitized_link):
+                normalized_link = scraper.normalize_url(link)
+                if self._urls_manager.is_scraped(normalized_link):
                     _log.info(
                         f"Skipping already scraped {scraper.short_name()} URL: "
-                        f"{sanitized_link!r}...")
+                        f"{normalized_link!r}...")
                     continue
-                if self._urls_manager.is_failed(sanitized_link):
+                if self._urls_manager.is_failed(normalized_link):
                     _log.info(
                         f"Skipping already failed {scraper.short_name()} URL: "
-                        f"{sanitized_link!r}...")
+                        f"{normalized_link!r}...")
                     continue
                 decks.update(scraper.scrape_decks())
 
@@ -518,27 +516,8 @@ class ChannelScraper:
     def url_title_text(self) -> str:
         return f"{self.url!r} ({self._title})" if self._title else f"{self.url!r}"
 
-    # works, but with enormous downtimes (ca. 40s per channel)
-    # @timed("fetching channel info")
-    # def _fetch_ytdlp_info(self) -> tuple[str | None, int | None, str | None, list[str] | None]:
-    #     options = {
-    #         'quiet': True,  # suppress verbose output
-    #         'extract_flat': True,  # avoid downloading, only fetch metadata
-    #         'force_generic_extractor': False,
-    #     }
-    #     # options = {
-    #     #     'quiet': True,
-    #     #     'skip_download': True,
-    #     #     'no_playlist': True,
-    #     #     'extract_flat': True,
-    #     # }
-    #     with YoutubeDL(options) as ydl:
-    #         # fetch channel info
-    #         info = ydl.extract_info(self.url, download=False)
-    #         # extract relevant metadata
-    #         return info.get('title'), info.get('channel_follower_count'), info.get(
-    #             'description'), info.get('tags')
-
+    # TODO: this is retrievable from `pytubefix.Channel.inital_data`
+    #  (but needs similar wrapper to what has been done for videos)
     def _fetch_info_with_selenium(
             self) -> tuple[str | None, int | None, str | None, list[str] | None]:
         soup, _, _ = fetch_dynamic_soup(self.url, self.XPATH, consent_xpath=self.CONSENT_XPATH)
@@ -659,7 +638,7 @@ class ChannelScraper:
             _log.info("Nothing to dump")
             return
         dstdir = dstdir or CHANNELS_DIR / self._yt_id
-        dstdir = getdir(dstdir)
+        dstdir = get_dir(dstdir)
         timestamp = self._scrape_time.strftime(FILENAME_TIMESTAMP_FORMAT)
         filename = filename or f"{self._yt_id}___{timestamp}_channel"
         dst = dstdir / f"{sanitize_filename(filename)}.json"

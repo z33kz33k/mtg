@@ -99,7 +99,7 @@ class EdhrecPreviewDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return strip_url_query(url)
 
     @override
@@ -116,7 +116,7 @@ class EdhrecPreviewDeckScraper(DeckScraper):
         if edhrec_tags := self._data.get("edhrec_tags"):
             self._metadata["edhrec_tags"] = edhrec_tags
         if tags := self._data.get("tags"):
-            self._metadata["tags"] = self.sanitize_metadata_deck_tags(tags)
+            self._metadata["tags"] = self.normalize_metadata_deck_tags(tags)
         if salt := self._data.get("salt"):
             self._metadata["salt"] = salt
         if theme := self._data.get("theme"):
@@ -159,7 +159,7 @@ class EdhrecAverageDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         url = strip_url_query(url)
         return url.replace("/commanders/", "/average-decks/")
 
@@ -243,7 +243,7 @@ class EdhrecArticleScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return strip_url_query(url)
 
     @override
@@ -262,7 +262,7 @@ class EdhrecArticleScraper(HybridContainerScraper):
         if title := self._data.get("title"):
             self._metadata.setdefault("article", {})["title"] = title
         if tags := self._data.get("tags"):
-            self._metadata["tags"] = self.sanitize_metadata_deck_tags(tags)
+            self._metadata["tags"] = self.normalize_metadata_deck_tags(tags)
 
     def _collect_tags(self) -> list[Tag]:
         content_soup = BeautifulSoup(self._data["content"], "lxml")
@@ -297,7 +297,7 @@ class EdhrecAuthorScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return strip_url_query(url)
 
     @override

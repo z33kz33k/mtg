@@ -161,7 +161,7 @@ class GoldfishDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         url = strip_url_query(url)
         if "/visual/" in url:
             url = url.replace("/visual/", "/")
@@ -206,7 +206,7 @@ class GoldfishTournamentScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         if "#" in url:
             url, _ = url.rsplit("#", maxsplit=1)
             return url
@@ -265,7 +265,7 @@ class GoldfishArticleScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return strip_url_query(url)
 
     def _collect_urls(self) -> tuple[list[str], list[str]]:

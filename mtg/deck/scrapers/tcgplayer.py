@@ -62,7 +62,7 @@ class TcgPlayerDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return strip_url_query(url)
 
     @override
@@ -235,7 +235,7 @@ class TcgPlayerInfiniteDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return strip_url_query(url)
 
     @override
@@ -275,7 +275,7 @@ class TcgPlayerInfinitePlayerScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return strip_url_query(url)
 
     @override
@@ -309,7 +309,7 @@ class TcgPlayerInfiniteAuthorSearchScraper(TcgPlayerInfinitePlayerScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return url.removesuffix("/")
 
     @override
@@ -373,7 +373,7 @@ class TcgPlayerInfiniteArticleScraper(DecksJsonContainerScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return strip_url_query(url)
 
     @override
@@ -434,7 +434,7 @@ class TcgPlayerInfiniteAuthorScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return strip_url_query(url)
 
     @override
@@ -497,7 +497,7 @@ class TcgPlayerInfiniteAuthorDecksPaneScraper(DeckUrlsContainerScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return strip_url_query(url)
 
     @override

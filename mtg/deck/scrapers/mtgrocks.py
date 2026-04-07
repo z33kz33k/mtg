@@ -41,7 +41,7 @@ class MtgRocksArticleScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return strip_url_query(url)
 
     @classmethod
@@ -66,7 +66,7 @@ class MtgRocksArticleScraper(HybridContainerScraper):
             self._metadata.setdefault("article", {})["description"] = desc_node.data["description"]
         if keywords_node := node.find(lambda n: "keywords" in n.data):
             self._metadata.setdefault(
-                "article", {})["tags"] = self.sanitize_metadata_deck_tags(
+                "article", {})["tags"] = self.normalize_metadata_deck_tags(
                 keywords_node.data["keywords"])
 
     @override

@@ -52,7 +52,7 @@ class MeleeGgDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return url.replace(ALT_DOMAIN, "melee.gg")
 
     @override

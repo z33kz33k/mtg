@@ -93,7 +93,7 @@ class CommandersHeraldArticleScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return strip_url_query(url)
 
     @override
@@ -110,7 +110,7 @@ class CommandersHeraldArticleScraper(HybridContainerScraper):
                             date_text.strip()).date()
                 if categories := [a.text.strip() for a in author_tag.select("a.badge")]:
                     self._metadata.setdefault(
-                "article", {})["tags"] = self.sanitize_metadata_deck_tags(categories)
+                "article", {})["tags"] = self.normalize_metadata_deck_tags(categories)
 
     @override
     def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:

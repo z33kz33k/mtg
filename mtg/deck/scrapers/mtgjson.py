@@ -21,7 +21,7 @@ from mtg.deck.core import Deck
 from mtg.deck.scrapers.abc import DeckScraper
 from mtg.lib.common import logging_disabled
 from mtg.lib.time import get_timestamp, timed
-from mtg.lib.files import getdir
+from mtg.lib.files import get_dir
 from mtg.lib.scrape.core import ScrapingError, fetch_json, fetch_soup
 from mtg.scryfall import Card
 
@@ -134,7 +134,7 @@ class Scraper:
         """
         timestamp = get_timestamp()
         dstdir = dstdir or DECKS_DIR / "mtgjson" / timestamp
-        dstdir = getdir(dstdir)
+        dstdir = get_dir(dstdir)
         with logging_disabled():
             for deck in tqdm(
                     self.scrape(), total=len(self._links), desc="Exporting MTGJSON decks..."):

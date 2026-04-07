@@ -88,7 +88,7 @@ class WotCArticleScraper(HybridContainerScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         locale = from_iterable(_LOCALES, lambda l: l in url)
         url = url.replace(locale, "/en/") if locale else url
         return strip_url_query(url)

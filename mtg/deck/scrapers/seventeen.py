@@ -34,7 +34,7 @@ class SeventeenLandsDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         url = strip_url_query(url).removesuffix("/primer").removesuffix("/history")
         return url.rstrip(".,")
 

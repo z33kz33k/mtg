@@ -19,7 +19,7 @@ from mtg.data.structures import ChannelData
 from mtg.deck.export import Exporter, FORMATS as EXPORT_FORMATS
 from mtg.lib.common import logging_disabled
 from mtg.lib.time import get_timestamp
-from mtg.lib.files import getdir, sanitize_filename
+from mtg.lib.files import get_dir, sanitize_filename
 
 
 def _dump_data_gen(
@@ -51,7 +51,7 @@ def dump_decks(
         raise ValueError(f"Invalid dump format: {fmt!r}. Must be one of: {EXPORT_FORMATS}")
     timestamp = get_timestamp()
     dstdir = dstdir or DECKS_DIR / "yt" / timestamp
-    dstdir = getdir(dstdir)
+    dstdir = get_dir(dstdir)
     chids = retrieve_ids()
     channels = [*tqdm(load_channels(*chids), total=len(chids), desc="Loading channels data...")]
     total = sum(len(ch.decks) for ch in channels)

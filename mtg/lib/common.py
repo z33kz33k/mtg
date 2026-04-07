@@ -27,22 +27,22 @@ def from_iterable[T](iterable: Iterable[T], predicate: Callable[[T], bool]) -> T
     return next((item for item in iterable if predicate(item)), None)
 
 
-def totuple(lst: list) -> tuple:  # recursive
+def to_tuple(lst: list) -> tuple:  # recursive
     """Convert ``lst`` and any list it contains (no matter the nesting level) recursively to tuple.
 
     Taken from:
         https://stackoverflow.com/a/27050037/4465708
     """
-    return tuple(totuple(i) if isinstance(i, list) else i for i in lst)
+    return tuple(to_tuple(i) if isinstance(i, list) else i for i in lst)
 
 
-def tolist(tpl: tuple) -> list:  # recursive
+def to_list(tpl: tuple) -> list:  # recursive
     """Convert ``tpl`` and any tuple it contains (no matter the nesting level) recursively to list.
 
     Taken from and made in reverse:
         https://stackoverflow.com/a/27050037/4465708
     """
-    return list(tolist(i) if isinstance(i, tuple) else i for i in tpl)
+    return list(to_list(i) if isinstance(i, tuple) else i for i in tpl)
 
 
 def cleardir(obj: object) -> list[str]:

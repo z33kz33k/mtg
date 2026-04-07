@@ -30,7 +30,7 @@ class MagicVilleDeckScraper(DeckScraper):
 
     @staticmethod
     @override
-    def sanitize_url(url: str) -> str:
+    def normalize_url(url: str) -> str:
         return f"{url}&decklanglocal=eng"
 
     @override

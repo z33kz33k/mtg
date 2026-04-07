@@ -21,7 +21,7 @@ from mtg.constants import FILENAME_TIMESTAMP_FORMAT, READABLE_TIMESTAMP_FORMAT
 _log = logging.getLogger(__name__)
 
 
-def seconds2readable(seconds: float) -> str:
+def seconds_to_readable(seconds: float) -> str:
     seconds = round(seconds)
     minutes, seconds = divmod(seconds, 60)
     hours, minutes = divmod(minutes, 60)
@@ -50,7 +50,7 @@ def get_formatted_time(seconds: float, precision: int | None = None) -> str:
         precision = 0
     precision = _get_precision(seconds) if precision is None else precision
     if not precision:
-        return seconds2readable(seconds)
+        return seconds_to_readable(seconds)
     return f"{seconds:.{precision}f} second(s)"
 
 
