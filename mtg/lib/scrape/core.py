@@ -542,15 +542,17 @@ def _parse_double_quoted_keywords(kw_text: str) -> list[str]:
     return keywords
 
 
-def parse_keywords_from_tag(tag: Tag) -> list[str]:
-    """Parse passed tag's content attribute string for keyword string tokens.
+def parse_keywords(tag_or_text: Tag | str) -> list[str]:
+    """Parse the passed tag's content attribute string (or - directly - a string text) for keyword
+    string tokens.
 
     Expected string should fall into two categories:
         * with keywords separated by whitespace and multiword keywords surrounded in double-quotes
           e.g.: `"Magic the gathering" MTG "magic arena" arena "mtg arena" histori...`
         * with comma-separated keywords, e.g.: `video, sharing, camera phone, video phone, free`
     """
-    if kw_text := tag.get("content", ""):
+    kw_text = tag_or_text if isinstance(tag_or_text, str) else tag_or_text.get("content", "")
+    if kw_text:
         if '"' in kw_text:
             keywords = _parse_double_quoted_keywords(kw_text)
         elif ", " in kw_text:

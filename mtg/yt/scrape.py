@@ -12,6 +12,7 @@ import logging
 import re
 import traceback
 import urllib.error
+from dataclasses import astuple
 from functools import cached_property
 from http.client import RemoteDisconnected
 from typing import Iterator
@@ -35,14 +36,14 @@ from mtg.lib.common import Noop, find_longest_seqs, from_iterable, logging_disab
 from mtg.lib.files import get_dir, sanitize_filename
 from mtg.lib.numbers import extract_float, multiply_by_symbol
 from mtg.lib.scrape.core import ScrapingError, extract_url, http_requests_counted, \
-    parse_keywords_from_tag, throttle, throttled, unshorten
+    parse_keywords, throttle, throttled, unshorten
 from mtg.lib.scrape.dynamic import fetch_dynamic_soup
 from mtg.lib.scrape.linktree import LinktreeScraper
 from mtg.lib.time import naive_utc_now, timed
 from mtg.scryfall import all_formats
 from mtg.session import ScrapingSession
 from mtg.yt.expand import LinksExpander
-from mtg.yt.ptfix import PytubeWrapper
+from mtg.yt.ptfix import PytubeVideoWrapper, PytubeChannelWrapper
 
 
 _log = logging.getLogger(__name__)
@@ -155,7 +156,11 @@ class VideoScraper:
         self._comment, self._channel_id = None, None
         self._pytube, self._data = None, None
 
-    def _get_pytube(self) -> PytubeWrapper:
+    @backoff.on_exception(
+        backoff.expo,
+        (Timeout, HTTPError, RemoteDisconnected, MissingVideoPublishTime, urllib.error.HTTPError),
+        max_time=300)
+    def _get_pytube(self) -> PytubeVideoWrapper:
         try:
             pytube = pytubefix.YouTube(self.url, use_oauth=True, allow_oauth_cache=True)
         except pytubefix.exceptions.RegexMatchError as rme:
@@ -163,16 +168,9 @@ class VideoScraper:
         if not pytube.publish_date:
             raise MissingVideoPublishTime(
                 "pytubefix data missing publish time", scraper=type(self), url=self.url)
-        wrapper = PytubeWrapper(pytube)
+        wrapper = PytubeVideoWrapper(pytube)
         wrapper.retrieve()
         return wrapper
-
-    @backoff.on_exception(
-        backoff.expo,
-        (Timeout, HTTPError, RemoteDisconnected, MissingVideoPublishTime, urllib.error.HTTPError),
-        max_time=300)
-    def _get_pytube_with_backoff(self) -> PytubeWrapper:
-        return self._get_pytube()
 
     def _save_pytube_data(self) -> None:
         self._author = self._pytube.data.author
@@ -184,12 +182,7 @@ class VideoScraper:
         self._channel_id = self._pytube.channel_id
 
     def _scrape_video(self) -> None:
-        try:
-            self._pytube = self._get_pytube()
-        except (RemoteDisconnected, ScrapingError) as e:
-            _log.warning(
-                f"pytubefix had a hiccup ({e}). Retrying with backoff (60 seconds max)...")
-            self._pytube = self._get_pytube_with_backoff()
+        self._pytube = self._get_pytube()
         self._save_pytube_data()
 
     def _derive_format(self) -> str | None:
@@ -516,12 +509,10 @@ class ChannelScraper:
     def url_title_text(self) -> str:
         return f"{self.url!r} ({self._title})" if self._title else f"{self.url!r}"
 
-    # TODO: this is retrievable from `pytubefix.Channel.inital_data`
-    #  (but needs similar wrapper to what has been done for videos)
-    def _fetch_info_with_selenium(
-            self) -> tuple[str | None, int | None, str | None, list[str] | None]:
+    def _fetch_info_with_selenium(  # not used
+            self) -> tuple[str | None, str | None, list[str] | None, int | None]:
         soup, _, _ = fetch_dynamic_soup(self.url, self.XPATH, consent_xpath=self.CONSENT_XPATH)
-        title, description, tags, count = None, None, None, None
+        title, description, tags, subscribers = None, None, None, None
 
         # title (from <meta> or <title>)
         title_tag = soup.find('meta', property='og:title') or soup.find('title')
@@ -535,25 +526,37 @@ class ChannelScraper:
 
         # tags (from <meta name="keywords">)
         if keywords_tag := soup.find('meta', {'name': 'keywords'}):
-            tags = parse_keywords_from_tag(keywords_tag)
+            tags = parse_keywords(keywords_tag)
 
         # subscribers
         if count_text := soup.find(
             "span", string=lambda t: t and "subscriber" in t).text.removesuffix(
             " subscribers").removesuffix(" subscriber"):
-            count = extract_float(count_text)
+            subscribers = extract_float(count_text)
             if count_text[-1] in {"K", "M", "B", "T"}:
-                count = multiply_by_symbol(count, count_text[-1])
-            count = int(count)
+                subscribers = multiply_by_symbol(subscribers, count_text[-1])
+            subscribers = int(subscribers)
 
-        return title, count, description, tags
+        return title, description, tags, subscribers
+
+    @backoff.on_exception(
+        backoff.expo,
+        (Timeout, HTTPError, RemoteDisconnected, urllib.error.HTTPError),
+        max_time=300)
+    def _fetch_info_with_pytube(
+            self) -> tuple[str | None, int | None, str | None, list[str] | None]:
+        pytube = pytubefix.Channel(self.url)
+        wrapper = PytubeChannelWrapper(pytube)
+        wrapper.retrieve()
+        return astuple(wrapper.data)
 
     def _scrape_videos(self, *video_ids: str) -> None:
         text = self.url_title_text()
         _log.info(f"Scraping channel: {text}, {len(video_ids)} video(s)...")
 
         self._scrape_time = naive_utc_now()
-        self._title, self._subscribers, self._description, self._tags = self._fetch_info_with_selenium()
+        # self._title, self._description, self._tags, self._subscribers = self._fetch_info_with_selenium()
+        self._title, self._description, self._tags, self._subscribers = self._fetch_info_with_pytube()
 
         self._videos, scraper = [], None
         for i, vid in enumerate(video_ids, start=1):
@@ -635,7 +638,7 @@ class ChannelScraper:
             filename: optionally, a custom filename (if not provided a default is used)
         """
         if not self.data:
-            _log.info("Nothing to dump")
+            _log.warning("Nothing to dump")
             return
         dstdir = dstdir or CHANNELS_DIR / self._yt_id
         dstdir = get_dir(dstdir)
@@ -644,7 +647,6 @@ class ChannelScraper:
         dst = dstdir / f"{sanitize_filename(filename)}.json"
         _log.info(f"Exporting channel to: '{dst}'...")
         dst.write_text(self.data.json, encoding="utf-8")
-
 
 
 # CONVENIENCE FUNCTIONS

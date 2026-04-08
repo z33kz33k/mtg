@@ -15,13 +15,13 @@ import pytubefix
 import pytubefix.exceptions
 from bs4 import BeautifulSoup
 
-from mtg.lib.numbers import extract_int
+from mtg.lib.numbers import extract_float, extract_int, multiply_by_symbol
 from mtg.lib.json import Node
-from mtg.lib.scrape.core import parse_keywords_from_tag
+from mtg.lib.scrape.core import parse_keywords
 
 
 @dataclass
-class PytubeData:
+class PytubeVideoData:
     author: str
     description: str
     title: str
@@ -29,12 +29,12 @@ class PytubeData:
     views: int
 
 
-class PytubefixError(OSError):
+class PytubefixError(RuntimeError):
     """Raised on pytubefix failing to retrieve expected data.
     """
 
 
-class PytubeWrapper:
+class PytubeVideoWrapper:
     """Wrap `pytubefix.YouTube` object to retrieve video details data more robustly than it does.
     """
     @property
@@ -54,7 +54,7 @@ class PytubeWrapper:
         return self._pytube.watch_html
 
     @property
-    def data(self) -> PytubeData | None:
+    def data(self) -> PytubeVideoData | None:
         return self._data
 
     def __init__(self, pytube: pytubefix.YouTube) -> None:
@@ -116,10 +116,10 @@ class PytubeWrapper:
             return keywords
         soup = BeautifulSoup(self.watch_html, "lxml")
         if kw_tag := soup.find("meta", {'name': 'keywords'}):
-            return parse_keywords_from_tag(kw_tag)
+            return parse_keywords(kw_tag)
         soup = BeautifulSoup(self.embed_html, "lxml")
         if kw_tag := soup.find("meta", {'name': 'keywords'}):
-            return parse_keywords_from_tag(kw_tag)
+            return parse_keywords(kw_tag)
         raise PytubefixError(f"Unable to retrieve keywords data for: {self._pytube.watch_url!r}")
 
     def _retrieve_views(self) -> int:
@@ -155,4 +155,91 @@ class PytubeWrapper:
         title = self._retrieve_title()
         keywords = self._retrieve_keywords()
         views = self._retrieve_views()
-        self._data = PytubeData(author, desc, title, keywords, views)
+        self._data = PytubeVideoData(author, desc, title, keywords, views)
+
+
+@dataclass
+class PytubeChannelData:
+    title: str
+    description: str
+    tags: list[str]
+    subscribers: int
+
+
+class PytubeChannelWrapper:
+    """Wrap `pytubefix.Channel` object to retrieve channel details data robustly
+    by traversing the `initial_data` deserialized JSON tree.
+    """
+    @property
+    def data(self) -> PytubeChannelData | None:
+        return self._data
+
+    def __init__(self, pytube: pytubefix.Channel) -> None:
+        """Initialize the wrapper with a pytubefix Channel object.
+
+        Args:
+            pytube: An instance of pytubefix.Channel.
+        """
+        self._pytube = pytube
+        self._data: PytubeChannelData | None = None
+        if not self._pytube.initial_data:
+            raise PytubefixError(
+                f"pytubefix 'initial_data' dict unavailable for channel:"
+                f" {self._pytube.channel_url!r}")
+        self._nid = Node(pytube.initial_data)
+
+    def _retrieve_title(self) -> str:
+        with contextlib.suppress(KeyError, pytubefix.exceptions.PytubeFixError):
+            if self._pytube.channel_name is not None and self._pytube.channel_name != "unknown":
+                return self._pytube.channel_name
+        path = "['channelMetadataRenderer']['title']"
+        if title := self._nid.find_by_path(path, mode="end"):
+            return title.data
+        path = "['microformatDataRenderer']['title']"
+        if title := self._nid.find_by_path(path, mode="end"):
+            return title.data
+        raise PytubefixError(f"Unable to retrieve title data for: {self._pytube.channel_url!r}")
+
+    def _retrieve_description(self) -> str:
+        with contextlib.suppress(KeyError, pytubefix.exceptions.PytubeFixError):
+            if self._pytube.description is not None and self._pytube.description != "unknown":
+                return self._pytube.description
+        path = "['channelMetadataRenderer']['description']"
+        if desc := self._nid.find_by_path(path, mode="end"):
+            return desc.data
+        path = "['microformatDataRenderer']['description']"
+        if desc := self._nid.find_by_path(path, mode="end"):
+            return desc.data
+        raise PytubefixError(
+            f"Unable to retrieve description data for: {self._pytube.channel_url!r}")
+
+    def _retrieve_tags(self) -> list[str]:
+        path = "['channelMetadataRenderer']['keywords']"
+        if desc := self._nid.find_by_path(path, mode="end"):
+            return parse_keywords(desc.data)
+        path = "['microformatDataRenderer']['tags']"
+        if desc := self._nid.find_by_path(path, mode="end"):
+            return desc.data
+        raise PytubefixError(f"Unable to retrieve tags data for: {self._pytube.channel_url!r}")
+
+    def _retrieve_subscribers(self) -> int:
+        if subscribers := self._nid.find(
+                lambda n: n.path.endswith("['text']['content']")
+                          and "metadataParts" in n.ancestors
+                          and "metadataRows" in n.ancestors
+                          and isinstance(n.data, str)
+        ):
+            text = subscribers.data.removesuffix(" subscribers").removesuffix(" subscriber")
+            count = extract_float(text)
+            if text[-1] in {"K", "M", "B", "T"}:
+                count = multiply_by_symbol(count, text[-1])
+            return int(count)
+        raise PytubefixError(
+            f"Unable to retrieve subscribers data for: {self._pytube.channel_url!r}")
+
+    def retrieve(self) -> None:
+        title = self._retrieve_title()
+        desc = self._retrieve_description()
+        tags = self._retrieve_tags()
+        subscribers = self._retrieve_subscribers()
+        self._data = PytubeChannelData(title, desc, tags, subscribers)

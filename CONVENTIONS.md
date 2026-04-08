@@ -18,3 +18,6 @@
 
 ## Python
 - Prefer `pathlib` over `os.path`.
+- Always put properties in classes before `__init__` and other methods.
+- For mutated states that are part of object's public API use properties with setters and an underlying truly private attribute (double leading underscore)
+- 
