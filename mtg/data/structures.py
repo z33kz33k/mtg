@@ -216,7 +216,7 @@ class ChannelData:
     def from_dict(cls, data: Json, sort_videos_by_publish_time=True) -> Self:
         field_names = {f.name for f in fields(cls)}
         data = {k: v for k, v in data.items() if k in field_names}
-        data["videos"] = [Video.from_dict(v, data["scrape_time"]) for v in data["videos"]]
+        data["videos"] = [VideoData.from_dict(v, data["scrape_time"]) for v in data["videos"]]
         if sort_videos_by_publish_time:
             data["videos"].sort(key=attrgetter("publish_time"), reverse=True)
         return cls(**data)

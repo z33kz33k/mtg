@@ -565,3 +565,7 @@ def parse_keywords(tag_or_text: Tag | str) -> list[str]:
     if keywords and keywords[-1].endswith('...'):
         keywords.pop()
     return keywords
+
+
+def normalize_url(url: str) -> str:
+    return url.removesuffix("/").lower()

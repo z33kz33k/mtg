@@ -21,6 +21,7 @@ from mtg.data.db import DefaultSession, NoAutoFlushSession
 from mtg.data.models import Channel, Deck, Decklist, FailedUrl, Snapshot, Tag, Video
 from mtg.data.structures import DataPath
 from mtg.deck.arena import normalize_decklist
+from mtg.lib.scrape.core import normalize_url
 from mtg.lib.text import get_hash
 from mtg.lib.time import timed
 from mtg.lib.json import from_json
@@ -88,9 +89,11 @@ class Loader:
                 stmt = select(Channel).where(Channel.yt_id == chid)
                 if channel := session.scalars(stmt).first():
                     for url in urls:
-                        failed_url = FailedUrl(text=url)
-                        channel.failed_urls.append(failed_url)
-                        session.add(failed_url)
+                        url = normalize_url(url)
+                        if url not in channel.failed_urls:
+                            failed_url = FailedUrl(text=url)
+                            channel.failed_urls.append(failed_url)
+                            session.add(failed_url)
 
     def _populate_tags(self) -> None:
         _log.info("Populating tags...")
@@ -136,7 +139,7 @@ class Loader:
                         title=snapshot_data["title"],
                         description=snapshot_data["description"],
                         subscribers=snapshot_data["subscribers"],
-                        scrape_time=(snapshot_data["scrape_time"]),
+                        scrape_time=snapshot_data["scrape_time"],
                     )
                     # tags
                     if tags_data := snapshot_data.get("tags", []):

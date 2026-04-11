@@ -8,6 +8,8 @@
 
 """
 import logging
+from datetime import datetime
+from operator import attrgetter
 from timeit import default_timer as timer
 from types import TracebackType
 from typing import Self, Type
@@ -16,15 +18,12 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from mtg.data.db import NoAutoFlushSession, retrieve_or_create
-from mtg.data.models import Channel, FailedUrl, Snapshot, Video
-from mtg.lib.scrape.core import throttle_with_countdown
+from mtg.data.models import Channel, Deck, Decklist, FailedUrl, Snapshot, Tag, Video
+from mtg.lib.scrape.core import normalize_url, throttle_with_countdown
+from mtg.lib.text import get_hash
 from mtg.lib.time import get_formatted_time
 
 _log = logging.getLogger(__name__)
-
-
-def normalize_url(url: str) -> str:
-    return url.removesuffix("/").lower()
 
 
 # TODO: each successfully scraped URL should be removed from failed ones (important for
@@ -40,23 +39,25 @@ class UrlsStateManager:
     def is_scraped(self, url: str) -> bool:
         if self.ignore_scraped:
             return False
-        scraped_urls = set()
         for video in self.current_snapshot.channel.videos:
             for deck in video.decks:
                 if deck.json_metadata and (deck_url := deck.json_metadata.get("url")):
-                    scraped_urls.add(deck_url)
-        return normalize_url(url) in scraped_urls
+                    if normalize_url(url) == normalize_url(deck_url):
+                        return True
+        return False
 
     def is_failed(self, url: str) -> bool:
-        if self.ignore_failed or not self.current_snapshot:
+        if self.ignore_failed:
             return False
         return normalize_url(url) in {
             furl.text for furl in self.current_snapshot.channel.failed_urls}
 
     def add_failed(self, url: str) -> None:
-        if not self.current_snapshot:
+        url = normalize_url(url)
+        if url in self.current_snapshot.channel.failed_urls:
             return
-        failed_url = FailedUrl(text=normalize_url(url))
+        failed_url = FailedUrl(text=url)
+        self._db_session.add(failed_url)
         self.current_snapshot.channel.failed_urls.append(failed_url)
         self._db_session.flush()
 
@@ -111,18 +112,6 @@ class ScrapingSession:
     """Context manager to ensure proper state management during scraping.
     """
     @property
-    def db_session(self) -> Session | None:
-        return self._db_session
-
-    @property
-    def current_snapshot(self) -> Snapshot | None:
-        return self._usm.current_snapshot
-
-    @property
-    def current_video(self) -> Video | None:
-        return self._usm.current_video
-
-    @property
     def ignore_failed(self) -> bool:
         return self._usm.ignore_failed
 
@@ -149,7 +138,7 @@ class ScrapingSession:
         # fine-grained control when states are persisted in the session's context,
         # this enables exactly that by enforcing manual flushing to the db transaction's buffer
         self._db_session = NoAutoFlushSession()
-        self._usm = UrlsStateManager(self.db_session)
+        self._usm = UrlsStateManager(self._db_session)
         self._cooloff = CoolOffManager()
         self._current_channel: Channel | None = None
         return self
@@ -180,6 +169,76 @@ class ScrapingSession:
     def set_channel(self, yt_id: str) -> None:
         channel = retrieve_or_create(self._db_session, Channel, yt_id=yt_id)
         self._current_channel = channel
+
+    def get_scraped_video_yt_ids(self) -> list[str]:
+        videos = sorted(
+            [video for snapshot in self._current_channel.snapshots for video in snapshot.videos],
+            key=attrgetter("publish_time"), reverse=True
+        )
+        return [video.yt_id for video in videos]
+
+    def set_snapshot(
+            self, title: str, description: str, tags: list[str], subscribers: int,
+            scrape_time: datetime) -> None:
+        snapshot = Snapshot(
+            title=title,
+            description=description,
+            subscribers=subscribers,
+            scrape_time=scrape_time,
+        )
+        self._db_session.add(snapshot)
+
+        # tags
+        if tags:
+            existing_tags = set(self._db_session.scalars(select(Tag.text)).all())
+            for tag_data in tags:
+                if tag_data not in existing_tags:
+                    tag = Tag(text=tag_data)
+                    self._db_session.add(tag)
+                    snapshot.tags.append(tag)
+
+        self._current_channel.snapshots.append(snapshot)
+        self._usm.current_snapshot = snapshot
+        self._db_session.flush()
+
+    def set_video(
+            self, yt_id: str, title: str, descritpion: str, keywords: list[str],
+            publish_time: datetime, views: int, comment: str | None) -> None:
+        video = Video(
+            yt_id=yt_id,
+            title=title,
+            description=descritpion,
+            publish_time=publish_time,
+            views=views,
+            comment=comment,
+        )
+        self._db_session.add(video)
+
+        # keywords
+        if keywords:
+            existing_tags = set(self._db_session.scalars(select(Tag.text)).all())
+            for kw_data in keywords:
+                if kw_data not in existing_tags:
+                    tag = Tag(text=kw_data)
+                    self._db_session.add(tag)
+                    video.keywords.append(tag)
+
+        self._usm.current_snapshot.videos.append(video)
+        self._usm.current_video = video
+        self._db_session.flush()
+
+    def set_deck(self, decklist_text: str, json_metadata: dict | None) -> None:
+        sha = get_hash(decklist_text, 40, sep="-")
+        decklist = retrieve_or_create(self._db_session, Decklist, hash=sha)
+        decklist.text = decklist_text
+
+        self._db_session.add(decklist)
+        deck = Deck(json_metadata=json_metadata)
+        self._db_session.add(deck)
+        decklist.decks.append(deck)
+        self._usm.current_video.decks.append(deck)
+
+        self._db_session.flush()
 
     # UrlsStateManager API
     def is_scraped(self, url: str) -> bool:

@@ -19,7 +19,7 @@
 """
 from datetime import datetime
 
-from sqlalchemy import Column, ForeignKey, Integer, JSON, String, Table, Text
+from sqlalchemy import Column, ForeignKey, Index, Integer, JSON, String, Table, Text
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -178,3 +178,7 @@ class FailedUrl(Base):
     text: Mapped[str] = mapped_column(Text)
 
     channel: Mapped["Channel"] = relationship(back_populates="failed_urls")
+
+    __table_args__ = (  # enforces uniqueness of failed URLs per channel
+        Index("ix_failed_url_per_channel", "channel_id", "text", unique=True),
+    )

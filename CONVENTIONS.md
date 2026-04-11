@@ -1,6 +1,7 @@
 # Aider Coding Conventions
 
 ## Core Principles
+- **Paramount**: Never ever create or change anything unless specifically asked to.
 - **Conciseness**: Prefer minimal code changes. Do not refactor unless asked.
 - **Ask Before Action**: If a request is ambiguous or high-risk, ask for clarification before acting.
 - **Security**: Never hardcode secrets. Use environment variables.

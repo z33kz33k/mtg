@@ -19,6 +19,7 @@ from typing import Iterator
 
 import backoff
 import pytubefix
+import pytubefix.exceptions
 import scrapetube
 from requests import ConnectionError, HTTPError, ReadTimeout, Timeout
 from tqdm import tqdm
@@ -434,6 +435,10 @@ class ChannelScraper:
     def data(self) -> ChannelData | None:
         return self._data
 
+    @property
+    def has_session(self) -> bool:
+        return isinstance(self._session, ScrapingSession)
+
     def __init__(self, channel_id: str, session: ScrapingSession | None) -> None:
         self._yt_id = channel_id
         self._session = session or Noop
@@ -469,7 +474,7 @@ class ChannelScraper:
     def _get_unscraped_video_ids(
             self, limit=10,
             only_newer_than_last_scraped=True) -> list[str]:
-        scraped_ids = [v.id for v in self.earlier_data.videos] if self.earlier_data else []
+        scraped_ids = self._session.get_last_scraped_video_yt_id()
         if not scraped_ids:
             last_scraped_id = None
         else:
@@ -491,10 +496,17 @@ class ChannelScraper:
             self, limit=10,
             only_newer_than_last_scraped=True,
             soft_limit=False) -> list[str]:
-        """Return a list of yet unscraped videos' IDs of this channel.
+        """Return a list of yet unscraped videos' YT IDs of this channel.
 
-        See scrape() for the description of the parameters.
+        The limit is strictly observed only if `soft_limit=False`.
+
+        See scrape() for the more in-depth description of the parameters.
         """
+        if not self.has_session:
+            _log.warning(
+                "You cannot reason about unscraped IDs without a session. If you used `scrape()`, "
+                "use `scrape_videos()` passing video IDs explicitly instead")
+            return
         video_ids = self._get_unscraped_video_ids(limit, only_newer_than_last_scraped)
         if not soft_limit:
             return video_ids
@@ -509,6 +521,7 @@ class ChannelScraper:
     def url_title_text(self) -> str:
         return f"{self.url!r} ({self._title})" if self._title else f"{self.url!r}"
 
+    # not currently used
     def _fetch_info_with_selenium(  # not used
             self) -> tuple[str | None, str | None, list[str] | None, int | None]:
         soup, _, _ = fetch_dynamic_soup(self.url, self.XPATH, consent_xpath=self.CONSENT_XPATH)
@@ -543,8 +556,7 @@ class ChannelScraper:
         backoff.expo,
         (Timeout, HTTPError, RemoteDisconnected, urllib.error.HTTPError),
         max_time=300)
-    def _fetch_info_with_pytube(
-            self) -> tuple[str | None, int | None, str | None, list[str] | None]:
+    def _fetch_info_with_pytube(self) -> tuple[str, str, list[str], int]:
         pytube = pytubefix.Channel(self.url)
         wrapper = PytubeChannelWrapper(pytube)
         wrapper.retrieve()
@@ -557,12 +569,14 @@ class ChannelScraper:
         self._scrape_time = naive_utc_now()
         # self._title, self._description, self._tags, self._subscribers = self._fetch_info_with_selenium()
         self._title, self._description, self._tags, self._subscribers = self._fetch_info_with_pytube()
+        self._session.set_snapshot(
+            self._title, self._description, self._tags, self._subscribers, self._scrape_time)
 
         self._videos, scraper = [], None
         for i, vid in enumerate(video_ids, start=1):
             _log.info(
                 f"Scraping video {i}/{len(video_ids)}: '{VIDEO_URL_TEMPLATE.format(vid)}'...")
-            scraper = VideoScraper(vid)
+            scraper = VideoScraper(vid, self._session)
             try:
                 scraper.scrape()
             except pytubefix.exceptions.VideoPrivate:
@@ -579,10 +593,11 @@ class ChannelScraper:
                     f"{self._yt_id!r}")
                 continue
             self._videos.append(scraper.data)
-            self._cooloff_manager.bump_video()
+            self._session.bump_video()
 
-        if not self._subscribers and scraper:
-            self._subscribers = scraper.get_channel_subscribers()
+        # if not self._subscribers and scraper:
+        #     self._subscribers = scraper.get_channel_subscribers()
+
         self._data = ChannelData(
             id=self._yt_id,
             title=self._title,
@@ -600,7 +615,7 @@ class ChannelScraper:
 
     @timed("channel scraping")
     def scrape_videos(self, *video_ids: str) -> None:
-        """Scrape videos of this channel according to the passed IDs.
+        """Scrape videos of this channel according to the passed YouTube IDs.
         """
         self._scrape_videos(*video_ids)
         self._session.bump_video()
