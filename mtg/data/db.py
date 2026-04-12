@@ -34,7 +34,8 @@ def exists_in_table(session: Session, model: type[Base], **filters) -> bool:
 
 
 def retrieve_or_create(session: Session, model: type[Base], **attrs) -> Base:
-    """Retrieve an instance of a model. If not present in the database, first create it.
+    """Retrieve an instance of a model by the attributes passed. If not present in the database,
+    first create it.
     """
     stmt = select(model).filter_by(**attrs)
     instance: Base | None = session.scalar(stmt)

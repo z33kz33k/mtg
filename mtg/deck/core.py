@@ -800,10 +800,6 @@ class Deck:
     def decklist_with_printings(self) -> str:
         return self._build_decklist(with_printings=True, about=False)
 
-    @property
-    def decklist_with_printings_hash(self) -> str:
-        return get_hash(self.decklist_with_printings, truncation=40, sep="-")
-
     @cached_property
     def as_dict(self) -> Json:
         return {

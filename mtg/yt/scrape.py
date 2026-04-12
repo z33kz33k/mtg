@@ -278,10 +278,10 @@ class VideoScraper:
         deck = None
         if scraper := DeckScraper.from_url(link, self.deck_metadata):
             normalized_link = scraper.normalize_url(link)
-            if self._urls_manager.is_scraped(normalized_link):
+            if self._urls_manager.is_scraped_url(normalized_link):
                 _log.info(f"Skipping already scraped deck URL: {normalized_link!r}...")
                 return None
-            elif self._urls_manager.is_failed(normalized_link):
+            elif self._urls_manager.is_failed_url(normalized_link):
                 _log.info(f"Skipping already failed deck URL: {normalized_link!r}...")
                 return None
             try:
@@ -289,7 +289,7 @@ class VideoScraper:
             except ReadTimeout:
                 _log.warning(f"Back-offed scraping of {link!r} failed with read timeout")
             if not deck:
-                self._urls_manager.add_failed(normalized_link)
+                self._urls_manager.add_failed_url(normalized_link)
 
         if deck:
             deck_name = f"{deck.name!r} deck" if deck.name else "Deck"
@@ -344,12 +344,12 @@ class VideoScraper:
                 link, self.deck_metadata) or HybridContainerScraper.from_url(
                 link, self.deck_metadata):
                 normalized_link = scraper.normalize_url(link)
-                if self._urls_manager.is_scraped(normalized_link):
+                if self._urls_manager.is_scraped_url(normalized_link):
                     _log.info(
                         f"Skipping already scraped {scraper.short_name()} URL: "
                         f"{normalized_link!r}...")
                     continue
-                if self._urls_manager.is_failed(normalized_link):
+                if self._urls_manager.is_failed_url(normalized_link):
                     _log.info(
                         f"Skipping already failed {scraper.short_name()} URL: "
                         f"{normalized_link!r}...")
@@ -375,7 +375,7 @@ class VideoScraper:
                 self._decks = self._collect(links, lines)
                 if self._decks:
                     self._comment = "\n".join(comment_lines)
-        self._cooloff_manager.bump_decks(len(self._decks))
+        self._session.bump_decks(len(self._decks))
 
     @timed("video scraping")
     @throttled(1.25, 0.25)
@@ -391,9 +391,10 @@ class VideoScraper:
             self._publish_time,
             self._views,
             self._comment,
-            [SerializedDeck(d.metadata, d.decklist_hash, d.decklist_with_printings_hash) for d in self._decks]
+            self._decks
         )
 
+    # not used
     def get_channel_subscribers(self) -> int | None:
         if not self._pytube:
             return None
@@ -445,7 +446,7 @@ class ChannelScraper:
         self._title, self._subscribers, self._description, self._tags = None, None, None, None
         self._scrape_time, self._videos = None, []
         self._data = None
-        self._session.set_channel(self._yt_id)
+        self._session.add_channel(self._yt_id)
 
     def video_ids(self, limit=10) -> Iterator[str]:
         try:
@@ -474,7 +475,7 @@ class ChannelScraper:
     def _get_unscraped_video_ids(
             self, limit=10,
             only_newer_than_last_scraped=True) -> list[str]:
-        scraped_ids = self._session.get_last_scraped_video_yt_id()
+        scraped_ids = self._session.get_video_yt_ids_for_current_channel()
         if not scraped_ids:
             last_scraped_id = None
         else:
@@ -557,7 +558,7 @@ class ChannelScraper:
         (Timeout, HTTPError, RemoteDisconnected, urllib.error.HTTPError),
         max_time=300)
     def _fetch_info_with_pytube(self) -> tuple[str, str, list[str], int]:
-        pytube = pytubefix.Channel(self.url)
+        pytube = pytubefix.Channel(self.url, use_oauth=True, allow_oauth_cache=True)
         wrapper = PytubeChannelWrapper(pytube)
         wrapper.retrieve()
         return astuple(wrapper.data)
@@ -569,7 +570,7 @@ class ChannelScraper:
         self._scrape_time = naive_utc_now()
         # self._title, self._description, self._tags, self._subscribers = self._fetch_info_with_selenium()
         self._title, self._description, self._tags, self._subscribers = self._fetch_info_with_pytube()
-        self._session.set_snapshot(
+        self._session.add_snapshot(
             self._title, self._description, self._tags, self._subscribers, self._scrape_time)
 
         self._videos, scraper = [], None
@@ -612,13 +613,13 @@ class ChannelScraper:
         if sources:
             text += f" [{', '.join(sources)}]"
         _log.info(f"Scraped *** {len(self.data.decks)} deck(s) *** in total for {text}")
+        self._session.bump_channel()
 
     @timed("channel scraping")
     def scrape_videos(self, *video_ids: str) -> None:
         """Scrape videos of this channel according to the passed YouTube IDs.
         """
         self._scrape_videos(*video_ids)
-        self._session.bump_video()
 
     @timed("channel scraping")
     def scrape(self, limit=10, only_newer_than_last_scraped=True, soft_limit=False) -> None:

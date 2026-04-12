@@ -1150,7 +1150,6 @@ def bulk_data(legal_only=True, non_token_only=True) -> set[Card]:
     Returns:
         set of Card objects
     """
-    print(f"Entering bulk_data(), legal_only={legal_only!r}, non_token_only={non_token_only!r}")
     bulk = scrython.bulk_data.ByType(type='oracle_cards')
     data = bulk.download(progress=True)
     cards = {Card(card_data) for card_data in data}
@@ -1309,7 +1308,6 @@ _oracle_ids_cache, _tcgplayer_ids_cache, _cardmarket_ids_cache, _mtgo_ids_cache 
 
 @timed("caching cards for fast lookups")
 def _cache_cards() -> None:
-    print(f"Entering _cache_cards(), _names_cache is {'empty' if _names_cache else 'populated'}")
     _log.info("Caching cards for fast lookups...")
     for card in bulk_data():
         _names_cache[unidecode(card.name).casefold()] = card

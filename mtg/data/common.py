@@ -397,7 +397,7 @@ def clean_up(move=True) -> None:
                 shutil.rmtree(chdir)
     manager = UrlsStateManager()
     manager.load_failed()
-    manager.prune_failed(ids)
+    manager.prune_failed_urls(ids)
     manager.dump_failed()
 
 

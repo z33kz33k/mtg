@@ -19,7 +19,7 @@ from selenium.common import ElementClickInterceptedException, TimeoutException
 from mtg.constants import Json
 from mtg.deck.core import CardNotFound, Deck, InvalidDeck
 from mtg.deck.abc import JsonBasedDeckParser, NestedDeckParser, TagBasedDeckParser
-from mtg.session import UrlsStateManager
+from mtg.session import ScrapingSession
 from mtg.lib.common import ParsingError, register_type
 from mtg.lib.time import timed
 from mtg.lib.scrape.core import InaccessiblePage, ScrapingError, Soft404Error, Throttling, \
@@ -363,9 +363,9 @@ class DeckUrlsContainerScraper(ContainerScraper):
             if not scraper:
                 continue
             normalized_deck_url = scraper.normalize_url(deck_url)
-            if self._urls_manager.is_scraped(normalized_deck_url):
+            if self._urls_manager.is_scraped_url(normalized_deck_url):
                 _log.info(f"Skipping already scraped deck URL: {normalized_deck_url!r}...")
-            elif self._urls_manager.is_failed(normalized_deck_url):
+            elif self._urls_manager.is_failed_url(normalized_deck_url):
                 _log.info(f"Skipping already failed deck URL: {normalized_deck_url!r}...")
             else:
                 throttle(*self.THROTTLING)
@@ -375,7 +375,7 @@ class DeckUrlsContainerScraper(ContainerScraper):
                     deck = scraper.scrape()
                 except ElementClickInterceptedException:
                     _log.warning("Unable to click on a deck link with Selenium. Skipping...")
-                    self._urls_manager.add_failed(normalized_deck_url)
+                    self._urls_manager.add_failed_url(normalized_deck_url)
                     continue
                 if deck:
                     deck_name = f"{deck.name!r} deck" if deck.name else "Deck"
@@ -383,7 +383,7 @@ class DeckUrlsContainerScraper(ContainerScraper):
                     decks.append(deck)
                     self._urls_manager.add_scraped(normalized_deck_url)
                 else:
-                    self._urls_manager.add_failed(normalized_deck_url)
+                    self._urls_manager.add_failed_url(normalized_deck_url)
 
         return decks
 
@@ -444,7 +444,7 @@ class DeckTagsContainerScraper(ContainerScraper):
         if decks:
             self._urls_manager.add_scraped(self.url)
         else:
-            self._urls_manager.add_failed(self.url)
+            self._urls_manager.add_failed_url(self.url)
 
         return decks
 
@@ -505,7 +505,7 @@ class DecksJsonContainerScraper(ContainerScraper):
         if decks:
             self._urls_manager.add_scraped(self.url)
         else:
-            self._urls_manager.add_failed(self.url)
+            self._urls_manager.add_failed_url(self.url)
 
         return decks
 
@@ -616,11 +616,11 @@ class HybridContainerScraper(
                 continue  # avoid scraping self in infinite loop
             if scraper := self._dispatch_container_scraper(url, self._metadata):
                 normalized_url = scraper.normalize_url(url)
-                if self._urls_manager.is_scraped(normalized_url):
+                if self._urls_manager.is_scraped_url(normalized_url):
                     _log.info(
                         f"Skipping already scraped {scraper.short_name()} URL: "
                         f"{normalized_url!r}...")
-                elif self._urls_manager.is_failed(normalized_url):
+                elif self._urls_manager.is_failed_url(normalized_url):
                     _log.info(
                         f"Skipping already failed {scraper.short_name()} URL: "
                         f"{normalized_url!r}...")
@@ -630,7 +630,7 @@ class HybridContainerScraper(
                         f"({scraper.short_name()})...")
                     container_decks = scraper.scrape_decks()
                     if not container_decks:
-                        self._urls_manager.add_failed(normalized_url)
+                        self._urls_manager.add_failed_url(normalized_url)
                     else:
                         decks += [d for d in container_decks if d not in decks]
                         self._urls_manager.add_scraped(normalized_url)
