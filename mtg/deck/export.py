@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Literal
 
 from mtg.constants import OUTPUT_DIR, PathLike
-from mtg.deck.arena import ArenaParser, IllFormedArenaDecklist, is_arena_decklist
+from mtg.deck.arena import ArenaParser, MalformedDecklist, is_arena_decklist
 from mtg.deck.core import CardNotFound, Deck, DeckParser, Mode
 from mtg.lib.common import ParsingError, from_iterable
 from mtg.lib.files import get_dir, get_file, sanitize_filename, truncate_path
@@ -278,7 +278,7 @@ def from_arena(path: PathLike) -> Deck:
     file = get_file(path, ".txt")
     decklist = file.read_text(encoding="utf-8")
     if not is_arena_decklist(decklist):
-        raise IllFormedArenaDecklist(f"Not an MTG Arena deck file: '{file}'")
+        raise MalformedDecklist(f"Not an MTG Arena deck file: '{file}'")
     return ArenaParser(decklist).parse(suppressed_errors=())
 
 

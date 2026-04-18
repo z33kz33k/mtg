@@ -71,17 +71,17 @@ class Snapshot(Base):
     __tablename__ = "snapshots"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    channel_id: Mapped[int] = mapped_column(ForeignKey('channels.id'))
+    channel_id: Mapped[int] = mapped_column(ForeignKey("channels.id"))
 
     title: Mapped[str | None]
     description: Mapped[str | None]
     subscribers: Mapped[int | None]
     scrape_time: Mapped[datetime]
 
-    channel: Mapped["Channel"] = relationship(back_populates='snapshots')
+    channel: Mapped["Channel"] = relationship(back_populates="snapshots")
     videos: Mapped[list["Video"]] = relationship(
-        back_populates='snapshot', cascade="all, delete-orphan")
-    tags: Mapped[list["Tag"]] = relationship(secondary=snapshot_tags, back_populates='snapshots')
+        back_populates="snapshot", cascade="all, delete-orphan")
+    tags: Mapped[list["Tag"]] = relationship(secondary=snapshot_tags, back_populates="snapshots")
 
 
 class Video(Base):
@@ -109,10 +109,10 @@ class Video(Base):
     views: Mapped[int]
     comment: Mapped[str | None]
 
-    snapshot: Mapped["Snapshot"] = relationship(back_populates='videos')
-    keywords: Mapped[list["Tag"]] = relationship(secondary=video_keywords, back_populates='videos')
+    snapshot: Mapped["Snapshot"] = relationship(back_populates="videos")
+    keywords: Mapped[list["Tag"]] = relationship(secondary=video_keywords, back_populates="videos")
     decks: Mapped[list["Deck"]] = relationship(
-        back_populates='video', cascade='all, delete-orphan')
+        back_populates="video", cascade="all, delete-orphan")
 
 
 class Tag(Base):
@@ -125,12 +125,12 @@ class Tag(Base):
     # YT enforces a 500-character limit on a channel tag or a video keyword, but that pertains to
     # the whole space- or comma-delimited tag string and not for individual tags/keywords
     # (which ARE recommended to be only 30-characters long)
-    text: Mapped[str] = mapped_column(Text, unique=True, index=True)
+    text: Mapped[str] = mapped_column(String(500), unique=True, index=True)
 
     snapshots: Mapped[list["Snapshot"]] = relationship(
-        secondary=snapshot_tags, back_populates='tags')
+        secondary=snapshot_tags, back_populates="tags")
     videos: Mapped[list["Video"]] = relationship(
-        secondary=video_keywords, back_populates='keywords')
+        secondary=video_keywords, back_populates="keywords")
 
 
 class Deck(Base):

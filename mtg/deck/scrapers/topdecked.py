@@ -20,7 +20,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-from mtg.deck.arena import IllFormedArenaDecklist, PlaysetLine
+from mtg.deck.arena import MalformedDecklist, PlaysetLine
 from mtg.deck.core import CardNotFound, Deck, InvalidDeck
 from mtg.deck.scrapers.abc import DeckScraper
 from mtg.lib.common import ParsingError
@@ -142,13 +142,13 @@ class TopDeckedRegularDeckScraper(DeckScraper):
             self._handle_commander()
 
     @backoff.on_exception(
-        backoff.expo, IllFormedArenaDecklist, max_time=60)
+        backoff.expo, MalformedDecklist, max_time=60)
     @override
     def scrape(
             self, throttled=False, suppressed_errors=(ParsingError, ScrapingError)) -> Deck | None:
         try:
             return super().scrape(throttled, suppressed_errors=())
-        except IllFormedArenaDecklist:
+        except MalformedDecklist:
             raise
         except suppressed_errors as err:
             if isinstance(err, ParsingError) and not isinstance(err, (InvalidDeck, CardNotFound)):

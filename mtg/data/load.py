@@ -20,7 +20,7 @@ from mtg.constants import CHANNELS_DIR, DECKLISTS_FILE, FAILED_URLS_FILE, WITHDR
 from mtg.data.db import DefaultSession, NoAutoFlushSession
 from mtg.data.models import Channel, Deck, Decklist, FailedUrl, Snapshot, Tag, Video
 from mtg.data.structures import DataPath
-from mtg.deck.arena import normalize_decklist
+from mtg.deck.arena import MalformedDecklist, normalize_decklist
 from mtg.lib.scrape.core import normalize_url
 from mtg.lib.text import get_hash
 from mtg.lib.time import timed
@@ -39,8 +39,6 @@ class MissedDecklist(RuntimeError):
         self.datapath = datapath
 
 
-# TODO: JSON data needs to be again front-loaded to the db as previously decklists weren't
-#  guaranteed to be properly normalized
 class Loader:
     """Load scraped data from JSON to the database.
 
@@ -112,13 +110,17 @@ class Loader:
 
     def _match_decklist_to_deck_data(
             self, deck_data: dict, video_data: dict, chid: str) -> tuple[str, dict | None]:
-        if decklist_text := self._decklists_json.get(deck_data["decklist_hash"]):
-            return normalize_decklist(decklist_text), deck_data["metadata"] or None
-        raise MissedDecklist(datapath=DataPath(
+        exc = MissedDecklist(datapath=DataPath(
             channel_id=chid,
             video_id=video_data["id"],
             decklist_hash=deck_data["decklist_hash"],
         ))
+        if decklist_text := self._decklists_json.get(deck_data["decklist_hash"]):
+            try:
+                return normalize_decklist(decklist_text), deck_data["metadata"] or None
+            except MalformedDecklist as md:
+                raise exc from md
+        raise exc
 
     def _populate_snapshots(self) -> None:
         missed_decklist_paths: list[DataPath] = []
@@ -207,8 +209,10 @@ class Loader:
                 session.flush()  # per channel
 
         if missed_decklist_paths:
-            _log.warning(f"{len(missed_decklist_paths)} couldn't be resolved. Video data containing "
-                         f"them was skipped from loading: {missed_decklist_paths}.")
+            _log.warning(
+                f"{len(missed_decklist_paths)} decklist path(s) couldn't be resolved. Video data "
+                f"containing them was skipped from loading: "
+                f"{[str(p) for p in missed_decklist_paths]}.")
 
     @timed("loading scraped data to database")
     def load(self) -> None:

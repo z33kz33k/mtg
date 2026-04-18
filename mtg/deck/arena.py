@@ -249,7 +249,7 @@ class LinesParser:
     In single-decklist mode it filters out anything that isn't a playset or section header line (
     including any possible gaps between them).
     """
-    MAINDECK_MIN_SIZE = 6  # pretty arbitrary
+    MIN_MAINDECK_SIZE = 6  # pretty arbitrary
 
     @property
     def decklists(self) -> list[str]:
@@ -259,12 +259,19 @@ class LinesParser:
     def _is_ready_for_closing(self) -> bool:
         return self._maindeck and self._maindeck != ["Deck"]
 
+    @property
+    def min_maindeck_size(self) -> int:
+        if self._single_decklist_mode:
+            return 1 if self._commander else 2
+        return self.MIN_MAINDECK_SIZE
+
     def __init__(self, *lines: str) -> None:
         self._lines = lines
         self._buffer, self._blanks = [], 0
         self._metadata, self._commander, self._companion = [], [], []
         self._maindeck, self._sideboard = [], []
         self._decklists: list[str] = []
+        self._single_decklist_mode = False
 
     def _flush(self, section: list[str]) -> None:
         self._buffer.reverse()
@@ -330,6 +337,7 @@ class LinesParser:
             section.append(header)
 
     def parse(self, single_decklist_mode=False) -> list[str]:
+        self._single_decklist_mode = single_decklist_mode
         lines = self._get_lines_for_single_decklist_mode() if single_decklist_mode else self._lines
         self._reset()
         self._decklists = []
@@ -370,7 +378,7 @@ class LinesParser:
                 # 1 Some Companion Card
                 # 1 Some Maindeck Card (without prior section separation)
                 elif (self._companion == ["Companion"]
-                      and self._commander != ["Commander"]
+                        and self._commander != ["Commander"]
                         and self._maindeck != ["Deck"]
                         and self._sideboard != ["Sideboard"]):
                     if len(self._buffer) == 1:
@@ -383,6 +391,7 @@ class LinesParser:
             last_line = line
 
         self._finish_decklist()
+        self._single_decklist_mode = False
         return self._decklists
 
     def _finish_section(self) -> None:
@@ -390,12 +399,17 @@ class LinesParser:
             if self._is_ready_for_closing:
                 self._flush(self._sideboard)
             else:
-                if len(self._buffer) == 1 and self._companion == ["Companion"]:
-                    self._flush(self._companion)
-                elif len(self._buffer) <= 2 and (
-                        self._commander == ["Commander"] or not self._commander):
-                    self._flush(self._commander)
-                elif len(self._buffer) >= self.MAINDECK_MIN_SIZE:
+                if not self._maindeck == ["Deck"]:
+                    if len(self._buffer) == 1 and self._companion == ["Companion"]:
+                        self._flush(self._companion)
+                    elif (
+                            len(self._buffer) <= 2
+                            and (self._commander == ["Commander"] or not self._commander)
+                    ):
+                        if not self._commander:
+                            self._commander = ["Commander"]
+                        self._flush(self._commander)
+                elif len(self._buffer) >= self.min_maindeck_size:
                     self._flush(self._maindeck)
                 else:
                     self._buffer = []
@@ -412,7 +426,7 @@ class LinesParser:
         if self._buffer:
             if self._is_ready_for_closing:
                 self._flush(self._sideboard)
-            elif len(self._buffer) >= self.MAINDECK_MIN_SIZE:
+            elif len(self._buffer) >= self.min_maindeck_size:
                 self._flush(self._maindeck)
             else:
                 self._buffer = []
@@ -426,8 +440,8 @@ def is_arena_decklist(decklist: str) -> bool:
     return all(is_arena_line(l) or is_empty(l) for l in decklist.splitlines())
 
 
-class IllFormedArenaDecklist(ParsingError):
-    """Raised on no ill-formed Arena decklists being parsed as one.
+class MalformedDecklist(ParsingError):
+    """Raised on not correctly formed Arena decklists being parsed as one.
     """
 
 
@@ -438,7 +452,7 @@ def normalize_decklist(decklist: str) -> str:
     lines = [sanitize_whitespace(l) for l in decklist.splitlines()]
     decklists = LinesParser(*lines).parse(single_decklist_mode=True)
     if not decklists:
-        raise IllFormedArenaDecklist("Not a well formed Arena/MTGO text decklist")
+        raise MalformedDecklist("Not a correctly formed Arena/MTGO text decklist")
     return decklists[0]
 
 
@@ -448,7 +462,11 @@ _cached_decks: dict[str, Deck] = {}
 class ArenaParser(DeckParser):
     """Parse a text decklist in Arena/MTGO format into a Deck object.
     """
-    MAX_CARD_QUANTITY = 50
+    MAX_CARD_QUANTITY = 59
+
+    @property
+    def max_card_quantity(self) -> int:
+        return 99 if self._commander is not None else self.MAX_CARD_QUANTITY
 
     def __init__(self, decklist: str, metadata: Json | None = None) -> None:
         super().__init__(metadata)
@@ -459,7 +477,7 @@ class ArenaParser(DeckParser):
     def _pre_parse(self) -> None:
         self._decklist = normalize_decklist(self._decklist)
         self._decklist_hash = get_hash(self._decklist, 40, sep="-")
-        self._should_parse = self._decklist_hash not in _cached_decks
+        self._is_cached = self._decklist_hash in _cached_decks
 
     @override
     def _parse_metadata(self) -> None:
@@ -468,7 +486,7 @@ class ArenaParser(DeckParser):
     # last safeguard against lines that mimicked Arena lines successfully enough
     # not to be weeded out at this point
     def _quantity_exceeded(self, playset: list[Card]) -> bool:
-        max_quantity, word = self.MAX_CARD_QUANTITY, "card"
+        max_quantity, word = self.max_card_quantity, "card"
         if self._state.is_commander:
             max_quantity, word = 1, "commander card"
         elif self._state.is_companion:
@@ -482,42 +500,43 @@ class ArenaParser(DeckParser):
 
     @override
     def _parse_deck(self) -> None:
-        if self._should_parse:
-            for line in self._decklist.splitlines():
-                if _is_maindeck_header_line(line):
+        if self._is_cached:
+            return
+        for line in self._decklist.splitlines():
+            if _is_maindeck_header_line(line):
+                self._state.shift_to_maindeck()
+            elif _is_sideboard_header_line(line):
+                self._state.shift_to_sideboard()
+            elif _is_commander_header_line(line):
+                self._state.shift_to_commander()
+            elif _is_companion_header_line(line):
+                self._state.shift_to_companion()
+            elif _is_name_line(line):
+                self._metadata["name"] = line.removeprefix("Name ")
+            elif _is_playset_line(line):
+                if self._state.is_idle:
                     self._state.shift_to_maindeck()
-                elif _is_sideboard_header_line(line):
-                    self._state.shift_to_sideboard()
-                elif _is_commander_header_line(line):
-                    self._state.shift_to_commander()
-                elif _is_companion_header_line(line):
-                    self._state.shift_to_companion()
-                elif _is_name_line(line):
-                    self._metadata["name"] = line.removeprefix("Name ")
-                elif _is_playset_line(line):
-                    if self._state.is_idle:
-                        self._state.shift_to_maindeck()
 
-                    playset = PlaysetLine(line).to_playset()
-                    if self._quantity_exceeded(playset):
-                        continue
+                playset = PlaysetLine(line).to_playset()
+                if self._quantity_exceeded(playset):
+                    continue
 
-                    if self._state.is_sideboard:
-                        self._sideboard.extend(playset)
-                    elif self._state.is_commander:
-                        card = playset[0]
-                        self._set_commander(card)
-                    elif self._state.is_companion:
-                        self._companion = playset[0]
-                    elif self._state.is_maindeck:
-                        self._maindeck.extend(playset)
+                if self._state.is_sideboard:
+                    self._sideboard.extend(playset)
+                elif self._state.is_commander:
+                    card = playset[0]
+                    self._set_commander(card)
+                elif self._state.is_companion:
+                    self._companion = playset[0]
+                elif self._state.is_maindeck:
+                    self._maindeck.extend(playset)
 
     @override
     def _build_deck(self) -> Deck | None:
-        if self._should_parse:
-            deck = super()._build_deck()
-            _cached_decks[self._decklist_hash] = deck
+        if self._is_cached:
+            deck = _cached_decks[self._decklist_hash]
+            deck.replace_metadata(self._metadata)
             return deck
-        deck = _cached_decks[self._decklist_hash]
-        deck.replace_metadata(self._metadata)
+        deck = super()._build_deck()
+        _cached_decks[self._decklist_hash] = deck
         return deck
