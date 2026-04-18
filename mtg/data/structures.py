@@ -13,15 +13,13 @@ from functools import cached_property
 from operator import attrgetter
 from typing import Self
 
-from mtg.constants import Json
+from mtg.constants import CHANNEL_URL_TEMPLATE, Json, VIDEO_URL_TEMPLATE
 from mtg.deck.arena import ArenaParser
 from mtg.deck.core import Deck
 from mtg.lib.common import MarkdownTableCounter, breadcrumbs
 from mtg.lib.json import to_json
 from mtg.lib.scrape.core import extract_url, get_netloc_domain
 
-VIDEO_URL_TEMPLATE = "https://www.youtube.com/watch?v={}"
-CHANNEL_URL_TEMPLATE = "https://www.youtube.com/channel/{}"
 ACTIVE_THRESHOLD = 14  # days (2 weeks)
 DORMANT_THRESHOLD = 30 * 3  # days (ca 3 months)
 ABANDONED_THRESHOLD = 30 * 12  # days (ca. 1 yr)
@@ -32,8 +30,7 @@ EXCESSIVELY_DECK_STALE_THRESHOLD = 150  # videos
 
 @dataclass
 class VideoData:
-    id: str
-    author: str
+    yt_id: str
     title: str
     description: str
     keywords: list[str]
@@ -42,11 +39,12 @@ class VideoData:
     comment: str | None = None
     decks: list[Deck] = field(default_factory=list)
     # injected from Channel
+    author: str | None = None  # same as channel's title
     scrape_time: datetime | None = None
 
     @property
     def url(self) -> str:
-        return VIDEO_URL_TEMPLATE.format(self.id)
+        return VIDEO_URL_TEMPLATE.format(self.yt_id)
 
     @property
     def deck_urls(self) -> set[str]:
@@ -69,10 +67,11 @@ class VideoData:
     @property
     def as_dict(self) -> Json:
         data = asdict(self)
-        del data["scrape_time"]
         if not self.comment:
             del data["comment"]
         data["decks"] = [d.as_dict for d in data["decks"]]
+        del data["author"]
+        del data["scrape_time"]
         return data
 
     @cached_property
@@ -80,16 +79,18 @@ class VideoData:
         return to_json(self.as_dict)
 
     @classmethod
-    def from_dict(cls, data: Json, scrape_time: datetime | None = None) -> Self:
+    def from_dict(
+            cls, data: Json, author: str | None = None,
+            scrape_time: datetime | None = None) -> Self:
         field_names = {f.name for f in fields(cls)}
         data = {k: v for k, v in data.items() if k in field_names}
         data["decks"] = [ArenaParser(d["decklist"], d["metadata"]).parse() for d in data["decks"]]
-        return cls(**data, scrape_time=scrape_time)
+        return cls(**data, author=author, scrape_time=scrape_time)
 
 
 @dataclass
 class ChannelData:
-    id: str
+    yt_id: str
     title: str | None
     description: str | None
     tags: list[str] | None
@@ -99,7 +100,7 @@ class ChannelData:
 
     @property
     def url(self) -> str:
-        return CHANNEL_URL_TEMPLATE.format(self.id)
+        return CHANNEL_URL_TEMPLATE.format(self.yt_id)
 
     @property
     def decks(self) -> list[Deck]:
@@ -132,8 +133,8 @@ class ChannelData:
         """
         if not self.decks:
             return len(self.videos)
-        video_ids = [v.id for v in self.videos]
-        deck_video_ids = [v.id for v in self.videos if v.decks]
+        video_ids = [v.yt_id for v in self.videos]
+        deck_video_ids = [v.yt_id for v in self.videos if v.decks]
         return len(self.videos[:video_ids.index(deck_video_ids[0])])
 
     @property
@@ -216,7 +217,10 @@ class ChannelData:
     def from_dict(cls, data: Json, sort_videos_by_publish_time=True) -> Self:
         field_names = {f.name for f in fields(cls)}
         data = {k: v for k, v in data.items() if k in field_names}
-        data["videos"] = [VideoData.from_dict(v, data["scrape_time"]) for v in data["videos"]]
+        data["videos"] = [
+            VideoData.from_dict(v, data["title"], data["scrape_time"])
+            for v in data["videos"]
+        ]
         if sort_videos_by_publish_time:
             data["videos"].sort(key=attrgetter("publish_time"), reverse=True)
         return cls(**data)

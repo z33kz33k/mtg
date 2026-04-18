@@ -19,9 +19,10 @@ from typing import Callable, Iterator
 
 from tqdm import tqdm
 
-from mtg.constants import CHANNELS_DIR, FILENAME_TIMESTAMP_FORMAT, READABLE_TIMESTAMP_FORMAT, \
+from mtg.constants import CHANNELS_DIR, CHANNEL_URL_TEMPLATE, FILENAME_TIMESTAMP_FORMAT, \
+    READABLE_TIMESTAMP_FORMAT, \
     README_FILE, WITHDRAWN_DIR
-from mtg.data.structures import CHANNEL_URL_TEMPLATE, ChannelData, VideoData
+from mtg.data.structures import ChannelData, VideoData
 from mtg.lib.common import MarkdownTableCounter, logging_disabled
 from mtg.lib.numbers import get_ordinal_suffix
 from mtg.lib.time import naive_utc_now as utcnow
@@ -71,8 +72,9 @@ def clear_cache() -> None:
     _channels_cache.clear()
 
 
+# TODO: use DB
 def load_channel(channel_id: str) -> ChannelData:
-    """Load all earlier scraped data for a channel designated by the provided ID.
+    """Load all earlier scraped data for a channel designated by the provided YouTube ID.
     """
     if channel :=  _channels_cache.get(channel_id):
         return channel
@@ -105,7 +107,7 @@ def load_channel(channel_id: str) -> ChannelData:
     videos.sort(key=attrgetter("publish_time"), reverse=True)
 
     channel = ChannelData(
-        id=channels[0].id,
+        id=channels[0].yt_id,
         title=channels[0].title,
         description=channels[0].description,
         tags=channels[0].tags,

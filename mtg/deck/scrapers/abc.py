@@ -20,7 +20,7 @@ from mtg.constants import Json
 from mtg.deck.core import CardNotFound, Deck, InvalidDeck
 from mtg.deck.abc import JsonBasedDeckParser, NestedDeckParser, TagBasedDeckParser
 from mtg.session import ScrapingSession
-from mtg.lib.common import ParsingError, register_type
+from mtg.lib.common import Noop, ParsingError, register_type
 from mtg.lib.time import timed
 from mtg.lib.scrape.core import InaccessiblePage, ScrapingError, Soft404Error, Throttling, \
     fetch_soup, find_links, prepend_url, throttle
@@ -52,11 +52,14 @@ class DeckScraper(NestedDeckParser):
         word = f"'{word}'" if word else "XPath-defined"
         return f"Selenium timed out looking for {word} element(s)"
 
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
+    def __init__(
+            self, url: str, metadata: Json | None = None,
+            session: ScrapingSession | Noop | None = None) -> None:
         self._validate_url(url)
         url = url.removesuffix("/")
         super().__init__(metadata)
         self._url = self.normalize_url(url)
+        self._session = session or Noop()
         self._soup: BeautifulSoup | None = None  # for HTML-based scraping
         self._clipboard: str | None  = None  # for Selenium-based scraping
         self._data: Json | None = None  # for JSON-based scraping
@@ -147,21 +150,27 @@ class DeckScraper(NestedDeckParser):
             self, throttled=False, suppressed_errors=(ParsingError, ScrapingError)) -> Deck | None:
         """Scrape the input URL for a Deck object or None (if not possible).
         """
+        deck = None
         if throttled:
             throttle(*self.THROTTLING)
         try:
             self._pre_parse()
             self._parse_metadata()
             self._parse_deck()
-            return self._build_deck()
+            deck = self._build_deck()
         except (InvalidDeck, CardNotFound) as err:
             _log.warning(f"Scraping failed with: {err!r}")
-            return None
         except suppressed_errors as err:
             if isinstance(err, ParsingError) and not isinstance(err, (InvalidDeck, CardNotFound)):
                 err = ScrapingError(str(err), type(self), self.url)
             _log.warning(f"Scraping failed with: {err!r}")
-            return None
+        if deck:
+            deck_name = f"{deck.name!r} deck" if deck.name else "Deck"
+            _log.info(f"{deck_name} scraped successfully")
+            self._session.add_deck(deck.decklist, deck.metadata or None)
+        else:
+            self._session.add_failed_url(self.url)
+        return deck
 
     @classmethod
     def registered(cls, scraper_type: Type[Self]) -> Type[Self]:
@@ -171,12 +180,15 @@ class DeckScraper(NestedDeckParser):
         return scraper_type
 
     @classmethod
-    def from_url(cls, url: str, metadata: Json | None = None) -> Self | None:
+    def from_url(
+            cls, url: str,
+            metadata: Json | None = None,
+            session: ScrapingSession | Noop | None = None) -> Self | None:
         """Based on the input URL, return an instance of the appropriate deck scraper subclass.
         """
         for scraper_type in cls._REGISTRY:
             if scraper_type.is_valid_url(url):
-                return scraper_type(url, metadata)
+                return scraper_type(url, metadata, session)
         return None
 
     @classmethod
@@ -225,10 +237,6 @@ class ContainerScraper(DeckScraper):
             return name
         except ValueError:
             return cls.CONTAINER_NAME
-
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
-        self._urls_manager = UrlsStateManager()
 
     @override
     def _post_init(self) -> None:
@@ -319,8 +327,10 @@ class DeckUrlsContainerScraper(ContainerScraper):
     DECK_SCRAPERS: tuple[Type[DeckScraper], ...] = ()
     DECK_URL_PREFIX = ""
 
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
+    def __init__(
+            self, url: str, metadata: Json | None = None,
+            session: ScrapingSession | Noop | None = None) -> None:
+        super().__init__(url, metadata, session)
         self._deck_urls = []
 
     @staticmethod
@@ -363,9 +373,9 @@ class DeckUrlsContainerScraper(ContainerScraper):
             if not scraper:
                 continue
             normalized_deck_url = scraper.normalize_url(deck_url)
-            if self._urls_manager.is_scraped_url(normalized_deck_url):
+            if self._session.is_scraped_url(normalized_deck_url):
                 _log.info(f"Skipping already scraped deck URL: {normalized_deck_url!r}...")
-            elif self._urls_manager.is_failed_url(normalized_deck_url):
+            elif self._session.is_failed_url(normalized_deck_url):
                 _log.info(f"Skipping already failed deck URL: {normalized_deck_url!r}...")
             else:
                 throttle(*self.THROTTLING)
@@ -375,15 +385,15 @@ class DeckUrlsContainerScraper(ContainerScraper):
                     deck = scraper.scrape()
                 except ElementClickInterceptedException:
                     _log.warning("Unable to click on a deck link with Selenium. Skipping...")
-                    self._urls_manager.add_failed_url(normalized_deck_url)
+                    self._session.add_failed_url(normalized_deck_url)
                     continue
                 if deck:
                     deck_name = f"{deck.name!r} deck" if deck.name else "Deck"
                     _log.info(f"{deck_name} scraped successfully")
                     decks.append(deck)
-                    self._urls_manager.add_scraped(normalized_deck_url)
+                    self._session.add_deck(deck.decklist, deck.metadata or None)
                 else:
-                    self._urls_manager.add_failed_url(normalized_deck_url)
+                    self._session.add_failed_url(normalized_deck_url)
 
         return decks
 
@@ -405,8 +415,10 @@ class DeckTagsContainerScraper(ContainerScraper):
     _REGISTRY: set[Type[Self]] = set()  # override
     TAG_BASED_DECK_PARSER: Type[TagBasedDeckParser] | None = None
 
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
+    def __init__(
+            self, url: str, metadata: Json | None = None,
+            session: ScrapingSession | Noop | None = None) -> None:
+        super().__init__(url, metadata, session)
         if self.TAG_BASED_DECK_PARSER:
             self._metadata["url"] = self.url
         self._deck_tags: list[Tag] = []
@@ -433,6 +445,7 @@ class DeckTagsContainerScraper(ContainerScraper):
                 deck = None
             if deck:
                 decks.append(deck)
+                self._session.add_deck(deck.decklist, deck.metadata or None)
                 msg = f"Parsed deck {i}/{len(self._deck_tags)}"
                 if deck.name:
                     msg += f": {deck.name!r}"
@@ -441,10 +454,8 @@ class DeckTagsContainerScraper(ContainerScraper):
                 _log.warning(f"Failed to parse deck {i}/{len(self._deck_tags)}. Skipping...")
                 continue
 
-        if decks:
-            self._urls_manager.add_scraped(self.url)
-        else:
-            self._urls_manager.add_failed_url(self.url)
+        if not decks:
+            self._session.add_failed_url(self.url)
 
         return decks
 
@@ -466,8 +477,10 @@ class DecksJsonContainerScraper(ContainerScraper):
     _REGISTRY: set[Type[Self]] = set()  # override
     JSON_BASED_DECK_PARSER: Type[JsonBasedDeckParser] | None = None
 
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
+    def __init__(
+            self, url: str, metadata: Json | None = None,
+            session: ScrapingSession | Noop | None = None) -> None:
+        super().__init__(url, metadata, session)
         if self.JSON_BASED_DECK_PARSER:
             self._metadata["url"] = self.url
         self._decks_data: Json = []
@@ -494,6 +507,7 @@ class DecksJsonContainerScraper(ContainerScraper):
                 deck = None
             if deck:
                 decks.append(deck)
+                self._session.add_deck(deck.decklist, deck.metadata or None)
                 msg = f"Parsed deck {i}/{len(self._decks_data)}"
                 if deck.name:
                     msg += f": {deck.name!r}"
@@ -502,10 +516,8 @@ class DecksJsonContainerScraper(ContainerScraper):
                 _log.warning(f"Failed to parse deck {i}/{len(self._decks_data)}. Skipping...")
                 continue
 
-        if decks:
-            self._urls_manager.add_scraped(self.url)
-        else:
-            self._urls_manager.add_failed_url(self.url)
+        if not decks:
+            self._session.add_failed_url(self.url)
 
         return decks
 
@@ -534,8 +546,10 @@ class HybridContainerScraper(
     CONTAINER_SCRAPERS: tuple[Type[ContainerScraper], ...] = ()
     CONTAINER_URL_PREFIX = ""
 
-    def __init__(self, url: str, metadata: Json | None = None) -> None:
-        super().__init__(url, metadata)
+    def __init__(
+            self, url: str, metadata: Json | None = None,
+            session: ScrapingSession | Noop | None = None) -> None:
+        super().__init__(url, metadata, session)
         self._container_urls = []
 
     @staticmethod
@@ -616,11 +630,11 @@ class HybridContainerScraper(
                 continue  # avoid scraping self in infinite loop
             if scraper := self._dispatch_container_scraper(url, self._metadata):
                 normalized_url = scraper.normalize_url(url)
-                if self._urls_manager.is_scraped_url(normalized_url):
+                if self._session.is_scraped_url(normalized_url):
                     _log.info(
                         f"Skipping already scraped {scraper.short_name()} URL: "
                         f"{normalized_url!r}...")
-                elif self._urls_manager.is_failed_url(normalized_url):
+                elif self._session.is_failed_url(normalized_url):
                     _log.info(
                         f"Skipping already failed {scraper.short_name()} URL: "
                         f"{normalized_url!r}...")
@@ -630,10 +644,9 @@ class HybridContainerScraper(
                         f"({scraper.short_name()})...")
                     container_decks = scraper.scrape_decks()
                     if not container_decks:
-                        self._urls_manager.add_failed_url(normalized_url)
+                        self._session.add_failed_url(normalized_url)
                     else:
                         decks += [d for d in container_decks if d not in decks]
-                        self._urls_manager.add_scraped(normalized_url)
 
         for deck in decks:
             deck.update_metadata(outer_container_url=self.url)

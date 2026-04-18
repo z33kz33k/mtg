@@ -225,8 +225,8 @@ class PytubeChannelWrapper:
     def _retrieve_subscribers(self) -> int:
         if subscribers := self._nid.find(
                 lambda n: n.path.endswith("['text']['content']")
-                          and "metadataParts" in n.ancestors
-                          and "metadataRows" in n.ancestors
+                          and "metadataParts" in n.path
+                          and "metadataRows" in n.path
                           and isinstance(n.data, str)
         ):
             text = subscribers.data.removesuffix(" subscribers").removesuffix(" subscriber")

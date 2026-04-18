@@ -9,7 +9,6 @@
 """
 import json
 import logging
-import re
 import traceback
 import urllib.error
 from dataclasses import astuple
@@ -26,9 +25,10 @@ from tqdm import tqdm
 from youtube_comment_downloader import SORT_BY_POPULAR, YoutubeCommentDownloader
 
 from mtg import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper
-from mtg.constants import CHANNELS_DIR, FILENAME_TIMESTAMP_FORMAT, Json, PathLike
+from mtg.constants import CHANNELS_DIR, CHANNEL_URL_TEMPLATE, FILENAME_TIMESTAMP_FORMAT, Json, \
+    PathLike, VIDEO_URL_TEMPLATE
 from mtg.data.common import load_channel, retrieve_ids
-from mtg.data.structures import CHANNEL_URL_TEMPLATE, ChannelData, VIDEO_URL_TEMPLATE, VideoData
+from mtg.data.structures import ChannelData, VideoData
 from mtg.deck.arena import ArenaParser, LinesParser
 from mtg.deck.core import Deck, DeckParser
 from mtg.deck.scrapers.abc import DeckTagsContainerScraper, DecksJsonContainerScraper, \
@@ -44,8 +44,7 @@ from mtg.lib.time import naive_utc_now, timed
 from mtg.scryfall import all_formats
 from mtg.session import ScrapingSession
 from mtg.yt.expand import LinksExpander
-from mtg.yt.ptfix import PytubeVideoWrapper, PytubeChannelWrapper
-
+from mtg.yt.ptfix import PytubeChannelWrapper, PytubeVideoWrapper
 
 _log = logging.getLogger(__name__)
 DEAD_THRESHOLD = 2000  # days (ca. 5.5 yrs) - only used in gsheet to trim dead from abandoned
@@ -125,10 +124,10 @@ class VideoScraper:
     @property
     def deck_metadata(self) -> Json:
         metadata = {}
-        if self._derived_format:
-            metadata["format"] = self._derived_format
-        if self._derived_name:
-            metadata["name"] = self._derived_name
+        if self._derived_deck_format:
+            metadata["format"] = self._derived_deck_format
+        if self._derived_deck_name:
+            metadata["name"] = self._derived_deck_name
         if self._author:
             metadata["author"] = self._author
         if self._publish_time:
@@ -143,19 +142,20 @@ class VideoScraper:
     def channel_id(self) -> str | None:
         return self._channel_id
 
-    def __init__(self, video_id: str, session: ScrapingSession | None) -> None:
+    def __init__(self, video_id: str, session: ScrapingSession | Noop | None) -> None:
         """Initialize.
 
         Args:
             video_id: unique string identifying a YouTube video (the part after `v=` in the URL)
         """
         self._yt_id = video_id
-        self._session = session or Noop
+        self._session = session or Noop()
         # description and title is also available in scrapetube data on Channel abstraction layer
         self._author, self._description, self._title = None, None, None
         self._keywords, self._publish_time, self._views = None, None, None
         self._comment, self._channel_id = None, None
         self._pytube, self._data = None, None
+        self._derived_deck_format, self._derived_deck_name = None, None
 
     @backoff.on_exception(
         backoff.expo,
@@ -185,8 +185,16 @@ class VideoScraper:
     def _scrape_video(self) -> None:
         self._pytube = self._get_pytube()
         self._save_pytube_data()
+        self._session.add_video(
+            yt_id=self._yt_id,
+            title=self._title,
+            descritpion=self._description,
+            keywords=self._keywords,
+            publish_time=self._publish_time,
+            views=self._views,
+        )
 
-    def _derive_format(self) -> str | None:
+    def _derive_deck_format(self) -> str | None:
         # first, check the keywords
         if self._keywords:
             if fmt := DeckParser.derive_format_from_words(*self._keywords, use_japanese=True):
@@ -195,7 +203,7 @@ class VideoScraper:
         return DeckParser.derive_format_from_text(
             self._title + self._description, use_japanese=True)
 
-    def _derive_name(self) -> str | None:
+    def _derive_deck_name(self) -> str | None:
         if not self._keywords:
             return None
         # identify title parts that are also parts of keywords
@@ -274,35 +282,26 @@ class VideoScraper:
         author_comments = [c for c in comments if c["channel"] == self.channel_id]
         return [line for c in author_comments for line in c["text"].splitlines()]
 
-    def _process_deck(self, link: str) -> Deck | None:
+    def _scrape_deck(self, link: str) -> Deck | None:
         deck = None
-        if scraper := DeckScraper.from_url(link, self.deck_metadata):
+        if scraper := DeckScraper.from_url(link, self.deck_metadata, self._session):
             normalized_link = scraper.normalize_url(link)
-            if self._urls_manager.is_scraped_url(normalized_link):
+            if self._session.is_scraped_url(normalized_link):
                 _log.info(f"Skipping already scraped deck URL: {normalized_link!r}...")
                 return None
-            elif self._urls_manager.is_failed_url(normalized_link):
+            elif self._session.is_failed_url(normalized_link):
                 _log.info(f"Skipping already failed deck URL: {normalized_link!r}...")
                 return None
             try:
                 deck = scraper.scrape(throttled=type(scraper) in get_throttled_deck_scrapers())
             except ReadTimeout:
                 _log.warning(f"Back-offed scraping of {link!r} failed with read timeout")
-            if not deck:
-                self._urls_manager.add_failed_url(normalized_link)
-
-        if deck:
-            deck_name = f"{deck.name!r} deck" if deck.name else "Deck"
-            _log.info(f"{deck_name} scraped successfully")
-            if deck_url := deck.metadata.get("url"):
-                self._urls_manager.add_scraped(deck_url)
-
         return deck
 
     def _process_urls(self, *urls: str) -> list[Deck]:
         decks = []
         for url in urls:
-            if deck := self._process_deck(url):
+            if deck := self._scrape_deck(url):
                 decks.append(deck)
         return decks
 
@@ -319,6 +318,8 @@ class VideoScraper:
                     deck_name = f"{deck.name!r} deck" if deck.name else "Deck"
                     _log.info(f"{deck_name} scraped successfully")
                     decks.append(deck)
+        for deck in decks:
+            self._session.add_deck(deck.decklist, deck.metadata or None)
         return decks
 
     def _collect(self, links: list[str], lines: list[str]) -> list[Deck]:
@@ -337,35 +338,30 @@ class VideoScraper:
             # individual deck URL; skipping for hybrid scrapers happens ONLY if their JSON or tag
             # parts flag the container URL as scraped/failed
             if scraper := DeckUrlsContainerScraper.from_url(
-                    link, self.deck_metadata):
+                    link, self.deck_metadata, self._session):
                 decks.update(scraper.scrape_decks())
             elif scraper := DecksJsonContainerScraper.from_url(
-                    link, self.deck_metadata) or DeckTagsContainerScraper.from_url(
-                link, self.deck_metadata) or HybridContainerScraper.from_url(
-                link, self.deck_metadata):
+                    link, self.deck_metadata, self._session) or DeckTagsContainerScraper.from_url(
+                link, self.deck_metadata, self._session) or HybridContainerScraper.from_url(
+                link, self.deck_metadata, self._session):
                 normalized_link = scraper.normalize_url(link)
-                if self._urls_manager.is_scraped_url(normalized_link):
+                if self._session.is_scraped_url(normalized_link):
                     _log.info(
                         f"Skipping already scraped {scraper.short_name()} URL: "
                         f"{normalized_link!r}...")
                     continue
-                if self._urls_manager.is_failed_url(normalized_link):
+                if self._session.is_failed_url(normalized_link):
                     _log.info(
                         f"Skipping already failed {scraper.short_name()} URL: "
                         f"{normalized_link!r}...")
                     continue
                 decks.update(scraper.scrape_decks())
 
-        for deck in decks:
-            self._decklists_manager.add_regular(deck.decklist_hash, deck.decklist)
-            self._decklists_manager.add_with_printings(
-                deck.decklist_with_printings_hash, deck.decklist_with_printings)
-
         return sorted(decks)
 
     def _scrape_decks(self) -> None:
-        self._derived_format = self._derive_format()
-        self._derived_name = self._derive_name()
+        self._derived_deck_format = self._derive_deck_format()
+        self._derived_deck_name = self._derive_deck_name()
         links, lines = self._parse_lines(self._title, *self._desc_lines)
         self._decks = self._collect(links, lines)
         if not self._decks:  # try with author's comment
@@ -375,6 +371,7 @@ class VideoScraper:
                 self._decks = self._collect(links, lines)
                 if self._decks:
                     self._comment = "\n".join(comment_lines)
+                    self._session.update_video_comment(self._comment)
         self._session.bump_decks(len(self._decks))
 
     @timed("video scraping")
@@ -382,9 +379,9 @@ class VideoScraper:
     def scrape(self) -> None:
         self._scrape_video()
         self._scrape_decks()
+        # saving author in data is redundant as it's the same as the channel's title
         self._data = VideoData(
             self._yt_id,
-            self._author,
             self._title,
             self._description,
             self._keywords,
@@ -393,23 +390,6 @@ class VideoScraper:
             self._comment,
             self._decks
         )
-
-    # not used
-    def get_channel_subscribers(self) -> int | None:
-        if not self._pytube:
-            return None
-
-        pattern = r'(\d+(?:\.\d+)?)\s*([KMB]?)\s*subscribers'
-        match = re.search(pattern, self._pytube.embed_html) or re.search(
-            pattern, self._pytube.watch_html)
-
-        if match:
-            # extract the number and suffix from the match
-            number = float(match.group(1))
-            suffix = match.group(2)
-            return multiply_by_symbol(number, suffix)
-
-        return None
 
 
 class MissingChannelData(ScrapingError):
@@ -442,7 +422,7 @@ class ChannelScraper:
 
     def __init__(self, channel_id: str, session: ScrapingSession | None) -> None:
         self._yt_id = channel_id
-        self._session = session or Noop
+        self._session = session or Noop()
         self._title, self._subscribers, self._description, self._tags = None, None, None, None
         self._scrape_time, self._videos = None, []
         self._data = None
@@ -507,7 +487,7 @@ class ChannelScraper:
             _log.warning(
                 "You cannot reason about unscraped IDs without a session. If you used `scrape()`, "
                 "use `scrape_videos()` passing video IDs explicitly instead")
-            return
+            return []
         video_ids = self._get_unscraped_video_ids(limit, only_newer_than_last_scraped)
         if not soft_limit:
             return video_ids
@@ -596,11 +576,8 @@ class ChannelScraper:
             self._videos.append(scraper.data)
             self._session.bump_video()
 
-        # if not self._subscribers and scraper:
-        #     self._subscribers = scraper.get_channel_subscribers()
-
         self._data = ChannelData(
-            id=self._yt_id,
+            yt_id=self._yt_id,
             title=self._title,
             description=self._description,
             tags=sorted(set(self._tags)) if self._tags else None,
@@ -670,18 +647,19 @@ class ChannelScraper:
 
 @http_requests_counted("channel videos scraping")
 @timed("channel videos scraping")
-def scrape_channel_videos(channel_id: str, *video_ids: str) -> bool:
+def scrape_channel_videos(session: ScrapingSession, channel_id: str, *video_ids: str) -> bool:
     """Scrape specified videos of a YouTube channel in a session.
 
     Scraped channel's data is saved in a .json file and session ensures decklists are saved
     in global decklists repositories.
 
     Args:
+        session: a scraping session context manager
         channel_id: YouTube ID of a channel to scrape
         *video_ids: YouTube IDs of videos to scrape
     """
     try:
-        ch = ChannelScraper(channel_id)
+        ch = ChannelScraper(channel_id, session)
         _log.info(f"Scraping {len(video_ids)} video(s) from channel {ch.url_title_text()}...")
         ch.scrape_videos(*video_ids)
         if ch.data:
@@ -712,10 +690,10 @@ def scrape_channels(
         only_newer_than_last_scraped: if True, only scrape videos newer than the last one scraped
         soft_limit: if True, extend the limit indefinitely unless not exactly met
     """
-    with ScrapingSession():
+    with ScrapingSession() as session:
         for i, chid in enumerate(chids, start=1):
             try:
-                ch = ChannelScraper(chid)
+                ch = ChannelScraper(chid, session)
                 _log.info(f"Scraping channel {i}/{len(chids)}: {ch.url_title_text()}...")
                 ch.scrape(videos_limit, only_newer_than_last_scraped, soft_limit)
                 if ch.data:

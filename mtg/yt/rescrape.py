@@ -123,12 +123,12 @@ def backup_channel_files(chid: str, *files: PathLike) -> None:
         shutil.copy(f, dst)
 
 
-def _process_videos(channel_id: str, *video_ids: str) -> None:
+def _process_videos(session: ScrapingSession, channel_id: str, *video_ids: str) -> None:
     files = find_channel_files(channel_id, *video_ids)
     if not files:
         return
     backup_channel_files(channel_id, *files)
-    if scrape_channel_videos(channel_id, *video_ids):
+    if scrape_channel_videos(session, channel_id, *video_ids):
         for f in files:
             prune_channel_file(f, *video_ids)
 
@@ -153,7 +153,7 @@ def rescrape_missing_decklists() -> None:
         for i, (channel_id, video_ids) in enumerate(channels.items(), start=1):
             _log.info(
                 f"Re-scraping ==> {i}/{len(channels)} <== channel for missing decklists data...")
-            _process_videos(channel_id, *video_ids)
+            _process_videos(session, channel_id, *video_ids)
 
 
 @http_requests_counted("re-scraping videos")
@@ -182,7 +182,7 @@ def rescrape_videos(
         for i, (channel_id, videos) in enumerate(channels.items(), start=1):
             _log.info(
                 f"Re-scraping {len(videos)} video(s) of ==> {i}/{len(channels)} <== channel...")
-            _process_videos(channel_id, *[v.id for v in videos])
+            _process_videos(session, channel_id, *[v.id for v in videos])
 
 
 def rescrape_by_date(

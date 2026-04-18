@@ -111,17 +111,19 @@ class ScrapingSession:
             f"{self._cooloff.total_channels} channel(s) scraped in total")
 
         # db session finalization
-        elapsed = get_formatted_time(timer() - self._start)
-        if exc_type is None:
-            _log.info(f"Scraping session finished successfully in {elapsed}. Committing changes "
-                      f"to the database...")
-            self._db.commit()
-        else:
-            _log.warning(
-                f"Scraping aborted after {elapsed} due to {exc_type}. Rolling back the database "
-                f"changes...")
-            self._db.rollback()
-        self._db.close()
+        try:
+            elapsed = get_formatted_time(timer() - self._start)
+            if exc_type is None:
+                _log.info(f"Scraping session finished successfully in {elapsed}. Committing changes "
+                          f"to the database...")
+                self._db.commit()
+            else:
+                _log.warning(
+                    f"Scraping aborted after {elapsed} due to {exc_type}. Rolling back the database "
+                    f"changes...")
+                self._db.rollback()
+        finally:
+            self._db.close()
 
         self._cooloff = None
         self._current_channel, self._current_snapshot, self._current_video = None, None, None
@@ -173,7 +175,7 @@ class ScrapingSession:
 
     def add_video(
             self, yt_id: str, title: str, descritpion: str, keywords: list[str],
-            publish_time: datetime, views: int, comment: str | None) -> None:
+            publish_time: datetime, views: int) -> None:
         """Add video designated by the passed arguments to this session and set it as the current
         one.
         """
@@ -183,7 +185,6 @@ class ScrapingSession:
             description=descritpion,
             publish_time=publish_time,
             views=views,
-            comment=comment,
         )
         self._db.add(video)
 
@@ -198,6 +199,12 @@ class ScrapingSession:
 
         self._current_snapshot.videos.append(video)
         self._current_video = video
+        self._db.flush()
+
+    def update_video_comment(self, comment: str) -> None:
+        """Update the current video's comment attribute.
+        """
+        self._current_video.comment = comment
         self._db.flush()
 
     def _remove_scraped_url_from_failed(self, json_metadata: dict):
