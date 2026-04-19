@@ -73,15 +73,15 @@ class ScrapingSession:
 
     @property
     def ignore_scraped(self) -> bool:
-        """Return True, if avoidance of already scraped deck URLs should be switched off for this
-        session.
+        """Return True, if avoidance of already scraped deck URLs / parsed decklists should be
+        switched off for this session.
         """
         return self.__ignore_scraped
 
     @ignore_scraped.setter
     def ignore_scraped(self, value: bool) -> None:
-        """Set to True, if avoidance of already scraped deck URLs should be switched off for this
-        session.
+        """Set to True, if avoidance of already scraped deck URLs / parsed decklists should be
+        switched off for this session.
         """
         self.__ignore_scraped = value
 
@@ -245,6 +245,22 @@ class ScrapingSession:
                     if deck.json_metadata and (deck_url := deck.json_metadata.get("url")):
                         if normalize_url(url) == normalize_url(deck_url):
                             return True
+        return False
+
+
+    def is_parsed_decklist(self, decklist: str) -> bool:
+        """Return True, if passed decklist is among already parsed decklists for the current 
+        channel.
+        """
+        if self.ignore_scraped:
+            return False
+
+        sha = get_hash(decklist, 40, sep="-")
+        for snapshot in self._current_channel.snapshots:
+            for video in snapshot.videos:
+                for deck in video.decks:
+                    if deck.decklist.hash == sha:
+                        return True
         return False
 
     def is_failed_url(self, url: str) -> bool:

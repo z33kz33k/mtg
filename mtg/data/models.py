@@ -22,6 +22,9 @@ from datetime import datetime
 from sqlalchemy import Column, ForeignKey, Index, Integer, JSON, String, Table, Text
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
+from mtg.data.structures import ChannelData, VideoData, Deck as DeckData
+from mtg.deck.arena import ArenaParser
+
 
 class Base(DeclarativeBase):
     pass
@@ -59,6 +62,10 @@ class Channel(Base):
         back_populates="channel", cascade="all, delete-orphan")
     failed_urls: Mapped[list["FailedUrl"]] = relationship(
         back_populates="channel", cascade="all, delete-orphan")
+
+    @property
+    def data(self) -> ChannelData:
+        pass # TODO: put here the current channel-loading logic
 
 
 class Snapshot(Base):
@@ -114,6 +121,19 @@ class Video(Base):
     decks: Mapped[list["Deck"]] = relationship(
         back_populates="video", cascade="all, delete-orphan")
 
+    @property
+    def data(self) -> VideoData:
+        return VideoData(
+            yt_id=self.yt_id,
+            title=self.title,
+            description=self.description,
+            keywords=[kw.text for kw in self.keywords],
+            publish_time=self.publish_time,
+            views=self.views,
+            comment=self.comment,
+            decks=[d.data for d in self.decks if d.data],
+        )
+
 
 class Tag(Base):
     """Represents either a YouTube channel's tag or a YouTube video's keyword.
@@ -142,11 +162,15 @@ class Deck(Base):
     video_id: Mapped[int] = mapped_column(ForeignKey("videos.id"))
     decklist_id: Mapped[int | None] = mapped_column(ForeignKey("decklists.id"))
 
-    # needs to be different from `Base.metadata`
+    # needs to have name different from 'metadata' not to overshadow `Base.metadata`
     json_metadata: Mapped[dict | None] = mapped_column(JSON)
 
     video: Mapped["Video"] = relationship(back_populates="decks")
     decklist: Mapped["Decklist"] = relationship(back_populates="decks")
+
+    @property
+    def data(self) -> DeckData | None:
+        return ArenaParser(self.decklist.text, self.json_metadata).parse()
 
 
 class Decklist(Base):

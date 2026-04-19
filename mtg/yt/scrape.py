@@ -309,15 +309,21 @@ class VideoScraper:
         decks, lp = [], LinesParser(*lines)
         for decklist in lp.parse():
             if deck := ArenaParser(decklist, self.deck_metadata).parse():
+                if self._session.is_parsed_decklist(deck.decklist):
+                    _log.info(f"Skipping already parsed text decklist...")
+                    continue
                 deck_name = f"{deck.name!r} deck" if deck.name else "Deck"
                 _log.info(f"{deck_name} scraped successfully")
                 decks.append(deck)
         if not decks:
             if decklists := lp.parse(single_decklist_mode=True):
                 if deck := ArenaParser(decklists[0], self.deck_metadata).parse():
-                    deck_name = f"{deck.name!r} deck" if deck.name else "Deck"
-                    _log.info(f"{deck_name} scraped successfully")
-                    decks.append(deck)
+                    if self._session.is_parsed_decklist(deck.decklist):
+                        _log.info(f"Skipping already parsed text decklist...")
+                    else:
+                        deck_name = f"{deck.name!r} deck" if deck.name else "Deck"
+                        _log.info(f"{deck_name} scraped successfully")
+                        decks.append(deck)
         for deck in decks:
             self._session.add_deck(deck.decklist, deck.metadata or None)
         return decks
@@ -325,13 +331,10 @@ class VideoScraper:
     def _collect(self, links: list[str], lines: list[str]) -> list[Deck]:
         decks: set[Deck] = set()
 
-        # 1st stage: URLs
+        # 1st stage: deck links
         decks.update(self._process_urls(*links))
 
-        # 2nd stage: text decklists
-        decks.update(self._process_lines(*lines))
-
-        # 3rd stage: deck containers
+        # 2nd stage: deck container links
         for link in links:
             # skipping of already scraped/failed links for JSON, tag and hybrid scrapers happens
             # here; the same skipping happens for deck URLs scrapers within them per each
@@ -356,6 +359,9 @@ class VideoScraper:
                         f"{normalized_link!r}...")
                     continue
                 decks.update(scraper.scrape_decks())
+
+        # 3rd stage: text decklists
+        decks.update(self._process_lines(*lines))
 
         return sorted(decks)
 

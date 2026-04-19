@@ -98,8 +98,9 @@ class PlaysetLine:
             self._name, self._set_code, self._collector_number = rest, "", ""
             if "(" in self.name and ")" in self.name and (self.name and self.name[-1].isdigit()):
                 _log.warning(
-                    f"{self.name!r} looks fishy for a card name. It seems like {line!r} Arena line "
-                    f"is in format with printings and hasn't been recognized as such by the parser")
+                    f"{self.name!r} looks fishy for a card name. It seems like {line!r} decklist "
+                    f"line is in format with printings and hasn't been recognized as such by the "
+                    f"parser")
         self._name = self._name.replace(ARENA_MULTIFACE_SEPARATOR, SCRYFALL_MULTIFACE_SEPARATOR)
 
     def __repr__(self) -> str:
@@ -441,7 +442,7 @@ def is_arena_decklist(decklist: str) -> bool:
 
 
 class MalformedDecklist(ParsingError):
-    """Raised on not correctly formed Arena decklists being parsed as one.
+    """Raised on a not correctly formed Arena/MTGO text decklist being parsed as one.
     """
 
 
@@ -483,7 +484,7 @@ class ArenaParser(DeckParser):
     def _parse_metadata(self) -> None:
         pass
 
-    # last safeguard against lines that mimicked Arena lines successfully enough
+    # last safeguard against lines that mimicked decklist lines successfully enough
     # not to be weeded out at this point
     def _quantity_exceeded(self, playset: list[Card]) -> bool:
         max_quantity, word = self.max_card_quantity, "card"
