@@ -43,7 +43,6 @@ def retrieve_or_create(session: Session, model: type[Base], **attrs) -> Base:
         return instance
     instance = model(**attrs)
     session.add(instance)
-    session.flush()
     return instance
 
 

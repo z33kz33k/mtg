@@ -8,41 +8,33 @@
 
 """
 import itertools
-import json
 import logging
 import shutil
-import sys
 from collections import defaultdict
-from datetime import datetime
-from operator import attrgetter, itemgetter
+from datetime import date, datetime
+from operator import itemgetter
 from typing import Callable, Iterator
 
+from sqlalchemy import delete, exists, select
 from tqdm import tqdm
 
 from mtg.constants import CHANNELS_DIR, CHANNEL_URL_TEMPLATE, FILENAME_TIMESTAMP_FORMAT, \
-    READABLE_TIMESTAMP_FORMAT, \
-    README_FILE, WITHDRAWN_DIR
+    READABLE_TIMESTAMP_FORMAT, README_FILE, WITHDRAWN_DIR
+from mtg.data.db import DefaultSession
+from mtg.data.models import Channel, Snapshot
 from mtg.data.structures import ChannelData, VideoData
-from mtg.lib.common import MarkdownTableCounter, logging_disabled
-from mtg.lib.numbers import get_ordinal_suffix
-from mtg.lib.time import naive_utc_now as utcnow
-from mtg.lib.files import get_dir
+from mtg.lib.common import MarkdownTableCounter
 from mtg.lib.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
-from mtg.lib.json import from_json
+from mtg.lib.numbers import get_ordinal_suffix
 from mtg.lib.scrape.core import fetch_soup
+from mtg.lib.time import naive_utc_now
 
 _log = logging.getLogger(__name__)
 _channels_cache: dict[str, ChannelData] = {}
 
 
-def get_channels_count() -> int:
-    """Return number of currently existing channel folders.
-    """
-    return len([d for d in CHANNELS_DIR.iterdir() if d.is_dir()])
-
-
 def retrieve_ids(sheet="channels") -> list[str]:
-    """Retrieve channel IDs from a private Google Sheet spreadsheet.
+    """Retrieve channel YouTube IDs from a private Google Sheet spreadsheet.
 
     Mind that this operation takes about 4 seconds to complete.
     """
@@ -72,51 +64,19 @@ def clear_cache() -> None:
     _channels_cache.clear()
 
 
-# TODO: use DB
-def load_channel(channel_id: str) -> ChannelData:
+def load_channel(channel_id: str) -> ChannelData | None:
     """Load all earlier scraped data for a channel designated by the provided YouTube ID.
     """
     if channel :=  _channels_cache.get(channel_id):
         return channel
 
-    channel_dir = get_dir(CHANNELS_DIR / channel_id)
-    _log.info(f"Loading channel data from: '{channel_dir}'...")
-    files = [f for f in channel_dir.iterdir() if f.is_file() and f.suffix.lower() == ".json"]
-    if not files:
-        raise FileNotFoundError(f"No channel files found at: '{channel_dir}'")
-    channels = []
-    for file in files:
-        try:
-            data = from_json(file.read_text(encoding="utf-8"))
-        except json.JSONDecodeError:
-            _log.critical(f"Failed to load channel data from: '{file}'")
-            sys.exit(1)
-        channels.append(ChannelData.from_dict(data, sort_videos_by_publish_time=False))
-    channels.sort(key=attrgetter("scrape_time"), reverse=True)
+    with DefaultSession() as session:
+        stmt = select(Channel).where(Channel.yt_id == channel_id)
+        channel = session.scalar(stmt)
 
-    videos_map = defaultdict(list)
-    for video in itertools.chain(*[c.videos for c in channels]):
-        videos_map[video.id].append(video)
-
-    videos = []
-    for same_video_batch in videos_map.values():
-        if len(same_video_batch) > 1:
-            same_video_batch.sort(key=attrgetter("scrape_time"), reverse=True)
-        videos.append(same_video_batch[0])
-
-    videos.sort(key=attrgetter("publish_time"), reverse=True)
-
-    channel = ChannelData(
-        id=channels[0].yt_id,
-        title=channels[0].title,
-        description=channels[0].description,
-        tags=channels[0].tags,
-        subscribers=channels[0].subscribers,
-        scrape_time=channels[0].scrape_time,
-        videos=videos,
-    )
-    _channels_cache[channel_id] = channel
-    return channel
+    if channel:
+        _channels_cache[channel_id] = channel.data
+    return channel.data
 
 
 def load_channels(*channel_ids: str) -> Iterator[ChannelData]:
@@ -125,9 +85,9 @@ def load_channels(*channel_ids: str) -> Iterator[ChannelData]:
     If nothing is specified, all known channels are considered.
     """
     chids = channel_ids or retrieve_ids()
-    with logging_disabled():
-        for chid in chids:
-            yield load_channel(chid)
+    for chid in chids:
+        if channel := load_channel(chid):
+            yield channel
 
 
 def update_gsheet() -> None:
@@ -137,8 +97,7 @@ def update_gsheet() -> None:
     for chid in tqdm(chids, total=len(chids), desc="Loading channels data..."):
         url = CHANNEL_URL_TEMPLATE.format(chid)
         try:
-            with logging_disabled():
-                ch = load_channel(chid)
+            ch = load_channel(chid)
             formats = sorted(ch.deck_formats.items(), key=itemgetter(1), reverse=True)
             formats = [pair[0] for pair in formats]
             deck_sources = sorted(ch.deck_sources.items(), key=itemgetter(1), reverse=True)
@@ -227,8 +186,8 @@ def get_duplicates() -> list[str]:
     return duplicates
 
 
-def parse_channel_data_filename(filename: str) -> tuple[str, datetime]:
-    """Parse channel data's filename into the channel ID and timestamp's datetime embedded in it.
+def parse_snapshot_filename(filename: str) -> tuple[str, datetime]:
+    """Parse channel snapshot's filename into the channel ID and timestamp's datetime embedded in it.
     """
     if not filename.endswith("_channel.json") or "___" not in filename:
         raise ValueError(f"Not a channel data filename: {filename!r}")
@@ -237,40 +196,55 @@ def parse_channel_data_filename(filename: str) -> tuple[str, datetime]:
         timestamp.removesuffix("_channel.json"), FILENAME_TIMESTAMP_FORMAT)
 
 
-def remove_channel_data(*range_: datetime | str) -> None:
-    """Remove all channel data files within the specified time range.
+def remove_channel_data(*range_: date | datetime | str, include_withdrawn=False) -> None:
+    """Remove all channel snapshots within the specified time range.
 
-    Range can be expressed as datime, or equivalent string(s) (in "%Y-%m-%d %H:%M:%S" format).
-    An omitted end time defaults to now.
+    All data with scrape times LATER or equal to start and EARLIER or equal to end is removed.
+
+    Range can be expressed as datetime, date, or equivalent string(s) (in "%Y-%m-%d [%H:%M:%S]"
+    format). An omitted end time defaults to now.
 
     Args:
         range_: start (and, optionally, end) of the time range
+        include_withdrawn: if True, include withdrawn channels in removal (default: False)
     """
     if len(range_) == 1:
-        start, end = range_[0], utcnow()
+        start, end = range_[0], naive_utc_now()
     elif len(range_) == 2:
         start, end = range_
     else:
         raise ValueError(f"Invalid range: {range_}")
 
-    if isinstance(start, str):
-        start_str = start
-        start = datetime.strptime(start, READABLE_TIMESTAMP_FORMAT)
-    else:
-        start_str = start.strftime(READABLE_TIMESTAMP_FORMAT)
-    if isinstance(end, str):
-        end_str = end
-        end = datetime.strptime(end, READABLE_TIMESTAMP_FORMAT)
-    else:
-        end_str = end.strftime(READABLE_TIMESTAMP_FORMAT)
+    for i, item in enumerate((start, end)):
+        if isinstance(item, str):
+            try:
+                item = datetime.strptime(item, READABLE_TIMESTAMP_FORMAT)
+            except ValueError:
+                dt = date.fromisoformat(item)
+                item = datetime.combine(dt, datetime.min.time())
+        elif isinstance(item, date):
+            item = datetime.combine(item, datetime.min.time())
 
-    _log.info(f"Removing channel data between {start_str} and {end_str}...")
-    for channel_dir in [d for d in CHANNELS_DIR.iterdir() if d.is_dir()]:
-        for file in [f for f in channel_dir.iterdir() if f.is_file()]:
-            channel_id, timestamp = parse_channel_data_filename(file.name)
-            if start <= timestamp <= end:
-                _log.info(f"Removing file: '{file}'...")
-                file.unlink()
+        if i == 0:
+            start = item
+            start_str = start.strftime(READABLE_TIMESTAMP_FORMAT)
+        elif i == 1:
+            end = item
+            end_str = end.strftime(READABLE_TIMESTAMP_FORMAT)
+
+    _log.info(f"Removing channel snapshots with scrape times between {start_str} and {end_str}...")
+
+    with DefaultSession.begin() as session:
+        if include_withdrawn:
+            stmt = delete(Snapshot).where(Snapshot.scrape_time.between(start, end))
+        else:
+            stmt = delete(Snapshot).where(
+                exists()
+                .where(Channel.id == Snapshot.channel_id)
+                .where(Channel.is_withdrawn == False)
+            ).where(Snapshot.scrape_time.between(start, end))
+        result = session.execute(stmt)
+    _log.info(f"Removed {result.rowcount} snapshot(s)")
 
 
 def find_dangling_decklists() -> dict[str, str]:

@@ -18,6 +18,7 @@
 
 """
 from datetime import datetime
+from operator import attrgetter
 
 from sqlalchemy import Column, ForeignKey, Index, Integer, JSON, String, Table, Text
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
@@ -64,8 +65,24 @@ class Channel(Base):
         back_populates="channel", cascade="all, delete-orphan")
 
     @property
-    def data(self) -> ChannelData:
-        pass # TODO: put here the current channel-loading logic
+    def data(self) -> ChannelData | None:
+        if not self.snapshots:
+            return None
+        snapshots = sorted(self.snapshots, key=attrgetter("scrape_time"), reverse=True)
+        videos = sorted(
+            (v.data for s in snapshots for v in s.videos),
+            key=attrgetter("publish_time"),
+            reverse=True
+        )
+        return ChannelData(
+            yt_id=self.yt_id,
+            title=snapshots[0].title,
+            description=snapshots[0].description,
+            tags=[t.text for t in snapshots[0].tags],
+            subscribers=snapshots[0].subscribers,
+            scrape_time=snapshots[0].scrape_time,
+            videos=videos
+        )
 
 
 class Snapshot(Base):
