@@ -15,13 +15,13 @@ from datetime import date, datetime
 from operator import itemgetter
 from typing import Callable, Iterator
 
-from sqlalchemy import delete, exists, select
+from sqlalchemy import delete, exists, select, update
 from tqdm import tqdm
 
 from mtg.constants import CHANNELS_DIR, CHANNEL_URL_TEMPLATE, FILENAME_TIMESTAMP_FORMAT, \
     READABLE_TIMESTAMP_FORMAT, README_FILE, WITHDRAWN_DIR
 from mtg.data.db import DefaultSession
-from mtg.data.models import Channel, Snapshot
+from mtg.data.models import Channel, Deck, Decklist, Snapshot
 from mtg.data.structures import ChannelData, VideoData
 from mtg.lib.common import MarkdownTableCounter
 from mtg.lib.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
@@ -67,20 +67,23 @@ def clear_cache() -> None:
 def load_channel(channel_id: str) -> ChannelData | None:
     """Load all earlier scraped data for a channel designated by the provided YouTube ID.
     """
-    if channel :=  _channels_cache.get(channel_id):
-        return channel
+    if channel_data :=  _channels_cache.get(channel_id):
+        return channel_data
 
     with DefaultSession() as session:
-        stmt = select(Channel).where(Channel.yt_id == channel_id)
+        stmt = select(Channel).where(Channel.is_withdrawn == False, Channel.yt_id == channel_id)
         channel = session.scalar(stmt)
+        if channel:
+            channel_data = channel.data
 
-    if channel:
-        _channels_cache[channel_id] = channel.data
-    return channel.data
+    if channel_data:
+        _channels_cache[channel_id] = channel_data
+
+    return channel_data
 
 
 def load_channels(*channel_ids: str) -> Iterator[ChannelData]:
-    """Load channel data for specified IDs.
+    """Load channel data for specified YouTube channel IDs.
 
     If nothing is specified, all known channels are considered.
     """
@@ -233,7 +236,6 @@ def remove_channel_data(*range_: date | datetime | str, include_withdrawn=False)
             end_str = end.strftime(READABLE_TIMESTAMP_FORMAT)
 
     _log.info(f"Removing channel snapshots with scrape times between {start_str} and {end_str}...")
-
     with DefaultSession.begin() as session:
         if include_withdrawn:
             stmt = delete(Snapshot).where(Snapshot.scrape_time.between(start, end))
@@ -247,50 +249,30 @@ def remove_channel_data(*range_: date | datetime | str, include_withdrawn=False)
     _log.info(f"Removed {result.rowcount} snapshot(s)")
 
 
-def find_dangling_decklists() -> dict[str, str]:
-    """Find those decklists in the global decklist repositories that have no counterpart in the
-    scraped data.
-
-    Returns:
-        a mapping of decklist hashes to decklists
+# this should be theoretically always empty
+def find_dangling_decklists() -> set[str]:
+    """Return a set of text decklists that have no counterparts in the scraped data.
     """
-    manager = DecklistsStateManager()
-    manager.reset()
-    manager.load()
-    loaded_regular, loaded_with_printings = manager.regular, manager.with_printings
-    dangling, scraped_regular, scraped_with_printings = {}, set(), set()
-    chids = retrieve_ids()
-    decks = [
-        d for ch
-        in tqdm(load_channels(*chids), total=len(chids), desc="Loading channels data...")
-        for d in ch.decks]
-    for d in decks:
-        scraped_regular.add(d.decklist_hash)
-        scraped_with_printings.add(d.decklist_with_printings_hash)
-    for decklist_hash in loaded_regular:
-        if decklist_hash not in scraped_regular:
-            dangling[decklist_hash] = loaded_regular[decklist_hash]
-    for decklist_hash in loaded_with_printings:
-        if decklist_hash not in scraped_with_printings:
-            dangling[decklist_hash] = loaded_with_printings[decklist_hash]
-    _log.info(f"Found {len(dangling):,} dangling decklist(s)")
-    return dangling
+    with DefaultSession() as session:
+        stmt = (
+            select(Decklist)
+            .outerjoin(Deck)
+            .where(Deck.id.is_(None))
+            .distinct()
+        )
+        return set(d.text for d in session.scalars(stmt))
 
 
 def prune_dangling_decklists() -> None:
     """Prune global decklist repositories of those decklists that have no counterpart in the
     scraped data.
     """
-    dangling = find_dangling_decklists()
-    if not dangling:
-        _log.info("Nothing to prune")
-        return
-    manager = DecklistsStateManager()
-    manager.reset()
-    manager.load()
-    manager.prune(lambda did: did in dangling)
-    manager.dump()
-    _log.info(f"Pruning done")
+    with DefaultSession.begin() as session:
+        stmt = delete(Decklist).where(~Decklist.decks.any())
+        result = session.execute(stmt)
+
+    if result.rowcount:
+        _log.info(f"Pruned {result.rowcount} dangling decklist(s) from the database")
 
 
 def fetch_channel_ids(*urls: str, only_new=True) -> list[str]:
@@ -346,7 +328,7 @@ def retrieve_video_data(
     return channels
 
 
-def clean_up(move=True) -> None:
+def clean_up(soft_delete=True) -> None:
     """Clean up channels data.
 
     Channels that are no longer present in the private Google Sheet are either removed or moved to
@@ -358,23 +340,23 @@ def clean_up(move=True) -> None:
         * pass an arbitrary threshold for staleness (aka get abandoned)
         * pass an arbitrary threshold for deck-staleness
         * author deletes them entirely, or they delete all their content, or they delete only their Videos tab
+
+    Args:
+        soft_delete: if True, channels not present in the private Google Sheet will be only marked as 'withdrawn', otherwise they will be removed with all their scraped data from the database
     """
     ids = set(retrieve_ids())
-    for chdir in [d for d in CHANNELS_DIR.iterdir() if d.is_dir()]:
-        if chdir.name not in ids:
-            if move:
-                dst = WITHDRAWN_DIR / chdir.name
-                if dst.is_dir():
-                    shutil.rmtree(dst)
-                _log.info(f"Moving channel data from '{chdir}' to '{dst}'...")
-                shutil.move(chdir, dst)
-            else:
-                _log.info(f"Removing channel data from '{chdir}'...")
-                shutil.rmtree(chdir)
-    manager = UrlsStateManager()
-    manager.load_failed()
-    manager.prune_failed_urls(ids)
-    manager.dump_failed()
+    with DefaultSession.begin() as session:
+        if soft_delete:
+            stmt = update(Channel).where(Channel.yt_id.not_in(ids)).values(is_withdrawn=True)
+            result = session.execute(stmt)
+            if result.rowcount:
+                _log.info(f"Marked {result.rowcount} channels as withdrawn.")
+        else:
+            stmt = delete(Channel).where(Channel.yt_id.not_in(ids))
+            result = session.execute(stmt)
+            if result.rowcount:
+                _log.info(
+                    f"Removed {result.rowcount} channels and their scraped data from the database.")
 
 
 def clear_update() -> None:
