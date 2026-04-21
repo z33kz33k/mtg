@@ -21,7 +21,7 @@ from tqdm import tqdm
 from mtg.constants import CHANNELS_DIR, CHANNEL_URL_TEMPLATE, FILENAME_TIMESTAMP_FORMAT, \
     READABLE_TIMESTAMP_FORMAT, README_FILE, WITHDRAWN_DIR
 from mtg.data.db import DefaultSession
-from mtg.data.models import Channel, Deck, Decklist, Snapshot
+from mtg.data.models import Channel, Deck, Decklist, Snapshot, Video
 from mtg.data.structures import ChannelData, VideoData
 from mtg.lib.common import MarkdownTableCounter
 from mtg.lib.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
@@ -268,7 +268,13 @@ def prune_dangling_decklists() -> None:
     scraped data.
     """
     with DefaultSession.begin() as session:
-        stmt = delete(Decklist).where(~Decklist.decks.any())
+        dangling_ids = (
+            select(Decklist.id)
+            .outerjoin(Deck)
+            .where(Deck.id.is_(None))
+            .distinct()
+        )
+        stmt = delete(Decklist).where(Decklist.id.in_(dangling_ids))
         result = session.execute(stmt)
 
     if result.rowcount:
@@ -307,7 +313,7 @@ def retrieve_video_data(
         *chids: str,
         video_filter: Callable[[VideoData], bool] = lambda _: True
 ) -> defaultdict[str, list[VideoData]]:
-    """Retrieve video data for specified channels. Optionally, define a video-filtering
+    """Retrieve video data for specified channel YouTube IDs. Optionally, define a video-filtering
     predicate.
 
     The default is retrieving all videos of all channels.
@@ -317,14 +323,25 @@ def retrieve_video_data(
         video_filter: video-filtering predicate
 
     Returns:
-        A video data mapped to channel IDs
+        A video data mapped to channel YouTube IDs
     """
     chids = chids or retrieve_ids()
     channels = defaultdict(list)
-    for ch in tqdm(load_channels(*chids), total=len(chids), desc="Loading channels data..."):
-        videos = [v for v in ch.videos if video_filter(v)]
-        if videos:
-            channels[ch.id].extend(videos)
+
+    with DefaultSession() as session:
+        # fetch all videos for specified channels in one query
+        stmt = (
+            select(Video)
+            .join(Snapshot)
+            .join(Channel)
+            .where(Channel.id.in_(chids))
+            .order_by(Video.publish_time.desc())
+        )
+        for video in tqdm(session.scalars(stmt), desc="Loading channels data..."):
+            video_data = video.data
+            if video_filter(video_data):
+                channels[video.snapshot.channel.yt_id].append(video_data)
+
     return channels
 
 
