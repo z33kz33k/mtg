@@ -7,153 +7,18 @@
     @author: mazz3rr
 
 """
-import itertools
 import logging
-import shutil
-from collections import defaultdict
 from collections.abc import Callable
 from datetime import date
-from pathlib import Path
 
-from tqdm import tqdm
-
-from mtg.constants import CHANNELS_DIR, OUTPUT_DIR, PathLike
-from mtg.data.common import load_channels, retrieve_ids, retrieve_video_data
-from mtg.data.structures import DataPath, VideoData
+from mtg.data.common import retrieve_ids, retrieve_video_data
+from mtg.data.structures import VideoData
 from mtg.session import ScrapingSession
-from mtg.lib.time import naive_utc_now, timed
-from mtg.lib.files import get_dir, get_file
-from mtg.lib.json import from_json, to_json
+from mtg.lib.time import timed
 from mtg.lib.scrape.core import http_requests_counted
 from mtg.yt.scrape import scrape_channel_videos
 
 _log = logging.getLogger(__name__)
-
-
-# TODO: use db
-def find_orphans() -> dict[str, list[str]]:
-    """Check the scraped channels data for any decklists missing in the global decklist
-    repositories and return their structural paths.
-
-    Returns:
-        A dictionary of string paths pointing to the orphaned decklists (both in simplified and
-        detailed form) in the channel data.
-    """
-    regular_ids, wirth_printings_ids = {}, {}
-    chids = retrieve_ids()
-    for ch in tqdm(load_channels(*chids), total=len(chids), desc="Loading channels data..."):
-        for v in ch.videos:
-            for deck in v.decks:
-                path_regular = DataPath(ch.id, v.id, deck.decklist_hash)
-                path_with_printings = DataPath(ch.id, v.id, deck.decklist_with_printings_hash)
-                regular_ids[deck.decklist_hash] = path_regular
-                wirth_printings_ids[deck.decklist_with_printings_hash] = path_with_printings
-
-    manager = DecklistsStateManager()
-    manager.reset()
-    manager.load()
-    loaded_regular, loaded_with_printings = manager.regular, manager.with_printings
-    regular_orphans = {r for r in regular_ids if r not in loaded_regular}
-    with_printings_orphans = {e for e in wirth_printings_ids if e not in loaded_with_printings}
-
-    _log.info(
-        f"Found {len(regular_orphans):,} orphaned regular decklist(s) and"
-        f" {len(with_printings_orphans):,} orphaned decklist(s) with printings")
-
-    return {
-        "regular_orphans": sorted({str(regular_ids[r]) for r in regular_orphans}),
-        "with_printings_orphans": sorted(
-            {str(wirth_printings_ids[e]) for e in with_printings_orphans}),
-    }
-
-
-def prune_channel_file(file: PathLike, *video_ids: str) -> None:
-    """Prune specified videos from channel data at 'file'.
-    """
-    file = get_file(file)
-    _log.info(f"Pruning {len(video_ids)} video(s) from '{file}'...")
-    data = from_json(file.read_text(encoding="utf-8"))
-    videos = data["videos"]
-    data["videos"], indices = [], []
-    for i, video in enumerate(videos):
-        if video["id"] in video_ids:
-            _log.info(f"Removing video data {i + 1}/{len(videos)} ({video['title']!r})...")
-            indices.append(i)
-        else:
-            data["videos"].append(video)
-
-    if indices:
-        _log.info(f"Dumping pruned channel data at: '{file}'...")
-        file.write_text(to_json(data), encoding="utf-8")
-    else:
-        _log.info(f"Nothing to prune in '{file}'")
-
-
-def find_channel_files(channel_id: str, *video_ids: str) -> list[str]:
-    """Find channel data files containing specified videos.
-    """
-    video_ids = set(video_ids)
-    channel_dir = get_dir(CHANNELS_DIR / channel_id)
-    _log.info(f"Loading channel data from: '{channel_dir}'...")
-    files = [f for f in channel_dir.iterdir() if f.is_file() and f.suffix.lower() == ".json"]
-    if not files:
-        raise FileNotFoundError(f"No channel files found at: '{channel_dir}'")
-    filtered = []
-    for file in files:
-        data = from_json(file.read_text(encoding="utf-8"))
-        if any(video["id"] in video_ids for video in data["videos"]):
-            filtered.append(file.as_posix())
-    return filtered
-
-
-def backup_channel_files(chid: str, *files: PathLike) -> None:
-    """Backup channel data files.
-    """
-    now = naive_utc_now()
-    timestamp = f"{now.year}{now.month:02}{now.day:02}"
-    backup_root = get_dir(OUTPUT_DIR / "_archive" / "channels")
-    backup_path, counter = backup_root / timestamp / chid, itertools.count(1)
-    while backup_path.exists():
-        backup_path = backup_root / timestamp /  f"{chid} ({next(counter)})"
-    backup_dir = get_dir(backup_path)
-    for f in files:
-        f = Path(f)
-        dst = backup_dir / f.name
-        _log.info(f"Backing-up '{f}' to '{dst}'...")
-        shutil.copy(f, dst)
-
-
-def _process_videos(session: ScrapingSession, channel_id: str, *video_ids: str) -> None:
-    files = find_channel_files(channel_id, *video_ids)
-    if not files:
-        return
-    backup_channel_files(channel_id, *files)
-    if scrape_channel_videos(session, channel_id, *video_ids):
-        for f in files:
-            prune_channel_file(f, *video_ids)
-
-
-@http_requests_counted("re-scraping videos")
-@timed("re-scraping videos")
-def rescrape_missing_decklists() -> None:
-    """Re-scrape those YT videos that contain decklists that are missing from global decklists
-    repositories.
-    """
-    decklist_paths = {p for lst in find_orphans().values() for p in lst}
-    channels = defaultdict(set)
-    for path in [DataPath.from_path(p) for p in decklist_paths]:
-        channels[path.channel_id].add(path.video_id)
-
-    if not channels:
-        _log.info("No videos found that needed re-scraping")
-        return
-
-    with ScrapingSession() as session:
-        session.urls_manager.ignore_scraped = True
-        for i, (channel_id, video_ids) in enumerate(channels.items(), start=1):
-            _log.info(
-                f"Re-scraping ==> {i}/{len(channels)} <== channel for missing decklists data...")
-            _process_videos(session, channel_id, *video_ids)
 
 
 @http_requests_counted("re-scraping videos")
@@ -166,7 +31,7 @@ def rescrape_videos(
     The default for scraping is all known channels and all their videos.
 
     Args:
-        *chids: channel IDs
+        *chids: channel YouTube IDs
         video_filter: video-filtering predicate
     """
     chids = chids or retrieve_ids()
@@ -176,13 +41,12 @@ def rescrape_videos(
         _log.info("No videos found that needed re-scraping")
         return
 
-    with ScrapingSession() as session:
-        session.urls_manager.ignore_scraped_for_current_video = True
-        session.urls_manager.ignore_failed = True
+    with ScrapingSession(ignore_scraped=True, ignore_failed=True) as session:
+        session.remove_videos(set(v.yt_id for lst in channels.values() for v in lst))
         for i, (channel_id, videos) in enumerate(channels.items(), start=1):
             _log.info(
                 f"Re-scraping {len(videos)} video(s) of ==> {i}/{len(channels)} <== channel...")
-            _process_videos(session, channel_id, *[v.id for v in videos])
+            scrape_channel_videos(session, channel_id, *(v.yt_id for v in videos))
 
 
 def rescrape_by_date(

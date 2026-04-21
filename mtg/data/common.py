@@ -9,7 +9,6 @@
 """
 import itertools
 import logging
-import shutil
 from collections import defaultdict
 from datetime import date, datetime
 from operator import itemgetter
@@ -19,15 +18,18 @@ from sqlalchemy import delete, exists, select, update
 from tqdm import tqdm
 
 from mtg.constants import CHANNELS_DIR, CHANNEL_URL_TEMPLATE, FILENAME_TIMESTAMP_FORMAT, \
-    READABLE_TIMESTAMP_FORMAT, README_FILE, WITHDRAWN_DIR
+    READABLE_TIMESTAMP_FORMAT, README_FILE
 from mtg.data.db import DefaultSession
 from mtg.data.models import Channel, Deck, Decklist, Snapshot, Video
 from mtg.data.structures import ChannelData, VideoData
 from mtg.lib.common import MarkdownTableCounter
+from mtg.lib.files import get_dir
 from mtg.lib.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
+from mtg.lib.json import from_json
 from mtg.lib.numbers import get_ordinal_suffix
 from mtg.lib.scrape.core import fetch_soup
 from mtg.lib.time import naive_utc_now
+from mtg.yt.rescrape import _log
 
 _log = logging.getLogger(__name__)
 _channels_cache: dict[str, ChannelData] = {}
@@ -199,52 +201,30 @@ def parse_snapshot_filename(filename: str) -> tuple[str, datetime]:
         timestamp.removesuffix("_channel.json"), FILENAME_TIMESTAMP_FORMAT)
 
 
-def remove_channel_data(*range_: date | datetime | str, include_withdrawn=False) -> None:
+def remove_channel_data(before: date, after: date | None = None, include_withdrawn=False) -> None:
     """Remove all channel snapshots within the specified time range.
 
-    All data with scrape times LATER or equal to start and EARLIER or equal to end is removed.
-
-    Range can be expressed as datetime, date, or equivalent string(s) (in "%Y-%m-%d [%H:%M:%S]"
-    format). An omitted end time defaults to now.
-
     Args:
-        range_: start (and, optionally, end) of the time range
+        before: before date
+        after: after date (or today if not specified)
         include_withdrawn: if True, include withdrawn channels in removal (default: False)
     """
-    if len(range_) == 1:
-        start, end = range_[0], naive_utc_now()
-    elif len(range_) == 2:
-        start, end = range_
-    else:
-        raise ValueError(f"Invalid range: {range_}")
+    after = after or datetime.today()
+    before_dt = datetime.combine(before, datetime.min.time())
+    after_dt = datetime.combine(after, datetime.min.time())
 
-    for i, item in enumerate((start, end)):
-        if isinstance(item, str):
-            try:
-                item = datetime.strptime(item, READABLE_TIMESTAMP_FORMAT)
-            except ValueError:
-                dt = date.fromisoformat(item)
-                item = datetime.combine(dt, datetime.min.time())
-        elif isinstance(item, date):
-            item = datetime.combine(item, datetime.min.time())
-
-        if i == 0:
-            start = item
-            start_str = start.strftime(READABLE_TIMESTAMP_FORMAT)
-        elif i == 1:
-            end = item
-            end_str = end.strftime(READABLE_TIMESTAMP_FORMAT)
-
-    _log.info(f"Removing channel snapshots with scrape times between {start_str} and {end_str}...")
+    _log.info(
+        f"Removing channel snapshots with scrape times before {before.isoformat()} "
+        f"and after {after.isoformat()}...")
     with DefaultSession.begin() as session:
         if include_withdrawn:
-            stmt = delete(Snapshot).where(Snapshot.scrape_time.between(start, end))
+            stmt = delete(Snapshot).where(Snapshot.scrape_time.between(before_dt, after_dt))
         else:
             stmt = delete(Snapshot).where(
                 exists()
                 .where(Channel.id == Snapshot.channel_id)
                 .where(Channel.is_withdrawn == False)
-            ).where(Snapshot.scrape_time.between(start, end))
+            ).where(Snapshot.scrape_time.between(before_dt, after_dt))
         result = session.execute(stmt)
     _log.info(f"Removed {result.rowcount} snapshot(s)")
 
@@ -382,3 +362,20 @@ def clear_update() -> None:
     clear_cache()
     update_gsheet()
     update_readme_with_deck_data()
+
+
+def find_snapshot_files(channel_id: str, *video_ids: str) -> list[str]:
+    """Find channel snapshot files containing specified videos.
+    """
+    video_ids = set(video_ids)
+    channel_dir = get_dir(CHANNELS_DIR / channel_id)
+    _log.info(f"Loading channel data from: '{channel_dir}'...")
+    files = [f for f in channel_dir.iterdir() if f.is_file() and f.suffix.lower() == ".json"]
+    if not files:
+        raise FileNotFoundError(f"No channel files found at: '{channel_dir}'")
+    filtered = []
+    for file in files:
+        data = from_json(file.read_text(encoding="utf-8"))
+        if any(video["id"] in video_ids for video in data["videos"]):
+            filtered.append(file.as_posix())
+    return filtered

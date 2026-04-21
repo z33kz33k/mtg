@@ -25,22 +25,16 @@ from mtg.lib.files import get_dir, sanitize_filename
 def _dump_data_gen(
         channels: list[ChannelData],
         dstdir: Path) -> Iterator[tuple[Exporter | None, Path]]:
-    seen_decks = {}
     for channel in channels:
         if title := channel.title:
             channel_dir = dstdir / f"{sanitize_filename(title)}_({channel.id})"
         else:
-            channel_dir = dstdir /channel.id
+            channel_dir = dstdir /channel.yt_id
         for video in channel.videos:
-            for serialized_deck in video.decks:
-                serialized_deck.metadata["video_url"] = video.url
+            for deck in video.decks:
+                deck.metadata["video_url"] = video.url
                 # FIXME: improve decks' equivalence (#426)
-                deck = seen_decks.get(hash(serialized_deck), serialized_deck.deck())
-                if deck:
-                    seen_decks[hash(deck)] = deck
-                    yield Exporter(deck), channel_dir
-                else:
-                    yield None, channel_dir
+                yield Exporter(deck), channel_dir
 
 
 def dump_decks(

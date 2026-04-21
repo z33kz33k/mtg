@@ -14,7 +14,7 @@ from timeit import default_timer as timer
 from types import TracebackType
 from typing import Self, Type
 
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
 from mtg.data.db import NoAutoFlushSession, retrieve_or_create
@@ -85,13 +85,13 @@ class ScrapingSession:
         """
         self.__ignore_scraped = value
 
-    def __init__(self) -> None:
+    def __init__(self, ignore_scraped=False, ignore_failed=False) -> None:
+        self.ignore_scraped, self.ignore_failed = ignore_scraped, ignore_failed
         self._db: Session | None = None
         self._cooloff: CoolOffManager | None = None
         self._current_channel: Channel | None = None
         self._current_snapshot: Snapshot | None = None
         self._current_video: Video | None = None
-        self.ignore_scraped, self.ignore_failed = False, False
 
     def __enter__(self) -> Self:
         self._start = timer()
@@ -134,6 +134,7 @@ class ScrapingSession:
         current one.
         """
         channel = retrieve_or_create(self._db, Channel, yt_id=yt_id)
+        self._db.flush()
         self._current_channel = channel
 
     def get_video_yt_ids_for_current_channel(self) -> list[str]:
@@ -300,6 +301,13 @@ class ScrapingSession:
         _log.info(
             f"Removed failed URLs data for {channels_count:,} channel(s) ({urls_count:,} URL(s) "
             f"in total)")
+
+    def remove_videos(self, video_ids: set[str]) -> None:
+        """Remove videos from the database by passed YouTube IDs.
+        """
+        stmt = delete(Video).where(Video.yt_id.in_(video_ids))
+        self._db.execute(stmt)
+        self._db.flush()
 
     # CoolOffManager API
     def bump_channel(self) -> None:

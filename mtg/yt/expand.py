@@ -14,9 +14,10 @@ from bs4 import Tag
 from requests import ConnectionError, HTTPError, ReadTimeout
 from selenium.common import TimeoutException
 
-from mtg.session import UrlsStateManager
+from mtg.lib.common import Noop
 from mtg.lib.scrape.core import dissect_js, fetch
 from mtg.lib.scrape.dynamic import fetch_dynamic_soup
+from mtg.session import ScrapingSession
 
 _log = logging.getLogger(__name__)
 
@@ -115,9 +116,9 @@ class LinksExpander:
     def lines(self) -> list[str]:
         return self._lines
 
-    def __init__(self, *links: str) -> None:
-        self._urls_manager = UrlsStateManager()
-        self._links = [l for l in links if not self._urls_manager.is_failed_url(l)]
+    def __init__(self, *links: str, session: ScrapingSession | Noop) -> None:
+        self._session = session
+        self._links = [l for l in links if not self._session.is_failed_url(l)]
         self._expanded_links, self._gathered_links, self._lines = [], [], []
         self._expand()
 
@@ -154,7 +155,7 @@ class LinksExpander:
 
         response = fetch(link)
         if not response:
-            self._urls_manager.add_failed_url(original_link)
+            self._session.add_failed_url(original_link)
             return
 
         lines = [l.strip() for l in response.text.splitlines()]
@@ -171,7 +172,7 @@ class LinksExpander:
             soup, _, _ = fetch_dynamic_soup(link, self._PATREON_XPATH, timeout=10)
             if not soup:
                 _log.warning("Patreon post data not available")
-                self._urls_manager.add_failed_url(link)
+                self._session.add_failed_url(link)
                 return None
             return soup.find("div", class_=lambda c: c and "sc-dtMgUX" in c and 'IEufa' in c)
         except TimeoutException:
@@ -179,13 +180,13 @@ class LinksExpander:
                 soup, _, _ = fetch_dynamic_soup(link, self._PATREON_XPATH2)
                 if not soup:
                     _log.warning("Patreon post data not available")
-                    self._urls_manager.add_failed_url(link)
+                    self._session.add_failed_url(link)
                     return None
                 return soup.find(
                     "div", class_=lambda c: c and "sc-b20d4e5f-0" in c and 'fbPSoT' in c)
             except TimeoutException:
                 _log.warning("Patreon post data not available")
-                self._urls_manager.add_failed_url(link)
+                self._session.add_failed_url(link)
                 return None
 
     def _expand_patreon(self, link: str) -> None:
@@ -207,11 +208,11 @@ class LinksExpander:
             soup, _, _ = fetch_dynamic_soup(link, self._GOOGLE_DOC_XPATH)
             if not soup:
                 _log.warning("Google Docs document data not available")
-                self._urls_manager.add_failed_url(link)
+                self._session.add_failed_url(link)
                 return
         except TimeoutException:
             _log.warning("Google Docs document data not available")
-            self._urls_manager.add_failed_url(link)
+            self._session.add_failed_url(link)
             return
 
         start = "DOCS_modelChunk = "
@@ -220,7 +221,7 @@ class LinksExpander:
 
         if not js:
             _log.warning("Google Docs document data not available")
-            self._urls_manager.add_failed_url(link)
+            self._session.add_failed_url(link)
             return
 
         matched_text, links = None, []

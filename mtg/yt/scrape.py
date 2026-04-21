@@ -240,13 +240,12 @@ class VideoScraper:
     def is_shortened_url(cls, url: str) -> bool:
         return any(h in url for h in cls.SHORTENER_HOOKS)
 
-    @classmethod  # recursive
-    def _parse_lines(cls, *lines, expand_links=True) -> tuple[list[str], list[str]]:
+    def _parse_lines(self, *lines, expand_links=True) -> tuple[list[str], list[str]]:
         links, other_lines = set(), []
         for line in lines:
             url = extract_url(line)
             if url:
-                if cls.is_shortened_url(url):
+                if self.is_shortened_url(url):
                     url = unshorten(url) or url
                 if LinktreeScraper.is_linktree_url(url):
                     try:
@@ -261,10 +260,10 @@ class VideoScraper:
                 other_lines.append(line)
 
         if expand_links:
-            expander = LinksExpander(*links)
+            expander = LinksExpander(*links, session=self._session)
             links = {l for l in links if l not in expander.expanded_links}
             links.update(expander.gathered_links)
-            new_links, new_lines = cls._parse_lines(*expander.lines, expand_links=False)
+            new_links, new_lines = self._parse_lines(*expander.lines, expand_links=False)
             links.update(new_links)
             other_lines.extend(new_lines)
 
