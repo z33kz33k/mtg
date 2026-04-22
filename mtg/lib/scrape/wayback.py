@@ -7,13 +7,17 @@
     @author: mazz3rr
 
 """
+import logging
+
 import backoff
 from bs4 import BeautifulSoup
 from wayback import WaybackClient
 from wayback.exceptions import MementoPlaybackError, WaybackException, WaybackRetryError
 
 from mtg.lib.time import timed
-from mtg.lib.scrape.core import _log
+
+
+_log = logging.getLogger(__name__)
 
 
 def _wayback_predicate(soup: BeautifulSoup | None) -> bool:

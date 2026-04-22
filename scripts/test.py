@@ -7,18 +7,23 @@
     @author: mazz3rr
 
 """
+import logging
 import sys
 
-from mtg.deck.scrapers.abc import ContainerScraper, DeckTagsContainerScraper, \
-    DecksJsonContainerScraper
-from mtg import DeckScraper, HybridContainerScraper
+from mtg.lib.time import timed
+from mtg.logging import init_log
+from mtg.deck.scrapers.abc import (
+    DeckScraper, DeckUrlsContainerScraper, DecksJsonContainerScraper, DeckTagsContainerScraper,
+    HybridContainerScraper)
+
+
+_log = logging.getLogger(__name__)
 
 # TODO: make this work async (group URLs into batches and run concurrently)
 
 
 # TODO: finish curating the URLs
 TEST_URLS = [
-    'https://www.17lands.com/user/deck/eba7a011b7e84f8cb286492312cf4241/85624423/1734473634',
     'https://aetherhub.com/Deck/tmnt-boros-ascension',
     'https://aetherhub.com/Decks/Writeups/Traditional-Standard/shenanigans-two-day-dec-21-22-std-rcq',
     'https://aetherhub.com/User/LegenVD',
@@ -149,38 +154,33 @@ TEST_URLS = [
 ]
 
 
+@timed("testing scrapers")
 def test_scrapers():
-    """Test all registered scrapers with known valid URLs.
+    """Test all registered scrapers with their example URLs.
     """
-    passed, failed, unsupported = [], [], []
-    for i, url in enumerate(TEST_URLS, start=1):
-        print(f"Testing {i}/{len(TEST_URLS)} URL: {url!r}...")
-        scraper = None
-        if scraper := DeckScraper.from_url(
-                url) or DecksJsonContainerScraper.from_url(
-            url) or DeckTagsContainerScraper.from_url(
-            url) or HybridContainerScraper.from_url(url):
-            name = type(scraper).__name__
-            try:
-                if isinstance(scraper, ContainerScraper):
-                    scraper.scrape_decks()
-                else:
-                    scraper.scrape()
-            except Exception as e:
-                print(f"✗ {name!r} scraper: FAILED - {e}")
-                failed.append(url)
-            else:
-                print(f"✓ {name!r} scraper: OK")
-                passed.append(url)
+    passed, failed = [], []
 
+    scrapers: list[type[DeckScraper]] = []
+    scrapers += DeckScraper.get_registered_scrapers()
+    scrapers += DeckUrlsContainerScraper.get_registered_scrapers()
+    scrapers += DecksJsonContainerScraper.get_registered_scrapers()
+    scrapers += DeckTagsContainerScraper.get_registered_scrapers()
+    scrapers += HybridContainerScraper.get_registered_scrapers()
+
+    for i, scraper in enumerate(scrapers, start=1):
+        name = scraper.__name__
+        _log.info(f"Testing {i}/{len(scrapers)} scraper: {name!r}...")
+        result, exc = scraper.test()
+        if result:
+            _log.info(f"✓ {name!r} scraper: PASSED")
+            passed.append(scraper)
         else:
-            print(f"No scraper found for {url!r}")
-            unsupported.append(url)
+            _log.warning(f"✗ {name!r} scraper: FAILED - {exc}")
+            failed.append(scraper)
 
-        print(
-            f"{len(passed)} URLs passed. {len(failed)} URLs failed. {len(unsupported)} URLs "
-            f"unsupported.")
+        _log.info(f"{len(passed)} scrapers passed. {len(failed)} scrapers failed.")
 
 
 if __name__ == '__main__':
+    init_log()
     sys.exit(test_scrapers())

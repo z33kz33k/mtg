@@ -18,7 +18,7 @@ from sqlalchemy import delete, exists, select, update
 from tqdm import tqdm
 
 from mtg.constants import CHANNELS_DIR, CHANNEL_URL_TEMPLATE, FILENAME_TIMESTAMP_FORMAT, \
-    READABLE_TIMESTAMP_FORMAT, README_FILE
+    README_FILE
 from mtg.data.db import DefaultSession
 from mtg.data.models import Channel, Deck, Decklist, Snapshot, Video
 from mtg.data.structures import ChannelData, VideoData
@@ -28,8 +28,6 @@ from mtg.lib.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_
 from mtg.lib.json import from_json
 from mtg.lib.numbers import get_ordinal_suffix
 from mtg.lib.scrape.core import fetch_soup
-from mtg.lib.time import naive_utc_now
-from mtg.yt.rescrape import _log
 
 _log = logging.getLogger(__name__)
 _channels_cache: dict[str, ChannelData] = {}

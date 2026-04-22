@@ -41,6 +41,7 @@ class DeckScraper(NestedDeckParser):
     API_URL_TEMPLATE = ""
     HEADERS = None
     DATA_FROM_SOUP = False
+    EXAMPLE_URLS: tuple[str, ...] | None = None
 
     @property
     def url(self) -> str:
@@ -197,6 +198,20 @@ class DeckScraper(NestedDeckParser):
         """
         return set(cls._REGISTRY)
 
+    @classmethod
+    def test(cls) -> tuple[bool, Exception | None]:
+        if not cls.EXAMPLE_URLS:
+            raise ValueError("No example URLs defined")
+        try:
+            for url in cls.EXAMPLE_URLS:
+                _log.info(f"Testing URL: {url!r}...")
+                scraper = cls(url)
+                scraper.scrape()
+        except Exception as e:
+            return False, e
+        else:
+            return True, None
+
 
 _THROTTLED_DECK_SCRAPERS = set()
 
@@ -299,6 +314,21 @@ class ContainerScraper(DeckScraper):
         singular list and returns it.
         """
         raise NotImplementedError
+
+    @classmethod
+    @override
+    def test(cls) -> tuple[bool, Exception | None]:
+        if not cls.EXAMPLE_URLS:
+            raise ValueError("No example URLs defined")
+        try:
+            for url in cls.EXAMPLE_URLS:
+                _log.info(f"Testing URL: {url!r}...")
+                scraper = cls(url)
+                scraper.scrape_decks()
+        except Exception as e:
+            return False, e
+        else:
+            return True, None
 
 
 _FOLDER_CONTAINER_SCRAPERS = set()
