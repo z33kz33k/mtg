@@ -230,8 +230,8 @@ class ChannelData:
 class DataPath:
     """Structural path to a channel/video/decklist in the channel data.
     """
-    channel_id: str
-    video_id: str | None = None
+    channel_yt_id: str
+    video_yt_id: str | None = None
     decklist_hash: str | None = None
 
     def __str__(self) -> str:

@@ -584,6 +584,10 @@ class Deck:
         return self.metadata.get("format")
 
     @property
+    def is_scraped_deck(self) -> bool:
+        return bool(self.metadata.get("url"))
+
+    @property
     def is_meta_deck(self) -> bool:
         return any(k.startswith("meta") for k in self.metadata)
 

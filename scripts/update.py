@@ -2,7 +2,7 @@
 
     scripts.update
     ~~~~~~~~~~~~~~
-    Script to download updated data files and update the README.
+    Download updated data files.
 
     @author: mazz3rr
 

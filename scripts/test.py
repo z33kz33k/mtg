@@ -2,7 +2,7 @@
 
     scripts.test
     ~~~~~~~~~~~~
-    Script to test validity of the scraping logic against live websites using known valid URLs.
+    Test validity of the scraping logic against live websites using known valid URLs.
 
     @author: mazz3rr
 

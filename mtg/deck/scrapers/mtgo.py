@@ -14,15 +14,13 @@ import backoff
 import dateutil.parser
 from bs4 import BeautifulSoup
 
-from mtg.constants import Json
-from mtg.constants import SECRETS
+from mtg.constants import Json, SECRETS
 from mtg.deck.abc import JsonBasedDeckParser
-from mtg.deck.scrapers.abc import DecksJsonContainerScraper
-from mtg import DeckScraper
-from mtg.scryfall import all_formats
+from mtg.deck.scrapers.abc import DeckScraper, DecksJsonContainerScraper
 from mtg.lib.common import from_iterable
 from mtg.lib.numbers import get_ordinal_suffix
 from mtg.lib.scrape.core import ScrapingError, dissect_js, strip_url_query
+from mtg.scryfall import all_formats
 
 _log = logging.getLogger(__name__)
 HEADERS = {

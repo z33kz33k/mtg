@@ -19,6 +19,7 @@ from pathlib import Path
 from sqlalchemy import func, select
 from tqdm import tqdm
 
+from mtg.logging import init_log
 from mtg.constants import OUTPUT_DIR
 from mtg.data.db import DefaultSession
 from mtg.data.models import Channel, Decklist, FailedUrl
@@ -192,4 +193,5 @@ class Dumper:
 
 
 if __name__ == '__main__':
+    init_log()
     Dumper().dump(*sys.argv[1:])

@@ -20,15 +20,20 @@
 from datetime import datetime
 from operator import attrgetter
 
-from sqlalchemy import Column, ForeignKey, Index, Integer, JSON, String, Table, Text
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy import Column, ForeignKey, Index, Integer, JSON, String, Table, Text, func, select
+from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, relationship
 
-from mtg.data.structures import ChannelData, VideoData, Deck as DeckData
+from mtg.data.structures import ChannelData, VideoData, Deck as DeckData, DataPath
 from mtg.deck.arena import ArenaParser
 
 
 class Base(DeclarativeBase):
-    pass
+    @classmethod
+    def count(cls, session: Session, *filters) -> int:
+        stmt = select(func.count()).select_from(cls)
+        if filters:
+            stmt = stmt.where(*filters)
+        return session.scalar(stmt) or 0
 
 
 # association tables for many-to-many relationships
@@ -188,6 +193,14 @@ class Deck(Base):
     @property
     def data(self) -> DeckData | None:
         return ArenaParser(self.decklist.text, self.json_metadata).parse()
+
+    @property
+    def datapath(self) -> DataPath:
+        return DataPath(
+            channel_yt_id=self.video.snapshot.channel.yt_id,
+            video_yt_id=self.video.yt_id,
+            decklist_hash=self.decklist.hash
+        )
 
 
 class Decklist(Base):

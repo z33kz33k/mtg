@@ -16,6 +16,7 @@ from pathlib import Path
 from sqlalchemy import select
 from tqdm import tqdm
 
+from mtg.logging import init_log
 from mtg.constants import CHANNELS_DIR, DECKLISTS_FILE, FAILED_URLS_FILE, WITHDRAWN_DIR
 from mtg.data.db import DefaultSession, NoAutoFlushSession
 from mtg.data.models import Channel, Deck, Decklist, FailedUrl, Snapshot, Tag, Video
@@ -111,8 +112,8 @@ class Loader:
     def _match_decklist_to_deck_data(
             self, deck_data: dict, video_data: dict, chid: str) -> tuple[str, dict | None]:
         exc = MissedDecklist(datapath=DataPath(
-            channel_id=chid,
-            video_id=video_data["id"],
+            channel_yt_id=chid,
+            video_yt_id=video_data["id"],
             decklist_hash=deck_data["decklist_hash"],
         ))
         if decklist_text := self._decklists_json.get(deck_data["decklist_hash"]):
@@ -225,4 +226,5 @@ class Loader:
 
 
 if __name__ == '__main__':
+    init_log()
     Loader().load()
