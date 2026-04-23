@@ -151,6 +151,10 @@ class GoldfishDeckScraper(DeckScraper):
         "xpath": "//table[@class='deck-view-deck-table']",
         "consent_xpath": CONSENT_XPATH
     }
+    EXAMPLE_URLS = (
+        "https://www.mtggoldfish.com/deck/6833104#paper",
+        "https://www.mtggoldfish.com/archetype/standard-mono-green-landfall-woe#paper"
+    )
 
     @staticmethod
     @override
@@ -198,6 +202,9 @@ class GoldfishTournamentScraper(DeckUrlsContainerScraper):
     HEADERS = HEADERS  # override
     DECK_SCRAPERS = GoldfishDeckScraper,  # override
     DECK_URL_PREFIX = URL_PREFIX  # override
+    EXAMPLE_URLS = (
+        "https://www.mtggoldfish.com/tournament/pauper-league-2024-11-05#online",
+    )
 
     @staticmethod
     @override
@@ -229,6 +236,9 @@ class GoldfishPlayerScraper(DeckUrlsContainerScraper):
     HEADERS = HEADERS  # override
     DECK_SCRAPERS = GoldfishDeckScraper,  # override
     DECK_URL_PREFIX = URL_PREFIX  # override
+    EXAMPLE_URLS = (
+        "https://www.mtggoldfish.com/deck_searches/create?utf8=%E2%9C%93&deck_search%5Bname%5D=&deck_search%5Bformat%5D=&deck_search%5Btypes%5D%5B%5D=&deck_search%5Btypes%5D%5B%5D=tournament&deck_search%5Btypes%5D%5B%5D=user&deck_search%5Bplayer%5D=Eliott_Dragon&deck_search%5Bdate_range%5D=01%2F26%2F2022+-+02%2F09%2F2022&deck_search%5Bdeck_search_card_filters_attributes%5D%5B0%5D%5Bcard%5D=&deck_search%5Bdeck_search_card_filters_attributes%5D%5B0%5D%5Bquantity%5D=1&deck_search%5Bdeck_search_card_filters_attributes%5D%5B0%5D%5Btype%5D=maindeck&deck_search%5Bdeck_search_card_filters_attributes%5D%5B1%5D%5Bcard%5D=&deck_search%5Bdeck_search_card_filters_attributes%5D%5B1%5D%5Bquantity%5D=1&deck_search%5Bdeck_search_card_filters_attributes%5D%5B1%5D%5Btype%5D=maindeck&counter=2&commit=Search",
+    )
 
     @staticmethod
     @override
@@ -257,6 +267,9 @@ class GoldfishArticleScraper(HybridContainerScraper):
     CONTAINER_NAME = "Goldfish article"  # override
     TAG_BASED_DECK_PARSER = GoldfishDeckTagParser  # override
     CONTAINER_SCRAPERS = GoldfishTournamentScraper,  # override
+    EXAMPLE_URLS = (
+        "https://www.mtggoldfish.com/articles/much-abrew-hammer-time-axe-time-modern",
+    )
 
     @staticmethod
     @override
@@ -293,6 +306,9 @@ class GoldfishAuthorScraper(HybridContainerScraper):
     CONTAINER_SCRAPERS = GoldfishArticleScraper,  # override
     HEADERS = HEADERS  # override
     DECK_URL_PREFIX = URL_PREFIX  # override
+    EXAMPLE_URLS = (
+        "https://www.mtggoldfish.com/articles/search?author=93",
+    )
 
     @staticmethod
     @override

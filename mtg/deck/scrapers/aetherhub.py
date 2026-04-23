@@ -133,6 +133,9 @@ class AetherhubDeckScraper(DeckScraper):
         "consent_xpath": CONSENT_XPATH,
         "wait_for_consent_disappearance": False
     }
+    EXAMPLE_URLS = (
+        "https://aetherhub.com/Deck/tmnt-boros-ascension",
+    )
 
     @staticmethod
     @override
@@ -240,6 +243,10 @@ class AetherhubDeckScraper(DeckScraper):
 class AetherhubWriteupDeckScraper(AetherhubDeckScraper):
     """Scraper of Aetherhub deck write-up page.
     """
+    EXAMPLE_URLS = (
+        "https://aetherhub.com/Decks/Writeups/Traditional-Standard/shenanigans-two-day-dec-21-22-std-rcq",
+    )
+
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
@@ -270,6 +277,10 @@ class AetherhubUserScraper(DeckUrlsContainerScraper):
     CONTAINER_NAME = "Aetherhub user"  # override
     DECK_SCRAPERS = AetherhubDeckScraper,  # override
     DECK_URL_PREFIX = URL_PREFIX  # override
+    EXAMPLE_URLS = (
+        "https://aetherhub.com/User/LegenVD",
+        "https://aetherhub.com/User/LegenVD/Decks/Standard-BO1",
+    )
 
     @staticmethod
     @override
@@ -306,6 +317,9 @@ class AetherhubEventScraper(DeckUrlsContainerScraper):
     CONTAINER_NAME = "Aetherhub event"  # override
     DECK_SCRAPERS = AetherhubDeckScraper,  # override
     DECK_URL_PREFIX = URL_PREFIX  # override
+    EXAMPLE_URLS = (
+        "https://aetherhub.com/Events/Standard/10838",
+    )
 
     @staticmethod
     @override
@@ -341,6 +355,11 @@ class AetherhubArticleScraper(HybridContainerScraper):
         "consent_xpath": CONSENT_XPATH,
         "wait_for_consent_disappearance": False
     }
+    EXAMPLE_URLS = (
+        "https://aetherhub.com/Article/Theros-Beyond-Death-Fresh-new-decks",
+        "https://aetherhub.com/Article/An-Aetherhub-Power-Panel-Breaks-Down-Mythic-Championship-V",
+        "https://aetherhub.com/Article/First-Tournament-decklists-post-Oko-ban",
+    )
 
     @staticmethod
     @override

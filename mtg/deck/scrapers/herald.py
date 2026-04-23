@@ -81,6 +81,10 @@ class CommandersHeraldArticleScraper(HybridContainerScraper):
     CONTAINER_NAME = "Commander's Herald article"  # override
     TAG_BASED_DECK_PARSER = CommandersHeraldDeckTagParser  # override
     HEADERS = HEADERS  # override
+    EXAMPLE_URLS = (
+        "https://commandersherald.com/araumi-of-the-dead-tide-pauper-commander/",
+        "https://commandersherald.com/dueling-deck-techs-equipment/",
+    )
 
     @staticmethod
     @override
@@ -133,6 +137,9 @@ class CommandersHeraldAuthorScraper(HybridContainerScraper):
     CONTAINER_NAME = "Commander's Herald author"  # override
     CONTAINER_SCRAPERS = CommandersHeraldArticleScraper,  # override
     HEADERS = HEADERS  # override
+    EXAMPLE_URLS = (
+        "https://commandersherald.com/author/cody-collins/",
+    )
 
     @staticmethod
     @override

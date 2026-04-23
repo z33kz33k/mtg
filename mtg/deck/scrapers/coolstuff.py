@@ -179,6 +179,10 @@ class CoolStuffIncArticleScraper(HybridContainerScraper):
     CONTAINER_NAME = "CoolStuffInc article"  # override
     HEADERS = HEADERS  # override
     TAG_BASED_DECK_PARSER = CoolStuffIncDeckTagParser  # override
+    EXAMPLE_URLS = (
+        "https://www.coolstuffinc.com/a/matthewlotti-02142025-skeletal-swindling-with-tinybones-bauble-burglar-in-commander",
+        "https://www.coolstuffinc.com/a/jimdavis-05152023-a-new-two-card-infinite-combo-in-standard",
+    )
 
     @staticmethod
     @override
@@ -222,6 +226,9 @@ class CoolStuffIncAuthorScraper(HybridContainerScraper):
     CONTAINER_NAME = "CoolStuffInc author"  # override
     HEADERS = HEADERS  # override
     CONTAINER_SCRAPERS = CoolStuffIncArticleScraper,  # override
+    EXAMPLE_URLS = (
+        "https://www.coolstuffinc.com/a/?action=search&page=1&author%5B%5D=Carlos%20Gutierrez",
+    )
 
     @staticmethod
     @override

@@ -34,6 +34,9 @@ class CardBoardLiveDeckScraper(DeckScraper):
         "xpath": CLIPBOARD_XPATH,
         "clipboard_xpath": CLIPBOARD_XPATH
     }
+    EXAMPLE_URLS = (
+        "https://app.cardboard.live/shared-deck/e75ebecd-6bec-11ec-8b34-12f15ef2af51?channel_id=38054155",
+    )
 
     @staticmethod
     @override

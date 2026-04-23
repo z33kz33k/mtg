@@ -110,6 +110,10 @@ class CyclesGamingArticleScraper(HybridContainerScraper):
     """
     CONTAINER_NAME = "CyclesGaming article"  # override
     TAG_BASED_DECK_PARSER = CyclesGamingDeckTagParser  # override
+    EXAMPLE_URLS = (
+        "https://cyclesgaming.com/ephara-god-of-the-polis-u-w-flash/",
+        "https://cyclesgaming.com/keeping-modern-janky-duskmourn-glimmers/",
+    )
 
     @staticmethod
     @override

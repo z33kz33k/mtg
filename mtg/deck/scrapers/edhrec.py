@@ -81,6 +81,9 @@ class EdhrecPreviewDeckScraper(DeckScraper):
         "R": "Mountain",
         "G": "Forest",
     }
+    EXAMPLE_URLS = (
+        "https://edhrec.com/deckpreview/mgRcVo95TJj9ztl2dHMBPw",
+    )
 
     @property
     def cards(self) -> list[Card]:
@@ -150,6 +153,10 @@ class EdhrecPreviewDeckScraper(DeckScraper):
 class EdhrecAverageDeckScraper(DeckScraper):
     """Scraper of EDHREC average decklist page and commander page.
     """
+    EXAMPLE_URLS = (
+        "https://edhrec.com/average-decks/honest-rutstein",
+    )
+
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
@@ -233,6 +240,9 @@ class EdhrecArticleScraper(HybridContainerScraper):
     """
     CONTAINER_NAME = "EDHREC article"  # override
     TAG_BASED_DECK_PARSER = EdhrecDeckTagParser  # override
+    EXAMPLE_URLS = (
+        "https://edhrec.com/articles/living-energy-precon-review-aetherdrift",
+    )
 
     @staticmethod
     @override
@@ -288,6 +298,10 @@ class EdhrecAuthorScraper(HybridContainerScraper):
     """
     CONTAINER_NAME = "EDHREC author"  # override
     CONTAINER_SCRAPERS = EdhrecArticleScraper,  # override
+    EXAMPLE_URLS = (
+        "https://edhrec.com/articles/author/angelo-guerrera",
+        "https://articles.edhrec.com/author/joseph-schultz",
+    )
 
     @staticmethod
     @override
@@ -315,6 +329,9 @@ class EdhrecArticleSearchScraper(EdhrecAuthorScraper):
     """Scraper of EDHREC article search page.
     """
     CONTAINER_NAME = "EDHREC article search"  # override
+    EXAMPLE_URLS = (
+        "https://edhrec.com/articles/search/tyler%20bucks",
+    )
 
     @staticmethod
     @override

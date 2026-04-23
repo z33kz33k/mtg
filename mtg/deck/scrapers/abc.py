@@ -17,14 +17,14 @@ from requests import ConnectionError, HTTPError, ReadTimeout
 from selenium.common import ElementClickInterceptedException, TimeoutException
 
 from mtg.constants import Json
-from mtg.deck.core import CardNotFound, Deck, InvalidDeck
 from mtg.deck.abc import JsonBasedDeckParser, NestedDeckParser, TagBasedDeckParser
-from mtg.session import ScrapingSession
+from mtg.deck.core import CardNotFound, Deck, InvalidDeck
 from mtg.lib.common import Noop, ParsingError, register_type
-from mtg.lib.time import timed
 from mtg.lib.scrape.core import InaccessiblePage, ScrapingError, Soft404Error, Throttling, \
     fetch_soup, find_links, prepend_url, throttle
 from mtg.lib.scrape.dynamic import fetch_dynamic_soup
+from mtg.lib.time import timed
+from mtg.session import ScrapingSession
 
 _log = logging.getLogger(__name__)
 
@@ -166,6 +166,10 @@ class DeckScraper(NestedDeckParser):
                 err = ScrapingError(str(err), type(self), self.url)
             _log.warning(f"Scraping failed with: {err!r}")
         if deck:
+            if self._session.is_parsed_decklist(deck.decklist):
+                _log.info(f"Skipping {deck.name!r} deck with already parsed decklist...")
+                self._session.add_failed_url(self.url)
+                return None
             deck_name = f"{deck.name!r} deck" if deck.name else "Deck"
             _log.info(f"{deck_name} scraped successfully")
             self._session.add_deck(deck.decklist, deck.metadata or None)
@@ -206,7 +210,9 @@ class DeckScraper(NestedDeckParser):
             for url in cls.EXAMPLE_URLS:
                 _log.info(f"Testing URL: {url!r}...")
                 scraper = cls(url)
-                scraper.scrape()
+                deck = scraper.scrape()
+                if not deck:
+                    return False, None
         except Exception as e:
             return False, e
         else:
@@ -324,7 +330,9 @@ class ContainerScraper(DeckScraper):
             for url in cls.EXAMPLE_URLS:
                 _log.info(f"Testing URL: {url!r}...")
                 scraper = cls(url)
-                scraper.scrape_decks()
+                decks = scraper.scrape_decks()
+                if not decks:
+                    return False, None
         except Exception as e:
             return False, e
         else:
@@ -418,6 +426,10 @@ class DeckUrlsContainerScraper(ContainerScraper):
                     self._session.add_failed_url(normalized_deck_url)
                     continue
                 if deck:
+                    if self._session.is_parsed_decklist(deck.decklist):
+                        _log.info(f"Skipping {deck.name!r} deck with already parsed decklist...")
+                        self._session.add_failed_url(normalized_deck_url)
+                        continue
                     deck_name = f"{deck.name!r} deck" if deck.name else "Deck"
                     _log.info(f"{deck_name} scraped successfully")
                     decks.append(deck)
@@ -474,6 +486,9 @@ class DeckTagsContainerScraper(ContainerScraper):
                 _log.warning(f"Tag-based deck parsing failed with: {err!r}")
                 deck = None
             if deck:
+                if self._session.is_parsed_decklist(deck.decklist):
+                    _log.info(f"Skipping {deck.name!r} deck with already parsed decklist...")
+                    continue
                 decks.append(deck)
                 self._session.add_deck(deck.decklist, deck.metadata or None)
                 msg = f"Parsed deck {i}/{len(self._deck_tags)}"
@@ -536,6 +551,9 @@ class DecksJsonContainerScraper(ContainerScraper):
                 _log.warning(f"JSON-based deck parsing failed with: {err!r}")
                 deck = None
             if deck:
+                if self._session.is_parsed_decklist(deck.decklist):
+                    _log.info(f"Skipping {deck.name!r} deck with already parsed decklist...")
+                    continue
                 decks.append(deck)
                 self._session.add_deck(deck.decklist, deck.metadata or None)
                 msg = f"Parsed deck {i}/{len(self._decks_data)}"

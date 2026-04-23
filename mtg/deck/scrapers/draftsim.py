@@ -36,6 +36,10 @@ URL_HOOKS = (
 class DraftsimDeckScraper(DeckScraper):
     """Scraper of Draftsim decklist page.
     """
+    EXAMPLE_URLS = (
+        "https://draftsim.com/decks/polymorph/",
+    )
+
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
@@ -120,6 +124,10 @@ class DraftsimArticleScraper(HybridContainerScraper):
     """
     CONTAINER_NAME = "Draftsim article"  # override
     TAG_BASED_DECK_PARSER = DraftsimDeckTagParser  # override
+    EXAMPLE_URLS = (
+        "https://draftsim.com/fynn-edh-deck/",
+        "https://draftsim.com/mtg-dft-commander-decks/",
+    )
 
     @staticmethod
     @override
@@ -178,6 +186,9 @@ class DraftsimAuthorScraper(HybridContainerScraper):
     """
     CONTAINER_NAME = "Draftsim author"  # override
     CONTAINER_SCRAPERS = DraftsimArticleScraper,  # override
+    EXAMPLE_URLS = (
+        "https://draftsim.com/author/darthjacen/",
+    )
 
     @staticmethod
     @override

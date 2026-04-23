@@ -77,6 +77,9 @@ class CardsrealmDeckScraper(DeckScraper):
     """Scraper of Cardsrealm decklist page.
     """
     DATA_FROM_SOUP = True  # override
+    EXAMPLE_URLS = (
+        "https://mtg.cardsrealm.com/en-us/decks/io11-bg-harvest?utm_source=monarchs&utm_medium=affiliate&utm_campaign=podcast",
+    )
 
     @staticmethod
     @override
@@ -135,6 +138,9 @@ class CardsrealmProfileScraper(DeckUrlsContainerScraper):
     CONTAINER_NAME = "Cardsrealm profile"  # override
     DECK_SCRAPERS = CardsrealmDeckScraper,  # override
     DECK_URL_PREFIX = URL_PREFIX  # override
+    EXAMPLE_URLS = (
+        "https://mtg.cardsrealm.com/en-us/profile/mateus-queiroz-n35/decks",
+    )
 
     @staticmethod
     @override
@@ -166,6 +172,9 @@ class CardsrealmFolderScraper(CardsrealmProfileScraper):
     """Scraper of Cardsrealm decks folder page.
     """
     CONTAINER_NAME = "Cardsrealm folder"  # override
+    EXAMPLE_URLS = (
+        "https://mtg.cardsrealm.com/en-us/decks/folder/1l7-pauper",
+    )
 
     @staticmethod
     @override
@@ -189,10 +198,12 @@ class CardsrealmMetaTournamentScraper(DeckUrlsContainerScraper):
     CONTAINER_NAME = "Cardsrealm meta-deck tournament"  # override
     DECK_SCRAPERS = CardsrealmDeckScraper,  # override
     DECK_URL_PREFIX = URL_PREFIX  # override
+    EXAMPLE_URLS = (
+        "https://mtg.cardsrealm.com/en-us/meta-decks/pauper/tournaments/1k27j-pauper-royale-220",
+    )
 
     @staticmethod
     @override
-    # e.g.: https://mtg.cardsrealm.com/en-us/meta-decks/pauper/tournaments/1k27j-pauper-royale-220
     def is_valid_url(url: str) -> bool:
         return all(t in url.lower() for t in ("cardsrealm.com/", "/meta-decks/", "/tournaments/"))
 
@@ -226,10 +237,12 @@ class CardsrealmRegularTournamentScraper(DeckUrlsContainerScraper):
     }
     CONTAINER_NAME = "Cardsrealm regular tournament"  # override
     DECK_SCRAPERS = CardsrealmDeckScraper,  # override
+    EXAMPLE_URLS = (
+        "https://mtg.cardsrealm.com/en-us/tournament/1k27j-pauper-royale-220",
+    )
 
     @staticmethod
     @override
-    # e.g.: https://mtg.cardsrealm.com/en-us/tournament/1k27j-pauper-royale-220
     def is_valid_url(url: str) -> bool:
         return (all(t in url.lower() for t in ("cardsrealm.com/", "/tournament/"))
                 and "/meta-decks/" not in url.lower())
@@ -293,6 +306,9 @@ class CardsrealmArticleScraper(HybridContainerScraper):
     CONTAINER_SCRAPERS = (
         CardsrealmProfileScraper, CardsrealmFolderScraper, CardsrealmRegularTournamentScraper,
         CardsrealmMetaTournamentScraper)
+    EXAMPLE_URLS = (
+        "https://mtg.cardsrealm.com/en-us/articles/explorer-mono-blue-tempo-deck-tech-sideboard-guide",
+    )
 
     @staticmethod
     @override
@@ -323,6 +339,9 @@ class CardsrealmAuthorScraper(HybridContainerScraper):
     """
     CONTAINER_NAME = "Cardsrealm author"  # override
     CONTAINER_SCRAPERS = CardsrealmArticleScraper,  # override
+    EXAMPLE_URLS = (
+        "https://cardsrealm.com/en-us/articles/author/humberto2151",
+    )
 
     @staticmethod
     @override
@@ -349,6 +368,9 @@ class CardsrealmArticleSearchScraper(HybridContainerScraper):
     """
     CONTAINER_NAME = "Cardsrealm article search"  # override
     CONTAINER_SCRAPERS = CardsrealmArticleScraper,  # override
+    EXAMPLE_URLS = (
+        "https://cardsrealm.com/en-us/articles/search/?keyword=humberto2151",
+    )
 
     @staticmethod
     @override

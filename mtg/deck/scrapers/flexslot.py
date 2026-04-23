@@ -113,6 +113,10 @@ class FlexslotDeckJsonParser(JsonBasedDeckParser):
 class FlexslotDeckScraper(DeckScraper):
     """Scraper of Flexslot.gg decklist page.
     """
+    EXAMPLE_URLS = (
+        "https://flexslot.gg/decks/243fc88f-1fca-41ae-a81a-9503347ce85c",
+    )
+
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
@@ -149,6 +153,9 @@ class FlexslotSideboardScraper(DecksJsonContainerScraper):
     """
     CONTAINER_NAME = "Flexslot sideboard"  # override
     JSON_BASED_DECK_PARSER = FlexslotDeckJsonParser  # override
+    EXAMPLE_URLS = (
+        "https://flexslot.gg/sideboards/7861",
+    )
 
     @staticmethod
     @override
@@ -184,6 +191,9 @@ class FlexslotArticleScraper(HybridContainerScraper):
     """
     CONTAINER_NAME = "Flexslot article"  # override
     CONTAINER_SCRAPERS = FlexslotSideboardScraper,  # override
+    EXAMPLE_URLS = (
+        "https://flexslot.gg/articles/a3222f36-64f1-43b1-9b5a-94dffa76459a",
+    )
 
     @staticmethod
     @override
@@ -240,6 +250,9 @@ class FlexslotUserScraper(HybridContainerScraper):
     DECK_SCRAPERS = FlexslotDeckScraper,  # override
     CONTAINER_SCRAPERS = FlexslotSideboardScraper,  #override
     API_URL_TEMPLATE = "https://api.flexslot.gg/{}/search/?firebase_user_id={}&page=1"
+    EXAMPLE_URLS = (
+        "https://flexslot.gg/u/YungDingo",
+    )
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)

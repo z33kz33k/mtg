@@ -39,6 +39,10 @@ URL_HOOKS = (
 class DeckboxDeckScraper(DeckScraper):
     """Scraper of Deckbox decklist page.
     """
+    EXAMPLE_URLS = (
+        "https://deckbox.org/sets/3581335",
+    )
+
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
@@ -109,6 +113,9 @@ class DeckboxUserScraper(DeckUrlsContainerScraper):
     CONTAINER_NAME = "Deckbox user"  # override
     DECK_SCRAPERS = DeckboxDeckScraper,  # override
     DECK_URL_PREFIX = URL_PREFIX  # override
+    EXAMPLE_URLS = (
+        "https://deckbox.org/users/Odekar",
+    )
 
     @staticmethod
     @override
@@ -136,6 +143,9 @@ class DeckboxEventScraper(DeckUrlsContainerScraper):
     CONTAINER_NAME = "Deckbox event"  # override
     DECK_SCRAPERS = DeckboxDeckScraper,  # override
     DECK_URL_PREFIX = URL_PREFIX  # override
+    EXAMPLE_URLS = (
+        "https://deckbox.org/communities/mtg_competitive_events/events/1989",
+    )
 
     @staticmethod
     @override

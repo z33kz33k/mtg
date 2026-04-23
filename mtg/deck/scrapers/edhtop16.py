@@ -15,6 +15,7 @@ import dateutil.parser
 
 from mtg.constants import Json
 from mtg.deck.arena import ArenaParser
+from mtg.deck.core import Deck
 from mtg.deck.scrapers.abc import DeckUrlsContainerScraper
 from mtg.deck.scrapers.topdeck import check_unexpected_urls
 from mtg.lib.scrape.core import ScrapingError, dissect_js, strip_url_query
@@ -39,6 +40,10 @@ class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "EDHTop16 tournament"  # override
     DATA_FROM_SOUP = True  # override
+    EXAMPLE_URLS = (
+        "https://edhtop16.com/tournament/Mh2edH1jY19LaTovso33",
+        "https://edhtop16.com/tournament/landfall-3er-clasificatorio-al-nacional-de-cedh",
+    )
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -130,6 +135,9 @@ class EdhTop16CommanderScraper(EdhTop16TournamentScraper):
     """Scraper of EDHTop16 commander page.
     """
     CONTAINER_NAME = "EDHTop16 commander"  # override
+    EXAMPLE_URLS = (
+        "https://edhtop16.com/commander/Niv-Mizzet%2C%20Visionary",
+    )
 
     @staticmethod
     @override

@@ -39,6 +39,9 @@ class CardhoarderDeckScraper(DeckScraper):
         "xpath": "//div[contains(@id, 'deck-viewer')]"
     }
     DATA_FROM_SOUP = True  # override
+    EXAMPLE_URLS = (
+        "https://www.cardhoarder.com/d/kpy674jn6ekerj5",
+    )
 
     @staticmethod
     @override

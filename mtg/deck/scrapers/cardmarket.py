@@ -149,6 +149,9 @@ class CardmarketArticleScraper(HybridContainerScraper):
     }
     CONTAINER_NAME = "Cardmarket article"  # override
     TAG_BASED_DECK_PARSER = CardmarketDeckTagParser  # override
+    EXAMPLE_URLS = (
+        "https://www.cardmarket.com/en/Insight/Articles/quest-for-the-best-pioneer-deck-ever",
+    )
 
     @staticmethod
     @override
@@ -205,6 +208,9 @@ class CardmarketWriterScraper(HybridContainerScraper):
     CONTAINER_NAME = "Cardmarket writer"  # override
     CONTAINER_SCRAPERS = CardmarketArticleScraper,  # override
     CONTAINER_URL_PREFIX = "https://www.cardmarket.com"
+    EXAMPLE_URLS = (
+        "https://www.cardmarket.com/en/Insight/Writers/tobi-henke",
+    )
 
     @staticmethod
     @override

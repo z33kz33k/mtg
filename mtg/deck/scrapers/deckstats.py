@@ -66,6 +66,10 @@ class DeckstatsDeckScraper(DeckScraper):
     """Scraper of Deckstats decklist page.
     """
     DATA_FROM_SOUP = True  # override
+    EXAMPLE_URLS = (
+        "https://deckstats.net/decks/231485/4286921-captain-n-ghathrod",
+        "https://deckstats.net/decks/115134/1283677-kaya-s-scourge",
+    )
 
     @staticmethod
     @override
@@ -175,6 +179,11 @@ class DeckstatsUserScraper(DeckUrlsContainerScraper):
                         "folder%3Bdecks%3Bparent_tree%3Bsubfolders&owner_id={}&folder_id=0&"
                         "decks_page={}")  # override
     DECK_SCRAPERS = DeckstatsDeckScraper,  # override
+    EXAMPLE_URLS = (
+        "https://deckstats.net/decks/30513",
+        "https://deckstats.net/decks/30513/?lng=it",
+        "https://deckstats.net/decks/202938/?lng=fr",
+    )
 
     @staticmethod
     @override

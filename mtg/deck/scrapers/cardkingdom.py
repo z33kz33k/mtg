@@ -53,6 +53,9 @@ class CardKingdomArticleScraper(HybridContainerScraper):
     """
     CONTAINER_NAME = "CardKingdom article"  # override
     HEADERS = HEADERS  # override
+    EXAMPLE_URLS = (
+        "https://blog.cardkingdom.com/river-song-commander-deck-tech/",
+    )
 
     @staticmethod
     @override
@@ -99,6 +102,9 @@ class CardKingdomAuthorScraper(HybridContainerScraper):
     CONTAINER_NAME = "CardKingdom author"  # override
     CONTAINER_SCRAPERS = CardKingdomArticleScraper,  # override
     HEADERS = HEADERS  # override
+    EXAMPLE_URLS = (
+        "https://blog.cardkingdom.com/author/kgregory/",
+    )
 
     @staticmethod
     @override

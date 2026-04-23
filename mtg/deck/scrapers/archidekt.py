@@ -58,6 +58,9 @@ class ArchidektDeckScraper(DeckScraper):
     """Scraper of Archidekt decklist page.
     """
     DATA_FROM_SOUP = True  # override
+    EXAMPLE_URLS = (
+        "https://archidekt.com/decks/16069812/zombie_horde",
+    )
 
     @staticmethod
     @override
@@ -133,6 +136,10 @@ class ArchidektDeckScraper(DeckScraper):
 class ArchidektSnapshotScraper(ArchidektDeckScraper):
     """Scraper of Archidekt snapshot decklist page.
     """
+    EXAMPLE_URLS = (
+        "https://archidekt.com/snapshots/47613",
+    )
+
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
@@ -146,6 +153,9 @@ class ArchidektFolderScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Archidekt folder"  # override
     DECK_SCRAPERS = ArchidektDeckScraper,  # override
+    EXAMPLE_URLS = (
+        "https://archidekt.com/folders/42773?orderBy=name&dir=asc",
+    )
 
     @staticmethod
     @override
@@ -169,6 +179,11 @@ class ArchidektUserScraper(DeckUrlsContainerScraper):
     CONTAINER_NAME = "Archidekt user"  # override
     DECK_SCRAPERS = ArchidektDeckScraper,  # override
     DECK_URL_PREFIX = URL_PREFIX  # override
+    EXAMPLE_URLS = (
+        "https://archidekt.com/u/tauna",
+        "https://archidekt.com/user/5879",
+        "https://archidekt.com/search/decks?owner=BacaIhau&ownerexact=true",
+    )
 
     @staticmethod
     @override

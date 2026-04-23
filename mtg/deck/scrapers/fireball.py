@@ -52,6 +52,10 @@ URL_HOOKS = (
 class ChannelFireballDeckScraper(TcgPlayerInfiniteDeckScraper):
     """Scraper of ChannelFireball decklist page.
     """
+    EXAMPLE_URLS = (
+        "https://www.channelfireball.com/magic-the-gathering/deck/Timeless-Grixis/481595?external=undefined",
+    )
+
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
@@ -65,6 +69,9 @@ class ChannelFireballPlayerScraper(TcgPlayerInfinitePlayerScraper):
     CONTAINER_NAME = "ChannelFireball player"  # override
     DECK_SCRAPERS = ChannelFireballDeckScraper,  # override
     DECK_URL_PREFIX = FIREBALL_URL_PREFIX  # override
+    EXAMPLE_URLS = (
+        "https://www.channelfireball.com/magic-the-gathering/decks/player/Martin%20Juza",
+    )
 
     @staticmethod
     @override
@@ -77,6 +84,9 @@ class ChannelFireballArticleScraper(TcgPlayerInfiniteArticleScraper):
     """Scraper of ChannelFireball article page.
     """
     CONTAINER_NAME = "ChannelFireball article"  # override
+    EXAMPLE_URLS = (
+        "https://www.channelfireball.com/article/MTG-Deck-Guide-Standard-Gruul-Aggro/bd06ac65-bb14-442c-aed5-cb9195861496/",
+    )
 
     @staticmethod
     @override
@@ -91,6 +101,9 @@ class ChannelFireballAuthorScraper(TcgPlayerInfiniteAuthorScraper):
     CONTAINER_NAME = "ChannelFireball author"  # override
     CONTAINER_SCRAPERS = ChannelFireballArticleScraper,  # override
     CONTAINER_URL_PREFIX = FIREBALL_URL_PREFIX  # override
+    EXAMPLE_URLS = (
+        "https://www.channelfireball.com/author/Frank-Karsten/7f203152-211a-478d-8fee-464c2aeca2cd",
+    )
 
     @staticmethod
     @override

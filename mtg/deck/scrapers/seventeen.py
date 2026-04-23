@@ -27,7 +27,8 @@ class SeventeenLandsDeckScraper(DeckScraper):
     API_URL_TEMPLATE = ("https://www.17lands.com/data/user_deck?sharing_token={}"
                         "&deck={}&timestamp={}")  # override
     EXAMPLE_URLS = (
-        "https://www.17lands.com/user/deck/eba7a011b7e84f8cb286492312cf4241/85624423/1734473634", )
+        "https://www.17lands.com/user/deck/eba7a011b7e84f8cb286492312cf4241/85624423/1734473634",
+    )
 
     @staticmethod
     @override
