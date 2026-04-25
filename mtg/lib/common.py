@@ -21,10 +21,13 @@ class ParsingError(ValueError):
     """
 
 
-def from_iterable[T](iterable: Iterable[T], predicate: Callable[[T], bool]) -> T | None:
-    """Return item from ``iterable`` based on ``predicate`` or ``None``, if it cannot be found.
+def from_iterable[T](
+        iterable: Iterable[T],
+        predicate: Callable[[T], bool],
+        default: T | None = None) -> T | None:
+    """Return item from ``iterable`` based on ``predicate`` or ``default``, if it cannot be found.
     """
-    return next((item for item in iterable if predicate(item)), None)
+    return next((item for item in iterable if predicate(item)), default)
 
 
 def to_tuple(lst: list) -> tuple:  # recursive

@@ -161,7 +161,7 @@ class Dumper:
                 channel_ids = session.scalars(
                     select(Channel.id).where(Channel.yt_id.in_(self._channels_yt_ids))).all()
             else:
-                channels_count = session.scalar(select(func.count()).select_from(Channel))
+                channels_count = Channel.count(session)
                 channel_ids = session.scalars(select(Channel.id)).all()
 
         with ThreadPoolExecutor(max_workers=self.workers_count) as executor:
