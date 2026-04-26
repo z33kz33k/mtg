@@ -90,6 +90,9 @@ class MagicBlogsArticleScraper(HybridContainerScraper):
         'November',
         'Dezember',
     ]
+    EXAMPLE_URLS = (
+        "https://magicblogs.de/blog/9893-in-a-land-before-the-monkey-aggro-5-5-sliver/",
+    )
 
     @staticmethod
     @override

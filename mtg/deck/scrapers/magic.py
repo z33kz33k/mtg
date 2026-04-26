@@ -259,7 +259,6 @@ class MagicGgArticleScraper(MagicGgEventScraper):
     The news article page can contain the same decklists that the event page holds.
     """
     CONTAINER_NAME = "Magic.gg article"  # override
-    DECK_TAG_PARSER_TYPE = MagicGgNewDeckTagParser  # override
     EXAMPLE_URLS = (
         "https://www.magic.gg/news/the-spiciest-decklists-of-magic-world-championship-31",
     )

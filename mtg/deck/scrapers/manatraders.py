@@ -24,6 +24,10 @@ class ManatradersDeckScraper(DeckScraper):
     """Scraper of Manatraders decklist page.
     """
     JSON_FROM_SOUP = True  # override
+    EXAMPLE_URLS = (
+        "https://www.manatraders.com/webshop/personal/806941?medium=Nikachu",
+        "https://www.manatraders.com/webshop/deck/6712289",
+    )
 
     @staticmethod
     @override
@@ -82,6 +86,9 @@ class ManatradersUserScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Manatraders user"  # override
     DECK_SCRAPER_TYPES = ManatradersDeckScraper,  # override
+    EXAMPLE_URLS = (
+        "https://www.manatraders.com/decks?format_id=4&search_name=kasa",
+    )
 
     @staticmethod
     @override

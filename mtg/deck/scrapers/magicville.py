@@ -22,6 +22,10 @@ URL_PREFIX = "https://www.magic-ville.com/fr/decks/"
 class MagicVilleDeckScraper(DeckScraper):
     """Scraper of MagicVille decklist page.
     """
+    EXAMPLE_URLS = (
+        "https://magic-ville.com/fr/decks/showdeck?ref=1009566",
+    )
+
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
@@ -116,6 +120,9 @@ class MagicVilleEventScraper(DeckUrlsContainerScraper):
     CONTAINER_NAME = "MagicVille event"  # override
     DECK_SCRAPER_TYPES = MagicVilleDeckScraper,  # override
     DECK_URL_PREFIX = URL_PREFIX  # override
+    EXAMPLE_URLS = (
+        "https://www.magic-ville.com/fr/decks/decklists?event=55432",
+    )
 
     @staticmethod
     @override
@@ -137,6 +144,9 @@ class MagicVilleUserScraper(DeckUrlsContainerScraper):
     CONTAINER_NAME = "MagicVille user"  # override
     DECK_SCRAPER_TYPES = MagicVilleDeckScraper,  # override
     DECK_URL_PREFIX = URL_PREFIX  # override
+    EXAMPLE_URLS = (
+        "https://magic-ville.com/fr/register/perso?user=excs&rub=decks",
+    )
 
     @staticmethod
     @override

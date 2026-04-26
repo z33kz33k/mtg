@@ -44,6 +44,9 @@ class MeleeGgDeckScraper(DeckScraper):
     """Scraper of Melee.gg decklist page.
     """
     HEADERS = HEADERS
+    EXAMPLE_URLS = (
+        "https://melee.gg/Decklist/View/7776"
+    )
 
     @staticmethod
     @override
@@ -116,6 +119,9 @@ class MeleeGgTournamentScraper(DeckUrlsContainerScraper):
     CONTAINER_NAME = "Melee.gg tournament"  # override
     DECK_SCRAPER_TYPES = MeleeGgDeckScraper,  # override
     DECK_URL_PREFIX = URL_PREFIX  # override
+    EXAMPLE_URLS = (
+        "https://melee.gg/Tournament/View/115613",
+    )
 
     @staticmethod
     @override
@@ -143,6 +149,9 @@ class MeleeGgProfileScraper(DeckUrlsContainerScraper):
     CONTAINER_NAME = "Melee.gg profile"  # override
     DECK_SCRAPER_TYPES = MeleeGgDeckScraper,  # override
     DECK_URL_PREFIX = URL_PREFIX  # override
+    EXAMPLE_URLS = (
+        "https://melee.gg/Profile/Index/MAJH81996",
+    )
 
     @staticmethod
     @override

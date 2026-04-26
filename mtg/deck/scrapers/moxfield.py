@@ -31,12 +31,15 @@ class MoxfieldDeckScraper(DeckScraper):
     """Scraper of Moxfield decklist page.
     """
     API_URL_TEMPLATE = "https://api2.moxfield.com/v3/decks/all/{}"
+    EXAMPLE_URLS = (
+        "https://moxfield.com/decks/y98F6TIUmkmfJ0_6AOIcYw",
+    )
 
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
         url = url.lower()
-        tokens = "public?q=", "/personal"
+        tokens = "public?q=", "/personal"  # deck search, private page
         return "moxfield.com/decks/" in url and all(t not in url for t in tokens)
 
     @staticmethod
@@ -112,17 +115,21 @@ class MoxfieldDeckScraper(DeckScraper):
 
 @folder_container_scraper
 @DeckUrlsContainerScraper.registered
-class MoxfieldBookmarkScraper(DeckUrlsContainerScraper):
-    """Scraper of Moxfield bookmark page.
+class MoxfieldListScraper(DeckUrlsContainerScraper):
+    """Scraper of Moxfield list (formerly bookmark) page.
     """
-    CONTAINER_NAME = "Moxfield bookmark"  # override
+    CONTAINER_NAME = "Moxfield list"  # override
     API_URL_TEMPLATE = "https://api2.moxfield.com/v1/bookmarks/{}"  # override
     DECK_SCRAPER_TYPES = MoxfieldDeckScraper,  # override
+    EXAMPLE_URLS = (
+        "https://moxfield.com/lists/enD41-decks-i-currently-play?redirectFrom=bookmarks",
+        "https://www.moxfield.com/bookmarks/enD41-decks-i-currently-play",
+    )
 
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return "moxfield.com/bookmarks/" in url.lower()
+        return "moxfield.com/bookmarks/" in url.lower() or "moxfield.com/lists/" in url.lower()
 
     def _get_bookmark_id(self) -> str:
         *_, last = self.url.split("/")
@@ -150,10 +157,15 @@ class MoxfieldUserScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Moxfield user"  # override
     # 100 page size is pretty arbitrary but tested to work
-    API_URL_TEMPLATE = ("https://api2.moxfield.com/v2/decks/search?includePinned=true&showIllegal"
-                        "=true&authorUserNames={}&pageNumber=1&pageSize=100&sortType="
-                        "updated&sortDirection=descending&board=mainboard")  # override
+    API_URL_TEMPLATE = (
+        "https://api2.moxfield.com/v2/decks/search?includePinned=true&showIllegal"
+        "=true&authorUserNames={}&pageNumber=1&pageSize=100&sortType="
+        "updated&sortDirection=descending&board=mainboard"
+    )  # override
     DECK_SCRAPER_TYPES = MoxfieldDeckScraper,  # override
+    EXAMPLE_URLS = (
+        "https://moxfield.com/users/OCHiveMind",
+    )
 
     @staticmethod
     @override
@@ -188,9 +200,14 @@ class MoxfieldDeckSearchScraper(DeckUrlsContainerScraper):
     }
     CONTAINER_NAME = "Moxfield deck search"  # override
     # 100 page size is pretty arbitrary but tested to work
-    API_URL_TEMPLATE = ("https://api2.moxfield.com/v2/decks/search?pageNumber=1&pageSize=100&sort"
-                        "Type=updated&sortDirection=descending&filter={}")  # override
+    API_URL_TEMPLATE = (
+        "https://api2.moxfield.com/v2/decks/search?pageNumber=1&pageSize=100&sort"
+        "Type=updated&sortDirection=descending&filter={}"
+    )  # override
     DECK_SCRAPER_TYPES = MoxfieldDeckScraper,  # override
+    EXAMPLE_URLS = (
+        "https://moxfield.com/decks/public?q=eyJmaWx0ZXIiOiJwb2cyNTAxIn0%3D",
+    )
 
     @staticmethod
     @override

@@ -24,6 +24,10 @@ class ManaStackDeckScraper(DeckScraper):
     SELENIUM_PARAMS = {  # override
         "xpath": "//div[@class='deck-list-container']"
     }
+    EXAMPLE_URLS = (
+        "https://manastack.com/deck/dustin-and-max-learned-tap-dancing",
+        "https://manastack.com/deck/esper-transcendent-4",
+    )
 
     @staticmethod
     @override
@@ -85,6 +89,9 @@ class ManaStackUserScraper(DeckUrlsContainerScraper):
     CONTAINER_NAME = "ManaStack user"  # override
     DECK_SCRAPER_TYPES = ManaStackDeckScraper,  # override
     DECK_URL_PREFIX = "https://manastack.com"  # override
+    EXAMPLE_URLS = (
+        "https://manastack.com/user/kxdx1157/decks",
+    )
 
     @staticmethod
     @override

@@ -122,7 +122,7 @@ YT videos descriptions).
         * [Magic.gg](https://magic.gg) events and articles
         * [MagicBlogs.de](https://magicblogs.de) articles
         * Melee.gg profiles and tournaments
-        * Moxfield bookmarks, users and deck searches
+        * Moxfield lists (formerly bookmarks), users and deck searches
         * MTGAZone articles and authors
         * MTGCircle articles
         * MTGDecks.net tournaments and articles

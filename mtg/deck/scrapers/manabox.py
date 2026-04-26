@@ -23,6 +23,10 @@ _log = logging.getLogger(__name__)
 class ManaBoxDeckScraper(DeckScraper):
     """Scraper of ManaBox decklist page.
     """
+    EXAMPLE_URLS = (
+        "https://manabox.app/decks/rx5CcxGfTJqBx7mQSqVb4A",
+    )
+
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
