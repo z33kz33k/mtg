@@ -12,7 +12,7 @@ from collections.abc import Callable
 from datetime import date
 
 from mtg.data.common import retrieve_ids, retrieve_video_data
-from mtg.data.structures import VideoData
+from mtg.data.structs import VideoData
 from mtg.session import ScrapingSession
 from mtg.lib.time import timed
 from mtg.lib.scrape.core import http_requests_counted

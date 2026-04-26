@@ -25,19 +25,25 @@ from tqdm import tqdm
 from youtube_comment_downloader import SORT_BY_POPULAR, YoutubeCommentDownloader
 
 from mtg import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper
-from mtg.constants import CHANNELS_DIR, CHANNEL_URL_TEMPLATE, FILENAME_TIMESTAMP_FORMAT, Json, \
-    PathLike, VIDEO_URL_TEMPLATE
+from mtg.constants import (
+    CHANNELS_DIR, CHANNEL_URL_TEMPLATE, FILENAME_TIMESTAMP_FORMAT, Json,
+    PathLike, VIDEO_URL_TEMPLATE,
+)
 from mtg.data.common import load_channel, retrieve_ids
-from mtg.data.structures import ChannelData, VideoData
+from mtg.data.structs import ChannelData, VideoData
 from mtg.deck.arena import ArenaParser, LinesParser
 from mtg.deck.core import Deck, DeckParser
-from mtg.deck.scrapers.abc import DeckTagsContainerScraper, DecksJsonContainerScraper, \
-    get_throttled_deck_scraper_types
+from mtg.deck.scrapers.abc import (
+    DeckTagsContainerScraper, DecksJsonContainerScraper,
+    get_throttled_deck_scraper_types,
+)
 from mtg.lib.common import Noop, find_longest_seqs, from_iterable, logging_disabled
 from mtg.lib.files import get_dir, sanitize_filename
 from mtg.lib.numbers import extract_float, multiply_by_symbol
-from mtg.lib.scrape.core import ScrapingError, extract_url, http_requests_counted, \
-    parse_keywords, throttle, throttled, unshorten
+from mtg.lib.scrape.core import (
+    ScrapingError, extract_url, http_requests_counted,
+    parse_keywords, throttle, throttled, unshorten,
+)
 from mtg.lib.scrape.dynamic import fetch_dynamic_soup
 from mtg.lib.scrape.linktree import LinktreeScraper
 from mtg.lib.time import naive_utc_now, timed
@@ -708,6 +714,7 @@ def scrape_channels(
                 _log.error(traceback.format_exc())
 
 
+# TODO: use load_channels() instead
 def scrape_fresh(only_deck_fresh=True) -> None:
     """Scrape those YouTube channels saved in a private Google Sheet that are not active,
     dormant nor abandoned.

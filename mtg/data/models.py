@@ -23,7 +23,7 @@ from operator import attrgetter
 from sqlalchemy import Column, ForeignKey, Index, Integer, JSON, String, Table, Text, func, select
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, relationship
 
-from mtg.data.structures import ChannelData, VideoData, Deck as DeckData, DataPath
+from mtg.data.structs import ChannelData, VideoData, Deck as DeckData, DataPath
 from mtg.deck.arena import ArenaParser
 
 

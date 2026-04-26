@@ -15,7 +15,7 @@ from tqdm import tqdm
 
 from mtg.constants import DECKS_DIR, PathLike
 from mtg.data.common import load_channels, retrieve_ids
-from mtg.data.structures import ChannelData
+from mtg.data.structs import ChannelData
 from mtg.deck.export import Exporter, FORMATS as EXPORT_FORMATS
 from mtg.lib.common import logging_disabled
 from mtg.lib.time import get_timestamp

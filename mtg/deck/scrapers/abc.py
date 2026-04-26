@@ -424,17 +424,7 @@ class DeckUrlsContainerScraper(ContainerScraper):
                     _log.warning("Unable to click on a deck link with Selenium. Skipping...")
                     self._session.add_failed_url(normalized_deck_url)
                     continue
-                if deck:
-                    if self._session.is_parsed_decklist(deck.decklist):
-                        _log.info(f"Skipping {deck.name!r} deck with already parsed decklist...")
-                        self._session.add_failed_url(normalized_deck_url)
-                        continue
-                    deck_name = f"{deck.name!r} deck" if deck.name else "Deck"
-                    _log.info(f"{deck_name} scraped successfully")
-                    decks.append(deck)
-                    self._session.add_deck(deck.decklist, deck.metadata or None)
-                else:
-                    self._session.add_failed_url(normalized_deck_url)
+                # skipping/adding to scraped/failed is already handled in deck scrapers
 
         return decks
 

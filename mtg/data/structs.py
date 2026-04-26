@@ -1,7 +1,7 @@
 """
 
-    mtg.data.structures
-    ~~~~~~~~~~~~~~~~~~~
+    mtg.data.structs
+    ~~~~~~~~~~~~~~~~
     Data structures for convenient consumption.
 
     @author: mazz3rr

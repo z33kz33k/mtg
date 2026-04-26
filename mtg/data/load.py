@@ -20,7 +20,7 @@ from mtg.logging import init_log
 from mtg.constants import CHANNELS_DIR, DECKLISTS_FILE, FAILED_URLS_FILE, WITHDRAWN_DIR
 from mtg.data.db import DefaultSession, NoAutoFlushSession
 from mtg.data.models import Channel, Deck, Decklist, FailedUrl, Snapshot, Tag, Video
-from mtg.data.structures import DataPath
+from mtg.data.structs import DataPath
 from mtg.deck.arena import MalformedDecklist, normalize_decklist
 from mtg.lib.scrape.core import normalize_url
 from mtg.lib.text import get_hash

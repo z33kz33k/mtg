@@ -21,7 +21,7 @@ from mtg.constants import CHANNELS_DIR, CHANNEL_URL_TEMPLATE, FILENAME_TIMESTAMP
     README_FILE
 from mtg.data.db import DefaultSession
 from mtg.data.models import Channel, Deck, Decklist, Snapshot, Video
-from mtg.data.structures import ChannelData, VideoData
+from mtg.data.structs import ChannelData, VideoData
 from mtg.lib.common import MarkdownTableCounter
 from mtg.lib.files import get_dir
 from mtg.lib.gsheets import extend_gsheet_rows_with_cols, retrieve_from_gsheets_cols
@@ -64,6 +64,7 @@ def clear_cache() -> None:
     _channels_cache.clear()
 
 
+# TODO: use sparingly, prefer load_channels() with single query to the db
 def load_channel(channel_id: str) -> ChannelData | None:
     """Load all earlier scraped data for a channel designated by the provided YouTube ID.
     """
@@ -82,6 +83,7 @@ def load_channel(channel_id: str) -> ChannelData | None:
     return channel_data
 
 
+# TODO: make a single query - joining everything like in deduplication script
 def load_channels(*channel_ids: str) -> Iterator[ChannelData]:
     """Load channel data for specified YouTube channel IDs.
 
@@ -92,7 +94,7 @@ def load_channels(*channel_ids: str) -> Iterator[ChannelData]:
         if channel := load_channel(chid):
             yield channel
 
-
+# TODO: use load_channels() instead
 def update_gsheet() -> None:
     """Update "channels" Google Sheets worksheet with the currently scraped data.
     """

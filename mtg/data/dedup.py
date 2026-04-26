@@ -1,7 +1,7 @@
 """
 
-    data.deduplicate
-    ~~~~~~~~~~~~~~~~
+    data.dedup
+    ~~~~~~~~~~
     Deduplicate decks per channel within the dataset in terms of their text decklists.
 
     @author: mazz3rr
