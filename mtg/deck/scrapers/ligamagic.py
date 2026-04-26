@@ -46,6 +46,10 @@ class LigaMagicDeckScraper(DeckScraper):
     """Scraper of LigaMagic decklist page.
     """
     _CSS_SELECTOR = "div#deck-view"
+    EXAMPLE_URLS = (
+        "https://www.ligamagic.com.br/?view=dks/deck&id=9629549",
+        "https://www.ligamagic.com.br/?view=dks/deck&id=8381525",
+    )
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -131,6 +135,9 @@ class LigaMagicEventScraper(DeckUrlsContainerScraper):
     DECK_SCRAPER_TYPES = LigaMagicDeckScraper,  # override
     DECK_URL_PREFIX = "https://www.ligamagic.com.br"  # override
     _CSS_SELECTOR = "div.evnt-dks"
+    EXAMPLE_URLS = (
+        "https://www.ligamagic.com.br/?view=dks/evento&id=297747",
+    )
 
     @staticmethod
     @override
@@ -147,3 +154,6 @@ class LigaMagicEventScraper(DeckUrlsContainerScraper):
         if not deck_tags:
             raise ScrapingError("Deck tags not found", scraper=type(self), url=self.url)
         self._deck_urls = [tag.attrs["href"].removeprefix(".") for tag in deck_tags]
+
+
+# TODO: articles

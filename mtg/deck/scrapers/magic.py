@@ -18,7 +18,7 @@ from selenium.common import TimeoutException
 
 from mtg.constants import Json
 from mtg.deck.abc import DeckTagParser
-from mtg.deck.scrapers.abc import Collected, DeckScraper, DeckTagsContainerScraper
+from mtg.deck.scrapers.abc import DeckScraper, DeckTagsContainerScraper
 from mtg.lib.common import ParsingError
 from mtg.lib.scrape.core import ScrapingError, strip_url_query
 from mtg.lib.scrape.dynamic import fetch_dynamic_soup
@@ -159,6 +159,9 @@ class MagicGgDeckScraper(DeckScraper):
         "xpath": '//div[@class="css-3X0PN"]',
         "consent_xpath": '//button[@aria-label="Reject All"]'
     }
+    EXAMPLE_URLS = (
+        "https://magic.gg/decklists/february-kaldheim-league-weekend-mpl-decklists?decklist=_Reid%2520Duke_February%2520Kaldheim%2520League%2520Weekend_02_27_21_7e2afc8b-3c0e-4873-8f71-e7b9b2fa70f2",
+    )
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -169,6 +172,7 @@ class MagicGgDeckScraper(DeckScraper):
     def is_valid_url(url: str) -> bool:
         return f"magic.gg/decklists/" in url.lower() and "?decklist=" in url.lower()
 
+    # FIXME: use `get_path_segments()` instead (#394)
     def _parse_decklist_id(self) -> str:
         *_, id_ = self.url.split("?decklist=")
         return id_
@@ -197,11 +201,15 @@ class MagicGgEventScraper(DeckTagsContainerScraper):
     """
     CONTAINER_NAME = "Magic.gg event"  # override
     DECK_TAG_PARSER_TYPE = MagicGgNewDeckTagParser  # override
+    EXAMPLE_URLS = (
+        "https://magic.gg/decklists/magic-world-championship-xxix-standard-decklists-a-l",  # old kind
+        "https://magic.gg/decklists/arena-championship-7-standard-decklists",  # new kind
+    )
 
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return f"magic.gg/decklists/" in url.lower() and "?decklist=" not in url.lower()
+        return "magic.gg/decklists/" in url.lower() and "?decklist=" not in url.lower()
 
     @staticmethod
     @override
@@ -242,3 +250,21 @@ class MagicGgEventScraper(DeckTagsContainerScraper):
             _log.warning(f"Scraping failed with: {err!r}")
         except ScrapingError as e:
             _log.warning(f"Scraping failed with: {e!r}")
+
+
+@DeckTagsContainerScraper.registered
+class MagicGgArticleScraper(MagicGgEventScraper):
+    """Scraper of Magic.gg news article page.
+
+    The news article page can contain the same decklists that the event page holds.
+    """
+    CONTAINER_NAME = "Magic.gg article"  # override
+    DECK_TAG_PARSER_TYPE = MagicGgNewDeckTagParser  # override
+    EXAMPLE_URLS = (
+        "https://www.magic.gg/news/the-spiciest-decklists-of-magic-world-championship-31",
+    )
+
+    @staticmethod
+    @override
+    def is_valid_url(url: str) -> bool:
+        return "magic.gg/news/" in url.lower() and "?decklist=" not in url.lower()

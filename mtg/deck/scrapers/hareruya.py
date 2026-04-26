@@ -70,6 +70,9 @@ class InternationalHareruyaDeckScraper(DeckScraper):
     """Scraper of international Hareruya decklist page.
     """
     HEADERS = GOLDFISH_HEADERS  # override
+    EXAMPLE_URLS = (
+        "https://www.hareruyamtg.com/en/deck/515432/show/",
+    )
 
     @staticmethod
     @override
@@ -210,6 +213,11 @@ class JapaneseHareruyaDeckScraper(DeckScraper):
     """Scraper of Japanese Hareruya decklist page.
     """
     API_URL_TEMPLATE = "https://api.deck.hareruyamtg.com/api/deck/{}?display_token={}"  # override
+    EXAMPLE_URLS = (
+        "https://www.hareruyamtg.com/decks/831676?display_token=cb0bc.3104896075514f",
+        "https://www.hareruyamtg.com/decks/list/662964",
+        "https://deck.hareruyamtg.com/deck/443536"
+    )
 
     @staticmethod
     @override
@@ -289,6 +297,10 @@ class HareruyaEventScraper(DeckUrlsContainerScraper):
     CONTAINER_NAME = "Hareruya event"  # override
     HEADERS = HEADERS  # override
     DECK_SCRAPER_TYPES = InternationalHareruyaDeckScraper, JapaneseHareruyaDeckScraper  # override
+    EXAMPLE_URLS = (
+        "https://www.hareruyamtg.com/en/deck/result?dateFrom=2024/10/13&dateTo=2024/10/13"
+        "&eventName=Players+Convention+Shizuoka2024+-+Modern+Open",
+    )
 
     @staticmethod
     @override
@@ -310,6 +322,9 @@ class HareruyaPlayerScraper(DeckUrlsContainerScraper):
     CONTAINER_NAME = "Hareruya player"  # override
     HEADERS = HEADERS  # override
     DECK_SCRAPER_TYPES = InternationalHareruyaDeckScraper, JapaneseHareruyaDeckScraper  # override
+    EXAMPLE_URLS = (
+        "https://www.hareruyamtg.com/en/deck/result?player=pg8",
+    )
 
     @staticmethod
     @override
@@ -466,6 +481,13 @@ class HareruyaArticleScraper(HybridContainerScraper):
     CONTAINER_NAME = "Hareruya article"  # override
     DECK_TAG_PARSER_TYPE = HareruyaArticleDeckTagParser  # override
     DECK_JSON_PARSER_TYPE = JapaneseHareruyaDeckJsonParser  # override
+    EXAMPLE_URLS = (
+        "https://article.hareruyamtg.com/article/72794/?lang=en",
+        "https://article.hareruyamtg.com/article/84119/",
+        "https://article.hareruyamtg.com/article/60476/?lang=en",
+        "https://article.hareruyamtg.com/article/44666/",
+        "https://article.hareruyamtg.com/article/21533/?lang=en",
+    )
 
     @staticmethod
     @override
@@ -525,6 +547,10 @@ class HareruyaArticleScraper(HybridContainerScraper):
 class HareruyaArticleDeckScraper(DeckScraper):
     """Scraper of Hareruya article page that points to an individual deck.
     """
+    EXAMPLE_URLS = (
+        "https://article.hareruyamtg.com/article/44666/#4",
+    )
+
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
@@ -564,6 +590,9 @@ class HareruyaAuthorScraper(HybridContainerScraper):
     CONTAINER_NAME = "Hareruya author"  # override
     CONTAINER_SCRAPER_TYPES = HareruyaArticleScraper,  # override
     CONTAINER_URL_PREFIX = "https://article.hareruyamtg.com"
+    EXAMPLE_URLS = (
+        "https://article.hareruyamtg.com/article/author/piotrglogowski_en/?lang=en",
+    )
 
     @staticmethod
     @override

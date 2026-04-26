@@ -1109,7 +1109,7 @@ class DeckParser(ABC):
             self._maindeck, self._sideboard, self._commander, self._partner_commander,
             self._companion, self._metadata)
 
-    def parse(self, suppressed_errors=(InvalidDeck, CardNotFound)) -> Deck | None:  # override
+    def parse(self, suppressed_errors=(InvalidDeck, CardNotFound)) -> Deck | None:
         """Parse the input data for a Deck object.
 
         This happens in four distinct and defined stages:

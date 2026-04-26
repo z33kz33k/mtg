@@ -73,7 +73,7 @@ class DeckTagParser(NestedDeckParser):
 
     @override
     def _pre_parse(self) -> None:
-        raise NotImplementedError(f"Not supported for {type(self).__name__!r}")
+        pass  # not needed in most cases (as already covered by super-parser/scraper)
 
     @abstractmethod
     @override
@@ -99,7 +99,7 @@ class DeckJsonParser(NestedDeckParser):
 
     @override
     def _pre_parse(self) -> None:
-        raise NotImplementedError(f"Not supported for {type(self).__name__!r}")
+        pass  # not needed in most cases (as already covered by super-parser/scraper)
 
     @abstractmethod
     @override
