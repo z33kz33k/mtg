@@ -38,7 +38,7 @@ class MtgSearchItDeckScraper(DeckScraper):
         return strip_url_query(url)
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         tags = self._soup.select_one("div.tags.mt10").text.strip()
         with contextlib.suppress(ValueError):
             fmt, arch = tags.splitlines()
@@ -49,7 +49,7 @@ class MtgSearchItDeckScraper(DeckScraper):
         self._metadata["author"] = img_tag.attrs["alt"].removesuffix(" | Icon")
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         tokens = "container text hide".split()
         decklist_tag = self._soup.find(
             "section", class_=lambda c: c and all(t in c for t in tokens))

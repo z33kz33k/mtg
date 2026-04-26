@@ -17,11 +17,13 @@ import dateutil.parser
 from bs4 import BeautifulSoup, Tag
 
 from mtg.constants import Json
-from mtg.deck.abc import TagBasedDeckParser
+from mtg.deck.abc import DeckTagParser
 from mtg.deck.scrapers.abc import DeckScraper, HybridContainerScraper
 from mtg.lib.common import ParsingError
-from mtg.lib.scrape.core import ScrapingError, fetch_soup, find_links, prepend_url, \
-    strip_url_query
+from mtg.lib.scrape.core import (
+    ScrapingError, fetch_soup, find_links, prepend_url,
+    strip_url_query,
+)
 from mtg.scryfall import Card
 from mtg.yt.discover import UrlHook
 
@@ -107,28 +109,28 @@ class EdhrecPreviewDeckScraper(DeckScraper):
 
     @override
     def _pre_parse(self) -> None:
-        self._data, self._soup = _get_data(self.url, type(self))
+        self._json, self._soup = _get_data(self.url, type(self))
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         self._update_fmt("commander")
-        self._metadata["date"] = datetime.fromisoformat(self._data["savedate"]).date()
-        if header := self._data.get("header"):
+        self._metadata["date"] = datetime.fromisoformat(self._json["savedate"]).date()
+        if header := self._json.get("header"):
             self._metadata["name"] = header
-        self._metadata["is_cedh"] = self._data["cedh"]
-        if edhrec_tags := self._data.get("edhrec_tags"):
+        self._metadata["is_cedh"] = self._json["cedh"]
+        if edhrec_tags := self._json.get("edhrec_tags"):
             self._metadata["edhrec_tags"] = edhrec_tags
-        if tags := self._data.get("tags"):
+        if tags := self._json.get("tags"):
             self._metadata["tags"] = self.normalize_metadata_deck_tags(tags)
-        if salt := self._data.get("salt"):
+        if salt := self._json.get("salt"):
             self._metadata["salt"] = salt
-        if theme := self._data.get("theme"):
+        if theme := self._json.get("theme"):
             self._metadata["theme"] = theme
-        if tribe := self._data.get("tribe"):
+        if tribe := self._json.get("tribe"):
             self._metadata["tribe"] = tribe
 
     def _add_basic_lands(self) -> None:
-        lands = [self.COLORS_TO_BASIC_LANDS[c] for c in self._data["coloridentity"]]
+        lands = [self.COLORS_TO_BASIC_LANDS[c] for c in self._json["coloridentity"]]
         pool = [self.find_card(l) for l in lands]
         cursor = 0
         while len(self.cards) < 100:
@@ -138,11 +140,11 @@ class EdhrecPreviewDeckScraper(DeckScraper):
                 cursor = 0
 
     @override
-    def _parse_deck(self) -> None:
-        for card_name in self._data["cards"]:
+    def _parse_input_for_decklist(self) -> None:
+        for card_name in self._json["cards"]:
             self._maindeck += self.get_playset(self.find_card(card_name), 1)
 
-        for card_name in [c for c in self._data["commanders"] if c]:
+        for card_name in [c for c in self._json["commanders"] if c]:
             card = self.find_card(card_name)
             self._set_commander(card)
 
@@ -160,9 +162,11 @@ class EdhrecAverageDeckScraper(DeckScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return ("edhrec.com/" in url.lower()
-                and ("/average-decks/" in url.lower() or "/commanders/" in url.lower())
-                and "/month" not in url.lower())
+        return (
+            "edhrec.com/" in url.lower()
+            and ("/average-decks/" in url.lower() or "/commanders/" in url.lower())
+            and "/month" not in url.lower()
+        )
 
     @staticmethod
     @override
@@ -178,18 +182,18 @@ class EdhrecAverageDeckScraper(DeckScraper):
 
     @override
     def _pre_parse(self) -> None:
-        self._data, self._soup = _get_data(self.url, type(self))
+        self._json, self._soup = _get_data(self.url, type(self))
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         self._update_fmt("commander")
         self._metadata["date"] = datetime.today().date()
-        if header := self._data.get("header"):
+        if header := self._json.get("header"):
             self._metadata["name"] = header
 
     @override
-    def _parse_deck(self) -> None:
-        for i, card_text in enumerate(self._data["deck"]):
+    def _parse_input_for_decklist(self) -> None:
+        for i, card_text in enumerate(self._json["deck"]):
             qty, card_name = card_text.split(maxsplit=1)
             card = self.find_card(card_name)
             if i == 0:
@@ -201,11 +205,11 @@ class EdhrecAverageDeckScraper(DeckScraper):
                     self._maindeck += self.get_playset(card, int(qty))
 
 
-class EdhrecDeckTagParser(TagBasedDeckParser):
+class EdhrecDeckTagParser(DeckTagParser):
     """Parser of an EDHREC decklist HTML tag (that lives inside an article's <script> JSON data).
     """
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         if name := self._deck_tag.attrs.get("name"):
             self._metadata["name"] = name
 
@@ -226,7 +230,7 @@ class EdhrecDeckTagParser(TagBasedDeckParser):
         return decklist
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         cards_text = self._deck_tag.attrs.get("cards")
         if not cards_text:
             raise ParsingError("Text decklist missing from deck tag's attributes")
@@ -239,7 +243,7 @@ class EdhrecArticleScraper(HybridContainerScraper):
     """Scraper of EDHREC article page.
     """
     CONTAINER_NAME = "EDHREC article"  # override
-    TAG_BASED_DECK_PARSER = EdhrecDeckTagParser  # override
+    DECK_TAG_PARSER_TYPE = EdhrecDeckTagParser  # override
     EXAMPLE_URLS = (
         "https://edhrec.com/articles/living-energy-precon-review-aetherdrift",
     )
@@ -247,9 +251,11 @@ class EdhrecArticleScraper(HybridContainerScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return (("edhrec.com/articles/" in url.lower()
-                 or "articles.edhrec.com/" in url.lower())
-                and "/author/" not in url.lower() and "/search/" not in url.lower())
+        return (
+            ("edhrec.com/articles/" in url.lower() or "articles.edhrec.com/" in url.lower())
+            and "/author/" not in url.lower()
+            and "/search/" not in url.lower()
+        )
 
     @staticmethod
     @override
@@ -258,24 +264,24 @@ class EdhrecArticleScraper(HybridContainerScraper):
 
     @override
     def _pre_parse(self) -> None:
-        self._data, self._soup = _get_data(self.url, type(self), data_key="post")
+        self._json, self._soup = _get_data(self.url, type(self), data_key="post")
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         self._update_fmt("commander")
-        if author := self._data.get("author", {}).get("name"):
+        if author := self._json.get("author", {}).get("name"):
             self._metadata["author"] = author
-        if date := self._data.get("date"):
+        if date := self._json.get("date"):
             self._metadata["date"] = dateutil.parser.parse(date).date()
-        if excerpt := self._data.get("excerpt"):
+        if excerpt := self._json.get("excerpt"):
             self._metadata.setdefault("article", {})["excerpt"] = excerpt
-        if title := self._data.get("title"):
+        if title := self._json.get("title"):
             self._metadata.setdefault("article", {})["title"] = title
-        if tags := self._data.get("tags"):
+        if tags := self._json.get("tags"):
             self._metadata["tags"] = self.normalize_metadata_deck_tags(tags)
 
     def _collect_tags(self) -> list[Tag]:
-        content_soup = BeautifulSoup(self._data["content"], "lxml")
+        content_soup = BeautifulSoup(self._json["content"], "lxml")
         return [*content_soup.find_all("span", class_="edhrecp__deck-s")]
 
     def _collect_urls(self) -> tuple[list[str], list[str]]:
@@ -287,9 +293,9 @@ class EdhrecArticleScraper(HybridContainerScraper):
         return self._sift_links(*links)
 
     @override
-    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
-        deck_urls, container_urls = self._collect_urls()
-        return deck_urls, self._collect_tags(), [], container_urls
+    def _parse_input_for_decks_data(self) -> None:
+        self._deck_tags = self._collect_tags()
+        self._deck_urls, self._container_urls = self._collect_urls()
 
 
 @HybridContainerScraper.registered
@@ -297,7 +303,7 @@ class EdhrecAuthorScraper(HybridContainerScraper):
     """Scraper of EDHREC author page.
     """
     CONTAINER_NAME = "EDHREC author"  # override
-    CONTAINER_SCRAPERS = EdhrecArticleScraper,  # override
+    CONTAINER_SCRAPER_TYPES = EdhrecArticleScraper,  # override
     EXAMPLE_URLS = (
         "https://edhrec.com/articles/author/angelo-guerrera",
         "https://articles.edhrec.com/author/joseph-schultz",
@@ -306,8 +312,10 @@ class EdhrecAuthorScraper(HybridContainerScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return (("edhrec.com/articles/" in url.lower()
-                 or "articles.edhrec.com/" in url.lower()) and "/author/" in url.lower())
+        return (
+            ("edhrec.com/articles/" in url.lower() or "articles.edhrec.com/" in url.lower())
+            and "/author/" in url.lower()
+        )
 
     @staticmethod
     @override
@@ -316,12 +324,12 @@ class EdhrecAuthorScraper(HybridContainerScraper):
 
     @override
     def _pre_parse(self) -> None:
-        self._data, self._soup = _get_data(self.url, type(self), data_key="posts")
+        self._json, self._soup = _get_data(self.url, type(self), data_key="posts")
 
     @override
-    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
+    def _parse_input_for_decks_data(self) -> None:
         prefix = f'{URL_PREFIX}/articles/'
-        return [], [], [], [prepend_url(d["slug"], prefix) for d in self._data]
+        self._container_urls = [prepend_url(d["slug"], prefix) for d in self._json]
 
 
 @HybridContainerScraper.registered
@@ -336,5 +344,7 @@ class EdhrecArticleSearchScraper(EdhrecAuthorScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return (("edhrec.com/articles/" in url.lower()
-                 or "articles.edhrec.com/" in url.lower()) and "/search/" in url.lower())
+        return (
+            ("edhrec.com/articles/" in url.lower() or "articles.edhrec.com/" in url.lower())
+            and "/search/" in url.lower()
+        )

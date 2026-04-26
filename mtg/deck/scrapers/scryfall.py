@@ -38,7 +38,7 @@ class ScryfallDeckScraper(DeckScraper):
         return f"{url}?as=list&with=usd"
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         *_, author_part = self.url.split("@")
         author, *_ = author_part.split("/")
         self._metadata["author"] = author
@@ -54,7 +54,7 @@ class ScryfallDeckScraper(DeckScraper):
             self._metadata["description"] = sanitize_whitespace(desc_tag.text.strip())
 
     @classmethod
-    def _parse_section(cls, section_tag: Tag) -> list[Card]:
+    def _parse_section_tag(cls, section_tag: Tag) -> list[Card]:
         cards = []
         for li_tag in section_tag.find_all("li"):
             quantity = extract_int(li_tag.find("span", class_="deck-list-entry-count").text)
@@ -70,10 +70,10 @@ class ScryfallDeckScraper(DeckScraper):
         return cards
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         for section_tag in self._soup.find_all("div", class_="deck-list-section"):
             title = section_tag.find("h6").text
-            cards = self._parse_section(section_tag)
+            cards = self._parse_section_tag(section_tag)
 
             if "Commander" in title:
                 for card in cards:

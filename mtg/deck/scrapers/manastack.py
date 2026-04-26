@@ -36,7 +36,7 @@ class ManaStackDeckScraper(DeckScraper):
         return strip_url_query(url)
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         self._metadata["name"] = self._soup.find("h3", class_="deck-name").text.strip()
         self._update_fmt(self._soup.find("div", class_="format-listing").text.strip().lower())
         if desc_tag := self._soup.select_one("div.deck-description.text"):
@@ -47,7 +47,7 @@ class ManaStackDeckScraper(DeckScraper):
         self._metadata["date"] = get_date_from_ago_text(date_text.strip())
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         deck_tag = self._soup.find("div", class_="deck-list-container")
         for tag in deck_tag.descendants:
             if tag.name == "h4":
@@ -83,7 +83,7 @@ class ManaStackUserScraper(DeckUrlsContainerScraper):
         "xpath": '//div[@class="deck-listing-container"]'
     }
     CONTAINER_NAME = "ManaStack user"  # override
-    DECK_SCRAPERS = ManaStackDeckScraper,  # override
+    DECK_SCRAPER_TYPES = ManaStackDeckScraper,  # override
     DECK_URL_PREFIX = "https://manastack.com"  # override
 
     @staticmethod
@@ -97,7 +97,7 @@ class ManaStackUserScraper(DeckUrlsContainerScraper):
         return strip_url_query(url)
 
     @override
-    def _collect(self) -> list[str]:
+    def _parse_input_for_decks_data(self) -> None:
         rows = self._soup.find_all("div", class_="deck-listing-container")
         deck_tags = [
             tag for tag in
@@ -105,4 +105,4 @@ class ManaStackUserScraper(DeckUrlsContainerScraper):
             if tag is not None]
         if not deck_tags:
             raise ScrapingError("Deck tags not found", scraper=type(self), url=self.url)
-        return [deck_tag["href"] for deck_tag in deck_tags]
+        self._deck_urls = [deck_tag["href"] for deck_tag in deck_tags]

@@ -39,7 +39,7 @@ class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
     """Scraper of EDHTop16 tournament page.
     """
     CONTAINER_NAME = "EDHTop16 tournament"  # override
-    DATA_FROM_SOUP = True  # override
+    JSON_FROM_SOUP = True  # override
     EXAMPLE_URLS = (
         "https://edhtop16.com/tournament/Mh2edH1jY19LaTovso33",
         "https://edhtop16.com/tournament/landfall-3er-clasificatorio-al-nacional-de-cedh",
@@ -66,7 +66,7 @@ class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
                 raise ScrapingError("No tournament data", scraper=type(self), url=self.url)
 
     @override
-    def _get_data_from_soup(self) -> Json:
+    def _get_json_from_soup(self) -> Json:
         end_processor = lambda s: s.replace('":undefined', '":null').replace(
                 '": undefined', '": null').rstrip(";")
         start_hook = "window.__router_ops = "
@@ -79,19 +79,19 @@ class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
         return self._process_json(json_data)
 
     @override
-    def _validate_data(self) -> None:
-        super()._validate_data()
-        if "entries" not in self._data:
+    def _validate_json(self) -> None:
+        super()._validate_json()
+        if "entries" not in self._json:
             raise ScrapingError("No tournament entries data", scraper=type(self), url=self.url)
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         self._update_fmt("commander")
         self._metadata["event"] = {}
-        self._metadata["event"]["name"] = self._data.get("name")
-        if size := self._data.get("size"):
+        self._metadata["event"]["name"] = self._json.get("name")
+        if size := self._json.get("size"):
             self._metadata["event"]["size"] = size
-        if date := self._data.get("tournamentDate"):
+        if date := self._json.get("tournamentDate"):
             self._metadata["event"]["date"] = dateutil.parser.parse(date).date()
 
     @staticmethod
@@ -110,12 +110,12 @@ class EdhTop16TournamentScraper(DeckUrlsContainerScraper):
                     self._arena_decklists.append(self._normalize_decklist(decklist))
 
     @override
-    def _collect(self) -> list[str]:
+    def _parse_input_for_decks_data(self) -> None:
         deck_urls = []
-        for entry in self._data["entries"]:
+        for entry in self._json["entries"]:
             self._process_decklist(entry.get("decklist", ""), deck_urls)
-        check_unexpected_urls(deck_urls, *self._get_deck_scrapers())
-        return deck_urls
+        check_unexpected_urls(deck_urls, *self._get_deck_scraper_types())
+        self._deck_urls = deck_urls
 
     @override
     def scrape_decks(self) -> list[Deck]:
@@ -153,24 +153,24 @@ class EdhTop16CommanderScraper(EdhTop16TournamentScraper):
                 raise ScrapingError("No commander data", scraper=type(self), url=self.url)
 
     @override
-    def _validate_data(self) -> None:
-        if not self._data or "entries" not in self._data or not self._data["entries"].get("edges"):
+    def _validate_json(self) -> None:
+        if not self._json or "entries" not in self._json or not self._json["entries"].get("edges"):
             raise ScrapingError("No commander entries data", scraper=type(self), url=self.url)
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         self._update_fmt("commander")
         self._metadata["commander"] = {}
-        self._metadata["commander"]["name"] = self._data["name"]
-        self._metadata["commander"]["entries"] = self._data["stats"]["count"]
-        self._metadata["commander"]["meta_share"] = self._data["stats"]["metaShare"]
-        self._metadata["commander"]["conversion_rate"] = self._data["stats"]["conversionRate"]
+        self._metadata["commander"]["name"] = self._json["name"]
+        self._metadata["commander"]["entries"] = self._json["stats"]["count"]
+        self._metadata["commander"]["meta_share"] = self._json["stats"]["metaShare"]
+        self._metadata["commander"]["conversion_rate"] = self._json["stats"]["conversionRate"]
 
     @override
-    def _collect(self) -> list[str]:
+    def _parse_input_for_decks_data(self) -> None:
         deck_urls = []
-        for edge in self._data["entries"]["edges"]:
+        for edge in self._json["entries"]["edges"]:
             decklist = edge["node"].get("decklist", "")
             self._process_decklist(decklist, deck_urls)
         check_unexpected_urls(deck_urls, *self._get_deck_scrapers())
-        return deck_urls
+        self._deck_urls = deck_urls

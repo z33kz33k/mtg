@@ -15,7 +15,7 @@ import dateutil.parser
 from bs4 import NavigableString, Tag
 
 from mtg.constants import Json
-from mtg.deck.abc import TagBasedDeckParser
+from mtg.deck.abc import DeckTagParser
 from mtg.deck.scrapers.abc import HybridContainerScraper
 from mtg.lib.scrape.core import is_more_than_root_path, strip_url_query
 from mtg.yt.discover import UrlHook
@@ -29,7 +29,7 @@ URL_HOOKS = (
 )
 
 
-class CyclesGamingDeckTagParser(TagBasedDeckParser):
+class CyclesGamingDeckTagParser(DeckTagParser):
     """Parser of Cycles Gaming decklist HTML tag.
     """
     def __init__(self, deck_tag: Tag, metadata: Json | None = None) -> None:
@@ -37,11 +37,11 @@ class CyclesGamingDeckTagParser(TagBasedDeckParser):
         self._parsed_multifaced = set()
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         self._metadata["name"] = self._deck_tag.text.strip().removeprefix("Decklist – ")
 
     @staticmethod
-    def _parse_quantity(text: str) -> int:
+    def _parse_text_for_quantity(text: str) -> int:
         qty = 1
         if " " in text:
             qty_str, _ = text.split(maxsplit=1)
@@ -61,7 +61,7 @@ class CyclesGamingDeckTagParser(TagBasedDeckParser):
                 continue
             a_tag = td_tag.find("a")
             name = a_tag.text.strip()
-            qty = self._parse_quantity(td_tag.text.strip())
+            qty = self._parse_text_for_quantity(td_tag.text.strip())
             card = self.find_card(name)
             if card.is_multifaced:
                 if card in self._parsed_multifaced:
@@ -77,7 +77,7 @@ class CyclesGamingDeckTagParser(TagBasedDeckParser):
                 self._sideboard += playset
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         current = self._deck_tag.next_sibling
         while current:
             if current.name == "p" and "Format: " in current.text and current.text.strip(
@@ -109,7 +109,7 @@ class CyclesGamingArticleScraper(HybridContainerScraper):
     """Scraper of Cycles Gaming article page.
     """
     CONTAINER_NAME = "CyclesGaming article"  # override
-    TAG_BASED_DECK_PARSER = CyclesGamingDeckTagParser  # override
+    DECK_TAG_PARSER_TYPE = CyclesGamingDeckTagParser  # override
     EXAMPLE_URLS = (
         "https://cyclesgaming.com/ephara-god-of-the-polis-u-w-flash/",
         "https://cyclesgaming.com/keeping-modern-janky-duskmourn-glimmers/",
@@ -126,7 +126,7 @@ class CyclesGamingArticleScraper(HybridContainerScraper):
         return strip_url_query(url)
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         if info_tag := self._soup.find(
                 "p", string=lambda s: s and "cycles" in s.lower() and ", " in s):
             author, date = info_tag.text.split(", ", maxsplit=1)
@@ -135,7 +135,8 @@ class CyclesGamingArticleScraper(HybridContainerScraper):
                 self._metadata["date"] = dateutil.parser.parse(date.strip()).date()
 
     @override
-    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
-        deck_tags = [tag for tag in self._soup.find_all("h2") if "list – " in tag.text.lower()]
-        deck_urls, container_urls = self._find_links_in_tags(*self._soup.find_all("p"))
-        return deck_urls, deck_tags, [], container_urls
+    def _parse_input_for_decks_data(self) -> None:
+        self._deck_tags = [
+            tag for tag in self._soup.find_all("h2") if "list – " in tag.text.lower()
+        ]
+        self._deck_urls, self._container_urls = self._find_links_in_tags(*self._soup.find_all("p"))

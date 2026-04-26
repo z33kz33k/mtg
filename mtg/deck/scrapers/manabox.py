@@ -29,7 +29,7 @@ class ManaBoxDeckScraper(DeckScraper):
         return "manabox.app/decks/" in url.lower()
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         info_tag = self._soup.find("div", class_="w-full").find("div", class_="mb-2")
         name_tag, _, fmt_tag, date_tag, *_ = info_tag.find_all("div")
         self._metadata["name"] = name_tag.text.strip()
@@ -38,7 +38,7 @@ class ManaBoxDeckScraper(DeckScraper):
         self._metadata["date"] = dateutil.parser.parse(date_tag.text.strip()).date()
 
     @classmethod
-    def _parse_container(cls, container_div: Tag) -> list[Card]:
+    def _parse_container_div(cls, container_div: Tag) -> list[Card]:
         cards = []
         for card_tag in container_div.find_all("div", class_=["hidden", "md:block"]):
             qty_tag, name_tag = card_tag.find_all("div", class_=lambda c: c and "text-sm" in c)
@@ -47,14 +47,14 @@ class ManaBoxDeckScraper(DeckScraper):
         return cards
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         for container_div in self._soup.find_all("div", class_="mb-3"):
             header_tag = container_div.find(
                 "div", class_=["flex", "whitespace-nowrap", "overflow-hidden", "text-ellipsis"])
             if "Commander" in header_tag.text:
-                for card in self._parse_container(container_div):
+                for card in self._parse_container_div(container_div):
                     self._set_commander(card)
             elif "Sideboard" in header_tag.text:
-                self._sideboard += self._parse_container(container_div)
+                self._sideboard += self._parse_container_div(container_div)
             else:
-                self._maindeck += self._parse_container(container_div)
+                self._maindeck += self._parse_container_div(container_div)

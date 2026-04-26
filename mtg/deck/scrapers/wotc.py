@@ -15,7 +15,7 @@ import dateutil.parser
 from bs4 import Tag
 
 from mtg.constants import Json
-from mtg.deck.abc import TagBasedDeckParser
+from mtg.deck.abc import DeckTagParser
 from mtg.deck.scrapers.abc import HybridContainerScraper
 from mtg.scryfall import COMMANDER_FORMATS
 from mtg.lib.common import ParsingError, from_iterable
@@ -25,7 +25,7 @@ _log = logging.getLogger(__name__)
 
 
 # could be parsed from <script> tags' data
-class WotCDeckTagParser(TagBasedDeckParser):
+class WotCDeckTagParser(DeckTagParser):
     """Parser of WotC decklist HTML tag.
     """
     def __init__(self, deck_tag: Tag, metadata: Json | None = None) -> None:
@@ -33,7 +33,7 @@ class WotCDeckTagParser(TagBasedDeckParser):
         self._locally_derived_fmt = False
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         if name := self._deck_tag.attrs.get("deck-title"):
             self._metadata["name"] = name
         if fmt := self._deck_tag.attrs.get("format"):
@@ -51,7 +51,7 @@ class WotCDeckTagParser(TagBasedDeckParser):
         return re.sub(r'\[[a-zA-Z0-9]+?\]', '', line).strip()
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         maindeck_tag = self._deck_tag.find("main-deck")
         if not maindeck_tag:
             raise ParsingError("Decklist tag not found")
@@ -79,7 +79,7 @@ class WotCArticleScraper(HybridContainerScraper):
     """Scraper of WotC article page.
     """
     CONTAINER_NAME = "WotC article"  # override
-    TAG_BASED_DECK_PARSER = WotCDeckTagParser  # override
+    DECK_TAG_PARSER_TYPE = WotCDeckTagParser  # override
 
     @staticmethod
     @override
@@ -100,18 +100,17 @@ class WotCArticleScraper(HybridContainerScraper):
         return tag and tag.text.strip() == "PAGE NOT FOUND"
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         if time_tag := self._soup.select_one("div > time"):
             self._metadata["date"] = dateutil.parser.parse(time_tag.text.strip()).date()
 
     @override
-    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
-        deck_tags = [*self._soup.find_all("deck-list")]
+    def _parse_input_for_decks_data(self) -> None:
+        self._deck_tags = [*self._soup.find_all("deck-list")]
         article_tag = self._soup.find("article")
         if not article_tag:
             err = ScrapingError("Article tag not found", scraper=type(self), url=self.url)
             _log.warning(f"Scraping failed with: {err!r}")
-            return [], deck_tags, [], []
+            return
         p_tags = [t for t in article_tag.find_all("p") if not t.find("deck-list")]
-        deck_urls, container_urls = self._find_links_in_tags(*p_tags)
-        return deck_urls, deck_tags, [], container_urls
+        self._deck_urls, self._container_urls = self._find_links_in_tags(*p_tags)

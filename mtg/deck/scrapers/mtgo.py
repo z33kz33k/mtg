@@ -15,7 +15,7 @@ import dateutil.parser
 from bs4 import BeautifulSoup
 
 from mtg.constants import Json, SECRETS
-from mtg.deck.abc import JsonBasedDeckParser
+from mtg.deck.abc import DeckJsonParser
 from mtg.deck.scrapers.abc import DeckScraper, DecksJsonContainerScraper
 from mtg.lib.common import from_iterable
 from mtg.lib.numbers import get_ordinal_suffix
@@ -97,21 +97,21 @@ def _get_event_metadata(json_data: Json) -> Json:
     return metadata
 
 
-class MtgoDeckJsonParser(JsonBasedDeckParser):
+class MtgoDeckJsonParser(DeckJsonParser):
     """Parser of MGTO individual decklist JSON data.
     """
     def _derive_name(self) -> str:
-        name = self._deck_data["player"]
-        if wins := self._deck_data.get("wins"):
+        name = self._deck_json["player"]
+        if wins := self._deck_json.get("wins"):
             name += f" ({wins['wins']}-{wins['losses']})"
-        elif rank := self._deck_data.get("final_rank"):
+        elif rank := self._deck_json.get("final_rank"):
             rank = int(rank)
             name += f" ({rank}{get_ordinal_suffix(rank)} place)"
         return name
 
     @override
-    def _parse_metadata(self) -> None:
-        self._metadata["author"] = self._deck_data["player"]
+    def _parse_input_for_metadata(self) -> None:
+        self._metadata["author"] = self._deck_json["player"]
         self._metadata["name"] = self._derive_name()
         if fmt := self._metadata.get("event", {}).get("format"):
             self._update_fmt(fmt)
@@ -125,8 +125,8 @@ class MtgoDeckJsonParser(JsonBasedDeckParser):
         decklist += self.get_playset(card, qty)
 
     @override
-    def _parse_deck(self) -> None:
-        for card in [*self._deck_data["main_deck"], *self._deck_data.get("sideboard_deck", [])]:
+    def _parse_input_for_decklist(self) -> None:
+        for card in [*self._deck_json["main_deck"], *self._deck_json.get("sideboard_deck", [])]:
             self._parse_card(card)
         self._derive_commander_from_sideboard()
 
@@ -135,12 +135,13 @@ class MtgoDeckJsonParser(JsonBasedDeckParser):
 class MtgoDeckScraper(DeckScraper):
     """Scraper of MGTO event page that points to an individual deck.
     """
-    DATA_FROM_SOUP = True  # override
+    JSON_FROM_SOUP = True  # override
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
         self._player_name = self._parse_player_name()
 
+    # FIXME: use `get_path_segments()` instead (#394)
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
@@ -157,7 +158,7 @@ class MtgoDeckScraper(DeckScraper):
         return rest.removeprefix("deck_")
 
     @override
-    def _get_data_from_soup(self) -> Json:
+    def _get_json_from_soup(self) -> Json:
         json_data = _get_json(self._soup, type(self), self.url)
         decks_data = json_data["decklists"]
         deck_data = from_iterable(decks_data, lambda d: d["player"] == self._player_name)
@@ -172,14 +173,14 @@ class MtgoDeckScraper(DeckScraper):
 
     @override
     def _get_sub_parser(self) -> MtgoDeckJsonParser:
-        return MtgoDeckJsonParser(self._data, self._metadata)
+        return MtgoDeckJsonParser(self._json, self._metadata)
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         pass
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         pass
 
 
@@ -189,8 +190,9 @@ class MtgoEventScraper(DecksJsonContainerScraper):
     """
     CONTAINER_NAME = "MTGO event"  # override
     HEADERS = HEADERS  # override
-    JSON_BASED_DECK_PARSER = MtgoDeckJsonParser  # override
+    DECK_JSON_PARSER_TYPE = MtgoDeckJsonParser  # override
 
+    # FIXME: use `get_path_segments()` instead (#394)
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
@@ -202,10 +204,10 @@ class MtgoEventScraper(DecksJsonContainerScraper):
         return strip_url_query(url)
 
     @override
-    def _collect(self) -> list[Json]:
+    def _parse_input_for_decks_data(self) -> None:
         json_data = _get_json(self._soup, type(self), self.url)
         decks_data = json_data["decklists"]
         if rank_data := json_data.get("final_rank"):
             _process_ranks(rank_data, *decks_data)
         self._metadata.update(_get_event_metadata(json_data))
-        return decks_data
+        self._decks_json = decks_data

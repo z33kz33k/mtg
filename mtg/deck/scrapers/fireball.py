@@ -13,11 +13,14 @@
 import logging
 from typing import override
 
-from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper, DecksJsonContainerScraper, \
-    HybridContainerScraper
+from mtg.deck.scrapers.abc import (
+    DeckScraper, DeckUrlsContainerScraper, DecksJsonContainerScraper,
+    HybridContainerScraper,
+)
 from mtg.deck.scrapers.tcgplayer import (
     TcgPlayerInfiniteArticleScraper, TcgPlayerInfiniteAuthorScraper, TcgPlayerInfiniteDeckScraper,
-    TcgPlayerInfinitePlayerScraper)
+    TcgPlayerInfinitePlayerScraper,
+)
 from mtg.yt.discover import UrlHook
 
 # NOTE: As of Feb 25th, TCGPlayer seems to have recently withdrawn special ChannelFireball-specific
@@ -67,7 +70,7 @@ class ChannelFireballPlayerScraper(TcgPlayerInfinitePlayerScraper):
     """Scraper of ChannelFireball player page.
     """
     CONTAINER_NAME = "ChannelFireball player"  # override
-    DECK_SCRAPERS = ChannelFireballDeckScraper,  # override
+    DECK_SCRAPER_TYPES = ChannelFireballDeckScraper,  # override
     DECK_URL_PREFIX = FIREBALL_URL_PREFIX  # override
     EXAMPLE_URLS = (
         "https://www.channelfireball.com/magic-the-gathering/decks/player/Martin%20Juza",
@@ -99,7 +102,7 @@ class ChannelFireballAuthorScraper(TcgPlayerInfiniteAuthorScraper):
     """Scraper of ChannelFireball author page.
     """
     CONTAINER_NAME = "ChannelFireball author"  # override
-    CONTAINER_SCRAPERS = ChannelFireballArticleScraper,  # override
+    CONTAINER_SCRAPER_TYPES = ChannelFireballArticleScraper,  # override
     CONTAINER_URL_PREFIX = FIREBALL_URL_PREFIX  # override
     EXAMPLE_URLS = (
         "https://www.channelfireball.com/author/Frank-Karsten/7f203152-211a-478d-8fee-464c2aeca2cd",

@@ -18,8 +18,10 @@ from requests import Response
 
 from mtg.constants import Json
 from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper, throttled_deck_scraper
-from mtg.lib.scrape.core import ScrapingError, dissect_js, fetch, fetch_json, strip_url_query, \
-    throttle
+from mtg.lib.scrape.core import (
+    ScrapingError, dissect_js, fetch, fetch_json, strip_url_query,
+    throttle,
+)
 from mtg.scryfall import Card
 from mtg.yt.discover import UrlHook
 
@@ -65,12 +67,13 @@ def _backoff_handler(details: dict) -> None:
 class DeckstatsDeckScraper(DeckScraper):
     """Scraper of Deckstats decklist page.
     """
-    DATA_FROM_SOUP = True  # override
+    JSON_FROM_SOUP = True  # override
     EXAMPLE_URLS = (
         "https://deckstats.net/decks/231485/4286921-captain-n-ghathrod",
         "https://deckstats.net/decks/115134/1283677-kaya-s-scourge",
     )
 
+    # FIXME: use `get_path_segments()` instead (#394)
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
@@ -111,7 +114,7 @@ class DeckstatsDeckScraper(DeckScraper):
         return tag and "This deck does not exist." in tag.text
 
     @override
-    def _get_data_from_soup(self) -> Json:
+    def _get_json_from_soup(self) -> Json:
         return dissect_js(
             self._soup, "init_deck_data(", "deck_display();", lambda s: s.removesuffix(", false);"))
 
@@ -124,22 +127,22 @@ class DeckstatsDeckScraper(DeckScraper):
                 url=self.url)
         self._soup = BeautifulSoup(response.text, "lxml")
         self._validate_soup()
-        self._data = self._get_data_from_soup()
+        self._json = self._get_json_from_soup()
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         author_text = self._soup.find("div", id="deck_folder_subtitle").text.strip()
         self._metadata["author"] = author_text.removeprefix("in  ").removesuffix("'s Decks")
-        self._metadata["name"] = self._data["name"]
-        if views := self._data.get("views"):
+        self._metadata["name"] = self._json["name"]
+        if views := self._json.get("views"):
             self._metadata["views"] = views
-        if fmt_id := self._data.get("format_id"):
+        if fmt_id := self._json.get("format_id"):
             if fmt := _FORMATS.get(fmt_id):
                 self._update_fmt(fmt)
-        self._metadata["date"] = datetime.fromtimestamp(self._data["updated"], UTC).date()
-        if tags := self._data.get("tags"):
+        self._metadata["date"] = datetime.fromtimestamp(self._json["updated"], UTC).date()
+        if tags := self._json.get("tags"):
             self._metadata["tags"] = self.normalize_metadata_deck_tags(tags)
-        if description := self._data.get("description"):
+        if description := self._json.get("description"):
             self._metadata["description"] = description
 
     def _parse_card_json(self, card_json: Json) -> list[Card]:
@@ -159,12 +162,12 @@ class DeckstatsDeckScraper(DeckScraper):
         return self.get_playset(card, quantity)
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         cards = itertools.chain(
-            *[section["cards"] for section in self._data["sections"]])
+            *[section["cards"] for section in self._json["sections"]])
         for card_json in cards:
             self._maindeck.extend(self._parse_card_json(card_json))
-        if sideboard := self._data.get("sideboard"):
+        if sideboard := self._json.get("sideboard"):
             for card_json in sideboard:
                 self._sideboard.extend(self._parse_card_json(card_json))
 
@@ -178,13 +181,14 @@ class DeckstatsUserScraper(DeckUrlsContainerScraper):
     API_URL_TEMPLATE = ("https://deckstats.net/api.php?action=user_folder_get&result_type="
                         "folder%3Bdecks%3Bparent_tree%3Bsubfolders&owner_id={}&folder_id=0&"
                         "decks_page={}")  # override
-    DECK_SCRAPERS = DeckstatsDeckScraper,  # override
+    DECK_SCRAPER_TYPES = DeckstatsDeckScraper,  # override
     EXAMPLE_URLS = (
         "https://deckstats.net/decks/30513",
         "https://deckstats.net/decks/30513/?lng=it",
         "https://deckstats.net/decks/202938/?lng=fr",
     )
 
+    # FIXME: use `get_path_segments()` instead (#394)
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
@@ -204,38 +208,38 @@ class DeckstatsUserScraper(DeckUrlsContainerScraper):
     def normalize_url(url: str) -> str:
         return strip_url_query(url)
 
+    # FIXME: use `get_path_segments()` instead (#394)
     def _get_user_id(self) -> str:
         url = self.url.removeprefix("https://").removeprefix("http://")
         *_, user_id = url.split("/")
         return user_id
 
     @override
-    def _get_data_from_api(self) -> Json:
+    def _get_json_from_api(self) -> Json:
         return {}  # dummy
 
     @override
-    def _validate_data(self) -> None:
+    def _validate_json(self) -> None:
         pass
 
     @override
-    def _collect(self) -> list[str]:
+    def _parse_input_for_decks_data(self) -> None:
         user_id = self._get_user_id()
-        collected, total, page = [], 1, 1
+        total, page = 1, 1
         last_seen = None
-        while len(collected) < total:
+        while len(self._deck_urls) < total:
             if page != 1:
                 throttle(*self.THROTTLING)
             json_data = fetch_json(self.API_URL_TEMPLATE.format(user_id, page))
-            if collected and last_seen == json_data:
+            if self._deck_urls and last_seen == json_data:
                 break
             if not json_data or not json_data.get("folder") or not json_data["folder"].get("decks"):
-                if not collected:
+                if not self._deck_urls:
                     err = ScrapingError("No decks data", scraper=type(self), url=self.url)
                     _log.warning(f"Scraping failed with: {err!r}")
                 break
             total = json_data["folder"]["decks_total"]
-            collected += [f'https:{d["url_neutral"]}' for d in json_data["folder"]["decks"]]
+            self._deck_urls += [f'https:{d["url_neutral"]}' for d in json_data["folder"]["decks"]]
             page += 1
             last_seen = json_data
-        return collected
 

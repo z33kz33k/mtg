@@ -13,50 +13,50 @@ from collections.abc import Callable
 from datetime import UTC, datetime
 from typing import Type, override
 
-from bs4 import BeautifulSoup, Tag
+from bs4 import BeautifulSoup
 
 from mtg.constants import Json
-from mtg.deck.abc import JsonBasedDeckParser
+from mtg.deck.abc import DeckJsonParser
 from mtg.deck.scrapers.abc import DeckScraper, HybridContainerScraper
 from mtg.lib.common import from_iterable
 from mtg.lib.json import Node
-from mtg.lib.scrape.core import ScrapingError, dissect_js
+from mtg.lib.scrape.core import ScrapingError, dissect_js, is_more_than_root_path
 from mtg.scryfall import Card, all_formats
 
 _log = logging.getLogger(__name__)
 _THROTTLING = DeckScraper.THROTTLING * 2
 
 
-class MtgCircleDeckJsonParser(JsonBasedDeckParser):
+class MtgCircleDeckJsonParser(DeckJsonParser):
     """Parser of MTGCircle deck JSON data.
     """
-    def _parse_metadata(self) -> None:
-        if fmt := self._deck_data.get("format"):
+    def _parse_input_for_metadata(self) -> None:
+        if fmt := self._deck_json.get("format"):
             self._update_fmt(fmt)
-        arch = self._deck_data.get("archetypeName")
+        arch = self._deck_json.get("archetypeName")
         if arch:
             self._update_archetype_or_theme(arch)
-        if name := self._deck_data.get("deckName"):
+        if name := self._deck_json.get("deckName"):
             self._metadata["name"] = name
         elif arch:
             self._metadata["name"] = arch
-        if author := self._deck_data.get("deckAuthorName"):
+        if author := self._deck_json.get("deckAuthorName"):
             self._metadata["author"] = author
-        if "gamesWon" in self._deck_data and self._deck_data["gamesWon"] is not None:
-            self._metadata["games_won"] = self._deck_data["gamesWon"]
-        if "gamesLost" in self._deck_data and self._deck_data["gamesLost"] is not None:
-            self._metadata["games_lost"] = self._deck_data["gamesLost"]
-        if winrate := self._deck_data.get("winrate"):
+        if "gamesWon" in self._deck_json and self._deck_json["gamesWon"] is not None:
+            self._metadata["games_won"] = self._deck_json["gamesWon"]
+        if "gamesLost" in self._deck_json and self._deck_json["gamesLost"] is not None:
+            self._metadata["games_lost"] = self._deck_json["gamesLost"]
+        if winrate := self._deck_json.get("winrate"):
             self._metadata["winrate"] = winrate
-        if source := self._deck_data.get("source"):
+        if source := self._deck_json.get("source"):
             self._metadata["original_source"] = source
-        if date := self._deck_data.get("date"):
+        if date := self._deck_json.get("date"):
             self._metadata["date"] = datetime.fromtimestamp(date / 1000, UTC).date()
-        if arena_fmt := self._deck_data.get("eventName"):
+        if arena_fmt := self._deck_json.get("eventName"):
             self._metadata.setdefault("arena", {})["format"] = arena_fmt
-        if arena_rank := self._deck_data.get("rank"):
+        if arena_rank := self._deck_json.get("rank"):
             self._metadata.setdefault("arena", {})["rank"] = arena_rank
-        if arena_mode := self._deck_data.get("gameMode"):
+        if arena_mode := self._deck_json.get("gameMode"):
             self._metadata.setdefault("arena", {})["mode"] = arena_mode
 
     def _parse_card(self, card_json: Json) -> list[Card]:
@@ -69,8 +69,8 @@ class MtgCircleDeckJsonParser(JsonBasedDeckParser):
             name, set_and_collector_number=set_and_number, oracle_id=oracle_id), qty)
 
     @override
-    def _parse_deck(self) -> None:
-        for card_json in self._deck_data["cards"]:
+    def _parse_input_for_decklist(self) -> None:
+        for card_json in self._deck_json["cards"]:
             match card_json["deckPos"]:
                 case "mainDeck":
                     self._maindeck += self._parse_card(card_json)
@@ -108,7 +108,7 @@ def get_data(
 class MtgCircleVideoDeckScraper(DeckScraper):
     """Scraper of MTGCircle video decklist page.
     """
-    DATA_FROM_SOUP = True  # override
+    JSON_FROM_SOUP = True  # override
     THROTTLING = _THROTTLING * 2  # override
     SELENIUM_PARAMS = {  # override
         "xpath": "//script[contains(text(), 'cards') and contains(text(), 'deckPos') and "
@@ -120,12 +120,10 @@ class MtgCircleVideoDeckScraper(DeckScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        if "mtgcircle.com/videos/" not in url.lower() or "/draft/" in url.lower():
+        url = url.lower()
+        if "mtgcircle.com/videos/" not in url or "/draft/" in url:
             return False
-        *_, rest = url.lower().split("mtgcircle.com/videos/")
-        if "/" not in rest:
-            return False
-        return True
+        return is_more_than_root_path(url, "mtgcircle.com/videos/")
 
     # FIXME: this doesn't work as it's in a part loaded dynamically
     @override
@@ -146,15 +144,15 @@ class MtgCircleVideoDeckScraper(DeckScraper):
         return decks[-1].data
 
     @override
-    def _get_data_from_soup(self) -> Json:
+    def _get_json_from_soup(self) -> Json:
         return get_data(self._soup, type(self), self.url, self._retrieve_deck_data)
 
     @override
     def _get_sub_parser(self) -> MtgCircleDeckJsonParser:
-        return MtgCircleDeckJsonParser(self._data, self._metadata)
+        return MtgCircleDeckJsonParser(self._json, self._metadata)
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         fmt_tags = self._soup.select("nav > ol > li > a")
         if fmt_tag := from_iterable(
                 fmt_tags,
@@ -163,7 +161,7 @@ class MtgCircleVideoDeckScraper(DeckScraper):
             self._update_fmt(fmt_tag.text)
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         pass
 
 
@@ -176,12 +174,10 @@ class MtgCircleRegularDeckScraper(MtgCircleVideoDeckScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        if "mtgcircle.com/decks/" not in url.lower() or "/draft/" in url.lower():
+        url = url.lower()
+        if "mtgcircle.com/decks/" not in url or "/draft/" in url:
             return False
-        *_, rest = url.lower().split("mtgcircle.com/decks/")
-        if "/" not in rest:
-            return False
-        return True
+        return is_more_than_root_path(url, "mtgcircle.com/decks/")
 
     @override
     def _retrieve_deck_data(self, data: Json) -> Json:
@@ -200,7 +196,7 @@ class MtgCircleArticleScraper(HybridContainerScraper):
     """Scraper of MTGCircle article page.
     """
     CONTAINER_NAME = "MTGCircle article"  # override
-    JSON_BASED_DECK_PARSER = MtgCircleDeckJsonParser  # override
+    DECK_JSON_PARSER_TYPE = MtgCircleDeckJsonParser  # override
     THROTTLING = _THROTTLING  # override
     SELENIUM_PARAMS = MtgCircleVideoDeckScraper.SELENIUM_PARAMS  # override
 
@@ -220,7 +216,7 @@ class MtgCircleArticleScraper(HybridContainerScraper):
         return dates[0].data
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         headline_tag = self._soup.select_one("div.container-custom > div > h1")
         self._metadata["title"] = headline_tag.text.strip()
         css = "div.container-custom > div > span > a > li.items-center.bg-paper"
@@ -238,13 +234,12 @@ class MtgCircleArticleScraper(HybridContainerScraper):
             lambda n: isinstance(n.data, dict) and "cards" in n.data and "deckId" in n.data)]
 
     @override
-    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
-        decks_data = get_data(
+    def _parse_input_for_decks_data(self) -> None:
+        self._decks_json = get_data(
             self._soup, type(self), self.url, retriever=self._retrieve_decks_data, start_pos=2)
         article_tag = self._soup.find("article")
         if not article_tag:
             err = ScrapingError("Article tag not found", scraper=type(self), url=self.url)
             _log.warning(f"Scraping failed with: {err!r}")
-            return [], [], decks_data, []
-        deck_urls, container_urls = self._find_links_in_tags(*article_tag.find_all("p"))
-        return deck_urls, [], decks_data, container_urls
+            return
+        self._deck_urls, self._container_urls = self._find_links_in_tags(*article_tag.find_all("p"))

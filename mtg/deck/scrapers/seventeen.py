@@ -24,8 +24,9 @@ _log = logging.getLogger(__name__)
 class SeventeenLandsDeckScraper(DeckScraper):
     """Scraper of 17Lands decklist page.
     """
-    API_URL_TEMPLATE = ("https://www.17lands.com/data/user_deck?sharing_token={}"
-                        "&deck={}&timestamp={}")  # override
+    API_URL_TEMPLATE = (
+        "https://www.17lands.com/data/user_deck?sharing_token={}&deck={}&timestamp={}"
+    )  # override
     EXAMPLE_URLS = (
         "https://www.17lands.com/user/deck/eba7a011b7e84f8cb286492312cf4241/85624423/1734473634",
     )
@@ -42,7 +43,7 @@ class SeventeenLandsDeckScraper(DeckScraper):
         return url.rstrip(".,")
 
     @override
-    def _get_data_from_api(self) -> Json:
+    def _get_json_from_api(self) -> Json:
         _, rest = self.url.split("/user/deck/", maxsplit=1)
         sharing_token, deck_id, timestamp = rest.split("/")
         try:
@@ -51,32 +52,32 @@ class SeventeenLandsDeckScraper(DeckScraper):
             raise ScrapingError("API request timed out", scraper=type(self), url=self.url)
 
     @override
-    def _validate_data(self) -> None:
-        super()._validate_data()
-        if not self._data.get("groups") or not self._data.get("cards"):
+    def _validate_json(self) -> None:
+        super()._validate_json()
+        if not self._json.get("groups") or not self._json.get("cards"):
             raise ScrapingError("No deck data", scraper=type(self), url=self.url)
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         pass
 
-    def _parse_card(self, card_data: Json) -> Card:
-        name = card_data["name"]
-        scryfall_id, _ = card_data["image_url"].split(".jpg?", maxsplit=1)
+    def _parse_card_json(self, card_json: Json) -> Card:
+        name = card_json["name"]
+        scryfall_id, _ = card_json["image_url"].split(".jpg?", maxsplit=1)
         scryfall_id = scryfall_id.removeprefix("https://cards.scryfall.io/large/front/")
         *_, scryfall_id = scryfall_id.split("/")
         return self.find_card(name, scryfall_id=scryfall_id)
 
     @override
-    def _parse_deck(self) -> None:
-        maindeck_card_ids = self._data["groups"][0]["cards"]
+    def _parse_input_for_decklist(self) -> None:
+        maindeck_card_ids = self._json["groups"][0]["cards"]
         try:
-            sideboard_card_ids = self._data["groups"][1]["cards"]
+            sideboard_card_ids = self._json["groups"][1]["cards"]
         except IndexError:
             sideboard_card_ids = []
 
-        for card_data in self._data["cards"].values():
-            card = self._parse_card(card_data)
+        for card_data in self._json["cards"].values():
+            card = self._parse_card_json(card_data)
             self._maindeck += [card] * maindeck_card_ids.count(card_data["id"])
             if sideboard_card_ids:
                 self._sideboard += [card] * sideboard_card_ids.count(card_data["id"])

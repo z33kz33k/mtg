@@ -13,16 +13,16 @@ import logging
 from typing import override
 
 import dateutil.parser
-from bs4 import BeautifulSoup, Comment, NavigableString, Tag
+from bs4 import BeautifulSoup, Comment, NavigableString
 from selenium.common import TimeoutException
 
 from mtg.constants import Json
-from mtg.deck.abc import TagBasedDeckParser
+from mtg.deck.abc import DeckTagParser
 from mtg.deck.scrapers.abc import Collected, DeckScraper, DeckTagsContainerScraper
 from mtg.lib.common import ParsingError
-from mtg.lib.text import sanitize_whitespace
 from mtg.lib.scrape.core import ScrapingError, strip_url_query
 from mtg.lib.scrape.dynamic import fetch_dynamic_soup
+from mtg.lib.text import sanitize_whitespace
 
 _log = logging.getLogger(__name__)
 
@@ -35,11 +35,11 @@ def _get_deck_name(author: str, subtitle: str) -> str:
     return subtitle
 
 
-class MagicGgNewDeckTagParser(TagBasedDeckParser):
+class MagicGgNewDeckTagParser(DeckTagParser):
     """Parser of Magic.gg (new-type) decklist HTML tag.
     """
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         attrs = self._deck_tag.attrs
         self._metadata["author"] = attrs["deck-title"]
         if name := _get_deck_name(attrs["deck-title"], attrs["subtitle"]):
@@ -52,7 +52,7 @@ class MagicGgNewDeckTagParser(TagBasedDeckParser):
         self._metadata["date"] = self._metadata["event"]["date"]
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         lines = []
         # <commander-card> tag is only derived based on seen companion treatment
         if commander := self._deck_tag.find("commander-card"):
@@ -74,11 +74,11 @@ class MagicGgNewDeckTagParser(TagBasedDeckParser):
         self._decklist = "\n".join(lines)
 
 
-class MagicGgOldDeckTagParser(TagBasedDeckParser):
+class MagicGgOldDeckTagParser(DeckTagParser):
     """Parser of Magic.gg (old-type) decklist HTML tag.
     """
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         author = self._deck_tag.select_one("div.css-2vNWs > span.css-3LH7E").text.strip()
         self._metadata["author"] = author
         subtitle = self._deck_tag.find(
@@ -105,7 +105,7 @@ class MagicGgOldDeckTagParser(TagBasedDeckParser):
             }
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         first_card_name = None
 
         for tag in [
@@ -183,11 +183,11 @@ class MagicGgDeckScraper(DeckScraper):
         return MagicGgOldDeckTagParser(deck_tag, self._metadata)
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         self._metadata["event"] = {"name": _get_event_name(self._soup)}
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         pass
 
 
@@ -196,7 +196,7 @@ class MagicGgEventScraper(DeckTagsContainerScraper):
     """Scraper of Magic.gg event page.
     """
     CONTAINER_NAME = "Magic.gg event"  # override
-    TAG_BASED_DECK_PARSER = MagicGgNewDeckTagParser  # override
+    DECK_TAG_PARSER_TYPE = MagicGgNewDeckTagParser  # override
 
     @staticmethod
     @override
@@ -209,24 +209,11 @@ class MagicGgEventScraper(DeckTagsContainerScraper):
         return strip_url_query(url)
 
     @override
-    def _gather(self) -> Collected:
-        try:
-            self._pre_parse()
-            return self._collect()
-        except ParsingError as pe:
-            err = ScrapingError(str(pe), type(self), self.url)
-            _log.warning(f"Scraping failed with: {err!r}")
-            return []
-        except ScrapingError as e:
-            _log.warning(f"Scraping failed with: {e!r}")
-            return []
-
-    @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         self._metadata["event"] = {"name": _get_event_name(self._soup)}
 
     @override
-    def _collect(self) -> list[Tag]:
+    def _parse_input_for_decks_data(self) -> None:
         deck_tags = [*self._soup.find_all("deck-list")]
         if not deck_tags:
             self.__class__.TAG_BASED_DECK_PARSER = MagicGgOldDeckTagParser
@@ -239,8 +226,19 @@ class MagicGgEventScraper(DeckTagsContainerScraper):
                     raise ScrapingError("Deck tags not found", scraper=type(self), url=self.url)
             except TimeoutException:
                 raise ScrapingError(self._selenium_timeout_msg, scraper=type(self), url=self.url)
-            self._parse_metadata()
+            self._parse_input_for_metadata()
         else:
             self.__class__.TAG_BASED_DECK_PARSER = MagicGgNewDeckTagParser
 
-        return deck_tags
+        self._deck_tags = deck_tags
+
+    @override
+    def _scrape_before_delegation(self) -> None:
+        try:
+            self._pre_parse()
+            self._parse_input_for_decks_data()
+        except ParsingError as pe:
+            err = ScrapingError(str(pe), type(self), self.url)
+            _log.warning(f"Scraping failed with: {err!r}")
+        except ScrapingError as e:
+            _log.warning(f"Scraping failed with: {e!r}")

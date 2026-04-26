@@ -36,7 +36,7 @@ class MtgVaultDeckScraper(DeckScraper):
             url.removesuffix("/proxy/").removesuffix("/stats/").removesuffix("/sample-hand/"))
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         if name_tag := self._soup.select_one("h1.deck-name"):
             self._metadata["name"] = name_tag.text.strip()
         if info_tag := self._soup.select_one("h3.deck-creation-info"):
@@ -52,7 +52,7 @@ class MtgVaultDeckScraper(DeckScraper):
             self._update_fmt(fmt_tag.text.strip())
 
     @classmethod
-    def _parse_card(cls, card_tag: Tag) -> list[Card]:
+    def _parse_card_tag(cls, card_tag: Tag) -> list[Card]:
         qty, _ = card_tag.text.strip().split("x", maxsplit=1)
         qty = int(qty)
         name_tag = card_tag.select_one("span > a")
@@ -60,21 +60,21 @@ class MtgVaultDeckScraper(DeckScraper):
         return cls.get_playset(cls.find_card(name), qty)
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         maindeck_tag = self._soup.select_one("div#main-deck")
         if not maindeck_tag:
             raise ScrapingError("Main deck tag not found", scraper=type(self), url=self.url)
 
         for card_tag in maindeck_tag.select("div.deck-card"):
-            self._maindeck += self._parse_card(card_tag)
+            self._maindeck += self._parse_card_tag(card_tag)
 
         if sideboard_tag := self._soup.select_one("div#sideboard"):
             for card_tag in sideboard_tag.select("div.deck-card"):
-                self._sideboard += self._parse_card(card_tag)
+                self._sideboard += self._parse_card_tag(card_tag)
 
         if commandzone_tag := self._soup.select_one("div#command-zone"):
             for card_tag in commandzone_tag.select("div.deck-card"):
-                self._set_commander(self._parse_card(card_tag)[0])
+                self._set_commander(self._parse_card_tag(card_tag)[0])
 
 
 @DeckUrlsContainerScraper.registered
@@ -82,17 +82,20 @@ class MtgVaultUserScraper(DeckUrlsContainerScraper):
     """Scraper of MTGVault user page.
     """
     CONTAINER_NAME = "MTGVault user"  # override
-    DECK_SCRAPERS = MtgVaultDeckScraper,  # override
+    DECK_SCRAPER_TYPES = MtgVaultDeckScraper,  # override
     DECK_URL_PREFIX = "https://www.mtgvault.com"  # override
 
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return ("mtgvault.com/" in url.lower() and "/decks/" not in url.lower()
-                and "/ViewDeck.aspx" not in url)
+        return (
+            "mtgvault.com/" in url.lower()
+            and "/decks/" not in url.lower()
+            and "/ViewDeck.aspx" not in url
+        )
 
     @override
-    def _collect(self) -> list[str]:
+    def _parse_input_for_decks_data(self) -> None:
         deck_urls = find_links(
             self._soup, href=lambda h: h and "/decks/" in h and "/search/" not in h)
 
@@ -111,4 +114,4 @@ class MtgVaultUserScraper(DeckUrlsContainerScraper):
         if not deck_urls:
             raise ScrapingError("No decks found", scraper=type(self), url=self.url)
 
-        return deck_urls
+        self._deck_urls = deck_urls

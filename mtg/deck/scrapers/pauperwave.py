@@ -11,22 +11,21 @@ import contextlib
 import logging
 from typing import override
 
-from bs4 import Tag
-
-from mtg.constants import Json
-from mtg.deck.abc import TagBasedDeckParser
+from mtg.deck.abc import DeckTagParser
 from mtg.deck.scrapers.abc import HybridContainerScraper
-from mtg.lib.scrape.core import ScrapingError, is_more_than_root_path, \
-    parse_non_english_month_date, strip_url_query
+from mtg.lib.scrape.core import (
+    ScrapingError, is_more_than_root_path,
+    parse_non_english_month_date, strip_url_query,
+)
 
 _log = logging.getLogger(__name__)
 
 
-class PauperwaveDeckTagParser(TagBasedDeckParser):
+class PauperwaveDeckTagParser(DeckTagParser):
     """Parser of Pauperwave decklist HTML tag.
     """
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         title_tag = self._deck_tag.previous_sibling
         name, author, place = None, None, None
         if " by " in title_tag.text:
@@ -42,7 +41,7 @@ class PauperwaveDeckTagParser(TagBasedDeckParser):
             self._metadata.setdefault("event", {})["place"] = place
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         qty = None
         for tag in self._deck_tag.descendants:
             if tag.name == "span":
@@ -78,7 +77,7 @@ class PauperwaveArticleScraper(HybridContainerScraper):
     """Scraper of Pauperwave article page.
     """
     CONTAINER_NAME = "Pauperwave article"  # override
-    TAG_BASED_DECK_PARSER = PauperwaveDeckTagParser  # override
+    DECK_TAG_PARSER_TYPE = PauperwaveDeckTagParser  # override
     _MONTHS = [
         "Gennaio",
         "Febbraio",
@@ -105,7 +104,7 @@ class PauperwaveArticleScraper(HybridContainerScraper):
         return strip_url_query(url)
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         if event_tag := self._soup.find("p", class_="has-medium-font-size"):
             self._metadata["event"] = {}
             seen, key = set(), ""
@@ -129,13 +128,12 @@ class PauperwaveArticleScraper(HybridContainerScraper):
                             self._metadata["event"][key] = el.text
 
     @override
-    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
-        deck_tags = [*self._soup.find_all(
+    def _parse_input_for_decks_data(self) -> None:
+        self._deck_tags = [*self._soup.find_all(
             "table", class_=lambda c: c and "mtg_deck" in c and "mtg_deck_embedded" in c)]
         article_tag = self._soup.find("article")
         if not article_tag:
             err = ScrapingError("Article tag not found", scraper=type(self), url=self.url)
             _log.warning(f"Scraping failed with: {err!r}")
-            return [], deck_tags, [], []
-        deck_urls, container_urls = self._find_links_in_tags(*article_tag.find_all("p"))
-        return deck_urls, deck_tags, [], container_urls
+            return
+        self._deck_urls, self._container_urls = self._find_links_in_tags(*article_tag.find_all("p"))

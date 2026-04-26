@@ -11,15 +11,19 @@ import logging
 from typing import override
 
 import dateutil.parser
-from bs4 import BeautifulSoup, Tag
+from bs4 import BeautifulSoup
 
 from mtg.constants import Json, SECRETS
-from mtg.deck.abc import JsonBasedDeckParser
-from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper, DecksJsonContainerScraper, \
-    HybridContainerScraper
+from mtg.deck.abc import DeckJsonParser
+from mtg.deck.scrapers.abc import (
+    DeckScraper, DeckUrlsContainerScraper, DecksJsonContainerScraper,
+    HybridContainerScraper,
+)
+from mtg.lib.scrape.core import (
+    InaccessiblePage, ScrapingError, fetch_json,
+    is_more_than_root_path, strip_url_query,
+)
 from mtg.yt.discover import UrlHook
-from mtg.lib.scrape.core import InaccessiblePage, ScrapingError, fetch_json, \
-    is_more_than_root_path, strip_url_query
 
 _log = logging.getLogger(__name__)
 HEADERS = {
@@ -68,26 +72,26 @@ def _get_json_data(url: str, **suffixes) -> Json:
     return fetch_json(url.replace(domain, api_domain), headers=HEADERS)
 
 
-class FlexslotDeckJsonParser(JsonBasedDeckParser):
+class FlexslotDeckJsonParser(DeckJsonParser):
     """Parser of Flexslot.gg deck JSON data.
     """
     @override
-    def _parse_metadata(self) -> None:
-        self._metadata["name"] = self._deck_data["name"]
-        self._metadata["author"] = self._deck_data["creator"]
-        self._update_fmt(self._deck_data["format"].lower())
-        self._metadata["date"] = dateutil.parser.parse(self._deck_data["date_updated"]).date()
-        self._metadata["likes"] = self._deck_data["likes"]
-        self._metadata["views"] = self._deck_data["pageviews"]
-        if event_name := self._deck_data.get("event_name"):
+    def _parse_input_for_metadata(self) -> None:
+        self._metadata["name"] = self._deck_json["name"]
+        self._metadata["author"] = self._deck_json["creator"]
+        self._update_fmt(self._deck_json["format"].lower())
+        self._metadata["date"] = dateutil.parser.parse(self._deck_json["date_updated"]).date()
+        self._metadata["likes"] = self._deck_json["likes"]
+        self._metadata["views"] = self._deck_json["pageviews"]
+        if event_name := self._deck_json.get("event_name"):
             self._metadata["event"] = {"name": event_name}
-            if event_date := self._deck_data.get("event_date"):
+            if event_date := self._deck_json.get("event_date"):
                 self._metadata["event"]["date"] = dateutil.parser.parse(event_date).date()
-            if player := self._deck_data.get("player"):
+            if player := self._deck_json.get("player"):
                 self._metadata["event"]["player"] = player
-            if rank := self._deck_data.get("rank"):
+            if rank := self._deck_json.get("rank"):
                 self._metadata["event"]["rank"] = rank
-        if archetype := self._deck_data.get("archetype"):
+        if archetype := self._deck_json.get("archetype"):
             self._update_archetype_or_theme(archetype)
 
     def _parse_card_json(self, card_json: Json) -> None:
@@ -103,8 +107,8 @@ class FlexslotDeckJsonParser(JsonBasedDeckParser):
             self._maindeck.extend(playset)
 
     @override
-    def _parse_deck(self) -> None:
-        for card_json in self._deck_data["deck_card_maps"]:
+    def _parse_input_for_decklist(self) -> None:
+        for card_json in self._deck_json["deck_card_maps"]:
             self._parse_card_json(card_json)
         self._derive_commander_from_sideboard()
 
@@ -132,18 +136,18 @@ class FlexslotDeckScraper(DeckScraper):
         json_data = _get_json_data(self.url)
         if not json_data or not json_data.get("data"):
             raise ScrapingError("No deck data", scraper=type(self), url=self.url)
-        self._data = json_data["data"]
+        self._json = json_data["data"]
 
     @override
     def _get_sub_parser(self) -> FlexslotDeckJsonParser:
-        return FlexslotDeckJsonParser(self._data, self._metadata)
+        return FlexslotDeckJsonParser(self._json, self._metadata)
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         pass
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         pass
 
 
@@ -152,7 +156,7 @@ class FlexslotSideboardScraper(DecksJsonContainerScraper):
     """Scraper of Flexslot.gg sideboard guide page.
     """
     CONTAINER_NAME = "Flexslot sideboard"  # override
-    JSON_BASED_DECK_PARSER = FlexslotDeckJsonParser  # override
+    DECK_JSON_PARSER_TYPE = FlexslotDeckJsonParser  # override
     EXAMPLE_URLS = (
         "https://flexslot.gg/sideboards/7861",
     )
@@ -178,11 +182,11 @@ class FlexslotSideboardScraper(DecksJsonContainerScraper):
                 raise InaccessiblePage(
                     "Content paywalled (Patreon exclusive)", type(self), self.url)
             raise ScrapingError("No decks data", type(self), self.url)
-        self._data = json_data["decks"]
+        self._json = json_data
 
     @override
-    def _collect(self) -> list[Json]:
-        return self._data
+    def _parse_input_for_decks_data(self) -> None:
+        self._decks_json = self._json["decks"]
 
 
 @HybridContainerScraper.registered
@@ -190,7 +194,7 @@ class FlexslotArticleScraper(HybridContainerScraper):
     """Scraper of Flexslot article page.
     """
     CONTAINER_NAME = "Flexslot article"  # override
-    CONTAINER_SCRAPERS = FlexslotSideboardScraper,  # override
+    CONTAINER_SCRAPER_TYPES = FlexslotSideboardScraper,  # override
     EXAMPLE_URLS = (
         "https://flexslot.gg/articles/a3222f36-64f1-43b1-9b5a-94dffa76459a",
     )
@@ -211,33 +215,34 @@ class FlexslotArticleScraper(HybridContainerScraper):
             self.url, domain_suffix="/article/", api_domain_suffix="/blogposts/")
         if not json_data or not json_data.get("data"):
             raise ScrapingError("No article data", scraper=type(self), url=self.url)
-        self._data = json_data["data"]
-        if not self._data.get("content"):
+        self._json = json_data["data"]
+        if not self._json.get("content"):
             raise ScrapingError("No article HTML content data", type(self), self.url)
-        self._soup = BeautifulSoup(self._data["content"], "lxml")
+        self._soup = BeautifulSoup(self._json["content"], "lxml")
 
     @override
-    def _parse_metadata(self) -> None:
-        if author := self._data.get("author_name") or self._data.get("author_username"):
+    def _parse_input_for_metadata(self) -> None:
+        if author := self._json.get("author_name") or self._json.get("author_username"):
             self._metadata["author"] = author
-        if date := self._data.get("date_updated") or self._data.get(
-                "date_created") or self._data.get("date_published"):
+        if date := self._json.get("date_updated") or self._json.get(
+                "date_created") or self._json.get("date_published"):
             self._metadata["date"] = dateutil.parser.parse(date).date()
-        if title := self._data.get("title"):
+        if title := self._json.get("title"):
             self._metadata.setdefault("article", {})["title"] = title
-        if page_views := self._data.get("pageviews"):
+        if page_views := self._json.get("pageviews"):
             self._metadata.setdefault("article", {})["page_views"] = page_views
-        if likes := self._data.get("likes"):
+        if likes := self._json.get("likes"):
             self._metadata.setdefault("article", {})["likes"] = likes
-        if tags := self._data.get("tags"):
+        if tags := self._json.get("tags"):
             self._metadata.setdefault("article", {})["tags"] = self.normalize_metadata_deck_tags(tags)
 
     @override
-    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
+    def _parse_input_for_decks_data(self) -> None:
         deck_urls, container_urls = self._find_links_in_tags()
         deck_urls2, container_urls2 = self._sift_links(
             *[t.text for t in self._soup.select("h4 > strong > u")])
-        return deck_urls + deck_urls2, [], [], container_urls + container_urls2
+        self._deck_urls = deck_urls + deck_urls2
+        self._container_urls = container_urls + container_urls2
 
 
 # TODO: add articles (once Flexslot.gg actually adds them to a user page)
@@ -247,8 +252,8 @@ class FlexslotUserScraper(HybridContainerScraper):
     """
     CONTAINER_NAME = "Flexslot user"  # override
     THROTTLING = DeckUrlsContainerScraper.THROTTLING * 2  # override
-    DECK_SCRAPERS = FlexslotDeckScraper,  # override
-    CONTAINER_SCRAPERS = FlexslotSideboardScraper,  #override
+    DECK_SCRAPER_TYPES = FlexslotDeckScraper,  # override
+    CONTAINER_SCRAPER_TYPES = FlexslotSideboardScraper,  #override
     API_URL_TEMPLATE = "https://api.flexslot.gg/{}/search/?firebase_user_id={}&page=1"
     EXAMPLE_URLS = (
         "https://flexslot.gg/u/YungDingo",
@@ -256,7 +261,7 @@ class FlexslotUserScraper(HybridContainerScraper):
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
-        self._decks_data, self._sideboards_data = None, None
+        self._decks_json, self._sideboards_json = None, None
 
     @staticmethod
     @override
@@ -276,9 +281,9 @@ class FlexslotUserScraper(HybridContainerScraper):
         if not user_data.get("firebase_id"):
             raise ScrapingError("No user Firebase ID data", type(self), self.url)
         user_id = user_data["firebase_id"]
-        self._decks_data = fetch_json(
+        self._decks_json = fetch_json(
             self.API_URL_TEMPLATE.format("decks", user_id), headers=HEADERS)
-        self._sideboards_data = fetch_json(
+        self._sideboards_json = fetch_json(
             self.API_URL_TEMPLATE.format("sideboards", user_id), headers=HEADERS)
 
     @staticmethod
@@ -295,16 +300,16 @@ class FlexslotUserScraper(HybridContainerScraper):
 
     def _get_deck_urls(self) -> list[str]:
         template = "https://flexslot.gg/decks/{}"
-        if decks := self._decks_data.get("decks", []):
+        if decks := self._decks_json.get("decks", []):
             return self._process_data(decks, template)
         return []
 
     def _get_sideboard_urls(self) -> list[str]:
         template = "https://flexslot.gg/sideboards/{}"
-        if sideboards := self._sideboards_data.get("sideboards", []):
+        if sideboards := self._sideboards_json.get("sideboards", []):
             return self._process_data(sideboards, template)
         return []
 
     @override
-    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
-        return self._get_deck_urls(), [], [], self._get_sideboard_urls()
+    def _parse_input_for_decks_data(self) -> None:
+        self._deck_urls, self._container_urls = self._get_deck_urls(), self._get_sideboard_urls()

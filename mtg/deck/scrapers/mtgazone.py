@@ -14,24 +14,23 @@ from typing import override
 
 from bs4 import Tag
 
-from mtg.constants import Json
-from mtg.deck.abc import TagBasedDeckParser
+from mtg.deck.abc import DeckTagParser
 from mtg.deck.core import Deck, Mode
 from mtg.deck.scrapers.abc import DeckScraper, HybridContainerScraper
 from mtg.lib.common import ParsingError, from_iterable
 from mtg.lib.numbers import extract_int
-from mtg.lib.time import timed
 from mtg.lib.scrape.core import ScrapingError, fetch_soup, is_more_than_root_path, strip_url_query
+from mtg.lib.time import timed
 from mtg.scryfall import ARENA_FORMATS, Card
 
 _log = logging.getLogger(__name__)
 
 
-class MtgaZoneDeckTagParser(TagBasedDeckParser):
+class MtgaZoneDeckTagParser(DeckTagParser):
     """Parser of an MTG Arena Zone decklist HTML tag.
     """
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         name_author_tag = self._deck_tag.find("div", class_="name-container")
         if not name_author_tag:
             raise ParsingError(
@@ -80,7 +79,7 @@ class MtgaZoneDeckTagParser(TagBasedDeckParser):
         return decklist
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         if commander_tag := self._deck_tag.select_one("div.decklist.short.commander"):
             for card in self._process_decklist_tag(commander_tag):
                 self._set_commander(card)
@@ -120,11 +119,11 @@ class MtgaZoneDeckScraper(DeckScraper):
         return MtgaZoneDeckTagParser(deck_tag, self._metadata)
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         pass
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         pass
 
 
@@ -133,14 +132,17 @@ class MtgaZoneArticleScraper(HybridContainerScraper):
     """Scraper of MTG Arena Zone article page.
     """
     CONTAINER_NAME = "MTGAZone article"
-    TAG_BASED_DECK_PARSER = MtgaZoneDeckTagParser  # override
+    DECK_TAG_PARSER_TYPE = MtgaZoneDeckTagParser  # override
 
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return is_more_than_root_path(url, "mtgazone.com") and not any(
-            t in url.lower() for t in ("/user-decks", "/deck/", "/plans/premium",
-                                       "/mtg-arena-codes", "/author/", "jump-in"))
+        return (
+            is_more_than_root_path(url, "mtgazone.com")
+            and not any(t in url.lower() for t in (
+                "/user-decks", "/deck/", "/plans/premium", "/mtg-arena-codes", "/author/", "jump-in"
+            ))
+        )
 
     @staticmethod
     @override
@@ -159,9 +161,9 @@ class MtgaZoneArticleScraper(HybridContainerScraper):
         return self._find_links_in_tags(*p_tags)
 
     @override
-    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
-        deck_urls, container_urls = self._collect_urls()
-        return deck_urls, [*self._soup.find_all("div", class_="deck-block")], [], container_urls
+    def _parse_input_for_decks_data(self) -> None:
+        self._deck_urls, self._container_urls = self._collect_urls()
+        self._deck_tags = [*self._soup.find_all("div", class_="deck-block")]
 
 
 @HybridContainerScraper.registered
@@ -169,8 +171,8 @@ class MtgaZoneAuthorScraper(HybridContainerScraper):
     """Scraper of MTG Arena Zone author page.
     """
     CONTAINER_NAME = "MTGAZone author"  # override
-    DECK_SCRAPERS = MtgaZoneDeckScraper,  # override
-    CONTAINER_SCRAPERS = MtgaZoneArticleScraper,  # override
+    DECK_SCRAPER_TYPES = MtgaZoneDeckScraper,  # override
+    CONTAINER_SCRAPER_TYPES = MtgaZoneArticleScraper,  # override
 
     @staticmethod
     @override
@@ -183,9 +185,9 @@ class MtgaZoneAuthorScraper(HybridContainerScraper):
         return strip_url_query(url)
 
     @override
-    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
-        deck_urls, article_urls = self._find_links_in_tags(css_selector="article > h2 > a")
-        return deck_urls, [], [], article_urls
+    def _parse_input_for_decks_data(self) -> None:
+        self._deck_urls, self._container_urls = self._find_links_in_tags(
+            css_selector="article > h2 > a")
 
 
 def _parse_tiers(table: Tag) -> dict[str, int]:

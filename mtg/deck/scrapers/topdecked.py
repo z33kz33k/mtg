@@ -52,8 +52,10 @@ class TopDeckedRegularDeckScraper(DeckScraper):
     ARENA_DELAY = 5
     NAME_XPATH = "//ion-title[contains(@class, 'title-default')]"
     FMT_XPATH = "//span[contains(@class, 'format') and contains(@class, 'text-uppercase')]"
-    DATE_XPATH = ("//span[contains(@class, 'prefix') and contains(@class, 'text-none') and "
-                  "contains(@class, 'ng-star-inserted')]")
+    DATE_XPATH = (
+        "//span[contains(@class, 'prefix') and contains(@class, 'text-none') and "
+        "contains(@class, 'ng-star-inserted')]"
+    )
 
     @staticmethod
     @override
@@ -115,7 +117,7 @@ class TopDeckedRegularDeckScraper(DeckScraper):
                 f"Scraping failed due to Selenium timing out", scraper=type(self), url=self.url)
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         pass
 
     def _handle_commander(self) -> None:
@@ -137,7 +139,7 @@ class TopDeckedRegularDeckScraper(DeckScraper):
         self._decklist = "\n".join(decklist)
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         if self.fmt and self.fmt in COMMANDER_FORMATS:
             self._handle_commander()
 
@@ -164,7 +166,8 @@ class TopDeckedMetaDeckScraper(TopDeckedRegularDeckScraper):
     SHARE_XPATH = "//ion-button[contains(text(), 'Share')]"  # override
     _META_SHARE_XPATH = (
         "//span[contains(@class, 'text-medium') and contains(@class, 'subtext') "
-        "and contains(text(), 'of meta')]")
+        "and contains(text(), 'of meta')]"
+    )
 
     @staticmethod
     @override

@@ -11,10 +11,9 @@ import logging
 from typing import override
 
 import dateutil.parser
-from bs4 import Tag
 
-from mtg.constants import Json, SECRETS
-from mtg.deck.abc import TagBasedDeckParser
+from mtg.constants import SECRETS
+from mtg.deck.abc import DeckTagParser
 from mtg.deck.scrapers.abc import HybridContainerScraper
 from mtg.lib.scrape.core import ScrapingError, is_more_than_root_path, strip_url_query
 from mtg.yt.discover import UrlHook
@@ -48,11 +47,11 @@ URL_HOOKS = (
 )
 
 
-class CommandersHeraldDeckTagParser(TagBasedDeckParser):
+class CommandersHeraldDeckTagParser(DeckTagParser):
     """Parser of a Commander's Herald decklist HTML tag.
     """
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         self._metadata["name"] = self._deck_tag.attrs["name"]
         if author := self._metadata.get("article", {}).get("author"):
             self._metadata["author"] = author
@@ -63,7 +62,7 @@ class CommandersHeraldDeckTagParser(TagBasedDeckParser):
             self._update_fmt(fmt or "commander")
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         decklist = self._deck_tag.attrs["cards"]
         lines = ["Commander"]
         for line in decklist.splitlines():
@@ -79,7 +78,7 @@ class CommandersHeraldArticleScraper(HybridContainerScraper):
     """Scraper of Commander's Herald article page.
     """
     CONTAINER_NAME = "Commander's Herald article"  # override
-    TAG_BASED_DECK_PARSER = CommandersHeraldDeckTagParser  # override
+    DECK_TAG_PARSER_TYPE = CommandersHeraldDeckTagParser  # override
     HEADERS = HEADERS  # override
     EXAMPLE_URLS = (
         "https://commandersherald.com/araumi-of-the-dead-tide-pauper-commander/",
@@ -89,11 +88,15 @@ class CommandersHeraldArticleScraper(HybridContainerScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        tokens = ('/all-edh-deck-guides', '/articles', '/author/', '/cedh-deck-guides',
-                  '/games/', "/category/", '/about-us','/contact-us', '/privacy-policy',
-                  '/terms-of-service')
-        return is_more_than_root_path(
-            url, "commandersherald.com") and not any(t in url.lower() for t in tokens)
+        tokens = (
+            '/all-edh-deck-guides', '/articles', '/author/', '/cedh-deck-guides',
+            '/games/', "/category/", '/about-us','/contact-us', '/privacy-policy',
+            '/terms-of-service'
+        )
+        return (
+            is_more_than_root_path(url, "commandersherald.com")
+            and not any(t in url.lower() for t in tokens)
+        )
 
     @staticmethod
     @override
@@ -101,7 +104,7 @@ class CommandersHeraldArticleScraper(HybridContainerScraper):
         return strip_url_query(url)
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         if header_tag := self._soup.select_one("header.article-header"):
             if title_tag := header_tag.find("h1"):
                 self._metadata.setdefault("article", {})["title"] = title_tag.text.strip()
@@ -117,17 +120,16 @@ class CommandersHeraldArticleScraper(HybridContainerScraper):
                 "article", {})["tags"] = self.normalize_metadata_deck_tags(categories)
 
     @override
-    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
-        deck_tags = [
+    def _parse_input_for_decks_data(self) -> None:
+        self._deck_tags = [
             tag.find("span") for tag in self._soup.select("div.edhrecp__deck.mtgh")
             if tag.find("span")]
         article_tag = self._soup.select_one("section.article-content")
         if not article_tag:
             err = ScrapingError("Article tag not found", scraper=type(self), url=self.url)
             _log.warning(f"Scraping failed with: {err!r}")
-            return [], deck_tags, [], []
-        deck_urls, container_urls = self._find_links_in_tags(*article_tag.find_all("p"))
-        return deck_urls, deck_tags, [], container_urls
+            return
+        self._deck_urls, self._container_urls = self._find_links_in_tags(*article_tag.find_all("p"))
 
 
 @HybridContainerScraper.registered
@@ -135,7 +137,7 @@ class CommandersHeraldAuthorScraper(HybridContainerScraper):
     """Scraper of Commander's Herald author page.
     """
     CONTAINER_NAME = "Commander's Herald author"  # override
-    CONTAINER_SCRAPERS = CommandersHeraldArticleScraper,  # override
+    CONTAINER_SCRAPER_TYPES = CommandersHeraldArticleScraper,  # override
     HEADERS = HEADERS  # override
     EXAMPLE_URLS = (
         "https://commandersherald.com/author/cody-collins/",
@@ -147,6 +149,5 @@ class CommandersHeraldAuthorScraper(HybridContainerScraper):
         return "commandersherald.com/author/" in url.lower()
 
     @override
-    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
-        _, container_urls = self._find_links_in_tags(css_selector="div > div > h3 > a")
-        return [], [], [], container_urls
+    def _parse_input_for_decks_data(self) -> None:
+        _, self._container_urls = self._find_links_in_tags(css_selector="div > div > h3 > a")

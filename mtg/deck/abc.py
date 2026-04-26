@@ -36,12 +36,12 @@ class NestedDeckParser(DeckParser):
 
     @abstractmethod
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         raise NotImplementedError
 
     @abstractmethod
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         raise NotImplementedError
 
     def _get_sub_parser(self) -> Self | None:
@@ -61,7 +61,7 @@ class NestedDeckParser(DeckParser):
         return super()._build_deck()
 
 
-class TagBasedDeckParser(NestedDeckParser):
+class DeckTagParser(NestedDeckParser):
     """Abstract HTML tag based deck parser.
 
     HTML tag based parsers process a single, decklist and metadata holding, HTML tag extracted
@@ -73,40 +73,40 @@ class TagBasedDeckParser(NestedDeckParser):
 
     @override
     def _pre_parse(self) -> None:
-        pass  # not utilized
+        raise NotImplementedError(f"Not supported for {type(self).__name__!r}")
 
     @abstractmethod
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         raise NotImplementedError
 
     @abstractmethod
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         raise NotImplementedError
 
 
-class JsonBasedDeckParser(NestedDeckParser):
+class DeckJsonParser(NestedDeckParser):
     """Abstract JSON data based deck parser.
 
     JSON data based parsers process a single, decklist and metadata holding, piece of JSON data
     either dissected from a webpage's JavaScript code or obtained via a separate JSON API
     request and return a Deck object (if able).
     """
-    def __init__(self,  deck_data: Json, metadata: Json | None = None) -> None:
+    def __init__(self,  deck_json: Json, metadata: Json | None = None) -> None:
         super().__init__(metadata)
-        self._deck_data = deck_data
+        self._deck_json = deck_json
 
     @override
     def _pre_parse(self) -> None:
-        pass  # not utilized
+        raise NotImplementedError(f"Not supported for {type(self).__name__!r}")
 
     @abstractmethod
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         raise NotImplementedError
 
     @abstractmethod
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         raise NotImplementedError

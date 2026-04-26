@@ -11,9 +11,8 @@ import logging
 from typing import override
 
 import dateutil.parser
-from bs4 import Tag
 
-from mtg.constants import Json, SECRETS
+from mtg.constants import SECRETS
 from mtg.deck.scrapers.abc import HybridContainerScraper
 from mtg.lib.scrape.core import ScrapingError, is_more_than_root_path, strip_url_query
 from mtg.yt.discover import UrlHook
@@ -61,8 +60,10 @@ class CardKingdomArticleScraper(HybridContainerScraper):
     @override
     def is_valid_url(url: str) -> bool:
         tokens = "/category/", '/tag/', '/submissions/', '/updates/', '/author/'
-        return is_more_than_root_path(
-            url, "blog.cardkingdom.com") and not any(t in url.lower() for t in tokens)
+        return (
+            is_more_than_root_path(url, "blog.cardkingdom.com")
+            and not any(t in url.lower() for t in tokens)
+        )
 
     @staticmethod
     @override
@@ -70,7 +71,7 @@ class CardKingdomArticleScraper(HybridContainerScraper):
         return strip_url_query(url)
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         if header_tag := self._soup.select_one("header.entry-header"):
             if title_tag := header_tag.find("h1"):
                 self._metadata.setdefault("article", {})["title"] = title_tag.text.strip()
@@ -85,14 +86,14 @@ class CardKingdomArticleScraper(HybridContainerScraper):
                         "article", {})["tags"] = self.normalize_metadata_deck_tags(categories)
 
     @override
-    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
+    def _parse_input_for_decks_data(self) -> None:
         article_tag = self._soup.select_one("div.content")
-        if not article_tag:
+        if article_tag:
+            self._deck_urls, self._container_urls = self._find_links_in_tags(*article_tag.find_all(
+                "p"))
+        else:
             err = ScrapingError("Article tag not found", scraper=type(self), url=self.url)
             _log.warning(f"Scraping failed with: {err!r}")
-            return [], [], [], []
-        deck_urls, container_urls = self._find_links_in_tags(*article_tag.find_all("p"))
-        return deck_urls, [], [], container_urls
 
 
 @HybridContainerScraper.registered
@@ -100,7 +101,7 @@ class CardKingdomAuthorScraper(HybridContainerScraper):
     """Scraper of CardKingdom author page.
     """
     CONTAINER_NAME = "CardKingdom author"  # override
-    CONTAINER_SCRAPERS = CardKingdomArticleScraper,  # override
+    CONTAINER_SCRAPER_TYPES = CardKingdomArticleScraper,  # override
     HEADERS = HEADERS  # override
     EXAMPLE_URLS = (
         "https://blog.cardkingdom.com/author/kgregory/",
@@ -112,7 +113,6 @@ class CardKingdomAuthorScraper(HybridContainerScraper):
         return "blog.cardkingdom.com/author/" in url.lower()
 
     @override
-    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
-        _, container_urls = self._find_links_in_tags(
+    def _parse_input_for_decks_data(self) -> None:
+        _, self._container_urls = self._find_links_in_tags(
             *self._soup.find_all("article"), css_selector="div.entry-wrap > header > h2 > a")
-        return [], [], [], container_urls

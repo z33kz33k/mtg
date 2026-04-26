@@ -49,7 +49,7 @@ class CardBoardLiveDeckScraper(DeckScraper):
         return strip_url_query(url)
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         self._metadata["name"] = self._soup.find("h3", class_="shared-deck__title").text.strip()
         for tag in self._soup.find_all("p", class_="shared-deck__describe"):
             if "Played by: " in tag.text:
@@ -60,5 +60,5 @@ class CardBoardLiveDeckScraper(DeckScraper):
                 self._metadata["event"] = tag.text.strip().removeprefix("Tournament: ")
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         self._decklist = self._clipboard

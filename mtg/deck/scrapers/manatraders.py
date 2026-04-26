@@ -23,7 +23,7 @@ URL_PREFIX = "https://www.manatraders.com"
 class ManatradersDeckScraper(DeckScraper):
     """Scraper of Manatraders decklist page.
     """
-    DATA_FROM_SOUP = True  # override
+    JSON_FROM_SOUP = True  # override
 
     @staticmethod
     @override
@@ -40,26 +40,26 @@ class ManatradersDeckScraper(DeckScraper):
         return strip_url_query(url)
 
     @override
-    def _get_data_from_soup(self) -> Json:
+    def _get_json_from_soup(self) -> Json:
         data_tag = self._soup.find("div", {"data-react-class": "WebshopApp"})
         if not data_tag:
             data_tag = self._soup.find("div", {"data-react-class": "DeckBuilder"})
             if not data_tag:
                 raise ScrapingError("Deck tag not found", scraper=type(self), url=self.url)
         json_data = json.loads(data_tag.attrs["data-react-props"])
-        if deck_data := json_data.get("deck"):
-            return deck_data
-        if deck_data := json_data.get("initialDeck"):
-            return deck_data
+        if deck_json := json_data.get("deck"):
+            return deck_json
+        if deck_json := json_data.get("initialDeck"):
+            return deck_json
         raise ScrapingError("Deck data missing in extracted JSON", scraper=type(self), url=self.url)
 
     @override
-    def _parse_metadata(self) -> None:
-        self._metadata["name"] = self._data["name"]
-        if author := self._data.get("playerName"):
+    def _parse_input_for_metadata(self) -> None:
+        self._metadata["name"] = self._json["name"]
+        if author := self._json.get("playerName"):
             self._metadata["author"] = author
-        self._update_fmt(self._data["format"])
-        self._update_archetype_or_theme(self._data["archetype"])
+        self._update_fmt(self._json["format"])
+        self._update_archetype_or_theme(self._json["archetype"])
 
     def _parse_card_json(self, card_json: Json) -> None:
         name = card_json["name"]
@@ -70,8 +70,8 @@ class ManatradersDeckScraper(DeckScraper):
             self._sideboard += self.get_playset(card, sideboard_qty)
 
     @override
-    def _parse_deck(self) -> None:
-        for card_data in self._data["cards"].values():
+    def _parse_input_for_decklist(self) -> None:
+        for card_data in self._json["cards"].values():
             self._parse_card_json(card_data)
         self._derive_commander_from_sideboard()
 
@@ -81,7 +81,7 @@ class ManatradersUserScraper(DeckUrlsContainerScraper):
     """Scraper of Manatraders user search page.
     """
     CONTAINER_NAME = "Manatraders user"  # override
-    DECK_SCRAPERS = ManatradersDeckScraper,  # override
+    DECK_SCRAPER_TYPES = ManatradersDeckScraper,  # override
 
     @staticmethod
     @override
@@ -89,10 +89,10 @@ class ManatradersUserScraper(DeckUrlsContainerScraper):
         return all(t in url.lower() for t in ("manatraders.com/decks?", "search_name"))
 
     @override
-    def _collect(self) -> list[str]:
+    def _parse_input_for_decks_data(self) -> None:
         deck_tags = [
             tag for tag in self._soup.find_all("a", href=lambda h: h and "/webshop/deck/" in h)]
         if not deck_tags:
             raise ScrapingError("Deck tags not found", scraper=type(self), url=self.url)
         urls = {tag.attrs["href"] for tag in deck_tags}
-        return [strip_url_query(prepend_url(url, URL_PREFIX)) for url in sorted(urls)]
+        self._deck_urls = [strip_url_query(prepend_url(url, URL_PREFIX)) for url in sorted(urls)]

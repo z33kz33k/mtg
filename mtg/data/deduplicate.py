@@ -7,21 +7,18 @@
     @author: mazz3rr
 
 """
-import itertools
 import logging
-import math
 from collections import defaultdict
-from operator import attrgetter
 
 from sqlalchemy import delete, select, text
 from sqlalchemy.orm import Session, joinedload
 from tqdm import tqdm
 
-from mtg.logging import init_log
 from mtg.data.db import DefaultSession
 from mtg.data.models import Channel, Deck, Snapshot, Video
 from mtg.lib.common import from_iterable
 from mtg.lib.time import timed
+from mtg.logging import init_log
 
 _log = logging.getLogger(__name__)
 
@@ -91,6 +88,7 @@ def deduplicate(session: Session) -> None:
 
         session.commit()
 
+        # optionally, shrink the database with VACUUM
         if len(deleted_deck_paths) > 20_000:
             _log.info("Compacting database file with VACUUM (this may take a while)...")
             session.execute(text("VACUUM"))

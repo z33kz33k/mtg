@@ -25,7 +25,7 @@ ALT_DOMAIN = "mtga.cc"
 class MtgArenaProDeckScraper(DeckScraper):
     """Scraper of MTGArena.Pro decklist page.
     """
-    DATA_FROM_SOUP = True  # override
+    JSON_FROM_SOUP = True  # override
 
     @staticmethod
     @override
@@ -38,40 +38,40 @@ class MtgArenaProDeckScraper(DeckScraper):
         return url.replace(ALT_DOMAIN, "mtgarena.pro")
 
     @override
-    def _get_data_from_soup(self) -> Json:
+    def _get_json_from_soup(self) -> Json:
         return dissect_js(
             self._soup, "var precachedDeck=", '"card_ids":', lambda s: s + '"card_ids":[]}')
 
     @override
-    def _validate_data(self) -> None:
-        super()._validate_data()
-        if not self._data.get("deck_order"):
+    def _validate_json(self) -> None:
+        super()._validate_json()
+        if not self._json.get("deck_order"):
             raise ScrapingError("No 'deck_order' data", scraper=type(self), url=self.url)
 
     def _parse_fmt(self) -> str:
-        if self._data["explorer"]:
+        if self._json["explorer"]:
             return "explorer"
-        elif self._data["timeless"]:
+        elif self._json["timeless"]:
             return "timeless"
-        elif self._data["alchemy"]:
+        elif self._json["alchemy"]:
             return "alchemy"
-        elif self._data["brawl"]:
-            if self._data["standard"]:
+        elif self._json["brawl"]:
+            if self._json["standard"]:
                 return "standardbrawl"
             return "brawl"
-        elif self._data["historic"]:
+        elif self._json["historic"]:
             return "historic"
-        elif self._data["standard"]:
+        elif self._json["standard"]:
             return "standard"
         return ""
 
     @override
-    def _parse_metadata(self) -> None:
-        self._metadata["author"] = self._data["author"]
-        self._metadata["name"] = self._data["humanname"]
+    def _parse_input_for_metadata(self) -> None:
+        self._metadata["author"] = self._json["author"]
+        self._metadata["name"] = self._json["humanname"]
         if fmt := self._parse_fmt():
             self._update_fmt(fmt)
-        self._metadata["date"] = dateutil.parser.parse(self._data["date"]).date()
+        self._metadata["date"] = dateutil.parser.parse(self._json["date"]).date()
 
     @classmethod
     def _parse_card_json(cls, card_json: Json) -> list[Card]:
@@ -81,10 +81,10 @@ class MtgArenaProDeckScraper(DeckScraper):
         return cls.get_playset(card, quantity)
 
     @override
-    def _parse_deck(self) -> None:
-        for card_json in self._data["deck_order"]:
+    def _parse_input_for_decklist(self) -> None:
+        for card_json in self._json["deck_order"]:
             self._maindeck.extend(self._parse_card_json(card_json))
-        for card_json in self._data["sidedeck_order"]:
+        for card_json in self._json["sidedeck_order"]:
             self._sideboard.extend(self._parse_card_json(card_json))
-        for card_json in self._data["commander_order"]:
+        for card_json in self._json["commander_order"]:
             self._set_commander(self._parse_card_json(card_json)[0])

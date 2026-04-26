@@ -12,7 +12,7 @@ import time
 from typing import override
 
 import dateutil.parser
-from bs4 import BeautifulSoup, Tag
+from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.common import ElementClickInterceptedException, TimeoutException
 from selenium.webdriver.common.by import By
@@ -20,11 +20,13 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from mtg.constants import Json
-from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
-    folder_container_scraper
-from mtg.lib.time import timed
+from mtg.deck.scrapers.abc import (
+    DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper,
+    folder_container_scraper,
+)
 from mtg.lib.scrape.core import ScrapingError, dissect_js, get_path_segments, strip_url_query
 from mtg.lib.scrape.dynamic import SELENIUM_TIMEOUT, accept_consent
+from mtg.lib.time import timed
 from mtg.yt.discover import UrlHook
 
 _log = logging.getLogger(__name__)
@@ -76,7 +78,7 @@ def to_eng_url(url: str, first_non_lang_segment: str) -> str:
 class CardsrealmDeckScraper(DeckScraper):
     """Scraper of Cardsrealm decklist page.
     """
-    DATA_FROM_SOUP = True  # override
+    JSON_FROM_SOUP = True  # override
     EXAMPLE_URLS = (
         "https://mtg.cardsrealm.com/en-us/decks/io11-bg-harvest?utm_source=monarchs&utm_medium=affiliate&utm_campaign=podcast",
     )
@@ -86,8 +88,10 @@ class CardsrealmDeckScraper(DeckScraper):
     def is_valid_url(url: str) -> bool:
         positives = ("cardsrealm.com/", "/decks/")
         negatives = ("/profile/", "/folder/")
-        return (all(p in url.lower() for p in positives)
-                and not any(n in url.lower() for n in negatives))
+        return (
+            all(p in url.lower() for p in positives)
+            and not any(n in url.lower() for n in negatives)
+        )
 
     @staticmethod
     @override
@@ -96,7 +100,7 @@ class CardsrealmDeckScraper(DeckScraper):
         return to_eng_url(url, "decks")
 
     @override
-    def _get_data_from_soup(self) -> Json:
+    def _get_json_from_soup(self) -> Json:
         def process(text: str) -> str:
             obj, _ = text.rsplit("]", maxsplit=1)
             return obj + "]"
@@ -104,8 +108,8 @@ class CardsrealmDeckScraper(DeckScraper):
             self._soup, "var deck_cards = ", 'var torneio_type =', end_processor=process)
 
     @override
-    def _parse_metadata(self) -> None:
-        card_data = self._data[0]
+    def _parse_input_for_metadata(self) -> None:
+        card_data = self._json[0]
         self._metadata["name"] = card_data["deck_title"]
         date_text = card_data.get("deck_lastchange", card_data['deck_card_datetime'])
         self._metadata["date"] = dateutil.parser.parse(date_text).date()
@@ -124,9 +128,9 @@ class CardsrealmDeckScraper(DeckScraper):
             self._maindeck += self.get_playset(card, quantity)
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         # filter out tokens and maybe-boards
-        for card_data in [cd for cd  in self._data if cd["deck_sideboard"] in (0, 1)]:
+        for card_data in [cd for cd  in self._json if cd["deck_sideboard"] in (0, 1)]:
             self._parse_card_json(card_data)
         self._derive_commander_from_sideboard()
 
@@ -136,7 +140,7 @@ class CardsrealmProfileScraper(DeckUrlsContainerScraper):
     """Scraper of Cardsrealm user profile page.
     """
     CONTAINER_NAME = "Cardsrealm profile"  # override
-    DECK_SCRAPERS = CardsrealmDeckScraper,  # override
+    DECK_SCRAPER_TYPES = CardsrealmDeckScraper,  # override
     DECK_URL_PREFIX = URL_PREFIX  # override
     EXAMPLE_URLS = (
         "https://mtg.cardsrealm.com/en-us/profile/mateus-queiroz-n35/decks",
@@ -147,8 +151,10 @@ class CardsrealmProfileScraper(DeckUrlsContainerScraper):
     def is_valid_url(url: str) -> bool:
         positives = ("cardsrealm.com/", "/profile/", "/decks")
         negatives = ("/folder/", )
-        return (all(p in url.lower() for p in positives)
-                and not any(n in url.lower() for n in negatives))
+        return (
+            all(p in url.lower() for p in positives)
+            and not any(n in url.lower() for n in negatives)
+        )
 
     @staticmethod
     @override
@@ -157,13 +163,14 @@ class CardsrealmProfileScraper(DeckUrlsContainerScraper):
         return to_eng_url(url, "profile")
 
     @override
-    def _collect(self) -> list[str]:
+    def _parse_input_for_decks_data(self) -> None:
         deck_divs = [
-            div for div in self._soup.find_all("div", class_=lambda c: c and "deck_div_all" in c)]
+            div for div in self._soup.find_all("div", class_=lambda c: c and "deck_div_all" in c)
+        ]
         deck_tags = [d.find("a", href=lambda h: h and "/decks/" in h) for d in deck_divs]
         if not deck_tags:
             raise ScrapingError("Deck tags not found", scraper=type(self), url=self.url)
-        return [tag.attrs["href"] for tag in deck_tags]
+        self._deck_urls = [tag.attrs["href"] for tag in deck_tags]
 
 
 @folder_container_scraper
@@ -181,8 +188,10 @@ class CardsrealmFolderScraper(CardsrealmProfileScraper):
     def is_valid_url(url: str) -> bool:
         positives = ("cardsrealm.com/", "/decks/folder/")
         negatives = ("/profile/", )
-        return (all(p in url.lower() for p in positives)
-                and not any(n in url.lower() for n in negatives))
+        return (
+            all(p in url.lower() for p in positives)
+            and not any(n in url.lower() for n in negatives)
+        )
 
     @staticmethod
     @override
@@ -196,7 +205,7 @@ class CardsrealmMetaTournamentScraper(DeckUrlsContainerScraper):
     """Scraper of Cardsrealm meta-deck tournaments page.
     """
     CONTAINER_NAME = "Cardsrealm meta-deck tournament"  # override
-    DECK_SCRAPERS = CardsrealmDeckScraper,  # override
+    DECK_SCRAPER_TYPES = CardsrealmDeckScraper,  # override
     DECK_URL_PREFIX = URL_PREFIX  # override
     EXAMPLE_URLS = (
         "https://mtg.cardsrealm.com/en-us/meta-decks/pauper/tournaments/1k27j-pauper-royale-220",
@@ -214,16 +223,18 @@ class CardsrealmMetaTournamentScraper(DeckUrlsContainerScraper):
         return to_eng_url(url, "meta-decks")
 
     @override
-    def _collect(self) -> list[str]:
+    def _parse_input_for_decks_data(self) -> None:
         deck_tags = [
             tag for tag in
             self._soup.find_all(
                 lambda t: t.name == "a"
                           and t.text.strip() == "Decklist"
-                          and t.parent.name == "span")]
+                          and t.parent.name == "span"
+            )
+        ]
         if not deck_tags:
             raise ScrapingError("Deck tags not found", scraper=type(self), url=self.url)
-        return sorted({tag.attrs["href"] for tag in deck_tags})
+        self._deck_urls = sorted({tag.attrs["href"] for tag in deck_tags})
 
 
 @DeckUrlsContainerScraper.registered
@@ -236,7 +247,7 @@ class CardsrealmRegularTournamentScraper(DeckUrlsContainerScraper):
         "consent_xpath": '//p[text()="Consent"]'
     }
     CONTAINER_NAME = "Cardsrealm regular tournament"  # override
-    DECK_SCRAPERS = CardsrealmDeckScraper,  # override
+    DECK_SCRAPER_TYPES = CardsrealmDeckScraper,  # override
     EXAMPLE_URLS = (
         "https://mtg.cardsrealm.com/en-us/tournament/1k27j-pauper-royale-220",
     )
@@ -244,8 +255,10 @@ class CardsrealmRegularTournamentScraper(DeckUrlsContainerScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return (all(t in url.lower() for t in ("cardsrealm.com/", "/tournament/"))
-                and "/meta-decks/" not in url.lower())
+        return (
+            all(t in url.lower() for t in ("cardsrealm.com/", "/tournament/"))
+            and "/meta-decks/" not in url.lower()
+        )
 
     @staticmethod
     @override
@@ -288,13 +301,13 @@ class CardsrealmRegularTournamentScraper(DeckUrlsContainerScraper):
         self._soup = self._fetch_dynamic_soup()
 
     @override
-    def _collect(self) -> list[str]:
+    def _parse_input_for_decks_data(self) -> None:
         deck_divs = [
             div for div in self._soup.find_all("div", class_=lambda c: c and "mainDeck" in c)]
         deck_tags = [d.find("a", href=lambda h: h and "/decks/" in h) for d in deck_divs]
         if not deck_tags:
             raise ScrapingError("Deck tags not found", scraper=type(self), url=self.url)
-        return [tag.attrs["href"] for tag in deck_tags if tag is not None]
+        self._deck_urls = [tag.attrs["href"] for tag in deck_tags if tag is not None]
 
 
 @HybridContainerScraper.registered
@@ -303,7 +316,7 @@ class CardsrealmArticleScraper(HybridContainerScraper):
     """
     CONTAINER_NAME = "Cardsrealm article"  # override
     # override
-    CONTAINER_SCRAPERS = (
+    CONTAINER_SCRAPER_TYPES = (
         CardsrealmProfileScraper, CardsrealmFolderScraper, CardsrealmRegularTournamentScraper,
         CardsrealmMetaTournamentScraper)
     EXAMPLE_URLS = (
@@ -315,8 +328,10 @@ class CardsrealmArticleScraper(HybridContainerScraper):
     def is_valid_url(url: str) -> bool:
         positives = ("cardsrealm.com/", "/articles/")
         negatives = ("/search/", "/author/", *NEGATIVE_DOMAINS)
-        return (all(p in url.lower() for p in positives)
-                and not any(n in url.lower() for n in negatives))
+        return (
+            all(p in url.lower() for p in positives)
+            and not any(n in url.lower() for n in negatives)
+        )
 
     @staticmethod
     @override
@@ -325,12 +340,12 @@ class CardsrealmArticleScraper(HybridContainerScraper):
         return to_eng_url(url, "articles")
 
     @override
-    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
+    def _parse_input_for_decks_data(self) -> None:
         article_tag = self._soup.find("div", id="article_div_all")
         if article_tag is None:
             raise ScrapingError("Article tag not found", scraper=type(self), url=self.url)
-        deck_links, container_links = self._find_links_in_tags(article_tag, url_prefix=URL_PREFIX)
-        return deck_links, [], [], container_links
+        self._deck_urls, self._container_urls = self._find_links_in_tags(
+            article_tag, url_prefix=URL_PREFIX)
 
 
 @HybridContainerScraper.registered
@@ -338,7 +353,7 @@ class CardsrealmAuthorScraper(HybridContainerScraper):
     """Scraper of Cardsrealm article's author page.
     """
     CONTAINER_NAME = "Cardsrealm author"  # override
-    CONTAINER_SCRAPERS = CardsrealmArticleScraper,  # override
+    CONTAINER_SCRAPER_TYPES = CardsrealmArticleScraper,  # override
     EXAMPLE_URLS = (
         "https://cardsrealm.com/en-us/articles/author/humberto2151",
     )
@@ -348,8 +363,10 @@ class CardsrealmAuthorScraper(HybridContainerScraper):
     def is_valid_url(url: str) -> bool:
         positives = ("cardsrealm.com/", "/articles/author/")
         negatives = ("/search/", *NEGATIVE_DOMAINS)
-        return (all(p in url.lower() for p in positives)
-                and not any(n in url.lower() for n in negatives))
+        return (
+            all(p in url.lower() for p in positives)
+            and not any(n in url.lower() for n in negatives)
+        )
 
     @staticmethod
     @override
@@ -357,9 +374,8 @@ class CardsrealmAuthorScraper(HybridContainerScraper):
         return CardsrealmArticleScraper.normalize_url(url)
 
     @override
-    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
-        _, container_links = self._find_links_in_tags(self._soup)
-        return [], [], [], container_links
+    def _parse_input_for_decks_data(self) -> None:
+        _, self._container_urls = self._find_links_in_tags(self._soup)
 
 
 @HybridContainerScraper.registered
@@ -367,7 +383,7 @@ class CardsrealmArticleSearchScraper(HybridContainerScraper):
     """Scraper of Cardsrealm article search page.
     """
     CONTAINER_NAME = "Cardsrealm article search"  # override
-    CONTAINER_SCRAPERS = CardsrealmArticleScraper,  # override
+    CONTAINER_SCRAPER_TYPES = CardsrealmArticleScraper,  # override
     EXAMPLE_URLS = (
         "https://cardsrealm.com/en-us/articles/search/?keyword=humberto2151",
     )
@@ -376,8 +392,10 @@ class CardsrealmArticleSearchScraper(HybridContainerScraper):
     @override
     def is_valid_url(url: str) -> bool:
         positives = ("cardsrealm.com/", "/articles/search/", "keyword=")
-        return (all(p in url.lower() for p in positives)
-                and not any(n in url.lower() for n in NEGATIVE_DOMAINS))
+        return (
+            all(p in url.lower() for p in positives)
+            and not any(n in url.lower() for n in NEGATIVE_DOMAINS)
+        )
 
     @staticmethod
     @override
@@ -385,9 +403,8 @@ class CardsrealmArticleSearchScraper(HybridContainerScraper):
         return to_eng_url(url, "articles")
 
     @override
-    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
+    def _parse_input_for_decks_data(self) -> None:
         main_tag = self._soup.select_one("div#articlePage")
         if not main_tag:
             raise ScrapingError("Main <div> tag not found", type(self), self.url)
-        _, container_links = self._find_links_in_tags(main_tag)
-        return [], [], [], container_links
+        _, self._container_urls = self._find_links_in_tags(main_tag)

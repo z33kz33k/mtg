@@ -45,14 +45,14 @@ class MtgJsonDeckScraper(DeckScraper):
             raise ScrapingError("No deck data", scraper=type(self), url=self.url)
         self._metadata["date"] = datetime.fromisoformat(json_data["meta"]["date"]).date()
         self._metadata["version"] = json_data["meta"]["version"]
-        self._data = json_data["data"]
+        self._json = json_data["data"]
 
     @override
-    def _parse_metadata(self) -> None:
-        self._metadata["name"] = self._data["name"]
+    def _parse_input_for_metadata(self) -> None:
+        self._metadata["name"] = self._json["name"]
         self._metadata["release_date"] = datetime.fromisoformat(
-            self._data["releaseDate"]).date()
-        self._metadata["type"] = self._data["type"]
+            self._json["releaseDate"]).date()
+        self._metadata["type"] = self._json["type"]
 
     def _parse_card_json(self, card_json: Json) -> list[Card]:
         qty = card_json["count"]
@@ -65,13 +65,13 @@ class MtgJsonDeckScraper(DeckScraper):
         return self.get_playset(card, qty)
 
     @override
-    def _parse_deck(self) -> None:
-        for card_json in self._data["commander"]:
+    def _parse_input_for_decklist(self) -> None:
+        for card_json in self._json["commander"]:
             for card in self._parse_card_json(card_json):
                 self._set_commander(card)
-        for card_json in self._data["mainBoard"]:
+        for card_json in self._json["mainBoard"]:
             self._maindeck += self._parse_card_json(card_json)
-        for card_json in self._data["sideBoard"]:
+        for card_json in self._json["sideBoard"]:
             self._sideboard += self._parse_card_json(card_json)
 
 

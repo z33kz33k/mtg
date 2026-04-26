@@ -54,7 +54,7 @@ class DeckboxDeckScraper(DeckScraper):
         return strip_url_query(url)
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         page_header_tag = self._soup.find("div", class_=lambda c: c and "page_header" in c)
         self._metadata["author"] = page_header_tag.find("a").text.strip()
         self._metadata["name"] = page_header_tag.find("span").text.strip()
@@ -82,7 +82,7 @@ class DeckboxDeckScraper(DeckScraper):
         return cls.get_playset(cls.find_card(name), quantity)
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         maindeck_table = self._soup.find("table", class_=lambda c: c and "main" in c)
         if not maindeck_table:
             raise ScrapingError(
@@ -111,7 +111,7 @@ class DeckboxUserScraper(DeckUrlsContainerScraper):
     """Scraper of Deckbox user page.
     """
     CONTAINER_NAME = "Deckbox user"  # override
-    DECK_SCRAPERS = DeckboxDeckScraper,  # override
+    DECK_SCRAPER_TYPES = DeckboxDeckScraper,  # override
     DECK_URL_PREFIX = URL_PREFIX  # override
     EXAMPLE_URLS = (
         "https://deckbox.org/users/Odekar",
@@ -128,12 +128,12 @@ class DeckboxUserScraper(DeckUrlsContainerScraper):
         return strip_url_query(url)
 
     @override
-    def _collect(self) -> list[str]:
+    def _parse_input_for_decks_data(self) -> None:
         deck_tags = [
             tag for tag in self._soup.find_all("a", href=lambda h: h and "/sets/" in h)]
         if not deck_tags:
             raise ScrapingError("Deck tags not found", scraper=type(self), url=self.url)
-        return sorted({tag.attrs["href"] for tag in deck_tags})
+        self._deck_urls = sorted({tag.attrs["href"] for tag in deck_tags})
 
 
 @DeckUrlsContainerScraper.registered
@@ -141,7 +141,7 @@ class DeckboxEventScraper(DeckUrlsContainerScraper):
     """Scraper of Deckbox community event page.
     """
     CONTAINER_NAME = "Deckbox event"  # override
-    DECK_SCRAPERS = DeckboxDeckScraper,  # override
+    DECK_SCRAPER_TYPES = DeckboxDeckScraper,  # override
     DECK_URL_PREFIX = URL_PREFIX  # override
     EXAMPLE_URLS = (
         "https://deckbox.org/communities/mtg_competitive_events/events/1989",
@@ -158,10 +158,10 @@ class DeckboxEventScraper(DeckUrlsContainerScraper):
         return strip_url_query(url)
 
     @override
-    def _collect(self) -> list[str]:
+    def _parse_input_for_decks_data(self) -> None:
         table_tag = self._soup.find("table", class_="simple_table")
         deck_tags = [
             tag for tag in table_tag.find_all("a", href=lambda h: h and "/sets/" in h)]
         if not deck_tags:
             raise ScrapingError("Deck tags not found", scraper=type(self), url=self.url)
-        return [tag.attrs["href"] for tag in deck_tags]
+        self._deck_urls = [tag.attrs["href"] for tag in deck_tags]

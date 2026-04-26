@@ -13,8 +13,7 @@ from typing import override
 import dateutil.parser
 from bs4 import Tag
 
-from mtg.constants import Json
-from mtg.deck.abc import TagBasedDeckParser
+from mtg.deck.abc import DeckTagParser
 from mtg.deck.scrapers.abc import HybridContainerScraper
 from mtg.lib.common import from_iterable
 from mtg.lib.scrape.core import ScrapingError, strip_url_query
@@ -37,11 +36,11 @@ URL_HOOKS = (
 )
 
 
-class CardmarketDeckTagParser(TagBasedDeckParser):
+class CardmarketDeckTagParser(DeckTagParser):
     """Parser of Cardmarket decklist HTML tag.
     """
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         title = self._deck_tag.select_one("thead").text.strip()
 
         tokens = [t.lower() for t in title.split()]
@@ -119,7 +118,7 @@ class CardmarketDeckTagParser(TagBasedDeckParser):
                 self._sideboard += self._parse_card_tag(card_tag)
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         has_sideboard = len([*self._deck_tag.find_all("thead")]) == 2
         ul_tags = [*self._deck_tag.select("ul")]
         if ul_tags:
@@ -148,7 +147,7 @@ class CardmarketArticleScraper(HybridContainerScraper):
         "wait_for_all": True
     }
     CONTAINER_NAME = "Cardmarket article"  # override
-    TAG_BASED_DECK_PARSER = CardmarketDeckTagParser  # override
+    DECK_TAG_PARSER_TYPE = CardmarketDeckTagParser  # override
     EXAMPLE_URLS = (
         "https://www.cardmarket.com/en/Insight/Articles/quest-for-the-best-pioneer-deck-ever",
     )
@@ -156,8 +155,11 @@ class CardmarketArticleScraper(HybridContainerScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return ("cardmarket.com/" in url.lower() and "/insight/articles/" in url.lower() and
-                "/yugioh/" not in url.lower())
+        return (
+            "cardmarket.com/" in url.lower()
+            and "/insight/articles/" in url.lower()
+            and "/yugioh/" not in url.lower()
+        )
 
     @staticmethod
     @override
@@ -172,7 +174,7 @@ class CardmarketArticleScraper(HybridContainerScraper):
             raise ScrapingError("Not a MtG article", scraper=type(self), url=self.url)
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         if author_tag := self._soup.select_one("div.u-article-meta__writer"):
             self._metadata["author"] = author_tag.text.strip()
         if date_tag := self._soup.select_one("div.u-article-meta__published"):
@@ -184,17 +186,17 @@ class CardmarketArticleScraper(HybridContainerScraper):
             self._metadata["title"] = title_tag.text.strip()
 
     @override
-    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
-        deck_tags = [
+    def _parse_input_for_decks_data(self) -> None:
+        self._deck_tags = [
             t for t in self._soup.select("div.table-responsive.mb-4")
             if t.find("hoverable-card")]
         article_tag = self._soup.find("article")
-        if not article_tag:
+        if article_tag:
+            self._deck_urls, self._container_urls = self._find_links_in_tags(*article_tag.find_all(
+                "p"))
+        else:
             err = ScrapingError("Article tag not found", scraper=type(self), url=self.url)
             _log.warning(f"Scraping failed with: {err!r}")
-            return [], deck_tags, [], []
-        deck_urls, container_urls = self._find_links_in_tags(*article_tag.find_all("p"))
-        return deck_urls, deck_tags, [], container_urls
 
 
 @HybridContainerScraper.registered
@@ -206,7 +208,7 @@ class CardmarketWriterScraper(HybridContainerScraper):
         "wait_for_all": True
     }
     CONTAINER_NAME = "Cardmarket writer"  # override
-    CONTAINER_SCRAPERS = CardmarketArticleScraper,  # override
+    CONTAINER_SCRAPER_TYPES = CardmarketArticleScraper,  # override
     CONTAINER_URL_PREFIX = "https://www.cardmarket.com"
     EXAMPLE_URLS = (
         "https://www.cardmarket.com/en/Insight/Writers/tobi-henke",
@@ -218,10 +220,10 @@ class CardmarketWriterScraper(HybridContainerScraper):
         return "cardmarket.com/" in url.lower() and "/insight/writers/" in url.lower()
 
     @override
-    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
+    def _parse_input_for_decks_data(self) -> None:
         article_tag = self._soup.find("article")
         if not article_tag:
             raise ScrapingError("Article tag not found", type(self), self.url)
         a_tags = article_tag.find_all("a")
-        return [], [], [], [
+        self._container_urls = [
             t["href"] for t in a_tags if t.has_attr("href") and "/Insight/Articles/" in t["href"]]

@@ -481,7 +481,7 @@ class ArenaParser(DeckParser):
         self._is_cached = self._decklist_hash in _cached_decks
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         pass
 
     # last safeguard against lines that mimicked decklist lines successfully enough
@@ -500,7 +500,7 @@ class ArenaParser(DeckParser):
         return False
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         if self._is_cached:
             return
         for line in self._decklist.splitlines():

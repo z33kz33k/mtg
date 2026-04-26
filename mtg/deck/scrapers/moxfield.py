@@ -14,8 +14,10 @@ from typing import override
 from selenium.common import TimeoutException
 
 from mtg.constants import Json
-from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper, folder_container_scraper, \
-    throttled_deck_scraper
+from mtg.deck.scrapers.abc import (
+    DeckScraper, DeckUrlsContainerScraper, folder_container_scraper,
+    throttled_deck_scraper,
+)
 from mtg.lib.scrape.core import ScrapingError, Soft404Error, strip_url_query
 from mtg.lib.scrape.dynamic import fetch_dynamic_soup, fetch_selenium_json
 from mtg.scryfall import Card
@@ -46,40 +48,40 @@ class MoxfieldDeckScraper(DeckScraper):
         return url.rstrip(".,")
 
     @override
-    def _get_data_from_api(self) -> Json:
+    def _get_json_from_api(self) -> Json:
         *_, self._decklist_id = self.url.split("/")
         if self._decklist_id == "undefined":
             raise Soft404Error(scraper=type(self), url=self.url)
         return fetch_selenium_json(self.API_URL_TEMPLATE.format(self._decklist_id))
 
     @override
-    def _validate_data(self) -> None:
-        if not self._data or not self._data.get("boards"):
+    def _validate_json(self) -> None:
+        if not self._json or not self._json.get("boards"):
             raise ScrapingError("No deck data", scraper=type(self), url=self.url)
 
     @override
-    def _parse_metadata(self) -> None:
-        fmt = self._data["format"].lower()
+    def _parse_input_for_metadata(self) -> None:
+        fmt = self._json["format"].lower()
         self._update_fmt(fmt)
-        name = self._data["name"]
+        name = self._json["name"]
         if " - " in name:
             *_, name = name.split(" - ")
         self._metadata["name"] = name
-        self._metadata["likes"] = self._data["likeCount"]
-        self._metadata["views"] = self._data["viewCount"]
-        self._metadata["comments"] = self._data["commentCount"]
-        self._metadata["author"] = self._data["createdByUser"]["displayName"]
+        self._metadata["likes"] = self._json["likeCount"]
+        self._metadata["views"] = self._json["viewCount"]
+        self._metadata["comments"] = self._json["commentCount"]
+        self._metadata["author"] = self._json["createdByUser"]["displayName"]
         try:
             self._metadata["date"] = datetime.strptime(
-                self._data["lastUpdatedAtUtc"], "%Y-%m-%dT%H:%M:%S.%fZ").date()
+                self._json["lastUpdatedAtUtc"], "%Y-%m-%dT%H:%M:%S.%fZ").date()
         except ValueError:  # no fractional seconds part in the date string
             self._metadata["date"] = datetime.strptime(
-                self._data["lastUpdatedAtUtc"], "%Y-%m-%dT%H:%M:%SZ").date()
-        if desc := self._data["description"]:
+                self._json["lastUpdatedAtUtc"], "%Y-%m-%dT%H:%M:%SZ").date()
+        if desc := self._json["description"]:
             self._metadata["description"] = desc
-        if hubs := self._data.get("hubs"):
+        if hubs := self._json.get("hubs"):
             self._metadata["hubs"] = self.normalize_metadata_deck_tags(hubs)
-        if edh_bracket := self._data.get("autoBracket"):
+        if edh_bracket := self._json.get("autoBracket"):
             self._metadata["edh_bracket"] = edh_bracket
 
     @classmethod
@@ -90,20 +92,20 @@ class MoxfieldDeckScraper(DeckScraper):
         return cls.get_playset(cls.find_card(name, scryfall_id=scryfall_id), quantity)
 
     @override
-    def _parse_deck(self) -> None:
-        for card in self._data["boards"]["mainboard"]["cards"].values():
+    def _parse_input_for_decklist(self) -> None:
+        for card in self._json["boards"]["mainboard"]["cards"].values():
             self._maindeck.extend(self._to_playset(card))
-        for card in self._data["boards"]["sideboard"]["cards"].values():
+        for card in self._json["boards"]["sideboard"]["cards"].values():
             self._sideboard.extend(self._to_playset(card))
         # Oathbreaker is not fully supported by Deck objects
-        if signature_spells := self._data["boards"]["signatureSpells"]:
+        if signature_spells := self._json["boards"]["signatureSpells"]:
             for card in signature_spells["cards"].values():
                 self._maindeck.extend(self._to_playset(card))
-        for card in self._data["boards"]["commanders"]["cards"].values():
+        for card in self._json["boards"]["commanders"]["cards"].values():
             result = self._to_playset(card)
             self._set_commander(result[0])
-        if self._data["boards"]["companions"]["cards"]:
-            card = next(iter(self._data["boards"]["companions"]["cards"].items()))[1]
+        if self._json["boards"]["companions"]["cards"]:
+            card = next(iter(self._json["boards"]["companions"]["cards"].items()))[1]
             result = self._to_playset(card)
             self._companion = result[0]
 
@@ -115,7 +117,7 @@ class MoxfieldBookmarkScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Moxfield bookmark"  # override
     API_URL_TEMPLATE = "https://api2.moxfield.com/v1/bookmarks/{}"  # override
-    DECK_SCRAPERS = MoxfieldDeckScraper,  # override
+    DECK_SCRAPER_TYPES = MoxfieldDeckScraper,  # override
 
     @staticmethod
     @override
@@ -130,16 +132,16 @@ class MoxfieldBookmarkScraper(DeckUrlsContainerScraper):
         return last
 
     @override
-    def _get_data_from_api(self) -> Json:
+    def _get_json_from_api(self) -> Json:
         return fetch_selenium_json(self.API_URL_TEMPLATE.format(self._get_bookmark_id()))
 
-    def _validate_data(self) -> None:
-        if not self._data or not self._data.get("decks") or not self._data["decks"].get("data"):
+    def _validate_json(self) -> None:
+        if not self._json or not self._json.get("decks") or not self._json["decks"].get("data"):
             raise ScrapingError("No decks data", scraper=type(self), url=self.url)
 
     @override
-    def _collect(self) -> list[str]:
-        return [d["deck"]["publicUrl"] for d in self._data["decks"]["data"]]
+    def _parse_input_for_decks_data(self) -> None:
+        self._deck_urls = [d["deck"]["publicUrl"] for d in self._json["decks"]["data"]]
 
 
 @DeckUrlsContainerScraper.registered
@@ -151,7 +153,7 @@ class MoxfieldUserScraper(DeckUrlsContainerScraper):
     API_URL_TEMPLATE = ("https://api2.moxfield.com/v2/decks/search?includePinned=true&showIllegal"
                         "=true&authorUserNames={}&pageNumber=1&pageSize=100&sortType="
                         "updated&sortDirection=descending&board=mainboard")  # override
-    DECK_SCRAPERS = MoxfieldDeckScraper,  # override
+    DECK_SCRAPER_TYPES = MoxfieldDeckScraper,  # override
 
     @staticmethod
     @override
@@ -164,17 +166,17 @@ class MoxfieldUserScraper(DeckUrlsContainerScraper):
         return strip_url_query(url)
 
     @override
-    def _get_data_from_api(self) -> Json:
+    def _get_json_from_api(self) -> Json:
         *_, last = self.url.split("/")
         return fetch_selenium_json(self.API_URL_TEMPLATE.format(last))
 
-    def _validate_data(self) -> None:
-        if not self._data or not self._data.get("data"):
+    def _validate_json(self) -> None:
+        if not self._json or not self._json.get("data"):
             raise ScrapingError("No decks data", scraper=type(self), url=self.url)
 
     @override
-    def _collect(self) -> list[str]:
-        return [d["publicUrl"] for d in self._data["data"]]
+    def _parse_input_for_decks_data(self) -> None:
+        self._deck_urls = [d["publicUrl"] for d in self._json["data"]]
 
 
 @DeckUrlsContainerScraper.registered
@@ -188,7 +190,7 @@ class MoxfieldDeckSearchScraper(DeckUrlsContainerScraper):
     # 100 page size is pretty arbitrary but tested to work
     API_URL_TEMPLATE = ("https://api2.moxfield.com/v2/decks/search?pageNumber=1&pageSize=100&sort"
                         "Type=updated&sortDirection=descending&filter={}")  # override
-    DECK_SCRAPERS = MoxfieldDeckScraper,  # override
+    DECK_SCRAPER_TYPES = MoxfieldDeckScraper,  # override
 
     @staticmethod
     @override
@@ -214,7 +216,7 @@ class MoxfieldDeckSearchScraper(DeckUrlsContainerScraper):
         return input_tag.attrs["value"]
 
     @override
-    def _collect(self) -> list[str]:
+    def _parse_input_for_decks_data(self) -> None:
         filter_ = self._get_filter()
         if not filter_:
             raise ScrapingError(
@@ -223,4 +225,4 @@ class MoxfieldDeckSearchScraper(DeckUrlsContainerScraper):
         json_data = fetch_selenium_json(api_url)
         if not json_data or not json_data.get("data"):
             raise ScrapingError("No deck data", scraper=type(self), url=self.url)
-        return [d["publicUrl"] for d in json_data["data"]]
+        self._deck_urls = [d["publicUrl"] for d in json_data["data"]]

@@ -58,7 +58,7 @@ class TCDecksDeckScraper(DeckScraper):
         return "tcdecks.net/deck.php?id=" in url.lower() and "&iddeck=" in url.lower()
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         title_tag = self._soup.select_one('div article fieldset legend')
         self._metadata["event"] = {}
         name = title_tag.find("h3").text.strip()
@@ -83,7 +83,7 @@ class TCDecksDeckScraper(DeckScraper):
         self._metadata["name"] = name_tag.text.strip().removeprefix("Deck Name: ")
 
     @classmethod
-    def _parse_td(cls, td_tag: Tag) -> list[Card]:
+    def _parse_td_tag(cls, td_tag: Tag) -> list[Card]:
         cards = []
         qty, name = None, None
         for el in td_tag:
@@ -97,12 +97,12 @@ class TCDecksDeckScraper(DeckScraper):
         return cards
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         for td_tag in self._deck_tag.find_all("td", valign="top"):
             if td_tag.attrs.get("id") == "sideboard":
-                self._sideboard += self._parse_td(td_tag)
+                self._sideboard += self._parse_td_tag(td_tag)
             else:
-                self._maindeck += self._parse_td(td_tag)
+                self._maindeck += self._parse_td_tag(td_tag)
 
 
 @DeckUrlsContainerScraper.registered
@@ -111,7 +111,7 @@ class TCDecksEventScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "TCDecks event"  # override
     HEADERS = HEADERS  # override
-    DECK_SCRAPERS = TCDecksDeckScraper,  # override
+    DECK_SCRAPER_TYPES = TCDecksDeckScraper,  # override
     DECK_URL_PREFIX = "https://www.tcdecks.net/"  # override
 
     @staticmethod
@@ -120,11 +120,11 @@ class TCDecksEventScraper(DeckUrlsContainerScraper):
         return "tcdecks.net/deck.php?id=" in url.lower() and "&iddeck=" not in url.lower()
 
     @override
-    def _collect(self) -> list[str]:  # override
+    def _parse_input_for_decks_data(self) -> None:  # override
         table_tag = self._soup.select_one('table[class*="tourney"]')
         if not table_tag:
             raise ScrapingError("Event table tag not found", scraper=type(self), url=self.url)
         a_tags = table_tag.find_all("a", href=lambda h: h and "deck.php?id=" in h)
         if not a_tags:
             raise ScrapingError("Deck tags not found", scraper=type(self), url=self.url)
-        return sorted(set(a_tag.attrs["href"] for a_tag in a_tags))
+        self._deck_urls = sorted(set(a_tag.attrs["href"] for a_tag in a_tags))

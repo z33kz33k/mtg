@@ -13,11 +13,12 @@ from typing import override
 import dateutil.parser
 from bs4 import Tag
 
-from mtg.constants import Json
 from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper
 from mtg.lib.numbers import extract_float, extract_int
-from mtg.lib.scrape.core import ScrapingError, find_links, find_next_sibling_tag, \
-    is_more_than_root_path, prepend_url, strip_url_query
+from mtg.lib.scrape.core import (
+    ScrapingError, find_links, find_next_sibling_tag,
+    is_more_than_root_path, prepend_url, strip_url_query,
+)
 from mtg.scryfall import Card
 
 _log = logging.getLogger(__name__)
@@ -43,7 +44,7 @@ class PlayingMtgDeckScraper(DeckScraper):
         return strip_url_query(url)
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         if title_tag := self._soup.select_one("h1.page-title"):
             self._metadata["name"] = title_tag.attrs["title"]
         if fmt_snap := self._soup.find("span", string=lambda s: s and "Format:" in s):
@@ -68,7 +69,7 @@ class PlayingMtgDeckScraper(DeckScraper):
             self._metadata["description"] = desc_tag.text.strip().removeprefix("Deck Description")
 
     @classmethod
-    def _parse_card(cls, card_tag: Tag) -> list[Card]:
+    def _parse_card_tag(cls, card_tag: Tag) -> list[Card]:
         data_tags = [
             tag for tag in card_tag.find_all("div")
             if tag.has_attr("title") and all(t not in tag.text for t in ("$", "N/A"))]
@@ -81,7 +82,7 @@ class PlayingMtgDeckScraper(DeckScraper):
         return cls.get_playset(cls.find_card(name), qty)
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         maindeck_hook = self._soup.find("div", string=lambda s: s and s == "Main Board")
         if not maindeck_hook:
             raise ScrapingError("Main board <div> tag not found")
@@ -89,21 +90,21 @@ class PlayingMtgDeckScraper(DeckScraper):
         card_tags = [a_tag.parent for a_tag in maindeck_tag.find_all(
             "a", href=lambda h: h and "playingmtg.com/" in h)]
         for card_tag in card_tags:
-            self._maindeck += self._parse_card(card_tag)
+            self._maindeck += self._parse_card_tag(card_tag)
 
         if sideboard_hook := self._soup.find("div", string=lambda s: s and s == "Side Board"):
             sideboard_tag = sideboard_hook.parent
             card_tags = [a_tag.parent for a_tag in sideboard_tag.find_all(
                 "a", href=lambda h: h and "playingmtg.com/" in h)]
             for card_tag in card_tags:
-                self._sideboard += self._parse_card(card_tag)
+                self._sideboard += self._parse_card_tag(card_tag)
 
         if commander_hook := self._soup.find("div", string=lambda s: s and s == "Commander"):
             commander_tag = commander_hook.parent
             card_tags = [a_tag.parent for a_tag in commander_tag.find_all(
                 "a", href=lambda h: h and "playingmtg.com/" in h)]
             for card_tag in card_tags:
-                self._set_commander(self._parse_card(card_tag)[0])
+                self._set_commander(self._parse_card_tag(card_tag)[0])
 
 
 @DeckUrlsContainerScraper.registered
@@ -116,7 +117,7 @@ class PlayingMtgTournamentScraper(DeckUrlsContainerScraper):
     }
     THROTTLING = DeckUrlsContainerScraper.THROTTLING * 2  # override
     CONTAINER_NAME = "PlayingMTG tournament"  # override
-    DECK_SCRAPERS = PlayingMtgDeckScraper,  # override
+    DECK_SCRAPER_TYPES = PlayingMtgDeckScraper,  # override
     DECK_URL_PREFIX = URL_PREFIX  # override
 
     @staticmethod
@@ -124,7 +125,7 @@ class PlayingMtgTournamentScraper(DeckUrlsContainerScraper):
     def is_valid_url(url: str) -> bool:
         return is_more_than_root_path(url, "playingmtg.com/tournaments")
 
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         if event_date_hook := self._soup.find("div", string=lambda s: s and s == "Event Date"):
             self._metadata["event"] = {}
             # date
@@ -172,8 +173,8 @@ class PlayingMtgTournamentScraper(DeckUrlsContainerScraper):
                 "Winner").strip()
 
     @override
-    def _collect(self) -> list[str]:
-        return find_links(
+    def _parse_input_for_decks_data(self) -> None:
+        self._deck_urls = find_links(
             self._soup, href=lambda h: h and "/decks/" in h and "playingmtg.com/" not in h)
 
 
@@ -189,7 +190,7 @@ class PlayingMtgArticleScraper(HybridContainerScraper):
     }
     THROTTLING = DeckUrlsContainerScraper.THROTTLING * 2  # override
     CONTAINER_NAME = "PlayingMTG article"  # override
-    CONTAINER_SCRAPERS = PlayingMtgTournamentScraper,  # override
+    CONTAINER_SCRAPER_TYPES = PlayingMtgTournamentScraper,  # override
     CONTAINER_URL_PREFIX = URL_PREFIX  # override
 
     @staticmethod
@@ -198,13 +199,14 @@ class PlayingMtgArticleScraper(HybridContainerScraper):
         tokens = (
             "decks", "tournaments", "wp-content", "news", "mtg-arena", "spoilers", "commander",
             "standard", "modern", "pioneer", "collection", "prices", "products", "schedule",
-            "builder", "meta", "tier-list")
+            "builder", "meta", "tier-list"
+        )
         if any(f"playingmtg.com/{t}" in url.lower() for t in tokens):
             return False
         return is_more_than_root_path(url, "playingmtg.com")
 
     @override
-    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
+    def _parse_input_for_decks_data(self) -> None:
         deck_tags = [*self._soup.find_all("div", class_="RootOfEmbeddedDeck")]
         a_tags = [t.find("a", href=lambda h: h and "/decks/" in h) for t in deck_tags]
         deck_urls = [prepend_url(t["href"], URL_PREFIX) for t in a_tags if t]
@@ -213,7 +215,8 @@ class PlayingMtgArticleScraper(HybridContainerScraper):
         if not article_tag:
             err = ScrapingError("Article tag not found", scraper=type(self), url=self.url)
             _log.warning(f"Scraping failed with: {err!r}")
-            return deck_urls, [], [], []
+            self._deck_urls = deck_urls
+            return
 
-        p_deck_urls, container_urls = self._find_links_in_tags(*article_tag.find_all("p"))
-        return deck_urls + [l for l in p_deck_urls if l not in deck_urls], [], [], container_urls
+        p_deck_urls, self._container_urls = self._find_links_in_tags(*article_tag.find_all("p"))
+        self._deck_urls = deck_urls + [l for l in p_deck_urls if l not in deck_urls]

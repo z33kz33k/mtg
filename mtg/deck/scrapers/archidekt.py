@@ -57,7 +57,7 @@ URL_HOOKS = (
 class ArchidektDeckScraper(DeckScraper):
     """Scraper of Archidekt decklist page.
     """
-    DATA_FROM_SOUP = True  # override
+    JSON_FROM_SOUP = True  # override
     EXAMPLE_URLS = (
         "https://archidekt.com/decks/16069812/zombie_horde",
     )
@@ -79,12 +79,12 @@ class ArchidektDeckScraper(DeckScraper):
         return tag and tag.text.strip() == "Page not found"
 
     @override
-    def _get_data_from_soup(self) -> Json:
+    def _get_json_from_soup(self) -> Json:
         json_data = json.loads(self._soup.find("script", id="__NEXT_DATA__").text)
         return json_data["props"]["pageProps"]["redux"]["deck"]
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         fmt_tag = self._soup.find("div", class_=lambda c: c and "deckHeader_format" in c)
         if fmt_tag:
             fmt_text = fmt_tag.text
@@ -93,14 +93,14 @@ class ArchidektDeckScraper(DeckScraper):
             if "/" in fmt:
                 fmt, *_ = fmt.split("/")
             self._update_fmt(fmt.strip())
-        self._metadata["name"] = self._data["name"]
-        self._metadata["author"] = self._data["owner"]
-        self._metadata["views"] = self._data["viewCount"]
-        date_text = self._data["updatedAt"].replace("Z", "+00:00")
+        self._metadata["name"] = self._json["name"]
+        self._metadata["author"] = self._json["owner"]
+        self._metadata["views"] = self._json["viewCount"]
+        date_text = self._json["updatedAt"].replace("Z", "+00:00")
         self._metadata["date"] = datetime.fromisoformat(date_text).date()
-        if edh_bracket := self._data.get("edhBracket"):
+        if edh_bracket := self._json.get("edhBracket"):
             self._metadata["edh_bracket"] = edh_bracket
-        if tags := self._data.get("deckTags"):
+        if tags := self._json.get("deckTags"):
             self._metadata["tags"] = self.normalize_metadata_deck_tags(tags)
 
     def _parse_card_json(self, card_json: Json) -> None:
@@ -127,8 +127,8 @@ class ArchidektDeckScraper(DeckScraper):
             self._maindeck.extend(playset)
 
     @override
-    def _parse_deck(self) -> None:
-        for v in self._data["cardMap"].values():
+    def _parse_input_for_decklist(self) -> None:
+        for v in self._json["cardMap"].values():
             self._parse_card_json(v)
 
 
@@ -152,7 +152,7 @@ class ArchidektFolderScraper(DeckUrlsContainerScraper):
     """Scraper of Archidekt folder page.
     """
     CONTAINER_NAME = "Archidekt folder"  # override
-    DECK_SCRAPERS = ArchidektDeckScraper,  # override
+    DECK_SCRAPER_TYPES = ArchidektDeckScraper,  # override
     EXAMPLE_URLS = (
         "https://archidekt.com/folders/42773?orderBy=name&dir=asc",
     )
@@ -168,8 +168,9 @@ class ArchidektFolderScraper(DeckUrlsContainerScraper):
         return strip_url_query(url)
 
     @override
-    def _collect(self) -> list[str]:
-        return find_links(self._soup, css_selector='a[href*="/decks/"]', url_prefix=URL_PREFIX)
+    def _parse_input_for_decks_data(self) -> None:
+        self._deck_urls = find_links(
+            self._soup, css_selector='a[href*="/decks/"]', url_prefix=URL_PREFIX)
 
 
 @DeckUrlsContainerScraper.registered
@@ -177,7 +178,7 @@ class ArchidektUserScraper(DeckUrlsContainerScraper):
     """Scraper of Archidekt folder page.
     """
     CONTAINER_NAME = "Archidekt user"  # override
-    DECK_SCRAPERS = ArchidektDeckScraper,  # override
+    DECK_SCRAPER_TYPES = ArchidektDeckScraper,  # override
     DECK_URL_PREFIX = URL_PREFIX  # override
     EXAMPLE_URLS = (
         "https://archidekt.com/u/tauna",
@@ -189,11 +190,16 @@ class ArchidektUserScraper(DeckUrlsContainerScraper):
     @override
     def is_valid_url(url: str) -> bool:
         url = url.lower()
-        return ("archidekt.com/u/" in url or "archidekt.com/user/" in url
-                or ("archidekt.com/search/decks?" in url
-                    and ("owner=" in url or "ownerusername=" in url)))
+        return (
+            "archidekt.com/u/" in url
+            or "archidekt.com/user/" in url
+            or (
+                "archidekt.com/search/decks?" in url
+                and ("owner=" in url or "ownerusername=" in url)
+            )
+        )
 
     @override
-    def _collect(self) -> list[str]:
+    def _parse_input_for_decks_data(self) -> None:
         info_tags = self._soup.find_all("div", class_="deckLink_info__ww_n5")
-        return [div.find("a")["href"] for div in info_tags]
+        self._deck_urls = [div.find("a")["href"] for div in info_tags]

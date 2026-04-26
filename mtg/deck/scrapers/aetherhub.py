@@ -12,13 +12,13 @@ from datetime import datetime
 from typing import override
 
 import dateutil.parser
-from bs4 import Tag
 
-from mtg.constants import Json
+from mtg.deck.abc import DeckTagParser
 from mtg.deck.core import Mode
-from mtg.deck.abc import TagBasedDeckParser
-from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper, \
-    throttled_deck_scraper
+from mtg.deck.scrapers.abc import (
+    DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper,
+    throttled_deck_scraper,
+)
 from mtg.lib.common import from_iterable
 from mtg.lib.numbers import extract_float, extract_int
 from mtg.lib.scrape.core import ScrapingError, strip_url_query
@@ -56,15 +56,15 @@ CONSENT_XPATH = '//button[@class="ncmp__btn" and contains(text(), "Accept")]'
 # TODO: scrape the meta
 
 
-class AetherhubDeckTagParser(TagBasedDeckParser):
+class AetherhubDeckTagParser(DeckTagParser):
     """Parser of an Aetherhub decklist HTML tag.
     """
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         pass
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         for tag in self._deck_tag.descendants:
             if tag.name in ("h4", "h5"):
                 if "Side" in tag.text:
@@ -173,7 +173,7 @@ class AetherhubDeckScraper(DeckScraper):
         return AetherhubDeckTagParser(deck_tag, self._metadata)
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         # name and format
         if title_tag := self._soup.find(["h2", "h3"], class_="text-header-gold"):
             fmt_part, name_part = title_tag.text.strip().split("-", maxsplit=1)
@@ -235,7 +235,7 @@ class AetherhubDeckScraper(DeckScraper):
                 self._metadata["event"]["name"] = rest
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         pass
 
 
@@ -275,7 +275,7 @@ class AetherhubUserScraper(DeckUrlsContainerScraper):
         "wait_for_consent_disappearance": False
     }
     CONTAINER_NAME = "Aetherhub user"  # override
-    DECK_SCRAPERS = AetherhubDeckScraper,  # override
+    DECK_SCRAPER_TYPES = AetherhubDeckScraper,  # override
     DECK_URL_PREFIX = URL_PREFIX  # override
     EXAMPLE_URLS = (
         "https://aetherhub.com/User/LegenVD",
@@ -298,11 +298,11 @@ class AetherhubUserScraper(DeckUrlsContainerScraper):
         return url
 
     @override
-    def _collect(self) -> list[str]:
+    def _parse_input_for_decks_data(self) -> None:
         tbody = self._soup.find("tbody")
         if not tbody:
             raise ScrapingError("<tbody> tag not found", scraper=type(self), url=self.url)
-        return [row.find("a")["href"] for row in tbody.find_all("tr") if row.find("a")]
+        self._deck_urls = [row.find("a")["href"] for row in tbody.find_all("tr") if row.find("a")]
 
 
 @DeckUrlsContainerScraper.registered
@@ -315,7 +315,7 @@ class AetherhubEventScraper(DeckUrlsContainerScraper):
         "wait_for_consent_disappearance": False
     }
     CONTAINER_NAME = "Aetherhub event"  # override
-    DECK_SCRAPERS = AetherhubDeckScraper,  # override
+    DECK_SCRAPER_TYPES = AetherhubDeckScraper,  # override
     DECK_URL_PREFIX = URL_PREFIX  # override
     EXAMPLE_URLS = (
         "https://aetherhub.com/Events/Standard/10838",
@@ -332,7 +332,7 @@ class AetherhubEventScraper(DeckUrlsContainerScraper):
         return strip_url_query(url)
 
     @override
-    def _collect(self) -> list[str]:
+    def _parse_input_for_decks_data(self) -> None:
         rows = self._soup.find_all("tr", class_="deckdata")
         if not rows:
             raise ScrapingError("Row tags not found", scraper=type(self), url=self.url)
@@ -341,7 +341,7 @@ class AetherhubEventScraper(DeckUrlsContainerScraper):
             _, deck_tag, *_ = row.find_all("td")
             deck_tags.append(deck_tag.find("a", href=lambda h: h and "/deck/" in h.lower()))
         deck_tags = [d for d in deck_tags if d is not None]
-        return [deck_tag["href"] for deck_tag in deck_tags]
+        self._deck_urls = [deck_tag["href"] for deck_tag in deck_tags]
 
 
 @HybridContainerScraper.registered
@@ -349,7 +349,7 @@ class AetherhubArticleScraper(HybridContainerScraper):
     """Scraper of Aetherhub article page.
     """
     CONTAINER_NAME = "Aetherhub article"  # override
-    CONTAINER_SCRAPERS = AetherhubUserScraper, AetherhubEventScraper  # override
+    CONTAINER_SCRAPER_TYPES = AetherhubUserScraper, AetherhubEventScraper  # override
     SELENIUM_PARAMS = {  # override
         "xpath": '//div[@id="article-text"]',
         "consent_xpath": CONSENT_XPATH,
@@ -372,9 +372,9 @@ class AetherhubArticleScraper(HybridContainerScraper):
         return strip_url_query(url)
 
     @override
-    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
+    def _parse_input_for_decks_data(self) -> None:
         article_tag = self._soup.find("div", id="article-text")
         if article_tag is None:
             raise ScrapingError("Article tag not found", scraper=type(self), url=self.url)
-        deck_links, container_links = self._find_links_in_tags(article_tag, url_prefix=URL_PREFIX)
-        return deck_links, [], [], container_links
+        self._deck_urls, self._container_urls = self._find_links_in_tags(
+            article_tag, url_prefix=URL_PREFIX)

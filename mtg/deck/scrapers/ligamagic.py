@@ -62,7 +62,7 @@ class LigaMagicDeckScraper(DeckScraper):
         self._soup = _get_soup_with_zenrows(self.url, self._CSS_SELECTOR)
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         header_tag = self._soup.find("div", id="deck-header")
         self._metadata["name"] = header_tag.find(
             "div", class_="title").find("span", class_=lambda c: not c).text.strip()
@@ -108,7 +108,7 @@ class LigaMagicDeckScraper(DeckScraper):
         return cards
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         self._parse_main_tag()
         for state in self._tags:
             if "Comandante" in state:
@@ -128,7 +128,7 @@ class LigaMagicEventScraper(DeckUrlsContainerScraper):
     """Scraper of LigaMagic event page.
     """
     CONTAINER_NAME = "LigaMagic event"  # override
-    DECK_SCRAPERS = LigaMagicDeckScraper,  # override
+    DECK_SCRAPER_TYPES = LigaMagicDeckScraper,  # override
     DECK_URL_PREFIX = "https://www.ligamagic.com.br"  # override
     _CSS_SELECTOR = "div.evnt-dks"
 
@@ -142,8 +142,8 @@ class LigaMagicEventScraper(DeckUrlsContainerScraper):
         self._soup = _get_soup_with_zenrows(self.url, self._CSS_SELECTOR)
 
     @override
-    def _collect(self) -> list[str]:
+    def _parse_input_for_decks_data(self) -> None:
         deck_tags = [tag.find("a") for tag in self._soup.find_all("div", class_="deckname")]
         if not deck_tags:
             raise ScrapingError("Deck tags not found", scraper=type(self), url=self.url)
-        return [tag.attrs["href"].removeprefix(".") for tag in deck_tags]
+        self._deck_urls = [tag.attrs["href"].removeprefix(".") for tag in deck_tags]

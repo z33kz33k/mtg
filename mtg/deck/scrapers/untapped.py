@@ -27,8 +27,9 @@ CLIPBOARD_XPATH = "//span[text()='Copy to MTGA']"
 class UntappedProfileDeckScraper(DeckScraper):
     """Scraper of decklist page of Untapped.gg user's profile.
     """
-    NO_GAMES_XPATH = ("//div[text()='No games have been played with this deck in the selected "
-                       "time frame']")
+    NO_GAMES_XPATH = (
+        "//div[text()='No games have been played with this deck in the selected time frame']"
+    )
     PRIVATE_XPATH = "//div[text()='This profile is private']"
 
     @staticmethod
@@ -54,7 +55,7 @@ class UntappedProfileDeckScraper(DeckScraper):
             raise ScrapingError(self._selenium_timeout_msg, scraper=type(self), url=self.url)
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         name_tag = self._soup.select_one(
             "main > div > div > div > div > div > div > div > div > a > span > strong")
         self._metadata["name"] = name_tag.text.strip()
@@ -62,7 +63,7 @@ class UntappedProfileDeckScraper(DeckScraper):
         self._metadata["author"] = author_tag.text.strip().removesuffix("'s Profile")
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         self._decklist = self._clipboard
 
 
@@ -88,7 +89,7 @@ class UntappedRegularDeckScraper(DeckScraper):
         return url.replace("input/", "") if "/input/" in url else url
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         name_tag = self._soup.select_one("main > div > div > div > h1")
         name = name_tag.text.strip()
         if " (" in name:
@@ -96,7 +97,7 @@ class UntappedRegularDeckScraper(DeckScraper):
         self._metadata["name"] = name
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         self._decklist = self._clipboard
 
 
@@ -121,7 +122,7 @@ class UntappedMetaDeckScraper(DeckScraper):
         return strip_url_query(url)
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         name_tag = self._soup.find("h1")
         self._metadata["name"] = name_tag.text.strip().removesuffix(" Deck")
         if set_tag := self._soup.find("h2"):
@@ -154,7 +155,7 @@ class UntappedMetaDeckScraper(DeckScraper):
             "meta", {})["time_range_since"] = time_range_tag.text.removesuffix("Now")
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         self._decklist = self._clipboard
 
 
@@ -169,7 +170,7 @@ class UntappedProfileScraper(DeckUrlsContainerScraper):
     }
     THROTTLING = DeckUrlsContainerScraper.THROTTLING * 1.4  # override
     CONTAINER_NAME = "Untapped profile"  # override
-    DECK_SCRAPERS = UntappedProfileDeckScraper,  # override
+    DECK_SCRAPER_TYPES = UntappedProfileDeckScraper,  # override
     DECK_URL_PREFIX = "https://mtga.untapped.gg"  # override
 
     @staticmethod
@@ -183,9 +184,9 @@ class UntappedProfileScraper(DeckUrlsContainerScraper):
         return strip_url_query(url)
 
     @override
-    def _collect(self) -> list[str]:
+    def _parse_input_for_decks_data(self) -> None:
         a_tags = self._soup.find_all("a", href=lambda h: h and "/profile/" in h)
         a_tags = [a_tag for a_tag in a_tags if "deckbox" in a_tag.attrs["class"]]
         if not a_tags:
             raise ScrapingError("Deck tags not found", scraper=type(self), url=self.url)
-        return [a_tag["href"] for a_tag in a_tags]
+        self._deck_urls = [a_tag["href"] for a_tag in a_tags]

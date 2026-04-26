@@ -11,14 +11,11 @@
 """
 import json
 import logging
-from typing import Type, override
+from typing import override
 
 import dateutil.parser
-from bs4 import Tag
 
-from mtg.constants import Json
-from mtg.deck.scrapers.abc import ContainerScraper, HybridContainerScraper, \
-    get_folder_container_scrapers
+from mtg.deck.scrapers.abc import HybridContainerScraper
 from mtg.lib.json import Node
 from mtg.lib.scrape.core import ScrapingError, is_more_than_root_path, strip_url_query
 
@@ -34,23 +31,22 @@ class MtgRocksArticleScraper(HybridContainerScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        tokens = ("/mtg-arena-codes/", "/deck-builder/", "/category/", "/sitemap/", "/about-us/",
-                  "/editorial-policy/", "/privacy-policy/")
-        return is_more_than_root_path(
-            url, "mtgrocks.com") and not any(t in url.lower() for t in tokens)
+        tokens = (
+            "/mtg-arena-codes/", "/deck-builder/", "/category/", "/sitemap/", "/about-us/",
+            "/editorial-policy/", "/privacy-policy/"
+        )
+        return (
+            is_more_than_root_path(url, "mtgrocks.com")
+            and not any(t in url.lower() for t in tokens)
+        )
 
     @staticmethod
     @override
     def normalize_url(url: str) -> str:
         return strip_url_query(url)
 
-    @classmethod
     @override
-    def _get_container_scrapers(cls) -> set[Type[ContainerScraper]]:
-        return get_folder_container_scrapers()
-
-    @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         script_tag = self._soup.find("script", type="application/ld+json")
         if not script_tag:
             raise ScrapingError("Metadata <script> tag not found", scraper=type(self), url=self.url)
@@ -70,20 +66,21 @@ class MtgRocksArticleScraper(HybridContainerScraper):
                 keywords_node.data["keywords"])
 
     @override
-    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
+    def _parse_input_for_decks_data(self) -> None:
         iframe_urls = [  # MTGDecks.net decklists
             tag.attrs["data-lazy-src"].removesuffix("/iframe")
-            for tag in self._soup.find_all("iframe", {"data-lazy-src": lambda d: d})]
+            for tag in self._soup.find_all("iframe", {"data-lazy-src": lambda d: d})
+        ]
         iframe_urls, _ = self._sift_links(*iframe_urls)
 
         article_tag = self._soup.select_one("div.elementor-widget-container")
         if not article_tag:
             err = ScrapingError("Article tag not found", scraper=type(self), url=self.url)
             _log.warning(f"Scraping failed with: {err!r}")
-            return iframe_urls, [], [], []
-        deck_urls, container_urls = self._find_links_in_tags(*article_tag.find_all("p"))
-        deck_urls = sorted({*iframe_urls, *deck_urls}) if deck_urls else iframe_urls
-        return deck_urls, [], [], container_urls
+            self._deck_urls = iframe_urls
+            return
+        deck_urls, self._container_urls = self._find_links_in_tags(*article_tag.find_all("p"))
+        self._deck_urls = sorted({*iframe_urls, *deck_urls}) if deck_urls else iframe_urls
 
 
 @HybridContainerScraper.registered
@@ -91,7 +88,7 @@ class MtgRocksAuthorScraper(HybridContainerScraper):
     """Scraper of MTGRocks author page.
     """
     CONTAINER_NAME = "MTGRocks author"  # override
-    CONTAINER_SCRAPERS = MtgRocksArticleScraper,  # override
+    CONTAINER_SCRAPER_TYPES = MtgRocksArticleScraper,  # override
 
     @staticmethod
     @override
@@ -99,11 +96,10 @@ class MtgRocksAuthorScraper(HybridContainerScraper):
         return "mtgrocks.com/author/" in url.lower()
 
     @override
-    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
+    def _parse_input_for_decks_data(self) -> None:
         listing_tag = self._soup.select_one("div.jet-listing-grid")
         if not listing_tag:
             err = ScrapingError("Listing tag not found", scraper=type(self), url=self.url)
             _log.warning(f"Scraping failed with: {err!r}")
-            return [], [], [], []
-        _, container_urls = self._find_links_in_tags(listing_tag)
-        return [], [], [], container_urls
+            return
+        _, self._container_urls = self._find_links_in_tags(listing_tag)

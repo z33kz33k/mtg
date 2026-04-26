@@ -34,7 +34,7 @@ from collections import defaultdict, namedtuple
 from collections.abc import Callable, Iterable
 from dataclasses import dataclass
 from datetime import date
-from enum import Enum
+from enum import Enum, StrEnum
 from functools import cached_property, lru_cache
 from pprint import pprint
 from types import EllipsisType
@@ -152,7 +152,7 @@ class Color(Enum):
         return Color.from_letters(*letters)
 
 
-class Rarity(Enum):
+class Rarity(StrEnum):
     COMMON = "common"
     UNCOMMON = "uncommon"
     RARE = "rare"

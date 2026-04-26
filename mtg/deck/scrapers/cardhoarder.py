@@ -38,7 +38,7 @@ class CardhoarderDeckScraper(DeckScraper):
     SELENIUM_PARAMS = {  # override
         "xpath": "//div[contains(@id, 'deck-viewer')]"
     }
-    DATA_FROM_SOUP = True  # override
+    JSON_FROM_SOUP = True  # override
     EXAMPLE_URLS = (
         "https://www.cardhoarder.com/d/kpy674jn6ekerj5",
     )
@@ -54,7 +54,7 @@ class CardhoarderDeckScraper(DeckScraper):
         return strip_url_query(url)
 
     @override
-    def _get_data_from_soup(self) -> Json:
+    def _get_json_from_soup(self) -> Json:
         start = 'const props = JSON.parse('
         end = ');\n\t\t\twindow.Cardhoarder.helpers.addDeckViewer('
         # in this case, it returns raw JSON string instead of dict...
@@ -66,14 +66,14 @@ class CardhoarderDeckScraper(DeckScraper):
         return json.loads(deck_data)
 
     @override
-    def _parse_metadata(self) -> None:
-        self._metadata["name"] = self._data["deck"]["name"]
-        self._metadata["date"] = dateutil.parser.parse(self._data["deck"]["updated_at"]).date()
+    def _parse_input_for_metadata(self) -> None:
+        self._metadata["name"] = self._json["deck"]["name"]
+        self._metadata["date"] = dateutil.parser.parse(self._json["deck"]["updated_at"]).date()
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         maindeck, sideboard = [], []
-        for item in self._data["items"]:
+        for item in self._json["items"]:
             card_data = item["card"]["card_data"]
             name = card_data["name"]
             set_code = card_data["scryfall_set_code"]

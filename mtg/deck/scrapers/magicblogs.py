@@ -13,8 +13,7 @@ from typing import override
 
 from bs4 import Tag
 
-from mtg.constants import Json
-from mtg.deck.abc import TagBasedDeckParser
+from mtg.deck.abc import DeckTagParser
 from mtg.deck.scrapers.abc import HybridContainerScraper
 from mtg.lib.common import ParsingError
 from mtg.lib.scrape.core import ScrapingError, parse_non_english_month_date, strip_url_query
@@ -22,11 +21,11 @@ from mtg.lib.scrape.core import ScrapingError, parse_non_english_month_date, str
 _log = logging.getLogger(__name__)
 
 
-class MagicBlogsDeckTagParser(TagBasedDeckParser):
+class MagicBlogsDeckTagParser(DeckTagParser):
     """Parser of MagicBlogs.de decklist HTML tag.
     """
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         pass
 
     def _sift(self) -> list[Tag]:
@@ -60,7 +59,7 @@ class MagicBlogsDeckTagParser(TagBasedDeckParser):
                 self._sideboard += self.get_playset(self.find_card(name), qty)
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         main_td, *side_td = self._sift()
 
         self._state.shift_to_maindeck()
@@ -76,7 +75,7 @@ class MagicBlogsArticleScraper(HybridContainerScraper):
     """Scraper of MagicBlogs.de article page.
     """
     CONTAINER_NAME = "MagicBlogs.de article"  # override
-    TAG_BASED_DECK_PARSER = MagicBlogsDeckTagParser  # override
+    DECK_TAG_PARSER_TYPE = MagicBlogsDeckTagParser  # override
     _MONTHS = [
         'Januar',
         'Februar',
@@ -103,7 +102,7 @@ class MagicBlogsArticleScraper(HybridContainerScraper):
         return strip_url_query(url)
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         if fmt_tag := self._soup.find("a", rel="category tag"):
             self._update_fmt(fmt_tag.text)
         self._metadata["name"] = self._soup.find("title").text
@@ -114,12 +113,11 @@ class MagicBlogsArticleScraper(HybridContainerScraper):
                 self._metadata["date"] = parse_non_english_month_date(time_tag.text, *self._MONTHS)
 
     @override
-    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
-        deck_tags = [*self._soup.find_all("div", class_="mtgh")]
+    def _parse_input_for_decks_data(self) -> None:
+        self._deck_tags = [*self._soup.find_all("div", class_="mtgh")]
         main_tag = self._soup.find("section", class_="content")
         if not main_tag:
             err = ScrapingError("Article tag not found", scraper=type(self), url=self.url)
             _log.warning(f"Scraping failed with: {err!r}")
-            return [], deck_tags, [], []
-        deck_urls, container_urls = self._find_links_in_tags(*main_tag.find_all("p"))
-        return deck_urls, deck_tags, [], container_urls
+            return
+        self._deck_urls, self._container_urls = self._find_links_in_tags(*main_tag.find_all("p"))

@@ -13,7 +13,7 @@ import logging
 import re
 from abc import ABC, abstractmethod
 from collections import Counter
-from enum import Enum, auto
+from enum import Enum, StrEnum, auto
 from functools import cached_property
 from operator import attrgetter, itemgetter
 from typing import Any, Iterable, Iterator, Self
@@ -37,7 +37,7 @@ ARENA_MULTIFACE_SEPARATOR = " /// "  # this is different from Scryfall data wher
 # this listing omits combo-control as it's too long a name to be efficiently used as a component
 # of a catchy deck name
 # in those scenarios usually a deck's theme (sub-archetype) is used (e.g. "stax" or "prison")
-class Archetype(Enum):
+class Archetype(StrEnum):
     AGGRO = "aggro"
     MIDRANGE = "midrange"
     CONTROL = "control"
@@ -47,7 +47,7 @@ class Archetype(Enum):
 
 # this is needed when scraping meta-decks from sites that subdivide meta based on the mode of
 # play (e.g. Aetherhub)
-class Mode(Enum):
+class Mode(StrEnum):
     BO1 = "Bo1"
     BO3 = "Bo3"
 
@@ -1091,13 +1091,13 @@ class DeckParser(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         """Parse the input data for deck metadata.
         """
         raise NotImplementedError
 
     @abstractmethod
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         """Parse the input data for deck data.
         """
         raise NotImplementedError
@@ -1126,8 +1126,8 @@ class DeckParser(ABC):
         """
         try:
             self._pre_parse()
-            self._parse_metadata()
-            self._parse_deck()
+            self._parse_input_for_metadata()
+            self._parse_input_for_decklist()
             return self._build_deck()
         except suppressed_errors as err:
             _log.warning(f"Parsing failed with: {err!r}")

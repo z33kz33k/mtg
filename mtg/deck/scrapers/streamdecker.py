@@ -38,7 +38,7 @@ class StreamdeckerDeckScraper(DeckScraper):
         return strip_url_query(url)
 
     @override
-    def _get_data_from_api(self) -> Json:
+    def _get_json_from_api(self) -> Json:
         *_, decklist_id = self.url.split("/")
         try:
             json_data = fetch_json(self.API_URL_TEMPLATE.format(decklist_id))
@@ -49,17 +49,17 @@ class StreamdeckerDeckScraper(DeckScraper):
         return json_data["data"]
 
     def _parse_date(self) -> date | None:
-        date_text = self._data["updatedAt"]
+        date_text = self._json["updatedAt"]
         return get_date_from_ago_text(date_text)
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         self._metadata.update({
-            "name": self._data["name"],
-            "views": self._data["views"]["counter"]
+            "name": self._json["name"],
+            "views": self._json["views"]["counter"]
         })
-        self._metadata["author"] = self._data["userProfile"]["displayName"]
-        self._metadata["author_twitch_id"] = self._data["userProfile"]["twitchId"]
+        self._metadata["author"] = self._json["userProfile"]["displayName"]
+        self._metadata["author_twitch_id"] = self._json["userProfile"]["twitchId"]
         if dt := self._parse_date():
             self._metadata["date"] = dt
 
@@ -79,8 +79,8 @@ class StreamdeckerDeckScraper(DeckScraper):
             self._companion = card
 
     @override
-    def _parse_deck(self) -> None:
-        for json_card in self._data["cardList"]:
+    def _parse_input_for_decklist(self) -> None:
+        for json_card in self._json["cardList"]:
             self._parse_json_card(json_card)
 
 
@@ -90,7 +90,7 @@ class StreamdeckerUserScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Streamdecker user"  # override
     API_URL_TEMPLATE = "https://www.streamdecker.com/api/userdecks/{}"  # override
-    DECK_SCRAPERS = StreamdeckerDeckScraper,  # override
+    DECK_SCRAPER_TYPES = StreamdeckerDeckScraper,  # override
     DECK_URL_PREFIX = "https://www.streamdecker.com/deck/"  # override
 
     @staticmethod
@@ -104,16 +104,16 @@ class StreamdeckerUserScraper(DeckUrlsContainerScraper):
         return strip_url_query(url)
 
     @override
-    def _get_data_from_api(self) -> Json:
+    def _get_json_from_api(self) -> Json:
         *_, user_name = self.url.split("/")
         return fetch_json(self.API_URL_TEMPLATE.format(user_name))
 
     @override
-    def _validate_data(self) -> None:
-        super()._validate_data()
-        if not self._data.get("data") or not self._data["data"].get("decks"):
+    def _validate_json(self) -> None:
+        super()._validate_json()
+        if not self._json.get("data") or not self._json["data"].get("decks"):
             raise ScrapingError("No decks data", scraper=type(self), url=self.url)
 
     @override
-    def _collect(self) -> list[str]:
-        return [d["deckLink"] for d in self._data["data"]["decks"]]
+    def _parse_input_for_decks_data(self) -> None:
+        self._deck_urls = [d["deckLink"] for d in self._json["data"]["decks"]]

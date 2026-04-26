@@ -59,8 +59,8 @@ class PauperMtgDeckScraper(DeckScraper):
                 self._tags[state] = tag
 
     @override
-    def _parse_metadata(self) -> None:
-        self._update_fmt("paupercommander") if self._is_edh else self._update_fmt("pauper")
+    def _parse_input_for_metadata(self) -> None:
+        self._update_fmt("paupercommander" if self._is_edh else "pauper")
         self._metadata["name"] = self._soup.find(
             "h1", class_=lambda c: c and "deckTitle" in c).text.strip()
         if "player" in self._tags:
@@ -69,7 +69,7 @@ class PauperMtgDeckScraper(DeckScraper):
             self._metadata["event"] = self._tags["tournament"].find("p").text.strip()
 
     @classmethod
-    def _parse_container(cls, container: Tag) -> list[Card]:
+    def _parse_container_tag(cls, container: Tag) -> list[Card]:
         cards = []
         li_tags = container.find_all("li")
         for li_tag in li_tags:
@@ -80,13 +80,13 @@ class PauperMtgDeckScraper(DeckScraper):
         return cards
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         if self._is_edh:
-            commander, *maindeck = self._parse_container(self._tags["maindeck"])
+            commander, *maindeck = self._parse_container_tag(self._tags["maindeck"])
             self._set_commander(commander)
             self._maindeck += maindeck
         else:
-            self._maindeck += self._parse_container(self._tags["maindeck"])
-        self._maindeck += self._parse_container(self._tags["land"])
+            self._maindeck += self._parse_container_tag(self._tags["maindeck"])
+        self._maindeck += self._parse_container_tag(self._tags["land"])
         if "sideboard" in self._tags:
-            self._sideboard += self._parse_container(self._tags["sideboard"])
+            self._sideboard += self._parse_container_tag(self._tags["sideboard"])

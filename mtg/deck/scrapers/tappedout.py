@@ -16,12 +16,16 @@ from bs4 import BeautifulSoup
 from requests import Response
 
 from mtg.constants import Json
-from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper, folder_container_scraper, \
-    throttled_deck_scraper
+from mtg.deck.scrapers.abc import (
+    DeckScraper, DeckUrlsContainerScraper, folder_container_scraper,
+    throttled_deck_scraper,
+)
 from mtg.lib.numbers import extract_int
+from mtg.lib.scrape.core import (
+    ScrapingError, fetch, fetch_json, fetch_soup, prepend_url,
+    strip_url_query, throttle,
+)
 from mtg.lib.time import get_date_from_ago_text
-from mtg.lib.scrape.core import ScrapingError, fetch, fetch_json, fetch_soup, prepend_url, \
-    strip_url_query, throttle
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://tappedout.net"
@@ -80,7 +84,7 @@ class TappedoutDeckScraper(DeckScraper):
         return "Page not found (404)" in self._soup.text
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         fmt_tag = self._soup.select_one("a.btn.btn-success.btn-xs")
         if fmt_tag is None:
             raise ScrapingError(f"Format tag not found", scraper=type(self), url=self.url)
@@ -104,7 +108,7 @@ class TappedoutDeckScraper(DeckScraper):
                     self._metadata["views"] = extract_int(views)
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         decklist_tag = self._soup.find("textarea", id="mtga-textarea")
         if not decklist_tag:
             raise ScrapingError("Decklist tag not found", scraper=type(self), url=self.url)
@@ -121,7 +125,7 @@ class TappedoutUserScraper(DeckUrlsContainerScraper):
     CONTAINER_NAME = "Tappedout user"  # override
     # override
     API_URL_TEMPLATE = "https://tappedout.net/api/users/{}/deck-list/?p={}&o=-date_updated"
-    DECK_SCRAPERS = TappedoutDeckScraper,  # override
+    DECK_SCRAPER_TYPES = TappedoutDeckScraper,  # override
 
     @staticmethod
     @override
@@ -134,20 +138,21 @@ class TappedoutUserScraper(DeckUrlsContainerScraper):
         return strip_url_query(url)
 
     @override
-    def _get_data_from_api(self) -> Json:
+    def _get_json_from_api(self) -> Json:
         return {}  # dummy
 
     @override
-    def _validate_data(self) -> None:
+    def _validate_json(self) -> None:
         pass
 
+    # FIXME: use `get_path_segments()` instead (#394)
     def _get_user_name(self) -> str:
         url = self.url.removeprefix("https://").removeprefix("http://")
         first, second, user, *_ = url.split("/")
         return user
 
     @override
-    def _collect(self) -> list[str]:
+    def _parse_input_for_decks_data(self) -> None:
         username = self._get_user_name()
         collected, total, page = [], 1, 1
         while len(collected) < total:
@@ -164,7 +169,7 @@ class TappedoutUserScraper(DeckUrlsContainerScraper):
             page += 1
         if not collected:
             raise ScrapingError("Decks not found", scraper=type(self), url=self.url)
-        return collected
+        self._deck_urls = collected
 
 
 @folder_container_scraper
@@ -174,7 +179,7 @@ class TappedoutFolderScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "Tappedout folder"  # override
     API_URL_TEMPLATE = "https://tappedout.net/api/folder/{}/detail/"  # override
-    DECK_SCRAPERS = TappedoutDeckScraper,  # override
+    DECK_SCRAPER_TYPES = TappedoutDeckScraper,  # override
     DECK_URL_PREFIX = URL_PREFIX  # override
 
     @staticmethod
@@ -198,18 +203,18 @@ class TappedoutFolderScraper(DeckUrlsContainerScraper):
         return extract_int(third)
 
     @override
-    def _get_data_from_api(self) -> Json:
+    def _get_json_from_api(self) -> Json:
         return fetch_json(self.API_URL_TEMPLATE.format(self._get_folder_id()))
 
     @override
-    def _validate_data(self) -> None:
-        super()._validate_data()
-        if not self._data.get("folder") or not self._data["folder"].get("decks"):
+    def _validate_json(self) -> None:
+        super()._validate_json()
+        if not self._json.get("folder") or not self._json["folder"].get("decks"):
             raise ScrapingError("No decks data", scraper=type(self), url=self.url)
 
     @override
-    def _collect(self) -> list[str]:
-        return [d["url"] for d in self._data["folder"]["decks"]]
+    def _parse_input_for_decks_data(self) -> None:
+        self._deck_urls = [d["url"] for d in self._json["folder"]["decks"]]
 
 
 @folder_container_scraper
@@ -226,7 +231,7 @@ class TappedoutUserFolderScraper(TappedoutUserScraper):
         return "tappedout.net/users/" in url.lower() and "/deck-folders" in url.lower()
 
     @override
-    def _collect(self) -> list[str]:
+    def _parse_input_for_decks_data(self) -> None:
         username = self._get_user_name()
         collected, has_next, page = [], True, 1
         while has_next:
@@ -245,4 +250,4 @@ class TappedoutUserFolderScraper(TappedoutUserScraper):
             page += 1
         if not collected:
             raise ScrapingError("Decks not found", scraper=type(self), url=self.url)
-        return sorted(set(collected))
+        self._deck_urls = sorted(set(collected))

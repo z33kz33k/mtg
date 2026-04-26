@@ -11,11 +11,10 @@ import logging
 from typing import override
 
 import dateutil.parser
-from bs4 import Tag
 
-from mtg.constants import Json, SECRETS
+from mtg.constants import SECRETS
+from mtg.deck.abc import DeckTagParser
 from mtg.deck.core import DeckParser
-from mtg.deck.abc import TagBasedDeckParser
 from mtg.deck.scrapers.abc import HybridContainerScraper
 from mtg.lib.common import ParsingError
 from mtg.lib.numbers import extract_int
@@ -50,15 +49,15 @@ URL_HOOKS = (
 )
 
 
-class _SubParser(TagBasedDeckParser):
+class _SubParser(DeckTagParser):
     """A sub-parser to handle cases where there's no 'Export text' button.
     """
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         pass
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         for li_tag in self._deck_tag.find_all("li"):
             if li_tag.attrs.get("class") == ["card-type"]:
                 if "Commander (" in li_tag.text.strip():
@@ -83,7 +82,7 @@ class _SubParser(TagBasedDeckParser):
                     self._companion = playset[0]
 
 
-class CoolStuffIncDeckTagParser(TagBasedDeckParser):
+class CoolStuffIncDeckTagParser(DeckTagParser):
     """Parser of an CoolStuffInc decklist HTML tag.
     """
     @property
@@ -95,7 +94,7 @@ class CoolStuffIncDeckTagParser(TagBasedDeckParser):
         return 0
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         info_tag = self._deck_tag.find("h4")
         if not info_tag:
             raise ParsingError("Metadata tag not found")
@@ -131,7 +130,7 @@ class CoolStuffIncDeckTagParser(TagBasedDeckParser):
             self._metadata["date"] = date
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         decklist_tag = self._deck_tag.find("a", {"data-reveal-id": "copydecklistmodal"})
         if not decklist_tag or not decklist_tag.attrs.get("data-text"):
             sub_tag = self._deck_tag.select_one("div.card-list")
@@ -178,7 +177,7 @@ class CoolStuffIncArticleScraper(HybridContainerScraper):
     """
     CONTAINER_NAME = "CoolStuffInc article"  # override
     HEADERS = HEADERS  # override
-    TAG_BASED_DECK_PARSER = CoolStuffIncDeckTagParser  # override
+    DECK_TAG_PARSER_TYPE = CoolStuffIncDeckTagParser  # override
     EXAMPLE_URLS = (
         "https://www.coolstuffinc.com/a/matthewlotti-02142025-skeletal-swindling-with-tinybones-bauble-burglar-in-commander",
         "https://www.coolstuffinc.com/a/jimdavis-05152023-a-new-two-card-infinite-combo-in-standard",
@@ -187,8 +186,10 @@ class CoolStuffIncArticleScraper(HybridContainerScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return is_more_than_root_path(
-            url, "coolstuffinc.com/a/") and "action=search" not in url.lower()
+        return (
+            is_more_than_root_path(url, "coolstuffinc.com/a/")
+            and "action=search" not in url.lower()
+        )
 
     @staticmethod
     @override
@@ -196,7 +197,7 @@ class CoolStuffIncArticleScraper(HybridContainerScraper):
         return strip_url_query(url)
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         if header_tag := self._soup.find("header"):
             if title_tag := header_tag.find("h1"):
                 self._metadata.setdefault("article", {})["title"] = title_tag.text.strip()
@@ -208,15 +209,15 @@ class CoolStuffIncArticleScraper(HybridContainerScraper):
                         date_tag.text.strip().removeprefix("Posted on ")).date()
 
     @override
-    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
-        deck_tags = [*self._soup.select("div.gm-deck")]
+    def _parse_input_for_decks_data(self) -> None:
+        self._deck_tags = [*self._soup.select("div.gm-deck")]
         article_tag = self._soup.find("article")
-        if not article_tag:
+        if article_tag:
+            self._deck_urls, self._container_urls = self._find_links_in_tags(*article_tag.find_all(
+                "p"))
+        else:
             err = ScrapingError("Article tag not found", scraper=type(self), url=self.url)
             _log.warning(f"Scraping failed with: {err!r}")
-            return [], deck_tags, [], []
-        deck_urls, container_urls = self._find_links_in_tags(*article_tag.find_all("p"))
-        return deck_urls, deck_tags, [], container_urls
 
 
 @HybridContainerScraper.registered
@@ -225,7 +226,7 @@ class CoolStuffIncAuthorScraper(HybridContainerScraper):
     """
     CONTAINER_NAME = "CoolStuffInc author"  # override
     HEADERS = HEADERS  # override
-    CONTAINER_SCRAPERS = CoolStuffIncArticleScraper,  # override
+    CONTAINER_SCRAPER_TYPES = CoolStuffIncArticleScraper,  # override
     EXAMPLE_URLS = (
         "https://www.coolstuffinc.com/a/?action=search&page=1&author%5B%5D=Carlos%20Gutierrez",
     )
@@ -237,9 +238,8 @@ class CoolStuffIncAuthorScraper(HybridContainerScraper):
         return all(t in url.lower() for t in tokens)
 
     @override
-    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
+    def _parse_input_for_decks_data(self) -> None:
         search_tag = self._soup.select_one("div#article-search-results")
         if not search_tag:
             raise ScrapingError("Search results tag not found", scraper=type(self), url=self.url)
-        _, container_urls = self._find_links_in_tags(search_tag, url_prefix=URL_PREFIX)
-        return [], [], [], container_urls
+        _, self._container_urls = self._find_links_in_tags(search_tag, url_prefix=URL_PREFIX)

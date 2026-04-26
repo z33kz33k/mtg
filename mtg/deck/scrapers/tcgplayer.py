@@ -20,9 +20,11 @@ from requests import HTTPError
 from selenium.common import TimeoutException
 
 from mtg.constants import Json, SECRETS
-from mtg.deck.abc import JsonBasedDeckParser
-from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper, DecksJsonContainerScraper, \
-    HybridContainerScraper
+from mtg.deck.abc import DeckJsonParser
+from mtg.deck.scrapers.abc import (
+    DeckScraper, DeckUrlsContainerScraper, DecksJsonContainerScraper,
+    HybridContainerScraper,
+)
 from mtg.lib.numbers import extract_int
 from mtg.lib.scrape.core import ScrapingError, fetch_json, strip_url_query, throttle
 from mtg.lib.scrape.dynamic import SCROLL_DOWN_TIMES, fetch_dynamic_soup
@@ -66,7 +68,7 @@ class TcgPlayerDeckScraper(DeckScraper):
         return strip_url_query(url)
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         info_tag = self._soup.find("div", class_="viewDeckHeader")
         h1_tag = info_tag.find("h1")
         self._metadata["name"] = h1_tag.find("a").text.strip()
@@ -91,7 +93,7 @@ class TcgPlayerDeckScraper(DeckScraper):
         return cards
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         deck_tags = self._soup.find_all("div", class_="subdeck")
         for deck_tag in deck_tags:
             if deck_tag.find("h3").text.lower().startswith("command"):
@@ -110,7 +112,7 @@ class TcgPlayerPlayerScraper(DeckUrlsContainerScraper):
     """
     HEADERS = HEADERS  # override
     CONTAINER_NAME = "TCGPlayer (old-site) player"  # override
-    DECK_SCRAPERS = TcgPlayerDeckScraper,  # override
+    DECK_SCRAPER_TYPES = TcgPlayerDeckScraper,  # override
     DECK_URL_PREFIX = "https://decks.tcgplayer.com"  # override
 
     @staticmethod
@@ -120,49 +122,49 @@ class TcgPlayerPlayerScraper(DeckUrlsContainerScraper):
                 and"player=" in url)
 
     @override
-    def _collect(self) -> list[str]:
+    def _parse_input_for_decks_data(self) -> None:
         deck_tags = self._soup.find_all(
             "a", href=lambda h: h and "/magic/" in h and "/magic/deck" not in h)
         if not deck_tags:
             raise ScrapingError("Deck tags not found", scraper=type(self), url=self.url)
-        return [deck_tag.attrs["href"] for deck_tag in deck_tags]
+        self._deck_urls = [deck_tag.attrs["href"] for deck_tag in deck_tags]
 
 
 # INFINITE ########################################################################################
 INFINITE_URL_PREFIX = "https://infinite.tcgplayer.com"
 
 
-class TcgPlyerInfiniteDeckJsonParser(JsonBasedDeckParser):
+class TcgPlyerInfiniteDeckJsonParser(DeckJsonParser):
     """Parser of an TCG Player Infinite deck JSON.
     """
     @override
-    def _parse_metadata(self) -> None:
-        self._metadata["name"] = self._deck_data["deck"]["name"]
-        self._update_fmt(self._deck_data["deck"]["format"])
-        self._metadata["author"] = self._deck_data["deck"]["playerName"]
-        if date_text := self._deck_data["deck"]["created"]:
+    def _parse_input_for_metadata(self) -> None:
+        self._metadata["name"] = self._deck_json["deck"]["name"]
+        self._update_fmt(self._deck_json["deck"]["format"])
+        self._metadata["author"] = self._deck_json["deck"]["playerName"]
+        if date_text := self._deck_json["deck"]["created"]:
             with contextlib.suppress(dateutil.parser.ParserError):
                 self._metadata["date"] = dateutil.parser.parse(date_text).date()
-        if event_name := self._deck_data["deck"].get("eventName"):
+        if event_name := self._deck_json["deck"].get("eventName"):
             self._metadata["event"] = {}
             self._metadata["event"]["name"] = event_name
-            if event_date := self._deck_data["deck"].get("eventDate"):
+            if event_date := self._deck_json["deck"].get("eventDate"):
                 self._metadata["event"]["date"] = dateutil.parser.parse(event_date).date()
-            if event_level := self._deck_data["deck"].get("eventLevel"):
+            if event_level := self._deck_json["deck"].get("eventLevel"):
                 self._metadata["event"]["level"] = event_level
-            self._metadata["event"]["draws"] = self._deck_data["deck"]["eventDraws"]
-            self._metadata["event"]["losses"] = self._deck_data["deck"]["eventLosses"]
-            self._metadata["event"]["wins"] = self._deck_data["deck"]["eventWins"]
-            self._metadata["event"]["placement_max"] = self._deck_data["deck"]["eventPlacementMax"]
-            self._metadata["event"]["placement_min"] = self._deck_data["deck"]["eventPlacementMin"]
-            if event_players := self._deck_data["deck"].get("eventPlayers"):
+            self._metadata["event"]["draws"] = self._deck_json["deck"]["eventDraws"]
+            self._metadata["event"]["losses"] = self._deck_json["deck"]["eventLosses"]
+            self._metadata["event"]["wins"] = self._deck_json["deck"]["eventWins"]
+            self._metadata["event"]["placement_max"] = self._deck_json["deck"]["eventPlacementMax"]
+            self._metadata["event"]["placement_min"] = self._deck_json["deck"]["eventPlacementMin"]
+            if event_players := self._deck_json["deck"].get("eventPlayers"):
                 self._metadata["event"]["players"] = event_players
-            if event_rank := self._deck_data["deck"].get("eventRank"):
+            if event_rank := self._deck_json["deck"].get("eventRank"):
                 self._metadata["event"]["rank"] = event_rank
 
     def _get_cardmap(self) -> dict[int, Card]:
         cardmap = {}
-        for card_id, data in self._deck_data["cards"].items():
+        for card_id, data in self._deck_json["cards"].items():
             name, tcgplayer_id, oracle_id = data["name"], data["tcgPlayerID"], data.get(
                 "oracleID", "")
             card = self.find_card(name, tcgplayer_id=tcgplayer_id, oracle_id=oracle_id)
@@ -170,9 +172,9 @@ class TcgPlyerInfiniteDeckJsonParser(JsonBasedDeckParser):
         return cardmap
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         cardmap = self._get_cardmap()
-        sub_decks = self._deck_data["deck"]["subDecks"]
+        sub_decks = self._deck_json["deck"]["subDecks"]
         if command_zone := sub_decks.get("commandzone"):
             for item in command_zone:
                 with contextlib.suppress(KeyError):
@@ -224,14 +226,18 @@ def _get_deck_data_from_api(
 class TcgPlayerInfiniteDeckScraper(DeckScraper):
     """Scraper of TCG Player Infinite decklist page.
     """
-    API_URL_TEMPLATE = ("https://infinite-api.tcgplayer.com/deck/magic/{}/?source=infinite-"
-                        "content&subDecks=true&cards=true&stats=true")  # override
+    API_URL_TEMPLATE = (
+        "https://infinite-api.tcgplayer.com/deck/magic/{}/?source=infinite-"
+        "content&subDecks=true&cards=true&stats=true"
+    )  # override
 
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return ("infinite.tcgplayer.com/magic-the-gathering/deck/" in url.lower()
-                or "tcgplayer.com/content/magic-the-gathering/deck/" in url.lower())
+        return (
+            "infinite.tcgplayer.com/magic-the-gathering/deck/" in url.lower()
+            or "tcgplayer.com/content/magic-the-gathering/deck/" in url.lower()
+        )
 
     @staticmethod
     @override
@@ -239,19 +245,19 @@ class TcgPlayerInfiniteDeckScraper(DeckScraper):
         return strip_url_query(url)
 
     @override
-    def _get_data_from_api(self) -> Json:
+    def _get_json_from_api(self) -> Json:
         return _get_deck_data_from_api(self.url, self.API_URL_TEMPLATE, scraper=type(self))
 
     @override
     def _get_sub_parser(self) -> TcgPlyerInfiniteDeckJsonParser:
-        return TcgPlyerInfiniteDeckJsonParser(self._data, self._metadata)
+        return TcgPlyerInfiniteDeckJsonParser(self._json, self._metadata)
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         pass
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         pass
 
 
@@ -261,17 +267,20 @@ class TcgPlayerInfinitePlayerScraper(DeckUrlsContainerScraper):
     """
     CONTAINER_NAME = "TCGPlayer Infinite player"  # override
     # 100 rows is pretty arbitrary but tested to work
-    API_URL_TEMPLATE = ("https://infinite-api.tcgplayer.com/content/decks/magic?source=infinite"
-                        "-content&rows=100&format=&playerName"
-                        "={}&latest=true&sort=created&order=desc")  # override
-    DECK_SCRAPERS = TcgPlayerInfiniteDeckScraper,  # override
+    API_URL_TEMPLATE = (
+        "https://infinite-api.tcgplayer.com/content/decks/magic?source=infinite"
+        "-content&rows=100&format=&playerName={}&latest=true&sort=created&order=desc"
+    )  # override
+    DECK_SCRAPER_TYPES = TcgPlayerInfiniteDeckScraper,  # override
     DECK_URL_PREFIX = INFINITE_URL_PREFIX  # override
 
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return ("infinite.tcgplayer.com/magic-the-gathering/decks/player/" in url.lower()
-                or "tcgplayer.com/content/magic-the-gathering/decks/player/" in url.lower())
+        return (
+            "infinite.tcgplayer.com/magic-the-gathering/decks/player/" in url.lower()
+            or "tcgplayer.com/content/magic-the-gathering/decks/player/" in url.lower()
+        )
 
     @staticmethod
     @override
@@ -279,19 +288,19 @@ class TcgPlayerInfinitePlayerScraper(DeckUrlsContainerScraper):
         return strip_url_query(url)
 
     @override
-    def _get_data_from_api(self) -> Json:
+    def _get_json_from_api(self) -> Json:
         *_, player_name = self.url.split("/")
         return fetch_json(self.API_URL_TEMPLATE.format(player_name))
 
     @override
-    def _validate_data(self) -> None:
-        super()._validate_data()
-        if not self._data.get("result"):
+    def _validate_json(self) -> None:
+        super()._validate_json()
+        if not self._json.get("result"):
             raise ScrapingError(f"No {self.short_name()} data", scraper=type(self), url=self.url)
 
     @override
-    def _collect(self) -> list[str]:
-        return [d["canonicalURL"] for d in self._data["result"]]
+    def _parse_input_for_decks_data(self) -> None:
+        self._deck_urls = [d["canonicalURL"] for d in self._json["result"]]
 
 
 @DeckUrlsContainerScraper.registered
@@ -303,9 +312,12 @@ class TcgPlayerInfiniteAuthorSearchScraper(TcgPlayerInfinitePlayerScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return (("infinite.tcgplayer.com/magic-the-gathering/decks/advanced-search" in url.lower()
-                 or "tcgplayer.com/content/magic-the-gathering/decks/advanced-search" in url.lower())
-                and "author=" in url.lower())
+        return (
+            (
+                "infinite.tcgplayer.com/magic-the-gathering/decks/advanced-search" in url.lower()
+                or "tcgplayer.com/content/magic-the-gathering/decks/advanced-search" in url.lower()
+            ) and "author=" in url.lower()
+        )
 
     @staticmethod
     @override
@@ -313,7 +325,7 @@ class TcgPlayerInfiniteAuthorSearchScraper(TcgPlayerInfinitePlayerScraper):
         return url.removesuffix("/")
 
     @override
-    def _get_data_from_api(self) -> Json:
+    def _get_json_from_api(self) -> Json:
         *_, author = self.url.split("author=")
         if "&" in author:
             author, *_ = author.split("&")
@@ -326,14 +338,18 @@ class TcgPlayerInfiniteEventScraper(TcgPlayerInfinitePlayerScraper):
     """
     CONTAINER_NAME = "TCGPlayer Infinite event"  # override
     # 200 rows is pretty arbitrary but tested to work (even though usually events have fewer rows)
-    API_URL_TEMPLATE = ("https://infinite-api.tcgplayer.com/content/decks/magic?source="
-                        "infinite-content&rows=200&eventNames={}")  # override
+    API_URL_TEMPLATE = (
+        "https://infinite-api.tcgplayer.com/content/decks/magic?source="
+        "infinite-content&rows=200&eventNames={}"
+    )  # override
 
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return ("infinite.tcgplayer.com/magic-the-gathering/events/event/" in url.lower()
-                or "tcgplayer.com/content/magic-the-gathering/events/event/" in url.lower())
+        return (
+            "infinite.tcgplayer.com/magic-the-gathering/events/event/" in url.lower()
+            or "tcgplayer.com/content/magic-the-gathering/events/event/" in url.lower()
+        )
 
 
 @DecksJsonContainerScraper.registered
@@ -353,7 +369,7 @@ class TcgPlayerInfiniteArticleScraper(DecksJsonContainerScraper):
     CONTAINER_NAME = "TCGPlayer Infinite article"  # override
     # NOTE: this doesn't override API_URL_TEMPLATE on purpose (not to skip soup fetching)
     ARTICLE_API_URL_TEMPLATE = TcgPlayerInfiniteDeckScraper.API_URL_TEMPLATE
-    JSON_BASED_DECK_PARSER = TcgPlyerInfiniteDeckJsonParser  # override
+    DECK_JSON_PARSER_TYPE = TcgPlyerInfiniteDeckJsonParser  # override
 
     @property
     def _scroll_down_times(self) -> int:
@@ -368,8 +384,10 @@ class TcgPlayerInfiniteArticleScraper(DecksJsonContainerScraper):
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return (f"infinite.tcgplayer.com/article/" in url.lower()
-                or "tcgplayer.com/content/article/" in url.lower())
+        return (
+                f"infinite.tcgplayer.com/article/" in url.lower()
+                or "tcgplayer.com/content/article/" in url.lower()
+        )
 
     @staticmethod
     @override
@@ -384,6 +402,7 @@ class TcgPlayerInfiniteArticleScraper(DecksJsonContainerScraper):
         except TimeoutException:
             raise ScrapingError(self._selenium_timeout_msg, scraper=type(self), url=self.url)
 
+    # FIXME: use `get_path_segments()` instead (#394)
     @staticmethod
     def _naive_strip_url_query(url: str) -> str:
         if "?" in url:
@@ -391,7 +410,7 @@ class TcgPlayerInfiniteArticleScraper(DecksJsonContainerScraper):
         return url.removesuffix("/")
 
     @override
-    def _collect(self) -> list[Json]:
+    def _parse_input_for_decks_data(self) -> None:
         article_tag = self._soup.find("div", class_="article-body")
         if not article_tag:
             raise ScrapingError("Article tag not found", scraper=type(self), url=self.url)
@@ -399,16 +418,14 @@ class TcgPlayerInfiniteArticleScraper(DecksJsonContainerScraper):
             self._naive_strip_url_query(t.attrs["href"]) for t in article_tag.find_all(
                 "a", href=lambda h: h and self._HOOK in h)]
 
-        decks_data = []
         for url in deck_urls:
             try:
-                decks_data.append(
+                self._decks_json.append(
                     _get_deck_data_from_api(url, self.ARTICLE_API_URL_TEMPLATE, scraper=type(self)))
             except ScrapingError as err:
                 _log.warning(f"Scraping failed with: {err!r}")
                 continue
             throttle(*DeckScraper.THROTTLING)
-        return decks_data
 
 
 @HybridContainerScraper.registered
@@ -420,17 +437,22 @@ class TcgPlayerInfiniteAuthorScraper(HybridContainerScraper):
         # "consent_xpath": TcgPlayerInfiniteArticleScraper.SELENIUM_PARAMS["consent_xpath"],
     }
     CONTAINER_NAME = "TCGPlayer Infinite author"  # override
-    API_URL_TEMPLATE = ("https://infinite-api.tcgplayer.com/content/author/{}/?source="
-                        "infinite-content&rows=48&game=&format=")  # override
-    CONTAINER_SCRAPERS = TcgPlayerInfiniteArticleScraper,  # override
+    API_URL_TEMPLATE = (
+        "https://infinite-api.tcgplayer.com/content/author/{}/?source="
+        "infinite-content&rows=48&game=&format="
+    )  # override
+    CONTAINER_SCRAPER_TYPES = TcgPlayerInfiniteArticleScraper,  # override
     CONTAINER_URL_PREFIX = INFINITE_URL_PREFIX  # override
 
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return (("infinite.tcgplayer.com/author/" in url.lower()
-                 or "tcgplayer.com/content/author/" in url.lower()) and not strip_url_query(
-            url.lower()).endswith("/decks"))
+        return (
+            (
+                "infinite.tcgplayer.com/author/" in url.lower()
+                or "tcgplayer.com/content/author/" in url.lower()
+            ) and not strip_url_query(url.lower()).endswith("/decks")
+        )
 
     @staticmethod
     @override
@@ -441,8 +463,8 @@ class TcgPlayerInfiniteAuthorScraper(HybridContainerScraper):
     def _pre_parse(self) -> None:
         self._fetch_soup()
         self._validate_soup()
-        self._data = self._get_data_from_api()
-        self._validate_data()
+        self._json = self._get_json_from_api()
+        self._validate_json()
 
     @classmethod
     def get_author_id(cls, soup: BeautifulSoup) -> str:
@@ -458,18 +480,18 @@ class TcgPlayerInfiniteAuthorScraper(HybridContainerScraper):
                 "Failed to obtain author ID from <script> tag's JavaScript", scraper=cls)
 
     @override
-    def _get_data_from_api(self) -> Json:
+    def _get_json_from_api(self) -> Json:
         return fetch_json(self.API_URL_TEMPLATE.format(self.get_author_id(self._soup)))
 
     @override
-    def _validate_data(self) -> None:
-        super()._validate_data()
-        if not self._data.get("result") or not self._data["result"].get("articles"):
+    def _validate_json(self) -> None:
+        super()._validate_json()
+        if not self._json.get("result") or not self._json["result"].get("articles"):
             raise ScrapingError("No author or articles data", scraper=type(self), url=self.url)
 
     @override
-    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
-        return [], [], [], [d["canonicalURL"] for d in self._data["result"]["articles"]]
+    def _parse_input_for_decks_data(self) -> None:
+        self._container_urls = [d["canonicalURL"] for d in self._json["result"]["articles"]]
 
 
 @DeckUrlsContainerScraper.registered
@@ -482,18 +504,22 @@ class TcgPlayerInfiniteAuthorDecksPaneScraper(DeckUrlsContainerScraper):
     }
     CONTAINER_NAME = "TCGPlayer Infinite author decks pane"  # override
     # 200 rows is pretty arbitrary but tested to work (even though usually events have fewer rows)
-    API_URL_TEMPLATE = ("https://infinite-api.tcgplayer.com/content/decks/?source"
-                        "=infinite-content&rows=2008&authorID={}&latest=true&sort="
-                        "created&order=desc")  # override
-    DECK_SCRAPERS = TcgPlayerInfiniteDeckScraper,  # override
+    API_URL_TEMPLATE = (
+        "https://infinite-api.tcgplayer.com/content/decks/?source"
+        "=infinite-content&rows=2008&authorID={}&latest=true&sort=created&order=desc"
+    )  # override
+    DECK_SCRAPER_TYPES = TcgPlayerInfiniteDeckScraper,  # override
     DECK_URL_PREFIX = INFINITE_URL_PREFIX  # override
 
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
-        return (("infinite.tcgplayer.com/author/" in url.lower()
-                 or "tcgplayer.com/content/author/" in url.lower()) and strip_url_query(
-            url.lower()).endswith("/decks"))
+        return (
+            (
+                "infinite.tcgplayer.com/author/" in url.lower()
+                or "tcgplayer.com/content/author/" in url.lower()
+            ) and strip_url_query(url.lower()).endswith("/decks")
+        )
 
     @staticmethod
     @override
@@ -504,20 +530,20 @@ class TcgPlayerInfiniteAuthorDecksPaneScraper(DeckUrlsContainerScraper):
     def _pre_parse(self) -> None:
         self._fetch_soup()
         self._validate_soup()
-        self._data = self._get_data_from_api()
-        self._validate_data()
+        self._json = self._get_json_from_api()
+        self._validate_json()
 
     @override
-    def _get_data_from_api(self) -> Json:
+    def _get_json_from_api(self) -> Json:
         author_id = TcgPlayerInfiniteAuthorScraper.get_author_id(self._soup)
         return fetch_json(self.API_URL_TEMPLATE.format(author_id))
 
     @override
-    def _validate_data(self) -> None:
-        super()._validate_data()
-        if not self._data.get("result"):
+    def _validate_json(self) -> None:
+        super()._validate_json()
+        if not self._json.get("result"):
             raise ScrapingError("No decks data", scraper=type(self), url=self.url)
 
     @override
-    def _collect(self) -> list[str]:
-        return [d["canonicalURL"] for d in self._data["result"]]
+    def _parse_input_for_decks_data(self) -> None:
+        self._deck_urls = [d["canonicalURL"] for d in self._json["result"]]

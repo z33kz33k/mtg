@@ -27,7 +27,7 @@ URL_PREFIX = "https://mtgstocks.com"
 class MtgStocksDeckScraper(DeckScraper):
     """Scraper of MTGStocks decklist page.
     """
-    DATA_FROM_SOUP = True  # override
+    JSON_FROM_SOUP = True  # override
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -55,7 +55,7 @@ class MtgStocksDeckScraper(DeckScraper):
         except ValueError:
             raise ScrapingError(f"Deck ID missing from URL", scraper=type(self), url=self.url)
 
-    def _get_data_from_soup(self) -> Json:
+    def _get_json_from_soup(self) -> Json:
         script_tag = self._soup.find("script", id="ng-state")
         if not script_tag:
             raise ScrapingError("<script> not found", scraper=type(self), url=self.url)
@@ -69,26 +69,26 @@ class MtgStocksDeckScraper(DeckScraper):
         return deck_data["b"]
 
     @override
-    def _parse_metadata(self) -> None:
-        self._metadata["name"] = self._data["name"]
-        if date := self._data.get("lastUpdated"):
+    def _parse_input_for_metadata(self) -> None:
+        self._metadata["name"] = self._json["name"]
+        if date := self._json.get("lastUpdated"):
             self._metadata["date"] = dateutil.parser.parse(date).date()
-        if player := self._data.get("player"):
+        if player := self._json.get("player"):
             self._metadata["author"] = player
-        self._update_fmt(self._data["format"]["name"])
+        self._update_fmt(self._json["format"]["name"])
 
-    def _parse_playset(self, card: Json) -> list[Card]:
+    def _parse_card_json(self, card: Json) -> list[Card]:
         qty = int(card["quantity"])
         name = card["card"]["name"]
         return self.get_playset(self.find_card(name), qty)
 
     @override
-    def _parse_deck(self) -> None:
-        for card in self._data["boards"]["mainboard"]["cards"]:
-            self._maindeck.extend(self._parse_playset(card))
-        if sideboard := self._data["boards"].get("sideboard"):
+    def _parse_input_for_decklist(self) -> None:
+        for card in self._json["boards"]["mainboard"]["cards"]:
+            self._maindeck.extend(self._parse_card_json(card))
+        if sideboard := self._json["boards"].get("sideboard"):
             for card in sideboard["cards"]:
-                self._sideboard.extend(self._parse_playset(card))
+                self._sideboard.extend(self._parse_card_json(card))
 
 
 @DeckUrlsContainerScraper.registered
@@ -114,13 +114,12 @@ class MtgStocksArticleScraper(DeckUrlsContainerScraper):
             _log.warning(f"Scraping failed with: {err!r}")
             return []
         links = find_links(article_tag)
-        return [l for l in links if any(ds.is_valid_url(l) for ds in self._get_deck_scrapers())]
+        return [l for l in links if any(ds.is_valid_url(l) for ds in self._get_deck_scraper_types())]
 
     def _collect_own_urls(self) -> list[str]:
         deck_tags = self._soup.find_all("news-deck")
         a_tags = [tag.find("a", href=lambda h: h and "/decks/" in h) for tag in deck_tags]
         return [prepend_url(t.attrs["href"], URL_PREFIX) for t in a_tags if t is not None]
 
-    def _collect(self) -> list[str]:
-        return sorted({*self._collect_other_urls(), *self._collect_own_urls()})
-
+    def _parse_input_for_decks_data(self) -> None:
+        self._deck_urls = sorted({*self._collect_other_urls(), *self._collect_own_urls()})

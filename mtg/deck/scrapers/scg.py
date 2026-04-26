@@ -15,7 +15,7 @@ import dateutil.parser
 from bs4 import Tag
 
 from mtg.constants import Json
-from mtg.deck.abc import TagBasedDeckParser
+from mtg.deck.abc import DeckTagParser
 from mtg.deck.scrapers.abc import DeckScraper, DeckUrlsContainerScraper, HybridContainerScraper
 from mtg.lib.common import ParsingError, from_iterable
 from mtg.lib.text import sanitize_whitespace
@@ -35,7 +35,7 @@ _log = logging.getLogger(__name__)
 # could be utilized.
 
 
-class ScgDeckTagParser(TagBasedDeckParser):
+class ScgDeckTagParser(DeckTagParser):
     """Parser of a StarCityGames decklist page's HTML tag.
     """
     @staticmethod
@@ -59,7 +59,7 @@ class ScgDeckTagParser(TagBasedDeckParser):
         self._update_fmt(header_tag.find("div", class_="deck_format").text.strip().lower())
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         self._parse_header_tag(self._deck_tag.find("div", class_="deck_header"))
 
     def _parse_decklist_tag(self, decklist_tag: Tag) -> None:
@@ -91,7 +91,7 @@ class ScgDeckTagParser(TagBasedDeckParser):
                 self._set_commander(commander)
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         decklist_tag = self._deck_tag.find("div", class_="deck_card_wrapper")
         if decklist_tag is None:
             raise ParsingError("Decklist tag not found (page is probably paywalled)")
@@ -102,6 +102,7 @@ class ScgDeckTagParser(TagBasedDeckParser):
 class ScgDeckScraper(DeckScraper):
     """Scraper of StarCityGames decklist page.
     """
+    # FIXME: use `get_path_segments()` instead (#394)
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
@@ -128,11 +129,11 @@ class ScgDeckScraper(DeckScraper):
         return ScgDeckTagParser(deck_tag, self._metadata)
 
     @override
-    def _parse_metadata(self) -> None:
+    def _parse_input_for_metadata(self) -> None:
         pass
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         pass
 
 
@@ -147,8 +148,9 @@ class ScgEventScraper(DeckUrlsContainerScraper):
     """Scraper of StarCityGames event page (or non-player deck search page).
     """
     CONTAINER_NAME = "StarCityGames event"  # override
-    DECK_SCRAPERS = ScgDeckScraper,  # override
+    DECK_SCRAPER_TYPES = ScgDeckScraper,  # override
 
+    # FIXME: use `get_path_segments()` instead (#394)
     @staticmethod
     @override
     def is_valid_url(url: str) -> bool:
@@ -170,7 +172,7 @@ class ScgEventScraper(DeckUrlsContainerScraper):
         return strip_url_query(url)
 
     @override
-    def _collect(self) -> list[str]:
+    def _parse_input_for_decks_data(self) -> None:
         section_tag = self._soup.select_one("section#content")
         if not section_tag:
             raise ScrapingError("Section tag not found", scraper=type(self), url=self.url)
@@ -179,7 +181,7 @@ class ScgEventScraper(DeckUrlsContainerScraper):
                 "a", href=lambda h: h and ScgDeckScraper.is_valid_url(h))]
         if not deck_tags:
             raise ScrapingError("Deck tags not found", scraper=type(self), url=self.url)
-        return [tag.attrs["href"] for tag in deck_tags if tag is not None]
+        self._deck_urls = [tag.attrs["href"] for tag in deck_tags if tag is not None]
 
 
 @DeckUrlsContainerScraper.registered
@@ -198,7 +200,7 @@ class ScgDatabaseScraper(DeckUrlsContainerScraper):
     """Scraper of StarCityGames author's decks database page.
     """
     CONTAINER_NAME = "StarCityGames author's deck database"  # override
-    DECK_SCRAPERS = ScgDeckScraper,  # override
+    DECK_SCRAPER_TYPES = ScgDeckScraper,  # override
 
     @staticmethod
     @override
@@ -211,14 +213,14 @@ class ScgDatabaseScraper(DeckUrlsContainerScraper):
         return strip_url_query(url)
 
     @override
-    def _collect(self) -> list[str]:
+    def _parse_input_for_decks_data(self) -> None:
         db_div = self._soup.find("div", id="deck-database")
         if db_div is None:
             raise ScrapingError("Deck database tag not found", scraper=type(self), url=self.url)
         a_tags = [tag for tag in db_div.find_all("a", class_="dd-deck-link")]
         if not a_tags:
             raise ScrapingError("Deck tags not found", scraper=type(self), url=self.url)
-        return [tag.attrs["href"].strip() for tag in a_tags]
+        self._deck_urls = [tag.attrs["href"].strip() for tag in a_tags]
 
 
 class ScgArticleDeckTagParser(ScgDeckTagParser):
@@ -244,7 +246,7 @@ class ScgArticleDeckTagParser(ScgDeckTagParser):
         return "\n".join(decklist)
 
     @override
-    def _parse_deck(self) -> None:
+    def _parse_input_for_decklist(self) -> None:
         css = "div[title='Export Decklist for Magic Arena'] > div"
         decklist_tag = self._deck_tag.select_one(css)
         if not decklist_tag:
@@ -257,8 +259,8 @@ class ScgArticleScraper(HybridContainerScraper):
     """Scraper of StarCityGames decks article page.
     """
     CONTAINER_NAME = "StarCityGames article"  # override
-    TAG_BASED_DECK_PARSER = ScgArticleDeckTagParser  # override
-    CONTAINER_SCRAPERS = ScgEventScraper,  # override
+    DECK_TAG_PARSER_TYPE = ScgArticleDeckTagParser  # override
+    CONTAINER_SCRAPER_TYPES = ScgEventScraper,  # override
 
     @staticmethod
     @override
@@ -271,13 +273,12 @@ class ScgArticleScraper(HybridContainerScraper):
         return strip_url_query(url)
 
     @override
-    def _collect(self) -> tuple[list[str], list[Tag], list[Json], list[str]]:
-        deck_tags = self._soup.find_all("div", class_="deck_listing")
+    def _parse_input_for_decks_data(self) -> None:
+        self._deck_tags = self._soup.find_all("div", class_="deck_listing")
         article_tag = self._soup.find("article", {"data-template": "post-content"})
         if article_tag is None:
             err = ScrapingError("Article tag not found", scraper=type(self), url=self.url)
             _log.warning(f"Scraping failed with: {err!r}")
-            return [], deck_tags, [], []
+            return
         p_tags = [t for t in article_tag.find_all("p") if not t.find("div", class_="deck_listing")]
-        deck_urls, article_urls = self._find_links_in_tags(*p_tags)
-        return deck_urls, deck_tags, [], article_urls
+        self._deck_urls, self._container_urls = self._find_links_in_tags(*p_tags)

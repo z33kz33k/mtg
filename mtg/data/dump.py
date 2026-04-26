@@ -16,15 +16,15 @@ from datetime import datetime
 from operator import attrgetter
 from pathlib import Path
 
-from sqlalchemy import func, select
+from sqlalchemy import select
 from tqdm import tqdm
 
-from mtg.logging import init_log
 from mtg.constants import OUTPUT_DIR
 from mtg.data.db import DefaultSession
 from mtg.data.models import Channel, Decklist, FailedUrl
-from mtg.lib.time import get_timestamp, timed
 from mtg.lib.json import to_json
+from mtg.lib.time import get_timestamp, timed
+from mtg.logging import init_log
 
 _log = logging.getLogger(__name__)
 
