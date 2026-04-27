@@ -17,8 +17,8 @@
     language-specific or platform-based card printings. This means that even for data pulled by
     calls to the Scryfall API, not only scraped data that is specific in terms of cosmetic
     printings, but also language-specific and platform-specific (like 'Through the Omenpaths'
-    cards) gets clobbered. That means that card specified in scraped data as "Kavaero,
-    Mind-Bitten" turns out to really be "Superior Spider-Man" at the end.
+    cards) gets clobbered. That means that a card specified in scraped data as "Kavaero,
+    Mind-Bitten" turns out to really be a "Superior Spider-Man" at the end.
 
     Thank WotC for this mess.
 
@@ -185,8 +185,10 @@ class TypeLine:
     """
     SEPARATOR = "—"
 
-    SUPERTYPES = {"Basic", "Elite", "Host", "Kindred", "Legendary", "Ongoing", "Snow", "Token",
-                  "Tribal", "World"}
+    SUPERTYPES = {
+        "Basic", "Elite", "Host", "Kindred", "Legendary", "Ongoing", "Snow", "Token", "Tribal",
+        "World"
+    }
     PERMANENT_TYPES = {"Artifact", "Battle", "Creature", "Enchantment", "Land", "Planeswalker"}
     NONPERMANENT_TYPES = {"Sorcery", "Instant"}
 
@@ -1215,10 +1217,12 @@ def all_formats() -> list[str]:
 
 
 ARENA_FORMATS = [
-    "alchemy", "brawl", "explorer", "historic", "standard", "standardbrawl", "timeless"]
+    "alchemy", "brawl", "explorer", "historic", "standard", "standardbrawl", "timeless"
+]
 COMMANDER_FORMATS = [
     'brawl', 'commander', 'duel', 'oathbreaker', 'oldschool', 'paupercommander', 'predh',
-    'standardbrawl']
+    'standardbrawl'
+]
 
 
 def layouts(data: Iterable[Card] | None = None) -> list[str]:
@@ -1347,7 +1351,7 @@ def query_api_for_card(card_name: str) -> Card | None:
 
     The provided name doesn't need to be English. Foreign names only fail the 'exact' query,
     but - if correct - are found in the 'fuzzy' mode. Mind that names of reflavored cards (like
-    those of Through the Omenpaths cards (e.g. "Kavaero, Mind-Bitten") also fail the 'exact'
+    those of Through the Omenpaths cards (e.g. "Kavaero, Mind-Bitten")) also fail the 'exact'
     query - even though they are English. Still, they pass in the 'fuzzy' mode - the same as
     localized cards.
 

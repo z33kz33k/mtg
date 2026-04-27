@@ -4,6 +4,8 @@
     ~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape defunct MTGMeta.io decklists (using Wayback Machine).
 
+    MTGMeta.io was acquired by the MTG Arena Zone network (part of DotGG) in August 2022.
+
     @author: mazz3rr
 
 """
@@ -20,7 +22,6 @@ from mtg.lib.scrape.core import (
     ScrapingError, dissect_js, find_links,
     strip_url_query,
 )
-from mtg.lib.scrape.wayback import fetch_wayback_soup
 from mtg.scryfall import Card
 
 _log = logging.getLogger(__name__)
@@ -30,6 +31,7 @@ _log = logging.getLogger(__name__)
 class MtgMetaIoDeckScraper(DeckScraper):
     """Scraper of MTGMeta.io decklist page.
     """
+    USE_WAYBACK = True  # override
     JSON_FROM_SOUP = True  # override
 
     @staticmethod
@@ -41,18 +43,6 @@ class MtgMetaIoDeckScraper(DeckScraper):
     @override
     def normalize_url(url: str) -> str:
         return strip_url_query(url)
-
-    @override
-    def _fetch_soup(self) -> None:
-        self._soup = fetch_wayback_soup(self.url)
-
-    @override
-    def _validate_soup(self) -> None:
-        super()._validate_soup()
-        if "Error connecting to database" in str(self._soup):
-            raise ScrapingError(
-                "Page not available due to Internet Archive's database error", scraper=type(self),
-                url=self.url)
 
     def _get_json_from_soup(self) -> Json:
         return dissect_js(self._soup, "const decklist = ", " ;\n  ")
@@ -118,6 +108,7 @@ class MtgMetaIoTournamentScraper(DeckUrlsContainerScraper):
     THROTTLING = DeckUrlsContainerScraper.THROTTLING * 10  # override
     CONTAINER_NAME = "MTGMeta.io tournament"  # override
     DECK_SCRAPER_TYPES = MtgMetaIoDeckScraper,  # override
+    USE_WAYBACK = True  # override
 
     @staticmethod
     @override
@@ -128,17 +119,6 @@ class MtgMetaIoTournamentScraper(DeckUrlsContainerScraper):
     @override
     def normalize_url(url: str) -> str:
         return strip_url_query(url)
-
-    @override
-    def _fetch_soup(self) -> None:
-        self._soup = fetch_wayback_soup(self.url)
-
-    def _validate_soup(self) -> None:
-        super()._validate_soup()
-        if "Error connecting to database" in str(self._soup):
-            raise ScrapingError(
-                "Page not available due to Internet Archive's database error", scraper=type(self),
-                url=self.url)
 
     @override
     def _parse_input_for_decks_data(self) -> None:
@@ -180,6 +160,7 @@ class MtgMetaIoArticleScraper(HybridContainerScraper):
     CONTAINER_NAME = "MTGMeta.io article"  # override
     THROTTLING = MtgMetaIoTournamentScraper.THROTTLING  # override
     DECK_TAG_PARSER_TYPE = MtgMetaIoDeckTagParser  # override
+    USE_WAYBACK = True  # override
 
     @staticmethod
     @override
@@ -190,16 +171,6 @@ class MtgMetaIoArticleScraper(HybridContainerScraper):
     @override
     def normalize_url(url: str) -> str:
         return strip_url_query(url)
-
-    def _fetch_soup(self) -> None:
-        self._soup = fetch_wayback_soup(self.url)
-
-    def _validate_soup(self) -> None:
-        super()._validate_soup()
-        if "Error connecting to database" in str(self._soup):
-            raise ScrapingError(
-                "Page not available due to Internet Archive's database error", scraper=type(self),
-                url=self.url)
 
     @override
     def _parse_input_for_metadata(self) -> None:

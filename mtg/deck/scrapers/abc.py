@@ -23,6 +23,7 @@ from mtg.lib.common import Noop, ParsingError, register_type
 from mtg.lib.scrape.core import InaccessiblePage, ScrapingError, Soft404Error, Throttling, \
     fetch_soup, find_links, prepend_url, throttle
 from mtg.lib.scrape.dynamic import fetch_dynamic_soup
+from mtg.lib.scrape.wayback import fetch_wayback_soup
 from mtg.lib.time import timed
 from mtg.session import ScrapingSession
 
@@ -40,6 +41,7 @@ class DeckScraper(NestedDeckParser):
     THROTTLING = Throttling(0.6, 0.15)
     API_URL_TEMPLATE = ""
     HEADERS = None
+    USE_WAYBACK = False
     JSON_FROM_SOUP = False
     EXAMPLE_URLS: tuple[str, ...] | None = None
 
@@ -93,7 +95,10 @@ class DeckScraper(NestedDeckParser):
                 raise ScrapingError(
                     self._selenium_timeout_msg, scraper=type(self), url=self.url) from te
         else:
-            self._soup = fetch_soup(self.url, self.HEADERS)
+            if self.USE_WAYBACK:
+                self._soup = fetch_wayback_soup(self.url)
+            else:
+                self._soup = fetch_soup(self.url, self.HEADERS)
 
     def _get_json_from_api(self) -> Json:
         raise NotImplementedError
@@ -114,6 +119,11 @@ class DeckScraper(NestedDeckParser):
             raise InaccessiblePage(scraper=type(self), url=self.url)
         if self._is_soft_404_error():
             raise Soft404Error(scraper=type(self), url=self.url)
+        if self.USE_WAYBACK:
+            if "Error connecting to database" in str(self._soup):
+                raise ScrapingError(
+                    "Page not available due to Internet Archive's database error", scraper=type(self),
+                    url=self.url)
 
     def _validate_json(self) -> None:
         if not self._json:

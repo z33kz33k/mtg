@@ -2,7 +2,10 @@
 
     mtg.deck.scrapers.mtgarenapro
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Scrape MTGArena.Pro decklists.
+    Scrape defunct MTGArena.Pro decklists (using Wayback Machine).
+
+    The tracker app is dead and the website was sold by the developer at some time:
+    https://www.reddit.com/r/MTGArenaPro/comments/1l9e9zb/is_mtgarena_pro_dead/
 
     @author: mazz3rr
 
@@ -21,11 +24,16 @@ _log = logging.getLogger(__name__)
 ALT_DOMAIN = "mtga.cc"
 
 
-@DeckScraper.registered
+# @DeckScraper.registered
 class MtgArenaProDeckScraper(DeckScraper):
     """Scraper of MTGArena.Pro decklist page.
     """
+    USE_WAYBACK = True  # override
     JSON_FROM_SOUP = True  # override
+    EXAMPLE_URLS = (
+        # doesn't work - service to retire
+        "https://mtgarena.pro/decks/doomed-snapper-pauper-1/",
+    )
 
     @staticmethod
     @override

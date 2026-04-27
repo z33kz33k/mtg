@@ -4,6 +4,9 @@
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Scrape MTGO Traders decklists.
 
+    The site is in a state of permanent shutdown sins December 2023. But, decklist pages still
+    seem operational.
+
     @author: mazz3rr
 
 """
@@ -19,11 +22,15 @@ from mtg.scryfall import Card
 _log = logging.getLogger(__name__)
 
 
-@DeckScraper.registered
+# @DeckScraper.registered
 class MtgoTradersDeckScraper(DeckScraper):
     """Scraper of MTGO Traders deck page.
     """
     API_URL_TEMPLATE = "https://www.mtgotraders.com/deck/data/getdeck.php?deck={}"  # override
+    EXAMPLE_URLS = (
+        # doesn't work - service to retire
+        "https://www.mtgotraders.com/deck/#/view?deck=3118",
+    )
 
     @staticmethod
     @override

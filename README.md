@@ -32,7 +32,7 @@ YT videos descriptions).
     * [youtube-comment-downloader](https://github.com/egbertbouman/youtube-comment-downloader) 
 * Parsing those descriptions (or author's comments) for decks:    
     * Pasted text decklists in Arena/MTGO format are parsed into Deck objects
-    * Links to decklist sites are scraped into Deck objects. 43 sites are supported so far:
+    * Links to decklist sites are scraped into Deck objects. 41 sites are supported so far:
         * [17Lands](https://www.17lands.com)
         * [Aetherhub](https://aetherhub.com)
         * [Archidekt](https://archidekt.com)
@@ -53,14 +53,12 @@ YT videos descriptions).
         * [Manatraders](https://www.manatraders.com)
         * [Melee.gg](https://melee.gg)
         * [Moxfield](https://www.moxfield.com)
-        * [MTGArena.Pro](https://mtgarena.pro)
         * [MTGAZone](https://mtgazone.com)
         * [MTGDecks.net](https://mtgdecks.net)
         * [MTGJSON](https://mtgjson.com)
         * MTGMeta.io _(defunct, scraped via Wayback Machine)_
         * [MTGSearch.it](https://mtgsearch.it)
         * [MTGStocks](https://www.mtgstocks.com)
-        * [MTGOTraders](https://www.mtgotraders.com/store/index.html)
         * [MTGTop8](https://mtgtop8.com/index)
         * [MTGVault](https://www.mtgvault.com)
         * [PauperMTG](https://paupermtg.com)
@@ -79,6 +77,9 @@ YT videos descriptions).
     * 2 sites are only partially supported (parsing logic in place, too hostile for being scraped):
         * [LigaMagic](https://www.ligamagic.com.br/?view=home)
         * [MTGCircle](https://mtgcircle.com)
+    * 2 sites has been retired as defunct and no longer scrapeable (even via Wayback Machine):
+        * [MTGArena.Pro](https://mtgarena.pro) 
+        * [MTGOTraders](https://www.mtgotraders.com/store/index.html)
     * 4 more decklist sites in plans 
     * Both Aetherhub decklist types featured in YT videos are supported: regular deck and write-up deck
     * Both Archidekt decklist types featured in YT videos are supported: regular deck and snapshot deck

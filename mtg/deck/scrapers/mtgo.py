@@ -136,6 +136,9 @@ class MtgoDeckScraper(DeckScraper):
     """Scraper of MGTO event page that points to an individual deck.
     """
     JSON_FROM_SOUP = True  # override
+    EXAMPLE_URLS = (
+        "https://www.mtgo.com/decklist/pauper-challenge-32-2024-11-0312703226#deck_Walker735",
+    )
 
     def __init__(self, url: str, metadata: Json | None = None) -> None:
         super().__init__(url, metadata)
@@ -191,6 +194,9 @@ class MtgoEventScraper(DecksJsonContainerScraper):
     CONTAINER_NAME = "MTGO event"  # override
     HEADERS = HEADERS  # override
     DECK_JSON_PARSER_TYPE = MtgoDeckJsonParser  # override
+    EXAMPLE_URLS = (
+        "https://www.mtgo.com/decklist/pauper-challenge-32-2024-11-0312703226",
+    )
 
     # FIXME: use `get_path_segments()` instead (#394)
     @staticmethod
