@@ -674,9 +674,32 @@ class Deck:
                 *sorted(sideboard_playsets.values(), key=lambda l: l[0].name))]
             if len(self.sideboard) > self.MAX_SIDEBOARD_SIZE:
                 self._cut_sideboard(sideboard)
+
             temp_playsets = aggregate(*self.cards)
             for playset in temp_playsets.values():
-                self._validate_playset(playset)
+
+                # first try to trim too many occurrences from the sideboard
+                card = playset[0]
+                validated, sideboard_trims = False, 0
+                first_exc = None
+
+                while not validated:
+                    try:
+                        self._validate_playset(playset)
+                        validated = True
+                    except InvalidDeck as ide:
+                        if first_exc is None:
+                            first_exc = ide
+                        if card not in self._sideboard:
+                            raise first_exc
+                        self._sideboard.remove(card)
+                        sideboard_trims += 1
+                        playset.remove(card)
+
+                if sideboard_trims:
+                    _log.warning(
+                        f"Sideboard trimmed by {sideboard_trims}. Too many occurrences of"
+                        f" {card.name!r}")
 
     def _cut_sideboard(self, input_sideboard: list[Card]) -> None:
         _log.warning(
