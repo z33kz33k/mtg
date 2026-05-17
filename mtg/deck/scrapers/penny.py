@@ -151,8 +151,8 @@ class PennyDreadfulMagicUserScraper(DeckUrlsContainerScraper):
     DECK_SCRAPER_TYPES = PennyDreadfulMagicDeckScraper,  # override
     DECK_URL_PREFIX = URL_PREFIX  # override
     EXAMPLE_URLS = (
-        "https://pennydreadfulmagic.com/seasons/33/people/id/2999/",
         "https://pennydreadfulmagic.com/people/id/2668/",
+        "https://pennydreadfulmagic.com/seasons/33/people/id/2999/",
     )
 
     @property
@@ -183,7 +183,14 @@ class PennyDreadfulMagicUserScraper(DeckUrlsContainerScraper):
             return None
         season_ids, user_ids = set(), set()
         for a_tag in soup.find_all(
-                "a", href=lambda h: h and "/seasons/" in h and "/people/id/" in h):
+            "a",
+            href=lambda h: (
+                h
+                and "/seasons/" in h
+                and "/people/id/" in h
+                and "/all/" not in h
+            )
+        ):
             season_id, user_id = self._parse_url_for_ids(a_tag.attrs["href"])
             season_ids.add(int(season_id))
             user_ids.add(int(user_id))
