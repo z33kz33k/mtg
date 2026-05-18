@@ -376,7 +376,9 @@ def normalize_deck_source(src: str) -> str:
 class Deck:
     """A deck of Magic: the Gathering cards suitable for Constructed formats.
     """
-    MIN_MAINDECK_SIZE = 60
+    # this is minimal size for `Tiny Leaders: Reborn` (tlr) format (a Commander variant)
+    # which has been recently added to Scryfall-supported formats
+    MIN_MAINDECK_SIZE = 50
     MAX_SIDEBOARD_SIZE = 15
     MIN_AGGRO_CMC = 2.3  # arbitrary
     MAX_CONTROL_CREATURES_COUNT = 10  # arbitrary
@@ -940,6 +942,7 @@ NORMALIZED_FORMATS = {
     "duelcommander": "duel",
     "duelcommanderrussian": "duel",
     "edh": "commander",
+    "edh / commander": "commander",
     "european highlander": "commander",
     "europeanhighlander": "commander",
     "future standard": "future",
@@ -969,6 +972,10 @@ NORMALIZED_FORMATS = {
     "pre commander": "predh",
     "pre edh": "predh",
     "standard brawl": "standardbrawl",
+    "tiny leaders": "tlr",
+    "tiny leaders reborn": "tlr",
+    "tiny leaders: reborn": "tlr",
+    "tiny leaders - reborn": "tlr",
     "vintage old school": "oldschool",
 }
 JAPANESE_FORMATS = {

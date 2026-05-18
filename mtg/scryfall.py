@@ -1233,11 +1233,11 @@ def all_formats() -> list[str]:
 
 
 ARENA_FORMATS = [
-    "alchemy", "brawl", "explorer", "historic", "standard", "standardbrawl", "timeless"
+    "alchemy", "brawl", "historic", "pioneer", "standard", "standardbrawl", "timeless"
 ]
 COMMANDER_FORMATS = [
     'brawl', 'commander', 'duel', 'oathbreaker', 'oldschool', 'paupercommander', 'predh',
-    'standardbrawl'
+    'standardbrawl', 'tlr'
 ]
 
 
@@ -1381,7 +1381,7 @@ def query_api_for_card(card_name: str, delay=API_QUERY_DELAY) -> Card | None:
 
     Args:
         card_name (str): name of the card to query
-        delay (float, optional): delay between calls to the API in seconds (defaults to the recommended 0.2)
+        delay (float, optional): delay between calls to the API in seconds (defaults to the recommended 0.2s)
     """
     _log.info(f"Querying Scryfall for {card_name!r}...")
     try:
@@ -1417,6 +1417,41 @@ def query_api_for_card(card_name: str, delay=API_QUERY_DELAY) -> Card | None:
         return found
 
     _log.warning(f"Scryfall API failed to find {card_name!r}")
+    return None
+
+
+@lru_cache(maxsize=None)
+@backoff.on_predicate(
+    backoff.expo,
+    predicate=lambda result: result is None,
+    max_tries=6
+)
+def query_api_for_card_by_number(
+    set_code: str, collector_number: str, delay=API_QUERY_DELAY * 1.5) -> Card | None:
+    """Query Scryfall API for a card designated by set code and collector number.
+
+    Args:
+        set_code (str): code that designates the card's set
+        collector_number (str): card's collector number
+        delay (float, optional): delay between calls to the API in seconds (defaults to 0.3s)
+    """
+    set_code = set_code.lower()
+    _log.info(f"Querying Scryfall for {(set_code, collector_number)}...")
+    try:
+        try:
+            throttle(delay)
+            result = scrython.cards.ByCodeNumber(
+                code=set_code, number=collector_number, rate_limit=False)
+        except scrython.base.ScryfallError:
+            result = None
+    except (ServerTimeoutError, AsyncIoTimeoutError):
+        _log.warning("Scryfall API timed out")
+        return None
+
+    if result:
+        return Card(result.to_dict())
+
+    _log.warning(f"Scryfall API failed to find {(set_code, collector_number)}")
     return None
 
 
@@ -1481,13 +1516,16 @@ def find_by_mtgo_id(mtgo_id: int) -> Card | None:
     return _mtgo_ids_cache.get(mtgo_id)
 
 
-def find_by_collector_number(set_code: str, collector_number: str | int) -> Card | None:
+def find_by_collector_number(
+    set_code: str, collector_number: str, fall_back_on_api=True) -> Card | None:
     """Return a card designated by provided ``set_code`` and ``collector_number`` or `None` if it
     cannot be found.
     """
     if not _collector_numbers_cache:
         _cache_cards()
-    return _collector_numbers_cache.get((set_code.lower(), collector_number))
+    if card := _collector_numbers_cache.get((set_code.lower(), collector_number)):
+        return card
+    return query_api_for_card_by_number(set_code, collector_number) if fall_back_on_api else None
 
 
 class ColorIdentityDistribution:

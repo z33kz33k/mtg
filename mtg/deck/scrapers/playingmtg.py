@@ -40,7 +40,8 @@ class PlayingMtgDeckScraper(DeckScraper):
         ],
     }
     EXAMPLE_URLS = (
-        "https://playingmtg.com/decks/dimir-midrange-t0wk2",
+        "https://playingmtg.com/decks/reckless-raid-mtg-arena-starter-deck/",
+        "https://playingmtg.com/decks/greasefang-parhelion-jqckl/",
         "https://playingmtg.com/decks/thurid-mare-of-destiny-equine-copy-00w7t/",
     )
 
