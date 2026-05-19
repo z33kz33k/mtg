@@ -369,6 +369,32 @@ def normalize_deck_source(src: str) -> str:
     return src
 
 
+DECK_SIZE_RULES: dict[str, dict[str, int]] = {
+    "alchemy":          {"min_maindeck": 60,  "max_sideboard": 15},
+    "brawl":            {"min_maindeck": 100, "max_sideboard": 0},
+    "commander":        {"min_maindeck": 100, "max_sideboard": 0},
+    "duel":             {"min_maindeck": 100, "max_sideboard": 0},
+    "future":           {"min_maindeck": 60,  "max_sideboard": 15},  # (future) standard
+    "gladiator":        {"min_maindeck": 100, "max_sideboard": 0},
+    "historic":         {"min_maindeck": 60,  "max_sideboard": 15},
+    "legacy":           {"min_maindeck": 60,  "max_sideboard": 15},
+    "modern":           {"min_maindeck": 60,  "max_sideboard": 15},
+    "oathbreaker":      {"min_maindeck": 60,  "max_sideboard": 0},
+    "oldschool":        {"min_maindeck": 60,  "max_sideboard": 15},
+    "pauper":           {"min_maindeck": 60,  "max_sideboard": 15},
+    "paupercommander":  {"min_maindeck": 100, "max_sideboard": 0},
+    "penny":            {"min_maindeck": 60,  "max_sideboard": 15},
+    "pioneer":          {"min_maindeck": 60,  "max_sideboard": 15},
+    "predh":            {"min_maindeck": 100, "max_sideboard": 0},
+    "premodern":        {"min_maindeck": 60,  "max_sideboard": 15},
+    "standard":         {"min_maindeck": 60,  "max_sideboard": 15},
+    "standardbrawl":    {"min_maindeck": 60,  "max_sideboard": 0},
+    "timeless":         {"min_maindeck": 60,  "max_sideboard": 15},
+    "tlr":              {"min_maindeck": 50,  "max_sideboard": 10},
+    "vintage":          {"min_maindeck": 60,  "max_sideboard": 15},
+}
+
+
 # this class tries to be as generic as possible and still support multiple Constructed formats
 # this means some more complicated formats like Oathbreaker are not fully supported (e.g a Deck
 # knows nothing about signature spells) to not over-complicate things (by either going into an
@@ -376,10 +402,8 @@ def normalize_deck_source(src: str) -> str:
 class Deck:
     """A deck of Magic: the Gathering cards suitable for Constructed formats.
     """
-    # this is minimal size for `Tiny Leaders: Reborn` (tlr) format (a Commander variant)
-    # which has been recently added to Scryfall-supported formats
-    MIN_MAINDECK_SIZE = 50
-    MAX_SIDEBOARD_SIZE = 15
+    DEFAULT_MIN_MAINDECK_SIZE = 60
+    DEFAULT_MAX_SIDEBOARD_SIZE = 15
     MIN_AGGRO_CMC = 2.3  # arbitrary
     MAX_CONTROL_CREATURES_COUNT = 10  # arbitrary
 
@@ -612,6 +636,18 @@ class Deck:
             return "arena.decklist"
         return normalize_deck_source(get_netloc_domain(url, naked=True))
 
+    @property
+    def _min_maindeck_size(self) -> int:
+        if fmt_def := DECK_SIZE_RULES.get(self.format or ""):
+            return fmt_def["min_maindeck"]
+        return self.DEFAULT_MIN_MAINDECK_SIZE
+
+    @property
+    def _max_sideboard_size(self) -> int:
+        if fmt_def := DECK_SIZE_RULES.get(self.format or ""):
+            return fmt_def["max_sideboard"]
+        return self.DEFAULT_MAX_SIDEBOARD_SIZE
+
     def __init__(
             self, maindeck: Iterable[Card], sideboard: Iterable[Card] | None = None,
             commander: Card | None = None, partner_commander: Card | None = None,
@@ -622,7 +658,10 @@ class Deck:
         commanders = [c for c in [commander, partner_commander] if c]
         maindeck, sideboard = [*maindeck], [*sideboard] if sideboard else []
 
-        if commanders and sideboard:
+        if not self._max_sideboard_size and sideboard:
+            sideboard = []
+            _log.warning(f"Disregarding sideboard for a {self.format!r} deck")
+        elif commanders and sideboard:
             sideboard = []
             _log.warning("Disregarding sideboard for a commander-enabled deck")
 
@@ -661,10 +700,11 @@ class Deck:
         # this is not strict enough for commander (not checking against 100 cards size) on purpose
         # otherwise, various commander-like subtypes like brawl, oathbraker or tiny leaders would
         # fail here
-        if (len(self.maindeck) + len(commanders)) < self.MIN_MAINDECK_SIZE:
+        if (len(self.maindeck) + len(commanders)) < self._min_maindeck_size:
+            fmt_suffix = f" for {self.format!r}" if self.format else ""
             raise InvalidDeck(
-                f"Invalid deck size: {len(self.maindeck) + len(commanders)} "
-                f"< {self.MIN_MAINDECK_SIZE}")
+                f"Invalid deck size{fmt_suffix}: {len(self.maindeck) + len(commanders)} "
+                f"< {self._min_maindeck_size}")
 
         self._sideboard = []
         if sideboard:
@@ -674,7 +714,7 @@ class Deck:
             sideboard_playsets = aggregate(*sideboard)
             self._sideboard = [*itertools.chain(
                 *sorted(sideboard_playsets.values(), key=lambda l: l[0].name))]
-            if len(self.sideboard) > self.MAX_SIDEBOARD_SIZE:
+            if len(self.sideboard) > self._max_sideboard_size:
                 self._cut_sideboard(sideboard)
 
             temp_playsets = aggregate(*self.cards)
@@ -704,10 +744,11 @@ class Deck:
                         f" {card.name!r}")
 
     def _cut_sideboard(self, input_sideboard: list[Card]) -> None:
+        fmt_suffix = f" for {self.format!r}" if self.format else ""
         _log.warning(
-            f"Oversized sideboard ({len(self.sideboard)}) cut down to regular size "
-            f"({self.MAX_SIDEBOARD_SIZE})")
-        sideboard = input_sideboard[:self.MAX_SIDEBOARD_SIZE]
+            f"Oversized sideboard ({len(self.sideboard)}) cut down to regular size{fmt_suffix} "
+            f"({self._max_sideboard_size})")
+        sideboard = input_sideboard[:self._max_sideboard_size]
         if self.companion and self.companion not in sideboard:
             sideboard[-1] = self.companion
         sideboard_playsets = aggregate(*sideboard)

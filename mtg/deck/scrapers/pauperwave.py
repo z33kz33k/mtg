@@ -31,8 +31,7 @@ class PauperwaveDeckJsonParser(DeckJsonParser):
     """
     @override
     def _parse_input_for_metadata(self) -> None:
-        self._metadata.update(self._deck_json["metadata"])
-        pass
+        self.update_metadata(**self._deck_json["metadata"])
 
     def _parse_card_data(self, card_data: dict) -> list[Card]:
         qty, name = card_data["quantity"], card_data["name"]

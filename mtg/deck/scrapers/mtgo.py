@@ -173,7 +173,7 @@ class MtgoDeckScraper(DeckScraper):
                 url=self.url)
         if rank_data := json_data.get("final_rank"):
             _process_ranks(rank_data, deck_data)
-        self._metadata.update(_get_event_metadata(json_data))
+        self.update_metadata(**_get_event_metadata(json_data))
         self._json = deck_data
 
     @override
@@ -219,5 +219,5 @@ class MtgoEventScraper(DecksJsonContainerScraper):
         decks_data = json_data["decklists"]
         if rank_data := json_data.get("final_rank"):
             _process_ranks(rank_data, *decks_data)
-        self._metadata.update(_get_event_metadata(json_data))
+        self.update_metadata(**_get_event_metadata(json_data))
         self._decks_json = decks_data
