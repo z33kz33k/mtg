@@ -20,6 +20,7 @@ from mtg.deck.scrapers.abc import DeckScraper, DecksJsonContainerScraper
 from mtg.lib.scrape.core import (
     ScrapingError, fetch_json, get_path_segments, strip_url_query,
 )
+from mtg.lib.time import date_from_unixtime
 from mtg.scryfall import Card
 
 _log = logging.getLogger(__name__)
@@ -178,8 +179,7 @@ class MtgStocksArticleScraper(DecksJsonContainerScraper):
         if title := self._json.get("title"):
             self._metadata.setdefault("article", {})["title"] = title
         if dt := self._json.get("date"):
-            self._metadata.setdefault("article", {})["date"] = datetime.fromtimestamp(
-                dt / 1000, UTC).date()
+            self._metadata.setdefault("article", {})["date"] = date_from_unixtime(dt)
         if cat := self._json.get("category"):
             self._metadata.setdefault("article", {})["category"] = cat["name"]
 

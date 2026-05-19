@@ -15,6 +15,7 @@ from typing import override
 
 from mtg.deck.scrapers.abc import DeckScraper
 from mtg.lib.scrape.core import ScrapingError, normalize_url
+from mtg.lib.time import date_from_unixtime
 
 _log = logging.getLogger(__name__)
 
@@ -59,7 +60,7 @@ class ManaBoxDeckScraper(DeckScraper):
             _, fmt = self._json["format"]
             self._update_fmt(fmt)
         _, dt = self._json["editDate"]
-        self._metadata["date"] = datetime.fromtimestamp(dt / 1000, UTC).date()
+        self._metadata["date"] = date_from_unixtime(dt)
 
     @override
     def _parse_input_for_decklist(self) -> None:

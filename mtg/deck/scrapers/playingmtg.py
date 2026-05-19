@@ -8,10 +8,10 @@
 
 """
 import logging
+from collections.abc import Iterator
 from typing import override
 
 import dateutil.parser
-from bs4 import Tag
 
 from mtg.deck.scrapers.abc import (
     DEFAULT_THROTTLING, DeckScraper, DeckUrlsContainerScraper,
@@ -19,11 +19,11 @@ from mtg.deck.scrapers.abc import (
 )
 from mtg.lib.numbers import extract_float, extract_int
 from mtg.lib.scrape.core import (
-    ScrapingError, find_links, find_next_sibling_tag,
-    is_more_than_root_path, normalize_url, prepend_url, strip_url_query,
+    ScrapingError, fetch_json, find_links, find_next_sibling_tag,
+    get_path_segments, is_more_than_root_path, normalize_url, prepend_url, strip_url_query,
 )
 from mtg.lib.scrape.dynamic import Xpath
-from mtg.scryfall import Card
+from mtg.lib.time import date_from_unixtime
 
 _log = logging.getLogger(__name__)
 URL_PREFIX = "https://playingmtg.com"
@@ -34,15 +34,11 @@ _THROTTLING = DEFAULT_THROTTLING * 2
 class PlayingMtgDeckScraper(DeckScraper):
     """Scraper of PlayingMTG decklist page.
     """
-    SELENIUM_PARAMS = {  # override
-        "xpaths": [
-            Xpath('//article//div/a[contains(@href, "/playingmtg.com/cards/")]'),
-        ],
-    }
+    JSON_FROM_API = True
     EXAMPLE_URLS = (
+        "https://playingmtg.com/decks/frodo-sam-and-their-favourite-squirrel-s-copy-2/",
         "https://playingmtg.com/decks/reckless-raid-mtg-arena-starter-deck/",
         "https://playingmtg.com/decks/greasefang-parhelion-jqckl/",
-        "https://playingmtg.com/decks/thurid-mare-of-destiny-equine-copy-00w7t/",
     )
 
     @classmethod
@@ -56,70 +52,65 @@ class PlayingMtgDeckScraper(DeckScraper):
         url = normalize_url(url, case_sensitive=True)
         return strip_url_query(url)
 
+    def _get_slug(self) -> str:
+        _, slug, *_ = get_path_segments(self._url)
+        return slug
+
+    @override
+    def _fetch_json(self) -> None:
+        slug = self._get_slug()
+        api_url = f"https://api.dotgg.gg/cgfw/getdeck?game=magic&slug={slug}&mode=boards"
+        self._json = fetch_json(api_url)
+
+    @override
+    def _validate_json(self) -> None:
+        super()._validate_json()
+        if not self._json.get("boards"):
+            raise ScrapingError("No cards data", scraper=type(self), url=self.url)
+
     @override
     def _parse_input_for_metadata(self) -> None:
-        if title_tag := self._soup.select_one("h1.page-title"):
-            self._metadata["name"] = title_tag.attrs["title"]
-        if fmt_snap := self._soup.find("span", string=lambda s: s and "Format:" in s):
-            fmt_tag = fmt_snap.parent
-            self._update_fmt(fmt_tag.find("a").text.strip().removeprefix("Format: "))
-        info_tags = [*self._soup.select_one("ul.entry-meta").find_all("li")]
-        if len(info_tags) == 2:
-            author_tag, date_tag = info_tags
-            theme_tag = None
-        elif len(info_tags) == 3:
-            theme_tag, author_tag, date_tag = info_tags
-        else:
-            theme_tag, author_tag, date_tag = None, None, None
-        if theme_tag:
-            self._update_archetype_or_theme(theme_tag.text.strip())
-        if author_tag:
-            self._metadata["author"] = author_tag.text.strip()
-        if date_tag:
-            self._metadata["date"] = dateutil.parser.parse(date_tag.text.strip()).date()
-        if desc_h := self._soup.find("h2", string=lambda s: s and s == "Deck Description"):
-            desc_tag = desc_h.parent
-            self._metadata["description"] = desc_tag.text.strip().removeprefix("Deck Description")
+        if fmt := self._json.get("format"):
+            self._update_fmt(fmt)
+        if dt := self._json.get("date"):
+            self._metadata["date"] = date_from_unixtime(int(dt), 1)
+        if name := self._json.get("humanname"):
+            self._metadata["name"] = name
+        if desc := self._json.get("description"):
+            self._metadata["description"] = desc
+        if views := self._json.get("views"):
+            self._metadata["views"] = int(views)
+        if author := self._json.get("authornick"):
+            self._metadata["author"] = author
+        if archetype := self._json.get("archetype_name"):
+            self._update_archetype_or_theme(archetype)
 
-    @classmethod
-    def _parse_card_tag(cls, card_tag: Tag) -> list[Card]:
-        data_tags = [
-            tag for tag in card_tag.find_all("div")
-            if tag.has_attr("title") and all(t not in tag.text for t in ("$", "N/A"))]
-        qty, name = None, None
-        for tag in data_tags:
-            if all(ch.isdigit() for ch in tag.text):
-                qty = int(tag.text)
-            else:
-                name = tag.text.strip()
-        return cls.get_playset(cls.find_card(name), qty)
+    def _get_boards_iterator(self) -> Iterator[tuple[int, dict]]:
+        boards = self._json["boards"]
+        if isinstance(boards, list):
+            for i, item in enumerate(boards):
+                yield i, item
+        elif isinstance(boards, dict):
+            for k, v in boards.items():
+                yield int(k), v
+        else:
+            raise TypeError(f"Unexpected type for boards collection: '{type(boards)}'")
 
     @override
     def _parse_input_for_decklist(self) -> None:
-        maindeck_hook = self._soup.find("div", string=lambda s: s and s == "Main Board")
-        if not maindeck_hook:
-            raise ScrapingError("Main board <div> tag not found")
-        maindeck_tag = maindeck_hook.parent
-        card_tags = [a_tag.parent for a_tag in maindeck_tag.find_all(
-            "a", href=lambda h: h and "playingmtg.com/" in h)]
-        for card_tag in card_tags:
-            self._maindeck += self._parse_card_tag(card_tag)
-
-        if sideboard_hook := self._soup.find("div", string=lambda s: s and s == "Side Board"):
-            sideboard_tag = sideboard_hook.parent
-            card_tags = [a_tag.parent for a_tag in sideboard_tag.find_all(
-                "a", href=lambda h: h and "playingmtg.com/" in h)]
-            for card_tag in card_tags:
-                self._sideboard += self._parse_card_tag(card_tag)
-
-        if commander_hook := self._soup.find("div", string=lambda s: s and s == "Commander"):
-            commander_tag = commander_hook.parent
-            card_tags = [a_tag.parent for a_tag in commander_tag.find_all(
-                "a", href=lambda h: h and "playingmtg.com/" in h)]
-            for card_tag in card_tags:
-                self._set_commander(self._parse_card_tag(card_tag)[0])
+        for board_code, cards_data in self._get_boards_iterator():
+            board = self._sideboard if board_code == 1 else self._maindeck
+            for set_num, qty in cards_data.items():
+                set_code, colnum = set_num.split("-", maxsplit=1)
+                card = self.find_card_by_collector_number(set_code, colnum)
+                playset = self.get_playset(card, int(qty))
+                if board_code == 2:
+                    self._set_commander(card)
+                else:
+                    board += playset
 
 
+# TODO
 @DeckUrlsContainerScraper.registered
 class PlayingMtgTournamentScraper(DeckUrlsContainerScraper):
     """Scraper of PlayingMTG tournament page.

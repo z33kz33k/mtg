@@ -652,6 +652,8 @@ class Deck:
             self, maindeck: Iterable[Card], sideboard: Iterable[Card] | None = None,
             commander: Card | None = None, partner_commander: Card | None = None,
             companion: Card | None = None, metadata: Json | None = None) -> None:
+        self._metadata = metadata or {}
+
         if partner_commander and not commander:
             _log.warning("Partner commander without commander. Re-assigning as commander")
             commander, partner_commander = partner_commander, commander
@@ -688,7 +690,6 @@ class Deck:
         sideboard = [*sideboard] if sideboard else []
         sideboard = [
             companion, *sideboard] if companion and companion not in sideboard else sideboard
-        self._metadata = metadata or {}
 
         self._max_playset_count = 1 if commander is not None else 4
         playsets = aggregate(*maindeck)
@@ -1140,6 +1141,13 @@ class DeckParser(ABC):
                 card = find_by_name(truncated.strip())
             if not card:
                 raise CardNotFound(f"Unable to find card {name!r}")
+        return card
+
+    @staticmethod
+    def find_card_by_collector_number(set_code: str, collector_number: str) -> Card:
+        card = find_by_collector_number(set_code, collector_number)
+        if not card:
+            raise CardNotFound(f"Unable to find card {(set_code, collector_number)}")
         return card
 
     @staticmethod

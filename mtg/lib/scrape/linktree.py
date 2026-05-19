@@ -38,6 +38,7 @@ from requests import ReadTimeout, HTTPError, ConnectionError
 
 from mtg.constants import Json
 from mtg.lib.scrape.core import ScrapingError, fetch, fetch_soup, strip_url_query
+from mtg.lib.time import datetime_from_unixtime
 
 _log = logging.getLogger(__name__)
 
@@ -151,8 +152,8 @@ class LinktreeScraper:
             self.url,
             self._account_id,
             data.get("isActive"),
-            datetime.fromtimestamp(created / 1000, UTC) if created else None,
-            datetime.fromtimestamp(updated / 1000, UTC) if updated else None,
+            datetime_from_unixtime(created) if created else None,
+            datetime_from_unixtime(updated) if updated else None,
             data.get("profilePictureUrl"),
             data.get("description"),
             self._links

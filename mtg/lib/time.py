@@ -161,3 +161,16 @@ def get_timestamp(filename=True, dt: datetime | None = None) -> str:
     fmt = FILENAME_TIMESTAMP_FORMAT if filename else READABLE_TIMESTAMP_FORMAT
     dt = dt or naive_utc_now()
     return dt.strftime(fmt)
+
+
+def date_from_unixtime(unixtime: int, divisor=1000) -> date:
+    """Return a `datetime.date` object from integer Unix time.
+    """
+    return datetime.fromtimestamp(unixtime / divisor, UTC).date()
+
+
+def datetime_from_unixtime(unixtime: int, divisor=1000) -> datetime:
+    """Return a `datetime.datetime` object from integer Unix time.
+    """
+    return datetime.fromtimestamp(unixtime / divisor, UTC)
+

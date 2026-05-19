@@ -24,6 +24,7 @@ from mtg.lib.scrape.core import (
     ScrapingError, dissect_js, fetch, fetch_json, get_path_segments, strip_url_query,
     throttle,
 )
+from mtg.lib.time import date_from_unixtime
 from mtg.scryfall import Card
 from mtg.yt.discover import UrlHook
 
@@ -143,7 +144,7 @@ class DeckstatsDeckScraper(DeckScraper):
         if fmt_id := self._json.get("format_id"):
             if fmt := _FORMATS.get(fmt_id):
                 self._update_fmt(fmt)
-        self._metadata["date"] = datetime.fromtimestamp(self._json["updated"], UTC).date()
+        self._metadata["date"] = date_from_unixtime(self._json["updated"], 1)
         if tags := self._json.get("tags"):
             self._metadata["tags"] = self.normalize_metadata_deck_tags(tags)
         if description := self._json.get("description"):

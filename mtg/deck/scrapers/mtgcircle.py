@@ -24,6 +24,7 @@ from mtg.lib.common import from_iterable
 from mtg.lib.json import Node
 from mtg.lib.scrape.core import ScrapingError, dissect_js, is_more_than_root_path
 from mtg.lib.scrape.dynamic import Xpath
+from mtg.lib.time import date_from_unixtime
 from mtg.scryfall import Card, all_formats
 
 _log = logging.getLogger(__name__)
@@ -54,7 +55,7 @@ class MtgCircleDeckJsonParser(DeckJsonParser):
         if source := self._deck_json.get("source"):
             self._metadata["original_source"] = source
         if date := self._deck_json.get("date"):
-            self._metadata["date"] = datetime.fromtimestamp(date / 1000, UTC).date()
+            self._metadata["date"] = date_from_unixtime(date)
         if arena_fmt := self._deck_json.get("eventName"):
             self._metadata.setdefault("arena", {})["format"] = arena_fmt
         if arena_rank := self._deck_json.get("rank"):
@@ -249,7 +250,7 @@ class MtgCircleArticleScraper(HybridContainerScraper):
         self._metadata["article_tags"] = [t.text.strip().lower() for t in info_tags]
         date_data = get_data(
             self._soup, type(self), self.url, retriever=self._retrieve_date_data, start_pos=2)
-        self._metadata["date"] = datetime.fromtimestamp(date_data["date"] / 1000, UTC).date()
+        self._metadata["date"] = date_from_unixtime(date_data["date"])
 
     @staticmethod
     def _retrieve_decks_data(data: Json) -> list[Json]:
